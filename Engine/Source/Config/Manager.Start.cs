@@ -929,6 +929,8 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		 */
 		protected static void MergeInputSettings (OverridableInputSettings primarySettings, OverridableInputSettings secondarySettings)
 			{
+			if (secondarySettings.HasCharacterEncodingRules)
+				{  primarySettings.AddCharacterEncodingRules(secondarySettings.CharacterEncodingRules);  }
 			}
 
 

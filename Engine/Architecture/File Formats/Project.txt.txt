@@ -47,8 +47,21 @@ _______________________________________________________________________________
 		The file that should serve as the home page.  This could be a source file in one of the input targets, or a HTML file in any
 		location.  Relative paths are relative to the project folder.
 
+		> Character Encoding: [name or number]
+		> Character Encoding: [name or number] [path and/or extension]
+
+		The character encodings to use.  It can be specified multiple times.
+
+		Each statement needs to have an encoding name, such as "iso-8859-1", or the number of a code page, such as "28591".
+		The default is "Unicode", which is special name that will auto-detect all forms of UTF-8, UTF-16, and UTF-32.
+
+		You can also specify a folder name, such as "C:\My Project\Source", a file extension, such as "*.mac", or both, such as
+		"C:\My Project\Source\*.mac".  It may be preferable to specify encodings for folders under their Source Folder sections 
+		instead of here.  Relative folders specified here are relative to the project file.  If there is no folder then it applies
+		everywhere.
+
  
-	Topic: Input Targets
+	Topic: Source Folders
 
 		> Source Folder: [path]
 		> Source Folder [number]: [path]
@@ -61,6 +74,17 @@ _______________________________________________________________________________
 			
 		Name can optionally be specified.  It's not required if there is only one source folder.  If there's more than one and it's 
 		not specified it will be automatically generated.
+
+		Overridden Properties:
+
+			> Character Encoding: [name or number]
+			> Character Encoding: [name or number] [path and/or extension]
+
+			Each source folder may add additional character encoding statements if desired.  These are applied in addition to the
+			ones in <Project Information>.  Relative paths will be relative to the source folder instead of the project file.
+
+
+	Topic: Image Folders
 			
 		> Image Folder: [path]
 		> Image Folder [number]: [path]
@@ -83,20 +107,28 @@ _______________________________________________________________________________
 		zero or more characters.  It applies to the entire folder name, so "cli" will not match "client", although "cli*" will.
 			
  
-	Topic: Output Targets
+	Topic: HTML Output Folders
  
 		> HTML Output Folder: [path]
-		>    [Project Info Settings]
 			
 		Specifies a HTML output folder.  Relative paths are relative to the project folder.
-			
-		Each folder may override any of the project information settings if desired.  This allows projects with multiple output targets
-		to give each one its own style, subtitle, etc.
 			
 		Although internally output targets have numbers like input targets, they're not stored in this file because it's not important
 		for them to remain consistent from one computer to the next.  They're only used for temporary data, whereas input target
 		numbers affect the generated output file paths (/files2, etc.) and thus need to remain consistent so URLs don't constantly
 		change.
+
+		Overridden Properties:
+
+			> Title: [title]
+			> Subtitle: [subtitle]
+			> Copyright: [copyright]
+			> Timestamp: [timestamp code]
+			> Style: [name]
+			> Home Page: [file]
+
+			Each output target may override Title, Subtitle, Copyright, Timestamp, Style, or Home Page properties if desired.  This 
+			allows projects with multiple output targets to give each one its own style, subtitle, etc.
 			
  
 	Topic: Global Settings
@@ -120,6 +152,7 @@ _______________________________________________________________________________
 	Topic: 2.2
 
 		- Added Home Page.
+		- Added Character Encoding.
 
 	Topic: 2.0
 		

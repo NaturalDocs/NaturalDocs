@@ -53,6 +53,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			htmlOutputFolderRegex = new Regex.Config.HTMLOutputFolder();
 			ignoredSourceFolderRegex = new Regex.Config.IgnoredSourceFolder();
 			ignoredSourceFolderPatternRegex = new Regex.Config.IgnoredSourceFolderPattern();
+			encodingRegex = new Regex.Config.Encoding();
 			}
 
 
@@ -218,6 +219,9 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 		protected bool GetInputProperty (string lcIdentifier, string value, PropertyLocation propertyLocation, 
 														Targets.Input inputTarget, ErrorList errorList)
 			{
+
+			// Name
+
 			if (lcIdentifier == "name")
 				{
 				 if (inputTarget is Targets.SourceFolder && 
@@ -234,9 +238,155 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 				return true;
 				}
+
+
+			// Encoding
+
+			else if (encodingRegex.IsMatch(lcIdentifier))
+				{
+				var inputSettings = inputTarget ?? projectConfig.InputSettings;
+
+				var encodingRule = GetEncodingRule (value, propertyLocation, inputTarget);
+				inputSettings.AddCharacterEncodingRule(encodingRule);
+
+				return true;
+				}
 				
 			else
 				{  return false;  }
+			}
+
+
+		/* Function: GetEncodingRule
+		 * Converts the value of an Encoding line into a <CharacterEncodingRule>.  It does not validate whether the encoding name,
+		 * number, or folder are valid.  If it contains a relative path it will be relative to the inputTarget if it's set, or the project folder
+		 * if it's null.
+		 */
+		protected CharacterEncodingRule GetEncodingRule (string value, PropertyLocation propertyLocation, Targets.Input inputTarget)
+			{
+			// Possible formats:
+			//
+			//     Encoding: iso-8859-1
+			//     Encoding: iso-8859-1 *.*
+			//     Encoding: iso-8859-1 *.txt
+			//
+			//     Encoding: iso-8859-1 C:\My Project\Source
+			//     Encoding: iso-8859-1 C:\My Project\Source\*.*
+			//     Encoding: iso-8859-1 C:\My Project\Source\*.txt
+			//
+			//     Encoding: iso-8859-1 Source
+			//     Encoding: iso-8859-1 Source\*.*
+			//     Encoding: iso-8859-1 Source\*.txt
+			//
+			//     Encoding: 28591
+			//     Encoding: 28591 *.*
+			//     ...
+			//     and all other permutations above with an integer in place of the encoding name
+
+			
+			// Split the path and the encoding
+
+			value = value.CondenseWhitespace();  // the edges should already be trimmed
+
+			string encoding;
+			Path path;
+
+			int spaceIndex = value.IndexOf(' ');
+
+			if (spaceIndex == -1)
+				{  
+				encoding = value;  
+				path = null;
+				}
+			else
+				{
+				encoding = value.Substring(0, spaceIndex);
+				path = value.Substring(spaceIndex + 1);
+				}
+
+
+			// Split the folder and extension
+
+			Path folder;
+			string extension;
+
+			if (path == null)
+				{
+				folder = null;
+				extension = null;
+				}
+			else
+				{
+				string filename = path.NameWithoutPath;
+
+				if (filename == "*.*")
+					{
+					folder = path.ParentFolder;
+					extension = null;
+					}
+				else if (filename.StartsWith("*."))
+					{
+					folder = path.ParentFolder;
+					extension = filename.Substring(2);
+					}
+				else
+					{
+					folder = path;
+					extension = null;
+					}
+
+				// Calling ParentFolder on "*.*" or "*.ext" will return ".", so we want to replace that with null.
+				if (folder == ".")
+					{  folder = null;  }
+				}
+
+
+			// Make the path absolute
+
+			AbsolutePath absoluteFolder;
+
+			if (folder == null)
+				{
+				if (inputTarget != null && inputTarget is Targets.SourceFolder)
+					{  absoluteFolder = (inputTarget as Targets.SourceFolder).Folder;  }
+				else
+					{  absoluteFolder = null;  }
+				}
+			else if (folder.IsAbsolute)
+				{  
+				absoluteFolder = (AbsolutePath)folder;  
+				}
+			else // folder.IsRelative
+				{
+				if (inputTarget != null && inputTarget is Targets.SourceFolder)
+					{  absoluteFolder = (inputTarget as Targets.SourceFolder).Folder + '/' + folder;  }
+				else
+					{  absoluteFolder = (AbsolutePath)propertyLocation.FileName.ParentFolder + '/' + folder;  }
+				}
+
+
+			// Check whether it's an encoding name or code page number
+
+			int codePage;
+			string encodingName;
+
+			// None of the valid encoding names start with a number, but use TryParse just in case
+			if (encoding[0] >= '0' && encoding[0] <= '9' && 
+				Int32.TryParse(encoding, out codePage))
+				{
+				// codePage set by TryParse
+				encodingName = null;
+				}
+			else
+				{
+				codePage = 0;
+				encodingName = encoding;
+				}
+
+
+			// Create and return the rule
+
+			return new CharacterEncodingRule(codePage, encodingName, absoluteFolder, extension, propertyLocation);
 			}
 
 
@@ -550,7 +700,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			AppendFileHeader(output);			
 			
-			AppendProjectInfo(output);
+			AppendProjectInfo(output, projectFolder);
 			AppendSourceTargets(output, projectFolder);
 			AppendFilterTargets(output, projectFolder);
 			AppendImageTargets(output, projectFolder);
@@ -576,7 +726,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 		 * Appends the project information to the passed string, which includes the global <OverridableInputSettings> and
 		 * <OverridableOutputSettings>.
 		 */
-		protected void AppendProjectInfo (StringBuilder output)
+		protected void AppendProjectInfo (StringBuilder output, Path projectFolder)
 			{
 
 			// Header
@@ -605,6 +755,20 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			bool hasHomePage = (projectConfig.OutputSettings.HomePagePropertyLocation.IsDefined &&
 											projectConfig.OutputSettings.HomePagePropertyLocation.Source != PropertySource.SystemDefault &&
 											projectConfig.OutputSettings.HomePagePropertyLocation.Source != PropertySource.CommandLine);
+
+			bool hasEncodingRules = false;
+			if (projectConfig.InputSettings.HasCharacterEncodingRules)
+				{
+				foreach (var encodingRule in projectConfig.InputSettings.CharacterEncodingRules)
+					{
+					if (encodingRule.PropertyLocation.Source != PropertySource.SystemDefault &&
+						encodingRule.PropertyLocation.Source != PropertySource.CommandLine)
+						{
+						hasEncodingRules = true;
+						break;
+						}
+					}
+				}
 
 			if (hasTitle)
 				{  
@@ -647,7 +811,62 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				output.AppendLine();
 				}
 
-			if (hasTitle || hasSubtitle || hasCopyright || hasTimestampCode || hasStyleName || hasHomePage)
+			if (hasEncodingRules)
+				{
+				foreach (var encodingRule in projectConfig.InputSettings.CharacterEncodingRules)
+					{
+					if (encodingRule.PropertyLocation.Source != PropertySource.SystemDefault &&
+						encodingRule.PropertyLocation.Source != PropertySource.CommandLine)
+						{
+						output.Append("Encoding: ");
+
+						if (encodingRule.CharacterEncodingName != null)
+							{  output.Append(encodingRule.CharacterEncodingName);  }
+						else
+							{  output.Append(encodingRule.CharacterEncodingID);  }
+
+						Path displayFolder = null;
+
+						if (encodingRule.Folder != null)
+							{
+							displayFolder = encodingRule.Folder.MakeRelativeTo(projectFolder);
+
+							// If the rule's folder isn't relative to the project folder, display as is
+							if (displayFolder == null)
+								{  displayFolder = encodingRule.Folder;  }
+
+							// If the rule's folder is the same as the project folder it will reduce to ".", so omit it
+							else if (displayFolder == ".")
+								{  displayFolder = null;  }
+
+							// Otherwise we have a relative folder in displayFolder which we'll use
+							}
+
+						if (displayFolder != null)
+							{
+							output.Append(' ');
+							output.Append(displayFolder);
+							}
+
+						if (encodingRule.FileExtension != null)
+							{
+							if (displayFolder != null)
+								{  output.Append(SystemInfo.PathSeparatorCharacter);  }
+							else
+								{  output.Append(' ');  }
+
+							output.Append("*.");
+							output.Append(encodingRule.FileExtension);
+							}
+
+						output.AppendLine();
+						}
+					}
+
+				output.AppendLine();
+				}
+
+			if (hasTitle || hasSubtitle || hasCopyright || hasTimestampCode || hasStyleName || hasHomePage || hasEncodingRules)
 				{  output.AppendLine();  }
 
 
@@ -657,41 +876,46 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			if (!hasTitle)
 				{
-				output.AppendLine("#");
-				output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.TitleSyntax.multiline") );
+			output.AppendLine("#");
+			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.TitleSyntax.multiline") );
 				}
 					
 			if (!hasSubtitle)
 				{  
-				output.AppendLine("#");
-				output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.SubtitleSyntax.multiline") );
+			output.AppendLine("#");
+			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.SubtitleSyntax.multiline") );
 				}
 					
 			if (!hasCopyright)
 				{  
-				output.AppendLine("#");
-				output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.CopyrightSyntax.multiline") );
+			output.AppendLine("#");
+			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.CopyrightSyntax.multiline") );
 				}
 			
 			if (!hasTimestampCode)
 				{  
-				output.AppendLine("#");
-				output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.TimestampSyntax.multiline") );
-				output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.TimestampSubstitutions.multiline") );
+			output.AppendLine("#");
+			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.TimestampSyntax.multiline") );
+			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.TimestampSubstitutions.multiline") );
 				}
 
 			if (!hasStyleName)
 				{
-				output.AppendLine("#");
-				output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.StyleSyntax.multiline") );
+			output.AppendLine("#");
+			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.StyleSyntax.multiline") );
 				}
 
 			if (!hasHomePage)
 				{
-				output.AppendLine("#");
-				output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.HomePageSyntax.multiline") );
+			output.AppendLine("#");
+			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.HomePageSyntax.multiline") );
 				}
 
+			if (hasEncodingRules)
+				{
+				output.AppendLine("#");
+				output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.EncodingSyntax.multiline") );
+				}
 			output.AppendLine();
 			output.AppendLine();
 			}
@@ -740,6 +964,22 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			if (target.PropertyLocation.Source == PropertySource.SystemDefault)
 				{  return;  }
 
+			bool hasName = (target.NamePropertyLocation.IsDefined &&
+									 target.NamePropertyLocation.Source != PropertySource.SystemDefault);
+
+			int encodingRules = 0;
+			if (projectConfig.InputSettings.HasCharacterEncodingRules)
+				{
+				foreach (var encodingRule in projectConfig.InputSettings.CharacterEncodingRules)
+					{
+					if (encodingRule.PropertyLocation.Source != PropertySource.SystemDefault &&
+						encodingRule.PropertyLocation.Source != PropertySource.CommandLine)
+						{
+						encodingRules++;
+						}
+					}
+				}
+
 			output.Append("Source Folder");
 
 			if (target.NumberPropertyLocation.IsDefined &&
@@ -752,9 +992,76 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			Path relativePath = target.Folder.MakeRelativeTo(projectFolder);
 			output.AppendLine( (relativePath != null ? relativePath : target.Folder) );
 
-			if (target.NamePropertyLocation.IsDefined &&
-				target.NamePropertyLocation.Source != PropertySource.SystemDefault)
+			if (hasName)
 				{  output.AppendLine("   Name: " + target.Name);  }
+
+			if (hasName && encodingRules > 1)
+				{  output.AppendLine();  }
+
+			AppendOverriddenInputSettings(target, output);
+			}
+
+
+		/* Function: AppendOverriddenInputSettings
+		 * Appends any <OverridableInputSettings> defined in the input target to the passed string.
+		 */
+		protected void AppendOverriddenInputSettings (Targets.Input inputTarget, StringBuilder output)
+			{
+			if (inputTarget.HasCharacterEncodingRules)
+				{
+				foreach (var encodingRule in inputTarget.CharacterEncodingRules)
+					{
+					if (encodingRule.PropertyLocation.Source != PropertySource.SystemDefault &&
+						encodingRule.PropertyLocation.Source != PropertySource.CommandLine)
+						{
+						output.Append("   Encoding: ");
+
+						if (encodingRule.CharacterEncodingName != null)
+							{  output.Append(encodingRule.CharacterEncodingName);  }
+						else
+							{  output.Append(encodingRule.CharacterEncodingID);  }
+
+						Path displayFolder = null;
+
+						if (encodingRule.Folder != null)
+							{
+							if (inputTarget is Targets.SourceFolder)
+								{  
+								displayFolder = encodingRule.Folder.MakeRelativeTo( (inputTarget as Targets.SourceFolder).Folder );
+
+								// If the rule's folder isn't relative to the source folder, display as is
+								if (displayFolder == null)
+									{  displayFolder = encodingRule.Folder;  }
+
+								// If the rule's folder is the same as the source folder it will reduce to ".", so omit it
+								else if (displayFolder == ".")
+									{  displayFolder = null;  }
+
+								// Otherwise we have a relative folder in displayFolder which we'll use
+								}
+							}
+
+						if (displayFolder != null)
+							{
+							output.Append(' ');
+							output.Append(displayFolder);
+							}
+
+						if (encodingRule.FileExtension != null)
+							{
+							if (displayFolder != null)
+								{  output.Append(SystemInfo.PathSeparatorCharacter);  }
+							else
+								{  output.Append(' ');  }
+
+							output.Append("*.");
+							output.Append(encodingRule.FileExtension);
+							}
+
+						output.AppendLine();
+						}
+					}
+				}
 			}
 
 
@@ -1063,6 +1370,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 		protected Regex.Config.HTMLOutputFolder htmlOutputFolderRegex;
 		protected Regex.Config.IgnoredSourceFolder ignoredSourceFolderRegex;
 		protected Regex.Config.IgnoredSourceFolderPattern ignoredSourceFolderPatternRegex;
+		protected Regex.Config.Encoding encodingRegex;
 		
 		}
 	}

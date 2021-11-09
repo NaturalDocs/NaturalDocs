@@ -33,7 +33,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{  
 				// This is a shallow copy as CharacterEncodingRule is a class and not a struct.  However, CharacterEncodingRule's
 				// properties are only set when it's created so it should be okay to share the member objects.
-				characterEncodingRules = toCopy.characterEncodingRules.GetRange(0, characterEncodingRules.Count);
+				characterEncodingRules = toCopy.characterEncodingRules.GetRange(0, toCopy.characterEncodingRules.Count);
 				}
 			else
 				{  characterEncodingRules = null;  }
@@ -48,6 +48,17 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{  characterEncodingRules = new List<CharacterEncodingRule>();  }
 
 			characterEncodingRules.Add(rule);
+			}
+
+		/* Function: AddCharacterEncodingRules
+		 * Appends a list of <CharacterEncodingRules> to the list.
+		 */
+		public void AddCharacterEncodingRules (IList<CharacterEncodingRule> rules)
+			{
+			if (characterEncodingRules == null)
+				{  characterEncodingRules = new List<CharacterEncodingRule>(rules);  }
+			else
+				{  characterEncodingRules.AddRange(rules);  }
 			}
 
 

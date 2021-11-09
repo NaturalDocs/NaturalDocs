@@ -237,6 +237,22 @@ Project.txt.HomePageSyntax.multiline {{{
 # Home Page: [file]
 #    The file that should serve as the home page.  This could be a source file
 #    in one of the input targets, or a HTML file in any location.
+Project.txt.EncodingSyntax.multiline {{{
+# Encoding: [name or code page number]
+# Encoding: [name or code page number] *.[extension]
+#    The character encoding source files use if it is something other than
+#    Unicode.  It can be specified as a name such as "iso-8859-1" or a code
+#    page number such as "28591".  You can see the list of encodings your
+#    system supports by running Natural Docs with the --list-encodings command
+#    line option.
+#
+#    Natural Docs defaults to Unicode which will handle all forms of UTF-8,
+#    UTF-16, and UTF-32.  You can set a new default for all files or you can
+#    limit it to an extension such as "*.txt".  You can use multiple Encoding
+#    lines to cover all the extensions that need them.
+#
+#    You can also set encodings for specific folders by adding Encoding lines
+#    in Source Folder sections.
 }}}
 
 Project.txt.SourceHeader.multiline {{{
@@ -262,6 +278,22 @@ Project.txt.SourceFolderSyntax.multiline {{{
 #    Specifies a folder which will be searched for source files.  If you have
 #    more than one, add the Name property to set how it will show up in the
 #    menu.
+#    Encoding: [name or code page number]
+#    Encoding: [name or code page number] *.[extension]
+#    Encoding: [name or code page number] [folder]
+#    Encoding: [name or code page number] [folder]\*.[extension]
+#       The character encoding source files use if it's something other than
+#       Unicode.  It can be specified as a name such as "iso-8859-1" or a code
+#       page number such as "28591".  You can see the list of encodings your
+#       system supports by running Natural Docs with the --list-encodings
+#       command line option.
+#
+#       Natural Docs defaults to Unicode which will handle all forms of UTF-8,
+#       UTF-16, and UTF-32.  You can set a new default for all files in this
+#       folder, limit it to an extension such as "*.txt", limit it to a
+#       subfolder, or limit it to extensions in a subfolder.  You can use
+#       multiple Encoding lines to cover all the subfolders and extensions
+#       that need them.
 }}}
 
 Project.txt.FilterHeader.multiline {{{
