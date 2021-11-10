@@ -73,6 +73,16 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 					{
 					if (encodingRule.Validate(errorList) == false)
 						{  valid = false;  }
+
+					if (encodingRule.Folder != null &&
+						encodingRule.Folder != folder &&
+						folder.Contains(encodingRule.Folder) == false)
+						{
+						errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.EncodingRuleFolderNotPartOfSourceFolder(ruleFolder, sourceFolder)", 
+															 encodingRule.Folder, folder),
+											 encodingRule.PropertyLocation );
+						valid = false;
+						}
 					}
 				}
 
