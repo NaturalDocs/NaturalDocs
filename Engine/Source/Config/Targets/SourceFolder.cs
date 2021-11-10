@@ -78,7 +78,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 						encodingRule.Folder != folder &&
 						folder.Contains(encodingRule.Folder) == false)
 						{
-						errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.EncodingRuleFolderNotPartOfSourceFolder(ruleFolder, sourceFolder)", 
+						errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.EncodingFolderNotPartOfSourceFolder(ruleFolder, sourceFolder)", 
 															 encodingRule.Folder, folder),
 											 encodingRule.PropertyLocation );
 						valid = false;

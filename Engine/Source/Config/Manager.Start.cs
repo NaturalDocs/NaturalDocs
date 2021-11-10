@@ -227,6 +227,15 @@ namespace CodeClear.NaturalDocs.Engine.Config
 					{
 					if (encodingRule.Validate(errorList) == false)
 						{  success = false;  }
+
+					if (encodingRule.Folder != null)
+						{
+						errorList.Add( 
+							Locale.Get("NaturalDocs.Engine", "Project.txt.EncodingFolderNotPartOfSourceFolder"),
+							encodingRule.PropertyLocation
+							);
+						success = false;
+						}
 					}
 				}
 

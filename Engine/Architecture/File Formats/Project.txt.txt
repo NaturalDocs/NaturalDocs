@@ -47,18 +47,15 @@ _______________________________________________________________________________
 		The file that should serve as the home page.  This could be a source file in one of the input targets, or a HTML file in any
 		location.  Relative paths are relative to the project folder.
 
-		> Character Encoding: [name or number]
-		> Character Encoding: [name or number] [path and/or extension]
+		> Encoding: [name or number]
+		> Encoding: [name or number] *.[extension]
 
-		The character encodings to use.  It can be specified multiple times.
+		The character encoding source files use if it is something other than Unicode.  It can be specified as a name such as 
+		"iso-8859-1" or a code page number such as "28591".
 
-		Each statement needs to have an encoding name, such as "iso-8859-1", or the number of a code page, such as "28591".
-		The default is "Unicode", which is special name that will auto-detect all forms of UTF-8, UTF-16, and UTF-32.
-
-		You can also specify a folder name, such as "C:\My Project\Source", a file extension, such as "*.mac", or both, such as
-		"C:\My Project\Source\*.mac".  It may be preferable to specify encodings for folders under their Source Folder sections 
-		instead of here.  Relative folders specified here are relative to the project file.  If there is no folder then it applies
-		everywhere.
+		The default is Unicode which will handle all forms of UTF-8, UTF-16, and UTF-32.  You can set a new default for all files or 
+		you can limit it to an extension such as "*.txt".  There can be multiple Encoding lines to cover all the extensions that need
+		them.
 
  
 	Topic: Source Folders
@@ -77,11 +74,17 @@ _______________________________________________________________________________
 
 		Overridden Properties:
 
-			> Character Encoding: [name or number]
-			> Character Encoding: [name or number] [path and/or extension]
+			> Encoding: [name or number]
+			> Encoding: [name or number] *.[extension]
+			> Encoding: [name or number] [folder]
+			> Encoding: [name or number] [folder]\*.[extension]
 
 			Each source folder may add additional character encoding statements if desired.  These are applied in addition to the
-			ones in <Project Information>.  Relative paths will be relative to the source folder instead of the project file.
+			ones in <Project Information>.
+			
+			You can set a new default encoding for all files in this source folder, limit it to an extension such as "*.txt", limit it to a
+			subfolder, or limit it to extensions in a subfolder.  Paths are relative to the source folder.  You can use multiple Encoding
+			lines to cover all the subfolders and extensions that need them.
 
 
 	Topic: Image Folders
@@ -152,7 +155,7 @@ _______________________________________________________________________________
 	Topic: 2.2
 
 		- Added Home Page.
-		- Added Character Encoding.
+		- Added Encoding.
 
 	Topic: 2.0
 		
