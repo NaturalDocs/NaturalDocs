@@ -71,7 +71,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 				{
 				foreach (var encodingRule in CharacterEncodingRules)
 					{
-					if (encodingRule.Validate(errorList) == false)
+					if (encodingRule.ValidateAndLookupID(errorList) == false)
 						{  valid = false;  }
 
 					if (encodingRule.Folder != null &&

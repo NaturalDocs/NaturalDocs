@@ -35,11 +35,12 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			}
 
 
-		/* Function: Validate
+		/* Function: ValidateAndLookupID
 		 * Checks if there are any problems with the encoding rule, such as the name being invalid or the folder not existing.
-		 * If there are problems it will add errors to the list and return false.
+		 * If there are problems it will add errors to the list and return false.  If <CharacterEncodingName> is set but
+		 * <CharacterEncodingID> is not it will also look it up and set it.
 		 */
-		public bool Validate (ErrorList errorList)
+		public bool ValidateAndLookupID (ErrorList errorList)
 			{
 			bool valid = true;
 
@@ -52,36 +53,6 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.EncodingFolderDoesNotExist(folder)", folder),
 								     propertyLocation );
 				valid = false;
-				}
-
-
-			// Character encoding name
-
-			if (characterEncodingName != null && 
-				characterEncodingName.Equals("Unicode", StringComparison.OrdinalIgnoreCase) == false)
-				{
-				bool validEncodingName = true;
-
-				try
-					{
-					// This should throw an exception on failure instead of returning null, but test it anyway for defensive programming.
-					if (System.Text.Encoding.GetEncoding(characterEncodingName) == null)
-						{  validEncodingName = false;  }
-					}
-				catch (Exception e)
-					{
-					if (e is System.ArgumentException || e is System.NotSupportedException)
-						{  validEncodingName = false;  }
-					else
-						{  throw;  }
-					}
-
-				if (!validEncodingName)
-					{
-					errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.EncodingNameDoesNotExist(name)", characterEncodingName),
-										 propertyLocation );
-					valid = false;
-					}
 				}
 
 
@@ -108,6 +79,43 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				if (!validEncodingID)
 					{
 					errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.EncodingCodePageDoesNotExist(codePage)", characterEncodingID),
+										 propertyLocation );
+					valid = false;
+					}
+				}
+
+
+			// Character encoding name and ID lookup
+
+			if (characterEncodingName == null)
+				{  /* do nothing */  }
+			else if (characterEncodingName.Equals("Unicode", StringComparison.OrdinalIgnoreCase))
+				{  characterEncodingID = 0;  }
+			else
+				{
+				bool validEncodingName = true;
+
+				try
+					{
+					var encoding = System.Text.Encoding.GetEncoding(characterEncodingName);
+					
+					// GetEncoding should throw an exception on failure instead of returning null, but test it anyway for defensive programming.
+					if (encoding == null)
+						{  validEncodingName = false;  }
+					else
+						{  characterEncodingID = encoding.CodePage;  }
+					}
+				catch (Exception e)
+					{
+					if (e is System.ArgumentException || e is System.NotSupportedException)
+						{  validEncodingName = false;  }
+					else
+						{  throw;  }
+					}
+
+				if (!validEncodingName)
+					{
+					errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.EncodingNameDoesNotExist(name)", characterEncodingName),
 										 propertyLocation );
 					valid = false;
 					}

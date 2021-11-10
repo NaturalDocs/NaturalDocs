@@ -225,7 +225,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{
 				foreach (var encodingRule in combinedConfig.InputSettings.CharacterEncodingRules)
 					{
-					if (encodingRule.Validate(errorList) == false)
+					if (encodingRule.ValidateAndLookupID(errorList) == false)
 						{  success = false;  }
 
 					if (encodingRule.Folder != null)
