@@ -44,7 +44,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{  return 0;  }
 
 			if (fileExtension != null &&
-				!fileExtension.Equals(file.Extension, StringComparison.InvariantCultureIgnoreCase))
+				!fileExtension.Equals(file.Extension, StringComparison.OrdinalIgnoreCase))
 				{  return 0;  }
 
 			// Format: 0LLL LLLE

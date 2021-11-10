@@ -321,7 +321,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 
 			if (href != null)
 				{
-				if (href.StartsWith("mailto:", StringComparison.InvariantCultureIgnoreCase))
+				if (href.StartsWith("mailto:", StringComparison.OrdinalIgnoreCase))
 					{
 					string emailAddress = href.Substring(7);
 
@@ -435,7 +435,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 
 			if (href != null)
 				{
-				if (href.StartsWith("mailto:", StringComparison.InvariantCultureIgnoreCase))
+				if (href.StartsWith("mailto:", StringComparison.OrdinalIgnoreCase))
 					{
 					string emailAddress = href.Substring(7);
 
