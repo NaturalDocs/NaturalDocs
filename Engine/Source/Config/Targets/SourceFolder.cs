@@ -57,15 +57,26 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 			
 		public override bool Validate (ErrorList errorList, int targetIndex)
 			{
+			bool valid = true;
+
 			if (System.IO.Directory.Exists(folder) == false)
 				{
 				errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.SourceFolderDoesNotExist(folder)", folder),
 								     folderPropertyLocation,
 								     "InputTargets[" + targetIndex + "].Folder" );
-				return false;
+				valid = false;
 				}
 
-			return true;
+			if (HasCharacterEncodingRules)
+				{
+				foreach (var encodingRule in CharacterEncodingRules)
+					{
+					if (encodingRule.Validate(errorList) == false)
+						{  valid = false;  }
+					}
+				}
+
+			return valid;
 			}
 
 		public void GenerateDefaultName ()

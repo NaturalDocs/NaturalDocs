@@ -184,7 +184,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 				
 			//
-			// Validate targets
+			// Validate targets and encodings
 			//
 						
 			if (combinedConfig.InputTargets.Count < 1)
@@ -218,6 +218,16 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{
 				if (combinedConfig.OutputTargets[i].Validate(errorList, i) == false)
 					{  success = false;  }
+				}
+
+			// Input targets will validate their own encoding rules, so we only need to check the global ones.
+			if (combinedConfig.InputSettings.HasCharacterEncodingRules)
+				{
+				foreach (var encodingRule in combinedConfig.InputSettings.CharacterEncodingRules)
+					{
+					if (encodingRule.Validate(errorList) == false)
+						{  success = false;  }
+					}
 				}
 
 			if (success == false)

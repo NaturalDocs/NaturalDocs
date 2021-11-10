@@ -175,6 +175,9 @@ Project.txt.SourceFolderDoesNotExist(folder): The source folder {0} does not exi
 Project.txt.IgnoredSourceFolderDoesNotExist(folder): The ignored source folder {0} does not exist.
 Project.txt.ImageFolderDoesNotExist(folder): The image folder {0} does not exist.
 Project.txt.OutputFolderDoesNotExist(folder): The output folder {0} does not exist.
+Project.txt.EncodingFolderDoesNotExist(folder): The source folder {0} does not exist.
+Project.txt.EncodingNameDoesNotExist(name): The encoding name "{0}" does not exist or is not supported on this system.  Run Natural Docs with --list-encodings to see all supported encoding names.
+Project.txt.EncodingCodePageDoesNotExist(codePage): The encoding code page {0} does not exist or is not supported on this system.  Run Natural Docs with --list-encodings to see all supported encoding code pages.
 Project.txt.FolderNumberMustBeGreaterThanZero: Folders must have a number greater than zero.
 Project.txt.NameOnlyAppliesToSourceFolders: The Name property only applies to source folders.
 Project.txt.StyleOnlyAppliesToHTMLOutputFolders: The Style property only applies to HTML output folders.
