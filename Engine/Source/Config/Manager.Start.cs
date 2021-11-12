@@ -412,7 +412,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			projectTxtParser.Save(projectConfigFolder + "/Project.txt", combinedConfig, errorList);
 			projectNDParser.Save(workingDataFolder + "/Project.nd", combinedConfig);
 			
-			
+
 			//
 			// Create file sources and filters for Files.Manager
 			//
@@ -949,7 +949,11 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		protected static void MergeInputSettings (OverridableInputSettings primarySettings, OverridableInputSettings secondarySettings)
 			{
 			if (secondarySettings.HasCharacterEncodingRules)
-				{  primarySettings.AddCharacterEncodingRules(secondarySettings.CharacterEncodingRules);  }
+				{
+				// We add the secondary settings to the beginning of the list instead of the end so they're overridden when evaluating
+				// them all.
+				primarySettings.AddCharacterEncodingRules(secondarySettings.CharacterEncodingRules, addToBeginning: true);
+				}
 			}
 
 
