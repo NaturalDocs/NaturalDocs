@@ -40,24 +40,31 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			}			
 
 		/* Function: AddCharacterEncodingRule
-		 * Adds a <CharacterEncodingRule> to the list.
+		 * Adds a <CharacterEncodingRule> to the list.  It can be added to the beginning of the list or the end.
 		 */
-		public void AddCharacterEncodingRule (CharacterEncodingRule rule)
+		public void AddCharacterEncodingRule (CharacterEncodingRule rule, bool addToBeginning = false)
 			{
 			if (characterEncodingRules == null)
-				{  characterEncodingRules = new List<CharacterEncodingRule>();  }
-
-			characterEncodingRules.Add(rule);
+				{  
+				characterEncodingRules = new List<CharacterEncodingRule>();
+				characterEncodingRules.Add(rule);
+				}
+			else if (addToBeginning)
+				{  characterEncodingRules.Insert(0, rule);  }
+			else // add to end
+				{  characterEncodingRules.Add(rule);  }
 			}
 
 		/* Function: AddCharacterEncodingRules
-		 * Appends a list of <CharacterEncodingRules> to the list.
+		 * Appends a list of <CharacterEncodingRules> to the list.  They can be added to the beginning of the list or the end.
 		 */
-		public void AddCharacterEncodingRules (IList<CharacterEncodingRule> rules)
+		public void AddCharacterEncodingRules (IList<CharacterEncodingRule> rules, bool addToBeginning = false)
 			{
 			if (characterEncodingRules == null)
 				{  characterEncodingRules = new List<CharacterEncodingRule>(rules);  }
-			else
+			else if (addToBeginning)
+				{  characterEncodingRules.InsertRange(0, rules);  }
+			else // add to end
 				{  characterEncodingRules.AddRange(rules);  }
 			}
 
