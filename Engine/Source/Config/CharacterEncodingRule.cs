@@ -131,24 +131,30 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		 */
 		public int Score (Path file)
 			{
-			if (!folder.Contains(file))
+			if (folder != null &&
+				!folder.Contains(file))
 				{  return 0;  }
 
 			if (fileExtension != null &&
 				!fileExtension.Equals(file.Extension, StringComparison.OrdinalIgnoreCase))
 				{  return 0;  }
 
-			// Format: 0LLL LLLE
+			// Format: 0LLLLLLL LLLLLLLL LLLLLLLL LLLLLLE1
 			// 0 - First bit zero so it's always positive.
-			// L - Length of the folder path.  Longer is better since it represents a deeper folder.
+			// L - Length of the folder path.  Longer is better since it represents a deeper folder.  29 bits gets us up to 512M.
 			// E - Whether it matches the extension.
+			// 1 - Last bit one so matches are always non-zero.
 
-			// 24 bits of length should be fine since it gets us to 16M and Windows' path limits are usually just under 255.
-			int score = Math.Min(folder.Length, 0x00FFFFFF) << 1;
+			// Add the 1 bit.
+			int score = 0x00000001;
 
-			// We already know it matches the extension if there is one.
+			// Add the folder length if folder is defined.  If it is we already know it contains the file path.
+			if (folder != null)
+				{  score |= Math.Min(folder.Length, 0x1FFFFFFF) << 2;  }
+
+			// Add the file extension bit if extension is defined.  If it is we already know it matches.
 			if (fileExtension != null)
-				{  score++;  }
+				{  score |= 0x00000002;  }
 
 			return score;
 			}
