@@ -31,6 +31,42 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 			}
 			
 			
+		/* Function: CharacterEncodingID
+		 * Returns the character encoding ID of the passed file.  Zero means it's not a text file or use Unicode auto-detection,
+		 * which will handle all forms of UTF-8, UTF-16, and UTF-32.  It's assumed that the file belongs to this file source.
+		 */
+		override public int CharacterEncodingID (Path file)
+			{
+			#if DEBUG
+			if (!Contains(file))
+				{  throw new Exception("Tried to call FileSource.CharacterEncodingID with a file that didn't belong to it.");  }
+			#endif
+
+			if (config.HasCharacterEncodingRules)
+				{
+				int bestEncodingID = 0;  // Unicode auto-detect
+				int bestScore = 0;
+
+				foreach (var characterEncodingRule in config.CharacterEncodingRules)
+					{
+					int score = characterEncodingRule.Score(file);
+
+					// We compare to bestScore with >= instead of > because later rules that match the same way should take
+					// precedence.  For example, a source folder rule for the same extension as a global rule.
+					if (score != 0 && score >= bestScore)
+						{
+						bestEncodingID = characterEncodingRule.CharacterEncodingID;
+						bestScore = score;
+						}
+					}
+
+				return bestEncodingID;
+				}
+			else // doesn't have character encoding rules
+				{  return 0;  }
+			}
+
+
 
 		// Group: Processes
 		// __________________________________________________________________________

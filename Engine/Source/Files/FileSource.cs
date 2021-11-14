@@ -62,6 +62,21 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		abstract public Path MakeAbsolute (Path path);
 		
 
+		/* Function: CharacterEncodingID
+		 * Returns the character encoding ID of the passed file.  Zero means it's not a text file or use Unicode auto-detection,
+		 * which will handle all forms of UTF-8, UTF-16, and UTF-32.  It's assumed that the file belongs to this file source.
+		 */
+		virtual public int CharacterEncodingID (Path file)
+			{
+			#if DEBUG
+			if (!Contains(file))
+				{  throw new Exception("Tried to call FileSource.CharacterEncodingID with a file that didn't belong to it.");  }
+			#endif
+
+			return 0;
+			}
+
+
 
 		// Group: Processes
 		// __________________________________________________________________________
