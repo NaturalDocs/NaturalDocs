@@ -26,7 +26,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		/* Constructor: CSSOnly
 		 * Pass the location of the .css file.
 		 */
-		public CSSOnly (Path cssFile) : base ()
+		public CSSOnly (AbsolutePath cssFile) : base ()
 			{
 			this.cssFile = cssFile;
 			}
@@ -44,7 +44,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		/* Function: MakeRelative
 		 * Converts the passed filename to one relative to this style.  If this style doesn't contain the file, it will return null.
 		 */
-		override public Path MakeRelative (Path file)
+		override public RelativePath MakeRelative (Path file)
 			{
 			if (file == cssFile)
 				{  return file.NameWithoutPath;  }
@@ -80,7 +80,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		/* Property: CSSFile
 		 * A path to the style's CSS file.
 		 */
-		public Path CSSFile
+		public AbsolutePath CSSFile
 			{
 			get
 				{  return cssFile;  }
@@ -95,7 +95,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		/* var: cssFile
 		 * The path to the style's CSS file.
 		 */
-		protected Path cssFile;
+		protected AbsolutePath cssFile;
 
 		}
 	}

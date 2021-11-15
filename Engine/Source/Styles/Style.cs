@@ -149,7 +149,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		/* Function: MakeRelative
 		 * Converts the passed filename to one relative to this style.  If this style doesn't contain the file, it will return null.
 		 */
-		abstract public Path MakeRelative (Path file);
+		abstract public RelativePath MakeRelative (Path file);
 
 
 		/* Function: IsSameFundamentalStyle

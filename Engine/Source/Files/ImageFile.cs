@@ -24,7 +24,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		/* Function: ImageFile
 		 * Creates a new ImageFile with unknown dimensions.
 		 */
-		public ImageFile (Path fileName, DateTime lastModified) : base (fileName, FileType.Image, lastModified)
+		public ImageFile (AbsolutePath fileName, DateTime lastModified) : base (fileName, FileType.Image, lastModified)
 			{
 			width = 0;
 			height = 0;
@@ -33,7 +33,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		/* Function: ImageFile
 		 * Creates a new ImageFile with known dimensions.
 		 */
-		public ImageFile (Path fileName, DateTime lastModified, uint width, uint height) : base (fileName, FileType.Image, lastModified)
+		public ImageFile (AbsolutePath fileName, DateTime lastModified, uint width, uint height) : base (fileName, FileType.Image, lastModified)
 			{
 			SetDimensions(width, height);
 			}

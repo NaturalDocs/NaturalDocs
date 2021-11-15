@@ -48,7 +48,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		/* Function: MakeRelative
 		 * Converts the passed filename to one relative to this style.  If this style doesn't contain the file, it will return null.
 		 */
-		override public Path MakeRelative (Path file)
+		override public RelativePath MakeRelative (Path file)
 			{
 			if (folder.Contains(file))
 				{  return file.MakeRelativeTo(folder);  }

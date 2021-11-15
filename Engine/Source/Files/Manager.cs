@@ -293,7 +293,8 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 * treated as new, whereas if it was known but has different properties it will be treated as changed.  Returns whether this
 		 * call changed anything.  It is okay to call this multiple times on the same file.
 		 */
-		public bool AddOrUpdateFile (Path name, FileType type, DateTime lastModified, bool forceReparse = false, int characterEncodingID = 0)
+		public bool AddOrUpdateFile (AbsolutePath name, FileType type, DateTime lastModified, bool forceReparse = false, 
+												  int characterEncodingID = 0)
 			{
 			lock (accessLock)
 				{

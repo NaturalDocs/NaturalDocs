@@ -47,7 +47,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 				{
 				if (style is Styles.CSSOnly)
 					{
-					Path cssFile = (style as Styles.CSSOnly).CSSFile;
+					AbsolutePath cssFile = (style as Styles.CSSOnly).CSSFile;
 
 					status.AddFiles(Files.FileType.Style, 1);
 

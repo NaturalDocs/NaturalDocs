@@ -75,7 +75,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 					
 				foreach (string file in files)
 					{
-					Path filePath = file;
+					AbsolutePath filePath = file;
 					string extension = filePath.Extension;
 						
 					if (Files.Manager.ImageExtensions.Contains(extension))

@@ -60,7 +60,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.ConfigFiles
 					bool didntStoreEncodingID = (binaryFile.Version != Engine.Instance.VersionString); // xxx change to < "2.2" on release
 					
 					int id;
-					Path path;
+					AbsolutePath path;
 					FileType type;
 					DateTime lastModification;
 					DateTime lastModification_ForceReparse = new DateTime(0);

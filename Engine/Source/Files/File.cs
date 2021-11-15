@@ -24,7 +24,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		
 		/* Function: File
 		 */
-		public File (Path fileName, FileType type, DateTime lastModified, int characterEncodingID = 0) : base()
+		public File (AbsolutePath fileName, FileType type, DateTime lastModified, int characterEncodingID = 0) : base()
 			{
 			this.fileName = fileName;
 			this.type = type;
@@ -55,9 +55,9 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		
 
 		/* Property: FileName
-		 * The file name as a <Path>.
+		 * The file name as an <AbsolutePath>.
 		 */
-		public Path FileName
+		public AbsolutePath FileName
 			{
 			get
 				{  return fileName;  }
@@ -139,9 +139,9 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		
 			
 		/* var: fileName
-		 * The absolute <Path> to the current file.
+		 * The <AbsolutePath> to the current file.
 		 */
-		protected Path fileName;
+		protected AbsolutePath fileName;
 		
 		/* var: type
 		 * The <FileType>.

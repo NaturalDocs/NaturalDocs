@@ -192,7 +192,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		protected Style LocateStyleOnDisk (string name)
 			{
 			// StyleName folder in project folder
-			Path testPath = EngineInstance.Config.ProjectConfigFolder + "/" + name + "/Style.txt";
+			AbsolutePath testPath = EngineInstance.Config.ProjectConfigFolder + "/" + name + "/Style.txt";
 			if (System.IO.File.Exists(testPath))
 				{  return new Styles.Advanced(testPath);  }
 
