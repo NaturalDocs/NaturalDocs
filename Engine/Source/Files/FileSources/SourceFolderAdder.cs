@@ -92,7 +92,8 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 					if (fileType != null)
 						{  
 						status.AddFiles((FileType)fileType, 1);
-						Manager.AddOrUpdateFile(filePath, (FileType)fileType, System.IO.File.GetLastWriteTimeUtc(file), forceReparse);
+						Manager.AddOrUpdateFile(filePath, (FileType)fileType, System.IO.File.GetLastWriteTimeUtc(file), forceReparse,
+															  (fileType == FileType.Source ? fileSource.CharacterEncodingID(filePath) : 0) );
 						}
 
 					if (cancelDelegate())

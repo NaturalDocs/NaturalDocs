@@ -289,13 +289,11 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			
 		/* Function: AddOrUpdateFile
 		 * 
-		 * Adds a file or updates its last modification time.  If the file was not previously known to the class, it will be treated as 
-		 * new, whereas if it was known but has a different modification time it will be treated as changed.  Returns whether this
+		 * Adds a file or updates its last modification time and character encoding ID.  If the file was not previously known it will be
+		 * treated as new, whereas if it was known but has different properties it will be treated as changed.  Returns whether this
 		 * call changed anything.  It is okay to call this multiple times on the same file.
-		 * 
-		 * This is assumed to be called for files that are in a file source so it automatically sets <File.InFileSource>.
 		 */
-		public bool AddOrUpdateFile (Path name, FileType type, DateTime lastModified, bool forceReparse = false)
+		public bool AddOrUpdateFile (Path name, FileType type, DateTime lastModified, bool forceReparse = false, int characterEncodingID = 0)
 			{
 			lock (accessLock)
 				{
@@ -307,7 +305,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					if (type == FileType.Image)
 						{  file = new ImageFile(name, lastModified);  }
 					else
-						{  file = new File(name, type, lastModified);  }
+						{  file = new File(name, type, lastModified, characterEncodingID);  }
 
 					files.Add(file);
 					filesAddedSinceStart.Add(file.ID);
@@ -330,6 +328,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					{
 					file.Deleted = false;
 					file.LastModified = lastModified;
+					file.CharacterEncodingID = characterEncodingID;
 
 					filesAddedSinceStart.Add(file.ID);
 					unprocessedChanges.AddNewFile(file);
@@ -341,9 +340,12 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					}
 					
 				// If the file changed or we're forcing everything to be reparsed anyway
-				else if (file.LastModified != lastModified || forceReparse)
+				else if (file.LastModified != lastModified || 
+						   file.CharacterEncodingID != characterEncodingID ||
+						   forceReparse)
 					{
 					file.LastModified = lastModified;
+					file.CharacterEncodingID = characterEncodingID;
 
 					filesAddedSinceStart.Add(file.ID);
 					unprocessedChanges.AddChangedFile(file);
