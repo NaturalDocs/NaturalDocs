@@ -8,16 +8,16 @@ using System;
 using NUnit.Framework;
 
 
-namespace CodeClear.NaturalDocs.Engine.Tests.General
+namespace CodeClear.NaturalDocs.Engine.Tests.General.FileEncodings
 	{
 	[TestFixture]
-	public class FileEncodings : Framework.TestTypes.CommentDetection
+	public class UnicodeAuto : Framework.TestTypes.CommentDetection
 		{
 
 		[Test]
 		public void All ()
 			{
-			TestFolder("General/File Encodings", "Shared ND Config/Basic Language Support");
+			TestFolder("General/File Encodings/Unicode Auto", "Shared ND Config/Basic Language Support");
 			}
 
 		}
