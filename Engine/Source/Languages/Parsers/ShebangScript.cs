@@ -39,8 +39,19 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			string content = null;
 				
 			try
-				{  
-				file = new StreamReader(filePath.ToString(), System.Text.Encoding.UTF8, true);
+				{
+				var fileInfo = EngineInstance.Files.FromPath(filePath);
+
+				// file may be null when running unit tests
+				if (file == null || fileInfo.AutoDetectUnicodeEncoding)
+					{
+					file = new StreamReader(filePath.ToString(), detectEncodingFromByteOrderMarks: true);
+					}
+				else
+					{
+					var encoding = System.Text.Encoding.GetEncoding(fileInfo.CharacterEncodingID);
+					file = new StreamReader(filePath.ToString(), encoding);
+					}
 
 				// If there's no shebang line we treat it as a successful parse with no content.
 				if ((char)file.Read() != '#')

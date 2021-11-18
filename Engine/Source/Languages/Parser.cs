@@ -116,7 +116,20 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			string content = null;
 				
 			try
-				{  content = System.IO.File.ReadAllText(filePath);  }
+				{  
+				var file = EngineInstance.Files.FromPath(filePath);
+
+				// file may be null when running unit tests
+				if (file == null || file.AutoDetectUnicodeEncoding)
+					{  
+					content = System.IO.File.ReadAllText(filePath);  
+					}
+				else
+					{  
+					var encoding = System.Text.Encoding.GetEncoding(file.CharacterEncodingID);
+					content = System.IO.File.ReadAllText(filePath, encoding);
+					}
+				}
 
 			catch (System.IO.FileNotFoundException)
 				{  return ParseResult.FileDoesntExist;  }
