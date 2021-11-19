@@ -69,6 +69,7 @@
     <Compile Include="Source\Framework\TestTypes\CommentMerging.cs" />
     <Compile Include="Source\Framework\SourceToElements.cs" />
     <Compile Include="Source\Framework\TestTypes\CommentTypeDetection.cs" />
+    <Compile Include="Source\Framework\TestTypes\Topics.cs" />
     <Compile Include="Source\Framework\TestTypes\VersionStrings.cs" />
     <Compile Include="Source\Framework\TestTypes\LinkInterpretations.cs" />
     <Compile Include="Source\Framework\TestTypes\SearchKeywords.cs" />
