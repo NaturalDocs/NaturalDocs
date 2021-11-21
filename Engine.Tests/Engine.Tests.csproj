@@ -77,6 +77,7 @@
     <Compile Include="Source\Framework\TestTypes\JavadocIterator.cs" />
     <Compile Include="Source\Framework\TestTypes\XMLIterator.cs" />
     <Compile Include="Source\Framework\TestTypes\LanguageDetection.cs" />
+    <Compile Include="Source\General\FileEncodings\Manual.cs" />
     <Compile Include="Source\General\LinkScoring.cs" />
     <Compile Include="Source\General\VersionStrings.cs" />
     <Compile Include="Source\General\NumberSet.cs" />
