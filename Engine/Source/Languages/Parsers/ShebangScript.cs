@@ -40,16 +40,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				
 			try
 				{
-				var fileInfo = EngineInstance.Files.FromPath(filePath);
+				// This function supports determining the character encoding from just the path, which is important because unit test
+				// files may not have been added to Files.Manager.
+				int characterEncodingID = EngineInstance.Files.CharacterEncodingID(filePath);
 
-				// file may be null when running unit tests
-				if (file == null || fileInfo.AutoDetectUnicodeEncoding)
+				if (characterEncodingID == 0)  // Unicode auto-detect
 					{
 					file = new StreamReader(filePath.ToString(), detectEncodingFromByteOrderMarks: true);
 					}
 				else
 					{
-					var encoding = System.Text.Encoding.GetEncoding(fileInfo.CharacterEncodingID);
+					var encoding = System.Text.Encoding.GetEncoding(characterEncodingID);
 					file = new StreamReader(filePath.ToString(), encoding);
 					}
 

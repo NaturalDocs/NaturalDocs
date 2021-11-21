@@ -117,16 +117,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				
 			try
 				{  
-				var file = EngineInstance.Files.FromPath(filePath);
+				// This function supports determining the character encoding from just the path, which is important because unit test
+				// files may not have been added to Files.Manager.
+				int characterEncodingID = EngineInstance.Files.CharacterEncodingID(filePath);
 
-				// file may be null when running unit tests
-				if (file == null || file.AutoDetectUnicodeEncoding)
+				if (characterEncodingID == 0)  // Unicode auto-detect
 					{  
-					content = System.IO.File.ReadAllText(filePath);  
+					content = System.IO.File.ReadAllText(filePath);
 					}
 				else
 					{  
-					var encoding = System.Text.Encoding.GetEncoding(file.CharacterEncodingID);
+					var encoding = System.Text.Encoding.GetEncoding(characterEncodingID);
 					content = System.IO.File.ReadAllText(filePath, encoding);
 					}
 				}
