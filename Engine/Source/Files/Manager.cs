@@ -250,16 +250,56 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		public FileSource FileSourceOf (File file)
 			{
+			return FileSourceOf(file.FileName);
+			}
+
+
+		/* Function: FileSourceOf
+		 * Returns the <FileSource> which contains the passed <Path>, or null if none.
+		 */
+		public FileSource FileSourceOf (Path file)
+			{
 			lock (accessLock)
 				{
-				foreach (FileSource fileSource in fileSources)
+				foreach (var fileSource in fileSources)
 					{
-					if (fileSource.Contains(file.FileName))
+					if (fileSource.Contains(file))
 						{  return fileSource;  }
 					}
 				
 				return null;
 				}
+			}
+
+
+		/* Function: CharacterEncodingID
+		 * Returns the character encoding ID of the passed file.  Zero means it's not a text file or use Unicode auto-detection,
+		 * which will handle all forms of UTF-8, UTF-16, and UTF-32.
+		 */
+		public int CharacterEncodingID (File file)
+			{
+			// If there's a File object it's already calculated.  This version is just for consistency.
+			return file.CharacterEncodingID;
+			}
+
+
+		/* Function: CharacterEncodingID
+		 * 
+		 * Returns the character encoding ID of the passed file.  Zero means it's not a text file or use Unicode auto-detection,
+		 * which will handle all forms of UTF-8, UTF-16, and UTF-32.
+		 * 
+		 * This version of the function will work regardless of whether the file was ever added with <AddOrUpdateFile()>.
+		 * However, it still requires the file's path to be part of a <FileSource> to apply encoding rules.  Otherwise it will
+		 * always return zero.
+		 */
+		public int CharacterEncodingID (Path file)
+			{
+			var fileSource = FileSourceOf(file);
+
+			if (fileSource != null)
+				{  return fileSource.CharacterEncodingID(file);  }
+			else
+				{  return 0;  }
 			}
 
 
