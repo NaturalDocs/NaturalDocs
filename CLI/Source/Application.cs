@@ -492,16 +492,18 @@ namespace CodeClear.NaturalDocs.CLI
 
 			string format = "{0,-" + descriptionColumnWidth + "}  {1,-" + nameColumnWidth + "}  {2,-" + codePageColumnWidth + "}";
 
-			System.Console.WriteLine(format, descriptionHeader, nameHeader, codePageHeader);
+			string formatLine = String.Format(format, descriptionHeader, nameHeader, codePageHeader);
+			System.Console.WriteLine(formatLine);
 
-			StringBuilder dashedLine = new StringBuilder(descriptionColumnWidth + nameColumnWidth + codePageColumnWidth + 6);
-			dashedLine.Append('-', descriptionColumnWidth);
-			dashedLine.Append(' ', 2);
-			dashedLine.Append('-', nameColumnWidth);
-			dashedLine.Append(' ', 2);
-			dashedLine.Append('-', codePageColumnWidth);
+			StringBuilder dashedLineBuilder = new StringBuilder(descriptionColumnWidth + nameColumnWidth + codePageColumnWidth + 6);
+			dashedLineBuilder.Append('-', descriptionColumnWidth);
+			dashedLineBuilder.Append(' ', 2);
+			dashedLineBuilder.Append('-', nameColumnWidth);
+			dashedLineBuilder.Append(' ', 2);
+			dashedLineBuilder.Append('-', codePageColumnWidth);
 
-			System.Console.WriteLine(dashedLine.ToString());
+			string dashedLine = dashedLineBuilder.ToString();
+			System.Console.WriteLine(dashedLine);
 
 
 			// Display the encodings
@@ -510,6 +512,12 @@ namespace CodeClear.NaturalDocs.CLI
 				{
 				System.Console.WriteLine(format, encoding.Description, encoding.Name, encoding.CodePage);
 				}
+
+
+			// Display a footer similar to the header
+
+			System.Console.WriteLine(dashedLine);
+			System.Console.WriteLine(formatLine);
 			}
 
 
