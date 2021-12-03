@@ -429,6 +429,7 @@ namespace CodeClear.NaturalDocs.CLI
 			// clearer.
 
 			List<EncodingTableEntry> encodingTable = new List<EncodingTableEntry>(systemEncodings.Length + 1);
+			bool missingDescriptions = false;
 
 			foreach (var systemEncoding in systemEncodings)
 				{
@@ -439,6 +440,34 @@ namespace CodeClear.NaturalDocs.CLI
 					{  description = "Unicode (UTF-16)";  }
 				else if (systemEncoding.CodePage == 1201 && description == "Unicode (Big-Endian)")
 					{  description = "Unicode (UTF-16 Big-Endian)";  }
+
+				// Unfortunately in Mono there are no descriptions, just "Globalization.cp_" plus the code page number.
+				// That makes the sort really suck, so replace them with the name.
+				else if (description.StartsWith("Globalization.cp_", StringComparison.OrdinalIgnoreCase))
+					{
+					// We can manually do the Unicode ones at least.
+					if (systemEncoding.CodePage == 1200)
+						{  description = "Unicode (UTF-16)";  }
+					else if (systemEncoding.CodePage == 1201)
+						{  description = "Unicode (UTF-16 Big-Endian)";  }
+					else if (systemEncoding.CodePage == 12000)
+						{  description = "Unicode (UTF-32)";  }
+					else if (systemEncoding.CodePage == 12001)
+						{  description = "Unicode (UTF-32 Big-Endian)";  }
+					else if (systemEncoding.CodePage == 65000)
+						{  description = "Unicode (UTF-7)";  }
+					else if (systemEncoding.CodePage == 65001)
+						{  description = "Unicode (UTF-8)";  }
+					else
+						{
+						description = systemEncoding.Name;
+
+						if (description.StartsWith("x-", StringComparison.OrdinalIgnoreCase))
+							{  description = description.Substring(2);  }
+
+						missingDescriptions = true;
+						}
+					}
 
 				encodingTable.Add(
 					new EncodingTableEntry(systemEncoding.Name, description, systemEncoding.CodePage)
@@ -518,6 +547,17 @@ namespace CodeClear.NaturalDocs.CLI
 
 			System.Console.WriteLine(dashedLine);
 			System.Console.WriteLine(formatLine);
+
+
+			// Display the description notice if necessary
+
+			if (missingDescriptions)
+				{
+				System.Console.WriteLine();
+				System.Console.Write(
+					Locale.Get("NaturalDocs.CLI", "Encodings.MissingDescriptions.multiline")
+					);
+				}
 			}
 
 

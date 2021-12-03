@@ -56,6 +56,15 @@ Encodings.Name: Name
 Encodings.Description: Description
 Encodings.UnicodeDescription: Unicode auto-detect (UTF-8, UTF-16, UTF-32)
 
+Encodings.MissingDescriptions.multiline {{{
+It looks like your system doesn't provide descriptions for every encoding.
+You can find descriptions of them at these sites:
+
+https://docs.microsoft.com/en-us/windows/win32/intl/code-page-identifiers
+
+https://en.wikipedia.org/wiki/Windows_code_page
+}}}
+
 
 
 #
