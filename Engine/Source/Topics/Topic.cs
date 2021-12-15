@@ -775,7 +775,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 			}
 
 
-		/* Property: commentTypeID
+		/* Property: CommentTypeID
 		 * The ID of the topic's comment type, or zero if it hasn't been set.
 		 */
 		public int CommentTypeID
