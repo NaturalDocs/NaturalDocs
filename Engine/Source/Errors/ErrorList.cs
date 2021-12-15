@@ -12,8 +12,8 @@
  *		- Use <Count> to determine if anything was added.
  *		
  *		- If you want to add any errors as comments to text configuration files, call <ConfigFile.TryToAnnotateWithErrors()>.
- *		  If you're also presenting the errors in an alternate means you *must* call this beforehand because it will change the 
- *		  line numbers.
+ *		  If you're also presenting the errors a different way such as with console output you *must* call this beforehand 
+ *		  because it will change the line numbers.
  *		  
  *		- Use the various access functions and properties to pull out the data and report on it.
  *		

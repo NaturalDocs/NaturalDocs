@@ -142,7 +142,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 		 * 
 		 * Options you can pass to <LinkInterpretations()>.
 		 * 
-		 * ExcludeLiteral - If set, the unaltered input string will not be added as one of the interpretations.  Only alternate
+		 * ExcludeLiteral - If set, the unaltered input string will not be added as one of the interpretations.  Only alternative
 		 *								 interpretations such as named links or plural/possessive conversions will be included, provided the 
 		 *								 relevant flags are set.
 		 *	 AllowNamedLinks - If set, it will see if the input string can be interpreted as a named link such as 

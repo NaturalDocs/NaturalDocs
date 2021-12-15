@@ -4,8 +4,8 @@
  * 
  * A struct encapsulating parameters from a symbol, which is a normalized way of representing the parenthetical
  * section of a code element or topic, such as "(int, int)" in "PackageA.PackageB.FunctionC(int, int)".  It supports
- * alternate braces as well such as "this[int]" and "Template<T>".  When generated from prototypes, ParameterStrings
- * only store the types of each parameter, not the names or default values.
+ * alternative braces as well such as "this[int]" and "Template<T>".  When generated from prototypes,
+ * ParameterStrings only store the types of each parameter, not the names or default values.
  * 
  * The encoding uses SeparatorChars.Level1.
  */
