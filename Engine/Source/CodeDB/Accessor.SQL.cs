@@ -1332,9 +1332,9 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		/* Function: GetLinksByEndingSymbol
 		 * 
 		 * Retrieves a list of all the <Links> present that use the passed <EndingSymbol>.  Note that this also searches 
-		 * <CodeDB.AlternateLinkEndingSymbols> so the actual <Link> object may not have the passed <EndingSymbol> as a property.
-		 * If there are none it will return an empty list.  Pass a <CancelDelegate> if you'd like to be able to interrupt this process, or 
-		 * <Delegates.NeverCancel> if not.
+		 * <CodeDB.AlternativeLinkEndingSymbols> so the actual <Link> object may not have the passed <EndingSymbol>
+		 * as a property.  If there are none it will return an empty list.  Pass a <CancelDelegate> if you'd like to be able to 
+		 * interrupt this process, or <Delegates.NeverCancel> if not.
 		 * 
 		 * If you don't need every property in the <Link> object you can use <GetLinkFlags> to filter some out and save 
 		 * processing time.
@@ -1357,33 +1357,33 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			List<Link> links = GetLinks("Links.EndingSymbol=?", parameters, cancelled);
 
 
-			// Find link IDs that have it as an alternate ending symbol
+			// Find link IDs that have it as an alternative ending symbol
 
-			IDObjects.NumberSet alternateLinkIDs = new IDObjects.NumberSet();
+			IDObjects.NumberSet alternativeLinkIDs = new IDObjects.NumberSet();
 			
-			using (SQLite.Query query = connection.Query("SELECT LinkID FROM AlternateLinkEndingSymbols " +
+			using (SQLite.Query query = connection.Query("SELECT LinkID FROM AlternativeLinkEndingSymbols " +
 																										"WHERE EndingSymbol = ?", endingSymbol.ToString()))
 				{
 				while (query.Step() && !cancelled())
-					{  alternateLinkIDs.Add( query.IntColumn(0) );  }
+					{  alternativeLinkIDs.Add( query.IntColumn(0) );  }
 				}
 
 
-			// Add the links that have it as an alternate ending symbol
+			// Add the links that have it as an alternative ending symbol
 
-			if (!alternateLinkIDs.IsEmpty)
+			if (!alternativeLinkIDs.IsEmpty)
 				{
-				IDObjects.NumberSet remainingAlternateLinkIDs = alternateLinkIDs;
+				IDObjects.NumberSet remainingAlternativeLinkIDs = alternativeLinkIDs;
 				
 				do
 					{
 					IDObjects.NumberSet temp;
-					List<Link> alternateLinksBatch = GetLinks(ColumnIsInNumberSetExpression("LinkID", remainingAlternateLinkIDs, out temp), null, cancelled);
-					remainingAlternateLinkIDs = temp;
+					List<Link> alternativeLinksBatch = GetLinks(ColumnIsInNumberSetExpression("LinkID", remainingAlternativeLinkIDs, out temp), null, cancelled);
+					remainingAlternativeLinkIDs = temp;
 
-					links.AddRange(alternateLinksBatch);
+					links.AddRange(alternativeLinksBatch);
 					}
-				while (remainingAlternateLinkIDs != null && !cancelled());
+				while (remainingAlternativeLinkIDs != null && !cancelled());
 				}
 
 			return links;
@@ -1437,14 +1437,14 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			RequireZero("AddLink", "TargetClassID", link.TargetClassID);
 			RequireZero("AddLink", "TargetScore", link.TargetScore);
 
-			StringSet alternateEndingSymbols = null;
+			StringSet alternativeEndingSymbols = null;
 
 			if (link.Type == LinkType.NaturalDocs)
 				{
 				string parentheses;
 
 				// Since we're not setting Flags.ExcludeLiteral the list will always have at least one entry.
-				// Set Flags.AllowPluralsAndPossessives to get alternate ending symbols (children = children, child)
+				// Set Flags.AllowPluralsAndPossessives to get alternative ending symbols (children = children, child)
 				// We don't need to set Flags.AllowNamedLinks because we only need the ending symbols, which will be the same either way.
 				// For example, <x at y> and <x: y> will still always end up with y as the ending symbol regardless of whether you search for
 				// named links or not, so we can avoid the extra processing.
@@ -1455,16 +1455,16 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 																												Comments.Parsers.NaturalDocs.LinkInterpretationFlags.FromOriginalText,
 																												out parentheses);
 
-				alternateEndingSymbols = new StringSet();
+				alternativeEndingSymbols = new StringSet();
 
 				foreach (LinkInterpretation linkInterpretation in linkInterpretations)
 					{
 					SymbolString symbol = SymbolString.FromPlainText_NoParameters(linkInterpretation.Target);
-					alternateEndingSymbols.Add(symbol.EndingSymbol);
+					alternativeEndingSymbols.Add(symbol.EndingSymbol);
 					}
 
 				link.EndingSymbol = SymbolString.FromPlainText_NoParameters(linkInterpretations[0].Target).EndingSymbol;
-				alternateEndingSymbols.Remove(link.EndingSymbol);
+				alternativeEndingSymbols.Remove(link.EndingSymbol);
 				}
 			else
 				{  link.EndingSymbol = link.Symbol.EndingSymbol;  }
@@ -1490,12 +1490,12 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				Manager.ContextIDReferenceChangeCache.AddReference(link.ContextID);
 				Manager.ClassIDReferenceChangeCache.AddReference(link.ClassID);
 
-				if (alternateEndingSymbols != null && alternateEndingSymbols.Count > 0)
+				if (alternativeEndingSymbols != null && alternativeEndingSymbols.Count > 0)
 					{
-					foreach (string alternateEndingSymbol in alternateEndingSymbols)
+					foreach (string alternativeEndingSymbol in alternativeEndingSymbols)
 						{
-						connection.Execute("INSERT INTO AlternateLinkEndingSymbols (LinkID, EndingSymbol) VALUES (?, ?)",
-															link.LinkID, alternateEndingSymbol
+						connection.Execute("INSERT INTO AlternativeLinkEndingSymbols (LinkID, EndingSymbol) VALUES (?, ?)",
+															link.LinkID, alternativeEndingSymbol
 															);
 						}
 					}
@@ -1611,7 +1611,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 				if (link.Type == LinkType.NaturalDocs)
 					{
-					connection.Execute("DELETE FROM AlternateLinkEndingSymbols WHERE LinkID=?", link.LinkID);
+					connection.Execute("DELETE FROM AlternativeLinkEndingSymbols WHERE LinkID=?", link.LinkID);
 					}
 
 				CommitTransaction();
@@ -1768,23 +1768,23 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			}
 
 			
-		/* Function: GetAlternateLinkEndingSymbols
+		/* Function: GetAlternativeLinkEndingSymbols
 		 * 
-		 * Retrieves the list of alternate <EndingSymbols> for a link ID.  It will not include the <EndingSymbol> stored in the <Link>
-		 * itself.  If there are no alternate symbols it will return null.
+		 * Retrieves the list of alternative <EndingSymbols> for a link ID.  It will not include the <EndingSymbol> stored in the
+		 * <Link> itself.  If there are no alternative symbols it will return null.
 		 * 
 		 * Requirements:
 		 * 
 		 *		- You must have at least a read-only lock.
 		 */
-		public List<EndingSymbol> GetAlternateLinkEndingSymbols (int linkID)
+		public List<EndingSymbol> GetAlternativeLinkEndingSymbols (int linkID)
 			{
 			RequireAtLeast(LockType.ReadOnly);
 
 			List<EndingSymbol> endingSymbols = null;
 
 			using (SQLite.Query query = connection.Query("SELECT EndingSymbol " +
-																								"FROM AlternateLinkEndingSymbols " +
+																								"FROM AlternativeLinkEndingSymbols " +
 																								"WHERE LinkID = ?", 
 																								linkID))
 				{

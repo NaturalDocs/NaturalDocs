@@ -497,7 +497,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 		/* Property: EndingSymbol
 		 * The ending symbol of the link.  If this is a Type or ClassParent link this is the only ending symbol, but if it's
-		 * a Natural Docs link there may be more in <CodeDB.AlternateLinkEndingSymbols>.
+		 * a Natural Docs link there may be more in <CodeDB.AlternativeLinkEndingSymbols>.
 		 */
 		public Symbols.EndingSymbol EndingSymbol
 			{
@@ -705,7 +705,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 		/* var: endingSymbol
 		 * The <EndingSymbol> of the link.  If this is a Type or ClassParent link this is the only one needed, but if it's
-		 * a Natural Docs link there may be more in <CodeDB.AlternateLinkEndingSymbols>.
+		 * a Natural Docs link there may be more in <CodeDB.AlternativeLinkEndingSymbols>.
 		 */
 		protected Symbols.EndingSymbol endingSymbol;
 

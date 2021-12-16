@@ -73,7 +73,7 @@ Database Column: EndingSymbol
 	-----------------
 
 	The ending segment of <TextOrSymbol>.  If this is a Natural Docs link, there may be additional ending 
-	symbols that apply to this link in <CodeDB.AlternateLinkEndingSymbols>.
+	symbols that apply to this link in <CodeDB.AlternativeLinkEndingSymbols>.
 
 
 Database Column: TargetTopicID

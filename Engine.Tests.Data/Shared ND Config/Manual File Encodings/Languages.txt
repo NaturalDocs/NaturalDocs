@@ -71,8 +71,8 @@ Language: C (Basic Language Support)
 #
 # Aliases: [alias] [alias] ...
 # [Add/Replace] Aliases: [alias] [alias] ...
-#    Defines alternate names for the language that can be used to start a code
-#    block.
+#    Defines alternative names for the language that can be used to start a
+#    code block.
 #
 #
 # Properties for Basic Language Support Only

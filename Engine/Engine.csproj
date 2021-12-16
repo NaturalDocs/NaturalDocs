@@ -347,7 +347,7 @@
     <Content Include="Architecture\JavaScript and Styles\JavaScript Menu Data.txt" />
     <Content Include="Architecture\Linking.txt" />
     <Content Include="Architecture\JavaScript and Styles\CSS Structure.txt" />
-    <Content Include="Architecture\Database Layout\AlternateLinkEndingSymbols.txt" />
+    <Content Include="Architecture\Database Layout\AlternativeLinkEndingSymbols.txt" />
     <Content Include="Architecture\Database Layout\Links.txt" />
     <Content Include="Architecture\Database Layout\System.txt" />
     <Content Include="Architecture\Database Layout\Topics.txt" />

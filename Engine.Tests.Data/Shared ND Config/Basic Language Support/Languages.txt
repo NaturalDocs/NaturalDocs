@@ -1,4 +1,4 @@
-﻿Format: 2.1 (Development Release 01-04-2018)
+﻿Format: 2.2 (Development Release 4)
 
 # This is the Natural Docs languages file for this project.  If you change
 # anything here, it will apply to THIS PROJECT ONLY.  You can edit the version
@@ -211,8 +211,8 @@ Language: SystemVerilog (Basic Language Support)
 #
 # Aliases: [alias] [alias] ...
 # [Add/Replace] Aliases: [alias] [alias] ...
-#    Defines alternate names for the language that can be used to start a code
-#    block.
+#    Defines alternative names for the language that can be used to start a
+#    code block.
 #
 #
 # Properties for Basic Language Support Only

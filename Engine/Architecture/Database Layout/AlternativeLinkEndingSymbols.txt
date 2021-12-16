@@ -1,8 +1,8 @@
 ﻿
-Database Table: CodeDB.AlternateLinkEndingSymbols
+Database Table: CodeDB.AlternativeLinkEndingSymbols
 _______________________________________________________________________________
 
-A table that stores alternate ending symbols for entries in <CodeDB.Links>.  One link can have multiple possible
+A table that stores alternative ending symbols for entries in <CodeDB.Links>.  One link can have multiple possible
 ending symbols if it's a text link and non-plural and/or non-possessive forms are generated.
 
 
@@ -30,7 +30,7 @@ Group: Indexes
 _______________________________________________________________________________
 
 
-Database Index: AlternateLinkEndingSymbolsByIDAndSymbol
+Database Index: AlternativeLinkEndingSymbolsByIDAndSymbol
 
 	--- Prototype ---
 		PRIMARY KEY (LinkID, EndingSymbol)
@@ -40,8 +40,8 @@ Database Index: AlternateLinkEndingSymbolsByIDAndSymbol
 	multiple entries for each link ID.
 
 
-Database Index: AlternateLinkEndingSymbolsBySymbol
+Database Index: AlternativeLinkEndingSymbolsBySymbol
 
 	--- Prototype ---
-		CREATE INDEX AlternateLinkEndingSymbolsBySymbol ON AlternateLinkEndingSymbols (EndingSymbol)
+		CREATE INDEX AlternativeLinkEndingSymbolsBySymbol ON AlternativeLinkEndingSymbols (EndingSymbol)
 	-----------------

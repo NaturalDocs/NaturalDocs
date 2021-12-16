@@ -172,7 +172,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		protected void ResolveLink (int linkID, Accessor accessor)
 			{
 			Link link = accessor.GetLinkByID(linkID, Accessor.GetLinkFlags.DontLookupClasses);
-			List<EndingSymbol> endingSymbols = accessor.GetAlternateLinkEndingSymbols(linkID);
+			List<EndingSymbol> endingSymbols = accessor.GetAlternativeLinkEndingSymbols(linkID);
 
 			if (endingSymbols == null)
 				{  endingSymbols = new List<EndingSymbol>();  }
@@ -185,12 +185,12 @@ namespace CodeClear.NaturalDocs.Engine.Links
 																							 Accessor.GetTopicFlags.DontLookupClasses |
 																							 Accessor.GetTopicFlags.DontLookupContexts);
 
-			List<LinkInterpretation> alternateInterpretations = null;
+			List<LinkInterpretation> alternativeInterpretations = null;
 
 			if (link.Type == LinkType.NaturalDocs)
 				{
 				string ignore;
-				alternateInterpretations = EngineInstance.Comments.NaturalDocsParser.LinkInterpretations(link.Text, 
+				alternativeInterpretations = EngineInstance.Comments.NaturalDocsParser.LinkInterpretations(link.Text, 
 																							Comments.Parsers.NaturalDocs.LinkInterpretationFlags.FromOriginalText |
 																							Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowNamedLinks |
 																							Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowPluralsAndPossessives,
@@ -204,7 +204,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 			foreach (Topic topic in topics)
 				{
-				long score = Manager.Score(link, topic, bestMatchScore, alternateInterpretations);
+				long score = Manager.Score(link, topic, bestMatchScore, alternativeInterpretations);
 
 				if (score > bestMatchScore)
 					{
@@ -257,16 +257,16 @@ namespace CodeClear.NaturalDocs.Engine.Links
 																						Accessor.GetLinkFlags.DontLookupClasses);
 
 			// Go through each link and see if any of the topics serve as a better target.  It's better for the links to be the outer loop 
-			// because we can generate alternate interpretations only once per link.
+			// because we can generate alternative interpretations only once per link.
 
 			foreach (Link link in links)
 				{
-				List<LinkInterpretation> alternateInterpretations = null;
+				List<LinkInterpretation> alternativeInterpretations = null;
 
 				if (link.Type == LinkType.NaturalDocs)
 					{
 					string ignore;
-					alternateInterpretations = EngineInstance.Comments.NaturalDocsParser.LinkInterpretations(link.Text, 
+					alternativeInterpretations = EngineInstance.Comments.NaturalDocsParser.LinkInterpretations(link.Text, 
 																						Comments.Parsers.NaturalDocs.LinkInterpretationFlags.FromOriginalText |
 																						Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowNamedLinks |
 																						Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowPluralsAndPossessives,
@@ -283,7 +283,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 					// No use rescoring the existing target.
 					if (topic.TopicID != link.TargetTopicID)
 						{
-						long score = Manager.Score(link, topic, bestMatchScore, alternateInterpretations);
+						long score = Manager.Score(link, topic, bestMatchScore, alternativeInterpretations);
 
 						if (score > bestMatchScore)
 							{

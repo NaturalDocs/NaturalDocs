@@ -88,11 +88,11 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			connection.Execute("CREATE INDEX LinksByTargetClassID ON Links (TargetClassID, Type)");
 
 
-			connection.Execute("CREATE TABLE AlternateLinkEndingSymbols (LinkID INTEGER NOT NULL, " +
-																										 "EndingSymbol TEXT NOT NULL, " +
-																										 "PRIMARY KEY (LinkID, EndingSymbol) )");
+			connection.Execute("CREATE TABLE AlternativeLinkEndingSymbols (LinkID INTEGER NOT NULL, " +
+																											 "EndingSymbol TEXT NOT NULL, " +
+																											 "PRIMARY KEY (LinkID, EndingSymbol) )");
 																	   
-			connection.Execute("CREATE INDEX AlternateLinkEndingSymbolsBySymbol ON AlternateLinkEndingSymbols (EndingSymbol)");
+			connection.Execute("CREATE INDEX AlternativeLinkEndingSymbolsBySymbol ON AlternativeLinkEndingSymbols (EndingSymbol)");
 
 
 			connection.Execute("CREATE TABLE ImageLinks (ImageLinkID INTEGER PRIMARY KEY NOT NULL, " +
@@ -135,7 +135,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			connection.Execute("DROP TABLE System");
 			connection.Execute("DROP TABLE Topics");
 			connection.Execute("DROP TABLE Links");
-			connection.Execute("DROP TABLE AlternateLinkEndingSymbols");
+			connection.Execute("DROP TABLE AlternativeLinkEndingSymbols");
 			connection.Execute("DROP TABLE ImageLinks");
 			connection.Execute("DROP TABLE Classes");
 			connection.Execute("DROP TABLE Contexts");

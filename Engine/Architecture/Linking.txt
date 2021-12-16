@@ -88,7 +88,7 @@ Topic: Scoring Links
 	a case insensitive ending symbol.
 	
 	Next each ending symbol is checked for the possibility of being a plural and/or possessive form.  If so, additional interpretations 
-	are generated to handle the singular forms and are stored in the database in <CodeDB.AlternateLinkEndingSymbols>.  They 
+	are generated to handle the singular forms and are stored in the database in <CodeDB.AlternativeLinkEndingSymbols>.  They 
 	may not all exist or make sense as they're just guesses.  For example, "leaves" can be translated into "leave", "leav", "leafe", 
 	and "leaf" as the plural of all those words could be "leaves".  A more sophisticated analysis to try to weed out things like "leav" 
 	isn't necessary as we can just rely on there being no targets defined for them.  All possible singular forms are also lowercase 
@@ -139,14 +139,14 @@ Topic: Maintaining Links
 
 	When a new link is created, it is resolved as described in <Resolving Links> and stored along with its definition in 
 	<CodeDB.Links>.  For text links that have generated singular forms, those forms are stored in 
-	<CodeDB.AlternateLinkEndingSymbols>.  This happens even if the link didn't resolve to anything.
+	<CodeDB.AlternativeLinkEndingSymbols>.  This happens even if the link didn't resolve to anything.
 	
 	If a link is deleted it is simply removed from the database.  Since changes to the context results in a completely different link 
 	as far as the database is concerned, adding or removing a "using" statement is handled by the old forms of the links being 
 	treated as removed and the new forms being treated as new.
 
 	If a topic changes, it is able to retrieve all links that could possibly resolve to it with <CodeDB.Links> and
-	<CodeDB.AlternateLinkEndingSymbols>.  It can then generate its score for those links to see whether it serves as a better 
+	<CodeDB.AlternativeLinkEndingSymbols>.  It can then generate its score for those links to see whether it serves as a better 
 	target for any of them.  If so the link's target is updated and its file/class it's defined in are marked for rebuilding.
 
 	If a topic is removed, it retrieves all links that have it as its target.  Those links are marked for reresolving and its file/class 
