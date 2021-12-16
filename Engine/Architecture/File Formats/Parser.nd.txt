@@ -1,0 +1,67 @@
+﻿
+File: Parser.nd
+_______________________________________________________________________________
+
+A binary file to store the last version of <Parser.txt> used in order to detect changes.
+
+
+Group: Format
+_______________________________________________________________________________
+
+	Topic: Header
+
+		> [[Binary Header]]
+		
+		The file starts with the standard binary file header as managed by <CodeClear.NaturalDocs.Engine.BinaryFile>.
+
+
+	Topic: Sets
+
+		> [Byte: number of sets]
+		>    [String: value] [] ... [String: null]
+		>    [String: value] [] ... [String: null]
+		>    ...
+
+		Sets are defined in this order:
+
+		- StartBlockKeywords
+		- EndBlockKeywords
+		- SeeImageKeywords
+		- AtLinkKeywords
+		- URLProtocols
+		- AcceptableLinkSuffixes
+
+
+	Topic: Tables
+
+		> [Byte: number of tables]
+		>    [String: key] [Byte: value] [] [] ... [String: null]
+		>    [String: key] [Byte: value] [] [] ... [String: null]
+		>    ...
+
+		Tables are defined in this order:
+		
+		- BlockTypes
+		- SpecialHeadings
+		- AccessLevel
+
+
+	Topic: Conversion Lists
+
+		> [Byte: number of conversion lists]
+		>    [String: key] [String: value] [] [] ... [String: null]
+		>    [String: key] [String: value] [] [] ... [String: null]
+		>    ...
+
+		Conversion lists are defined in this order:
+
+		- PluralConversions
+		- PossessiveConversions		
+
+
+Group: Revisions
+_______________________________________________________________________________
+
+ 	Topic: 2.0
+
+ 		- The file is introduced.
