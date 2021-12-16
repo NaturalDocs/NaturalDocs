@@ -394,7 +394,6 @@ namespace CodeClear.NaturalDocs.Engine
 			return result;
 			}
 
-
 		
 
 		// Group: Functions
@@ -421,6 +420,32 @@ namespace CodeClear.NaturalDocs.Engine
 			}
 			
 			
+		/* Function: IsAtLeastRelease
+		 * Returns whether this version is a full release and is greater than or equal to the passed one, which must also be a full
+		 * release.  It will return false if either of them are pre-releases, regardless of whether it is greater.
+		 */
+		public bool IsAtLeastRelease (Version minimum)
+			{
+			if (this.Type != ReleaseType.Full || minimum.Type != ReleaseType.Full)
+				{  return false;  }
+			else
+				{  return (this.versionInt >= minimum.versionInt);  }
+			}
+
+
+		/* Function: IsSamePreRelease
+		 * Returns whether this version is the same as the passed one and they are are both pre-releases, meaning anything other 
+		 * than <ReleaseType.Full>.  It will return false if either of them are full releases, even if they are the same.
+		 */
+		public bool IsSamePreRelease (Version other)
+			{
+			if (this.Type == ReleaseType.Full || other.Type == ReleaseType.Full)
+				{  return false;  }
+			else
+				{  return (this.versionInt == other.versionInt);  }
+			}
+
+
 
 		// Group: Properties
 		// __________________________________________________________________________

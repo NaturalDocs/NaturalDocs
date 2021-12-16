@@ -48,9 +48,15 @@ namespace CodeClear.NaturalDocs.Engine.Files.ConfigFiles
 			
 			try
 				{
-				// We'll continue to handle 2.0 files in later versions since it's easy enough
-				if (binaryFile.OpenForReading(filename, "2.0") == false)
+				if (binaryFile.OpenForReading(filename) == false)
 					{
+					result = false;
+					}
+				// We'll continue to handle 2.0 files in later versions since it's easy enough
+				else if (binaryFile.Version.IsAtLeastRelease("2.0") == false &&
+						   binaryFile.Version.IsSamePreRelease(Engine.Instance.Version) == false)
+					{
+					binaryFile.Close();
 					result = false;
 					}
 				else
@@ -150,7 +156,8 @@ namespace CodeClear.NaturalDocs.Engine.Files.ConfigFiles
 				}
 			finally
 				{  
-				binaryFile.Close();  
+				if (binaryFile.IsOpen)
+					{  binaryFile.Close();  }
 				}
 				
 			if (result == false)

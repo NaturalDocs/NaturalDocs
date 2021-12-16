@@ -39,8 +39,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 
 			try
 				{
-				if (binaryFile.OpenForReading(filename, "2.0") == false)
-					{  result = false;  }
+				if (binaryFile.OpenForReading(filename) == false)
+					{  
+					result = false;  
+					}
+				else if (binaryFile.Version.IsAtLeastRelease("2.0") == false &&
+						   binaryFile.Version.IsSamePreRelease(Engine.Instance.Version) == false)
+					{  
+					binaryFile.Close();
+					result = false;  
+					}
 				else
 					{
 					// [String: Prefix]
@@ -61,9 +69,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 					}
 				}
 			catch
-				{  result = false;  }
+				{  
+				result = false;  
+				}
 			finally
-				{  binaryFile.Dispose();  }
+				{  
+				if (binaryFile.IsOpen)
+					{  binaryFile.Close();  }
+				}
 
 			if (result == false)
 				{  prefixTopicIDs.Clear();  }

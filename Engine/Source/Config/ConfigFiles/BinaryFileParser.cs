@@ -17,8 +17,6 @@
 
 
 using System;
-using System.Text;
-using CodeClear.NaturalDocs.Engine.Config;
 
 
 namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
@@ -57,10 +55,16 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			
 			try
 				{
+				if (binaryFile.OpenForReading(filename) == false)
+					{
+					result = false;
+					}
 				// There were no file format changes between 2.0 and 2.0.2 but there were parsing changes and
 				// bug fixes that require a full rebuild.
-				if (binaryFile.OpenForReading(filename, "2.0.2") == false)
+				else if (binaryFile.Version.IsAtLeastRelease("2.0.2") == false &&
+						   binaryFile.Version.IsSamePreRelease(Engine.Instance.Version) == false)
 					{
+					binaryFile.Close();
 					result = false;
 					}
 				else
@@ -106,7 +110,10 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				}
 			finally
 				{
-				binaryFile.Close();
+				if (binaryFile.IsOpen)
+					{  binaryFile.Close();  }
+
+				binaryFile = null;
 				}
 				
 			return result;
@@ -191,8 +198,8 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 		 */
 		public void Save (Path filename, ProjectConfig projectConfig)
 		    {
-		    var output = new BinaryFile();
-		    output.OpenForWriting(filename);
+		    binaryFile = new BinaryFile();
+		    binaryFile.OpenForWriting(filename);
 
 		    try
 		        {
@@ -202,10 +209,10 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 		        // [Byte: Auto Group (0 or 1)]
 		        // [Byte: Shrink Files (0 or 1)]
 
-		        output.WriteInt32(projectConfig.TabWidth);
-		        output.WriteByte( (byte)((bool)projectConfig.DocumentedOnly == false ? 0 : 1) );
-		        output.WriteByte( (byte)((bool)projectConfig.AutoGroup == false ? 0 : 1) );
-		        output.WriteByte( (byte)((bool)projectConfig.ShrinkFiles == false ? 0 : 1) );
+		        binaryFile.WriteInt32(projectConfig.TabWidth);
+		        binaryFile.WriteByte( (byte)((bool)projectConfig.DocumentedOnly == false ? 0 : 1) );
+		        binaryFile.WriteByte( (byte)((bool)projectConfig.AutoGroup == false ? 0 : 1) );
+		        binaryFile.WriteByte( (byte)((bool)projectConfig.ShrinkFiles == false ? 0 : 1) );
 				
 		        // [String: Identifier]
 		        // [[Properties]]
@@ -215,9 +222,9 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 		        foreach (var target in projectConfig.InputTargets)
 		            {
 		            if (target is Targets.SourceFolder)
-						{  SaveSourceFolder((Targets.SourceFolder)target, output);  }
+						{  SaveSourceFolder((Targets.SourceFolder)target);  }
 		            else if (target is Targets.ImageFolder)
-						{  SaveImageFolder((Targets.ImageFolder)target, output);  }
+						{  SaveImageFolder((Targets.ImageFolder)target);  }
 					else
 						{  throw new NotImplementedException();  }
 		            }
@@ -227,54 +234,55 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				foreach (var target in projectConfig.OutputTargets)
 					{
 					if (target is Targets.HTMLOutputFolder)
-						{  SaveHTMLOutputFolder((Targets.HTMLOutputFolder)target, output);  }
+						{  SaveHTMLOutputFolder((Targets.HTMLOutputFolder)target);  }
 					else
 						{  throw new NotImplementedException();  }
 					}
 					
-		        output.WriteString(null);
+		        binaryFile.WriteString(null);
 		        }
 				
 		    finally
 		        {
-		        output.Close();
+		        binaryFile.Close();
+				binaryFile = null;
 		        }
 		    }
 
 
-		protected void SaveSourceFolder (Targets.SourceFolder target, BinaryFile output)
+		protected void SaveSourceFolder (Targets.SourceFolder target)
 		    {
 		    // [String: Identifier="Source Folder"]
 		    // [String: Absolute Path]
 		    // [Int32: Number]
 				
-		    output.WriteString("Source Folder");
-		    output.WriteString(target.Folder);
-		    output.WriteInt32(target.Number);
+		    binaryFile.WriteString("Source Folder");
+		    binaryFile.WriteString(target.Folder);
+		    binaryFile.WriteInt32(target.Number);
 		    }
 
 
-		protected void SaveImageFolder (Targets.ImageFolder target, BinaryFile output)
+		protected void SaveImageFolder (Targets.ImageFolder target)
 		    {
 		    // [String: Identifier="Image Folder"]
 		    // [String: Absolute Path]
 		    // [String: Number]
 				
-		    output.WriteString("Image Folder");
-		    output.WriteString(target.Folder);
-		    output.WriteInt32(target.Number);
+		    binaryFile.WriteString("Image Folder");
+		    binaryFile.WriteString(target.Folder);
+		    binaryFile.WriteInt32(target.Number);
 		    }
 
 
-		protected void SaveHTMLOutputFolder (Targets.HTMLOutputFolder target, BinaryFile output)
+		protected void SaveHTMLOutputFolder (Targets.HTMLOutputFolder target)
 			{
 			// [String: Identifier="HTML Output Folder"]
 			// [String: Absolute Path]
 			// [Int32: Number]
 
-			output.WriteString("HTML Output Folder");
-			output.WriteString(target.Folder);
-			output.WriteInt32(target.Number);
+			binaryFile.WriteString("HTML Output Folder");
+			binaryFile.WriteString(target.Folder);
+			binaryFile.WriteInt32(target.Number);
 			}
 
 

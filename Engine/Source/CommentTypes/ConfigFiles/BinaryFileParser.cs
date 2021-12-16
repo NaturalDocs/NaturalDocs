@@ -41,12 +41,19 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 		 */
 		public bool Load (Path filename, out Config config)
 			{
-			BinaryFile file = new BinaryFile();
+			BinaryFile binaryFile = new BinaryFile();
 			
 			try
 				{
-				if (file.OpenForReading(filename, "2.2") == false)
+				if (binaryFile.OpenForReading(filename) == false)
 					{
+					config = null;
+					return false;
+					}
+				else if (binaryFile.Version.IsAtLeastRelease("2.2") == false &&
+						   binaryFile.Version.IsSamePreRelease(Engine.Instance.Version) == false)
+					{
+					binaryFile.Close();
 					config = null;
 					return false;
 					}
@@ -59,15 +66,15 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 					// ...
 					// [String: null]
 					
-					string tagName = file.ReadString();
+					string tagName = binaryFile.ReadString();
 					
 					while (tagName != null)
 						{
 						Tag tag = new Tag(tagName);
-						tag.ID = file.ReadInt32();
+						tag.ID = binaryFile.ReadInt32();
 						config.AddTag(tag);
 
-						tagName = file.ReadString();
+						tagName = binaryFile.ReadString();
 						}
 						
 
@@ -82,31 +89,31 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 					// ...
 					// [String: null]
 						
-					string commentTypeName = file.ReadString();
+					string commentTypeName = binaryFile.ReadString();
 					
 					while (commentTypeName != null)
 						{
 						CommentType commentType = new CommentType(commentTypeName);
 						
-						commentType.ID = file.ReadInt32();
-						commentType.DisplayName = file.ReadString();
-						commentType.PluralDisplayName = file.ReadString();
-						commentType.SimpleIdentifier = file.ReadString();
+						commentType.ID = binaryFile.ReadInt32();
+						commentType.DisplayName = binaryFile.ReadString();
+						commentType.PluralDisplayName = binaryFile.ReadString();
+						commentType.SimpleIdentifier = binaryFile.ReadString();
 
 						// We don't have to validate the scope and flag values because they're only used to compare to the text file 
 						// versions, which are validated.  If these are invalid they'll just show up as changed.
 
-						commentType.Scope = (CommentType.ScopeValue)file.ReadByte();
+						commentType.Scope = (CommentType.ScopeValue)binaryFile.ReadByte();
 
-						int hierarchyID = file.ReadInt32();
+						int hierarchyID = binaryFile.ReadInt32();
 						if (hierarchyID != 0)
 							{  commentType.HierarchyID = hierarchyID;  }
 
-						commentType.Flags = (CommentType.FlagValue)file.ReadByte();
+						commentType.Flags = (CommentType.FlagValue)binaryFile.ReadByte();
 
 						config.AddCommentType(commentType);
 						
-						commentTypeName = file.ReadString();
+						commentTypeName = binaryFile.ReadString();
 						}
 
 						
@@ -117,22 +124,22 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 					// ...
 					// [String: null]
 
-					string keywordName = file.ReadString();
+					string keywordName = binaryFile.ReadString();
 
 					while (keywordName != null)
 						{
 						var keywordDefinition = new KeywordDefinition(keywordName);
 
-						keywordDefinition.Plural = (file.ReadByte() != 0);
-						keywordDefinition.CommentTypeID = file.ReadInt32();
+						keywordDefinition.Plural = (binaryFile.ReadByte() != 0);
+						keywordDefinition.CommentTypeID = binaryFile.ReadInt32();
 
-						int languageID = file.ReadInt32();
+						int languageID = binaryFile.ReadInt32();
 						if (languageID != 0)
 							{  keywordDefinition.LanguageID = languageID;  }
 
 						config.AddKeywordDefinition(keywordDefinition);
 
-						keywordName = file.ReadString();
+						keywordName = binaryFile.ReadString();
 						}
 					}
 				}
@@ -143,7 +150,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 				}
 			finally
 				{  
-				file.Close();  
+				if (binaryFile.IsOpen)
+					{  binaryFile.Close();  }
 				}
 				
 			return true;
@@ -155,8 +163,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 		 */
 		public void Save (Path filename, Config config)
 			{
-			BinaryFile file = new BinaryFile();
-			file.OpenForWriting(filename);
+			BinaryFile binaryFile = new BinaryFile();
+			binaryFile.OpenForWriting(filename);
 
 			try
 				{
@@ -168,11 +176,11 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 				
 				foreach (var tag in config.Tags)
 					{
-					file.WriteString(tag.Name);
-					file.WriteInt32(tag.ID);
+					binaryFile.WriteString(tag.Name);
+					binaryFile.WriteInt32(tag.ID);
 					}
 					
-				file.WriteString(null);
+				binaryFile.WriteString(null);
 				
 
 				// [String: Comment Type Name]
@@ -188,17 +196,17 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 
 				foreach (var commentType in config.CommentTypes)
 					{
-					file.WriteString( commentType.Name );
-					file.WriteInt32( commentType.ID );
-					file.WriteString( commentType.DisplayName );
-					file.WriteString( commentType.PluralDisplayName );
-					file.WriteString( commentType.SimpleIdentifier );
-					file.WriteByte( (byte)commentType.Scope );
-					file.WriteInt32( commentType.HierarchyID );
-					file.WriteByte( (byte)commentType.Flags );
+					binaryFile.WriteString( commentType.Name );
+					binaryFile.WriteInt32( commentType.ID );
+					binaryFile.WriteString( commentType.DisplayName );
+					binaryFile.WriteString( commentType.PluralDisplayName );
+					binaryFile.WriteString( commentType.SimpleIdentifier );
+					binaryFile.WriteByte( (byte)commentType.Scope );
+					binaryFile.WriteInt32( commentType.HierarchyID );
+					binaryFile.WriteByte( (byte)commentType.Flags );
 					}
 					
-				file.WriteString(null);
+				binaryFile.WriteString(null);
 				
 				
 				// [String: Keyword]
@@ -210,18 +218,18 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 
 				foreach (var keywordDefinition in config.KeywordDefinitions)
 					{
-					file.WriteString( keywordDefinition.Keyword );
-					file.WriteByte( (byte)(keywordDefinition.Plural ? 1 : 0) );
-					file.WriteInt32( keywordDefinition.CommentTypeID );
-					file.WriteInt32( (keywordDefinition.IsLanguageSpecific ? keywordDefinition.LanguageID : 0) );
+					binaryFile.WriteString( keywordDefinition.Keyword );
+					binaryFile.WriteByte( (byte)(keywordDefinition.Plural ? 1 : 0) );
+					binaryFile.WriteInt32( keywordDefinition.CommentTypeID );
+					binaryFile.WriteInt32( (keywordDefinition.IsLanguageSpecific ? keywordDefinition.LanguageID : 0) );
 					}
 
-				file.WriteString(null);
+				binaryFile.WriteString(null);
 				}
 				
 			finally
 				{
-				file.Close();
+				binaryFile.Close();
 				}
 			}
 		 

@@ -163,9 +163,12 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 					{
 					connection.Open(databaseFile, false);
 					
-					Version version = GetVersion();
+					Version databaseVersion = GetVersion();
 					
-					if (BinaryFile.IsCompatible(version, Engine.Instance.Version, "2.0.2") == true)
+					// In 2.2 the internal format of ClassStrings changed so the database needs to be regenerated.  Also,
+					// "AlternateLinkEndingSymbols" became "AlternativeLinkEndingSymbols".
+					if (databaseVersion.IsAtLeastRelease("2.2") ||
+						databaseVersion.IsSamePreRelease(Engine.Instance.Version))
 						{  
 						LoadSystemVariables();
 						success = true;

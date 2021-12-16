@@ -47,12 +47,19 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		 */
 		public bool Load (Path filename, out Config config)
 			{
-			BinaryFile file = new BinaryFile();
+			BinaryFile binaryFile = new BinaryFile();
 			
 			try
 				{
-				if (file.OpenForReading(filename, "2.2") == false)
+				if (binaryFile.OpenForReading(filename) == false)
 					{
+					config = null;
+					return false;
+					}
+				else if (binaryFile.Version.IsAtLeastRelease("2.2") == false &&
+						   binaryFile.Version.IsSamePreRelease(Engine.Instance.Version) == false)
+					{
+					binaryFile.Close();
 					config = null;
 					return false;
 					}
@@ -65,7 +72,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// ...
 					// [String: null]
 						
-					string languageName = file.ReadString();
+					string languageName = binaryFile.ReadString();
 
 					while (languageName != null)
 						{
@@ -79,9 +86,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 						// [String: Member Operator Symbol]
 						// [String: Line Extender Symbol]
 					
-						language.ID = file.ReadInt32();
+						language.ID = binaryFile.ReadInt32();
 						
-						byte type = file.ReadByte();
+						byte type = binaryFile.ReadByte();
 						if (Enum.IsDefined(typeof(Language.LanguageType), type))
 							{  language.Type = (Language.LanguageType)type;  }
 						else
@@ -90,9 +97,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 							return false;
 							}
 							
-						language.SimpleIdentifier = file.ReadString();
+						language.SimpleIdentifier = binaryFile.ReadString();
 						
-						byte enumValues = file.ReadByte();
+						byte enumValues = binaryFile.ReadByte();
 						if (Enum.IsDefined(typeof(Language.EnumValues), enumValues))
 							{  language.EnumValue = (Language.EnumValues)enumValues;  }
 						else
@@ -101,10 +108,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 							return false;
 							}
 						
-						language.CaseSensitive = (file.ReadByte() == 1);	
+						language.CaseSensitive = (binaryFile.ReadByte() == 1);	
 						
-						language.MemberOperator = file.ReadString();
-						language.LineExtender = file.ReadString();
+						language.MemberOperator = binaryFile.ReadString();
+						language.LineExtender = binaryFile.ReadString();
 
 						// [String: Line Comment Symbol] [] ... [String: null]
 						// [String: Opening Block Comment Symbol] [String: Closing Block Comment Symbol] [] [] ... [String: null]
@@ -112,23 +119,23 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 						// [String: Javadoc Opening Block Comment Symbol] [String: Javadoc Closing Block Comment Symbol] [] [] ... [String: null]
 						// [String: XML Line Comment Symbol] [] ... [String: null]
 					
-						var lineCommentSymbols = ReadSymbolList(file);
+						var lineCommentSymbols = ReadSymbolList(binaryFile);
 						if (lineCommentSymbols != null)
 							{  language.LineCommentSymbols = lineCommentSymbols;  }
 
-						var blockCommentSymbols = ReadBlockCommentSymbolsList(file);
+						var blockCommentSymbols = ReadBlockCommentSymbolsList(binaryFile);
 						if (blockCommentSymbols != null)
 							{  language.BlockCommentSymbols = blockCommentSymbols;  }
 
-						var javadocLineCommentSymbols = ReadLineCommentSymbolsList(file);
+						var javadocLineCommentSymbols = ReadLineCommentSymbolsList(binaryFile);
 						if (javadocLineCommentSymbols != null)
 							{  language.JavadocLineCommentSymbols = javadocLineCommentSymbols;  }
 
-						var javadocBlockCommentSymbols = ReadBlockCommentSymbolsList(file);
+						var javadocBlockCommentSymbols = ReadBlockCommentSymbolsList(binaryFile);
 						if (javadocBlockCommentSymbols != null)
 							{  language.JavadocBlockCommentSymbols = javadocBlockCommentSymbols;  }
 
-						var xmlLineCommentSymbols = ReadSymbolList(file);
+						var xmlLineCommentSymbols = ReadSymbolList(binaryFile);
 						if (xmlLineCommentSymbols != null)
 							{  language.XMLLineCommentSymbols = xmlLineCommentSymbols;  }
 
@@ -139,57 +146,57 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 						// ...
 						// [Int32: 0]
 
-						int commentTypeID = file.ReadInt32();
+						int commentTypeID = binaryFile.ReadInt32();
 
 						while (commentTypeID != 0)
 							{
-							bool includeLineBreaks = (file.ReadByte() == 1);
-							var enderSymbols = ReadSymbolList(file);
+							bool includeLineBreaks = (binaryFile.ReadByte() == 1);
+							var enderSymbols = ReadSymbolList(binaryFile);
 
 							language.AddPrototypeEnders( new PrototypeEnders(commentTypeID, enderSymbols, includeLineBreaks) );
 
-							commentTypeID = file.ReadInt32();
+							commentTypeID = binaryFile.ReadInt32();
 							}
 						
 						config.AddLanguage(language);
 
-						languageName = file.ReadString();
+						languageName = binaryFile.ReadString();
 						}
 						
 					// [String: Alias] [Int32: Language ID] [] [] ... [String: Null]
 					
-					string alias = file.ReadString();
+					string alias = binaryFile.ReadString();
 					
 					while (alias != null)
 						{
-						int languageID = file.ReadInt32();
+						int languageID = binaryFile.ReadInt32();
 						config.AddAlias(alias, languageID);
 
-						alias = file.ReadString();
+						alias = binaryFile.ReadString();
 						}
 						
 					// [String: File Extension] [Int32: Language ID] [] [] ... [String: Null]
 					
-					string fileExtension = file.ReadString();
+					string fileExtension = binaryFile.ReadString();
 
 					while (fileExtension != null)
 						{
-						int languageID = file.ReadInt32();
+						int languageID = binaryFile.ReadInt32();
 						config.AddFileExtension(fileExtension, languageID);
 
-						fileExtension = file.ReadString();
+						fileExtension = binaryFile.ReadString();
 						}
 						
 					// [String: Shebang String] [Int32: Language ID] [] [] ... [String: Null]
 
-					string shebangString = file.ReadString();
+					string shebangString = binaryFile.ReadString();
 
 					while (shebangString != null)
 						{
-						int languageID = file.ReadInt32();
+						int languageID = binaryFile.ReadInt32();
 						config.AddShebangString(shebangString, languageID);
 
-						shebangString = file.ReadString();
+						shebangString = binaryFile.ReadString();
 						}
 					}
 				}
@@ -200,7 +207,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 				}
 			finally
 				{
-				file.Close();
+				if (binaryFile.IsOpen)
+					{  binaryFile.Close();  }
 				}
 				
 			return true;
@@ -292,8 +300,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		 */
 		public void Save (Path filename, Config config)
 			{
-			BinaryFile file = new BinaryFile();
-			file.OpenForWriting(filename);
+			BinaryFile binaryFile = new BinaryFile();
+			binaryFile.OpenForWriting(filename);
 
 			try
 				{
@@ -305,7 +313,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 
 				foreach (var language in config.Languages)
 					{
-					file.WriteString( language.Name );
+					binaryFile.WriteString( language.Name );
 
 					// [Int32: ID]
 					// [Byte: Type]
@@ -315,13 +323,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// [String: Member Operator Symbol]
 					// [String: Line Extender Symbol]
 				
-					file.WriteInt32( language.ID );
-					file.WriteByte( (byte)language.Type );
-					file.WriteString( language.SimpleIdentifier );
-					file.WriteByte( (byte)language.EnumValue );
-					file.WriteByte( (byte)(language.CaseSensitive ? 1 : 0) );
-					file.WriteString( language.MemberOperator );
-					file.WriteString( language.LineExtender );
+					binaryFile.WriteInt32( language.ID );
+					binaryFile.WriteByte( (byte)language.Type );
+					binaryFile.WriteString( language.SimpleIdentifier );
+					binaryFile.WriteByte( (byte)language.EnumValue );
+					binaryFile.WriteByte( (byte)(language.CaseSensitive ? 1 : 0) );
+					binaryFile.WriteString( language.MemberOperator );
+					binaryFile.WriteString( language.LineExtender );
 					
 					// [String: Line Comment Symbol] [] ... [String: null]
 					// [String: Opening Block Comment Symbol] [String: Closing Block Comment Symbo] [] [] ... [String: null]
@@ -329,11 +337,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// [String: Javadoc Opening Block Comment Symbol] [String: Javadoc Closing Block Comment Symbol] [] [] ... [String: null]
 					// [String: XML Line Comment Symbol] [] ... [String: null]
 				
-					WriteSymbolList(file, language.LineCommentSymbols);
-					WriteBlockCommentSymbolsList(file, language.BlockCommentSymbols);
-					WriteLineCommentSymbolsList(file, language.JavadocLineCommentSymbols);
-					WriteBlockCommentSymbolsList(file, language.JavadocBlockCommentSymbols);
-					WriteSymbolList(file, language.XMLLineCommentSymbols);
+					WriteSymbolList(binaryFile, language.LineCommentSymbols);
+					WriteBlockCommentSymbolsList(binaryFile, language.BlockCommentSymbols);
+					WriteLineCommentSymbolsList(binaryFile, language.JavadocLineCommentSymbols);
+					WriteBlockCommentSymbolsList(binaryFile, language.JavadocBlockCommentSymbols);
+					WriteSymbolList(binaryFile, language.XMLLineCommentSymbols);
 
 					// Prototype Enders:
 					// [Int32: Comment Type ID]
@@ -346,54 +354,54 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 						{
 						foreach (var prototypeEnders in language.PrototypeEnders)
 							{
-							file.WriteInt32( prototypeEnders.CommentTypeID );
-							file.WriteByte( (byte)(prototypeEnders.IncludeLineBreaks ? 1 : 0) );
-							WriteSymbolList(file, prototypeEnders.Symbols);
+							binaryFile.WriteInt32( prototypeEnders.CommentTypeID );
+							binaryFile.WriteByte( (byte)(prototypeEnders.IncludeLineBreaks ? 1 : 0) );
+							WriteSymbolList(binaryFile, prototypeEnders.Symbols);
 							}
 						}
 
-					file.WriteInt32(0);					
+					binaryFile.WriteInt32(0);					
 					}
 					
-				file.WriteString(null);
+				binaryFile.WriteString(null);
 				
 				
 				// [String: Alias] [Int32: Language ID] [] [] ... [String: Null]
 
 				foreach (KeyValuePair<string, int> aliasKVP in config.Aliases)
 					{
-					file.WriteString( aliasKVP.Key );
-					file.WriteInt32( aliasKVP.Value );
+					binaryFile.WriteString( aliasKVP.Key );
+					binaryFile.WriteInt32( aliasKVP.Value );
 					}
 					
-				file.WriteString(null);
+				binaryFile.WriteString(null);
 				
 				
 				// [String: File Extension] [Int32: Language ID] [] [] ... [String: Null]
 
 				foreach (KeyValuePair<string, int> fileExtensionKVP in config.FileExtensions)
 					{
-					file.WriteString( fileExtensionKVP.Key );
-					file.WriteInt32( fileExtensionKVP.Value );
+					binaryFile.WriteString( fileExtensionKVP.Key );
+					binaryFile.WriteInt32( fileExtensionKVP.Value );
 					}
 					
-				file.WriteString(null);
+				binaryFile.WriteString(null);
 				
 				
 				// [String: Shebang String] [Int32: Language ID] [] [] ... [String: Null]
 
 				foreach (KeyValuePair<string, int> shebangStringKVP in config.ShebangStrings)
 					{
-					file.WriteString( shebangStringKVP.Key );
-					file.WriteInt32( shebangStringKVP.Value );
+					binaryFile.WriteString( shebangStringKVP.Key );
+					binaryFile.WriteInt32( shebangStringKVP.Value );
 					}
 					
-				file.WriteString(null);
+				binaryFile.WriteString(null);
 				}
 				
 			finally
 				{
-				file.Close();
+				binaryFile.Close();
 				}
 			}
 			

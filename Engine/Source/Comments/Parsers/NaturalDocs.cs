@@ -3472,13 +3472,19 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 		    binaryTables = null;
 		    binaryConversionLists = null;
 		    
-		    BinaryFile file = new BinaryFile();
+		    BinaryFile binaryFile = new BinaryFile();
 		    bool result = true;
 			
 		    try
 		        {
-		        if (file.OpenForReading(filename, "2.0") == false)
+		        if (binaryFile.OpenForReading(filename) == false)
 		            {
+		            result = false;
+		            }
+		        else if (binaryFile.Version.IsAtLeastRelease("2.0") == false &&
+						   binaryFile.Version.IsSamePreRelease(Engine.Instance.Version) == false)
+		            {
+					binaryFile.Close();
 		            result = false;
 		            }
 		        else
@@ -3486,13 +3492,13 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 					// [Byte: number of sets]
 					// [[Set 0]] [[Set 1]] ...
 
-		            byte numberOfSets = file.ReadByte();
+		            byte numberOfSets = binaryFile.ReadByte();
 					binarySets = new StringSet[numberOfSets];		            
 						
 					for (byte i = 0; i < numberOfSets; i++)
 						{
 						StringSet set = new StringSet (KeySettings.IgnoreCase | KeySettings.NormalizeUnicode);
-						LoadBinaryFile_GetSet(file, set);
+						LoadBinaryFile_GetSet(binaryFile, set);
 						binarySets[i] = set;
 						}
 
@@ -3500,13 +3506,13 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 					// [Byte: number of tables]
 					// [[Table 0]] [[Table 1]] ...
 					
-					byte numberOfTables = file.ReadByte();
+					byte numberOfTables = binaryFile.ReadByte();
 					binaryTables = new StringTable<byte>[numberOfTables];
 				
 					for (byte i = 0; i < numberOfTables; i++)
 						{
 						StringTable<byte> table = new StringTable<byte>(KeySettings.IgnoreCase | KeySettings.NormalizeUnicode);
-						LoadBinaryFile_GetTable(file, table);
+						LoadBinaryFile_GetTable(binaryFile, table);
 						binaryTables[i] = table;
 						}
 						
@@ -3514,21 +3520,26 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 					// [Byte: number of conversion lists]
 					// [[Conversion List 0]] [[Conversion List 1]] ...
 					
-					byte numberOfConversionLists = file.ReadByte();
+					byte numberOfConversionLists = binaryFile.ReadByte();
 					binaryConversionLists = new List<string>[numberOfConversionLists];
 
 					for (byte i = 0; i < numberOfConversionLists; i++)
 						{
 						List<string> conversionList = new List<string>();
-						LoadBinaryFile_GetConversionList(file, conversionList);
+						LoadBinaryFile_GetConversionList(binaryFile, conversionList);
 						binaryConversionLists[i] = conversionList;
 						}
 		            }
 		        }
 		    catch
-		        {  result = false;  }
+		        {  
+				result = false;  
+				}
 		    finally
-		        {  file.Close();  }
+		        {  
+				if (binaryFile.IsOpen)
+					{  binaryFile.Close();  }
+				}
 				
 		    if (result == false)
 		        {
