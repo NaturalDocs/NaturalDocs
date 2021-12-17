@@ -481,8 +481,8 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 							{
 							string ignore;
 							interpretations = EngineInstance.Comments.NaturalDocsParser.LinkInterpretations(link.TextOrSymbol, 
-																								Engine.Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowNamedLinks | 
-																								Engine.Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowPluralsAndPossessives,
+																								Engine.Comments.NaturalDocs.Parser.LinkInterpretationFlags.AllowNamedLinks | 
+																								Engine.Comments.NaturalDocs.Parser.LinkInterpretationFlags.AllowPluralsAndPossessives,
 																								out ignore);
 							}
 

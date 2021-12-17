@@ -269,7 +269,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 
 				if (closingBrace != -1 && closingBrace < endingRawTextIndex && 
 					lookahead.FundamentalType == FundamentalType.Text &&
-					Parsers.Javadoc.InlineTags.Contains(lookahead.String))
+					Javadoc.Parser.InlineTags.Contains(lookahead.String))
 					{
 					found = true;
 					type = JavadocElementType.JavadocTag;
@@ -283,7 +283,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 				lookahead.Next();
 
 				if (lookahead.FundamentalType == FundamentalType.Text &&
-					Parsers.Javadoc.BlockTags.Contains(lookahead.String))
+					Javadoc.Parser.BlockTags.Contains(lookahead.String))
 					{
 					found = true;
 					type = JavadocElementType.JavadocTag;

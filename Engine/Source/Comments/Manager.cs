@@ -33,9 +33,9 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 		 */
 		public Manager (Engine.Instance engineInstance) : base (engineInstance)
 			{
-			naturalDocsParser = new Parsers.NaturalDocs(this);
-			xmlParser = new Parsers.XML(this);
-			javadocParser = new Parsers.Javadoc(this);
+			naturalDocsParser = new NaturalDocs.Parser(this);
+			xmlParser = new XML.Parser(this);
+			javadocParser = new Javadoc.Parser(this);
 			}
 
 
@@ -101,9 +101,9 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 		
 		
 		/* Property: NaturalDocsParser
-		 * A reference to <Parsers.NaturalDocs> so that other code can call <Parsers.NaturalDocs.LinkInterpretations()>.
+		 * A reference to <NaturalDocs.Parser> so that other code can call <NaturalDocs.Parser.LinkInterpretations()>.
 		 */
-		public Parsers.NaturalDocs NaturalDocsParser
+		public NaturalDocs.Parser NaturalDocsParser
 			{
 			get
 				{  return naturalDocsParser;  }
@@ -111,9 +111,9 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 			
 			
 		/* Property: XMLParser
-		 * A reference to <Parsers.XML>.
+		 * A reference to <XML.Parser>.
 		 */
-		public Parsers.XML XMLParser
+		public XML.Parser XMLParser
 			{
 			get
 				{  return xmlParser;  }
@@ -121,9 +121,9 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 
 
 		/* Property: JavadocParser
-		 * A reference to <Parsers.Javadoc>.
+		 * A reference to <Javadoc.Parser>.
 		 */
-		public Parsers.Javadoc JavadocParser
+		public Javadoc.Parser JavadocParser
 			{
 			get
 				{  return javadocParser;  }
@@ -135,9 +135,9 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 		// __________________________________________________________________________
 
 
-		protected Parsers.NaturalDocs naturalDocsParser;
-		protected Parsers.XML xmlParser;
-		protected Parsers.Javadoc javadocParser;
+		protected NaturalDocs.Parser naturalDocsParser;
+		protected XML.Parser xmlParser;
+		protected Javadoc.Parser javadocParser;
 		
 		}
 	}

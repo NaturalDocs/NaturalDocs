@@ -693,9 +693,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			string ignore;
 			List<LinkInterpretation> linkInterpretations = EngineInstance.Comments.NaturalDocsParser.LinkInterpretations(fullLink.Text,
-																					  Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowNamedLinks |
-																					  Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowPluralsAndPossessives |
-																					  Comments.Parsers.NaturalDocs.LinkInterpretationFlags.FromOriginalText,
+																					  Comments.NaturalDocs.Parser.LinkInterpretationFlags.AllowNamedLinks |
+																					  Comments.NaturalDocs.Parser.LinkInterpretationFlags.AllowPluralsAndPossessives |
+																					  Comments.NaturalDocs.Parser.LinkInterpretationFlags.FromOriginalText,
 																					  out ignore);
 
 			linkInterpretation = linkInterpretations[ fullLink.TargetInterpretationIndex ];

@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Comments.Parsers.Javadoc
+ * Class: CodeClear.NaturalDocs.Engine.Comments.Javadoc.Parser
  * ____________________________________________________________________________
  * 
  * A parser to handle the Javadoc comment format.
@@ -65,9 +65,9 @@ using CodeClear.NaturalDocs.Engine.Tokenization;
 using CodeClear.NaturalDocs.Engine.Topics;
 
 
-namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
+namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 	{
-	public class Javadoc : Parser
+	public class Parser : Comments.Parser
 		{
 
 		// Group: Types
@@ -83,9 +83,9 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 		// __________________________________________________________________________
 		
 		
-		/* Function: Javadoc
+		/* Function: Parser
 		 */
-		public Javadoc (Comments.Manager manager) : base (manager)
+		public Parser (Comments.Manager manager) : base (manager)
 			{
 			}
 			

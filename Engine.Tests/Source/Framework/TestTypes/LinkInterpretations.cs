@@ -49,9 +49,9 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 						string parameters = null;
 
 						var interpretations = parser.LinkInterpretations(link,
-																					   Engine.Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowNamedLinks |
-																					   Engine.Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowPluralsAndPossessives |
-																					   Engine.Comments.Parsers.NaturalDocs.LinkInterpretationFlags.FromOriginalText,
+																					   Engine.Comments.NaturalDocs.Parser.LinkInterpretationFlags.AllowNamedLinks |
+																					   Engine.Comments.NaturalDocs.Parser.LinkInterpretationFlags.AllowPluralsAndPossessives |
+																					   Engine.Comments.NaturalDocs.Parser.LinkInterpretationFlags.FromOriginalText,
 																					   out parameters);
 
 						if (parameters != null)

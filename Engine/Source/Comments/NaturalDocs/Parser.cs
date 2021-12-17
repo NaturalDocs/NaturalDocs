@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Comments.Parsers.NaturalDocs
+ * Class: CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.Parser
  * ____________________________________________________________________________
  * 
  * A parser to handle Natural Docs' native comment format.
@@ -25,9 +25,9 @@ using CodeClear.NaturalDocs.Engine.Tokenization;
 using CodeClear.NaturalDocs.Engine.Topics;
 
 
-namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
+namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 	{
-	public class NaturalDocs : Parser
+	public class Parser : Comments.Parser
 		{
 		
 		// Group: Types
@@ -132,9 +132,9 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 		// __________________________________________________________________________
 		
 		
-		/* Function: NaturalDocs
+		/* Function: Parser
 		 */
-		public NaturalDocs (Comments.Manager manager) : base (manager)
+		public Parser (Comments.Manager manager) : base (manager)
 			{
 			sets = null;
 			tables = null;
@@ -3087,7 +3087,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 		    using (ConfigFile file = new ConfigFile())
 		        {
 		        bool openResult = file.Open(filename, 
-														 Config.PropertySource.ParserConfigurationFile,
+														 Engine.Config.PropertySource.ParserConfigurationFile,
 														 ConfigFile.FileFormatFlags.MakeIdentifiersLowercase |
 		                                                 ConfigFile.FileFormatFlags.CondenseValueWhitespace |
 		                                                 ConfigFile.FileFormatFlags.SupportsRawValueLines,

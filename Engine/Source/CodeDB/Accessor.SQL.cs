@@ -1450,9 +1450,9 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				// named links or not, so we can avoid the extra processing.
 				List<LinkInterpretation> linkInterpretations = 
 					EngineInstance.Comments.NaturalDocsParser.LinkInterpretations(link.Text, 
-																												Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowPluralsAndPossessives |
-																												Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowNamedLinks |
-																												Comments.Parsers.NaturalDocs.LinkInterpretationFlags.FromOriginalText,
+																												Comments.NaturalDocs.Parser.LinkInterpretationFlags.AllowPluralsAndPossessives |
+																												Comments.NaturalDocs.Parser.LinkInterpretationFlags.AllowNamedLinks |
+																												Comments.NaturalDocs.Parser.LinkInterpretationFlags.FromOriginalText,
 																												out parentheses);
 
 				alternativeEndingSymbols = new StringSet();

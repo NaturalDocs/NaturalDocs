@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Comments.Parsers.XML
+ * Class: CodeClear.NaturalDocs.Engine.Comments.XML.Parser
  * ____________________________________________________________________________
  * 
  * A parser to handle Microsoft's XML comment format.
@@ -66,18 +66,18 @@ using CodeClear.NaturalDocs.Engine.Regex.Comments;
 using CodeClear.NaturalDocs.Engine.Topics;
 
 
-namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
+namespace CodeClear.NaturalDocs.Engine.Comments.XML
 	{
-	public class XML : Parser
+	public class Parser : Comments.Parser
 		{
 				
 		// Group: Functions
 		// __________________________________________________________________________
 		
 		
-		/* Function: XML
+		/* Function: Parser
 		 */
-		public XML (Comments.Manager manager) : base (manager)
+		public Parser (Comments.Manager manager) : base (manager)
 			{
 			}
 			

@@ -173,8 +173,8 @@
     <Compile Include="Source\Comments\Components\JavadocComment.cs" />
     <Compile Include="Source\Comments\Components\XMLComment.cs" />
     <Compile Include="Source\Collections\TagStack.cs" />
-    <Compile Include="Source\Comments\Parsers\Javadoc.cs" />
-    <Compile Include="Source\Comments\Parsers\XML.cs" />
+    <Compile Include="Source\Comments\Javadoc\Parser.cs" />
+    <Compile Include="Source\Comments\XML\Parser.cs" />
     <Compile Include="Source\Comments\Components\XMLElementType.cs" />
     <Compile Include="Source\Comments\Components\XMLIterator.cs" />
     <Compile Include="Source\CommandLine.cs" />
@@ -223,7 +223,7 @@
     <Compile Include="Source\Comments\Manager.cs" />
     <Compile Include="Source\Comments\Parser.cs" />
     <Compile Include="Source\Comments\LineFinder.cs" />
-    <Compile Include="Source\Comments\Parsers\NaturalDocs.cs" />
+    <Compile Include="Source\Comments\NaturalDocs\Parser.cs" />
     <Compile Include="Source\Comments\PossibleDocumentationComment.cs" />
     <Compile Include="Source\ConfigFile.cs" />
     <Compile Include="Source\Config\Manager.cs" />

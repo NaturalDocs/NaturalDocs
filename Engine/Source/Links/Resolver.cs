@@ -191,9 +191,9 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				{
 				string ignore;
 				alternativeInterpretations = EngineInstance.Comments.NaturalDocsParser.LinkInterpretations(link.Text, 
-																							Comments.Parsers.NaturalDocs.LinkInterpretationFlags.FromOriginalText |
-																							Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowNamedLinks |
-																							Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowPluralsAndPossessives,
+																							Comments.NaturalDocs.Parser.LinkInterpretationFlags.FromOriginalText |
+																							Comments.NaturalDocs.Parser.LinkInterpretationFlags.AllowNamedLinks |
+																							Comments.NaturalDocs.Parser.LinkInterpretationFlags.AllowPluralsAndPossessives,
 																							out ignore);
 
 				}
@@ -267,9 +267,9 @@ namespace CodeClear.NaturalDocs.Engine.Links
 					{
 					string ignore;
 					alternativeInterpretations = EngineInstance.Comments.NaturalDocsParser.LinkInterpretations(link.Text, 
-																						Comments.Parsers.NaturalDocs.LinkInterpretationFlags.FromOriginalText |
-																						Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowNamedLinks |
-																						Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowPluralsAndPossessives,
+																						Comments.NaturalDocs.Parser.LinkInterpretationFlags.FromOriginalText |
+																						Comments.NaturalDocs.Parser.LinkInterpretationFlags.AllowNamedLinks |
+																						Comments.NaturalDocs.Parser.LinkInterpretationFlags.AllowPluralsAndPossessives,
 																						out ignore);
 
 					}
