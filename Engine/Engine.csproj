@@ -47,6 +47,9 @@
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Source\Comments\NaturalDocs\Config.cs" />
+    <Compile Include="Source\Comments\NaturalDocs\ConfigFiles\BinaryFileParser.cs" />
+    <Compile Include="Source\Comments\NaturalDocs\ConfigFiles\TextFileParser.cs" />
     <Compile Include="Source\Config\CharacterEncodingRule.cs" />
     <Compile Include="Source\Config\OverridableInputSettings.cs" />
     <Compile Include="Source\Exceptions\PathMustBeAbsolute.cs" />

@@ -17,12 +17,9 @@ _______________________________________________________________________________
 
 	Topic: Sets
 
-		> [Byte: number of sets]
-		>    [String: value] [] ... [String: null]
-		>    [String: value] [] ... [String: null]
-		>    ...
+		> [String: value] [] ... [String: null]
 
-		Sets are defined in this order:
+		A set is stored as a series of strings, ending on null.  They are defined in this order:
 
 		- StartBlockKeywords
 		- EndBlockKeywords
@@ -34,12 +31,10 @@ _______________________________________________________________________________
 
 	Topic: Tables
 
-		> [Byte: number of tables]
-		>    [String: key] [Byte: value] [] [] ... [String: null]
-		>    [String: key] [Byte: value] [] [] ... [String: null]
-		>    ...
+		> [String: key] [Byte: value] [] [] ... [String: null]
 
-		Tables are defined in this order:
+		A table is stored as a series of string pairs representing the keys and values.  It ends on a single null string.  They
+		are defined in this order:
 		
 		- BlockTypes
 		- SpecialHeadings
@@ -48,12 +43,10 @@ _______________________________________________________________________________
 
 	Topic: Conversion Lists
 
-		> [Byte: number of conversion lists]
-		>    [String: key] [String: value] [] [] ... [String: null]
-		>    [String: key] [String: value] [] [] ... [String: null]
-		>    ...
+		> [String: key] [String: value] [] [] ... [String: null]
 
-		Conversion lists are defined in this order:
+		Conversion lists are stored as a series of string pairs representing the keys and values.  Unlike tables it is possible for
+		the same key to appear multiple times.  They are defined in this order:
 
 		- PluralConversions
 		- PossessiveConversions		
@@ -61,6 +54,10 @@ _______________________________________________________________________________
 
 Group: Revisions
 _______________________________________________________________________________
+
+	Topic: 2.2
+
+		- Removed count of sets, tables, and conversion lists.
 
  	Topic: 2.0
 
