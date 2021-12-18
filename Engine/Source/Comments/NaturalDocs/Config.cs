@@ -62,17 +62,24 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 		 */
 		public static bool operator== (Comments.NaturalDocs.Config config1, Comments.NaturalDocs.Config config2)
 			{
-			return (config1.startBlockKeywords == config2.startBlockKeywords &&
-					   config1.endBlockKeywords == config2.endBlockKeywords &&
-					   config1.seeImageKeywords == config2.seeImageKeywords &&
-					   config1.atLinkKeywords == config2.atLinkKeywords &&
-					   config1.urlProtocols == config2.urlProtocols &&
-					   config1.acceptableLinkSuffixes == config2.acceptableLinkSuffixes &&
-					   config1.blockTypes == config2.blockTypes &&
-					   config1.specialHeadings == config2.specialHeadings &&
-					   config1.accessLevel == config2.accessLevel &&
-					   config1.pluralConversions == config2.pluralConversions &&
-					   config1.possessiveConversions == config2.possessiveConversions);
+			if ((object)config1 == null && (object)config2 == null)
+				{  return true;  }
+			else if ((object)config1 == null || (object)config2 == null)
+				{  return false;  }
+			else
+				{
+				return (config1.startBlockKeywords == config2.startBlockKeywords &&
+						   config1.endBlockKeywords == config2.endBlockKeywords &&
+						   config1.seeImageKeywords == config2.seeImageKeywords &&
+						   config1.atLinkKeywords == config2.atLinkKeywords &&
+						   config1.urlProtocols == config2.urlProtocols &&
+						   config1.acceptableLinkSuffixes == config2.acceptableLinkSuffixes &&
+						   config1.blockTypes == config2.blockTypes &&
+						   config1.specialHeadings == config2.specialHeadings &&
+						   config1.accessLevel == config2.accessLevel &&
+						   config1.pluralConversions == config2.pluralConversions &&
+						   config1.possessiveConversions == config2.possessiveConversions);
+				}
 			}
 			
 		
