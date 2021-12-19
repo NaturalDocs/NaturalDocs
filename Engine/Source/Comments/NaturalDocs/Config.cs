@@ -68,17 +68,34 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 				{  return false;  }
 			else
 				{
-				return (config1.startBlockKeywords == config2.startBlockKeywords &&
-						   config1.endBlockKeywords == config2.endBlockKeywords &&
-						   config1.seeImageKeywords == config2.seeImageKeywords &&
-						   config1.atLinkKeywords == config2.atLinkKeywords &&
-						   config1.urlProtocols == config2.urlProtocols &&
-						   config1.acceptableLinkSuffixes == config2.acceptableLinkSuffixes &&
-						   config1.blockTypes == config2.blockTypes &&
-						   config1.specialHeadings == config2.specialHeadings &&
-						   config1.accessLevel == config2.accessLevel &&
-						   config1.pluralConversions == config2.pluralConversions &&
-						   config1.possessiveConversions == config2.possessiveConversions);
+				if (config1.startBlockKeywords != config2.startBlockKeywords ||
+					config1.endBlockKeywords != config2.endBlockKeywords ||
+					config1.seeImageKeywords != config2.seeImageKeywords ||
+					config1.atLinkKeywords != config2.atLinkKeywords ||
+					config1.urlProtocols != config2.urlProtocols ||
+					config1.acceptableLinkSuffixes != config2.acceptableLinkSuffixes ||
+					config1.blockTypes != config2.blockTypes ||
+					config1.specialHeadings != config2.specialHeadings ||
+					config1.accessLevel != config2.accessLevel ||
+					config1.pluralConversions.Count != config2.pluralConversions.Count ||
+					config1.possessiveConversions.Count != config2.possessiveConversions.Count)
+					{  return false;  }
+
+				for (int i = 0; i < config1.pluralConversions.Count; i++)
+					{
+					if (config1.pluralConversions[i].Key != config2.pluralConversions[i].Key ||
+						config1.pluralConversions[i].Value != config2.pluralConversions[i].Value)
+						{  return false;  }
+					}
+
+				for (int i = 0; i < config1.possessiveConversions.Count; i++)
+					{
+					if (config1.possessiveConversions[i].Key != config2.possessiveConversions[i].Key ||
+						config1.possessiveConversions[i].Value != config2.possessiveConversions[i].Value)
+						{  return false;  }
+					}
+
+				return true;
 				}
 			}
 			
