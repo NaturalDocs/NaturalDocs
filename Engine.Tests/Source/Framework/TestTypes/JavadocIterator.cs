@@ -2,7 +2,7 @@
  * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes.JavadocIterator
  * ____________________________________________________________________________
  * 
- * A class to test <Engine.Comments.Parsers.JavadocIterator's> ability to parse Javadoc content.
+ * A class to test <Engine.Comments.Components.JavadocIterator's> ability to parse Javadoc content.
  * 
  * Commands:
  * 

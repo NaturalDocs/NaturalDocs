@@ -1175,7 +1175,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 
 		/* __________________________________________________________________________
 		 * 
-		 * Struct: CodeClear.NaturalDocs.Engine.Comments.Parsers.XML.ListItem
+		 * Struct: CodeClear.NaturalDocs.Engine.Comments.XML.Parser.ListItem
 		 * __________________________________________________________________________
 		 */
 		private struct ListItem

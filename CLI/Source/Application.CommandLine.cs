@@ -36,7 +36,7 @@ namespace CodeClear.NaturalDocs.CLI
 
 		/* Function: ParseCommandLine
 		 * 
-		 * Parses the command line and applies the relevant settings in in <NaturalDocs.Engine's> modules.  If there were 
+		 * Parses the command line and applies the relevant settings in in <NaturalDocs.Engine.Instance's> modules.  If there were 
 		 * errors they will be placed on errorList and it will return <ParseCommandLineResult.Error>.
 		 * 
 		 * Supported:

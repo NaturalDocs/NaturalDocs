@@ -142,9 +142,9 @@ Topic: Top-Level Block Tags
 			> <link type="naturaldocs" originaltext="[text]">
 			
 			Natural Docs links are standalone tags instead of wrappers.  The link text can be interpreted multiple ways so there is no target
-			or text properties.  Instead you must pass originaltext to <Engine.Comments.Parsers.NaturalDocs.LinkInterpretations()> to get all
-			the possibilities.  For example, "a at b" can be interpreted as text "a" target "b", or as both being "a at b".  Natural Docs' may
-			also apply plural and possessive processing, so target "objects" will always have text "objects" but may have an actual target 
+			or text properties.  Instead you must pass originaltext to <CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.Parser.LinkInterpretations()>
+			to get all the possibilities.  For example, "a at b" can be interpreted as text "a" target "b", or as both being "a at b".  Natural Docs'
+			may also apply plural and possessive processing, so target "objects" will always have text "objects" but may have an actual target 
 			of "objects" or "object".  If none of the possible interpretations resolve it will place originaltext in the output.
 			
 			
