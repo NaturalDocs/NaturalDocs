@@ -82,49 +82,6 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 		 */
 		public enum HeadingType : byte
 			{  Generic, Parameters  }
-		
-			
-		/* enum: SetIndex
-		 * The index into <sets> for each item.  The values must start at zero and proceed sequentially.  MaxValue must be set
-		 * to the highest used value.  The value names are used by <LoadFile()>, so they must match the possible set names in
-		 * <Parser.txt> exactly with the exception of spaces.
-		 */
-		protected enum SetIndex 
-			{  
-			StartBlockKeywords = 0, 
-			EndBlockKeywords = 1, 
-			SeeImageKeywords = 2, 
-			AtLinkKeywords = 3,
-			URLProtocols = 4,
-			AcceptableLinkSuffixes = 5,
-			MaxValue = AcceptableLinkSuffixes
-			}
-			
-		/* enum: TableIndex
-		 * The index into <tables> for each item.  The values must start at zero and proceed sequentially.  MaxValue must be set
-		 * to the highest used value.  The value names are used by <LoadFile()>, so they must match the possible table names in
-		 * <Parser.txt> exactly with the exception of spaces.
-		 */
-		protected enum TableIndex
-			{  
-			BlockTypes = 0, 
-			SpecialHeadings = 1, 
-			AccessLevel = 2,
-			MaxValue = AccessLevel
-			}
-			
-		/* enum: ConversionListIndex
-		 * The index into <conversionLists> for each item.  The values must start at zero and proceed sequentially.  MaxValue must
-		 * be set to the highest used value.  The value names are used by <LoadFile()>, so they must match the possible list names
-		 * in <Parser.txt> exactly with the exception of spaces.
-		 */
-		protected enum ConversionListIndex
-			{  
-			PluralConversions = 0, 
-			PossessiveConversions = 1,
-			MaxValue = PossessiveConversions
-			}
-			
 			
 			
 		
@@ -136,9 +93,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 		 */
 		public Parser (Comments.Manager manager) : base (manager)
 			{
-			sets = null;
-			tables = null;
-			conversionLists = null;
+			config = null;
 			}
 			
 			
@@ -153,101 +108,37 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 			StartupIssues newStartupIssues = StartupIssues.None;
 
 
-			 // Load configuration files
+			// Load configuration files
 
-			bool loadFileResult = LoadFile( EngineInstance.Config.SystemConfigFolder + "/Parser.txt", errors,
-														out sets, out tables, out conversionLists);
+			ConfigFiles.TextFileParser textFileParser = new ConfigFiles.TextFileParser();
+
+			bool loadTextFileResult = textFileParser.Load(EngineInstance.Config.SystemConfigFolder + "/Parser.txt", 
+																			 Engine.Config.PropertySource.ParserConfigurationFile,
+																			 errors, out config);
 													 
-			if (loadFileResult == false )
+			if (loadTextFileResult == false )
 				{  return false;  }
 
-			bool loadBinaryFileResult = false;
-			StringSet[] binarySets = null;
-			StringTable<byte>[] binaryTables = null;
-			List<string>[] binaryConversionLists = null;
 
+			ConfigFiles.BinaryFileParser binaryFileParser = new ConfigFiles.BinaryFileParser();
+			Config binaryConfig = null;
 								
 			if (!EngineInstance.HasIssues( StartupIssues.NeedToStartFresh ))
 				{
-				loadBinaryFileResult = LoadBinaryFile( EngineInstance.Config.WorkingDataFolder + "/Parser.nd",
-																		out binarySets, out binaryTables, out binaryConversionLists );
+				binaryFileParser.Load(EngineInstance.Config.WorkingDataFolder + "/Parser.nd", out binaryConfig);
 				}
 
 
 			// Compare to previous settings
 			
-			if (loadBinaryFileResult == false)
+			if (binaryConfig == null)
 				{  newStartupIssues |= StartupIssues.NeedToReparseAllFiles;  }
-					
-			// Try quick compares before full ones
-			else if (sets.Length != binarySets.Length ||
-					   tables.Length != binaryTables.Length ||
-					   conversionLists.Length != binaryConversionLists.Length)
+			else if (binaryConfig != config)
 				{  newStartupIssues |= StartupIssues.NeedToReparseAllFiles;  }
-
-			else
-				{
-				bool equal = true;
-
-				for (int i = 0; i < sets.Length && equal; i++)	
-					{
-					if (sets[i].Count != binarySets[i].Count)
-						{  equal = false;  }
-					else
-						{
-						foreach (string setMember in sets[i])
-							{
-							if (!binarySets[i].Contains(setMember))
-								{
-								equal = false;
-								break;
-								}
-							}
-						}
-					}
-						
-				for (int i = 0; i < tables.Length && equal; i++)
-					{
-					if (tables[i].Count != binaryTables[i].Count)
-						{  equal = false;  }
-					else
-						{
-						foreach (KeyValuePair<string, byte> pair in tables[i])
-							{
-							if (binaryTables[i][pair.Key] != pair.Value)	
-								{
-								equal = false;
-								break;
-								}
-							}
-						}
-					}
-						
-				for (int i = 0; i < conversionLists.Length && equal; i++)
-					{
-					if (conversionLists[i].Count != binaryConversionLists[i].Count)
-						{  equal = false;  }
-					else
-						{
-						for (int x = 0; x < conversionLists[i].Count; x++)
-							{
-							if (conversionLists[i][x] != binaryConversionLists[i][x])
-								{
-								equal = false;
-								break;
-								}
-							}
-						}
-					}
-						
-				if (equal == false)
-					{  newStartupIssues |= StartupIssues.NeedToReparseAllFiles;  }
-				}
 		        
-			ConfigFile.TryToRemoveErrorAnnotations( EngineInstance.Config.SystemConfigFolder + "/Parser.txt" );
+			ConfigFile.TryToRemoveErrorAnnotations(EngineInstance.Config.SystemConfigFolder + "/Parser.txt");
 				
-			SaveBinaryFile( EngineInstance.Config.WorkingDataFolder + "/Parser.nd",
-									sets, tables, conversionLists );
+			binaryFileParser.Save(EngineInstance.Config.WorkingDataFolder + "/Parser.nd", config);
 
 
 			if (newStartupIssues != StartupIssues.None)
@@ -541,28 +432,27 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 				string nInput = input.Normalize(System.Text.NormalizationForm.FormC);
 				string lcnInput = nInput.ToLower();
 				
-				List<String> pluralConversions = conversionLists[(int)ConversionListIndex.PluralConversions];
-				List<String> possessiveConversions = conversionLists[(int)ConversionListIndex.PossessiveConversions];
-
-				// We use -2 to signify none, since we also want to test each plural conversion without any possessive conversion applied.
-				for (int possessiveIndex = -2; possessiveIndex < possessiveConversions.Count; possessiveIndex += 2)
+				// We use -1 to signify none, since we also want to test each plural conversion without any possessive conversion applied.
+				for (int possessiveIndex = -1; possessiveIndex < config.PossessiveConversions.Count; possessiveIndex++)
 					{
 					string nWithoutPossessive, lcnWithoutPossessive;
 					
-					if (possessiveIndex == -2)
+					if (possessiveIndex == -1)
 						{  
 						nWithoutPossessive = nInput;
 						lcnWithoutPossessive = lcnInput;
 						}
-					else if (lcnInput.EndsWith(possessiveConversions[possessiveIndex]))
+					else if (lcnInput.EndsWith(config.PossessiveConversions[possessiveIndex].Key))
 						{
-						nWithoutPossessive = nInput.Substring(0, nInput.Length - possessiveConversions[possessiveIndex].Length);
-						lcnWithoutPossessive = lcnInput.Substring(0, lcnInput.Length - possessiveConversions[possessiveIndex].Length);
+						var possessiveConversion = config.PossessiveConversions[possessiveIndex];
+
+						nWithoutPossessive = nInput.Substring(0, nInput.Length - possessiveConversion.Key.Length);
+						lcnWithoutPossessive = lcnInput.Substring(0, lcnInput.Length - possessiveConversion.Key.Length);
 						
-						if (possessiveConversions[possessiveIndex+1] != null)
+						if (possessiveConversion.Value != null)
 							{  
-							nWithoutPossessive += possessiveConversions[possessiveIndex+1];
-							lcnWithoutPossessive += possessiveConversions[possessiveIndex+1];  
+							nWithoutPossessive += possessiveConversion.Value;
+							lcnWithoutPossessive += possessiveConversion.Value;
 							}
 						}
 					else
@@ -573,26 +463,28 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 						
 					if (nWithoutPossessive != null)
 						{
-						// Again -2 signifies none, since we also want each possessive conversion without any plural conversion applied.
-						for (int pluralIndex = -2; pluralIndex < pluralConversions.Count; pluralIndex += 2)
+						// Again -1 signifies none, since we also want each possessive conversion without any plural conversion applied.
+						for (int pluralIndex = -1; pluralIndex < config.PluralConversions.Count; pluralIndex++)
 							{
 							string nWithoutEither;
 							
-							if (pluralIndex == -2)
+							if (pluralIndex == -1)
 								{
 								// Skip when we're missing both.  We have that on the list already.
-								if (possessiveIndex == -2)
+								if (possessiveIndex == -1)
 									{  nWithoutEither = null;  }
 								else
 									{  nWithoutEither = nWithoutPossessive;  }
 								}	
 														
-							else if (lcnWithoutPossessive.EndsWith(pluralConversions[pluralIndex]))
+							else if (lcnWithoutPossessive.EndsWith(config.PluralConversions[pluralIndex].Key))
 								{
-								nWithoutEither = nWithoutPossessive.Substring(0, nWithoutPossessive.Length - pluralConversions[pluralIndex].Length);
+								var pluralConversion = config.PluralConversions[pluralIndex];
+
+								nWithoutEither = nWithoutPossessive.Substring(0, nWithoutPossessive.Length - pluralConversion.Key.Length);
 								
-								if (pluralConversions[pluralIndex+1] != null)
-									{  nWithoutEither += pluralConversions[pluralIndex+1];  }
+								if (pluralConversion.Value != null)
+									{  nWithoutEither += pluralConversion.Value;  }
 								}
 								
 							else
@@ -638,9 +530,9 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 		 */
 		protected bool IsAccessLevelTag (string tag, out Languages.AccessLevel accessLevel)
 			{
-			if (tables[(int)TableIndex.AccessLevel].ContainsKey(tag))
+			if (config.AccessLevel.ContainsKey(tag))
 				{  
-				accessLevel = (Languages.AccessLevel)tables[(int)TableIndex.AccessLevel][tag];
+				accessLevel = config.AccessLevel[tag];
 				return true;
 				}
 			else
@@ -1006,7 +898,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 		 */
 		protected bool IsStartBlockKeyword (string keyword)
 			{
-			return sets[(int)SetIndex.StartBlockKeywords].Contains(keyword);
+			return config.StartBlockKeywords.Contains(keyword);
 			}
 			
 			
@@ -1015,7 +907,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 		 */
 		protected bool IsEndBlockKeyword (string keyword)
 			{
-			return sets[(int)SetIndex.EndBlockKeywords].Contains(keyword);
+			return config.EndBlockKeywords.Contains(keyword);
 			}
 			
 			
@@ -1025,9 +917,9 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 		 */
 		protected bool IsBlockType (string keyword, out BlockType blockType)
 			{
-			if (tables[(int)TableIndex.BlockTypes].ContainsKey(keyword))
+			if (config.BlockTypes.ContainsKey(keyword))
 				{  
-				blockType = (BlockType)tables[(int)TableIndex.BlockTypes][keyword];  
+				blockType = config.BlockTypes[keyword];  
 				return true;
 				}
 			else
@@ -1273,8 +1165,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 
 			heading = start.TextBetween(end);
 
-			if (tables[(int)TableIndex.SpecialHeadings].ContainsKey(heading))
-				{  headingType = (HeadingType)tables[(int)TableIndex.SpecialHeadings][heading];  }
+			if (config.SpecialHeadings.ContainsKey(heading))
+				{  headingType = config.SpecialHeadings[heading];  }
 			else
 				{  headingType = HeadingType.Generic;  }
 				
@@ -1505,7 +1397,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 		 */
 		protected bool IsImageKeyword (string keyword)
 			{
-			return sets[(int)SetIndex.SeeImageKeywords].Contains(keyword);
+			return config.SeeImageKeywords.Contains(keyword);
 			}
 			
 			
@@ -1684,7 +1576,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 		 */
 		public bool IsURLProtocol (string input)
 			{
-			return sets[(int)SetIndex.URLProtocols].Contains(input);
+			return config.URLProtocols.Contains(input);
 			}
 
 
@@ -1693,7 +1585,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 		 */
 		protected bool IsAtLinkKeyword (string keyword)
 			{
-			return sets[(int)SetIndex.AtLinkKeywords].Contains(keyword);
+			return config.AtLinkKeywords.Contains(keyword);
 			}
 			
 
@@ -2334,7 +2226,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 							
 					// Skip any acceptable suffixes, like 's.  We pick the longest match we can find.
 					int longestSuffix = 0;
-					foreach (string suffix in sets[(int)SetIndex.AcceptableLinkSuffixes])
+					foreach (string suffix in config.AcceptableLinkSuffixes)
 						{
 						if (suffix.Length > longestSuffix && next.MatchesAcrossTokens(suffix, true))
 							{  longestSuffix = suffix.Length;  }
@@ -3061,562 +2953,13 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 			
 			
 			
-		// Group: Static Functions
-		// __________________________________________________________________________
-		
-		
-		/* Function: LoadFile
-		 * 
-		 * Loads <Parser.txt> and puts the results in the various out parameters, returning whether it was successful or not.
-		 * If it wasn't, the out structures will still exist but be empty and all errors will be added to the error list.
-		 * 
-		 * Keywords are matched to the value names in <SetIndex>, <TableIndex>, and <ConversionListIndex> so all possible
-		 * keywords must be represented there sans spaces.  Likewise table values must be represented in <BlockType>,
-		 * <HeadingType>, and <Languages.AccessLevel>.
-		 */
-		static public bool LoadFile (Path filename, Errors.ErrorList errors,
-											   out StringSet[] sets, out StringTable<byte>[] tables, out List<string>[] conversionLists)
-		    {
-		    sets = new StringSet[ (int)SetIndex.MaxValue + 1 ];
-		    tables = new StringTable<byte>[ (int)TableIndex.MaxValue + 1 ];
-		    conversionLists = new List<string>[ (int)ConversionListIndex.MaxValue + 1 ];
-
-		    int previousErrorCount = errors.Count;
-		    Regex.CondensedWhitespaceArrowSeparator arrowSeparatorRegex = new Regex.CondensedWhitespaceArrowSeparator();
-			
-		    using (ConfigFile file = new ConfigFile())
-		        {
-		        bool openResult = file.Open(filename, 
-														 Engine.Config.PropertySource.ParserConfigurationFile,
-														 ConfigFile.FileFormatFlags.MakeIdentifiersLowercase |
-		                                                 ConfigFile.FileFormatFlags.CondenseValueWhitespace |
-		                                                 ConfigFile.FileFormatFlags.SupportsRawValueLines,
-		                                                 errors);
-														 
-		        if (openResult == false)
-		            {  return false;  }
-					
-		        string identifier = null;
-		        string value = null;
-				
-		        // If this is true, identifier and value are already filled but not processed, so Get shouldn't be called again on the next
-		        // iteration.
-		        bool alreadyHaveNextLine = false;				
-				
-		        while (alreadyHaveNextLine || file.Get(out identifier, out value))
-		            {
-		            alreadyHaveNextLine = false;
-					
-		            if (identifier == null)
-		                {
-		                file.AddError(
-		                    Locale.Get("NaturalDocs.Engine", "ConfigFile.LineNotInIdentifierValueFormat")
-		                    );
-		                continue;
-		                }
-		                
-		            
-		            //
-		            // Sets
-		            //
-
-					if (identifier == "set")
-						{
-						string nsValue = value.RemoveWhitespace();
-						StringSet set = new StringSet (KeySettings.IgnoreCase | KeySettings.NormalizeUnicode);
-						bool urlProtocol = false;
-						
-						try
-							{  
-							SetIndex setIndex = (SetIndex)Enum.Parse(typeof(SetIndex), nsValue, true);  
-							sets[ (int)setIndex ] = set;
-							
-							urlProtocol = (setIndex == SetIndex.URLProtocols);
-							}
-						catch
-							{
-							file.AddError(
-								Locale.Get("NaturalDocs.Engine", "ConfigFile.NotAValidIdentifier(identifier)", value)
-								);
-							// Continue anyway.
-							}
-							
-						while (file.Get(out identifier, out value))
-							{
-							if (identifier != null)
-								{
-								alreadyHaveNextLine = true;
-								break;
-								}
-								
-							if (urlProtocol && AcceptableURLProtocolCharactersRegex.IsMatch(value) == false)
-								{
-								file.AddError(
-									Locale.Get("NaturalDocs.Engine", "ConfigFile.NotAValidValue(value)", value)
-									);
-								}
-								
-							set.Add(value);
-							}
-						}
-						
-						
-					//
-					// Tables
-					//
-					
-					else if (identifier == "table")
-						{
-						StringTable<byte> table = new StringTable<byte>(KeySettings.IgnoreCase | KeySettings.NormalizeUnicode);
-						System.Type type = null;
-
-						// We take the spaces out anyway because if one's not defined, the error message will use the
-						// enum name.  Following that message would make people define it without spaces.						
-						string nslcValue = value.RemoveWhitespace().ToLower();
-						
-						if (nslcValue == "blocktypes")
-							{
-							type = typeof(BlockType);
-							tables[ (int)TableIndex.BlockTypes ] = table;
-							}
-						else if (nslcValue == "specialheadings")
-							{
-							type = typeof(HeadingType);
-							tables[ (int)TableIndex.SpecialHeadings ] = table;
-							}
-						else if (nslcValue == "accesslevel")
-							{
-							type = typeof(Languages.AccessLevel);
-							tables[ (int)TableIndex.AccessLevel ] = table;
-							}
-						else
-							{
-							file.AddError(
-								Locale.Get("NaturalDocs.Engine", "ConfigFile.NotAValidIdentifier(identifier)", value)
-								);
-							// Continue anyway.
-							}
-							
-						while (file.Get(out identifier, out value))
-							{
-							if (identifier != null)
-								{
-								alreadyHaveNextLine = true;
-								break;
-								}
-								
-							string[] split = arrowSeparatorRegex.Split(value, 2);
-							byte byteValue = 0;
-							
-							try
-								{  
-								if (type != null)
-									{  byteValue = (byte)Enum.Parse(type, split[1], true);  }
-								}
-							catch
-								{
-								file.AddError(
-									Locale.Get("NaturalDocs.Engine", "ConfigFile.NotAValidValue(value)", split[1])
-									);
-								// Continue anyway.
-								}
-
-							table.Add(split[0], byteValue);
-							}
-						}
-						
-						
-					//
-					// Conversion List
-					//
-					
-					else if (identifier == "conversion list")
-						{
-						string nsValue = value.RemoveWhitespace();
-						List<string> conversionList = new List<string>();
-						
-						try
-							{  
-							ConversionListIndex index = (ConversionListIndex)Enum.Parse( typeof(ConversionListIndex), nsValue, true);  
-							conversionLists[ (int)index ] = conversionList;
-							}
-						catch
-							{
-							file.AddError(
-								Locale.Get("NaturalDocs.Engine", "ConfigFile.NotAValidIdentifier(identifier)", value)
-								);
-							// Continue anyway.
-							}
-
-						while (file.Get(out identifier, out value))
-							{
-							if (identifier != null)
-								{
-								alreadyHaveNextLine = true;
-								break;
-								}
-								
-							string[] split = arrowSeparatorRegex.Split(value, 2);
-							
-							conversionList.Add( split[0].ToLower().Normalize(System.Text.NormalizationForm.FormC) );
-							
-							if (String.IsNullOrEmpty(split[1]))
-								{  conversionList.Add(null);  }
-							else
-								{  conversionList.Add( split[1].ToLower().Normalize(System.Text.NormalizationForm.FormC) );  }
-							}
-						}
-						
-						
-						
-		            else
-		                {
-		                file.AddError(
-		                    Locale.Get("NaturalDocs.Engine", "ConfigFile.NotAValidIdentifier(identifier)", identifier)
-		                    );
-							
-		                // Skip to the next identifier
-		                while (file.Get(out identifier, out value))
-		                    {
-		                    if (identifier != null)
-		                        {
-		                        alreadyHaveNextLine = true;
-		                        break;
-		                        }
-		                    }
-		                }						
-		            }
-		            
-		            
-		            
-				List<string> missingIdentifiers = new List<string>();
-		        
-		        for (int i = 0; i <= (int)SetIndex.MaxValue; i++)
-					{
-					if (sets[i] == null)
-						{
-						string name = Enum.GetName( typeof(SetIndex), i);
-						
-						if (!String.IsNullOrEmpty(name))
-							{  missingIdentifiers.Add(name);  }
-						}
-					}
-					
-		        for (int i = 0; i <= (int)TableIndex.MaxValue; i++)
-					{
-					if (tables[i] == null)
-						{
-						string name = Enum.GetName( typeof(TableIndex), i);
-
-						if (!String.IsNullOrEmpty(name))
-							{  missingIdentifiers.Add(name);  }
-						}
-					}
-					
-		        for (int i = 0; i <= (int)ConversionListIndex.MaxValue; i++)
-					{
-					if (conversionLists[i] == null)
-						{
-						string name = Enum.GetName( typeof(ConversionListIndex), i);
-						
-						if (!String.IsNullOrEmpty(name))
-							{  missingIdentifiers.Add(name);  }
-						}
-					}
-					
-				if (missingIdentifiers.Count == 1)
-					{
-					file.AddError(
-						Locale.Get("NaturalDocs.Engine", "ConfigFile.RequiredIdentifierNotDefined(identifier)", missingIdentifiers[0])
-						);
-					}
-				else if (missingIdentifiers.Count > 1)
-					{
-					file.AddError(
-						Locale.Get("NaturalDocs.Engine", "ConfigFile.RequiredIdentifiersNotDefined(identifiers)", 
-										string.Join(", ", missingIdentifiers.ToArray()))
-						);
-					}
-
-		        }
-		        
-				
-		    if (errors.Count == previousErrorCount)
-		        {  return true;  }
-		    else
-		        {
-		        sets = null;
-		        tables = null;
-		        conversionLists = null;
-
-		        return false;
-		        }
-		    }
-			
-			
-		/* Function: LoadBinaryFile
-		 * Loads <Parser.nd> and puts the results in the various out parameters, returning whether it was successful or not.
-		 * If it wasn't, the out structures will still exist but be empty.
-		 */
-		static public bool LoadBinaryFile (Path filename,
-		                                            out StringSet[] binarySets,
-		                                            out StringTable<byte>[] binaryTables,
-		                                            out List<string>[] binaryConversionLists)
-		    {
-		    // To get the compiler to shut up
-		    binarySets = null;
-		    binaryTables = null;
-		    binaryConversionLists = null;
-		    
-		    BinaryFile binaryFile = new BinaryFile();
-		    bool result = true;
-			
-		    try
-		        {
-		        if (binaryFile.OpenForReading(filename) == false)
-		            {
-		            result = false;
-		            }
-		        else if (binaryFile.Version.IsAtLeastRelease("2.0") == false &&
-						   binaryFile.Version.IsSamePreRelease(Engine.Instance.Version) == false)
-		            {
-					binaryFile.Close();
-		            result = false;
-		            }
-		        else
-		            {
-					// [Byte: number of sets]
-					// [[Set 0]] [[Set 1]] ...
-
-		            byte numberOfSets = binaryFile.ReadByte();
-					binarySets = new StringSet[numberOfSets];		            
-						
-					for (byte i = 0; i < numberOfSets; i++)
-						{
-						StringSet set = new StringSet (KeySettings.IgnoreCase | KeySettings.NormalizeUnicode);
-						LoadBinaryFile_GetSet(binaryFile, set);
-						binarySets[i] = set;
-						}
-
-
-					// [Byte: number of tables]
-					// [[Table 0]] [[Table 1]] ...
-					
-					byte numberOfTables = binaryFile.ReadByte();
-					binaryTables = new StringTable<byte>[numberOfTables];
-				
-					for (byte i = 0; i < numberOfTables; i++)
-						{
-						StringTable<byte> table = new StringTable<byte>(KeySettings.IgnoreCase | KeySettings.NormalizeUnicode);
-						LoadBinaryFile_GetTable(binaryFile, table);
-						binaryTables[i] = table;
-						}
-						
-						
-					// [Byte: number of conversion lists]
-					// [[Conversion List 0]] [[Conversion List 1]] ...
-					
-					byte numberOfConversionLists = binaryFile.ReadByte();
-					binaryConversionLists = new List<string>[numberOfConversionLists];
-
-					for (byte i = 0; i < numberOfConversionLists; i++)
-						{
-						List<string> conversionList = new List<string>();
-						LoadBinaryFile_GetConversionList(binaryFile, conversionList);
-						binaryConversionLists[i] = conversionList;
-						}
-		            }
-		        }
-		    catch
-		        {  
-				result = false;  
-				}
-		    finally
-		        {  
-				if (binaryFile.IsOpen)
-					{  binaryFile.Close();  }
-				}
-				
-		    if (result == false)
-		        {
-				binarySets = new StringSet[ (int)SetIndex.MaxValue + 1 ];
-				binaryTables = new StringTable<byte>[ (int)TableIndex.MaxValue + 1 ];
-				binaryConversionLists = new List<string>[ (int)ConversionListIndex.MaxValue + 1 ];
-				
-				for (byte i = 0; i <= (byte)SetIndex.MaxValue; i++)
-					{  binarySets[i] = new StringSet (KeySettings.IgnoreCase | KeySettings.NormalizeUnicode);  }
-					
-				for (byte i = 0; i <= (byte)TableIndex.MaxValue; i++)
-					{  binaryTables[i] = new StringTable<byte> (KeySettings.IgnoreCase | KeySettings.NormalizeUnicode);  }
-					
-				for (byte i = 0; i <= (byte)ConversionListIndex.MaxValue; i++)
-					{  binaryConversionLists[i] = new List<string>();  }
-		        }
-				
-		    return result;
-		    }
-			
-			
-		/* Function: LoadBinaryFile_GetSet
-		 * A helper function used only by <LoadBinaryFile()> which loads values into the passed <StringSet> until it reaches a null string.
-		 */
-		static private void LoadBinaryFile_GetSet(BinaryFile file, StringSet set)
-		    {
-		    for (;;)
-		        {
-		        string value = file.ReadString();
-				
-		        if (value == null)
-		            {  return;  }
-					
-		        set.Add(value);
-		        }
-		    }
-		
-		
-		/* Function: LoadBinaryFile_GetTable
-		 * A helper function used only by <LoadBinaryFile()> which loads values into the passed <StringTable> until it reaches a null string.
-		 */
-		static private void LoadBinaryFile_GetTable(BinaryFile file, StringTable<byte> table)
-		    {
-		    for (;;)
-		        {
-		        string key = file.ReadString();
-				
-		        if (key == null)
-		            {  return;  }
-					
-		        byte value = file.ReadByte();
-					
-		        table.Add(key, value);
-		        }
-		    }
-		
-		
-		/* Function: LoadBinaryFile_GetConversionList
-		 * A helper function used only by <LoadBinaryFile()> which loads values into the passed conversion list until it reaches a null string.
-		 */
-		static private void LoadBinaryFile_GetConversionList(BinaryFile file, List<string> conversionList)
-		    {
-		    for (;;)
-		        {
-		        string key = file.ReadString();
-				
-		        if (key == null)
-		            {  return;  }
-					
-		        string value = file.ReadString();
-					
-		        conversionList.Add(key);
-		        conversionList.Add(value);
-		        }
-		    }
-		
-		
-		/* Function: SaveBinaryFile
-		 * Saves <Parser.nd>.  Throws an exception if unsuccessful.
-		 */
-		static public void SaveBinaryFile (Path filename,
-		                                            StringSet[] sets,
-		                                            StringTable<byte>[] tables,
-		                                            List<string>[] conversionLists)
-		    {
-		    BinaryFile file = new BinaryFile();
-		    file.OpenForWriting(filename);
-
-		    try
-		        {
-				// [Byte: number of sets]
-				// [[Set 0]] [[Set 1]] ...
-				
-				file.WriteByte((byte)sets.Length);
-				foreach (StringSet set in sets)
-					{  SaveBinaryFile_WriteSet(file, set);  }
-
-				// [Byte: number of tables]
-				// [[Table 0]] [[Table 1]] ...
-				
-				file.WriteByte((byte)tables.Length);
-				foreach (StringTable<byte> table in tables)
-					{  SaveBinaryFile_WriteTable(file, table);  }
-
-				// [Byte: number of conversion lists]
-				// [[Conversion List 0]] [[Conversion List 1]] ...
-				
-				file.WriteByte((byte)conversionLists.Length);
-				foreach (List<string> conversionList in conversionLists)
-					{  SaveBinaryFile_WriteConversionList(file, conversionList);  }
-		        }
-				
-		    finally
-		        {
-		        file.Close();
-		        }
-		    }
-			
-			
-		/* Function: SaveBinaryFile_WriteSet
-		 * A helper function used only by <SaveBinaryFile()> which writes out the <StringSet> values followed by a null string.
-		 */
-		static private void SaveBinaryFile_WriteSet(BinaryFile file, StringSet set)
-		    {
-		    foreach (string value in set)
-		        {  file.WriteString(value);  }
-				
-		    file.WriteString(null);
-		    }
-		
-		
-		/* Function: SaveBinaryFile_WriteTable
-		 * A helper function used only by <SaveBinaryFile()> which writes out the <StringTable> values followed by a null string.
-		 */
-		static private void SaveBinaryFile_WriteTable(BinaryFile file, StringTable<byte> table)
-		    {
-		    foreach (System.Collections.Generic.KeyValuePair<string, byte> pair in table)
-		        {  
-		        file.WriteString(pair.Key);
-		        file.WriteByte(pair.Value);
-		        }
-				
-		    file.WriteString(null);
-		    }
-		
-		
-		/* Function: SaveBinaryFile_WriteConversionList
-		 * A helper function used only by <SaveBinaryFile()> which writes out the conversion list values followed by a null string.
-		 */
-		static private void SaveBinaryFile_WriteConversionList(BinaryFile file, List<string> conversionList)
-		    {
-		    foreach (string entry in conversionList)
-		        {  file.WriteString(entry);  }
-				
-		    file.WriteString(null);
-		    }
-		
-		
-		
 		// Group: Variables
 		// __________________________________________________________________________
 
 
-		/* var: sets
-		 * An array of <StringSets> corresponding to the sets in <Parser.txt>.  Use <SetIndex> for indexes to get particular
-		 * sets.
+		/* var: config
 		 */
-		protected StringSet[] sets;
-
-		/* var: tables
-		 * An array of <StringTables> corresponding to the tables in <Parser.txt>.  The values are bytes but will be safe to blindly
-		 * cast to their respective enums because the values will have been validated when the files were loaded.
-		 */
-		protected StringTable<byte>[] tables;
-		
-		/* var: conversionLists
-		 * An array of string lists corresponding to the conversion lists in <Parser.txt>.  Each string list is made up of string pairs 
-		 * where the first are the keys and the second are the values or null.  Everything will be in lowercase and canonically
-		 * composed in Unicode (FormC).  Use <ConversionListIndex> for indexes to get particular tables.
-		 */
-		protected List<string>[] conversionLists;
+		protected Config config;
 
 		/* var: ParenthesesChars 
 		 * An array of the parentheses characters, for use with IndexOfAny(char[]).
