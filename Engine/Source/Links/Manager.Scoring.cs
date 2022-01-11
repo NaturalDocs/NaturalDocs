@@ -173,12 +173,18 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			
 			// Both of these only apply to Natural Docs links that have parameters.
 			if (link.Type == LinkType.NaturalDocs)
-				{  
-				int parametersIndex = ParameterString.GetParametersIndex(link.Text);
+				{
+				string linkText = link.Text;
+
+				// Strip off the angle brackets around the link since they throw off GetParametersIndex()
+				if (linkText.Length > 2 && linkText[0] == '<' && linkText[linkText.Length - 1] == '>')
+					{  linkText = linkText.Substring(1, linkText.Length - 2);  }
+
+				int parametersIndex = ParameterString.GetParametersIndex(linkText);
 
 				if (parametersIndex != -1)
 					{
-					string linkParametersString = link.Text.Substring(parametersIndex);
+					string linkParametersString = linkText.Substring(parametersIndex);
 					ParameterString linkParameters = ParameterString.FromPlainText(linkParametersString);
 
 					// If the topic title has parameters as well, the link parameters must match them exactly.  We
