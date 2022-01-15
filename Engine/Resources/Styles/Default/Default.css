@@ -21,7 +21,6 @@
 	$HeaderBackgroundColor: #7070C0;
 	$MenuBackgroundColor: #E0E0E0;
 	$SummaryBackgroundColor: #F8F8F8;
-	$ToolTipBackgroundColor: #FFFFF0;
 	$ContentBackgroundColor: #FFFFFF;
 
 	$MenuTextColor: #606060;
@@ -64,7 +63,7 @@
 	$SummaryFontFamily: $ContentFontFamily;
 	$SearchFontFamily: $ContentFontFamily;
 
-	$PopupShadow: .075rem .125rem .3rem #606060;
+	$PopupShadow: .125rem .125rem .5rem #505050;
 
 
 /* Layout */
@@ -1252,11 +1251,11 @@ body.NDContentPage {
 */
 
 .NDToolTip {
-	background-color: $ToolTipBackgroundColor;
+	background-color: #FCFCE8;  /* match variable prototype background */
 	border-style: solid;
 	border-width: 1px;
-	border-color: #A0A193 #57574B #57574B #A0A193;
-	padding: 1ex;
+	border-color: #BDBD77 #797948 #797948 #BDBD77;
+	padding: .83rem;
 	overflow: hidden;
 	border-radius: 1ex;
 	box-shadow: $PopupShadow;
@@ -1276,10 +1275,15 @@ body.NDContentPage {
 	.TTSummary {
 		font: $ContentFontSize $ContentFontFamily;
 		max-width: 75ex;
+		margin-left: .125rem;
+		margin-right: .125rem;
 		}
 
 	.NDPrototype + .TTSummary {
-		margin-top: .5em;
+		margin-top: .6rem;
+		}
+	.NDClassPrototype + .TTSummary {
+		margin-top: .3rem;
 		}
 
 
