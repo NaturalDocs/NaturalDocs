@@ -785,7 +785,6 @@ body.NDContentPage {
 			}
 
 	.CTopic pre {
-		color: #606060;
 		font: $CodeFontSize $CodeFontFamily;
 		overflow: auto;
 
@@ -793,6 +792,12 @@ body.NDContentPage {
 		border: 1px solid #7C7C7C;
 		padding: $CodePadding;
 		}
+		.CTopic pre.CCode {
+			color: #000000;
+			}
+		.CTopic pre.CText {
+			color: #484848;
+			}
 
 	.CImage {
 		text-align: center;
