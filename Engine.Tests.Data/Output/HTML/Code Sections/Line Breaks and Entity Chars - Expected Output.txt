@@ -1,5 +1,5 @@
-<pre>// Code section<br />&lt; &gt; &amp; <span class="SHString">&quot; &quot;</span><br /><span class="SHKeyword">int</span> x = <span class="SHNumber">12</span>;</pre>
+<pre class="CCode">// Code section<br />&lt; &gt; &amp; <span class="SHString">&quot; &quot;</span><br /><span class="SHKeyword">int</span> x = <span class="SHNumber">12</span>;</pre>
 -----
-<pre>// Table section<br />&lt; &gt; &amp; &quot; &quot;<br />int x = 12;</pre>
+<pre class="CText">// Table section<br />&lt; &gt; &amp; &quot; &quot;<br />int x = 12;</pre>
 -----
-<pre>Anonymous section<br />&lt; &gt; &amp; &quot; &quot;<br />int x = 12;</pre>
+<pre class="CText">Anonymous section<br />&lt; &gt; &amp; &quot; &quot;<br />int x = 12;</pre>
