@@ -2,7 +2,7 @@
 File: Languages.nd
 _______________________________________________________________________________
 
-A binary file which stores the combined results of the two versions of <Languages.txt> as of the last run, as well as 
+A binary file which stores the combined results of the two versions of <Languages.txt> as of the last run, as well as
 storing the IDs of each type so they maintain their consistency between runs.
 
 
@@ -12,20 +12,20 @@ _______________________________________________________________________________
 	Topic: Header
 
 		> [[Binary Header]]
-	
+
 		The file starts with the standard binary file header as managed by <CodeClear.NaturalDocs.Engine.BinaryFile>.
-	
+
 
 	Topic: Languages
-		
+
 		> [String: Language Name]
 		> [[Language Attributes]]
 		> ...
 		> [String: null]
-		
+
 		The file then encodes each language by its name string, followed by its attributes, and repeats until it reaches a null
 		string instead of a new name string.
-		
+
 
 		Language Attributes:
 
@@ -42,33 +42,33 @@ _______________________________________________________________________________
 		> [String: Javadoc Opening Block Comment Symbol] [String: Javadoc Closing Block Comment Symbol] [] [] ... [String: null]
 		> [String: XML Line Comment Symbol] [] ... [String: null]
 		> [[Prototype Enders]]
-		
+
 		The attributes are self-explanitory.  The comment symbols repeat until a null string is reached.
 
 
 		Prototype Enders:
-		
+
 		> [Int32: Comment Type ID]
 		> [Byte: Include Line Breaks (1 or 0)]
 		> [String: Prototype Ender Symbol] [] ... [String: null]
 		> ...
 		> [Int32: 0]
-		
+
 		Prototype ender sections repeat until a zero ID is reached.
-		
+
 
 	Topic: File Extensions and Other Identifiers
-		
+
 		> [String: Alias] [Int32: Language ID] [] [] ... [String: Null]
 		> [String: File Extension] [Int32: Language ID] [] [] ... [String: Null]
 		> [String: Shebang String] [Int32: Language ID] [] [] ... [String: Null]
-		
+
 		Aliases, file extensions, and shebang strings are paired with language IDs.  All repeat until they hit a null string.
-		
+
 
 Group: Revisions
 _______________________________________________________________________________
-	
+
 	Topic: 2.2
 
 		- Removed Aliases from the language attributes.  They will be reflected in the later Alias list.
@@ -77,5 +77,5 @@ _______________________________________________________________________________
 		- Removed the Ignored Extensions list.  They will be reflected by omissions from the Extensions list.
 
 	Topic: 2.0
-			
+
 		- The file was introduced.

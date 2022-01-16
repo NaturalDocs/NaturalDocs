@@ -1,11 +1,11 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Files.ImageFileProcessor
  * ____________________________________________________________________________
- * 
+ *
  * A class containing functions to determine information about an image file.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -23,7 +23,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		// __________________________________________________________________________
 
 		/* enum: Result
-		 * 
+		 *
 		 * Success - The operation was successful.
 		 *	FileDoesntExist - The file couldn't be opened because it doesn't exist.
 		 *	CantAccessFile - The file exists but couldn't be opened, such as if the program doesn't have permission to access
@@ -35,7 +35,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			Success, FileDoesntExist, CantAccessFile, IncorrectFormat
 			}
 
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
 
@@ -98,7 +98,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			try
 				{
 				binaryReader = new BinaryReader(fileStream);
-				
+
 				uint signature = binaryReader.ReadUInt32();
 
 				// BinaryReader always uses little-endian
@@ -134,7 +134,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				if (binaryReader != null)
 					{  binaryReader.Close();  }
 				if (fileStream != null)
-					{  
+					{
 					fileStream.Close();
 					fileStream.Dispose();
 					}
@@ -175,7 +175,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			try
 				{
 				binaryReader = new BinaryReader(fileStream);
-				
+
 				ulong signature = binaryReader.ReadUInt64();
 
 				// BinaryReader always uses little-endian
@@ -192,7 +192,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 				// PNG is big-endian so we need to convert them manually
 				byte[] dimensions = binaryReader.ReadBytes(8);
-				
+
 				width = (uint)(dimensions[0] << 24);
 				width |= (uint)(dimensions[1] << 16);
 				width |= (uint)(dimensions[2] << 8);
@@ -223,7 +223,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				if (binaryReader != null)
 					{  binaryReader.Close();  }
 				if (fileStream != null)
-					{  
+					{
 					fileStream.Close();
 					fileStream.Dispose();
 					}
@@ -267,7 +267,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			try
 				{
 				binaryReader = new BinaryReader(fileStream);
-				
+
 				ushort signature = binaryReader.ReadUInt16();
 
 				// BinaryReader always uses little-endian
@@ -301,7 +301,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				if (binaryReader != null)
 					{  binaryReader.Close();  }
 				if (fileStream != null)
-					{  
+					{
 					fileStream.Close();
 					fileStream.Dispose();
 					}
@@ -356,7 +356,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			try
 				{
 				binaryReader = new BinaryReader(fileStream);
-				
+
 				uint firstTwoMarkers = binaryReader.ReadUInt32();
 
 				// BinaryReader always uses little-endian
@@ -390,7 +390,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 						binaryReader.BaseStream.Seek(3, SeekOrigin.Current);
 
 						byte[] dimensions = binaryReader.ReadBytes(4);
-				
+
 						height = (uint)(dimensions[0] << 8);
 						height |= (uint)(dimensions[1]);
 
@@ -421,7 +421,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				if (binaryReader != null)
 					{  binaryReader.Close();  }
 				if (fileStream != null)
-					{  
+					{
 					fileStream.Close();
 					fileStream.Dispose();
 					}
@@ -462,7 +462,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			try
 				{
 				streamReader = new StreamReader(fileStream);
-		
+
 				char[] buffer = new char[1024];
 				int amountRead = streamReader.Read(buffer, 0, 1024);
 
@@ -514,7 +514,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				if (heightString.EndsWith("px", StringComparison.OrdinalIgnoreCase))
 					{  heightString = heightString.Substring(0, heightString.Length - 2);  }
 
-				if (!uint.TryParse(widthString, out width) || 
+				if (!uint.TryParse(widthString, out width) ||
 					!uint.TryParse(heightString, out height) ||
 					width == 0 || height == 0)
 					{
@@ -534,12 +534,12 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			finally
 				{
 				if (streamReader != null)
-					{  
+					{
 					streamReader.Close();
 					streamReader.Dispose();
 					}
 				if (fileStream != null)
-					{  
+					{
 					fileStream.Close();
 					fileStream.Dispose();
 					}

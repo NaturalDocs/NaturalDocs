@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Paths.Image
  * ____________________________________________________________________________
- * 
+ *
  * Path functions relating to image files in HTML output.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -33,18 +33,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 			string fileName = relativeFilePath.NameWithoutPath.ToString();
 			string outputFileName = Utilities.Sanitize(fileName);
 			string outputFolder = OutputFolder(targetOutputFolder, fileSourceNumber, fileSourceType, relativeFilePath.ParentFolder);
-			
+
 			return outputFolder + '/' + outputFileName;
 			}
 
 
 		/* Function: OutputFolder
-		 * 
+		 *
 		 * Returns the output folder of the passed output target, file source number and type, and optionally a subfolder within it.
 		 * If the subfolder is null it returns the root output folder for the target and file source number.
-		 * 
+		 *
 		 * Examples:
-		 * 
+		 *
 		 *		targetOutputFolder + fileSourceNumber - C:\Project\Documentation\files
 		 *		targetOutputFolder + fileSourceNumber + subfolder - C:\Project\Documentation\files\Folder1\Folder2
 		 */
@@ -58,11 +58,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 			else if (fileSourceType == Files.InputType.Image)
 				{
 				StringBuilder result = new StringBuilder(targetOutputFolder);
-				result.Append("/images");  
+				result.Append("/images");
 
 				if (fileSourceNumber != 1)
 					{  result.Append(fileSourceNumber);  }
-					
+
 				if (subfolder != null)
 					{
 					result.Append('/');

@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Paths.SearchIndex
  * ____________________________________________________________________________
- * 
+ *
  * Path functions relating to search index data in HTML output.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -21,11 +21,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 		{
 
 		/* Function: IndexOutputFile
-		 * 
+		 *
 		 * Returns the file name of the JavaScript data file which stores the index of all the prefix data files.
-		 * 
+		 *
 		 * Examples:
-		 * 
+		 *
 		 *		targetOutputFolder - C:\Project\Documentation\search\index.js
 		 *		targetOutputFolder + fileNameOnly - index.js
 		 */
@@ -39,11 +39,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 
 
 		/* Function: PrefixOutputFile
-		 * 
+		 *
 		 * Returns the file name of the JavaScript data file for the passed prefix.
-		 * 
+		 *
 		 * Examples:
-		 * 
+		 *
 		 *		targetOutputFolder + prefix - C:\Project\Documentation\search\keywords\006a0073006f.js
 		 *		targetOutputFolder + prefix + fileNameOnly - 006a0073006f.js
 		 */
@@ -57,7 +57,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 			StringBuilder result = new StringBuilder( (fileNameOnly ? 15 : targetOutputFolder.Length + 17 + 15) );
 
 			if (!fileNameOnly)
-				{  
+				{
 				result.Append(targetOutputFolder);
 				result.Append("/search/keywords/");
 				}

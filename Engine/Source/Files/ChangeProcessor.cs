@@ -1,20 +1,20 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Files.ChangeProcessor
  * ____________________________________________________________________________
- * 
- * A process which handles processing changes to the files Natural Docs scans.  In addition to source files, this includes 
+ *
+ * A process which handles processing changes to the files Natural Docs scans.  In addition to source files, this includes
  * image files that can be referenced with "(see image.jpg)" and extras tied to CSS styles.
- * 
- * 
+ *
+ *
  * Multithreading: Thread Safety Notes
- * 
+ *
  *		Externally, this class is thread safe.
- *		
+ *
  *		Internally, all variable accesses must use a monitor on <accessLock>.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -32,13 +32,13 @@ namespace CodeClear.NaturalDocs.Engine.Files
 	{
 	public class ChangeProcessor : Process
 		{
-		
+
 		// Group: Types
 		// __________________________________________________________________________
-		
-		
+
+
 		/* enum: ProcessFileResult
-		 * 
+		 *
 		 * Success - The file was successfully processed.
 		 * Cancelled - The file's processing was cancelled.
 		 *	FileDoesntExist - The file couldn't be opened because it doesn't exist.  This obviously only applies to changed files,
@@ -55,7 +55,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 		// Group: Initialization and Configuration Functions
 		// __________________________________________________________________________
-		
+
 
 		/* Function: ChangeProcessor
 		 */
@@ -65,7 +65,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			inaccessibleFiles = new IDObjects.NumberSet();
 			accessLock = new object();
 			}
-			
+
 		override protected void Dispose (bool strictRulesApply)
 			{
 			if (!strictRulesApply)
@@ -76,17 +76,17 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			}
 
 
-	
+
 		// Group: Group File Processing Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Function: WorkOnProcessingChanges
-		 * 
-		 * Works on the task of going through all the file changes and deletions and calling <ProcessNewOrChangedFile()> and 
-		 * <ProcessDeletedFile()> on each one.  This is a parallelizable task, so multiple threads can call this function and they 
+		 *
+		 * Works on the task of going through all the file changes and deletions and calling <ProcessNewOrChangedFile()> and
+		 * <ProcessDeletedFile()> on each one.  This is a parallelizable task, so multiple threads can call this function and they
 		 * will divide up the work until it's done.
-		 * 
+		 *
 		 * The function returns when there is no more work for this thread to do.  If this is the only thread working on it then the
 		 * task is complete, but if there are multiple threads, the task is only complete after they all return.  An individual thread
 		 * may return prior to that point.
@@ -101,23 +101,23 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					{
 					deletedFiles = false;
 					newOrChangedFiles = false;
-			
+
 					while (!cancelDelegate())
 						{
 						File file = PickDeletedFile();
 
 						if (file == null)
 							{  break;  }
-						
+
 						deletedFiles = true;
 						var result = ProcessDeletedFile(file, codeDBAccessor, cancelDelegate);
 						FinalizeDeletedFile(file, result);
 						}
-					
+
 					while (!cancelDelegate())
 						{
 						File file = PickNewOrChangedFile();
-					
+
 						if (file == null)
 							{  break;  }
 
@@ -132,8 +132,8 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 				}
 			}
-		 
-		
+
+
 		/* Function: GetStatus
 		 * Fills the passed object with the status of <WorkOnProcessingChanges()>.  This will be a snapshot of its
 		 * progress rather than a live object, so the values won't change out from under you.
@@ -150,15 +150,15 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				statusTarget.DeletedFilesRemaining = deletedFileIDs;
 				}
 			}
-			
-		
+
+
 
 		// Group: Individual File Processing Functions
 		// __________________________________________________________________________
-		
-			
+
+
 		/* Function: PickNewOrChangedFile
-		 * Picks a new or changed file to work on, if there are any.  If not it will return null.  Picked files will be added to 
+		 * Picks a new or changed file to work on, if there are any.  If not it will return null.  Picked files will be added to
 		 * <filesBeingProcessed> and must be released with <FinalizeNewOrChangedFile()>.
 		 */
 		protected File PickNewOrChangedFile ()
@@ -181,13 +181,13 @@ namespace CodeClear.NaturalDocs.Engine.Files
 						}
 
 					// If it is being processed by another thread, discard it and pick again.  It's okay to discard it from the list
-					// of changes because when processing ends FinalizeNewOrChangedFile() will compare it to the snapshot in 
+					// of changes because when processing ends FinalizeNewOrChangedFile() will compare it to the snapshot in
 					// filesBeingProcessed and re-add it to the change list if it's different.
 					}
 				}
 			}
-			
-			
+
+
 		/* Function: PickDeletedFile
 		 * Picks a deleted file to work on, if there are any.  If not it will return null.  Picked files will be added to <filesBeingProcessed>
 		 * and must be released with <FinalizeDeletedFile()>.
@@ -217,10 +217,10 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					}
 				}
 			}
-			
-			
+
+
 		/* Function: ProcessNewOrChangedFile
-		 * Takes a new or changed <File> and processes it according to its type.  The <CodeDB.Accessor> should NOT already 
+		 * Takes a new or changed <File> and processes it according to its type.  The <CodeDB.Accessor> should NOT already
 		 * hold a lock.
 		 */
 		protected ProcessFileResult ProcessNewOrChangedFile (File file, Engine.CodeDB.Accessor codeDBAccessor,
@@ -239,7 +239,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 
 		/* Function: ProcessNewOrChangedSourceFile
-		 * Takes a new or changed <File>, parses it, and updates <CodeDB.Manager> with its contents.  The <CodeDB.Accessor> 
+		 * Takes a new or changed <File>, parses it, and updates <CodeDB.Manager> with its contents.  The <CodeDB.Accessor>
 		 * should NOT already hold a lock.
 		 */
 		protected ProcessFileResult ProcessNewOrChangedSourceFile (File file, Engine.CodeDB.Accessor codeDBAccessor,
@@ -281,25 +281,25 @@ namespace CodeClear.NaturalDocs.Engine.Files
 							{  return ProcessFileResult.Cancelled;  }
 						}
 					}
-					
+
 
 				// Update the database
 
 				codeDBAccessor.GetReadPossibleWriteLock();
-					
+
 				try
 					{
-					if (topics != null && topics.Count > 0)  
+					if (topics != null && topics.Count > 0)
 						{  codeDBAccessor.UpdateTopicsInFile(file.ID, topics, cancelDelegate);  }
 					else
 						{  codeDBAccessor.DeleteTopicsInFile(file.ID, cancelDelegate);  }
 
-					if (links != null && links.Count > 0)  
+					if (links != null && links.Count > 0)
 						{  codeDBAccessor.UpdateLinksInFile(file.ID, links, cancelDelegate);  }
 					else
 						{  codeDBAccessor.DeleteLinksInFile(file.ID, cancelDelegate);  }
 
-					if (imageLinks != null && imageLinks.Count > 0)  
+					if (imageLinks != null && imageLinks.Count > 0)
 						{  codeDBAccessor.UpdateImageLinksInFile(file.ID, imageLinks, cancelDelegate);  }
 					else
 						{  codeDBAccessor.DeleteImageLinksInFile(file.ID, cancelDelegate);  }
@@ -324,8 +324,8 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				throw;
 				}
 			}
-			
-			
+
+
 		/* Function: ProcessNewOrChangedImageFile
 		 * Takes a new or changed <ImageFile> and determines its dimensions if it can.
 		 */
@@ -369,8 +369,8 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				throw;
 				}
 			}
-			
-			
+
+
 		/* Function: ProcessDeletedFile
 		 * Takes a deleted <File> and updates <CodeDB.Manager>.  The <CodeDB.Accessor> should NOT already hold a lock.
 		 */
@@ -388,30 +388,30 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		/* Function: ProcessDeletedSourceFile
 		 * Takes a deleted <File> and updates <CodeDB.Manager>.  The <CodeDB.Accessor> should NOT already hold a lock.
 		 */
-		protected ProcessFileResult ProcessDeletedSourceFile (File file, CodeDB.Accessor codeDBAccessor, 
+		protected ProcessFileResult ProcessDeletedSourceFile (File file, CodeDB.Accessor codeDBAccessor,
 																					 CancelDelegate cancelDelegate)
 			{
 			codeDBAccessor.GetReadPossibleWriteLock();
-				
+
 			try
-				{  
+				{
 				codeDBAccessor.DeleteTopicsInFile(file.ID, cancelDelegate);
 				codeDBAccessor.DeleteLinksInFile(file.ID, cancelDelegate);
 				codeDBAccessor.DeleteImageLinksInFile(file.ID, cancelDelegate);
 				}
 			finally
 				{  codeDBAccessor.ReleaseLock();  }
-				
+
 			// Need this check in case CodeDB quit early because of the cancel delegate.
 			if (cancelDelegate())
 				{  return ProcessFileResult.Cancelled;  }
 
 			return ProcessFileResult.Success;
 			}
-		 
-			
+
+
 		/* Function: FinalizeNewOrChangedFile
-		 * 
+		 *
 		 * Finalizes processing of a changed file based on the <ProcessFileResult> and whether the original file has changed or
 		 * been deleted since processing began.
 		 */
@@ -458,7 +458,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			else if (processResult == ProcessFileResult.CantAccessFile)
 				{
 				inaccessibleFiles.Add(file.ID);
-				Manager.UnprocessedChanges.AddDeletedFile(file);  
+				Manager.UnprocessedChanges.AddDeletedFile(file);
 				}
 
 			else
@@ -467,7 +467,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 
 		/* Function: FinalizeDeletedFile
-		 * 
+		 *
 		 * Finalizes processing of a deleted file based on the <ProcessFileResult> and whether the original file has changed or
 		 * been deleted since processing began.
 		 */
@@ -501,7 +501,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			}
 
 
-		
+
 		// Group: Topic Functions
 		// __________________________________________________________________________
 
@@ -578,7 +578,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				}
 			}
 
-			
+
 		/* Function: GetPrototypeLinks
 		 * Goes through the prototype of the passed <Topic> and adds any type links it finds to <LinkSet>.
 		 */
@@ -589,8 +589,8 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 			Language language = EngineInstance.Languages.FromID(topic.LanguageID);
 
-			// We do this even for topics in the class hierarchy because the HTML output falls back to regular prototypes 
-			// if there's no class prototype.  Also, if there's parameter lists in the description the HTML generator will require 
+			// We do this even for topics in the class hierarchy because the HTML output falls back to regular prototypes
+			// if there's no class prototype.  Also, if there's parameter lists in the description the HTML generator will require
 			// type links to exist regardless of what type of prototype it creates.  For example, this SystemVerilog interface:
 			//
 			//    // Interface: myInterface
@@ -611,7 +611,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					 symbolStart.PrototypeParsingType == PrototypeParsingType.TypeQualifier)
 					{
 					symbolEnd = symbolStart;
-						
+
 					do
 						{  symbolEnd.Next();  }
 					while (symbolEnd.PrototypeParsingType == PrototypeParsingType.Type ||
@@ -657,20 +657,20 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				{  return EngineInstance.Files;  }
 			}
 
-		
+
 
 		// Group: Variables
 		// __________________________________________________________________________
-		
+
 
 		/* var: filesBeingProcessed
-		 * 
-		 * The files currently being worked on.  It also stores snapshots of each file's properties as of the time 
+		 *
+		 * The files currently being worked on.  It also stores snapshots of each file's properties as of the time
 		 * processing began, so when finishing processing they may be compared to the current state to detect
 		 * if they changed.
-		 * 
+		 *
 		 * Thread Safety:
-		 * 
+		 *
 		 *		You must hold <accessLock> in order to use this variable.
 		 */
 		protected FilesBeingProcessed filesBeingProcessed;

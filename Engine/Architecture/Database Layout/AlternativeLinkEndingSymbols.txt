@@ -12,12 +12,12 @@ _______________________________________________________________________________
 
 
 Database Column: LinkID
-	
+
 	--- Prototype ---
 		LinkID INTEGER NOT NULL
 	-----------------
-	
-	
+
+
 Database Column: EndingSymbol
 
 	--- Prototype ---

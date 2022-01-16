@@ -1,11 +1,11 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Comments.Parser
  * ____________________________________________________________________________
- * 
+ *
  * A base class for Natural Docs comment parsers.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -19,11 +19,11 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 	{
 	public class Parser
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Function: Parser
 		 */
 		public Parser (Comments.Manager manager)
@@ -31,7 +31,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 			this.manager = manager;
 			}
 
-			
+
 		/* Function: Start
 		 */
 		virtual public bool Start (Errors.ErrorList errors)
@@ -104,16 +104,16 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 			return false;
 			}
 
-			
+
 		/* Function: Normalize
-		 * 
+		 *
 		 * Cleans up the generated NDMarkup.
-		 * 
+		 *
 		 * - Replaces tab characters with spaces.
 		 * - Any '\n' characters will be replaced with spaces or double spaces depending on whether it appears to come at the end
 		 *   of a sentence.
 		 * - Empty paragraphs and extraneous whitespace will be removed.
-		 * 
+		 *
 		 * If the generated NDMarkup is normalized down to nothing it will return null instead of an empty string.
 		 */
 		protected string Normalize (string ndMarkup)
@@ -142,9 +142,9 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 
 
 		/* Function: Normalize
-		 * 
+		 *
 		 * Cleans up the list of <CodeLines>.
-		 * 
+		 *
 		 * - Trims whitespace from all lines.
 		 * - Replaces empty lines with Text null, Indent -1.
 		 * - Removes empty lines from the beginning and end of the list.
@@ -158,7 +158,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 			for (int i = 0; i < lines.Count; i++)
 				{
 				if (lines[i].Text != null)
-					{  
+					{
 					// Have to do it this way because CodeLine is a struct.
 					CodeLine temp = lines[i];
 					temp.Text = temp.Text.Trim();
@@ -203,7 +203,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 			// Remove shared indent from all lines
 
 			if (sharedIndent >= 1)
-				{  
+				{
 				for (int i = 0; i < lines.Count; i++)
 					{
 					if (lines[i].Indent != -1)
@@ -235,7 +235,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 			}
 
 
-		
+
 		// Group: Variables
 		// __________________________________________________________________________
 
@@ -254,13 +254,13 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 
 		protected static Regex.Comments.EmptyParagraphs EmptyParagraphsRegex = new Regex.Comments.EmptyParagraphs();
 
-		protected static Regex.Comments.LineBreakWhichProbablyEndsSentence LineBreakWhichProbablyEndsSentenceRegex = 
+		protected static Regex.Comments.LineBreakWhichProbablyEndsSentence LineBreakWhichProbablyEndsSentenceRegex =
 			new Regex.Comments.LineBreakWhichProbablyEndsSentence();
 
 
 
 		/* __________________________________________________________________________
-		 * 
+		 *
 		 * Struct: CodeClear.NaturalDocs.Engine.Comments.Parser.CodeLine
 		 * __________________________________________________________________________
 		 */

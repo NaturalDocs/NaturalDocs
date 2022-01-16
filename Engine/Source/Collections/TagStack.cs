@@ -1,16 +1,16 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Collections.TagStack
  * ____________________________________________________________________________
- * 
- * A class to handle tag systems like HTML and XML that might not be valid.  This stack tracks tags that are opened and 
+ *
+ * A class to handle tag systems like HTML and XML that might not be valid.  This stack tracks tags that are opened and
  * allows you to handle tags that are closed out of order or not closed at all.
- * 
+ *
  * The class also supports attaching text to each opened tag which can be appended automatically when that tag is
  * closed.  This aids in converting from one tag system to another and keeping the output valid even if the input is not.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -53,7 +53,7 @@ namespace CodeClear.NaturalDocs.Engine.Collections
 
 		/* Function: CloseTag
 		 * Closes a tag that was added to the stack.  If a StringBuilder is passed, the appendOnClose text for every tag closed
-		 * will be appended to it in order.  Any nested tags will be closed automatically to handle invalid markup such as 
+		 * will be appended to it in order.  Any nested tags will be closed automatically to handle invalid markup such as
 		 * "<i>text<b>text</i>".  If the passed tag doesn't appear on the stack this will have no effect.
 		 */
 		public void CloseTag (string tag, StringBuilder appendClosedTagsTo = null)
@@ -74,7 +74,7 @@ namespace CodeClear.NaturalDocs.Engine.Collections
 			{
 			if (stack == null || index >= stack.Count)
 				{  return;  }
-			
+
 			for (int i = stack.Count - 1; i >= index; i--)
 				{
 				if (stack[i].AppendOnClose != null && appendClosedTagsTo != null)
@@ -173,7 +173,7 @@ namespace CodeClear.NaturalDocs.Engine.Collections
 
 
 		/* ___________________________________________________________________________
-		 * 
+		 *
 		 * Struct: CodeClear.NaturalDocs.Engine.Comments.Components.TagStack.Entry
 		 * ___________________________________________________________________________
 		 */

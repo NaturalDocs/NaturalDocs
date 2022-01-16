@@ -1,7 +1,7 @@
 ﻿/*
 	Include in output:
 
-	This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+	This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 	Natural Docs is licensed under version 3 of the GNU Affero General Public
 	License (AGPL).  Refer to License.txt or www.naturaldocs.org for the
 	complete details.
@@ -48,7 +48,7 @@ var NDFramePage = new function ()
 		{
 
 		// The default title of the page is the project title.  Save a copy before we mess with it.
-		
+
 		this.projectTitle = document.title;
 
 
@@ -62,7 +62,7 @@ var NDFramePage = new function ()
 			NDHeader: true,
 			NDSearchField: true,
 			NDFooter: true,
-			NDMenu: true, 
+			NDMenu: true,
 			NDSummary: false, // UpdateLayout() will enable this if necessary
 			NDContent: true,
 			NDMenuSizer: true, // Needs to be visible, but is styled as transparent unless hovered over
@@ -86,7 +86,7 @@ var NDFramePage = new function ()
 		this.UpdateLayout();
 
 
-		// Attach event handlers.  All browsers Natural Docs supports support onhashchange now, including IE 11 and 
+		// Attach event handlers.  All browsers Natural Docs supports support onhashchange now, including IE 11 and
 		// EdgeHTML.
 
 		window.onresize = function () {  NDFramePage.OnResize();  };
@@ -103,7 +103,7 @@ var NDFramePage = new function ()
 
 
 		// We want to close the search results when we click anywhere else.  OnMouseDown handles clicks on most of the
-		// page but not inside the content iframe.  window.onblur will fire for IE 10, Firefox, and Chrome.  document.onblur 
+		// page but not inside the content iframe.  window.onblur will fire for IE 10, Firefox, and Chrome.  document.onblur
 		// will only fire for Firefox.  IE 8 and earlier won't fire either, oh well.
 		window.onblur = function () {  NDFramePage.OnBlur();  };
 
@@ -146,20 +146,20 @@ var NDFramePage = new function ()
 		this.currentLocation = new NDLocation(location.hash);
 
 
-		// Update the poller for the browsers that need it to prevent this function from being called twice.  The poller will 
+		// Update the poller for the browsers that need it to prevent this function from being called twice.  The poller will
 		// therefore only catch navigation that the event doesn't fire for, like moving from "Member" to "member".
 
 		if (this.hashChangePoller != undefined)
 			{  this.hashChangePoller.lastHash = location.hash;  }
 
-		
+
 		// Clear any search results since that may be the way we got here.
 
 		NDSearch.ClearResults();
 		NDSearch.DeactivateSearchField();
 
 
-		// If we're using a source file for the home page, substitute its location.  We don't have to worry about handling 
+		// If we're using a source file for the home page, substitute its location.  We don't have to worry about handling
 		// custom home pages based on HTML files here because they get resaved into the default location.
 
 		if (this.currentLocation.type == "Home" && this.sourceFileHomePageHashPath)
@@ -185,7 +185,7 @@ var NDFramePage = new function ()
 		var frame = document.getElementById("CFrame");
 
 		// If the browser treats anchors as case-insensitive and the hash path has a member we won't do the navigation here because
-		// it would confuse member and Member.  Instead we'll let the summary look up the member and do the navigation with a 
+		// it would confuse member and Member.  Instead we'll let the summary look up the member and do the navigation with a
 		// Topic# anchor.
 		if (NDCore.CaseInsensitiveAnchors() && this.currentLocation.member != undefined)
 			{
@@ -193,7 +193,7 @@ var NDFramePage = new function ()
 			// always occur in the right order.
 			}
 		else
-			{  
+			{
 			// Everything else is case sensitive and can go right to the target without waiting for the summary to load.
 			frame.contentWindow.location.replace(this.currentLocation.contentPage);
 			}
@@ -210,7 +210,7 @@ var NDFramePage = new function ()
 		NDSummary.OnLocationChange(oldLocation, this.currentLocation);
 
 
-		// Normally the page title will be updated by the summary metadata file, but we have to do it manually if the new 
+		// Normally the page title will be updated by the summary metadata file, but we have to do it manually if the new
 		// location won't have a summary, such as the home page.
 
 		if (this.currentLocation.summaryFile == undefined)
@@ -231,7 +231,7 @@ var NDFramePage = new function ()
 			}
 
 		this.sourceFileHomePageHashPath = sourceFileHomePageHashPath;
-		
+
 		// Now we can interpret the initial hash path and set the event handler for future ones.
 		window.onhashchange = function () {  NDFramePage.OnHashChange();  };
 		this.OnHashChange();
@@ -244,7 +244,7 @@ var NDFramePage = new function ()
 	this.OnPageTitleLoaded = function (hashPath, title)
 		{
 		if (this.currentLocation.path == hashPath)
-			{  
+			{
 			// If we're handling a source file being loaded as the home page, ignore its page title and set it back to the project's.
 			if (this.currentLocation.type == "Home")
 				{  this.UpdatePageTitle();  }
@@ -348,13 +348,13 @@ var NDFramePage = new function ()
 		header.style.width = fullWidth + "px";
 
 
-		// Treat the header as one pixel shorter than it actually is.  This makes it so it there's a lip that sits under the 
+		// Treat the header as one pixel shorter than it actually is.  This makes it so it there's a lip that sits under the
 		// rest of the page elements.  We do this because when browsers are set to zoom levels greater than 100%,
 		// rounding errors may make 1px gaps appear between elements.  For most elements this isn't as issue because
-		// the menu background color blends in.  The header is different because a gray bar between it and the home 
+		// the menu background color blends in.  The header is different because a gray bar between it and the home
 		// page is very noticable.
 		var headerHeight = header.offsetHeight - 1;
-		
+
 		// firstChild moves from the div to the link
 		var headerTitle = document.getElementById("HTitle").firstChild;
 		var headerTitleRightEdge = headerTitle.offsetLeft + headerTitle.offsetWidth;
@@ -499,7 +499,7 @@ var NDFramePage = new function ()
 				{
 				if (element.id == "NDSearchResults" ||
 					element.id == "NDSearchField")
-					{  
+					{
 					targetIsPartOfSearch = true;
 					break;
 					}
@@ -613,8 +613,8 @@ var NDFramePage = new function ()
 
 
 	/* Function: SizeSummaryToContent
-		Resizes the summary panel to try to show its content without a horizontal scrollbar.  The new width will have a 
-		minimum of <desiredSummaryWidth> and a maximum of <desiredSummaryWidth> times <$ExpansionFactor>.  This 
+		Resizes the summary panel to try to show its content without a horizontal scrollbar.  The new width will have a
+		minimum of <desiredSummaryWidth> and a maximum of <desiredSummaryWidth> times <$ExpansionFactor>.  This
 		is to be called by <NDSummary> whenever it's content changes.
 	*/
 	this.SizeSummaryToContent = function ()
@@ -644,10 +644,10 @@ var NDFramePage = new function ()
 
 		var resized = false;
 
-		// If there's no horizontal scroll bar... 
+		// If there's no horizontal scroll bar...
 		// (scrollWidth will never be less than clientWidth, even if the content doesn't need all the room.)
 		if (panel.clientWidth == panel.scrollWidth)
-			{  
+			{
 			// and we're already at the desired width, there's nothing to do.
 			if (panel.offsetWidth == desiredOffsetWidth)
 				{  return;  }
@@ -668,9 +668,9 @@ var NDFramePage = new function ()
 
 		// Do we have a vertical scroll bar?
 		if (panel.scrollHeight > panel.clientHeight)
-			{  
+			{
 			// If so factor it in.  offset - client will include the left and right border widths too.
-			newOffsetWidth += panel.offsetWidth - panel.clientWidth;  
+			newOffsetWidth += panel.offsetWidth - panel.clientWidth;
 			}
 		else
 			{
@@ -679,7 +679,7 @@ var NDFramePage = new function ()
 										 NDCore.GetComputedPixelWidth(panel, "borderRightWidth");
 			}
 
-		// At this point newOffsetWidth is either the same as desiredOffsetWidth or is a larger value representing the 
+		// At this point newOffsetWidth is either the same as desiredOffsetWidth or is a larger value representing the
 		// minimum content size.  Search your feelings, you know it to be true.  Or just work through all the possibilities
 		// in the above code.  Whatever.
 
@@ -693,9 +693,9 @@ var NDFramePage = new function ()
 				{
 				newOffsetWidth = Math.floor(desiredOffsetWidth * $ExpansionFactor);
 				}
-			
+
 			if (panel.offsetWidth != newOffsetWidth)
-				{  
+				{
 				panel.style.width = newOffsetWidth + "px";
 				resized = true;
 				}
@@ -754,12 +754,12 @@ var NDFramePage = new function ()
 	*/
 
 	/* var: desiredMenuWidth
-		The width the menu panel should use, or undefined to use the default.  The actual menu width can be 
+		The width the menu panel should use, or undefined to use the default.  The actual menu width can be
 		slightly larger if needed to show the content without a horizontal scrollbar.
 	*/
 
 	/* var: desiredSummaryWidth
-		The width the summary panel should use, or undefined to use the default.  The actual summary width 
+		The width the summary panel should use, or undefined to use the default.  The actual summary width
 		can be slightly larger if needed to show the content without a horizontal scrollbar.
 	*/
 

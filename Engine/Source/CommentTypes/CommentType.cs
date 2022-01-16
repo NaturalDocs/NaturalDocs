@@ -1,19 +1,19 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.CommentTypes.CommentType
  * ____________________________________________________________________________
- * 
+ *
  * A class encapsulating information about a comment type.
- * 
- * 
+ *
+ *
  * Multithreading: Not Thread Safe, Supports Multiple Readers
- * 
+ *
  *		This object doesn't have any locking built in, and so it is up to the class managing it to provide thread safety if needed.
  *		However, it does support multiple concurrent readers.  This means it can be used in read-only mode with no locking or
  *		in read/write mode with a ReaderWriterLock.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -26,10 +26,10 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 	{
 	public class CommentType : IDObjects.IDObject
 		{
-		
+
 		// Group: Types
 		// __________________________________________________________________________
-		
+
 
 		/* Enum: ScopeValue
 		 * Can be Normal, Start, End, or AlwaysGlobal.
@@ -37,15 +37,15 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 		public enum ScopeValue : byte
 			{  Normal, Start, End, AlwaysGlobal  };
 
-		
+
 		/* Enum: FlagValue
-		 * 
+		 *
 		 *		Code - Set if the comment type describes a code element.
 		 *		File - Set if the comment type describes a file.
 		 *		Documentation - Set if the comment type is for standalone documentation.
-		 * 
+		 *
 		 *		VariableType - Set if the comment type can be used as a type for a variable.
-		 * 
+		 *
 		 *		Enum - Set if the comment type describes an enum.
 		 */
 		[Flags]
@@ -60,12 +60,12 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			Enum = 0x40
 			}
 
-		
-		
+
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: CommentType
 		 */
 		public CommentType (string name) : base()
@@ -79,13 +79,13 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			hierarchyID = 0;
 			flags = default;
 			}
-			
+
 
 
 		// Group: Properties
 		// __________________________________________________________________________
 
-			
+
 		/* Property: Name
 		 * The name of the comment type, not to be confused with <DisplayName>.
 		 */
@@ -94,7 +94,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			get
 				{  return name;  }
 			}
-			
+
 		/* Property: DisplayName
 		 * The comment type's display name.
 		 */
@@ -105,7 +105,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			set
 				{  displayName = value;  }
 			}
-			
+
 		/* Property: PluralDisplayName
 		 * The comment type's plural display name.
 		 */
@@ -116,7 +116,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			set
 				{  pluralDisplayName = value;  }
 			}
-			
+
 		/* Property: SimpleIdentifier
 		 * The comment type's name using only the letters A to Z.
 		 */
@@ -127,7 +127,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			set
 				{  simpleIdentifier = value;  }
 			}
-			
+
 		/* Property: Scope
 		 * The scope of the comment type.
 		 */
@@ -158,7 +158,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			set
 				{  hierarchyID = value;  }
 			}
-			
+
 		/* Property: Flags
 		 * The combination of all <FlagValues> applying to the comment type.
 		 */
@@ -170,12 +170,12 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				{  flags = value;  }
 			}
 
-			
-						
+
+
 		// Group: Flags
 		// __________________________________________________________________________
 
-						
+
 		/* Property: IsCode
 		 * Whether the comment type describes a code element.
 		 */
@@ -184,7 +184,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			get
 				{  return ( (flags & FlagValue.Code) != 0);  }
 			set
-				{  
+				{
 				if (value == true)
 					{  flags |= FlagValue.Code;  }
 				else
@@ -200,7 +200,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			get
 				{  return ( (flags & FlagValue.File) != 0);  }
 			set
-				{  
+				{
 				if (value == true)
 					{  flags |= FlagValue.File;  }
 				else
@@ -216,7 +216,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			get
 				{  return ( (flags & FlagValue.Documentation) != 0);  }
 			set
-				{  
+				{
 				if (value == true)
 					{  flags |= FlagValue.Documentation;  }
 				else
@@ -232,7 +232,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			get
 				{  return ( (flags & FlagValue.VariableType) != 0);  }
 			set
-				{  
+				{
 				if (value == true)
 					{  flags |= FlagValue.VariableType;  }
 				else
@@ -248,7 +248,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			get
 				{  return ( (flags & FlagValue.Enum) != 0);  }
 			set
-				{  
+				{
 				if (value == true)
 					{  flags |= FlagValue.Enum;  }
 				else
@@ -260,10 +260,10 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 		// Group: Operators
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Function: operator ==
-		 * Returns whether all the properties of the two comment types are equal, including Name and ID, but excluding 
+		 * Returns whether all the properties of the two comment types are equal, including Name and ID, but excluding
 		 * <CommentTypeFlags.Location Properties>.
 		 */
 		public static bool operator == (CommentType type1, CommentType type2)
@@ -284,8 +284,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 						   type1.Flags == type2.Flags);
 				}
 			}
-			
-		
+
+
 		/* Function: operator !=
 		 * Returns if any of the properties of the two comment types are inequal, including Name and ID, but excluding
 		 * <CommentTypeFlags.Location Properties>.
@@ -294,8 +294,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			{
 			return !(type1 == type2);
 			}
-			
-		
+
+
 		public override bool Equals (object o)
 			{
 			if (o is CommentType)
@@ -309,32 +309,32 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			{
 			return Name.GetHashCode();
 			}
-			
-			
-		
+
+
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
+
 		/* var: name
 		 * The comment type name.
 		 */
 		protected string name;
-		
+
 		/* var: displayName
 		 * The comment type's display name.
 		 */
 		protected string displayName;
-		
+
 		/* var: pluralDisplayName
 		 * The comment type's plural display name.
 		 */
 		protected string pluralDisplayName;
-		
+
 		/* var: simpleIdentifier
 		 * The comment type's name using only the letters A to Z.  No spaces, numbers, symbols, or Unicode.
 		 */
 		protected string simpleIdentifier;
-		
+
 		/* var: scope
 		 * The scope of the comment type.
 		 */
@@ -344,11 +344,11 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 		 * The ID of the hierarchy this comment type belongs to, or zero if none.
 		 */
 		protected int hierarchyID;
-		
+
 		/* var: flags
 		 * The combination of all <FlagValues> applying to the comment type.
 		 */
 		protected FlagValue flags;
-		
+
 		}
 	}

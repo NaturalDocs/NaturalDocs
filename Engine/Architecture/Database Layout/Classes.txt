@@ -16,7 +16,7 @@ Database Column: ClassID
 	--- Prototype ---
 		ClassID INTEGER PRIMARY KEY NOT NULL
 	-----------------
-	
+
 	The class identifier.
 
 
@@ -25,9 +25,9 @@ Database Column: ClassString
 	--- Prototype ---
 		ClassString TEXT
 	-----------------
-	
-	The class information encoded with <CodeClear.NaturalDocs.Engine.Symbols.ClassString>.  If this is the same 
-	as <LookupKey> this will be null to reduce memory use.  Retrieve it using "ifnull(ClassString, LookupKey)" or 
+
+	The class information encoded with <CodeClear.NaturalDocs.Engine.Symbols.ClassString>.  If this is the same
+	as <LookupKey> this will be null to reduce memory use.  Retrieve it using "ifnull(ClassString, LookupKey)" or
 	"coalesce(ClassString, LookupKey)" in the select statement.
 
 
@@ -37,8 +37,8 @@ Database Column: LookupKey
 		LookupKey TEXT NOT NULL
 	-----------------
 
-	This is the same as <ClassString>, except that if the language is case insensitive the symbol portion will be in 
-	lowercase.  You look up records with this key to allow for case insensitivity but you use <ClassString> so you 
+	This is the same as <ClassString>, except that if the language is case insensitive the symbol portion will be in
+	lowercase.  You look up records with this key to allow for case insensitivity but you use <ClassString> so you
 	can preserve the case as it was entered.
 
 

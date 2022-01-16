@@ -1,11 +1,11 @@
-/* 
+/*
  * Class: CodeClear.NaturalDocs.Engine.Config.Targets.Input
  * ____________________________________________________________________________
- * 
+ *
  * A base class for the configuration of all input targets.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -17,11 +17,11 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 	{
 	abstract public class Input : OverridableInputSettings
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		public Input (Files.InputType type, PropertyLocation propertyLocation) : base ()
 			{
 			this.type = type;
@@ -59,9 +59,9 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		 * properties such as <Name> and <Number> should be ignored.
 		 */
 		public abstract bool IsSameTarget (Input other);
-			
-	
-		
+
+
+
 		// Group: Properties
 		// __________________________________________________________________________
 
@@ -116,15 +116,15 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		    }
 
 
-		
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
+
 		protected Files.InputType type;
 		protected int number;
 
 		protected PropertyLocation propertyLocation;
 		protected PropertyLocation numberPropertyLocation;
-		
+
 		}
 	}

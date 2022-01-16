@@ -1,11 +1,11 @@
-/* 
+/*
  * Class: CodeClear.NaturalDocs.Engine.Config.Targets.HTMLOutputFolder
  * ____________________________________________________________________________
- * 
+ *
  * The configuration of a HTML build target.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -18,11 +18,11 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 	{
 	public class HTMLOutputFolder : Targets.Output
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		public HTMLOutputFolder (PropertyLocation propertyLocation) : base (propertyLocation)
 			{
 			folder = null;
@@ -51,7 +51,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		override public bool Validate (ErrorList errorList, int targetIndex)
 			{
 			if (System.IO.Directory.Exists(folder) == false)
-				{  
+				{
 				errorList.Add(
 					Locale.Get("NaturalDocs.Engine", "Project.txt.OutputFolderDoesNotExist(folder)", folder),
 					folderPropertyLocation,
@@ -62,8 +62,8 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 
 			return true;
 			}
-			
-	
+
+
 
 		// Group: Properties
 		// __________________________________________________________________________
@@ -80,7 +80,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 				{  folder = value;  }
 		    }
 
-					
+
 
 		// Group: Property Locations
 		// __________________________________________________________________________
@@ -97,11 +97,11 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		        {  folderPropertyLocation = value;  }
 		    }
 
-	
-		
+
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
+
 
 		protected AbsolutePath folder;
 		protected PropertyLocation folderPropertyLocation;

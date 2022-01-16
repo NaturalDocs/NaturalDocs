@@ -1,17 +1,17 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.CommentTypes.Manager
  * ____________________________________________________________________________
- * 
+ *
  * A module to handle <Comments.txt> and all the comment type settings within Natural Docs.
- * 
- * 
+ *
+ *
  * Topic: Usage
- * 
+ *
  *		- Call <Engine.Instance.Start()> which will start this module.
- *	
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -26,11 +26,11 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 	{
 	public partial class Manager : Module
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: Manager
 		 */
 		public Manager (Engine.Instance engineInstance) : base (engineInstance)
@@ -56,8 +56,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 
 		/* Function: FromKeyword
-		 * Returns the <CommentType> associated with the passed keyword, or null if none.  The language ID should be set to 
-		 * the language the keyword appears in, though it can also be zero to only return comment types from language agnostic 
+		 * Returns the <CommentType> associated with the passed keyword, or null if none.  The language ID should be set to
+		 * the language the keyword appears in, though it can also be zero to only return comment types from language agnostic
 		 * keywords.
 		 */
 		public CommentType FromKeyword (string keyword, int languageID)
@@ -74,7 +74,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			{
 			return config.CommentTypeFromKeyword(keyword, languageID, out plural);
 			}
-			
+
 		/* Function: FromName
 		 * Returns the <CommentType> associated with the passed name, or null if none.
 		 */
@@ -82,7 +82,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			{
 			return config.CommentTypeFromName(name);
 			}
-			
+
 		/* Function: FromID
 		 * Returns the <CommentType> associated with the passed ID, or null if none.
 		 */
@@ -90,7 +90,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			{
 			return config.CommentTypeFromID(commentTypeID);
 			}
-			
+
 		/* Function: IDFromKeyword
 		 * Returns the comment type ID associated with the passed keyword, or zero if none.
 		 */
@@ -111,7 +111,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			{
 			return config.TagFromName(name);
 			}
-			
+
 		/* Function: TagFromID
 		 * Returns the <Tag> associated with the passed ID, or null if none.
 		 */
@@ -156,9 +156,9 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			get
 				{  return groupCommentTypeID;  }
 			}
-			
 
-		
+
+
 		// Group: Variables
 		// __________________________________________________________________________
 
@@ -184,28 +184,28 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 
 		/* var: systemTextConfig
-		 * The <ConfigFiles.TextFile> representing the system <Comments.txt>.  This is only stored between <Start_Stage1()> 
+		 * The <ConfigFiles.TextFile> representing the system <Comments.txt>.  This is only stored between <Start_Stage1()>
 		 * and <Start_Stage2()>.  It will be null afterwards.
 		 */
 		protected ConfigFiles.TextFile systemTextConfig;
-		
+
 		/* var: projectTextConfig
 		 * The <ConfigFiles.TextFile> representing the project <Comments.txt>.  This is only stored between <Start_Stage1()>
 		 * and <Start_Stage2()>.  It will be null afterwards.
 		 */
 		protected ConfigFiles.TextFile projectTextConfig;
-		
+
 		/* var: mergedTextConfig
 		 * A <ConfigFiles.TextFile> representing the merger of <systemTextConfig> and <projectTextConfig>, sans keywords.
 		 * This is only stored between <Start_Stage1()> and <Start_Stage2()>.  It will be null afterwards.
 		 */
 		protected ConfigFiles.TextFile mergedTextConfig;
-		
+
 		/* var: lastRunConfig
 		 * The <Config> representing the contents of <Comments.nd>.  This is only stored between <Start_Stage1()> and
 		 * <Start_Stage2()>.  It will be null afterwards.
 		 */
 		protected Config lastRunConfig;
-		
+
 		}
 	}

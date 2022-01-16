@@ -1,14 +1,14 @@
-﻿/* 
+﻿/*
  * Struct: CodeClear.NaturalDocs.Engine.Comments.Components.XMLIterator
  * ____________________________________________________________________________
- * 
+ *
  * A struct to handle walking through XML-formatted content.  It moves by element, treating things like tags
  * and stretches of unformatted text as one step.  The iterator assumes you are going to walk through it in
  * a linear fashion rather than navigating a parsed XML tree.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -91,7 +91,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 
 		/* Function: IsOn
 		 * Returns whether the iterator is on the passed <XMLElementType>, tag type, and <TagForm>.  This function must be
-		 * used with <XMLElementType.Tag> since that's the only type where it's relevant.  <XMLElementType> is passed anyway 
+		 * used with <XMLElementType.Tag> since that's the only type where it's relevant.  <XMLElementType> is passed anyway
 		 * for consistency with other IsOn() functions.
 		 */
 		public bool IsOn (XMLElementType elementType, string tagType, TagForm tagForm)
@@ -148,7 +148,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 			foreach (Capture capture in captures)
 				{
 				Match propertyMatch = TagPropertyRegex.Match(RawText, capture.Index, capture.Length);
-				properties.Add( propertyMatch.Groups[1].ToString(), 
+				properties.Add( propertyMatch.Groups[1].ToString(),
 										DecodePropertyValue(propertyMatch.Groups[2].Index, propertyMatch.Groups[2].Length) );
 				}
 
@@ -175,10 +175,10 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 				found = true;
 				}
 			// If we're on a new line and either whitespace or a comment token...
-			else if ( ( RawTextIndex == 0 || 
+			else if ( ( RawTextIndex == 0 ||
 						  Tokenizer.FundamentalTypeOf(RawText[RawTextIndex - 1]) == FundamentalType.LineBreak )
 						&&
-						( tokenIterator.FundamentalType == FundamentalType.Whitespace || 
+						( tokenIterator.FundamentalType == FundamentalType.Whitespace ||
 						  tokenIterator.CommentParsingType == CommentParsingType.CommentSymbol ||
 						  tokenIterator.CommentParsingType == CommentParsingType.CommentDecoration ) )
 				{
@@ -188,7 +188,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 				TokenIterator lookahead = tokenIterator;
 
 				do
-					{  
+					{
 					length += lookahead.RawTextLength;
 					lookahead.Next();
 					}
@@ -266,7 +266,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 			}
 
 
-		
+
 		// Group: Properties
 		// __________________________________________________________________________
 
@@ -301,9 +301,9 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 				if (length == 0)
 					{  return "";  }
 				else if (type == XMLElementType.Indent)
-					{  
+					{
 					// Don't want comment symbols or tabs, so convert to spaces
-					return new string(' ', Indent);  
+					return new string(' ', Indent);
 					}
 				else
 					{  return RawText.Substring(RawTextIndex, length);  }
@@ -402,7 +402,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 				int indent = 0;
 				string rawText = RawText;
 				int rawTextIndex = RawTextIndex;
-			
+
 				for (int i = 0; i < length; i++)
 					{
 					if (rawText[rawTextIndex + i] == '\t')
@@ -413,7 +413,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 					else
 						{  indent++;  }
 					}
-				
+
 				return indent;
 				}
 			}

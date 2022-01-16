@@ -1,11 +1,11 @@
-/* 
+/*
  * Class: CodeClear.NaturalDocs.Engine.Config.Targets.ImageFolder
  * ____________________________________________________________________________
- * 
+ *
  * The configuration of an image folder input target.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -18,11 +18,11 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 	{
 	public class ImageFolder : Targets.Input
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		public ImageFolder (PropertyLocation propertyLocation) : base (Files.InputType.Image, propertyLocation)
 			{
 			folder = null;
@@ -47,7 +47,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 
 			return (folder == (other as ImageFolder).folder);
 			}
-			
+
 		public override bool Validate (ErrorList errorList, int targetIndex)
 			{
 			if (System.IO.Directory.Exists(folder) == false)
@@ -95,11 +95,11 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		        {  folderPropertyLocation = value;  }
 		    }
 
-	
-		
+
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
+
 
 		protected AbsolutePath folder;
 		protected PropertyLocation folderPropertyLocation;

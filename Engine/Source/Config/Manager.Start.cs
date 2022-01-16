@@ -1,9 +1,9 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Config.Manager
  * ____________________________________________________________________________
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -16,17 +16,17 @@ namespace CodeClear.NaturalDocs.Engine.Config
 	{
 	public partial class Manager : Module
 		{
-		
+
 		// Group: Initialization Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Function: Start_Stage1
-		 * 
-		 * Initializes the configuration and returns whether all the settings are correct and that execution is ready to begin.  
-		 * If there are problems they are added as <Errors> to the errorList parameter.  This class is *not* designed to allow 
+		 *
+		 * Initializes the configuration and returns whether all the settings are correct and that execution is ready to begin.
+		 * If there are problems they are added as <Errors> to the errorList parameter.  This class is *not* designed to allow
 		 * multiple attempts.  If this function fails scrap the entire <Engine.Instance> and start again.
-		 * 
+		 *
 		 * After <Start()> is called the properties of this class become read-only.  This function will add all the input and filter
 		 * targets it has to <Files.Manager>, and all output targets to <Output.Manager>.
 		 */
@@ -34,26 +34,26 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			{
 			StartupIssues newStartupIssues = StartupIssues.None;
 			bool success = true;
-			
-			
+
+
 			//
 			// Validate project config folder
 			//
 
 			projectConfigFolder = commandLineConfig.ProjectConfigFolder;
-				
+
 			if (!commandLineConfig.ProjectConfigFolderPropertyLocation.IsDefined ||
 				String.IsNullOrEmpty(projectConfigFolder))
 				{
-				errorList.Add( 
+				errorList.Add(
 					message: Locale.Get("NaturalDocs.Engine", "Error.NoProjectConfigFolder"),
 					configSource: PropertySource.CommandLine,
 					property: "ProjectConfigFolder"
 					);
-					
+
 				success = false;
 				}
-				
+
 			else if (!System.IO.Directory.Exists(projectConfigFolder))
 				{
 				errorList.Add(
@@ -61,29 +61,29 @@ namespace CodeClear.NaturalDocs.Engine.Config
 					propertyLocation: commandLineConfig.ProjectConfigFolderPropertyLocation,
 					property: "ProjectConfigFolder"
 					);
-					
+
 				success = false;
 				}
-				
+
 			else if (projectConfigFolder == SystemConfigFolder)
 				{
-				errorList.Add( 
+				errorList.Add(
 					message: Locale.Get("NaturalDocs.Engine", "Error.ProjectConfigFolderCannotEqualSystemConfigFolder"),
 					propertyLocation: commandLineConfig.ProjectConfigFolderPropertyLocation,
 					property: "ProjectConfigFolder"
 					);
-					
+
 				success = false;
 				}
 
 			if (success == false)
 				{  return false;  }
-				
+
 
 			//
 			// Load and merge configuration files
 			//
-			
+
 			ProjectConfig combinedConfig = new ProjectConfig(PropertySource.Combined);
 			MergeConfig(combinedConfig, commandLineConfig);
 
@@ -134,15 +134,15 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				catch (Exception e)
 					{
 					errorList.Add(
-						message: Locale.Get("NaturalDocs.Engine", "Error.CantCreateWorkingDataFolder(name, exception)", 
+						message: Locale.Get("NaturalDocs.Engine", "Error.CantCreateWorkingDataFolder(name, exception)",
 														workingDataFolder, e.Message),
 						property: "WorkingDataFolder"
 						);
-					
+
 					success = false;
 					}
 				}
-				
+
 			if (success == false)
 				{  return false;  }
 
@@ -150,17 +150,17 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			//
 			// Load the previous configuration state.  Remember that not every value in ProjectConfig is stored in Project.nd.
 			//
-				
+
 			ProjectConfig previousConfig = null;
 			var projectNDParser = new ConfigFiles.BinaryFileParser();
 
-			if (!EngineInstance.HasIssues( StartupIssues.NeedToStartFresh ) && 
+			if (!EngineInstance.HasIssues( StartupIssues.NeedToStartFresh ) &&
 				System.IO.File.Exists(workingDataFolder + "/Project.nd"))
-				{  
+				{
 				if (!projectNDParser.Load(workingDataFolder + "/Project.nd", out previousConfig))
 					{  previousConfig = null;  }
 				}
-				
+
 
 			//
 			// Merge output target numbers from Project.nd into the settings.  These are not stored in Project.txt because they're
@@ -182,11 +182,11 @@ namespace CodeClear.NaturalDocs.Engine.Config
 					}
 				}
 
-				
+
 			//
 			// Validate targets and encodings
 			//
-						
+
 			if (combinedConfig.InputTargets.Count < 1)
 				{
 				errorList.Add(
@@ -197,7 +197,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				}
 			if (combinedConfig.OutputTargets.Count < 1)
 				{
-				errorList.Add( 
+				errorList.Add(
 					message: Locale.Get("NaturalDocs.Engine", "Error.NoOutputTargets"),
 					property: "OutputTargets"
 					);
@@ -230,7 +230,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 					if (encodingRule.Folder != null)
 						{
-						errorList.Add( 
+						errorList.Add(
 							Locale.Get("NaturalDocs.Engine", "Project.txt.EncodingFolderNotPartOfSourceFolder"),
 							encodingRule.PropertyLocation
 							);
@@ -246,10 +246,10 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			//
 			// Determine the target numbers that are already used and reset duplicates.
 			//
-			
+
 			IDObjects.NumberSet usedSourceNumbers = new IDObjects.NumberSet();
 			IDObjects.NumberSet usedImageNumbers = new IDObjects.NumberSet();
-			
+
 			foreach (var target in combinedConfig.InputTargets)
 				{
 				if (target.Number != 0)
@@ -264,7 +264,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 						else
 							{  usedSourceNumbers.Add(target.Number);  }
 						}
-							
+
 					else if (target.Type == Files.InputType.Image)
 						{
 						if (usedImageNumbers.Contains(target.Number))
@@ -278,7 +278,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 					}
 				}
 
-				
+
 			IDObjects.NumberSet usedOutputNumbers = new IDObjects.NumberSet();
 			IDObjects.NumberSet outputNumbersToPurge = new IDObjects.NumberSet();
 
@@ -287,7 +287,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				if (target.Number != 0)
 					{
 					if (usedOutputNumbers.Contains(target.Number))
-						{  
+						{
 						target.Number = 0;
 						target.NumberPropertyLocation = PropertySource.NotDefined;
 
@@ -298,7 +298,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 						{  usedOutputNumbers.Add(target.Number);  }
 					}
 				}
-				
+
 
 			//
 			// Assign numbers to the targets that don't already have them and generate default input folder names.
@@ -317,13 +317,13 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 						usedSourceNumbers.Add(target.Number);
 						}
-							
+
 					if (sourceTarget.Name == null && combinedConfig.InputTargets.Count > 1)
 						{
 						sourceTarget.GenerateDefaultName();
 						}
 					}
-						
+
 				else if (target.Type == Files.InputType.Image)
 					{
 					if (target.Number == 0)
@@ -379,12 +379,12 @@ namespace CodeClear.NaturalDocs.Engine.Config
 					}
 				}
 
-				
+
 			//
 			// Apply global settings.
 			//
 
-			// DEPENDENCY: We assume all these settings are set in systemDefaultConfig so we don't have to worry about them being 
+			// DEPENDENCY: We assume all these settings are set in systemDefaultConfig so we don't have to worry about them being
 			// undefined.
 			tabWidth = combinedConfig.TabWidth;
 			documentedOnly = combinedConfig.DocumentedOnly;
@@ -411,25 +411,25 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 			projectTxtParser.Save(projectConfigFolder + "/Project.txt", combinedConfig, errorList);
 			projectNDParser.Save(workingDataFolder + "/Project.nd", combinedConfig);
-			
+
 
 			//
 			// Create file sources and filters for Files.Manager
 			//
-	
+
 			foreach (var target in combinedConfig.InputTargets)
-				{  
+				{
 				// Merge the project-wide settings into them so they have a complete configuration.  The configuration files have already
 				// been saved without them.
 				MergeInputSettings(target, combinedConfig.InputSettings);
 
-				EngineInstance.Files.AddFileSource(CreateFileSource(target));  
+				EngineInstance.Files.AddFileSource(CreateFileSource(target));
 				}
 
 			foreach (var target in combinedConfig.FilterTargets)
 				{  EngineInstance.Files.AddFilter(CreateFilter(target));  }
 
-				
+
 			//
 			// Create default filters
 			//
@@ -438,29 +438,29 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			EngineInstance.Files.AddFilter( new Engine.Files.Filters.IgnoredSourceFolder(WorkingDataFolder) );
 			EngineInstance.Files.AddFilter( new Engine.Files.Filters.IgnoredSourceFolder(SystemConfigFolder) );
 			EngineInstance.Files.AddFilter( new Engine.Files.Filters.IgnoredSourceFolder(SystemStyleFolder) );
-			
+
 			EngineInstance.Files.AddFilter( new Engine.Files.Filters.IgnoredSourceFolderRegex(new Regex.Config.DefaultIgnoredSourceFolderRegex()) );
 
 			// Some people may put output folders in their source folders.  Exclude them automatically.
 			foreach (var outputTarget in combinedConfig.OutputTargets)
-				{  
+				{
 				var filter = CreateOutputFilter(outputTarget);
 
 				if (filter != null)
 					{  EngineInstance.Files.AddFilter(filter);  }
 				}
 
-		
+
 			//
 			// Check all source folder entries against the filters.
 			//
-			
+
 			for (int i = 0; i < combinedConfig.InputTargets.Count; i++)
 				{
 				if (combinedConfig.InputTargets[i] is Targets.SourceFolder)
 					{
 					var sourceFolderTarget = (Targets.SourceFolder)combinedConfig.InputTargets[i];
-					
+
 					if (EngineInstance.Files.SourceFolderIsIgnored(sourceFolderTarget.Folder))
 						{
 						errorList.Add(
@@ -468,24 +468,24 @@ namespace CodeClear.NaturalDocs.Engine.Config
 							propertyLocation: sourceFolderTarget.FolderPropertyLocation,
 							property: "InputTargets[" + i + "].Folder"
 							);
-							
+
 						success = false;
 						}
 					}
 				}
-			
+
 
 			//
 			// Create output targets for Output.Manager
 			//
-			
+
 			foreach (var target in combinedConfig.OutputTargets)
 				{
 				// Merge the project-wide settings into them so they have a complete configuration.  The configuration files have already
 				// been saved without them.
 				MergeOutputSettings(target, combinedConfig.OutputSettings);
 
-				EngineInstance.Output.AddTarget(CreateOutputTarget(target));  
+				EngineInstance.Output.AddTarget(CreateOutputTarget(target));
 				}
 
 
@@ -498,7 +498,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 			string[] outputDataFolders = System.IO.Directory.GetDirectories(workingDataFolder, "Output*", System.IO.SearchOption.TopDirectoryOnly);
 			foreach (string outputDataFolder in outputDataFolders)
-				{  
+				{
 				System.Text.RegularExpressions.Match match = outputPathNumberRegex.Match(outputDataFolder);
 				if (match.Success)
 					{
@@ -511,7 +511,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 						{  number = int.Parse(numberString);  }
 
 					if (outputNumbersToPurge.Contains(number) || !usedOutputNumbers.Contains(number))
-						{  
+						{
 						// Since we're deleting an entire folder, mark it as a possibly long operation.  Some output formats may create many
 						// files in there which could take a while to clear out.
 						if (!raisedPossiblyLongOperationEvent)
@@ -533,7 +533,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 			string[] outputDataFiles = System.IO.Directory.GetFiles(workingDataFolder, "Output*.nd", System.IO.SearchOption.TopDirectoryOnly);
 			foreach (string outputDataFile in outputDataFiles)
-				{  
+				{
 				System.Text.RegularExpressions.Match match = outputPathNumberRegex.Match(outputDataFile);
 				if (match.Success)
 					{
@@ -546,18 +546,18 @@ namespace CodeClear.NaturalDocs.Engine.Config
 						{  number = int.Parse(numberString);  }
 
 					if (outputNumbersToPurge.Contains(number) || !usedOutputNumbers.Contains(number))
-						{  
+						{
 						// Since this should just be a few individual files we don't have to worry about it being a possibly long operation,
 						// although this will piggyback on that event if it was already raised.
 
-						System.IO.File.Delete(outputDataFile);  
+						System.IO.File.Delete(outputDataFile);
 						}
 					}
 				}
 
 			if (raisedPossiblyLongOperationEvent)
 				{  EngineInstance.EndPossiblyLongOperation();  }
-				
+
 			if (newStartupIssues != StartupIssues.None)
 				{  EngineInstance.AddStartupIssues(newStartupIssues);  }
 
@@ -567,15 +567,15 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 
 		/* Function: Start_Stage2
-		 * 
-		 * Finishes validating the configuration, returning whether it was successful.  If there were any errors they will be added to 
+		 *
+		 * Finishes validating the configuration, returning whether it was successful.  If there were any errors they will be added to
 		 * errorList.
-		 * 
-		 * This must be called after <Start_Stage1()> has been called, and also <Languages.Manager.Start_Stage1()>.  This 
+		 *
+		 * This must be called after <Start_Stage1()> has been called, and also <Languages.Manager.Start_Stage1()>.  This
 		 * finalizes any settings which also depend on <Languages.txt>.
-		 * 
+		 *
 		 * Dependencies:
-		 * 
+		 *
 		 *		- <Config.Manager.Start_Stage1()> must be started before this class can start.
 		 *		- <Languages.Manager.Start_Stage1()> must be called and return true before this function can be called.
 		 */
@@ -675,15 +675,15 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 
 		/* Function: MergeConfig
-		 * 
-		 * Merges the settings of the secondary configuration into the primary one.  The primary configuration will only adopt the secondary 
+		 *
+		 * Merges the settings of the secondary configuration into the primary one.  The primary configuration will only adopt the secondary
 		 * settings which it does not already have set.  When merging you should start with your most important configuration and merge
 		 * others into it in order of importance.
-		 * 
+		 *
 		 * If the primary config has input targets, only unset properties from matching targets in the secondary config will be copied.  Any
 		 * targets not appearing in the primary config will be ignored.  If there are no input targets in the primary config, they will be copied
 		 * from the secondary config.
-		 * 
+		 *
 		 * This system also applies for output and filter targets, with the exception of filter targets from a <PropertySource.SystemDefault>
 		 * config.  Filters found in a <PropertySource.SystemDefault> config will always be added to the primary config.
 		 */
@@ -876,11 +876,11 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 
 		/* Function: MergeInputTargets
-		 * 
-		 * Merges the settings of the secondary input target into the primary one.  The primary target will only adopt the secondary 
+		 *
+		 * Merges the settings of the secondary input target into the primary one.  The primary target will only adopt the secondary
 		 * settings which it does not already have set.  When merging you should start with your most important target and merge
 		 * others into it in order of importance.
-		 * 
+		 *
 		 * It is assumed that the two targets are of the same class and match with <Targets.InputBase.IsSameTarget()>.
 		 */
 		protected static void MergeInputTargets (Targets.Input primaryTarget, Targets.Input secondaryTarget)
@@ -939,11 +939,11 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 
 		/* Function: MergeInputSettings
-		 * 
+		 *
 		 * Merges the settings of the secondary <OverridableInputSettings> into the primary one.  The primary one will only adopt
-		 * the secondary settings which it does not already have set.  When merging you should start with your most important 
+		 * the secondary settings which it does not already have set.  When merging you should start with your most important
 		 * configuration and merge others into it in order of importance.
-		 * 
+		 *
 		 * Note that <Targets.Input> is derived from <OverridableInputSettings> so you can pass targets as one or both parameters.
 		 */
 		protected static void MergeInputSettings (OverridableInputSettings primarySettings, OverridableInputSettings secondarySettings)
@@ -958,11 +958,11 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 
 		/* Function: MergeOutputTargets
-		 * 
-		 * Merges the settings of the secondary output target into the primary one.  The primary target will only adopt the secondary 
+		 *
+		 * Merges the settings of the secondary output target into the primary one.  The primary target will only adopt the secondary
 		 * settings which it does not already have set.  When merging you should start with your most important target and merge
 		 * others into it in order of importance.
-		 * 
+		 *
 		 * It is assumed that the two targets are of the same class and match with <Targets.OutputBase.IsSameTarget()>.
 		 */
 		protected static void MergeOutputTargets (Targets.Output primaryTarget, Targets.Output secondaryTarget)
@@ -981,7 +981,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			    primaryTarget.Number = secondaryTarget.Number;
 			    primaryTarget.NumberPropertyLocation = secondaryTarget.NumberPropertyLocation;
 			    }
-				
+
 
 			if (primaryTarget is Targets.HTMLOutputFolder)
 				{
@@ -997,11 +997,11 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 
 		/* Function: MergeOutputSettings
-		 * 
+		 *
 		 * Merges the settings of the secondary <OverridableOutputSettings> into the primary one.  The primary one will only adopt
-		 * the secondary settings which it does not already have set.  When merging you should start with your most important 
+		 * the secondary settings which it does not already have set.  When merging you should start with your most important
 		 * configuration and merge others into it in order of importance.
-		 * 
+		 *
 		 * Note that <Targets.Output> is derived from <OverridableOutputSettings> so you can pass targets as one or both parameters.
 		 */
 		protected static void MergeOutputSettings (OverridableOutputSettings primarySettings, OverridableOutputSettings secondarySettings)
@@ -1097,6 +1097,6 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			else
 				{  throw new NotImplementedException();  }
 			}
-	
+
 		}
 	}

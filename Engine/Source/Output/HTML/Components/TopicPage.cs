@@ -1,17 +1,17 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.TopicPage
  * ____________________________________________________________________________
- * 
+ *
  * Creates the HTML page for the <Topics> of a source file or class and all it's supporting JavaScript files.
- * 
- * 
+ *
+ *
  * Threading: Not Thread Safe
- * 
+ *
  *		This class is only designed to be used by one thread at a time.  Each thread should create its own object.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -38,18 +38,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: BuildDataFiles
-		 * 
-		 * Builds the content HTML file for the passed <Context's> <PageLocation> and its supporting <JSONSummary> and 
-		 * <JSONToolTips>.  Returns whether there was any content.  It will also return false if it was interrupted by the 
+		 *
+		 * Builds the content HTML file for the passed <Context's> <PageLocation> and its supporting <JSONSummary> and
+		 * <JSONToolTips>.  Returns whether there was any content.  It will also return false if it was interrupted by the
 		 * <CancelDelegate>.
-		 * 
-		 * If the <CodeDB.Accessor> doesn't have a lock, this function will automatically acquire and release a read-only 
-		 * lock.  This is the preferred way of using this function as the lock will only be held during the data querying stage 
+		 *
+		 * If the <CodeDB.Accessor> doesn't have a lock, this function will automatically acquire and release a read-only
+		 * lock.  This is the preferred way of using this function as the lock will only be held during the data querying stage
 		 * and will be  released before writing output to disk.
-		 * 
+		 *
 		 * If it already had a lock it will use it and not release it unless you set releaseExistingLocks.
 		 */
-		public bool BuildDataFiles (Context context, CodeDB.Accessor accessor, CancelDelegate cancelDelegate, 
+		public bool BuildDataFiles (Context context, CodeDB.Accessor accessor, CancelDelegate cancelDelegate,
 												bool releaseExistingLocks = false)
 			{
 			this.Context = context;
@@ -62,7 +62,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			bool releaseDBLock = false;
 
 			if (accessor.LockHeld == CodeDB.Accessor.LockType.None)
-				{  
+				{
 				accessor.GetReadOnlyLock();
 				releaseDBLock = true;
 				}
@@ -105,7 +105,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 				// Get the links from the database.
-				
+
 				if (location.IsSourceFile)
 					{
 					links = accessor.GetLinksInFile(location.FileID, cancelDelegate) ?? new List<Engine.Links.Link>();
@@ -138,9 +138,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 				// We need the class parent links of all the classes defined on this page so the class prototypes can show the parents.
-				// If this is a class page then we can skip this step since all the links should already be included.  However, for any 
-				// other type of page this may not be the case.  A source file page would return all the links in that file, but the class 
-				// may be defined across multiple files and we need the class parent links in all of them.  In this case we need to look 
+				// If this is a class page then we can skip this step since all the links should already be included.  However, for any
+				// other type of page this may not be the case.  A source file page would return all the links in that file, but the class
+				// may be defined across multiple files and we need the class parent links in all of them.  In this case we need to look
 				// up the class parent links separately by class ID.
 
 				if (location.IsClass == false && classIDsDefined.IsEmpty == false)
@@ -155,7 +155,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					{  return false;  }
 
 
-				// Now we need to find the children of all the classes defined on this page.  Get the class parent links that resolve to 
+				// Now we need to find the children of all the classes defined on this page.  Get the class parent links that resolve to
 				// any of the defined classes, but keep them separate for now.
 
 				List<Engine.Links.Link> childLinks = null;
@@ -215,16 +215,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 				// Now we need to find any Natural Docs and image links appearing inside the summaries of link targets.
-				// The tooltips that will be generated for them include their summaries, and even though we don't generate 
+				// The tooltips that will be generated for them include their summaries, and even though we don't generate
 				// HTML links inside tooltips, how and if they're resolved affects their appearance.  We need to know whether
 				// to include the original text with angle brackets, the text without angle brackets if it's resolved, or only part
 				// of the text if it's a resolved named link.
-				
-				// Links don't store which topic they appear in but they do store the file, so gather the file IDs of the link 
+
+				// Links don't store which topic they appear in but they do store the file, so gather the file IDs of the link
 				// targets that have Natural Docs or image links in the summaries and get all the links in those files.
 
-				// Links also store which class they appear in, so why not do this by class instead of by file?  Because a 
-				// link could be to something global, and the global scope could potentially have a whole hell of a lot of 
+				// Links also store which class they appear in, so why not do this by class instead of by file?  Because a
+				// link could be to something global, and the global scope could potentially have a whole hell of a lot of
 				// content, depending on the project and language.  While there can also be some really long files, the
 				// chances of that are smaller so we stick with doing this by file.
 
@@ -232,16 +232,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				foreach (var linkTarget in linkTargets)
 					{
-					if (linkTarget.Summary != null && 
+					if (linkTarget.Summary != null &&
 						(linkTarget.Summary.IndexOf("<link type=\"naturaldocs\"") != -1 || linkTarget.Summary.IndexOf("<image ") != -1))
 						{  summaryLinkFileIDs.Add(linkTarget.FileID);  }
 					}
 
 				List<Engine.Links.Link> summaryLinks = null;
 				List<Engine.Links.ImageLink> summaryImageLinks = null;
-					
+
 				if (!summaryLinkFileIDs.IsEmpty)
-					{  
+					{
 					summaryLinks = accessor.GetNaturalDocsLinksInFiles(summaryLinkFileIDs, cancelDelegate);
 					summaryImageLinks = accessor.GetImageLinksInFiles(summaryLinkFileIDs, cancelDelegate);
 					}
@@ -285,7 +285,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					{  lastNonEmbeddedTopic--;  }
 
 				for (int i = 0; i <= lastNonEmbeddedTopic; i++)
-					{  
+					{
 					string extraClass = null;
 
 					if (i == 0)
@@ -295,11 +295,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 					if (topics[i].IsEmbedded == false)
 						{
-						topicBuilder.AppendTopic(topics[i], context, links, linkTargets, imageLinks, html, topics, i + 1, extraClass);  
+						topicBuilder.AppendTopic(topics[i], context, links, linkTargets, imageLinks, html, topics, i + 1, extraClass);
 						html.Append("\r\n\r\n");
 						}
 					}
-							
+
 
 				// Build the full HTML file
 
@@ -331,9 +331,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				throw;
 				}
-				
+
 			finally
-				{ 
+				{
 				if (releaseDBLock)
 					{  accessor.ReleaseLock();  }
 				}
@@ -341,4 +341,3 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 		}
 	}
-

@@ -1,7 +1,7 @@
 ﻿/*
 	Include in output:
 
-	This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+	This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 	Natural Docs is licensed under version 3 of the GNU Affero General Public
 	License (AGPL).  Refer to License.txt or www.naturaldocs.org for the
 	complete details.
@@ -298,7 +298,7 @@ var NDCore = new function ()
 		prototype.parentNode.replaceChild(newPrototype, prototype);
 		};
 
-	
+
 	/* Function: ChangePrototypeToWideForm
 		Changes the passed NDPrototype element to use the wide form.  The prototype *must* be in the narrow form.
 	*/
@@ -345,8 +345,8 @@ var NDCore = new function ()
 
 
 	/* Function: GetComputedStyle
-		Returns the computed CSS style for the passed element in a browser-neutral way.  It first tries the element's 
-		inline styles in case it overrides them, and if not, retrieves the results created from the style sheets.  Returns 
+		Returns the computed CSS style for the passed element in a browser-neutral way.  It first tries the element's
+		inline styles in case it overrides them, and if not, retrieves the results created from the style sheets.  Returns
 		undefined if it's not set.
 	*/
 	this.GetComputedStyle = function (element, style)
@@ -367,7 +367,7 @@ var NDCore = new function ()
 			}
 
 		else
-			{  
+			{
 			return undefined;
 			}
 		};
@@ -503,7 +503,7 @@ function NDLocation (hashString)
 				}
 			}
 
-		
+
 		//
 		// Determine the type from the prefix
 		//
@@ -518,7 +518,7 @@ function NDLocation (hashString)
 			foundPrefix = true;
 			}
 
-		else if (NDFramePage != undefined && 
+		else if (NDFramePage != undefined &&
 				  NDFramePage.locationInfo != undefined)
 			{
 			for (var i = 0; i < NDFramePage.locationInfo.length; i++)
@@ -557,7 +557,7 @@ function NDLocation (hashString)
 		else
 			{
 			var path = locationInfo[$LocationInfo_Folder];
-			
+
 			if (locationInfo[$LocationInfo_Type] == $LocationInfoType_File && prefixParam != undefined)
 				{  path += prefixParam;  }  // files2
 			else if (locationInfo[$LocationInfo_Type] == $LocationInfoType_LanguageSpecificHierarchy)
@@ -566,14 +566,14 @@ function NDLocation (hashString)
 			path += '/' + this.path.substr(prefixSeparator + 1);
 
 			if (locationInfo[$LocationInfo_Type] == $LocationInfoType_File)
-				{  
+				{
 				var lastSeparator = path.lastIndexOf('/');
 				var folder = path.substr(0, lastSeparator + 1);
 				var file = path.substr(lastSeparator + 1);
 
 				// Need to use replace() with a regex because older versions of Safari don't have replaceAll()
 				file = file.replace(/\./g, '-');
-				
+
 				path = folder + file;
 				}
 			else // hierarchy
@@ -590,7 +590,7 @@ function NDLocation (hashString)
 			}
 		};
 
-	
+
 
 	// Group: Variables
 	// ___________________________________________________________________________
@@ -600,14 +600,14 @@ function NDLocation (hashString)
 		var: hashString
 		The full normalized hash string.
 
-		
+
 		var: type
 
 		A string representing the type of location this is.
-		
+
 		Possible Values:
-		
-			"Home" - The home page.  For now if there's an invalid hash path the location will be set the home page.  In the future 
+
+			"Home" - The home page.  For now if there's an invalid hash path the location will be set the home page.  In the future
 						  there may be a separate 404-type page.
 			"File" - A source file.
 			"Class" - A class.
@@ -618,9 +618,9 @@ function NDLocation (hashString)
 		var: path
 
 		If <hashString> can be split into a path and member, this will be the path.  This includes the prefix like File:.
-		
+
 		Examples:
-		
+
 			File - "File:Folder/Folder/Source.cs"
 			Class - "CSharpClass:Namespace.Namespace.Class"
 
@@ -629,9 +629,9 @@ function NDLocation (hashString)
 
 		If <hashString> can be split into a path and member and a member is specified, this will be the member.  Some
 		hashes will only include a <path> and not a member.
-		
+
 		Examples:
-		
+
 			File - "Class.Class.Member" in "File:Folder/Folder/Source.cs:Class.Class.Member"
 			Class - "Member" in "CSharpClass:Namespace.Namespace.Class:Member"
 
@@ -639,13 +639,13 @@ function NDLocation (hashString)
 		var: prefix
 
 		If <hashString> contains a path, this will be just the prefix.  It does not include the colon.
-		
+
 		Examples:
-		
+
 			File - "File" in "File:Folder/Folder/Source.cs"
 			Class - "CSharpClass" in "CSharpClass:Namespace.Namespace.Class"
 
-		
+
 		var: contentPage
 		The URL to the content page.
 

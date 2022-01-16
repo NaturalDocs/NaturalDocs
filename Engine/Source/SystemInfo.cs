@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.SystemInfo
  * ____________________________________________________________________________
- * 
+ *
  * A static class to gather information about the operating system we're running on.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -18,11 +18,11 @@ namespace CodeClear.NaturalDocs.Engine
 	{
 	public static class SystemInfo
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: SystemInfo
 		 */
 		static SystemInfo ()
@@ -36,8 +36,8 @@ namespace CodeClear.NaturalDocs.Engine
 
 		// Group: Properties
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Property: OnWindows
 		 * Whether the program is running in Windows.
 		 */
@@ -49,8 +49,8 @@ namespace CodeClear.NaturalDocs.Engine
 				return (System.Environment.OSVersion.Platform == PlatformID.Win32NT);
 				}
 			}
-			
-			
+
+
 		/* Property: OnUnix
 		 * Whether the program is running in Unix.
 		 */
@@ -65,8 +65,8 @@ namespace CodeClear.NaturalDocs.Engine
 							(int)System.Environment.OSVersion.Platform == 128 );
 				}
 			}
-			
-			
+
+
 		/* Property: PathSeparatorCharacter
 		 * The path separator character for the current platform, such as slash or backslash.
 		 */
@@ -75,8 +75,8 @@ namespace CodeClear.NaturalDocs.Engine
 			get
 				{  return pathSeparator;  }
 			}
-			
-			
+
+
 		/* Property: IgnoreCaseInPaths
 		 * Whether paths are case sensitive on the current platform.
 		 */
@@ -96,7 +96,7 @@ namespace CodeClear.NaturalDocs.Engine
 				{
 				try
 					{
-					string monoString = 
+					string monoString =
 						Type.GetType("Mono.Runtime")?
 						.GetMethod("GetDisplayName", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)?
 						.Invoke(null, null)?.ToString();
@@ -132,7 +132,7 @@ namespace CodeClear.NaturalDocs.Engine
 				if (monoVersion == null)
 					{  return false;  }
 
-				return ( monoVersion.StartsWith("0.") || 
+				return ( monoVersion.StartsWith("0.") ||
 							monoVersion.StartsWith("1.") ||
 							monoVersion.StartsWith("2.") ||
 							monoVersion.StartsWith("3.") );
@@ -337,7 +337,7 @@ namespace CodeClear.NaturalDocs.Engine
 			}
 
 
-			
+
 		// Group: Static Variables
 		// __________________________________________________________________________
 

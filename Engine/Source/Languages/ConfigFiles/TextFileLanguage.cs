@@ -1,13 +1,13 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Languages.ConfigFiles.TextFileLanguage
  * ____________________________________________________________________________
- * 
- * A class encapsulating information about a language as it appears in <Languages.txt>.  This differs from <Language> in 
+ *
+ * A class encapsulating information about a language as it appears in <Languages.txt>.  This differs from <Language> in
  * that its meant to represent its entry in a config file rather than the final combined settings of a language.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -26,9 +26,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		// __________________________________________________________________________
 
 		/* enum: PropertyChange
-		 * 
+		 *
 		 * Whether a property like Extensions uses Add, Replace, or neither.
-		 * 
+		 *
 		 * None - No overriding, such as just "Extensions".  This is only valid when <AlterLanguage> is false.
 		 * Add - Adds the elements to the list, such as "Add Extensions".  This is only valid when <AlterLanguage> is true.
 		 * Replace - Replaces the elements on the list, such as "Replace Extensions".  This is only valid when <AlterLanguage> is true.
@@ -40,11 +40,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			Replace
 			}
 
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: TextFileLanguage
 		 */
 		public TextFileLanguage (string name, PropertyLocation propertyLocation, bool alterLanguage = false)
@@ -181,7 +181,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		 * Sets the list of the aliases for this language.  If <AlterLanguage> is true then you must set either <PropertyChange.Add>
 		 * or <PropertyChange.Replace>.
 		 */
-		public void SetAliases (IList<string> aliases, PropertyLocation propertyLocation, 
+		public void SetAliases (IList<string> aliases, PropertyLocation propertyLocation,
 										 PropertyChange propertyChange = PropertyChange.None)
 			{
 			#if DEBUG
@@ -191,7 +191,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 				{  throw new Exception("You can't set PropertyChange when setting aliases on a non-Alter Language entry.");  }
 			#endif
 
-			if (aliases == null)	
+			if (aliases == null)
 				{  this.aliases = null;  }
 			else
 				{
@@ -202,7 +202,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			this.aliasesPropertyChange = propertyChange;
 			this.aliasesPropertyLocation = propertyLocation;
 			}
-		
+
 		/* Function: SetFileExtensions
 		 * Sets the list of the file extensions for this language.  If <AlterLanguage> is true then you must set either <PropertyChange.Add>
 		 * or <PropertyChange.Replace>.
@@ -217,7 +217,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 				{  throw new Exception("You can't set PropertyChange when setting extensions on a non-Alter Language entry.");  }
 			#endif
 
-			if (fileExtensions == null)	
+			if (fileExtensions == null)
 				{  this.fileExtensions = null;  }
 			else
 				{
@@ -228,7 +228,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			this.fileExtensionsPropertyChange = propertyChange;
 			this.fileExtensionsPropertyLocation = propertyLocation;
 			}
-		
+
 		/* Function: SetShebangStrings
 		 * Sets the list of the shebang strings for this language.  If <AlterLanguage> is true then you must set either <PropertyChange.Add>
 		 * or <PropertyChange.Replace>.
@@ -243,7 +243,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 				{  throw new Exception("You can't set PropertyChange when setting shebang strings on a non-Alter Language entry.");  }
 			#endif
 
-			if (shebangStrings == null)	
+			if (shebangStrings == null)
 				{  this.shebangStrings = null;  }
 			else
 				{
@@ -254,7 +254,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			this.shebangStringsPropertyChange = propertyChange;
 			this.shebangStringsPropertyLocation = propertyLocation;
 			}
-		
+
 		/* Function: SetLineCommentSymbols
 		 * Sets the list of strings that start line comments.
 		 */
@@ -286,7 +286,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 
 			this.blockCommentSymbolsPropertyLocation = propertyLocation;
 			}
-		
+
 		/* Function: SetMemberOperator
 		 * Sets the string representing the default member operator symbol.
 		 */
@@ -310,7 +310,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			if (index == -1)
 				{  this.prototypeEnders.Add(prototypeEnders);  }
 			else
-				{  
+				{
 				// We could just overwrite the entry at the index but we want to preserve the order they appear in.
 				this.prototypeEnders.RemoveAt(index);
 				this.prototypeEnders.Add(prototypeEnders);
@@ -380,15 +380,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 
 		// Group: Properties
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Property: PropertyLocation
 		 * The <PropertyLocation> where the language is defined.
 		 */
 		public PropertyLocation PropertyLocation
 			{
 			get
-				{  
+				{
 				// Name is defined on the starting line of the comment type.
 				return namePropertyLocation;
 				}
@@ -411,7 +411,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			get
 				{  return namePropertyLocation;  }
 			}
-		
+
 		/* Property: AlterLanguage
 		 * Whether this is an Alter Language entry.
 		 */
@@ -447,7 +447,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			get
 				{  return simpleIdentifierPropertyLocation;  }
 			}
-		
+
 		/* Property: HasAliases
 		 * Whether any <Aliases> are defined.
 		 */
@@ -456,7 +456,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			get
 				{  return (aliases != null);  }
 			}
-		
+
 		/* Property: Aliases
 		 * A list of the aliases for this language, or null if none.
 		 */
@@ -465,7 +465,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			get
 				{  return aliases;  }
 			}
-		
+
 		/* Property: AliasesPropertyChange
 		 * Whether the <Aliases> should be added to or replaced if <AlterLanguage> is true.
 		 */
@@ -492,7 +492,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			get
 				{  return (fileExtensions != null);  }
 			}
-		
+
 		/* Property: FileExtensions
 		 * A list of the file extensions for this language, or null if none.
 		 */
@@ -501,7 +501,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			get
 				{  return fileExtensions;  }
 			}
-		
+
 		/* Property: ExtensionsPropertyChange
 		 * Whether the <FileExtensions> should be added to or replaced if <AlterLanguage> is true.
 		 */
@@ -528,7 +528,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			get
 				{  return (shebangStrings != null);  }
 			}
-		
+
 		/* Property: ShebangStrings
 		 * A list of the shebang strings for this language, or null if none.
 		 */
@@ -537,7 +537,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			get
 				{  return shebangStrings;  }
 			}
-		
+
 		/* Property: ShebangStringsPropertyChange
 		 * Whether the <ShebangStrings> should be added to or replaced if <AlterLanguage> is true.
 		 */
@@ -591,7 +591,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			get
 				{  return (blockCommentSymbols != null);  }
 			}
-		
+
 		/* Property: BlockCommentSymbols
 		 * A list of <Languages.BlockCommentSymbols> that start and end block comments, or null if none.
 		 */
@@ -600,7 +600,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			get
 				{  return blockCommentSymbols;  }
 			}
-		
+
 		/* Property: BlockCommentSymbolsPropertyLocation
 		 * The <PropertyLocation> where <BlockCommentSymbols> is defined.
 		 */
@@ -618,7 +618,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			get
 				{  return (memberOperator != null);  }
 			}
-		
+
 		/* Property: MemberOperator
 		 * A string representing the default member operator symbol, or null if it's not set.
 		 */
@@ -627,7 +627,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			get
 				{  return memberOperator;  }
 			}
-		
+
 		/* Property: MemberOperatorPropertyLocation
 		 * The <PropertyLocation> where <MemberOperator> is defined.
 		 */
@@ -645,7 +645,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			get
 				{  return (prototypeEnders != null);  }
 			}
-		
+
 		/* Property: PrototypeEnders
 		 * A list of <TextFilePrototypeEnders> mapping comment type strings to their ender strings.  Line breaks are represented
 		 * with "\n".  Will be null if there are none set.
@@ -655,7 +655,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			get
 				{  return prototypeEnders;  }
 			}
-		
+
 		/* Property: HasLineExtender
 		 * Whether <LineExtender> is defined.
 		 */
@@ -664,7 +664,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			get
 				{  return (lineExtender != null);  }
 			}
-		
+
 		/* Property: LineExtender
 		 * A string representing the line extender symbol if line breaks are significant to the language.  Will be null if not set.
 		 */
@@ -673,7 +673,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			get
 				{  return lineExtender;  }
 			}
-		
+
 		/* Property: LineExtenderPropertyLocation
 		 * The <PropertyLocation> where <LineExtender> is defined.
 		 */
@@ -718,7 +718,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			get
 				{  return (caseSensitive != null);  }
 			}
-		
+
 		/* Property: CaseSensitive
 		 * Whether the language's identifiers are case sensitive, or null if not set.
 		 */
@@ -727,7 +727,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			get
 				{  return caseSensitive;  }
 			}
-		
+
 		/* Property: CaseSensitivePropertyLocation
 		 * The <PropertyLocation> where <CaseSensitive> is defined.
 		 */
@@ -736,12 +736,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			get
 				{  return caseSensitivePropertyLocation;  }
 			}
-		
+
 
 
 		// Group: Variables
 		// __________________________________________________________________________
-		
+
 		/* var: name
 		 * The language name.
 		 */
@@ -751,12 +751,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		 * The <PropertyLocation> where <name> is defined.
 		 */
 		protected PropertyLocation namePropertyLocation;
-		
+
 		/* var: alterLanguage
 		 * Whether this is an Alter Language entry.
 		 */
 		protected bool alterLanguage;
-		
+
 		/* var: simpleIdentifier
 		 * The language name using only the letters A to Z, or null if not set.
 		 */
@@ -766,12 +766,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		 * The <PropertyLocation> where <simpleIdentifier> is defined.
 		 */
 		protected PropertyLocation simpleIdentifierPropertyLocation;
-		
+
 		/* var: aliases
 		 * A list of the aliases for this language, or null if none.
 		 */
 		protected List<string> aliases;
-		
+
 		/* var: aliasesPropertyChange
 		 * Whether the <aliases> should be added to or replaced if <alterLanguage> is true.
 		 */
@@ -786,7 +786,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		 * A list of the file extensions for this language, or null if none.
 		 */
 		protected List<string> fileExtensions;
-		
+
 		/* var: fileExtensionsPropertyChange
 		 * Whether the <fileExtensions> should be added to or replaced if <alterLanguage> is true.
 		 */
@@ -801,7 +801,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		 * A list of the shebang strings for this language, or null if none.
 		 */
 		protected List<string> shebangStrings;
-		
+
 		/* var: shebangStringsPropertyChange
 		 * Whether the <shebangStrings> should be added to or replaced if <alterLanguage> is true.
 		 */
@@ -826,7 +826,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		 * A list of <Languages.BlockCommentSymbols> that start and end block comments, or null if none.
 		 */
 		protected List<BlockCommentSymbols> blockCommentSymbols;
-		
+
 		/* var: blockCommentSymbolsPropertyLocation
 		 * The <PropertyLocation> where <blockCommentSymbols> is defined.
 		 */
@@ -836,7 +836,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		 * A string representing the default member operator symbol, or null if it's not set.
 		 */
 		protected string memberOperator;
-		
+
 		/* var: memberOperatorPropertyLocation
 		 * The <PropertyLocation> where <memberOperator> is defined.
 		 */
@@ -847,12 +847,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		 * with "\n".  Will be null if there are none set.
 		 */
 		protected List<TextFilePrototypeEnders> prototypeEnders;
-		
+
 		/* var: lineExtender
 		 * A string representing the line extender symbol if line breaks are significant to the language.  Will be null if not set.
 		 */
 		protected string lineExtender;
-		
+
 		/* var: lineExtenderPropertyLocation
 		 * The <PropertyLocation> where <lineExtender> is defined.
 		 */
@@ -872,7 +872,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		 * Whether the language's identifiers are case sensitive, or null if not set.
 		 */
 		protected bool? caseSensitive;
-		
+
 		/* var: caseSensitivePropertyLocation
 		 * The <PropertyLocation> where <caseSensitive> is defined.
 		 */

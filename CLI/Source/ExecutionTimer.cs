@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.CLI.ExecutionTimer
  * ____________________________________________________________________________
- * 
+ *
  * A class to time certain operations in the engine.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -19,10 +19,10 @@ namespace CodeClear.NaturalDocs.CLI
 	{
 	public class ExecutionTimer
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
+
 		public ExecutionTimer ()
 			{
 			timingRecords = new List<TimingRecord>();
@@ -172,7 +172,7 @@ namespace CodeClear.NaturalDocs.CLI
 
 		// Group: Support Functions
 		// __________________________________________________________________________
-				
+
 		protected TimingRecord Get (string name)
 			{
 			foreach (var timingRecord in timingRecords)
@@ -192,17 +192,17 @@ namespace CodeClear.NaturalDocs.CLI
 				{  return Get(timingRecord.ParentName);  }
 			}
 
-				
-		
+
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
+
 		protected List<TimingRecord> timingRecords;
 
 
 
 		/* __________________________________________________________________________
-		 * 
+		 *
 		 * Class: TimingRecord
 		 * __________________________________________________________________________
 		 */
@@ -260,6 +260,6 @@ namespace CodeClear.NaturalDocs.CLI
 
 			protected System.Diagnostics.Stopwatch stopWatch;
 			}
-		
+
 		}
 	}

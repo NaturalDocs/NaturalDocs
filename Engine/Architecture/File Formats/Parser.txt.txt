@@ -4,29 +4,29 @@ _______________________________________________________________________________
 
 A configuration file to handle various non-topic keywords in Natural Docs formatted comments.  The file follows the
 standard conventions in <ConfigFile>.  Identifier and value whitespace is condensed.
- 		
+
 
 Group: Format
 _______________________________________________________________________________
-	
+
 	Topic: Sets
 
 		> Set: [identifier]
 		>    [value]
 		>    [value]
 		>    ...
-		
+
 		A string set, meaning the code is interested in only the existence of a string in that set.
 
 		Identifiers:
-		
+
 			Start Block Keywords - The first word for lines like "(start code)".
 			End Block Keywords - The first word for lines like "(end code)" or just "(end)".
 
 			See Image Keywords - The first word for lines like "(see image.jpg)".
 			At Link Keywords - The middle word for lines like "<reference at http://www.website.com>".
 			URL Protocols - The protocol strings in external URLs like http.
-		
+
 			Acceptable Link Suffixes - The s after links like "<object>s".
 
 
@@ -36,7 +36,7 @@ _______________________________________________________________________________
 		>    [key] -> [value]
 		>    [key] -> [value]
 		>    ...
-		
+
 		A table mapping one string to another.  Each key can only have one value, so anything specified multiple times
 		will overwrite the previous value.
 
@@ -45,17 +45,17 @@ _______________________________________________________________________________
 			Block Types - The second word for lines like "(start code)" or the only word for lines like "(code)".  Possible values
 								are "generic" for when there is no special behavior, "code" for source code and any additional
 								formatting that may entail, and "prototype" for manually specifying prototypes.
-		
+
 			Special Headings - Headings that have special behavior associated with them.  The only possible value at this point
 										is "parameters", meaning the section is dedicated to a function's parameters.
-								  
+
 			Access Level - Modifiers that can be placed before a Natural Docs keyword to set the access level if it is not specified
 								 in the code itself.  Possible values are "public", "private", "protected", "internal", "protectedinternal",
 								 and "privateprotected".
-								   
+
 
 	Topic: Conversions
-		
+
 		> Conversion List: [identifier]
 		>    [key] -> [value]
 		>    [key] ->
@@ -66,17 +66,17 @@ _______________________________________________________________________________
 		Identifiers:
 
 			Plural Conversions - A series of endings where the words ending with the key can have it replaced by the value to form
-										  a possible singular form.  There may be multiple combinations that can be applied to a word, and 
-										  not all of them will be valid.  "Leaves" converts to "Leave", "Leav", "Leaf", and "Leafe".  All that 
+										  a possible singular form.  There may be multiple combinations that can be applied to a word, and
+										  not all of them will be valid.  "Leaves" converts to "Leave", "Leav", "Leaf", and "Leafe".  All that
 										  matters however is that the valid form be present in the possibilities.
-									  
+
 			Possessive Conversions - A series of endings where the words ending with the key can have it replaced by the value to
 												 form a possible non-possessive form.
-			
+
 
 Group: Revisions
 _______________________________________________________________________________
-		
+
 	Topic: 2.0
 
 		- The file was introduced.

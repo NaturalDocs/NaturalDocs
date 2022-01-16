@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Symbols.SeparatorChars
  * ____________________________________________________________________________
- * 
- * The reserved characters that can be used as separators by the symbol encodings.  They use consecutive values 
+ *
+ * The reserved characters that can be used as separators by the symbol encodings.  They use consecutive values
  * so they can be checked for by looking between <LowestValue> and <HighestValue> in addition to individually by name.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 

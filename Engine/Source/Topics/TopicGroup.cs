@@ -1,18 +1,18 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Topics.TopicGroup
  * ____________________________________________________________________________
- * 
+ *
  * A class to store information about a group of consecutive <Topics> in a list.
- * 
+ *
  * Topic: Restrictions
- * 
- *		- The group can start with a group topic, but it's not required.  However, it must not contain any 
+ *
+ *		- The group can start with a group topic, but it's not required.  However, it must not contain any
  *		   group topics beyond that.
  *		- All topics must be in the same class.
  *		- It cannot contain topics that start a scope.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -87,7 +87,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 
 			if (count == 0)
 				{  return;  }
-		
+
 			var classString = topics[startingIndex].ClassString;
 
 			for (int i = startingIndex; i < startingIndex + count; i++)
@@ -102,7 +102,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 
 			#endif
 			}
-		
+
 
 		/* Function: CalculateProperties
 		 * Recalculates <DominantTypeID>, <MixedTypes>, and <TitleMatchesType>.
@@ -151,7 +151,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 					mixedTypes = false;
 					}
 				else
-					{			
+					{
 					// Oh well.  Gather the counts for each type.  At least we avoided creating and using a dictionary for
 					// the groups that don't need it.
 
@@ -284,11 +284,11 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		public bool MixedTypes
 			{
 			get
-				{  
+				{
 				if (recalculateProperties)
 					{  CalculateProperties();  }
 
-				return mixedTypes;  
+				return mixedTypes;
 				}
 			}
 
@@ -299,11 +299,11 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		public int DominantTypeID
 			{
 			get
-				{  
+				{
 				if (recalculateProperties)
 					{  CalculateProperties();  }
 
-				return dominantTypeID;  
+				return dominantTypeID;
 				}
 			}
 
@@ -313,11 +313,11 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		public bool TitleMatchesType
 			{
 			get
-				{  
+				{
 				if (recalculateProperties)
 					{  CalculateProperties();  }
 
-				return titleMatchesType;  
+				return titleMatchesType;
 				}
 			}
 
@@ -381,4 +381,3 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 
 		}
 	}
-

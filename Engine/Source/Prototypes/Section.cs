@@ -1,13 +1,13 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Prototypes.Section
  * ____________________________________________________________________________
- * 
+ *
  * A class that wraps a section of a <Tokenizer> which has been marked with <PrototypeParsingTypes>.  Provides basic
  * functionality that will be common to many sections.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -25,8 +25,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: Section
 		 */
 		public Section (TokenIterator start, TokenIterator end)
@@ -53,7 +53,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			{
 			TokenIterator iterator = start;
 
-			while (iterator < end && 
+			while (iterator < end &&
 					  iterator.PrototypeParsingType != PrototypeParsingType.Name)
 				{  iterator.Next();  }
 
@@ -78,7 +78,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 
 		/* Function: GetAccessLevel
-		 * Returns the <Languages.AccessLevel> if it can be determined.  This should only be used with basic language support 
+		 * Returns the <Languages.AccessLevel> if it can be determined.  This should only be used with basic language support
 		 * as it's not as reliable as the results from the dedicated language parsers.
 		 */
 		virtual public Languages.AccessLevel GetAccessLevel ()
@@ -135,7 +135,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			{
 			TokenIterator iterator = start;
 
-			while (iterator < end && 
+			while (iterator < end &&
 					  iterator.PrototypeParsingType != PrototypeParsingType.Type &&
 					  iterator.PrototypeParsingType != PrototypeParsingType.TypeQualifier &&
 					  iterator.PrototypeParsingType != PrototypeParsingType.StartOfTuple)
@@ -155,12 +155,12 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 
 		/* Function: BuildFullType
-		 * 
+		 *
 		 * Returns the full type if one is marked by <PrototypeParsingType.Type> tokens, combining all its modifiers and qualifiers into
 		 * one continuous string.
-		 * 
+		 *
 		 * If the type and all its modifiers and qualifiers are continuous in the original <Tokenizer> it will return <TokenIterators> based
-		 * on it.  However, if the type and all its modifiers and qualifiers are NOT continuous it will create a separate <Tokenizer> to hold 
+		 * on it.  However, if the type and all its modifiers and qualifiers are NOT continuous it will create a separate <Tokenizer> to hold
 		 * a continuous version of it.  The returned bounds will be <TokenIterators> based on that rather than on the original <Tokenizer>.
 		 * The new <Tokenizer> will still contain the same <PrototypeParsingTypes> and <SyntaxHighlightingTypes> of the original.
 		 */
@@ -190,8 +190,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			while (iterator < end)
 				{
 				if (iterator.PrototypeParsingType == PrototypeParsingType.Type)
-					{  
-					foundType = true;  
+					{
+					foundType = true;
 					iterator.Next();
 					}
 				else if (iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier ||
@@ -223,7 +223,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 						lookahead.PrototypeParsingType == PrototypeParsingType.EndOfTuple ||
 						lookahead.PrototypeParsingType == PrototypeParsingType.TupleMemberSeparator ||
 						lookahead.PrototypeParsingType == PrototypeParsingType.TupleMemberName)
-						{  
+						{
 						iterator = lookahead;
 						}
 					else
@@ -243,7 +243,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			while (iterator < end)
 				{
 				if (iterator.PrototypeParsingType == PrototypeParsingType.Type)
-					{  
+					{
 					foundType = true;
 					continuous = false;
 					}
@@ -267,7 +267,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				iterator.Next();
 				}
 
-			
+
 			// If we didn't find a type we're done.
 
 			if (!foundType)
@@ -290,7 +290,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			// Return the continuous one if it's acceptable or build a new one if it's not.
 
 			if (continuous && acceptableSpacing)
-				{  
+				{
 				// fullTypeStart is already set
 				// fullTypeEnd is already set
 
@@ -304,8 +304,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 													"\", \"" + tempTokenizer.RawText + "\"");
 					}
 				#endif
-		
-				return true;  
+
+				return true;
 				}
 			else
 				{
@@ -320,14 +320,14 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 
 		/* Function: GetDefaultValue
-		 * Returns the bounds of the default value as marked by <PrototypeParsingType.DefaultValueSeparator> and 
+		 * Returns the bounds of the default value as marked by <PrototypeParsingType.DefaultValueSeparator> and
 		 * <PrototypeParsingType.DefaultValue, or false if it couldn't find it.
 		 */
 		virtual public bool GetDefaultValue (out TokenIterator defaultValueStart, out TokenIterator defaultValueEnd)
 			{
 			TokenIterator iterator = start;
 
-			while (iterator < end && 
+			while (iterator < end &&
 					 iterator.PrototypeParsingType != PrototypeParsingType.DefaultValue)
 				{  iterator.Next();  }
 
@@ -391,7 +391,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			closingModifier.Next();
 			int level = 1;
 
-			// We're going to cheat and assume all blocks are balanced and nested in a way that makes sense. This lets us handle 
+			// We're going to cheat and assume all blocks are balanced and nested in a way that makes sense. This lets us handle
 			// both in a simple loop.
 			for (;;)
 				{
@@ -402,12 +402,12 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					}
 				else if (closingModifier.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier ||
 						  closingModifier.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier)
-					{  
-					level++;  
+					{
+					level++;
 					}
 				else if (closingModifier.PrototypeParsingType == PrototypeParsingType.ClosingTypeModifier ||
 						  closingModifier.PrototypeParsingType == PrototypeParsingType.ClosingParamModifier)
-					{  
+					{
 					level--;
 
 					if (level == 0)
@@ -418,7 +418,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				}
 			}
 
-			
+
 		/* Function: TryToSkipModifierBlock
 		 * If the iterator is on a <PrototypeParsingType.OpeningTypeModifier> or <PrototypeParsingType.OpeningParamModifier>
 		 * token, moves the iterator past the entire block including any nested blocks.
@@ -437,9 +437,9 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				{  return false;  }
 			}
 
-			
+
 		/* Function: BuildFullType
-		 * Creates a new <Tokenizer> for the variable type, including all modifiers, even if they are not continuous.  This is a support 
+		 * Creates a new <Tokenizer> for the variable type, including all modifiers, even if they are not continuous.  This is a support
 		 * function for <BuildFullType(TokenIterator, TokenIterator, Tokenizer)> and it always builds a new <Tokenizer>.
 		 */
 		protected Tokenizer BuildFullType ()
@@ -481,8 +481,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 		// Group: Properties
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Property: Tokenizer
 		 */
 		public Tokenizer Tokenizer
@@ -532,10 +532,10 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			}
 
 
-		
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
+
 
 		/* var: start
 		 * The first token of the section.

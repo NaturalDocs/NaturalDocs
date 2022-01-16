@@ -1,11 +1,11 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.ExceptionExtensions
  * ____________________________________________________________________________
- * 
+ *
  * A static class for all the functions added to the System.Exception type.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -22,7 +22,7 @@ namespace CodeClear.NaturalDocs.Engine
 		// Group: Functions
 		// __________________________________________________________________________
 
-		
+
 		/* Function: HasNaturalDocsTask
 		 * Whether this exception has a Natural Docs task information attached to it.
 		 */
@@ -35,10 +35,10 @@ namespace CodeClear.NaturalDocs.Engine
 
 			return exceptionData.Contains("NDTask");
 			}
-		
+
 		/* Function: AddNaturalDocsTask
 		 * Adds a Natural Docs task information to the exception.  Multiple tasks can be added, such as "Processing file x" and "Processing topic y".
-		 * Since it is assumed that these will be added by exception handlers, it is assumed that they will be added in order of lowest child task to 
+		 * Since it is assumed that these will be added by exception handlers, it is assumed that they will be added in order of lowest child task to
 		 * highest parent task.
 		 */
 		static public void AddNaturalDocsTask (this Exception exception, string task)
@@ -53,9 +53,9 @@ namespace CodeClear.NaturalDocs.Engine
 			else
 				{  exceptionData.Add("NDTask", task);  }
 			}
-		
+
 		/* Function: GetNaturalDocsTasks
-		 * Returns the task Natural Docs was working on when the exception was thrown, or null if none.  There may be subtasks, such as "Processing 
+		 * Returns the task Natural Docs was working on when the exception was thrown, or null if none.  There may be subtasks, such as "Processing
 		 * file x" and "Processing topic y" so it is returned as a list.  The list is ordered from the highest parent task to the lowest child task.
 		 */
 		static public IList<string> GetNaturalDocsTasks (this Exception exception)
@@ -70,7 +70,7 @@ namespace CodeClear.NaturalDocs.Engine
 			else
 				{  return null;  }
 			}
-		
+
 		/* Function: HasNaturalDocsQuery
 		 * Whether this exception has query information attached to it by Natural Docs.
 		 */
@@ -83,9 +83,9 @@ namespace CodeClear.NaturalDocs.Engine
 
 			return exceptionData.Contains("NDQuery");
 			}
-		
+
 		/* Function: SetNaturalDocsQuery
-		 * Adds the Natural Docs query information to the exception.  Only the first query added will be stored.  Subsequent ones 
+		 * Adds the Natural Docs query information to the exception.  Only the first query added will be stored.  Subsequent ones
 		 * will be ignored.
 		 */
 		static public void AddNaturalDocsQuery (this Exception exception, string statement, params Object[] values)
@@ -96,9 +96,9 @@ namespace CodeClear.NaturalDocs.Engine
 			var exceptionData = exception.Data;
 
 			if (exceptionData.Contains("NDQuery") == false)
-				{  
-				exceptionData.Add("NDQuery", statement);  
-				
+				{
+				exceptionData.Add("NDQuery", statement);
+
 				if (values != null && values.Length > 0)
 					{
 					List<string> valueStrings = new List<string>(values.Length);
@@ -138,7 +138,7 @@ namespace CodeClear.NaturalDocs.Engine
 					}
 				}
 			}
-		
+
 		/* Function: GetNaturalDocsQuery
 		 * Returns the query Natural Docs was working on when the exception was thrown, or returns false if none.
 		 */
@@ -150,7 +150,7 @@ namespace CodeClear.NaturalDocs.Engine
 			var exceptionData = exception.Data;
 
 			if (exceptionData.Contains("NDQuery"))
-				{  
+				{
 				query = exceptionData["NDQuery"].ToString();
 
 				if (exceptionData.Contains("NDQueryValues"))
@@ -161,12 +161,12 @@ namespace CodeClear.NaturalDocs.Engine
 				return true;
 				}
 			else
-				{  
+				{
 				query = null;
 				values = null;
 				return false;
 				}
 			}
-		
+
 		}
 	}

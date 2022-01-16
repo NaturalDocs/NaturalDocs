@@ -6,7 +6,7 @@ _______________________________________________________________________________
 	This results in a smaller file sizes and it also lets you document your files heavily without worrying about how it will affect the
 	output.
 
-	As this includes line breaks, you have to be diligent about using semicolons in JavaScript.  For example, you must make sure 
+	As this includes line breaks, you have to be diligent about using semicolons in JavaScript.  For example, you must make sure
 	all functions defined this way have a semicolon after the closing brace:
 
 	> this.FunctionName = function ()
@@ -29,7 +29,7 @@ _______________________________________________________________________________
 
 	Topic: Including Comments in Shrunken Files
 
-		Normally comments are removed during shrinking, but if there's some copyright and licensing information you want to keep in 
+		Normally comments are removed during shrinking, but if there's some copyright and licensing information you want to keep in
 		there, put them in a comment under the heading "Include in output:".
 
 		> /* Include in output:
@@ -38,4 +38,3 @@ _______________________________________________________________________________
 
 		Only the text from the following line to the end of the comment will be included so you can have other information above it.  If
 		you include Natural Docs comments in your file and don't want this included in that documentation, put it in a separate comment.
-	

@@ -4,35 +4,35 @@ _______________________________________________________________________________
 
 The configuration file that defines or overrides the comment type definitions for Natural Docs.  One version sits in Natural Docs'
 configuration folder, and another in the project configuration folder to add comment types or override their behavior.
-		
-These files follows the standard conventions in <ConfigFile>.  Identifier and value whitespace is condensed.  Y, N, True, 
+
+These files follows the standard conventions in <ConfigFile>.  Identifier and value whitespace is condensed.  Y, N, True,
 and False can be substituted for Yes and No.
-		
+
 
 Group: Format
 _______________________________________________________________________________
-	
-	
+
+
 	Topic: Ignored Keywords
 
 		> Ignore[d] Keyword[s]: [keyword], [keyword] ...
 		>    [keyword]
 		>    [keyword], [keyword]
 		>    ...
-		
-		Ignores the keywords so that they're not recognized as Natural Docs comments anymore.  Can be specified as a list on 
+
+		Ignores the keywords so that they're not recognized as Natural Docs comments anymore.  Can be specified as a list on
 		the same line and/or following like a normal Keywords section.
 
 
 	Topic: Tags
-			
+
 		> Tag[s]: [tag], [tag] ...
 		>    [tag]
 		>    [tag]
 		>    ...
-			
+
 		Defines tags that can be applied to comment types.
-			
+
 
 	Topic: Comment Types
 
@@ -42,133 +42,133 @@ _______________________________________________________________________________
 		> (synonyms)
 		> Topic Type: [name]
 		> [Edit/Change] [Comment/Topic] Type: [name]
-			
+
 		Creates a new comment type or alters an existing one.  The name isn't case sensitive.
-			
-		The name Information is reserved.  There are a number of default types that must be defined in the system config file 
-		but those may be different for each individual release and aren't listed here.  The default types can have their 
+
+		The name Information is reserved.  There are a number of default types that must be defined in the system config file
+		but those may be different for each individual release and aren't listed here.  The default types can have their
 		keywords or behaviors changed, though, either by editing the system config file or by overriding them in the project
 		config file.
-			
-		Enumeration is a special type.  It is indexed with Types and its definition list members are indexed with Constants 
+
+		Enumeration is a special type.  It is indexed with Types and its definition list members are indexed with Constants
 		according to the rules in <Languages.txt>.
-			
+
 
 	Topic: Comment Type Properties
 
 		Display Name:
-		
+
 		> Display Name: [name]
 		> Plural Display Name: [name]
 		>
 		> (synonyms)
 		> Name: [name]
 		> Plural: [name]
-			
-		Specifies the singular and plural display names of the comment type.  If Display Name isn't defined, it defaults to the 
-		comment type name.  If Plural Display Name isn't defined, it defaults to the Display Name.  These are available so 
+
+		Specifies the singular and plural display names of the comment type.  If Display Name isn't defined, it defaults to the
+		comment type name.  If Plural Display Name isn't defined, it defaults to the Display Name.  These are available so
 		someone can rename one of the required types in the output since they can't change the comment type name.
-			
+
 		> Display Name from Locale: [identifier]
 		> Plural Display Name from Locale: [identifier]
 		>
 		> (synonyms)
 		> Name from Locale: [identifier]
 		> Plural from Locale: [identifier]
-			
-		Specifies the singular and plural display names of the comment type using an identifier from a translation file in the 
-		Engine module.  A comment type does not store both a normal and a "from locale" version, one overwrites the other.  
+
+		Specifies the singular and plural display names of the comment type using an identifier from a translation file in the
+		Engine module.  A comment type does not store both a normal and a "from locale" version, one overwrites the other.
 		This means that a project's configuration file can override the system's "from locale" version with a regular version.
-			
+
 
 		Simple Identifier:
 
 		> Simple Identifier: [name]
-			
+
 		Specifies the comment type name using only the letters A to Z.  No spaces, numbers, symbols, or Unicode
 		allowed.  This is for use in situations when such things may not be allowed, such as when generating CSS class names.
 		If it's not specified, it defaults to the comment type name stripped of all unacceptable characters.
-			
+
 
 		Scope:
 
 		> Scope: [normal|start|end|always global]
-			
+
 		How the comment affects scope.  Defaults to normal.
-			
+
 		normal - The comment stays within the current scope.
 		start - The comment starts a new scope for all the comments beneath it, like class comments.
 		end - The comment resets the scope back to global for all the comments beneath it, like section comments.
 		always global - The comment is defined as a global symbol, but does not change the scope for any other comments.
-			
+
 
 		Flags:
 
 		> Flags: [flag], [flag], ...
-			
+
 		Various flags that can be applied to the comment type.
-			
-		Code, File, Documentation - Whether it's used to describe a code element, a file, or is a standalone documentation 
+
+		Code, File, Documentation - Whether it's used to describe a code element, a file, or is a standalone documentation
 																comment.  Defaults to Code.
 		Variable Type - Whether it describes a code element that can be used as a variable's type.
-		Class Hierarchy, Database Hierarchy - Whether it describes a code element that should be included in the class or 
+		Class Hierarchy, Database Hierarchy - Whether it describes a code element that should be included in the class or
 																					database hierarchy.  Requires Scope: Start.
 		Enum - Whether it describes an enum.
-			
-		
+
+
 		Keywords:
 
 		> [Add] Keyword[s]:
 		>    [keyword]
 		>    [keyword], [plural keyword]
 		>    ...
-			
-		A list of the comment type's keywords.  Each line after the heading is the keyword and optionally its plural form.  This 
+
+		A list of the comment type's keywords.  Each line after the heading is the keyword and optionally its plural form.  This
 		continues until the next line in "keyword: value" format.  "Add" isn't required.
-			
+
 		- Keywords cannot contain colons, commas, braces, or #.
 		- Keywords are not case sensitive.
 		- Subsequent keyword sections add to the list.  They don't replace it.
 		- Keywords can be redefined by other keyword sections.
-			
+
 		> [Add] [Language] Keyword[s]:
 		>    [keyword]
 		>    [keyword], [plural keyword]
 		>    ...
-			
+
 		A list of language-specific keywords.  "Add" isn't required, but the language name is and it must appear in <Languages.txt>.
-			
+
 
 	Topic: Deprecated Properties
-		
+
 		These are no longer supported but are listed here as a reference for parsing earlier verisons of the file.
-			
+
 		> Index: [yes|no|with [comment type]]
 		> Index With: [comment type]
-			
+
 		Whether the comment type is indexed.  Defaults to yes.  If "with [comment type]" is specified, the type is indexed but only
 		as part of the other comment type's index.
-			
+
 		> Break List[s]: [yes|no]
-			
+
 		Whether list comments should be broken into individual topics in the output.  Defaults to no.
 
 		> Can Group With: [comment type], [comment type], ...
-			
+
 		The list of comment types the comment can possibly be grouped with.
-			
+
 		> Page Title if First: [yes|no]
-			
+
 		Whether the title of this comment becomes the page title if it is the first comment in a file.  Defaults to no.
-			
+
 		> Class Hierarchy: [yes|no]
-			
+
 		No longer its own setting, this will be converted into the Flags value.
-			
+
 
 Group: Revisions
 _______________________________________________________________________________
-		
+
 	Topic: 2.2
 
 		- Deprecated Index, Index With, and Break Lists.  They were already unused in practice.
@@ -185,7 +185,7 @@ _______________________________________________________________________________
 		- Added "with [comment type]" value to Index property.
 		- Replaced "Generic" as the default comment type with "Information".
 		- Added Tags.
-			
+
 	Topic: 1.3
 
 		- The initial version of this file.

@@ -1,11 +1,11 @@
-﻿/* 
+﻿/*
  * Enum: CodeClear.NaturalDocs.Engine.Config.PropertySource
  * ____________________________________________________________________________
- * 
+ *
  * The source of a configuration property.
- * 
+ *
  * Values:
- * 
+ *
  *		NotDefined - The property is not defined.
  *		SystemDefault - The property was not defined and is using the system default value.
  *		SystemGenerated - The property was not defined and the system generated a value.  This differs from <SystemDefault>
@@ -22,17 +22,17 @@
  *		ProjectCommentsFile - The property is defined in the project's <Comments.txt> file.
  *		SystemCommentsFile - The property is defined in the system's <Comments.txt> file.
  *		StyleConfigurationFile - The property is defined in a <Style.txt> file.
- *		
+ *
  * Meta-Values:
- * 
- *		LowestFileValue - Any value between or equal to this and <HighestFileValue> comes from a file such as <Project.txt> as 
+ *
+ *		LowestFileValue - Any value between or equal to this and <HighestFileValue> comes from a file such as <Project.txt> as
  *								opposed to something like the command line.
- *		HighestFileValue - Any value between or equal to this and <LowestFileValue> comes from a file such as <Project.txt> as 
+ *		HighestFileValue - Any value between or equal to this and <LowestFileValue> comes from a file such as <Project.txt> as
  *								opposed to something like the command line.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 

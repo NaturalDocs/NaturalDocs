@@ -1,21 +1,21 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles.TextFileCommentType
  * ____________________________________________________________________________
- * 
- * A class encapsulating information about a comment type as parsed from a <ConfigFiles.TextFile>.  This differs from 
- * <CommentType> in that its meant to represent how its entry appears in the text file rather than the final combined 
+ *
+ * A class encapsulating information about a comment type as parsed from a <ConfigFiles.TextFile>.  This differs from
+ * <CommentType> in that its meant to represent how its entry appears in the text file rather than the final combined
  * settings.  For example, any field can be null if it's not defined.
- * 
- * 
+ *
+ *
  * Multithreading: Not Thread Safe, Supports Multiple Readers
- * 
+ *
  *		This object doesn't have any locking built in, and so it is up to the class managing it to provide thread safety if needed.
  *		However, it does support multiple concurrent readers.  This means it can be used in read-only mode with no locking or
  *		in read/write mode with a ReaderWriterLock.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -32,8 +32,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: TextFileCommentType
 		 */
 		public TextFileCommentType (string name, PropertyLocation propertyLocation, bool alterType = false)
@@ -99,7 +99,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 				foreach (var keywordGroup in keywordGroups)
 					{  copy.keywordGroups.Add( keywordGroup.Duplicate() );  }
 				}
-			
+
 			return copy;
 			}
 
@@ -130,7 +130,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 			this.displayNameFromLocale = null;
 			this.displayNameFromLocalePropertyLocation = default;
 			}
-			
+
 		/* Function: SetDisplayNameFromLocale
 		 * Sets the comment type's display name identifier to be retrieved from <Engine.Locale>.  This will also set <DisplayName>
 		 * to null since the cannot both have values.
@@ -143,7 +143,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 			this.displayName = null;
 			this.displayNamePropertyLocation = default;
 			}
-			
+
 		/* Function: SetPluralDisplayName
 		 * Sets the comment type's plural display name.  This will also set <PluralDisplayNameFromLocale> to null since they
 		 * cannot both have values.
@@ -156,7 +156,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 			this.pluralDisplayNameFromLocale = null;
 			this.pluralDisplayNameFromLocalePropertyLocation = default;
 			}
-			
+
 		/* Function: SetPluralDisplayNameFromLocale
 		 * Sets the comment type's plural display name identifier to be retrieved from <Engine.Locale>.  This will also set
 		 * <PluralDisplayName> to null since they cannot both have values.
@@ -169,7 +169,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 			this.pluralDisplayName = null;
 			this.pluralDisplayNamePropertyLocation = default;
 			}
-			
+
 		/* Function: SetSimpleIdentifier
 		 * Sets the comment type's name using only the letters A to Z.
 		 */
@@ -221,15 +221,15 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 
 		// Group: Properties
 		// __________________________________________________________________________
-			
-			
+
+
 		/* Property: PropertyLocation
 		 * The <PropertyLocation> where the comment type is defined.
 		 */
 		public PropertyLocation PropertyLocation
 			{
 			get
-				{  
+				{
 				// Name is defined on the starting line of the comment type.
 				return namePropertyLocation;
 				}
@@ -243,7 +243,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 			get
 				{  return name;  }
 			}
-			
+
 		/* Property: NamePropertyLocation
 		 * The <PropertyLocation> where <Name> is defined.
 		 */
@@ -261,7 +261,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 			get
 				{  return alterType;  }
 			}
-			
+
 		/* Property: HasDisplayName
 		 * Whether the comment type's display name property is defined.
 		 */
@@ -270,7 +270,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 			get
 				{  return (displayName != null);  }
 			}
-			
+
 		/* Property: DisplayName
 		 * The comment type's display name, or null if it's not defined.
 		 */
@@ -279,7 +279,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 			get
 				{  return displayName;  }
 			}
-			
+
 		/* Property: DisplayNamePropertyLocation
 		 * The <PropertyLocation> where <DisplayName> is defined.
 		 */
@@ -297,7 +297,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 			get
 				{  return (displayNameFromLocale != null);  }
 			}
-			
+
 		/* Property: DisplayNameFromLocale
 		 * The comment type's display name identifier to be retrieved from <Engine.Locale>, or null if it's not defined.
 		 */
@@ -306,7 +306,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 			get
 				{  return displayNameFromLocale;  }
 			}
-			
+
 		/* Property: DisplayNameFromLocalePropertyLocation
 		 * The <PropertyLocation> where <DisplayNameFromLocale> is defined.
 		 */
@@ -324,7 +324,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 			get
 				{  return (pluralDisplayName != null);  }
 			}
-			
+
 		/* Property: PluralDisplayName
 		 * The comment type's plural display name, or null if it's not defined.
 		 */
@@ -333,7 +333,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 			get
 				{  return pluralDisplayName;  }
 			}
-			
+
 		/* Property: PluralDisplayNamePropertyLocation
 		 * The <PropertyLocation> where <PluralDisplayName> is defined.
 		 */
@@ -351,7 +351,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 			get
 				{  return (pluralDisplayNameFromLocale != null);  }
 			}
-			
+
 		/* Property: PluralDisplayNameFromLocale
 		 * The comment type's plural display name identifier to be retrieved from <Engine.Locale>, or null if it's not defined.
 		 */
@@ -360,7 +360,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 			get
 				{  return pluralDisplayNameFromLocale;  }
 			}
-			
+
 		/* Property: PluralDisplayNameFromLocalePropertyLocation
 		 * The <PropertyLocation> where <PluralDisplayNameFromLocale> is defined.
 		 */
@@ -396,7 +396,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 			get
 				{  return simpleIdentifierPropertyLocation;  }
 			}
-			
+
 		/* Property: HasScope
 		 * Whether the comment type's scope property was defined..
 		 */
@@ -497,11 +497,11 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 				{  return keywordGroups;  }
 			}
 
-				
-		
+
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
+
 		/* var: name
 		 * The comment type name.
 		 */
@@ -511,12 +511,12 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 		 * The <PropertyLocation> where <name> is defined, and thus where the entire comment type is defined.
 		 */
 		protected PropertyLocation namePropertyLocation;
-		
+
 		/* var: alterType
 		 * Whether this entry is for altering a comment type instead of defining a new one.
 		 */
 		protected bool alterType;
-		
+
 		/* var: displayName
 		 * The comment type's display name, or null if it's not defined.
 		 */
@@ -526,12 +526,12 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 		 * The <PropertyLocation> where <displayName> is defined.
 		 */
 		protected PropertyLocation displayNamePropertyLocation;
-		
+
 		/* var: displayNameFromLocale
 		 * The locale identifier of the comment type's display name, or null if it's not defined.
 		 */
 		protected string displayNameFromLocale;
-		
+
 		/* var: displayNameFromLocalePropertyLocation
 		 * The <PropertyLocation> where <displayNameFromLocale> is defined.
 		 */
@@ -541,7 +541,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 		 * The comment type's plural display name, or null if it's not defined.
 		 */
 		protected string pluralDisplayName;
-		
+
 		/* var: pluralDisplayNamePropertyLocation
 		 * The <PropertyLocation> where <pluralDisplayName> is defined.
 		 */
@@ -551,7 +551,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 		 * The locale identifier of the comment type's plural display name, or null if it's not defined.
 		 */
 		protected string pluralDisplayNameFromLocale;
-		
+
 		/* var: pluralDisplayNameFromLocalePropertyLocation
 		 * The <PropertyLocation> where <pluralDisplayNameFromLocale> is defined.
 		 */
@@ -561,7 +561,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 		 * The comment type's name using only the letters A to Z, or null if it's not defined.
 		 */
 		protected string simpleIdentifier;
-		
+
 		/* var: simpleIdentifierPropertyLocation
 		 * The <PropertyLocation> where <simpleIdentifier> is defined.
 		 */
@@ -576,7 +576,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 		 * The <PropertyLocation> where <scope> is defined.
 		 */
 		protected PropertyLocation scopePropertyLocation;
-		
+
 		/* var: hierarchyName
 		 * The name of the hierarchy the comment type appears in, or null if none.
 		 */
@@ -586,7 +586,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 		 * The <PropertyLocation> where <hierarchyName> is defined.
 		 */
 		protected PropertyLocation hierarchyNamePropertyLocation;
-		
+
 		/* var: flags
 		 * The combination of all <CommentType.FlagValues> that apply, or null if it is not defined.  Note that this does not
 		 * include the <hierarchyName> even though that's declared in the flags.

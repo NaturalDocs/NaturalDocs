@@ -1,11 +1,11 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.JSONMenuEntries.RootContainer
  * ____________________________________________________________________________
- * 
+ *
  * A base class for root container entries in <JSONMenu>.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -23,7 +23,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.JSONMenuEntries
 		// Group: Functions
 		// __________________________________________________________________________
 
-		
+
 		/* Function: RootContainer
 		 */
 		public RootContainer (MenuEntries.Container menuContainer) : base (menuContainer)

@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.PageLocation
  * ____________________________________________________________________________
- * 
+ *
  * The location of a topic page, such as for a source file or class.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -108,7 +108,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			{
 			get
 				{  return classString;  }
-			}		
+			}
 
 
 
@@ -136,4 +136,3 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 		}
 	}
-

@@ -4,9 +4,9 @@ _______________________________________________________________________________
 
 This parser is currently written for the C# 9.0 language proposal as of January 2021.
 
-The parser may be more tolerant than the actual C# syntax in places.  For example, destructors may not have modifiers 
-other than "extern", but this parser will accept any of the standard ones like "public" and "protected".  This is done wherever 
-it may simplify the parser code (in this case, condensing all modifier parsing into a single <TryToSkipModifiers()> function) 
+The parser may be more tolerant than the actual C# syntax in places.  For example, destructors may not have modifiers
+other than "extern", but this parser will accept any of the standard ones like "public" and "protected".  This is done wherever
+it may simplify the parser code (in this case, condensing all modifier parsing into a single <TryToSkipModifiers()> function)
 as it's not important for the code to be perfectly valid in order to generate documentation.
 
 In other places it may be less tolerant, but these are documented in <Unsupported Features>.
@@ -21,20 +21,20 @@ _______________________________________________________________________________
 
 	Topic: @ Identifiers
 
-		Identifiers may be prefixed with the @ symbol, which allows the use of keywords as identifiers.  Thus "class" should be 
+		Identifiers may be prefixed with the @ symbol, which allows the use of keywords as identifiers.  Thus "class" should be
 		highlighted as a keyword but "@class" should not.
 
 
 	Topic: Access Level Interaction
 
-		When a class marked "internal" has a member marked "public", the member is functionally "internal" for all practical 
+		When a class marked "internal" has a member marked "public", the member is functionally "internal" for all practical
 		purposes.  See the language reference for the full rules regarding these types of interactions.
 
 
 	Topic: Pointer Types and Unsafe Code
 
 		Unsafe code extensions are documented separately in the language reference, so looking at the syntax diagrams without
-		them will give an incomplete picture.  For example, void* is a valid type that can be used anywhere even though void 
+		them will give an incomplete picture.  For example, void* is a valid type that can be used anywhere even though void
 		would only be used in function return values otherwise.
 
 		Also, look at this code:
@@ -42,13 +42,13 @@ _______________________________________________________________________________
 		> int* x, y;
 
 		In C++ that would mean
-		
+
 		> int *x, int y
-		
+
 		as the asterisk is associated with the name.  In C# it means
-		
-		> int* x, int* y 
-		
+
+		> int* x, int* y
+
 		as the asterisk is associated with the type.
 
 
@@ -57,7 +57,7 @@ Group: Unsupported Features
 _______________________________________________________________________________
 
 	These language elements are not supported by the parser.
-	
+
 
 	Topic: Alternative Line Breaks
 
@@ -112,10 +112,10 @@ _______________________________________________________________________________
 	Topic: Identifier Characters
 
 		Excluding the @, C# identifiers can start with an underscore or any character in Unicode classes Lu (Letter, Uppercase)
-		Ll (Letter, Lowercase) Lt, Lm, Lo, or Nl.  Subsequent characters can also be in the character classes Mn, Mc, Nd (Number, 
+		Ll (Letter, Lowercase) Lt, Lm, Lo, or Nl.  Subsequent characters can also be in the character classes Mn, Mc, Nd (Number,
 		Decimal Digit) Pc, or Cf.
 
-		The parser follows these rules for ASCII characters, but all Unicode characters beyond U+007F are treated as if they are 
+		The parser follows these rules for ASCII characters, but all Unicode characters beyond U+007F are treated as if they are
 		a letter.
 
 
@@ -128,5 +128,5 @@ _______________________________________________________________________________
 	Topic: Separate Accessor Access Levels
 
 		Properties can have access keywords like "public" applied to itself as a whole and also specifically to get and set.  While the
-		access keywords applied to get and set will appear in the prototype, Natural Docs will otherwise only use the overall access 
+		access keywords applied to get and set will appear in the prototype, Natural Docs will otherwise only use the overall access
 		level of the property.

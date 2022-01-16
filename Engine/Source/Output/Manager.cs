@@ -1,11 +1,11 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.Manager
  * ____________________________________________________________________________
- * 
+ *
  * A class to manage all the output targets.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -19,19 +19,19 @@ namespace CodeClear.NaturalDocs.Engine.Output
 	{
 	public class Manager : Module
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: Manager
 		 */
 		public Manager (Engine.Instance engineInstance) : base (engineInstance)
 			{
 			targets = new List<Target>();
 			}
-			
-			
+
+
 		/* Function: Dispose
 		 */
 		override protected void Dispose (bool strictRulesApply)
@@ -51,23 +51,23 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			{
 			targets.Add(target);
 			}
-			
-			
+
+
 		/* Function: Start
-		 * Initializes the manager and returns whether all the settings are correct and that execution is ready to begin.  
-		 * If there are problems they are added as <Errors> to the errorList parameter.  This class is *not* designed to allow 
+		 * Initializes the manager and returns whether all the settings are correct and that execution is ready to begin.
+		 * If there are problems they are added as <Errors> to the errorList parameter.  This class is *not* designed to allow
 		 * multiple attempts.  If this function fails scrap the entire <Engine.Instance> and start again.
 		 */
 		public bool Start (ErrorList errorList)
 			{
 			bool success = true;
-			
+
 			foreach (var target in targets)
 				{
 				if (target.Start(errorList) == false)
 					{  success = false;  }
 				}
-				
+
 			started = success;
 			return success;
 			}
@@ -96,8 +96,8 @@ namespace CodeClear.NaturalDocs.Engine.Output
 
 		// Group: Properties
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Property: Targets
 		 * A read-only list of <Targets> managed by this module.  If there are none, the list will be empty instead of null.
 		 */
@@ -108,10 +108,10 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			}
 
 
-			
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
+
 		protected List<Target> targets;
 
 		}

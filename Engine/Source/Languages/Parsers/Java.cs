@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Languages.Parsers.Java
  * ____________________________________________________________________________
- * 
+ *
  * Additional language support for Java.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -22,7 +22,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		// Group: Functions
 		// __________________________________________________________________________
-		
+
 
 		/* Constructor: Java
 		 */
@@ -36,7 +36,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		override public void SyntaxHighlight (Tokenizer source)
 			{
 			TokenIterator iterator = source.FirstToken;
-			
+
 			while (iterator.IsInBounds)
 				{
 				if (TryToSkipComment(ref iterator, ParseMode.SyntaxHighlight) ||
@@ -123,7 +123,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 
-			// If we found brackets, it's either a function prototype or a class prototype that includes members.  
+			// If we found brackets, it's either a function prototype or a class prototype that includes members.
 			// Mark the delimiters.
 
 			if (closingBracket != '\0')
@@ -148,7 +148,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					// Unlike prototype detection, here we treat < as an opening bracket.  Since we're already in the parameter list
 					// we shouldn't run into it as part of an operator overload, and we need it to not treat the comma in "template<a,b>"
 					// as a parameter divider.
-					else if (TryToSkipComment(ref iterator) || 
+					else if (TryToSkipComment(ref iterator) ||
 							   TryToSkipString(ref iterator) ||
 							   TryToSkipBlock(ref iterator, true))
 						{  }
@@ -195,7 +195,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					}
 				}
 
-			
+
 			// If there's no brackets, it's a variable, property, or class.
 
 			else
@@ -212,11 +212,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipAnnotations
-		 * 
+		 *
 		 * Tries to move the iterator past one or more annotations, like "@Preliminary" or "@Copynight("String")".
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- <ParseMode.ParsePrototype>
@@ -247,11 +247,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipAnnotation
-		 * 
+		 *
 		 * Tries to move the iterator past a single annotation, like "@Preliminary" or "@Copynight("String")".
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- <ParseMode.ParsePrototype>
@@ -265,7 +265,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			TokenIterator lookahead = iterator;
 			lookahead.Next();
-			
+
 			// Whitespace is allowed between the @ and the identifier, though it's not recommended
 			TryToSkipWhitespace(ref lookahead, true, mode);
 
@@ -296,11 +296,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipAnnotationParameters
-		 * 
+		 *
 		 * Tries to move the iterator past an annotation parameter section, such as "("String")" in "@Copynight("String")".
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- <ParseMode.ParsePrototype>
@@ -351,7 +351,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						startOfParam = lookahead;
 						}
 
-					else if (TryToSkipComment(ref lookahead) || 
+					else if (TryToSkipComment(ref lookahead) ||
 							   TryToSkipString(ref lookahead) ||
 							   TryToSkipBlock(ref lookahead, true))
 						{  }
@@ -369,12 +369,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: MarkAnnotationParameter
-		 * 
-		 * Applies types to an annotation parameter, such as ""String"" in "@Copynight("String")" or "id = 12" in 
+		 *
+		 * Applies types to an annotation parameter, such as ""String"" in "@Copynight("String")" or "id = 12" in
 		 * "@RequestForEnhancement(id = 12, engineer = "String")".
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.ParsePrototype>
 		 *			- The contents will be marked with parameter tokens.
 		 *		- Everything else has no effect.
@@ -402,7 +402,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					equals.PrototypeParsingType = PrototypeParsingType.PropertyValueSeparator;
 					break;
 					}
-				else if (TryToSkipComment(ref equals) || 
+				else if (TryToSkipComment(ref equals) ||
 							TryToSkipString(ref equals) ||
 							TryToSkipBlock(ref equals, true))
 					{  }
@@ -436,12 +436,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipIdentifier
-		 * 
+		 *
 		 * Tries to move the iterator past a qualified identifier, such as "X.Y.Z".  Use <TryToSkipUnqualifiedIdentifier()> if you only want
 		 * to skip a single segment.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
@@ -466,11 +466,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipUnqualifiedIdentifier
-		 * 
+		 *
 		 * Tries to move the iterator past a single unqualified identifier, which means only "X" in "X.Y.Z".
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */

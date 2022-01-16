@@ -4,19 +4,19 @@ _______________________________________________________________________________
 
 This is an important issue to keep track of because ID numbers are managed in <IDObjects.Managers> and/or
 <IDObjects.NumberSets>.  When a NumberSet assigns a new ID number it gives out the lowest one available, which
-means that IDs which are deleted will probably be reused right away.  That means it's important to manage exactly 
-when they are deleted so that you know there are no references left behind when it happens.  Otherwise an ID number's 
+means that IDs which are deleted will probably be reused right away.  That means it's important to manage exactly
+when they are deleted so that you know there are no references left behind when it happens.  Otherwise an ID number's
 meaning may change out from under code unexpectedly.
 
 
 Topic: Comment Type, Language, and Tag IDs
 
-	These are easy.  These IDs can only be changed by changing <Comments.txt> or <Languages.txt> between runs.  
-	Changing those files in a substantial way automatically triggers a complete rebuild, so any references to them in 
+	These are easy.  These IDs can only be changed by changing <Comments.txt> or <Languages.txt> between runs.
+	Changing those files in a substantial way automatically triggers a complete rebuild, so any references to them in
 	CodeDB or other areas are thrown out and the data regenerated.  As such you don't have to worry about deletions
 	for these types of IDs.
-	
-	
+
+
 Topic: File IDs
 
 	File IDs are assigned by <Files.Manager>.  First the IDs from the previous run are loaded from <Files.nd>.  Then as
@@ -28,10 +28,10 @@ Topic: File IDs
 Topic: Topic IDs
 
 	Topic IDs are assigned by <CodeDB.Manager>.  New ones are assigned when an accessor adds one to the database,
-	and the IDs are removed immediately when it deletes them.  However, they will still exist while the 
+	and the IDs are removed immediately when it deletes them.  However, they will still exist while the
 	<CodeDB.IChangeWatchers> are being notified.
-	
-	Output targets should not need deleted topic IDs to stick around.  They should be translating the add/change/delete 
+
+	Output targets should not need deleted topic IDs to stick around.  They should be translating the add/change/delete
 	events into the effects on the documentation, such as "rebuild file x".  They should not need them beyond the event
 	notification.
 

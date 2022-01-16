@@ -1,11 +1,11 @@
-/* 
+/*
  * Class: CodeClear.NaturalDocs.Engine.Config.Targets.Filter
  * ____________________________________________________________________________
- * 
+ *
  * A base class for the configuration of all filter targets.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -17,10 +17,10 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 	{
 	abstract public class Filter
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
+
 
 		public Filter (PropertyLocation propertyLocation)
 			{
@@ -33,7 +33,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 			}
 
 		abstract public Filter Duplicate ();
-					
+
 		/* Function: Validate
 		 * Override to add errors if there are any problems with the target's properties, such as a folder not existing.
 		 * TargetIndex is passed so that you may include it in the error's Property field, such as

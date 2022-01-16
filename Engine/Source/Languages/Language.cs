@@ -1,26 +1,26 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Languages.Language
  * ____________________________________________________________________________
- * 
+ *
  * A class encapsulating information about a language.
- * 
- * 
+ *
+ *
  * Multithreading: Thread Safety Notes
- * 
+ *
  *		Once the object is set up, meaning there will be no further changes to properties like <LineCommentSymbols>,
- *		the object is read-only and can be used by multiple threads simultaneously.  <Parser> stores no parsing state 
+ *		the object is read-only and can be used by multiple threads simultaneously.  <Parser> stores no parsing state
  *		information so it is also okay to be used by multiple threads simulaneously.
- *		
- *	
+ *
+ *
  * Topic: Language-Specific Parsers
- * 
+ *
  *		The <Parser> property can be set to a language-specific one instead of the default generalized one.  In order to
- *		have it used automatically you must also create a predefined language entry in <Languages.Manager>'s 
+ *		have it used automatically you must also create a predefined language entry in <Languages.Manager>'s
  *		constructor.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -34,20 +34,20 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 	{
 	public class Language : IDObjects.IDObject
 		{
-		
+
 		// Group: Types
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Enum: EnumValues
 		 * Can be Global, UnderType, or UnderParent.
 		 */
 		public enum EnumValues : byte
 			{  Global, UnderType, UnderParent  };
-		
-		
+
+
 		/* Enum: LanguageType
-		 * 
+		 *
 		 * The type of language or file this is.
 		 *
 		 * FullSupport - The language is fully supported.
@@ -57,13 +57,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 */
 		public enum LanguageType : byte
 			{  FullSupport, BasicSupport, TextFile, Container  };
-		
-		
-		
+
+
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: Language
 		 * Creates a new language object.
 		 */
@@ -71,7 +71,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			{
 			this.name = name;
 
-			simpleIdentifier = null;			
+			simpleIdentifier = null;
 			type = LanguageType.BasicSupport;
 			parser = null;
 			lineCommentSymbols = null;
@@ -93,7 +93,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			{
 			return (PrototypeEndersIndex(commentTypeID) != -1);
 			}
-			
+
 		/* Function: GetPrototypeEndersFor
 		 * Returns the <Languages.PrototypeEnders> for the passed comment type, or null if there are none.
 		 */
@@ -106,7 +106,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			else
 				{  return prototypeEnders[index];  }
 			}
-			
+
 		/* Function: AddPrototypeEnders
 		 * Sets the <PrototypeEnders> for the passed comment type.  If enders already existed for that type they will be replaced.
 		 */
@@ -157,13 +157,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			return -1;
 			}
-			
 
-			
+
+
 		// Group: Properties
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Property: Name
 		 * The name of the language.
 		 */
@@ -183,7 +183,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			set
 				{  simpleIdentifier = value;  }
 			}
-			
+
 		/* Property: Type
 		 * The <LanguageType> of the language or file.
 		 */
@@ -194,7 +194,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			set
 				{  type = value;  }
 			}
-		
+
 		/* Property: HasParser
 		 * Whether <Parser> has been set.
 		 */
@@ -223,7 +223,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			get
 				{  return (lineCommentSymbols != null);  }
 			}
-			
+
 		/* Property: LineCommentSymbols
 		 * A list of strings representing line comment symbols, or null if none are defined.
 		 */
@@ -232,7 +232,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			get
 				{  return lineCommentSymbols;  }
 			set
-				{  
+				{
 				if (value == null || value.Count == 0)
 					{  lineCommentSymbols = null;  }
 				else
@@ -255,7 +255,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			get
 				{  return (blockCommentSymbols != null);  }
 			}
-			
+
 		/* Property: BlockCommentSymbols
 		 * A list of <Languages.BlockCommentSymbols> that start and end block comments, or null if none are defined.
 		 */
@@ -264,7 +264,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			get
 				{  return blockCommentSymbols;  }
 			set
-				{  
+				{
 				if (value == null || value.Count == 0)
 					{  blockCommentSymbols = null;  }
 				else
@@ -288,7 +288,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			get
 				{  return (javadocLineCommentSymbols != null);  }
 			}
-			
+
 		/* Property: JavadocLineCommentSymbols
 		 * A list of <Languages.LineCommentSymbols> that start Javadoc line comments, or null if there aren't any.
 		 */
@@ -297,7 +297,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			get
 				{  return javadocLineCommentSymbols;  }
 			set
-				{  
+				{
 				if (value == null || value.Count == 0)
 					{  javadocLineCommentSymbols = null;  }
 				else
@@ -321,7 +321,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			get
 				{  return (javadocBlockCommentSymbols != null);  }
 			}
-			
+
 		/* Property: JavadocBlockCommentSymbols
 		 * A list of <Javadoc.BlockCommentSymbols> that start and end Javadoc block comments, or null if there aren't any.
 		 */
@@ -330,7 +330,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			get
 				{  return javadocBlockCommentSymbols;  }
 			set
-				{  
+				{
 				if (value == null || value.Count == 0)
 					{  javadocBlockCommentSymbols = null;  }
 				else
@@ -354,7 +354,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			get
 				{  return (xmlLineCommentSymbols != null);  }
 			}
-			
+
 		/* Property: XMLLineCommentSymbols
 		 * A list of strings that start XML line comments, or null if there aren't any.
 		 */
@@ -363,7 +363,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			get
 				{  return xmlLineCommentSymbols;  }
 			set
-				{  
+				{
 				if (value == null || value.Count == 0)
 					{  xmlLineCommentSymbols = null;  }
 				else
@@ -415,7 +415,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			get
 				{  return (lineExtender != null);  }
 			}
-		
+
 		/* Property: LineExtender
 		 * A string representing the line extender symbol if line breaks are significant to the language, or null if none.
 		 */
@@ -453,8 +453,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 		// Group: Operators
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Function: operator ==
 		 * Returns whether all the properties of the two languages are equal.
 		 */
@@ -478,18 +478,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				language1.caseSensitive != language2.caseSensitive)
 				{  return false;  }
 
-			int lineCommentSymbols1Count = (language1.lineCommentSymbols != null ? language1.lineCommentSymbols.Count : 0);						  
-			int lineCommentSymbols2Count = (language2.lineCommentSymbols != null ? language2.lineCommentSymbols.Count : 0);						  
-			int blockCommentSymbols1Count = (language1.blockCommentSymbols != null ? language1.blockCommentSymbols.Count : 0);						  
+			int lineCommentSymbols1Count = (language1.lineCommentSymbols != null ? language1.lineCommentSymbols.Count : 0);
+			int lineCommentSymbols2Count = (language2.lineCommentSymbols != null ? language2.lineCommentSymbols.Count : 0);
+			int blockCommentSymbols1Count = (language1.blockCommentSymbols != null ? language1.blockCommentSymbols.Count : 0);
 			int blockCommentSymbols2Count = (language2.blockCommentSymbols != null ? language2.blockCommentSymbols.Count : 0);
-			int javadocLineCommentSymbols1Count = (language1.javadocLineCommentSymbols != null ? language1.javadocLineCommentSymbols.Count : 0);						  
-			int javadocLineCommentSymbols2Count = (language2.javadocLineCommentSymbols != null ? language2.javadocLineCommentSymbols.Count : 0);						  
-			int javadocBlockCommentSymbols1Count = (language1.javadocBlockCommentSymbols != null ? language1.javadocBlockCommentSymbols.Count : 0);						  
-			int javadocBlockCommentSymbols2Count = (language2.javadocBlockCommentSymbols != null ? language2.javadocBlockCommentSymbols.Count : 0);						  
-			int xmlLineCommentSymbols1Count = (language1.xmlLineCommentSymbols != null ? language1.xmlLineCommentSymbols.Count : 0);						  
-			int xmlLineCommentSymbols2Count = (language2.xmlLineCommentSymbols != null ? language2.xmlLineCommentSymbols.Count : 0);						  
-			int prototypeEnders1Count = (language1.prototypeEnders != null ? language1.prototypeEnders.Count : 0);						  
-			int prototypeEnders2Count = (language2.prototypeEnders != null ? language2.prototypeEnders.Count : 0);						  
+			int javadocLineCommentSymbols1Count = (language1.javadocLineCommentSymbols != null ? language1.javadocLineCommentSymbols.Count : 0);
+			int javadocLineCommentSymbols2Count = (language2.javadocLineCommentSymbols != null ? language2.javadocLineCommentSymbols.Count : 0);
+			int javadocBlockCommentSymbols1Count = (language1.javadocBlockCommentSymbols != null ? language1.javadocBlockCommentSymbols.Count : 0);
+			int javadocBlockCommentSymbols2Count = (language2.javadocBlockCommentSymbols != null ? language2.javadocBlockCommentSymbols.Count : 0);
+			int xmlLineCommentSymbols1Count = (language1.xmlLineCommentSymbols != null ? language1.xmlLineCommentSymbols.Count : 0);
+			int xmlLineCommentSymbols2Count = (language2.xmlLineCommentSymbols != null ? language2.xmlLineCommentSymbols.Count : 0);
+			int prototypeEnders1Count = (language1.prototypeEnders != null ? language1.prototypeEnders.Count : 0);
+			int prototypeEnders2Count = (language2.prototypeEnders != null ? language2.prototypeEnders.Count : 0);
 
 			if (lineCommentSymbols1Count != lineCommentSymbols2Count ||
 				blockCommentSymbols1Count != blockCommentSymbols2Count ||
@@ -559,7 +559,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			return true;
 			}
-			
+
 		/* Function: operator !=
 		 * Returns if any of the properties of the two languages are different.
 		 */
@@ -567,7 +567,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			{
 			return !(language1 == language2);
 			}
-			
+
 		public override bool Equals (object o)
 			{
 			if (o is Language)
@@ -580,12 +580,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			{
 			return Name.GetHashCode();
 			}
-			
-			
-		
+
+
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
+
 		/* var: name
 		 * The language name.
 		 */
@@ -595,7 +595,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * The language's name using only the letters A to Z, or null if it's not defined.
 		 */
 		protected string simpleIdentifier;
-		
+
 		/* var: type
 		 * The <LanguageType> of the language or file.
 		 */
@@ -610,22 +610,22 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * A list of strings that start line comments, or null if there aren't any.
 		 */
 		protected List<string> lineCommentSymbols;
-		
+
 		/* var: blockCommentSymbols
 		 * A list of <Languages.BlockCommentSymbols> that start and end block comments, or null if there aren't any.
 		 */
 		protected List<BlockCommentSymbols> blockCommentSymbols;
-		
+
 		/* var: javadocLineCommentSymbols
 		 * A list of <Languages.LineCommentSymbols> that start Javadoc line comments, or null if there aren't any.
 		 */
 		protected List<LineCommentSymbols> javadocLineCommentSymbols;
-		
+
 		/* var: javadocBlockCommentSymbols
 		 * A list of <Javadoc.BlockCommentSymbols> that start and end Javadoc block comments, or null if there aren't any.
 		 */
 		protected List<BlockCommentSymbols> javadocBlockCommentSymbols;
-		
+
 		/* var: xmlLineCommentSymbols
 		 * A list of strings that start XML line comments, or null if there aren't any.
 		 */
@@ -635,19 +635,19 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * A string representing the default member operator symbol.
 		 */
 		protected string memberOperator;
-		
+
 		/* var: prototypeEnders
-		 * A list of the <Languages.PrototypeEnders> associated with this language.  Since there shouldn't be very many entries 
+		 * A list of the <Languages.PrototypeEnders> associated with this language.  Since there shouldn't be very many entries
 		 * it is more efficient to have a list and walk through them than to use a Dictionary.
 		 */
 		protected List<PrototypeEnders> prototypeEnders;
-		
+
 		/* var: lineExtender
-		 * A string representing the line extender symbol if line breaks are significant to the language, or null if ithere is 
+		 * A string representing the line extender symbol if line breaks are significant to the language, or null if ithere is
 		 * none.
 		 */
 		protected string lineExtender;
-		
+
 		/* var: enumValue
 		 * How the language handles enum values.
 		 */

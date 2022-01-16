@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.Entries.Entry
  * ____________________________________________________________________________
- * 
+ *
  * A base class for all entries in the search index.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -29,9 +29,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.Entries
 
 
 		/* Function: Normalize
-		 * 
+		 *
 		 * Converts a string to a standardized form that's easier to search.
-		 * 
+		 *
 		 * - Text is converted to lowercase, regardless of whether the language is case-sensitive or not.
 		 * - Whitespace is condensed.
 		 * - Spaces that don't separate alphanumeric and underscore characters are removed.
@@ -91,10 +91,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.Entries
 
 
 		/* Function: NormalizeSeparators
-		 * 
+		 *
 		 * Converts all separators to a standardized form that's easier to search.  If you called <Normalize()> there is no need
 		 * to call this as well.
-		 * 
+		 *
 		 * - :: and -> are converted to . regardless of what the language's member operator is.  It also doesn't matter if
 		 *   they appear in non-code topics or not.
 		 * - \ is converted to / regardless of what the platform's path separator is.  It also doesn't matter if they appear in

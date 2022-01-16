@@ -1,19 +1,19 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Tokenization.Tokenizer
  * ____________________________________________________________________________
- * 
+ *
  * A class for dividing a block of text into easily navigable tokens.  See <FundamentalType> for a description of
  * how they are divided up by default.
- * 
- * 
+ *
+ *
  * Multithreading: Not Thread Safe, Doesn't Support Reader/Writer
- * 
+ *
  *		This class is NOT thread safe, not even with an external reader/writer lock because line information
  *		is generated on demand during reads.  Multiple iterators can be used on the same tokenizer but
  *		they must all be in the same thread.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -27,11 +27,11 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	{
 	public class Tokenizer
 		{
-				
+
 		// Group: Functions
 		// __________________________________________________________________________
 
-		
+
 		/* Function: Tokenizer
 		 * Creates a tokenizer from the passed string.  If the string doesn't come from the beginning of the file you can
 		 * pass the line number it appears at.
@@ -52,8 +52,8 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 			if (input != null)
 				{  Load(input);  }
 			}
-			
-			
+
+
 		/* Function: CreateFromIterators
 		 * Creates a new tokenizer from the range between two <TokenIterators>.  The token the ending iterator is
 		 * on is not included in the range.  The new tokenizer has a copy of the memory and is thus independent.  This
@@ -70,34 +70,34 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 				{  throw new ArgumentOutOfRangeException();  }
 
 			Tokenizer extracted = new Tokenizer();
-			
-			// If end is out of bounds it's return values will be one past the end of the data.	
+
+			// If end is out of bounds it's return values will be one past the end of the data.
 			extracted.rawText = original.rawText.Substring(start.RawTextIndex, end.RawTextIndex - start.RawTextIndex);
-			
+
 			extracted.tokenLengths = original.tokenLengths.GetRange(start.TokenIndex, end.TokenIndex - start.TokenIndex);
 			extracted.startingLineNumber = start.LineNumber;
 			extracted.tabWidth = original.tabWidth;
-			
+
 			// Leave lines null.  Even if they exist the iterators may not be cleanly on the beginning and end.  Let them be
 			// recalculated.
 
 			if (original.commentParsingTypes != null)
-				{  
+				{
 				extracted.commentParsingTypes = new CommentParsingType[extracted.tokenLengths.Count];
 				Array.Copy(original.commentParsingTypes, start.TokenIndex, extracted.commentParsingTypes, 0, extracted.tokenLengths.Count);
 				}
 			if (original.syntaxHighlightingTypes != null)
-				{  
+				{
 				extracted.syntaxHighlightingTypes = new SyntaxHighlightingType[extracted.tokenLengths.Count];
 				Array.Copy(original.syntaxHighlightingTypes, start.TokenIndex, extracted.syntaxHighlightingTypes, 0, extracted.tokenLengths.Count);
 				}
 			if (original.prototypeParsingTypes != null)
-				{  
+				{
 				extracted.prototypeParsingTypes = new PrototypeParsingType[extracted.tokenLengths.Count];
 				Array.Copy(original.prototypeParsingTypes, start.TokenIndex, extracted.prototypeParsingTypes, 0, extracted.tokenLengths.Count);
 				}
 			if (original.classPrototypeParsingTypes != null)
-				{  
+				{
 				extracted.classPrototypeParsingTypes = new ClassPrototypeParsingType[extracted.tokenLengths.Count];
 				Array.Copy(original.classPrototypeParsingTypes, start.TokenIndex, extracted.classPrototypeParsingTypes, 0, extracted.tokenLengths.Count);
 				}
@@ -114,11 +114,11 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 		 */
 		public static Tokenizer CreateFromIterators (LineIterator start, LineIterator end)
 		    {
-			Tokenizer extracted = CreateFromIterators( start.FirstToken(LineBoundsMode.Everything), 
+			Tokenizer extracted = CreateFromIterators( start.FirstToken(LineBoundsMode.Everything),
 																			end.FirstToken(LineBoundsMode.Everything) );
 
 			extracted.lines = start.Tokenizer.lines.GetRange(start.LineIndex, end.LineIndex - start.LineIndex);
-			
+
 			return extracted;
 			}
 
@@ -142,7 +142,7 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 
 		/* Function: AppendTextBetweenTo
 		 * Appends the text between the two passed iterators to the passed StringBuilder.  This is more effecient than appending
-		 * the result from <TextBetween()> because it transfers directly from the raw text to the StringBuilder without creating 
+		 * the result from <TextBetween()> because it transfers directly from the raw text to the StringBuilder without creating
 		 * an intermediate string.
 		 */
 		public void AppendTextBetweenTo (TokenIterator start, TokenIterator end, System.Text.StringBuilder output)
@@ -156,8 +156,8 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 
 			output.Append(rawText, start.RawTextIndex, end.RawTextIndex - start.RawTextIndex);
 			}
-			
-			
+
+
 		/* Function: MatchTextBetween
 		 * Runs the passed regular expression on the text between the two iterators and returns the result.
 		 */
@@ -172,8 +172,8 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 
 			return regex.Match(rawText, start.RawTextIndex, end.RawTextIndex - start.RawTextIndex);
 			}
-			
-			
+
+
 		/* Function: ContainsTextBetween
 		 * Returns whether the text between the two iterators contains the passed string.
 		 */
@@ -212,49 +212,49 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 
 
 		/* Function: FindTokenBetween
-		 * Attempts to find the passed string as a token between the two iterators, and set a <TokenIterator> at its position if successful.  
+		 * Attempts to find the passed string as a token between the two iterators, and set a <TokenIterator> at its position if successful.
 		 * The string must match the entire token, so "some" will not match "something".
 		 */
 		public bool FindTokenBetween (string text, bool ignoreCase, TokenIterator start, TokenIterator end, out TokenIterator result)
 			{
 			TokenIterator findTokensBetweenResult;
-			
+
 			if (FindTokensBetween(text, ignoreCase, start, end, out findTokensBetweenResult) == false ||
 				findTokensBetweenResult.RawTextLength != text.Length)
-				{  
+				{
 				result = end;
 				return false;
 				}
 			else
-				{  
+				{
 				result = findTokensBetweenResult;
 				return true;
 				}
 			}
-			
-			
+
+
 		/* Function: FindTokensBetween
-		 * Attempts to find the passed string between the two iterators, and sets a <TokenIterator> at its position if successful.  This 
-		 * function can cross token boundaries, so you can search for "<<" even though that would normally be two tokens.  The result 
+		 * Attempts to find the passed string between the two iterators, and sets a <TokenIterator> at its position if successful.  This
+		 * function can cross token boundaries, so you can search for "<<" even though that would normally be two tokens.  The result
 		 * must match complete tokens though, so "<< some" will not match "<< something".
 		 */
 		public bool FindTokensBetween (string text, bool ignoreCase, TokenIterator start, TokenIterator end, out TokenIterator result)
 			{
 			if (!start.IsInBounds || start > end)
-				{  
+				{
 				result = end;
 				return false;
 				}
-				
+
 			int resultIndex = rawText.IndexOf( text, start.RawTextIndex, end.RawTextIndex - start.RawTextIndex,
 																(ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal) );
-																									   
+
 			if (resultIndex == -1)
-				{  
+				{
 				result = end;
 				return false;
 				}
-				
+
 			result = start;
 
 			// Do this instead of NextByCharacters() so we don't cause an exception if it's not on a token boundary.
@@ -262,11 +262,11 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 				{  result.Next();  }
 
 			if (result.RawTextIndex != resultIndex)
-				{  
+				{
 				result = end;
 				return false;
 				}
-			
+
 			return true;
 			}
 
@@ -281,7 +281,7 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 		 */
 		public FundamentalType FundamentalTypeAt (int tokenIndex, int rawTextIndex)
 			{
-			// We test the bounds of tokenIndex instead of rawTextIndex because iterators will keep the raw text index at zero if you go 
+			// We test the bounds of tokenIndex instead of rawTextIndex because iterators will keep the raw text index at zero if you go
 			// backwards past the beginning of the string.
 			if (tokenIndex < 0 || tokenIndex >= tokenLengths.Count)
 				{  return FundamentalType.Null;  }
@@ -313,7 +313,7 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 
 			commentParsingTypes[tokenIndex] = type;
 			}
-			
+
 		/* Function: SetCommentParsingTypeBetween
 		 * Changes the <CommentParsingType> of all the tokens between the two passed indexes.  The
 		 * token at the ending index will not be changed.
@@ -330,13 +330,13 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 
 			for (int i = startingIndex; i < endingIndex; i++)
 				{  commentParsingTypes[i] = type;  }
-			}			
-			
+			}
+
 		/* Function: SetCommentParsingTypeBetween
 		 * Changes the <CommentParsingType> of all the tokens between the two passed iterators.  The
 		 * token at the ending iterator will not be changed.
 		 */
-		public void SetCommentParsingTypeBetween (TokenIterator startingIterator, TokenIterator endingIterator, 
+		public void SetCommentParsingTypeBetween (TokenIterator startingIterator, TokenIterator endingIterator,
 																							 CommentParsingType type)
 			{
 			if (startingIterator.Tokenizer != this || endingIterator.Tokenizer != this)
@@ -344,7 +344,7 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 
 			SetCommentParsingTypeBetween(startingIterator.TokenIndex, endingIterator.TokenIndex, type);
 			}
-			
+
 		/* Function: SyntaxHighlightingTypeAt
 		 * Returns the <SyntaxHighlightingType> at the passed token index.
 		 */
@@ -369,7 +369,7 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 
 			syntaxHighlightingTypes[tokenIndex] = type;
 			}
-			
+
 		/* Function: SetSyntaxHighlightingTypeBetween
 		 * Changes the <SyntaxHighlightingType> of all the tokens between the two passed indexes.  The
 		 * token at the ending index will not be changed.
@@ -386,21 +386,21 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 
 			for (int i = startingIndex; i < endingIndex; i++)
 				{  syntaxHighlightingTypes[i] = type;  }
-			}			
-			
+			}
+
 		/* Function: SetSyntaxHighlightingTypeBetween
 		 * Changes the <SyntaxHighlightingType> of all the tokens between the two passed iterators.  The
 		 * token at the ending iterator will not be changed.
 		 */
-		public void SetSyntaxHighlightingTypeBetween (TokenIterator startingIterator, TokenIterator endingIterator, 
+		public void SetSyntaxHighlightingTypeBetween (TokenIterator startingIterator, TokenIterator endingIterator,
 																							 SyntaxHighlightingType type)
 			{
 			if (startingIterator.Tokenizer != this || endingIterator.Tokenizer != this)
 				{  throw new InvalidOperationException();  }
 
 			SetSyntaxHighlightingTypeBetween(startingIterator.TokenIndex, endingIterator.TokenIndex, type);
-			}			
-			
+			}
+
 		/* Function: PrototypeParsingTypeAt
 		 * Returns the <PrototypeParsingType> at the passed token index.
 		 */
@@ -425,7 +425,7 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 
 			prototypeParsingTypes[tokenIndex] = type;
 			}
-			
+
 		/* Function: SetPrototypeParsingTypeBetween
 		 * Changes the <PrototypeParsingType> of all the tokens between the two passed indexes.  The
 		 * token at the ending index will not be changed.
@@ -442,13 +442,13 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 
 			for (int i = startingIndex; i < endingIndex; i++)
 				{  prototypeParsingTypes[i] = type;  }
-			}			
-			
+			}
+
 		/* Function: SetPrototypeParsingTypeBetween
 		 * Changes the <PrototypeParsingType> of all the tokens between the two passed iterators.  The
 		 * token at the ending iterator will not be changed.
 		 */
-		public void SetPrototypeParsingTypeBetween (TokenIterator startingIterator, TokenIterator endingIterator, 
+		public void SetPrototypeParsingTypeBetween (TokenIterator startingIterator, TokenIterator endingIterator,
 																							 PrototypeParsingType type)
 			{
 			if (startingIterator.Tokenizer != this || endingIterator.Tokenizer != this)
@@ -456,7 +456,7 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 
 			SetPrototypeParsingTypeBetween(startingIterator.TokenIndex, endingIterator.TokenIndex, type);
 			}
-			
+
 		/* Function: ClassPrototypeParsingTypeAt
 		 * Returns the <ClassPrototypeParsingType> at the passed token index.
 		 */
@@ -481,7 +481,7 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 
 			classPrototypeParsingTypes[tokenIndex] = type;
 			}
-			
+
 		/* Function: SetClassPrototypeParsingTypeBetween
 		 * Changes the <ClassPrototypeParsingType> of all the tokens between the two passed indexes.  The
 		 * token at the ending index will not be changed.
@@ -498,13 +498,13 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 
 			for (int i = startingIndex; i < endingIndex; i++)
 				{  classPrototypeParsingTypes[i] = type;  }
-			}			
-			
+			}
+
 		/* Function: SetClassPrototypeParsingTypeBetween
 		 * Changes the <ClassPrototypeParsingType> of all the tokens between the two passed iterators.  The
 		 * token at the ending iterator will not be changed.
 		 */
-		public void SetClassPrototypeParsingTypeBetween (TokenIterator startingIterator, TokenIterator endingIterator, 
+		public void SetClassPrototypeParsingTypeBetween (TokenIterator startingIterator, TokenIterator endingIterator,
 																											ClassPrototypeParsingType type)
 			{
 			if (startingIterator.Tokenizer != this || endingIterator.Tokenizer != this)
@@ -512,13 +512,13 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 
 			SetClassPrototypeParsingTypeBetween(startingIterator.TokenIndex, endingIterator.TokenIndex, type);
 			}
-			
-			
-			
+
+
+
 		// Group: Static Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Function: FundamentalTypeOf
 		 * Returns the <FundamentalType> of the passed character.
 		 */
@@ -529,34 +529,34 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 			//		- SimpleTokenIterator.GetTokenLength()
 			//		- lineBreakChars
 			//		- Comments.XML/Javadoc Iterator for line break chars
-			
+
 			char maskedCharacter = (char)(character | 0x0020);  // Converts A-Z to a-z
-				
+
 			if ( (maskedCharacter >= 'a' && maskedCharacter <= 'z') ||
 				 (character >= '0' && character <= '9') ||
 				 character > 0x007F )  // Beyond ASCII
 				{
 				return FundamentalType.Text;
 				}
-					
+
 			else if (character == ' ' || character == '\t')
 				{
 				return FundamentalType.Whitespace;
 				}
-					
+
 			else if (character == '\n' || character == '\r')
 				{
 				return FundamentalType.LineBreak;
 				}
-					
+
 			else
 				{
 				return FundamentalType.Symbol;
 				}
 			}
-			
-			
-			
+
+
+
 		// Group: Protected/Internal Functions
 		// __________________________________________________________________________
 
@@ -572,35 +572,35 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 			commentParsingTypes = null;
 			syntaxHighlightingTypes = null;
 			lines = null;
-			
+
 			byte tokenLength;
-			
+
 			int index = 0;
 			char character;
 			char maskedCharacter;
-			
+
 			while (index < rawText.Length)
 				{
 				character = rawText[index];
-				
+
 				// DEPENDENCY: This must match the implementation of FundamentalTypeOf().
-				
+
 				// Text
-				
+
 				maskedCharacter = (char)(character | 0x0020);  // Converts A-Z to a-z
-				
+
 				if ( (maskedCharacter >= 'a' && maskedCharacter <= 'z') ||
 					 (character >= '0' && character <= '9') ||
 					 character > 0x007F )  // Beyond ASCII
 					{
 					tokenLength = 1;
 					index++;
-					
+
 					while (index < rawText.Length && tokenLength < 255)
 						{
 						character = rawText[index];
 						maskedCharacter = (char)(character | 0x0020);
-						
+
 						if ( (maskedCharacter >= 'a' && maskedCharacter <= 'z') ||
 							 (character >= '0' && character <= '9') ||
 							 character > 0x007F )
@@ -611,22 +611,22 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 						else
 							{  break;  }
 						}
-						
+
 					tokenLengths.Add(tokenLength);
 					}
-					
-					
+
+
 				// Whitespace
-				
+
 				else if (character == ' ' || character == '\t')
 					{
 					tokenLength = 1;
 					index++;
-					
+
 					while (index < rawText.Length && tokenLength < 255)
 						{
 						character = rawText[index];
-						
+
 						if (character == ' ' || character == '\t')
 							{
 							tokenLength++;
@@ -635,30 +635,30 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 						else
 							{  break;  }
 						}
-						
+
 					tokenLengths.Add(tokenLength);
 					}
-					
-					
+
+
 				// Line break
-				
+
 				else if (character == '\n' || character == '\r')
 					{
 					tokenLength = 1;
 					index++;
-					
+
 					if (index < rawText.Length && character == '\r' && rawText[index] == '\n')
 						{
 						tokenLength++;
 						index++;
 						}
-						
+
 					tokenLengths.Add(tokenLength);
 					}
-					
-					
+
+
 				// Symbols
-				
+
 				else
 					{
 					index++;
@@ -675,12 +675,12 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 			{
 			// Random guess, almost definitely too low, but that's better than being too high.  Will still be closer than the default.
   			lines = new List<Line>(4 + (rawText.Length / 60));
-				
+
 			Line line;
 			int tokenIndex = 0;
 			int rawTextIndex = 0;
 			FundamentalType previousType = FundamentalType.Null;
-			
+
 			while (tokenIndex < tokenLengths.Count)
 				{
 				line.TokenLength = 0;
@@ -697,17 +697,17 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 					tokenIndex++;
 					}
 				while (tokenIndex < tokenLengths.Count && previousType != FundamentalType.LineBreak);
-					
+
 				lines.Add(line);
 				}
 			}
-			
-			
-			
+
+
+
 		// Group: Properties
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Property: RawText
 		 * The raw, unadulterated input string.
 		 */
@@ -716,7 +716,7 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 			get
 				{  return rawText;  }
 			}
-						
+
 		/* Property: StartingLineNumber
 		 * The starting line number for the tokenized text.
 		 */
@@ -725,7 +725,7 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 			get
 				{  return startingLineNumber;  }
 			}
-						
+
 		/* Function: FirstToken
 		 * A <TokenIterator> set to the first token of this object.
 		 */
@@ -734,7 +734,7 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 			get
 				{  return new TokenIterator(this, 0, 0, StartingLineNumber);  }
 			}
-			
+
 		/* Function: LastToken
 		 * A <TokenIterator> set to one past the last token of this object.
 		 */
@@ -752,7 +752,7 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 			get
 				{  return tokenLengths.Count;  }
 			}
-			
+
 		/* Function: FirstLine
 		 * A <LineIterator> set to the first line in this object.
 		 */
@@ -790,11 +790,11 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 			}
 
 
-			
+
 		// Group: Protected/Internal Properties
 		// __________________________________________________________________________
-		
-			
+
+
 		/* Property: TokenLengths
 		 * The list of token lengths.
 		 */
@@ -803,7 +803,7 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 			get
 				{  return tokenLengths;  }
 			}
-			
+
 		/* Property: Lines
 		 * The list of <Lines>.
 		 */
@@ -813,22 +813,22 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 				{
 				if (lines == null)
 					{  CalculateLines();  }
-					
+
 				return lines;
 				}
 			}
-			
-			
-			
+
+
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
-		
+
+
 		/* var: rawText
 		 * The raw, unadulterated input text.
 		 */
 		protected string rawText;
-		
+
 		/* var: tokenLengths
 		 * The list of token lengths generated for <rawText> based on <FundamentalTypes>.
 		 */
@@ -845,7 +845,7 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 		 * <tokenLengths>.  This is created on demand, so if none have been assigned this will be null.
 		 */
 		protected SyntaxHighlightingType[] syntaxHighlightingTypes;
-		
+
 		/* var: prototypeParsingTypes
 		 * A list of <PrototypeParsingTypes> that are set for each token.  The array indexes correspond to those in
 		 * <tokenLengths>.  This is created on demand, so if none have been assigned this will be null.
@@ -857,13 +857,13 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 		 * in <tokenLengths>.  This is created on demand, so if none have been assigned this will be null.
 		 */
 		protected ClassPrototypeParsingType[] classPrototypeParsingTypes;
-		
+
 		/* var: lines
-		 * The list of <Lines> generated for <rawText>.  This is generated on demand so this variable will be null 
+		 * The list of <Lines> generated for <rawText>.  This is generated on demand so this variable will be null
 		 * if it hasn't been done yet.
 		 */
 		protected List<Line> lines;
-		
+
 		/* var: startingLineNumber
 		 */
 		protected int startingLineNumber;

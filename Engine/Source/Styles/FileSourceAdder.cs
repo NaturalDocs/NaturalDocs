@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Styles.FileSourceAdder
  * ____________________________________________________________________________
- * 
+ *
  * A <Files.FileSourceAdder> that can be used with <Styles.FileSource>.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -19,13 +19,13 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 	{
 	public class FileSourceAdder : Files.FileSourceAdder
 		{
-		
+
 		/* Function: FileSourceAdder
 		 */
 		public FileSourceAdder (Styles.FileSource fileSource, Engine.Instance engineInstance) : base (fileSource, engineInstance)
 			{
 			}
-			
+
 		/* Function: AddAllFiles
 		 * Goes through all the files for all the loaded styles in <Styles.Manager> and calls <Files.Manager.AddOrUpdateFile()>
 		 * on each one.
@@ -51,7 +51,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 					status.AddFiles(Files.FileType.Style, 1);
 
-					EngineInstance.Files.AddOrUpdateFile(cssFile, Files.FileType.Style, 
+					EngineInstance.Files.AddOrUpdateFile(cssFile, Files.FileType.Style,
 																			System.IO.File.GetLastWriteTimeUtc(cssFile), forceReparse);
 					}
 
@@ -67,9 +67,9 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 						string folder = foldersToSearch.Pop();
 
 						string[] subfolders = System.IO.Directory.GetDirectories(folder);
-				   
+
 						status.AddFolders(Files.InputType.Style, subfolders.Length);
-				
+
 						foreach (string subfolder in subfolders)
 							{  foldersToSearch.Push(subfolder);  }
 
@@ -77,14 +77,14 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 							{  return;  }
 
 						string[] files = System.IO.Directory.GetFiles(folder);
-				
+
 						foreach (string file in files)
 							{
 							if (style.Contains(file))
-								{  
+								{
 								status.AddFiles(Files.FileType.Style, 1);
 
-								EngineInstance.Files.AddOrUpdateFile(file, Files.FileType.Style, 
+								EngineInstance.Files.AddOrUpdateFile(file, Files.FileType.Style,
 																						System.IO.File.GetLastWriteTimeUtc(file), forceReparse);
 
 								if (cancelDelegate())
@@ -99,6 +99,6 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 				}
 
 			}
-			
+
 		}
 	}

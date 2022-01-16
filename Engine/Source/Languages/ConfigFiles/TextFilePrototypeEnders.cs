@@ -1,19 +1,19 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Languages.ConfigFiles.TextFilePrototypeEnders
  * ____________________________________________________________________________
- * 
+ *
  * A class encapsulating information about a group of prototype enders parsed from a <ConfigFiles.TextFile>.
- * 
- * 
+ *
+ *
  * Multithreading: Not Thread Safe, Supports Multiple Readers
- * 
+ *
  *		This object doesn't have any locking built in, and so it is up to the class managing it to provide thread safety if needed.
  *		However, it does support multiple concurrent readers.  This means it can be used in read-only mode with no locking or
  *		in read/write mode with a ReaderWriterLock.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -81,7 +81,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			get
 				{  return propertyLocation;  }
 			}
-			
+
 		/* Property: CommentType
 		 * The name of the comment type associated with these enders.
 		 */
@@ -111,7 +111,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		 * The <PropertyLocation> where this statement is defined.
 		 */
 		protected PropertyLocation propertyLocation;
-			
+
 		/* var: commentType
 		 * The name of the comment type associated with these enders.
 		 */
@@ -122,5 +122,5 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		 */
 		protected List<string> enderStrings;
 		}
-	
+
 	}

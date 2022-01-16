@@ -1,8 +1,8 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Links.Manager
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -28,14 +28,14 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 
 		/* Function: Score
-		 * 
+		 *
 		 * Generates a numeric score representing how well the <Topic> serves as a match for the <Link>.  Higher scores are
 		 * better, and zero means they don't match at all.
-		 * 
-		 * If a score has to beat a certain threshold to be relevant, you can pass it to lessen the processing load.  This function 
-		 * may be able to tell it can't beat the score early and return without performing later steps.  In these cases it will return 
+		 *
+		 * If a score has to beat a certain threshold to be relevant, you can pass it to lessen the processing load.  This function
+		 * may be able to tell it can't beat the score early and return without performing later steps.  In these cases it will return
 		 * -1.
-		 * 
+		 *
 		 * If scoring a Natural Docs link you must pass a list of interpretations.  It must include the literal form.
 		 */
 		public long Score (Link link, Topic topic, long minimumScore = 0, List<LinkInterpretation> interpretations = null)
@@ -44,10 +44,10 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			//   - EngineTests.LinkScoring
 			//   - Link.TargetInterepretationIndex
 
-			// Other than that the score's format should be treated as opaque.  Nothing beyond this class should try to 
+			// Other than that the score's format should be treated as opaque.  Nothing beyond this class should try to
 			// interpret the value other than to know that higher is better, zero is not a match, and -1 means we quit early.
 
-			// It's a 64-bit value so we'll assign bits to the different characteristics.  Higher order bits obviously result in higher 
+			// It's a 64-bit value so we'll assign bits to the different characteristics.  Higher order bits obviously result in higher
 			// numeric values so the characteristics are ordered by priority.
 
 			// Format:
@@ -128,7 +128,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 							{  interpretationScore |= 0x1000000000000000;  }
 
 						if (interpretationScore > bestInterpretationScore)
-							{  
+							{
 							bestInterpretationScore = interpretationScore;
 							bestInterpretationIndex = i;
 							}
@@ -170,7 +170,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			// ====TPPP PPPPPPPP PPPPPPPP P======= ======== =------- -------- -------=
 			// T - Whether the link parameters exactly match the topic title parameters.
 			// P - How well the parameters match.
-			
+
 			// Both of these only apply to Natural Docs links that have parameters.
 			if (link.Type == LinkType.NaturalDocs)
 				{
@@ -190,7 +190,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 					// If the topic title has parameters as well, the link parameters must match them exactly.  We
 					// don't do fuzzy matching with topic title parameters.
 					if (topic.HasTitleParameters && string.Compare(linkParameters, topic.TitleParameters, !language.CaseSensitive) == 0)
-						{  
+						{
 						score |= 0x0800000000000000;
 						// We can skip the prototype match since this outweighs it.  Also, we don't want two link targets
 						// where the topic title parameters are matched to be distinguished by the prototype parameters.
@@ -280,8 +280,8 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 
 		/* Function: ScoreScopeInterpretation
-		 * A function used by <ScoreInterpretation()> to determine the C and S fields of the score for the passed interpretation 
-		 * using only the scope.  Only those fields and the trailing 1 will be set in the returned score.  If the interpretation doesn't 
+		 * A function used by <ScoreInterpretation()> to determine the C and S fields of the score for the passed interpretation
+		 * using only the scope.  Only those fields and the trailing 1 will be set in the returned score.  If the interpretation doesn't
 		 * match using the scope, it will return zero.
 		 */
 		private long ScoreScopeInterpretation (Topic topic, Link link, SymbolString interpretation)
@@ -317,9 +317,9 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 			bool caseFlagged;
 			bool caseRequired;
-			
+
 			if (link.Type == LinkType.NaturalDocs)
-				{  
+				{
 				caseRequired = false;
 				caseFlagged = (commentType.IsCode && topicLanguage.CaseSensitive);
 				}
@@ -328,7 +328,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				if (commentType.IsCode == false)
 					{  return 0;  }
 
-				caseRequired = topicLanguage.CaseSensitive;  
+				caseRequired = topicLanguage.CaseSensitive;
 				caseFlagged = false;
 				}
 
@@ -337,7 +337,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			// Our baseline.
 
 			long score = 0x0000000000000001;
-				
+
 			int scopeListIndex;
 
 
@@ -387,7 +387,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				link.Context.GetRawTextScope(out linkScopeIndex, out linkScopeLength);
 
 				// If the remaining topic scope is a substring or equal to the link scope...
-				if (topicScopeLength <= linkScopeLength && 
+				if (topicScopeLength <= linkScopeLength &&
 					 string.Compare(linkContextString, linkScopeIndex, topicSymbolString, topicScopeIndex, topicScopeLength, !caseRequired) == 0)
 					{
 					if (topicScopeLength == linkScopeLength)
@@ -417,7 +417,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 					// --C----- -------- -------- -SSSSSSS SSS----- -------- -------- -------=
 					// Apply C
-					if (!caseFlagged || 
+					if (!caseFlagged ||
 						(topicSymbolString.EndsWith(interpretation) == true &&
 						 string.Compare(linkContextString, linkScopeIndex, topicSymbolString, topicScopeIndex, topicScopeLength, false) == 0) )
 						{  score |= 0x2000000000000000;  }
@@ -445,8 +445,8 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 
 		/* Function: ScoreUsingInterpretation
-		 * A function used by <ScoreInterpretation()> to determine the C and S fields of the score for the passed interpretation 
-		 * using only the using statements.  Only those fields and the trailing 1 will be set in the returned score.  If the interpretation 
+		 * A function used by <ScoreInterpretation()> to determine the C and S fields of the score for the passed interpretation
+		 * using only the using statements.  Only those fields and the trailing 1 will be set in the returned score.  If the interpretation
 		 * doesn't match using the using statements, it will return zero.
 		 */
 		private long ScoreUsingInterpretation (Topic topic, Link link, SymbolString interpretation)
@@ -487,9 +487,9 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 			bool caseFlagged;
 			bool caseRequired;
-			
+
 			if (link.Type == LinkType.NaturalDocs)
-				{  
+				{
 				caseRequired = false;
 				caseFlagged = (commentType.IsCode && topicLanguage.CaseSensitive);
 				}
@@ -498,7 +498,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				if (commentType.IsCode == false)
 					{  return 0;  }
 
-				caseRequired = topicLanguage.CaseSensitive;  
+				caseRequired = topicLanguage.CaseSensitive;
 				caseFlagged = false;
 				}
 
@@ -555,9 +555,9 @@ namespace CodeClear.NaturalDocs.Engine.Links
 						newInterpretationPossible = true;
 						}
 					else
-						{  
+						{
 						newInterpretation = new SymbolString();  // to make the compiler shut up
-						newInterpretationPossible = false;  
+						newInterpretationPossible = false;
 						}
 					}
 				else
@@ -589,8 +589,8 @@ namespace CodeClear.NaturalDocs.Engine.Links
 					// generate a higher score.
 
 					if (!caseFlagged || string.Compare(newInterpretation, topic.Symbol, false) == 0)
-						{  
-						score |= 0x2000000000000000;  
+						{
+						score |= 0x2000000000000000;
 						bestScore = score;
 						break;
 						}
@@ -626,7 +626,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 			bool hasLinkParam = linkParameters.GetParameter(index, out linkParamStart, out linkParamEnd);
 			bool hasPrototypeParam;
-			
+
 			if (prototype == null)
 				{
 				hasPrototypeParam = false;
@@ -643,8 +643,8 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				if (!hasPrototypeParam)
 					{  return 3;  }
 				else
-					{  
-					// There is a prototype parameter but not a link parameter.  This will be 0 or 1 depending on whether the 
+					{
+					// There is a prototype parameter but not a link parameter.  This will be 0 or 1 depending on whether the
 					// prototype parameter has a default value.
 
 					while (prototypeParamStart < prototypeParamEnd)
@@ -696,11 +696,11 @@ namespace CodeClear.NaturalDocs.Engine.Links
 						case PrototypeParsingType.ClosingTypeModifier:
 						case PrototypeParsingType.ParamModifier:
 						case PrototypeParsingType.OpeningParamModifier:
-						case PrototypeParsingType.ClosingParamModifier: 
+						case PrototypeParsingType.ClosingParamModifier:
 
 							if (linkParamStart < linkParamEnd && linkParamStart.MatchesToken(prototypeParamStart, ignoreCase))
-								{  
-								linkParamStart.Next();  
+								{
+								linkParamStart.Next();
 								linkParamStart.NextPastWhitespace();
 								}
 							else
@@ -710,10 +710,10 @@ namespace CodeClear.NaturalDocs.Engine.Links
 						case PrototypeParsingType.Type:
 
 							if (linkParamStart < linkParamEnd && linkParamStart.MatchesToken(prototypeParamStart, ignoreCase))
-								{  
-								typeMatch = true;  
+								{
+								typeMatch = true;
 
-								linkParamStart.Next();  
+								linkParamStart.Next();
 								linkParamStart.NextPastWhitespace();
 								}
 							else
@@ -723,10 +723,10 @@ namespace CodeClear.NaturalDocs.Engine.Links
 						case PrototypeParsingType.Name:
 
 							if (linkParamStart < linkParamEnd && linkParamStart.MatchesToken(prototypeParamStart, ignoreCase))
-								{  
-								nameMatch = true;  
+								{
+								nameMatch = true;
 
-								linkParamStart.Next();  
+								linkParamStart.Next();
 								linkParamStart.NextPastWhitespace();
 								}
 							else
@@ -757,8 +757,8 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 		/* Function: ScoreTopic
 		 * Generates the portions of the score which depend on the topic properties only and not how well they match a link.
-		 * These are the B, F, R, b, and r components which are used for breaking ties when multiple topics would otherwise 
-		 * satisfy a link equally.  This is also used in class views where there are multiple definitions of the same code element 
+		 * These are the B, F, R, b, and r components which are used for breaking ties when multiple topics would otherwise
+		 * satisfy a link equally.  This is also used in class views where there are multiple definitions of the same code element
 		 * and it must decide which one to display.  Using this function for that will make it more consistent with how links will
 		 * resolve.
 		 */
@@ -845,12 +845,12 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 
 		/* Function: Score
-		 * 
-		 * Generates a numeric score representing how well the <File> serves as a match for the <ImageLink>.  Higher scores 
+		 *
+		 * Generates a numeric score representing how well the <File> serves as a match for the <ImageLink>.  Higher scores
 		 * are better, and zero means they don't match at all.
-		 * 
-		 * If a score has to beat a certain threshold to be relevant, you can pass it to lessen the processing load.  This function 
-		 * may be able to tell it can't beat the score early and return without performing later steps.  In these cases it will return 
+		 *
+		 * If a score has to beat a certain threshold to be relevant, you can pass it to lessen the processing load.  This function
+		 * may be able to tell it can't beat the score early and return without performing later steps.  In these cases it will return
 		 * -1.
 		 */
 		public int Score (ImageLink imageLink, File file, int minimumScore = 0)
@@ -892,7 +892,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 					Path pathRelativeToFileSource = fileSource.MakeAbsolute(imageLink.Path);
 
 					if (string.Compare(pathRelativeToFileSource, file.FileName, true) == 0)
-						{  
+						{
 						int score = (int.MaxValue - fileSource.Number);
 
 						if (score > bestScore)
@@ -945,7 +945,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				return ( Path.Compare(currentPath, toTestPath) > 0 );
 				}
 
-			// If they're in the same file, choose the one with the lower definition number.  If they're equal that means they're both 
+			// If they're in the same file, choose the one with the lower definition number.  If they're equal that means they're both
 			// the same topic and either topic is fine.
 
 			else
@@ -954,7 +954,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 
 		/* Function: IsBetterClassDefinition
-		 * If two <Topics> both have the same <ClassString>, returns whether the second one serves as a better definition 
+		 * If two <Topics> both have the same <ClassString>, returns whether the second one serves as a better definition
 		 * than the first.  Is safe to use with topics that don't have <Topic.DefinesClass> set.
 		 */
 		public bool IsBetterClassDefinition (Topic currentDefinition, Topic toTest)

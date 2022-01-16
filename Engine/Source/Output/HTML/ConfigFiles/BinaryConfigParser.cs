@@ -1,16 +1,16 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles.BinaryConfigParser
  * ____________________________________________________________________________
- * 
+ *
  * A class to handle loading and saving <Config.nd>.
- * 
- * 
+ *
+ *
  * Threading: Not Thread Safe
- * 
+ *
  *		The parser object may be reused, but multiple threads cannot use it at the same time.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -24,11 +24,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 	{
 	public class BinaryConfigParser
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: BinaryConfigParser
 		 */
 		public BinaryConfigParser ()
@@ -37,10 +37,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 
 
 		/* Function: Load
-		 * Loads the information in <Config.nd> and returns whether it was successful.  If not all the out parameters will still 
-		 * return objects, they will just be empty.  
+		 * Loads the information in <Config.nd> and returns whether it was successful.  If not all the out parameters will still
+		 * return objects, they will just be empty.
 		 */
-		public bool Load (Path filename, out Config.OverridableOutputSettings overridableSettings, out List<Style> styles, 
+		public bool Load (Path filename, out Config.OverridableOutputSettings overridableSettings, out List<Style> styles,
 								 out List<FileSourceInfo> fileSourceInfoList)
 			{
 			overridableSettings = new Config.OverridableOutputSettings();
@@ -53,14 +53,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 			try
 				{
 				if (binaryFile.OpenForReading(filename) == false)
-					{  
-					result = false;  
+					{
+					result = false;
 					}
 				else if (binaryFile.Version.IsAtLeastRelease("2.2") == false &&
 						   binaryFile.Version.IsSamePreRelease(Engine.Instance.Version) == false)
 					{
 					binaryFile.Close();
-					result = false;  
+					result = false;
 					}
 				else
 					{
@@ -113,7 +113,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 						while (inheritStatement != null)
 							{
 							// Find the name in the list of styles so we can connect the objects together properly.  There should only
-							// be one style per name so we can just compare by name.  Also, this list is stored in the order in which 
+							// be one style per name so we can just compare by name.  Also, this list is stored in the order in which
 							// they must be applied, which means inherited styles will appear before the ones that inherit from them,
 							// so we can search the list we've built so far instead of waiting until they're all loaded.
 							Style matchingStyle = null;
@@ -215,11 +215,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 					}
 				}
 			catch
-				{  
-				result = false;  
+				{
+				result = false;
 				}
 			finally
-				{  
+				{
 				if (binaryFile.IsOpen)
 					{  binaryFile.Close();  }
 				}
@@ -238,7 +238,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 		/* Function: Save
 		 * Saves the passed information in <Config.nd>.
 		 */
-		public void Save (Path filename, Config.OverridableOutputSettings overridableSettings, List<Style> styles, 
+		public void Save (Path filename, Config.OverridableOutputSettings overridableSettings, List<Style> styles,
 								  List<FileSourceInfo> fileSourceInfoList)
 			{
 			using (BinaryFile binaryFile = new BinaryFile())
@@ -281,7 +281,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 						foreach (var inheritStatement in style.Inherits)
 							{  binaryFile.WriteString(inheritStatement.Name);  }
 						}
-					
+
 					binaryFile.WriteString(null);
 
 

@@ -1,23 +1,23 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes.XMLIterator
  * ____________________________________________________________________________
- * 
+ *
  * A class to test <Engine.Comments.Parsers.XMLIterator's> ability to parse XML.
- * 
+ *
  * Commands:
- * 
+ *
  *		> // text
  *		Comment.  Ignored.
- *		
+ *
  *		> Property [name] in <tag>
  *		Attempts to retrieve the named property in the tag.
- *		
+ *
  *		> content
  *		Parses the content.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -46,7 +46,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 				{
 				output.AppendLine(command);
 				Match findPropertyMatch = FindPropertyRegex.Match(command);
-				
+
 				try
 					{
 					if (command == "" || command.StartsWith("//"))
@@ -63,7 +63,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 						if (iterator.Type != XMLElementType.Tag)
 							{  output.AppendLine("- Not an XML tag");  }
 						else
-							{  
+							{
 							string value = iterator.TagProperty(propertyName);
 
 							if (value != null)

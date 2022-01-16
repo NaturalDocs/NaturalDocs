@@ -1,17 +1,17 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.Topic
  * ____________________________________________________________________________
- * 
+ *
  * A reusable class for building HTML topics.
- * 
- * 
+ *
+ *
  * Threading: Not Thread Safe
- * 
+ *
  *		This class is only designed to be used by one thread at a time.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -44,11 +44,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: AppendTopic
-		 * 
+		 *
 		 * Builds the HTML for the topic and appends it to the passed StringBuilder.
-		 * 
+		 *
 		 * Parameters:
-		 * 
+		 *
 		 *		topic - The topic to build.
 		 *		context - The <Context> the topic appears in.  The topic will automatically replace the context's topic, so you can just
 		 *					  pass the context of the page.
@@ -60,8 +60,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 *		embeddedTopicIndex - The index into embeddedTopics to start at.
 		 *		extraClass - If specified, this string will be added to the CTopic div as an extra CSS class.
 		 */
-		public void AppendTopic (Topics.Topic topic, Context context, IList<Link> links, IList<Topics.Topic> linkTargets, 
-											IList<ImageLink> imageLinks, StringBuilder output, IList<Topics.Topic> embeddedTopics = null, 
+		public void AppendTopic (Topics.Topic topic, Context context, IList<Link> links, IList<Topics.Topic> linkTargets,
+											IList<ImageLink> imageLinks, StringBuilder output, IList<Topics.Topic> embeddedTopics = null,
 											int embeddedTopicIndex = 0, string extraClass = null)
 			{
 			try
@@ -90,7 +90,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				output.Append(
 					"<a name=\"Topic" + topic.TopicID + "\"></a>" +
-					"<div class=\"CTopic T" + simpleCommentTypeName + " L" + simpleLanguageName + 
+					"<div class=\"CTopic T" + simpleCommentTypeName + " L" + simpleLanguageName +
 										(extraClass == null ? "" : ' ' + extraClass) + "\">" +
 
 						"\r\n ");
@@ -180,7 +180,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			var commentType = EngineInstance.CommentTypes.FromID(context.Topic.CommentTypeID);
 
 			WrappedTitleMode mode;
-			
+
 			if (commentType.IsFile)
 				{  mode = WrappedTitleMode.File;  }
 			else if (commentType.IsCode)
@@ -287,7 +287,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					case NDMarkup.Iterator.ElementType.HeadingTag:
 
 						if (iterator.IsOpeningTag)
-							{  
+							{
 							output.Append("<div class=\"CHeading\">");
 							underParameterHeading = (iterator.Property("type") == "parameters");
 							}
@@ -304,7 +304,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						iterator.Next();
 						NDMarkup.Iterator startOfCode = iterator;
 
-						// Because we can assume the NDMarkup is valid, we can assume we were on an opening tag and that we will 
+						// Because we can assume the NDMarkup is valid, we can assume we were on an opening tag and that we will
 						// run into a closing tag before the end of the text.  We can also assume the next pre tag is a closing tag.
 
 						while (iterator.Type != NDMarkup.Iterator.ElementType.PreTag)
@@ -320,9 +320,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 							Languages.Language preLanguage = null;
 
 							if (preLanguageName != null)
-								{  
+								{
 								// This can return null if the language name is unrecognized.
-								preLanguage = EngineInstance.Languages.FromName(preLanguageName);  
+								preLanguage = EngineInstance.Languages.FromName(preLanguageName);
 								}
 
 							if (preLanguage == null)
@@ -333,7 +333,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 							AppendSyntaxHighlightedText(code.FirstToken, code.LastToken, output);
 							}
 						else
-							{  
+							{
 							output.Append("<pre class=\"CText\">");
 
 							string htmlCode = textCode.EntityEncode();
@@ -358,7 +358,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					case NDMarkup.Iterator.ElementType.DefinitionListSymbolTag:
 
 						if (iterator.IsOpeningTag)
-							{  
+							{
 							output.Append("<tr><td class=\"CDLEntry\">");
 							parameterListSymbol = null;
 
@@ -395,14 +395,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 								StringBuilder symbol = new StringBuilder();
 
-								while (temp.IsInBounds && 
+								while (temp.IsInBounds &&
 											temp.Type != NDMarkup.Iterator.ElementType.DefinitionListEntryTag &&
 											temp.Type != NDMarkup.Iterator.ElementType.DefinitionListSymbolTag)
 									{
 									if (temp.Type == NDMarkup.Iterator.ElementType.Text)
 										{  temp.AppendTo(symbol);  }
 
-									temp.Next();  
+									temp.Next();
 									}
 
 								// If the entry name starts with any combination of $, @, or % characters, strip them off.
@@ -423,7 +423,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 									{  parameterListSymbol = null;  }
 
 								if (firstNonSymbolIndex > 0)
-									{  
+									{
 									symbol.Remove(0, firstNonSymbolIndex);
 									altParameterListSymbol = symbol.ToString();
 									}
@@ -433,7 +433,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 								}
 							}
 						else // closing tag
-							{  
+							{
 							// See if parameterListSymbol matches any of the prototype parameter names
 							if ( (parameterListSymbol != null || altParameterListSymbol != null) && context.Topic.Prototype != null)
 								{
@@ -441,7 +441,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 								TokenIterator start, end;
 								int matchedParameter = -1;
 
-								for (int i = 0; i < parsedPrototype.NumberOfParameters; i++)	
+								for (int i = 0; i < parsedPrototype.NumberOfParameters; i++)
 									{
 									parsedPrototype.GetParameterName(i, out start, out end);
 
@@ -458,7 +458,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 									{
 									parsedPrototype.BuildFullParameterType(matchedParameter, out start, out end);
 
-									if (start < end && 
+									if (start < end &&
 										// Don't include single symbol types
 										 !(end.RawTextIndex - start.RawTextIndex == 1 &&
 										   (start.Character == '$' || start.Character == '@' || start.Character == '%')) )
@@ -534,7 +534,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			int atIndex = address.IndexOf('@');
 			int cutPoint1 = atIndex / 2;
 			int cutPoint2 = (atIndex+1) + ((address.Length - (atIndex+1)) / 2);
-			
+
 			output.Append("<a href=\"#\" onclick=\"javascript:location.href='ma\\u0069'+'lto\\u003a'+'");
 			output.Append( EMailSegmentForJavaScriptString( address.Substring(0, cutPoint1) ));
 			output.Append("'+'");
@@ -772,7 +772,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			Files.ImageFile targetFile = (Files.ImageFile)EngineInstance.Files.FromID(fullImageLink.TargetFileID);
 			string description = targetFile.FileName.NameWithoutPathOrExtension;
-			
+
 			var fileSource = EngineInstance.Files.FileSourceOf(targetFile);
 			Path relativeTargetPath = fileSource.MakeRelative(targetFile.FileName);
 			Path targetOutputPath = Paths.Image.OutputFile(context.Target.OutputFolder, fileSource.Number, fileSource.Type, relativeTargetPath);
@@ -783,7 +783,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					"<a href=\"" + relativeTargetOutputPath.ToURL().EntityEncode() + "\" target=\"_blank\" class=\"ZoomLink\">" +
 
 						"<img src=\"" + relativeTargetOutputPath.ToURL().EntityEncode() + "\" loading=\"lazy\" " +
-							(targetFile.DimensionsKnown ? 
+							(targetFile.DimensionsKnown ?
 								"class=\"KnownDimensions\" width=\"" + targetFile.Width + "\" height=\"" + targetFile.Height + "\" " +
 									"style=\"max-width: " + targetFile.Width + "px\" " :
 								"class=\"UnknownDimensions\" ") +
@@ -857,7 +857,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					"<a href=\"" + relativeTargetOutputPath.ToURL().EntityEncode() + "\" target=\"_blank\" class=\"ZoomLink\">" +
 
 						"<img src=\"" + relativeTargetOutputPath.ToURL().EntityEncode() + "\" loading=\"lazy\" " +
-							(targetFile.DimensionsKnown ? 
+							(targetFile.DimensionsKnown ?
 								"class=\"KnownDimensions\" width=\"" + targetFile.Width + "\" height=\"" + targetFile.Height + "\" " +
 									"style=\"max-width: " + targetFile.Width + "px\" " :
 								"class=\"UnknownDimensions\" ") +
@@ -948,4 +948,3 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 		}
 	}
-

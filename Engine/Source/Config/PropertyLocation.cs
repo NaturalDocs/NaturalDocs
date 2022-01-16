@@ -1,11 +1,11 @@
-﻿/* 
+﻿/*
  * Struct: CodeClear.NaturalDocs.Engine.Config.PropertyLocation
  * ____________________________________________________________________________
- * 
+ *
  * A struct that stores where a particular property is defined.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -20,8 +20,8 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: PropertyLocation
 		 */
 		public PropertyLocation (Config.PropertySource source, Path fileName = default(Path), int lineNumber = 0)
@@ -43,8 +43,8 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			this.fileName = fileName;
 			this.lineNumber = lineNumber;
 			}
-		
-		
+
+
 		/* Operator: operator PropertyLocation
 		 * Allows non-file based <Config.Sources> to be cast directly to a PropertyLocation.
 		 */
@@ -69,11 +69,11 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			}
 
 
-		
+
 		// Group: Properties
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Property: IsDefined
 		 * Whether the property is defined.  Is equivalent to testing <Source> for <PropertySource.NotDefined>.
 		 */
@@ -94,8 +94,8 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			set
 				{  source = value;  }
 			}
-			
-			
+
+
 		/* Property: FileName
 		 * If the property is defined in a config file, the <Path> of the file.  Null otherwise.
 		 */
@@ -118,11 +118,11 @@ namespace CodeClear.NaturalDocs.Engine.Config
 					}
 				#endif
 
-				fileName = value;  
+				fileName = value;
 				}
 			}
-			
-		
+
+
 		/* Property: LineNumber
 		 * If the property is defined in a config file, the line number where it appears.  Zero otherwise.
 		 */
@@ -131,7 +131,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			get
 				{  return lineNumber;  }
 			set
-				{  
+				{
 				#if DEBUG
 				// 0 is valid for file-based config sources
 				if (!IsFileBased(source))
@@ -141,18 +141,18 @@ namespace CodeClear.NaturalDocs.Engine.Config
 					}
 				#endif
 
-				lineNumber = value;  
+				lineNumber = value;
 				}
 			}
 
-			
+
 
 		// Group: Variables
-		// __________________________________________________________________________		
-		
+		// __________________________________________________________________________
+
 		private PropertySource source;
 		private Path fileName;
 		private int lineNumber;
-		
+
 		}
 	}

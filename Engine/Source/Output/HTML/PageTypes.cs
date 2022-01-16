@@ -1,11 +1,11 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.PageTypes
  * ____________________________________________________________________________
- * 
+ *
  * A static class of functions related to <PageType>.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -78,6 +78,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 */
 		public static readonly string[] AllNames = { "All", "Frame", "Content", "Home" };
 		// DEPENDENCY: This depends on the indexes matching the integer values of PageType
-			
+
 		}
 	}

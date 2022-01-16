@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.UTF8Marshaller
  * ____________________________________________________________________________
- * 
+ *
  * A custom marshaller because .NET inexplicably doesn't have one for UTF-8.  Also, I refuse to spell it with one L.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -27,7 +27,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 			// Convert string to UTF-8 bytes.  The result is not null terminated.
 			byte[] utf8Bytes = Encoding.UTF8.GetBytes((string)managedObject);
-		
+
 			// Create a native buffer.  +1 to the length for the null terminator.
 			IntPtr nativeBuffer = Marshal.AllocHGlobal(utf8Bytes.Length + 1);
 
@@ -44,7 +44,7 @@ namespace CodeClear.NaturalDocs.Engine
 			if (nativeBuffer == IntPtr.Zero)
 				{  return null;  }
 
-			unsafe 
+			unsafe
 				{
 				sbyte* start = (sbyte*)nativeBuffer;
 				sbyte* end = start;

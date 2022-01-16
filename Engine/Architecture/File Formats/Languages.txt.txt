@@ -2,9 +2,9 @@
 File: Languages.txt
 _______________________________________________________________________________
 
-The configuration file that defines or overrides the language definitions for Natural Docs.  One version sits in Natural 
+The configuration file that defines or overrides the language definitions for Natural Docs.  One version sits in Natural
 Docs' configuration folder, and another in the project configuration folder to add languages or override their behavior.
-	
+
 These files follows the standard conventions in <ConfigFile>.  Identifier and value whitespace is condensed.
 
 
@@ -12,170 +12,170 @@ Group: Format
 _______________________________________________________________________________
 
 	Topic: Ignored Extensions
-	
+
 		> Ignore[d] Extension[s]: [extension] [extension] ...
-		
-		Causes the listed file extensions to be ignored, even if they were previously defined to be part of a language.  The 
+
+		Causes the listed file extensions to be ignored, even if they were previously defined to be part of a language.  The
 		list is space-separated.  Example: "Ignore Extensions: cvs txt"
 
 
 	Topic: Languages
-		
+
 		> Language: [name]
 		> Alter Language: [name]
 		>
 		> (synonyms)
 		> Edit Language: [name]
 		> Change Language: [name]
-		
-		Creates a new language or alters an existing one.  Everything underneath applies to this language until the next 
+
+		Creates a new language or alters an existing one.  Everything underneath applies to this language until the next
 		heading like this.  Names can use any characters.
-		
-		The languages "Text File" and "Shebang Script" have special meanings.  Text files are considered all comment and 
-		don't have comment symbols.  Shebang scripts have their language determined by their shebang string and 
+
+		The languages "Text File" and "Shebang Script" have special meanings.  Text files are considered all comment and
+		don't have comment symbols.  Shebang scripts have their language determined by their shebang string and
 		automatically include files with no extension in addition to the extensions defined.
-		
-		If "Text File" doesn't define ignored prefixes, a member operator, or enum value behavior, those settings will be 
+
+		If "Text File" doesn't define ignored prefixes, a member operator, or enum value behavior, those settings will be
 		copied from the language with the most files in the source tree.
-		
+
 
 	Topic: Language Properties
-	
+
 		Simple Identifier:
-	
+
 		> Simple Identifier: [name]
-		
+
 		Specifies the language name using only the letters A to Z.  No spaces, numbers, symbols, or Unicode
-		allowed.  This is for use in situations when such things may not be allowed, such as when generating CSS class 
+		allowed.  This is for use in situations when such things may not be allowed, such as when generating CSS class
 		names.  If it's not specified, it defaults to the language name stripped of all unacceptable characters.
-		
+
 
 		Aliases:
 
 		> Alias[es]: [name] [name] ...
 		> [Add/Replace] Alias[es]: ...
-		
+
 		Alternative names that can be used with (start [language] code).
-		
+
 
 		Extensions:
 
 		> Extension[s]: [extension] [extension] ...
 		> [Add/Replace] Extension[s]: ...
-		
-		Defines file extensions for the language's source files.  The list is space-separated.  Example: "Extensions: c cpp".  
+
+		Defines file extensions for the language's source files.  The list is space-separated.  Example: "Extensions: c cpp".
 		You can use extensions that were previously used by another language to redefine them.
-		
+
 
 		Shebang Strings:
 
 		> Shebang String[s]: [string] [string] ...
 		> [Add/Replace] Shebang String[s]: ...
-		
-		Defines a list of strings that can appear in the shebang (#!) line to designate that it's part of this language.  They can 
-		appear anywhere in the line, so "php" will work for "#!/user/bin/php4".  You can use strings that were previously 
+
+		Defines a list of strings that can appear in the shebang (#!) line to designate that it's part of this language.  They can
+		appear anywhere in the line, so "php" will work for "#!/user/bin/php4".  You can use strings that were previously
 		used by another language to redefine them.
-		
+
 
 	Topic: Basic Language Support Properties
-	
+
 		These are used for languages with basic support.
 
 
 		Comments:
-		
+
 		> Line Comment[s]: [symbol] [symbol] ...
-		
+
 		Defines a space-separated list of symbols that are used for line comments, if any.  Example: "Line Comment: //".
-		
+
 		> Block Comment[s]: [opening symbol] [closing symbol] [opening symbol] [closing symbol] ...
-		
-		Defines a space-separated list of symbol pairs that are used for block comments, if any.  
+
+		Defines a space-separated list of symbol pairs that are used for block comments, if any.
 		Example: "Block Comment: (* *)".
 
 
 		Member Operator:
-		
+
 		> Member Operator: [symbol]
 		>
 		> (synonyms)
 		> Package Separator: [symbol]
-		
-		Defines the default member operator, such as . or ::.  This is for presentation only and will not affect how 
+
+		Defines the default member operator, such as . or ::.  This is for presentation only and will not affect how
 		Natural Docs links are parsed.  The default is a dot.
-		
+
 
 		Prototype Enders:
 
 		> [Comment Type] Prototype Ender[s]: [symbol] [symbol] ...
-		
-		When defined, Natural Docs will attempt to collect prototypes from the code following the specified comment type.  It 
-		grabs code until the first ender symbol or the next Natural Docs comment, and if it contains the topic name, it serves 
-		as its prototype.  Use \n to specify a line break.  Example: "Function Prototype Enders: { ;", 
+
+		When defined, Natural Docs will attempt to collect prototypes from the code following the specified comment type.  It
+		grabs code until the first ender symbol or the next Natural Docs comment, and if it contains the topic name, it serves
+		as its prototype.  Use \n to specify a line break.  Example: "Function Prototype Enders: { ;",
 		"Variable Prototype Enders: = ;".
-		
+
 
 		Line Extender:
 
 		> Line Extender: [symbol]
-		
+
 		Defines the symbol that allows a prototype to span multiple lines if normally a line break would end it.
-		
+
 
 		Enum Values:
 
 		> Enum Values: [global|under type|under parent]
-		
+
 		Defines how enum values are referenced.  The default is global.
-		
+
 		global - Values are always global, referenced as 'value'.
 		under type - Values are under the enum type, referenced as 'class.enum.value'.
 		under parent - Values are under the enum's parent, referenced as 'class.value'.
-		
+
 
 		Case Sensitive:
 
 		> Case Sensitive: [yes|no]
-		
+
 		Whether the language's identifiers are case sensitive.  Defaults to yes.
-		
+
 
 	Topic: Deprecated Language Properties
-	
+
 		These properties are no longer supported.  They will be silently ignored if they appear in the configuration files.
-		
+
 		> Ignore[d] Prefix[es] in Index: [prefix] [prefix] ...
 		> Ignore[d] [Comment Type] Prefix[es] in Index: [prefix] [prefix] ...
 		> [Add/Replace] Ignore[d] Prefix[es] in Index: ...
 		> [Add/Replace] Ignore[d] [Comment Type] Prefix[es] in Index: ...
-		
-		Specifies prefixes that should be ignored when sorting symbols for an index.  Can be specified in general or for a 
+
+		Specifies prefixes that should be ignored when sorting symbols for an index.  Can be specified in general or for a
 		specific comment type.  The prefixes will still appear, the symbols will just be sorted as if they're not there.  For example,
 		specifying "ADO_" for functions will mean that "ADO_DoSomething" will appear under D instead of A.
 
 		> Perl Package: [perl package]
-		
+
 		Specifies the Perl package used to fine-tune the language behavior in ways too complex to do in this file.
-		
+
 		> Full Language Support: [perl package]
-		
+
 		Specifies the Perl package that has the parsing routines necessary for full language support.
-		
+
 
 Group: Revisions
 _______________________________________________________________________________
-	
+
 	Topic: 2.0
-	
+
 		- Ignore Prefixes, Perl Package, and Full Language Support properties are deprecated.
 		- Package Separator was renamed Member Operator, although the original will still be accepted.
 		- Added Simple Identifier, Alias, Case Sensitive.
-	
+
 	Topic: 1.32
-	
+
 		- Package Separator is now a basic language support only property.
 		- Added Enum Values setting.
-		
+
 	Topic: 1.3
-	
+
 		- The file was introduced.

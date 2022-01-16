@@ -6,7 +6,7 @@ The table that contains all of the contexts used by <Topics> and <Links>.
 
 These are stored in a separate table and managed with IDs instead of being stored inline with the <Topics> and
 <Links> because there would be a lot of data duplication otherwise.  In languages like C# there may be a lot of
-"use" statements in effect for a file.  We wouldn't want this non-trivial string to be duplicated for every topic and 
+"use" statements in effect for a file.  We wouldn't want this non-trivial string to be duplicated for every topic and
 link in that file because it would waste a lot of memory.
 
 
@@ -20,16 +20,16 @@ Database Column: ContextID
 	--- Prototype ---
 		ContextID INTEGER PRIMARY KEY NOT NULL
 	-----------------
-	
+
 	The context identifier.
-	
-	
+
+
 Database Column: ContextString
 
 	--- Prototype ---
 		ContextString TEXT NOT NULL
 	-----------------
-	
+
 	The context, encoded with <Engine.Symbols.ContextString>.
 
 

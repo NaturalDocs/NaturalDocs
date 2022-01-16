@@ -1,38 +1,38 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes.NumberSet
  * ____________________________________________________________________________
- * 
+ *
  * A class to test <Engine.IDObjects.NumberSet>.
- * 
+ *
  * Commands:
- * 
+ *
  *		> // text
  *		Comment.  Ignored.
- *		
+ *
  *		> {1-9,12}
  *		Sets the NumberSet to that value.
- *		
+ *
  *		> +4
  *		Adds that number to the set.
- *		
+ *
  *		> -9
  *		Removes that number from the set.
- *		
+ *
  *		> 21?
  *		Does the number exist in the set?
- *		
+ *
  *		> +{4-5}
  *		Adds another set.
- *		
+ *
  *		> -{8-9}
  *		Subtracts a set.
- *		
+ *
  *		> Extract 1, 4
  *		Extracts the *ranges* at the index and count.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -54,7 +54,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 		public override string OutputOf (IList<string> commands)
 			{
 			StringBuilder output = new StringBuilder();
-			Engine.IDObjects.NumberSet set = new Engine.IDObjects.NumberSet();			
+			Engine.IDObjects.NumberSet set = new Engine.IDObjects.NumberSet();
 
 			foreach (string command in commands)
 				{
@@ -78,7 +78,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 
 				bool showSet = false;
 				output.AppendLine(command);
-				
+
 				try
 					{
 					if (command == "" || command.StartsWith("//"))
@@ -86,7 +86,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 						// Ignore
 						}
 					else if (command.StartsWith("{"))
-						{  
+						{
 						set.SetTo(braces);
 						showSet = true;
 						}
@@ -97,9 +97,9 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 						showSet = true;
 						}
 					else if (command.StartsWith("+"))
-						{  
-						set.Add(number);  
-						showSet = true;  
+						{
+						set.Add(number);
+						showSet = true;
 						}
 					else if (command.StartsWith("-{"))
 						{
@@ -108,13 +108,13 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 						showSet = true;
 						}
 					else if (command.StartsWith("-"))
-						{  
-						set.Remove(number); 
-						showSet = true; 
+						{
+						set.Remove(number);
+						showSet = true;
 						}
 					else if (command.EndsWith("?"))
 						{
-						output.AppendLine( (set.Contains(number) ? "true" : "false") );	
+						output.AppendLine( (set.Contains(number) ? "true" : "false") );
 						}
 					else if (extractIndex != -1 && extractCount != -1)
 						{
@@ -134,7 +134,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 
 				if (showSet)
 					{
-					output.AppendLine("= " + set.ToString() + 
+					output.AppendLine("= " + set.ToString() +
 														 " Lowest Available: " + set.LowestAvailable + ", Highest Used: " + set.Highest + ", Count: " + set.Count);
 					output.AppendLine();
 					}

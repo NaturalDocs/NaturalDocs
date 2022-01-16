@@ -1,17 +1,17 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.FormattedText
  * ____________________________________________________________________________
- * 
+ *
  * A reusable class for generating formatted text such as syntax highlighting.
- * 
- * 
+ *
+ *
  * Multithreading: Not Thread Safe
- * 
+ *
  *		This class is only designed to be used by one thread at a time.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -37,9 +37,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Enum: WrappedTitleMode
-		 * 
+		 *
 		 * The way in which <AppendWrappedTitle()> and <BuildWrappedTitle()> break long symbols.
-		 * 
+		 *
 		 * Code - Wrap symbols based on code separators like . and ::.
 		 * File - Wrap symbols based on file separators like / and \.
 		 * None - Do not apply wrapping.
@@ -61,11 +61,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: AppendOpeningLinkTag
-		 * 
+		 *
 		 * Constructs an <a> tag from the <Context's> <PageLocation> to the passed topic and appends it to the passed StringBuilder.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- The <Context>'s page must be set.
 		 */
 		public void AppendOpeningLinkTag (Topics.Topic targetTopic, StringBuilder output, string extraCSSClass = null)
@@ -97,7 +97,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			// Build the link
 
 			output.Append("<a ");
-			
+
 			if (extraCSSClass != null)
 				{  output.Append("class=\"" + extraCSSClass + "\" ");  }
 
@@ -111,10 +111,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: AppendSyntaxHighlightedText
-		 * 
+		 *
 		 * Appends the text between the two iterators to the passed StringBuilder as HTML with syntax highlighting applied.  The
 		 * syntax highlighting is based on the set <Tokenization.SyntaxHighlightingTypes>.
-		 * 
+		 *
 		 * If excludeKeywords is set, it will ignore any <SyntaxHighlightingType.Keyword> sections.  This is useful in situations where
 		 * you know the text is an identifier but it may be accidentally marked as a keyword by basic language support highlighting.
 		 */
@@ -152,7 +152,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 							{
 							TokenIterator lookahead = endStretch;
 
-							do 
+							do
 								{  lookahead.Next();  }
 							while (lookahead.SyntaxHighlightingType == SyntaxHighlightingType.Null &&
 									  lookahead.FundamentalType == FundamentalType.Whitespace &&
@@ -214,27 +214,27 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: AppendSyntaxHighlightedTextWithTypeLinks
-		 * 
-		 * Formats the text between the iterators with syntax highlighting and links for any tokens marked with 
+		 *
+		 * Formats the text between the iterators with syntax highlighting and links for any tokens marked with
 		 * <PrototypeParsingType.Type> and <PrototypeParsingType.TypeQualifier>.  Appends the result to the passed StringBuilder.
-		 * 
-		 * Parameters: 
-		 * 
+		 *
+		 * Parameters:
+		 *
 		 *		start - The first token of the text to convert.
 		 *		end - The end of the text to convert, which is one token past the last one included.
 		 *		output - The StringBuilder to append the output to.
-		 *		
+		 *
 		 *		links - A list of <Links> that should  contain any appearing in the code.
 		 *		linkTargets - A list of topics that should contain any used as targets in the list of links.
-		 *		
-		 *		extendTypeSearch - If true, it will search beyond the bounds of the iterators to get the complete type.  This allows you to 
+		 *
+		 *		extendTypeSearch - If true, it will search beyond the bounds of the iterators to get the complete type.  This allows you to
 		 *									 format only a portion of the link with this function yet still have the link go to the complete destination.
 		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- The <Context>'s topic and page must be set.
 		 */
-		public void AppendSyntaxHighlightedTextWithTypeLinks (TokenIterator start, TokenIterator end, StringBuilder output, 
+		public void AppendSyntaxHighlightedTextWithTypeLinks (TokenIterator start, TokenIterator end, StringBuilder output,
 																						  IList<Link> links, IList<Topics.Topic> linkTargets,
 																						  bool extendTypeSearch = false)
 			{
@@ -382,7 +382,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 					do
 						{  iterator.Next();  }
-					while (iterator < end && 
+					while (iterator < end &&
 								iterator.PrototypeParsingType != PrototypeParsingType.Type &&
 								iterator.PrototypeParsingType != PrototypeParsingType.TypeQualifier);
 
@@ -393,7 +393,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: BuildWrappedTitle
-		 * Returns the title as HTML with zero-width spaces added so that long identifiers wrap.  It will also add a span surrounding 
+		 * Returns the title as HTML with zero-width spaces added so that long identifiers wrap.  It will also add a span surrounding
 		 * the qualifiers with a "Qualifier" CSS class.
 		 */
 		public string BuildWrappedTitle (string title, WrappedTitleMode mode)
@@ -419,12 +419,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			int splitCount = 0;
 
 			if (mode == WrappedTitleMode.Code)
-				{  
+				{
 				splitSymbols = CodeSplitSymbolsRegex.Matches(title);
 				splitCount = splitSymbols.Count;
 				}
 			else if (mode == WrappedTitleMode.File)
-				{  
+				{
 				splitSymbols = FileSplitSymbolsRegex.Matches(title);
 				splitCount = splitSymbols.Count;
 				}
@@ -468,7 +468,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 					if (i < splitCount - 1)
 						{
-						// Insert a zero-width space for wrapping.  We have to put the final one outside the closing </span> or 
+						// Insert a zero-width space for wrapping.  We have to put the final one outside the closing </span> or
 						// Webkit browsers won't wrap on it.
 						output.Append("&#8203;");
 						}
@@ -493,4 +493,3 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 		}
 	}
-

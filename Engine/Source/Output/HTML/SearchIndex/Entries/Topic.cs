@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.Entries.Topic
  * ____________________________________________________________________________
- * 
+ *
  * A single topic entry in the search index.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -38,7 +38,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.Entries
 			var memberOperator = (language != null ? language.MemberOperator : ".");
 
 
-			// Get the title without any parameters.  We don't want to include parameters in the index.  Multiple functions that 
+			// Get the title without any parameters.  We don't want to include parameters in the index.  Multiple functions that
 			// differ only by parameter will be treated as one entry.
 
 			string title, ignore;
@@ -47,7 +47,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.Entries
 
 
 			// Figure out the extra scope text that should be added to the title to make it a fully resolved symbol.  We do this by
-			// comparing the symbol from the topic to one generated from the title.  We don't just use the symbol to begin with 
+			// comparing the symbol from the topic to one generated from the title.  We don't just use the symbol to begin with
 			// because we want to show the title as written; there's some normalization that occurs when generating symbols
 			// that we want to bypass.
 
@@ -66,9 +66,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.Entries
 
 				#if DEBUG
 				if (titleIndex == -1)
-					{  
+					{
 					throw new Exception("Title symbol string \"" + titleSymbolString + "\" isn't part of symbol string \"" + symbolString + "\" which " +
-													"was assumed when creating a search index entry.");  
+													"was assumed when creating a search index entry.");
 					}
 				#endif
 
@@ -148,7 +148,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.Entries
 					endOfString = splitSymbols[i].Index;
 					}
 				else
-					{  
+					{
 					var nonWhitespaceCharsMatch = NonWhitespaceCharsRegex.Match(title, afterSplitSymbolIndex, endOfString - afterSplitSymbolIndex);
 
 					if (nonWhitespaceCharsMatch.Success)
@@ -299,7 +299,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.Entries
 
 		// Group: Static Variables
 		// __________________________________________________________________________
-		
+
 		private static char[] NormalizedKeywordSeparators = { ' ', '.', '/' };
 
 		static protected Regex.FileSplitSymbols FileSplitSymbolsRegex = new Regex.FileSplitSymbols();

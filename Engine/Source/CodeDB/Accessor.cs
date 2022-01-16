@@ -1,28 +1,28 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.CodeDB.Accessor
  * ____________________________________________________________________________
- * 
+ *
  * A class threads can use to access the code database.
- * 
- * 
+ *
+ *
  * Topic: Usage
- * 
+ *
  *		- Retrieve this object from <CodeDB.Manager.GetAccessor()> or <CodeDB.Manager.GetPriorityAccessor()>.
- *		
+ *
  *		- Use the <Lock Functions> and the <Topic Functions> to manipulate the database.
- * 
- * 
+ *
+ *
  * Multithreading: Thread Safety Notes
- * 
+ *
  *		Each thread must have its own accessor.  One cannot be used by multiple threads at the same time.
- *		
+ *
  *		Threads must acquire the appropriate locks using functions like <GetReadOnlyLock()> before calling data
  *		functions, and then release them afterwards with <ReleaseLock()>.  The only thing that's done automatically
  *		is upgrading a read/possible write lock to a read/write lock.  Otherwise, an exception will be thrown if you
  *		do not have the appropriate lock for a function.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -37,15 +37,15 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 	{
 	public partial class Accessor : IDisposable
 		{
-		
+
 		// Group: Types
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Enum: LockType
-		 * 
+		 *
 		 * The type of lock held.  These have increasing values so you can use operators like >=.
-		 * 
+		 *
 		 * None - No lock held.
 		 * ReadOnly - A read-only lock is held which cannot be upgraded to read/write.
 		 * ReadPossibleWrite - A read-only lock is held which can be upgraded to read/write.  The database is
@@ -60,16 +60,16 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			ReadPossibleWrite = 2,
 			ReadWrite = 3
 			}
-			
-			
+
+
 		/* Enum: GetTopicFlags
-		 * 
+		 *
 		 * When querying topics from the database, not all fields may be needed in all circumstances.  This is a
-		 * bitfield that allows you to specify which fields can be ignored.  In debug builds this is enforced by <Topic>, 
+		 * bitfield that allows you to specify which fields can be ignored.  In debug builds this is enforced by <Topic>,
 		 * so if you try to access any of these fields an exception will be thrown.
-		 * 
+		 *
 		 * Everything - All <Topic> fields will be retrieved from the database.
-		 * 
+		 *
 		 * DontLookupClasses - Only <Topic.ClassID> will be retrieved.  It will not look up <Topic.ClassString> which
 		 *								 will prevent a table join if you don't need it.
 		 *	DontLookupContexts - Only <Topic.PrototypeContextID> and <Topic.BodyContextID> will be retrieved.  It
@@ -96,16 +96,16 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 		/* Enum: GetLinkFlags
-		 * 
+		 *
 		 * When querying links from the database, not all fields may be needed in all circumstances.  This is a
-		 * bitfield that allows you to specify which fields can be ignored.  In debug builds this is enforced by <Link>, 
+		 * bitfield that allows you to specify which fields can be ignored.  In debug builds this is enforced by <Link>,
 		 * so if you try to access any of these fields an exception will be thrown.
-		 * 
+		 *
 		 * Everything - All <Link> fields will be retrieved from the database.
-		 * 
+		 *
 		 * DontLookupClasses - Only <Link.ClassID> will be retrieved.  It will not look up <Link.ClassString> which
 		 *									will prevent a table join if you don't need it.
-		 * DontLookupContexts - Only <Link.ContextID> will be retrieved.  It will not look up <Link.Context> which 
+		 * DontLookupContexts - Only <Link.ContextID> will be retrieved.  It will not look up <Link.Context> which
 		 *									  will prevent a table join if you don't need it.
 		 */
 		[Flags]
@@ -119,13 +119,13 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 		/* Enum: GetImageLinkFlags
-		 * 
+		 *
 		 * When querying image links from the database, not all fields may be needed in all circumstances.  This is a
-		 * bitfield that allows you to specify which fields can be ignored.  In debug builds this is enforced by <ImageLink>, 
+		 * bitfield that allows you to specify which fields can be ignored.  In debug builds this is enforced by <ImageLink>,
 		 * so if you try to access any of these fields an exception will be thrown.
-		 * 
+		 *
 		 * Everything - All <ImageLink> fields will be retrieved from the database.
-		 * 
+		 *
 		 * DontLookupClasses - Only <ImageLink.ClassID> will be retrieved.  It will not look up <ImageLink.ClassString>
 		 *									which will prevent a table join if you don't need it.
 		 */
@@ -138,11 +138,11 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			}
 
 
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Function: Accessor
 		 */
 		internal Accessor (CodeDB.Manager manager, SQLite.Connection connection, bool priority)
@@ -156,8 +156,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			classIDLookupCache = new IDLookupCache<Symbols.ClassString>();
 			contextIDLookupCache = new IDLookupCache<Symbols.ContextString>();
 			}
-			
-			
+
+
 		/* Function: Dispose
 		 */
 		public void Dispose ()
@@ -176,11 +176,11 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			}
 
 
-			
+
 		// Group: Lock Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Function: GetReadOnlyLock
 		 * Acquires a read-only lock on the database which cannot be upgraded to a read/write lock.
 		 */
@@ -188,12 +188,12 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			{
 			if (lockHeld != LockType.None)
 				{  throw new Exceptions.BadLockChange(lockHeld, LockType.ReadOnly, LockType.None);  }
-				
+
 			Manager.DatabaseLock.GetReadOnlyLock(priority);
 			lockHeld = LockType.ReadOnly;
 			}
-			
-			
+
+
 		/* Function: GetReadPossibleWriteLock
 		 * Acquires a read-only lock on the database which can be upgraded to a read/write lock.  The database is
 		 * guaranteed not to change between when this lock is acquired and when the lock is successfully upgraded.
@@ -202,12 +202,12 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			{
 			if (lockHeld != LockType.None)
 				{  throw new Exceptions.BadLockChange(lockHeld, LockType.ReadPossibleWrite, LockType.None);  }
-				
+
 			Manager.DatabaseLock.GetReadPossibleWriteLock(priority);
 			lockHeld = LockType.ReadPossibleWrite;
 			}
-			
-			
+
+
 		/* Function: UpgradeToReadWriteLock
 		 * Upgrades a read/possible write lock to a read/write lock.  This is safe to call multiple times, and you still only need
 		 * to call <DowngradeToReadPossibleWriteLock()> or <ReleaseLock()> once.
@@ -218,12 +218,12 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				{  return;  }
 			if (lockHeld != LockType.ReadPossibleWrite)
 				{  throw new Exceptions.BadLockChange(lockHeld, LockType.ReadWrite, LockType.ReadPossibleWrite);  }
-				
+
 			Manager.DatabaseLock.UpgradeToReadWriteLock(priority);
 			lockHeld = LockType.ReadWrite;
 			}
-			
-			
+
+
 		/* Function: DowngradeToReadPossibleWriteLock
 		 * Downgrades a read/write lock to a read/possible write lock so that other readers may access the database again.
 		 * This is safe to call multiple times.
@@ -234,11 +234,11 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				{  return;  }
 			if (lockHeld != LockType.ReadWrite)
 				{  throw new Exceptions.BadLockChange(lockHeld, LockType.ReadPossibleWrite, LockType.ReadWrite);  }
-				
+
 			Manager.DatabaseLock.DowngradeToReadPossibleWriteLock(priority);
 			lockHeld = LockType.ReadPossibleWrite;
 			}
-			
+
 
 		/* Function: ReleaseLock
 		 * Releases any locks held, regardless of type.  Is safe to call when no locks are held.
@@ -257,23 +257,23 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 					Manager.DatabaseLock.ReleaseReadWriteLock(priority);
 					break;
 				}
-				
+
 			lockHeld = LockType.None;
-			
+
 			// No longer valid because another accessor may change the values while we don't hold a lock.
 			classIDLookupCache.Clear();
 			contextIDLookupCache.Clear();
 			}
 
-			
-			
-			
+
+
+
 		// Group: Validation Functions
 		// __________________________________________________________________________
-			
-			
+
+
 		/* Function: RequireAtLeast
-		 * Enforces a minimum lock level for an operation.  If a read/write lock is required and a read/possible write lock is held, it will be 
+		 * Enforces a minimum lock level for an operation.  If a read/write lock is required and a read/possible write lock is held, it will be
 		 * upgraded automatically.  Otherwise if the lock held does not meet the minimum it will throw an exception.
 		 */
 		protected internal void RequireAtLeast (LockType minimum)
@@ -283,7 +283,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			else if (lockHeld < minimum)
 				{  throw new Exceptions.LockMinimumNotMet(lockHeld, minimum);  }
 			}
-			
+
 		/* Function: RequireZero
 		 * Throws an exception if the value is not zero.
 		 */
@@ -292,7 +292,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			if (value != 0)
 				{  throw new Exceptions.FieldMustBeZero(operation, fieldName);  }
 			}
-			
+
 		/* Function: RequireZero
 		 * Throws an exception if the value is not zero.
 		 */
@@ -301,7 +301,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			if (value != 0)
 				{  throw new Exceptions.FieldMustBeZero(operation, fieldName);  }
 			}
-			
+
 		/* Function: RequireNonZero
 		 * Throws an exception if the value is zero.
 		 */
@@ -310,7 +310,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			if (value == 0)
 				{  throw new Exceptions.FieldMustBeNonZero(operation, fieldName);  }
 			}
-			
+
 		/* Function: RequireNull
 		 * Throws an exception if the value is not null.
 		 */
@@ -318,7 +318,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			{
 			if (value != null)
 				{  throw new Exceptions.FieldMustBeNull(operation, fieldName);  }
-			}			
+			}
 
 		/* Function: RequireContent
 		 * Throws an exception if the value is null or an empty string.
@@ -327,7 +327,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			{
 			if (String.IsNullOrEmpty(value))
 				{  throw new Exceptions.FieldMustHaveContent(operation, fieldName);  }
-			}			
+			}
 
 		/* Function: RequireValue
 		 * Throws an exception if the field value doesn't match the expected value.
@@ -369,7 +369,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 		// Group: Properties
 		// __________________________________________________________________________
-		
+
 
 		/* Property: Manager
 		 * The <CodeDB.Manager> associated with this accessor.
@@ -397,7 +397,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			get
 				{  return connection;  }
 			}
-		
+
 		/* Property: HasLock
 		 * Whether any type of lock is currently held.
 		 */
@@ -420,8 +420,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 		// Group: Variables
 		// __________________________________________________________________________
-		
-		
+
+
 		/* var: manager
 		 * The <CodeDB.Manager> associated with this accessor.
 		 */
@@ -431,25 +431,25 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		 * This accessor's connection to the database.
 		 */
 		protected SQLite.Connection connection;
-		
+
 		/* var: lockHeld
 		 * The lock currently held by this accessor, if any.
 		 */
 		protected LockType lockHeld;
-		
+
 		/* var: priority
 		 * Whether this is a priority accessor or not.
 		 */
 		protected bool priority;
-		
+
 		/* var: transactionLevel
 		 * How many nested transactions we are in, or zero if none.  If -1, the transaction was broken with an exception.
 		 */
 		protected int transactionLevel;
 
 		/* var: classIDLookupCache
-		 * A cache mapping <Symbols.ClassStrings> to their IDs.  This is useful because ClassStrings are going to be reused 
-		 * many times throughout a file and this way we don't have to hit the database for each individual Topic added.  This 
+		 * A cache mapping <Symbols.ClassStrings> to their IDs.  This is useful because ClassStrings are going to be reused
+		 * many times throughout a file and this way we don't have to hit the database for each individual Topic added.  This
 		 * is only valid while we have a database lock so it's cleared automatically by <ReleaseLock()>.
 		 */
 		protected IDLookupCache<Symbols.ClassString> classIDLookupCache;
@@ -462,22 +462,22 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		protected IDLookupCache<Symbols.ContextString> contextIDLookupCache;
 
 
-		
+
 		// Group: Constants
 		// __________________________________________________________________________
 
 
 		/* Const: NumberSetExpressionExpansionLimit
-		 * 
+		 *
 		 * The number of ranges <ColumnIsInNumberSetExpression> will limit itself to before it makes you use multiple queries.
-		 * 
-		 * As of January 2018 SQLite has a limit of about 127 "?" parameters in queries.  Switching NumberSet expansions to use 
+		 *
+		 * As of January 2018 SQLite has a limit of about 127 "?" parameters in queries.  Switching NumberSet expansions to use
 		 * inline values instead of "?" parameters helped, but SQLite still fails at about 4500 inline parameters.  This constant is set
 		 * much lower since we can't rely on 4500 reliably remaining usable indefinitely.
-		 * 
-		 * Quick benchmarks didn't show a significant difference in execution time between 4, 100, and 1000.  I find it a little hard 
-		 * to believe, but it means we don't have to obsess over finding the ideal value.  The limit is set reasonably high in release 
-		 * builds because I'm still convinced there's some efficiency there, but not so high as to potentially overtax SQLite now or 
+		 *
+		 * Quick benchmarks didn't show a significant difference in execution time between 4, 100, and 1000.  I find it a little hard
+		 * to believe, but it means we don't have to obsess over finding the ideal value.  The limit is set reasonably high in release
+		 * builds because I'm still convinced there's some efficiency there, but not so high as to potentially overtax SQLite now or
 		 * in the future.  In debug builds the limit is very low to test that everything works with multiple queries.
 		 */
 		#if DEBUG

@@ -1,18 +1,18 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles.TextFileParser
  * ____________________________________________________________________________
- * 
+ *
  * A class to handle loading <Parser.txt>.  Unlike most other config files, this one is not resaved by Natural Docs so
  * there is no save function.
- * 
- * 
+ *
+ *
  * Multithreading: Not Thread Safe
- * 
+ *
  *		The parser object may be reused, but multiple threads cannot use it at the same time.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -28,11 +28,11 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 	{
 	public class TextFileParser
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: TextFileParser
 		 */
 		public TextFileParser ()
@@ -48,50 +48,50 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 
 
 		/* Function: Load
-		 * 
+		 *
 		 * Loads the contents of a <Parser.txt> file into a <Config>, returning whether it was successful.  If it was unsuccessful
 		 * config will be null and it will place errors on the errorList.
-		 * 
+		 *
 		 * Parameters:
-		 * 
+		 *
 		 *		filename - The <Path> where the file is located.
 		 *		propertySource - The <Engine.Config.PropertySource> associated with the file.
 		 *		errorList - If it couldn't successfully parse the file it will add error messages to this list.
 		 *		config - The contents of the file as a <Config>.
 		 */
-		public bool Load (Path filename, Engine.Config.PropertySource propertySource, Errors.ErrorList errorList, 
+		public bool Load (Path filename, Engine.Config.PropertySource propertySource, Errors.ErrorList errorList,
 								 out Config config)
 			{
 		    int previousErrorCount = errorList.Count;
-			
+
 		    using (ConfigFile file = new ConfigFile())
 		        {
-		        bool openResult = file.Open(filename, 
+		        bool openResult = file.Open(filename,
 														 Engine.Config.PropertySource.ParserConfigurationFile,
 														 ConfigFile.FileFormatFlags.MakeIdentifiersLowercase |
 		                                                 ConfigFile.FileFormatFlags.CondenseValueWhitespace |
 		                                                 ConfigFile.FileFormatFlags.SupportsRawValueLines,
 		                                                 errorList);
-														 
+
 		        if (openResult == false)
 		            {
 					config = null;
-					return false;  
+					return false;
 					}
 
 				config = new Config();
-					
+
 		        string identifier = null;
 		        string value = null;
-				
+
 		        // If this is true, identifier and value are already filled but not processed, so Get shouldn't be called again on the next
 		        // iteration.
-		        bool alreadyHaveNextLine = false;				
-				
+		        bool alreadyHaveNextLine = false;
+
 		        while (alreadyHaveNextLine || file.Get(out identifier, out value))
 		            {
 		            alreadyHaveNextLine = false;
-					
+
 		            if (identifier == null)
 		                {
 		                file.AddError(
@@ -99,8 +99,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 		                    );
 		                continue;
 		                }
-		                
-		            
+
+
 		            //
 		            // Sets
 		            //
@@ -122,8 +122,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 						else if (lcSetName == "acceptable link suffixes")
 							{  set = config.AcceptableLinkSuffixes;  }
 						else if (lcSetName == "url protocols")
-							{  
-							set = config.URLProtocols;  
+							{
+							set = config.URLProtocols;
 							urlProtocols = true;
 							}
 						else
@@ -133,7 +133,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 								);
 							// Continue anyway.
 							}
-							
+
 						while (file.Get(out identifier, out value))
 							{
 							if (identifier != null)
@@ -141,24 +141,24 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 								alreadyHaveNextLine = true;
 								break;
 								}
-								
+
 							if (urlProtocols && acceptableURLProtocolCharactersRegex.IsMatch(value) == false)
 								{
 								file.AddError(
 									Locale.Get("NaturalDocs.Engine", "ConfigFile.NotAValidValue(value)", value)
 									);
 								}
-								
+
 							if (set != null)
 								{  set.Add(value);  }
 							}
 						}
-						
-						
+
+
 					//
 					// Tables
 					//
-					
+
 					else if (identifier == "table")
 						{
 						string lcTableName = value.ToLowerInvariant();
@@ -180,7 +180,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 								);
 							// Continue anyway.
 							}
-							
+
 						while (file.Get(out identifier, out value))
 							{
 							if (identifier != null)
@@ -269,17 +269,17 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 								}
 							}
 						}
-						
-						
+
+
 					//
 					// Conversion Lists
 					//
-					
+
 					else if (identifier == "conversion list")
 						{
 						string lcListName = value.ToLowerInvariant();
 						List<KeyValuePair<string, string>> list = null;
-						
+
 						if (lcListName == "plural conversions")
 							{  list = config.PluralConversions;  }
 						else if (lcListName == "possessive conversions")
@@ -301,7 +301,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 								}
 
 							if (list != null)
-								{								
+								{
 								string[] split = arrowSeparatorRegex.Split(value, 2);
 
 								string left = split[0].ToLower().Normalize(System.Text.NormalizationForm.FormC);
@@ -311,13 +311,13 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 								}
 							}
 						}
-						
+
 		            else
 		                {
 		                file.AddError(
 		                    Locale.Get("NaturalDocs.Engine", "ConfigFile.NotAValidIdentifier(identifier)", identifier)
 		                    );
-							
+
 		                // Skip to the next identifier
 		                while (file.Get(out identifier, out value))
 		                    {
@@ -327,11 +327,11 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 		                        break;
 		                        }
 		                    }
-		                }						
+		                }
 		            }
 				}
-		        
-				
+
+
 		    if (errorList.Count == previousErrorCount)
 		        {  return true;  }
 		    else
@@ -348,6 +348,6 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 	    protected CondensedWhitespaceArrowSeparator arrowSeparatorRegex;
 		protected AcceptableURLProtocolCharacters acceptableURLProtocolCharactersRegex;
 
-		 
+
 		}
 	}

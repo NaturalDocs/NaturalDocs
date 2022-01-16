@@ -16,10 +16,10 @@
 	<!--
 		Group: General Targets
 		_____________________________________________________________________________
-		
-		These targets are used when building this project.  They just forward to the <Engine Test Runner General Targets> which can 
+
+		These targets are used when building this project.  They just forward to the <Engine Test Runner General Targets> which can
 		be called when building any project.
-		
+
 	-->
 
 		<!-- Build Target: BeforeClean -->
@@ -47,7 +47,7 @@
 	<!--
 		Group: Engine Test Runner General Targets
 		_____________________________________________________________________________
-		
+
 		These targets are used when building this project.  All projects that depend on this one should also call these functions from their own
 		<General Targets> so that resources are properly copied over.
 	-->
@@ -74,17 +74,17 @@
 			<CallTarget Targets="EngineTestRunner_CopyNUnitResources" />
 		</Target>
 
-	
+
 
 	<!--
 		Group: Engine Test Runner Action Targets
 		_____________________________________________________________________________
-		
-		These targets are used by the <Engine Test Runner General Targets>.  You shouldn't need to call these individually, just call the 
+
+		These targets are used by the <Engine Test Runner General Targets>.  You shouldn't need to call these individually, just call the
 		<Engine Test Runner General Targets> and they will be called automatically.
 	-->
 
-	
+
 		<!--
 			Build Target: EngineTestRunner_CopyNUnitResources
 		-->
@@ -126,8 +126,8 @@
 				/>
 
 		</Target>
-	
-	
+
+
 		<!--
 			Build Target: EngineTestRunner_CleanNUnitResources
 		-->
@@ -136,7 +136,7 @@
 			<Delete
 				Files="$(TargetDir)nunit-console-runner.dll"
 				/>
-			
+
 			<Delete
 				Files="$(TargetDir)nunit.core.dll"
 				/>
@@ -148,6 +148,6 @@
 				/>
 
 		</Target>
-	
-	
+
+
 </Project>

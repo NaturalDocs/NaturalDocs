@@ -1,19 +1,19 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Languages.Config
  * ____________________________________________________________________________
- * 
+ *
  * A class representing a complete configuration after all <Languages.txt> values have been combined.
- * 
- * 
+ *
+ *
  * Multithreading: Not Thread Safe, Supports Multiple Readers
- * 
+ *
  *		This object doesn't have any locking built in, and so it is up to the class managing it to provide thread safety if needed.
  *		However, it does support multiple concurrent readers.  This means it can be used in read-only mode with no locking or
  *		in read/write mode with a ReaderWriterLock.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -27,11 +27,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 	{
 	public class Config
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: Config
 		 */
 		public Config ()
@@ -49,9 +49,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: LanguageFromFileExtension
-		 * 
+		 *
 		 * Returns the <Language> associated with the passed file extension, or null if none.
-		 * 
+		 *
 		 * If you pass null or an empty string, it will return the language information for Shebang Script if it is defined, or null
 		 * if it is not.
 		 */
@@ -62,7 +62,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			else
 				{  return LanguageFromID(fileExtensions[extension]);  }
 			}
-			
+
 		/* Function: LanguageFromShebangLine
 		 * Returns the <Language> associated with the passed shebang line, or null if none.  Pass the entire line; this function
 		 * will handle picking out the substrings.
@@ -73,14 +73,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{  return null;  }
 
 			shebangLine = shebangLine.NormalizeKey(KeySettingsForShebangStrings);
-			
+
 			// shebangStrings is sorted so longer string come before shorter ones, so it will match against "php4" before "php".
 			foreach (KeyValuePair<string, int> shebangStringKVP in shebangStrings)
 				{
 				if (shebangLine.Contains(shebangStringKVP.Key))
 					{  return LanguageFromID(shebangStringKVP.Value);  }
 				}
-				
+
 			return null;
 			}
 
@@ -90,7 +90,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		public Language LanguageFromName (string name)
 			{
 			Language language = languages[name];
-			
+
 			if (language != null)
 				{  return language; }
 
@@ -101,7 +101,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			return null;
 			}
-			
+
 		/* Function: LanguageFromID
 		 * Returns the <Language> associated with the passed ID, or null if none.
 		 */
@@ -109,7 +109,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			{
 			return languages[id];
 			}
-			
+
 		/* Function: UsedLanguageIDs
 		 * Returns a set of all the used language IDs.
 		 */
@@ -118,8 +118,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			return languages.GetUsedIDs();
 			}
 
-			
-						
+
+
 		// Group: Action Functions
 		// __________________________________________________________________________
 
@@ -158,8 +158,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			shebangStrings[shebangString] = languageID;
 			}
 
-			
-						
+
+
 		// Group: Operators
 		// __________________________________________________________________________
 
@@ -223,8 +223,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			return true;
 			}
-			
-		
+
+
 		/* Function: operator !=
 		 * Returns whether any of the settings of the two configurations are different.
 		 */
@@ -232,8 +232,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			{
 			return !(config1 == config2);
 			}
-			
-		
+
+
 		public override bool Equals (object o)
 			{
 			if (o is Config)
@@ -245,9 +245,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 		public override int GetHashCode ()
 			{
-			return ( (languages.Count) ^ 
-						(aliases.Count << 8) ^ 
-						(fileExtensions.Count << 16) ^ 
+			return ( (languages.Count) ^
+						(aliases.Count << 8) ^
+						(fileExtensions.Count << 16) ^
 						(shebangStrings.Count << 24) );
 			}
 
@@ -267,7 +267,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			}
 
 		/* Property: Aliases
-		 * Returns an enumerator that returns every language alias defined and its corresponding language ID.  This property 
+		 * Returns an enumerator that returns every language alias defined and its corresponding language ID.  This property
 		 * is usable with foreach.
 		 */
 		public IEnumerable<KeyValuePair<string, int>> Aliases
@@ -277,7 +277,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			}
 
 		/* Property: FileExtensions
-		 * Returns an enumerator that returns every file extension defined and its corresponding language ID.  This property is 
+		 * Returns an enumerator that returns every file extension defined and its corresponding language ID.  This property is
 		 * usable with foreach.
 		 */
 		public IEnumerable<KeyValuePair<string, int>> FileExtensions
@@ -287,7 +287,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			}
 
 		/* Property: ShebangStrings
-		 * Returns an enumerator that returns every shebang string defined and its corresponding language ID.  This property 
+		 * Returns an enumerator that returns every shebang string defined and its corresponding language ID.  This property
 		 * is usable with foreach.
 		 */
 		public IEnumerable<KeyValuePair<string, int>> ShebangStrings
@@ -306,7 +306,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * Manages all the <Languages> by their case-insensitive name and ID number.
 		 */
 		protected IDObjects.Manager<Language> languages;
-		
+
 		/* var: aliases
 		 * A <StringTable> mapping aliases to the language IDs they represent.
 		 */
@@ -316,18 +316,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * A <StringTable> mapping file extensions to the language IDs they represent.
 		 */
 		protected StringTable<int> fileExtensions;
-		
+
 		/* var: shebangStrings
 		 * A <SortedStringTable> mapping shebang strings to the language IDs they represent.  Using
 		 * <ShebangStringComparer> ensures that longer strings appear first when enumerating the entries.
 		 */
 		protected SortedStringTable<int> shebangStrings;
 
-		
+
 
 		// Group: Constants
 		// __________________________________________________________________________
-		
+
 		public const KeySettings KeySettingsForLanguageName = KeySettings.IgnoreCase | KeySettings.NormalizeUnicode;
 		public const KeySettings KeySettingsForFileExtensions = KeySettings.IgnoreCase;
 		public const KeySettings KeySettingsForShebangStrings = KeySettings.IgnoreCase;
@@ -335,11 +335,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* ____________________________________________________________________________
-		 * 
+		 *
 		 * Class: ShebangStringComparer
 		 * ____________________________________________________________________________
-		 * 
-		 * An implementation of IComparer that incorporates string length.  Longer strings are less than shorter strings, and if 
+		 *
+		 * An implementation of IComparer that incorporates string length.  Longer strings are less than shorter strings, and if
 		 * two strings are equal lengths it does a regular string comparison.  This is done so when you iterate through a
 		 * <Collections.SortedStringTable> of shebang strings the longer strings come first.  This is important because someone
 		 * could conceivably define one language with shebang string "php5" and another with just "php".  We want the longer
@@ -350,17 +350,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			public int Compare (string a, string b)
 				{
 				int aLength, bLength;
-			
+
 				if (a == null)
 					{  aLength = 0;  }
 				else
 					{  aLength = a.Length;  }
-				
+
 				if (b == null)
 					{  bLength = 0;  }
 				else
 					{  bLength = b.Length;  }
-				
+
 				if (aLength != bLength)
 					{  return bLength - aLength;  }
 				else if (aLength == 0)  // Both null

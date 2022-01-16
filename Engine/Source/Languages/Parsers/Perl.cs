@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Languages.Parsers.Perl
  * ____________________________________________________________________________
- * 
+ *
  * Additional language support for Perl.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -30,7 +30,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Enum: PODLineType
-		 * 
+		 *
 		 * StartPOD - The first line of a POD comment which isn't in the Natural Docs or Javadoc format, such as "=pod".
 		 * StartNaturalDocs - The first line of a Natural Docs POD comment, such as "=begin natural docs".
 		 * StartJavadoc - The first line of a Javadoc POD comment, such as "=begin javadoc"
@@ -44,8 +44,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: Perl
 		 */
 		public Perl (Engine.Instance engineInstance, Language language) : base (engineInstance, language)
@@ -54,9 +54,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		// Function: GetPossibleDocumentationComments
-		// 
-		// Goes through the file looking for comments that could possibly contain documentation and returns them as a list.  These 
-		// comments are not guaranteed to have documentation in them, just to be acceptable candidates for them.  If there are no 
+		//
+		// Goes through the file looking for comments that could possibly contain documentation and returns them as a list.  These
+		// comments are not guaranteed to have documentation in them, just to be acceptable candidates for them.  If there are no
 		// comments it will return an empty list.
 		//
 		// All the comments in the returned list will have their comment symbols marked as <CommentParsingType.CommentSymbol>
@@ -135,7 +135,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					comment.End = lineIterator;
 					comments.Add(comment);
 
-					
+
 					// Go back and mark the tokens
 
 					int firstLineCount, subsequentLineCount;
@@ -169,7 +169,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						temp.Next();
 						}
 
-					
+
 					// XML can actually appear in Javadoc comments
 
 					if (comment.Javadoc)
@@ -214,7 +214,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 									lineIterator.Next();
 									}
 
-								break;  
+								break;
 								}
 							}
 
@@ -270,7 +270,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			do
 				{  endOfLine.Next();  }
-			while (endOfLine.IsInBounds && 
+			while (endOfLine.IsInBounds &&
 					 endOfLine.FundamentalType != FundamentalType.LineBreak);
 
 			TokenIterator endOfContent = endOfLine;

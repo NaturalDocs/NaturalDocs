@@ -1,28 +1,28 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Languages.Parser
  * ____________________________________________________________________________
- * 
+ *
  * A generalized language parser, and also a base class for language-specific parsers.
- * 
- * 
+ *
+ *
  * Multithreading: Thread Safe
- * 
+ *
  *		The parser object may be used by multiple threads at the same time.  It stores no internal state related to parsing,
  *		and other instance variables are read-only once the parser is created.
- *		
- *		
+ *
+ *
  * Topic: Implementing Language-Specific Parsers
- * 
- *		Since there will only be one shared parser per <Language> object, all derived classes must also be thread safe and 
- *		allow multiple threads to use them on multiple files concurrently.  There should be no parsing state data stored in 
+ *
+ *		Since there will only be one shared parser per <Language> object, all derived classes must also be thread safe and
+ *		allow multiple threads to use them on multiple files concurrently.  There should be no parsing state data stored in
  *		instance variables.
- *		
+ *
  *		In order to have Natural Docs use the parser automatically for a specific language you must create a predefined
  *		language entry in <Languages.Manager>'s constructor.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -45,16 +45,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 	{
 	public class Parser
 		{
-		
+
 		// Group: Types
 		// __________________________________________________________________________
-		
-		
+
+
 		/* enum: ParseMode
-		 * 
-		 * What type of processing individual parsing functions will perform.  Not every mode is appropriate for every 
+		 *
+		 * What type of processing individual parsing functions will perform.  Not every mode is appropriate for every
 		 * function, but passing an unsupported mode would just be the equivalent of using <IterateOnly>.
-		 * 
+		 *
 		 * IterateOnly - The function will simply move the iterator past the tokens.
 		 * CreateElements - The function will create language <Elements> and add them to the list.
 		 * SyntaxHighlight - The function will apply <SyntaxHighlightingTypes> to the tokens.
@@ -66,9 +66,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* enum: ParseResult
-		 * 
+		 *
 		 * The result of a <Parse()> operation.
-		 * 
+		 *
 		 * Success - The parsing completed successfully.
 		 * Cancelled - The parsing was cancelled before completion.
 		 * FileDoesntExist - The file couldn't be opened because it doesn't exist.
@@ -92,7 +92,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 		// Group: Functions
 		// __________________________________________________________________________
-	
+
 
 		/* Function: Parser
 		 */
@@ -107,26 +107,26 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * Parses the passed file and returns it as a list of <Topics> and class parent <Links>.  Set cancelDelegate for the ability
 		 * to interrupt parsing, or use <Delegates.NeverCancel> if that's not needed.
 		 */
-		virtual public ParseResult Parse (Path filePath, int fileID, CancelDelegate cancelDelegate, 
+		virtual public ParseResult Parse (Path filePath, int fileID, CancelDelegate cancelDelegate,
 													out IList<Topic> topics, out LinkSet classParentLinks)
 			{
 			topics = null;
 			classParentLinks = null;
 
 			string content = null;
-				
+
 			try
-				{  
+				{
 				// This function supports determining the character encoding from just the path, which is important because unit test
 				// files may not have been added to Files.Manager.
 				int characterEncodingID = EngineInstance.Files.CharacterEncodingID(filePath);
 
 				if (characterEncodingID == 0)  // Unicode auto-detect
-					{  
+					{
 					content = System.IO.File.ReadAllText(filePath);
 					}
 				else
-					{  
+					{
 					var encoding = System.Text.Encoding.GetEncoding(characterEncodingID);
 					content = System.IO.File.ReadAllText(filePath, encoding);
 					}
@@ -142,13 +142,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			return Parse(new Tokenizer(content, tabWidth: EngineInstance.Config.TabWidth),
 							   fileID, cancelDelegate, out topics, out classParentLinks);
 			}
-			
-			
+
+
 		/* Function: Parse
-		 * Parses the tokenized source code and returns it as a list of <Topics> and class parent <Links>.  Set cancelDelegate for 
+		 * Parses the tokenized source code and returns it as a list of <Topics> and class parent <Links>.  Set cancelDelegate for
 		 * the ability to interrupt parsing, or use <Delegates.NeverCancel>.
 		 */
-		virtual public ParseResult Parse (Tokenizer source, int fileID, CancelDelegate cancelDelegate, 
+		virtual public ParseResult Parse (Tokenizer source, int fileID, CancelDelegate cancelDelegate,
 													out IList<Topic> topics, out LinkSet classParentLinks)
 			{
 			if (language.Type == Language.LanguageType.Container)
@@ -162,15 +162,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			// Find all the comments that could have documentation.
 
 			List<PossibleDocumentationComment> possibleDocumentationComments = GetPossibleDocumentationComments(source);
-			
+
 			if (cancelDelegate())
 				{  return ParseResult.Cancelled;  }
-			
+
 
 			// Extract comment elements from them.  This could include Javadoc, XML, and headerless Natural Docs comments.
-				
+
 			List<Element> commentElements = GetCommentElements(possibleDocumentationComments);
-			
+
 			#if DEBUG
 				ValidateElements(commentElements, ValidateElementsMode.CommentElements);
 			#endif
@@ -209,8 +209,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					{  return ParseResult.Cancelled;  }
 
 
-				// Fill in the declared access levels for comment elements.  We do this before merging with the code elements so the defaults 
-				// that come from the  comment settings only apply to topics that don't also appear in the code.  Anything that gets merged will 
+				// Fill in the declared access levels for comment elements.  We do this before merging with the code elements so the defaults
+				// that come from the  comment settings only apply to topics that don't also appear in the code.  Anything that gets merged will
 				// have the comment settings overwritten by the code settings.
 
 				ApplyDeclaredAccessLevels(commentElements);
@@ -262,7 +262,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				#endif
 
 
-				// Remove code topics if --documented-only is on.  We do this after merging and keep all the original elements so that the 
+				// Remove code topics if --documented-only is on.  We do this after merging and keep all the original elements so that the
 				// code's effects still apply.
 
 				if (EngineInstance.Config.DocumentedOnly)
@@ -280,9 +280,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			else if (language.Type == Language.LanguageType.BasicSupport)
 				{
-				
+
 				// Fill in additional prototypes via our language-neutral algorithm.  These will not overwrite the comment prototypes.
-	
+
 				AddBasicPrototypes(source, commentElements, possibleDocumentationComments);
 
 				if (cancelDelegate())
@@ -359,9 +359,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			if (EngineInstance.Config.AutoGroup)
 				{
 				if (AddAutomaticGrouping(elements))
-					{  
+					{
 					// Need to add these to any newly created groups.
-					ApplyDeclaredAccessLevels(elements);  
+					ApplyDeclaredAccessLevels(elements);
 					}
 
 				if (cancelDelegate())
@@ -496,7 +496,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				}
 
 
-			// If we found brackets, it's either a function prototype or a class prototype that includes members.  
+			// If we found brackets, it's either a function prototype or a class prototype that includes members.
 			// Mark the delimiters.
 
 			if (closingBracket != '\0')
@@ -521,7 +521,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					// Unlike prototype detection, here we treat < as an opening bracket.  Since we're already in the parameter list
 					// we shouldn't run into it as part of an operator overload, and we need it to not treat the comma in "template<a,b>"
 					// as a parameter divider.
-					else if (TryToSkipComment(ref iterator) || 
+					else if (TryToSkipComment(ref iterator) ||
 							   TryToSkipString(ref iterator) ||
 							   TryToSkipBlock(ref iterator, true))
 						{  }
@@ -571,10 +571,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					start.NextPastWhitespace(end);
 					}
 
-				// If there's a colon immediately after the parameters, assume it's a Pascal-style function and mark the return 
+				// If there's a colon immediately after the parameters, assume it's a Pascal-style function and mark the return
 				// value after it.  We can't rely on parameterStyle since the prototype may not have parameters.
 				if (start < end && start.Character == ':')
-					{  
+					{
 					start.Next();
 					start.NextPastWhitespace(end);
 
@@ -584,7 +584,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 				// Otherwise assume it's a C-style function.  Mark the part before the parameters, which includes the name.
 				else
-					{  
+					{
 					parsedPrototype.GetBeforeParameters(out start, out end);
 
 					// Exclude the opening bracket
@@ -596,7 +596,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					}
 				}
 
-			
+
 			// If there's no brackets, it's a variable, property, or class.
 
 			else
@@ -644,17 +644,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{
 				if (iterator.IsInBounds == false)
 					{  break;  }
-				else if (iterator.MatchesToken("class") || 
-						  iterator.MatchesToken("struct") || 
+				else if (iterator.MatchesToken("class") ||
+						  iterator.MatchesToken("struct") ||
 						  iterator.MatchesToken("interface"))
-					{  
-					// Only count it as a keyword if it's a standalone word.  We don't want to get tripped up on a macro called external_class or 
+					{
+					// Only count it as a keyword if it's a standalone word.  We don't want to get tripped up on a macro called external_class or
 					// something like that.
 					if (iterator.IsStandaloneWord())
-						{  
+						{
 						iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.Keyword;
 						foundKeyword = true;
-						break;  
+						break;
 						}
 					else
 						{  iterator.Next();  }
@@ -687,7 +687,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				iterator.NextPastWhitespace();
 				}
 
-			
+
 			// If we didn't find a recognized keyword, treat it as a space separated list of words, the last one being the name and the rest being modifiers.
 
 			else
@@ -709,7 +709,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					while (iterator.IsInBounds)
 						{
 						if (iterator.FundamentalType == FundamentalType.Text ||
-							iterator.Character == '.' || 
+							iterator.Character == '.' ||
 							iterator.Character == '_')
 							{  iterator.Next();  }
 						else if (iterator.MatchesAcrossTokens("::"))
@@ -719,9 +719,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						}
 
 					if (iterator.FundamentalType != FundamentalType.Whitespace)
-						{  
+						{
 						iterator = startOfLastWord;
-						break;  
+						break;
 						}
 
 					TokenIterator lookahead = iterator;
@@ -787,7 +787,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				iterator.NextPastWhitespace();
 				}
 
-			
+
 			// We now have a valid prototype.  See if we can find any parents.  We won't be parsing them yet, we're just finding the
 			// separators.
 
@@ -884,8 +884,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					iterator.Next();
 					}
 				else if (iterator.Character == '{')
-					{  
-					iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfBody;  
+					{
+					iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfBody;
 					getParents = false;
 					}
 				else if (TryToSkipComment(ref iterator) ||
@@ -924,7 +924,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 						while (endOfName < endOfParent)
 							{
-							if (endOfName.FundamentalType == FundamentalType.Text || 
+							if (endOfName.FundamentalType == FundamentalType.Text ||
 								endOfName.Character == '.' || endOfName.Character == '_')
 								{  endOfName.Next();  }
 							else if (endOfName.MatchesAcrossTokens("::"))
@@ -995,8 +995,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 							}
 						else
 							{
-							// Reset in case TryToSkipBlock() worked but it went past the parent.  
-							endOfTemplate = startOfTemplate;  
+							// Reset in case TryToSkipBlock() worked but it went past the parent.
+							endOfTemplate = startOfTemplate;
 							}
 						}
 
@@ -1047,15 +1047,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: GetPossibleDocumentationComments
-		 * 
+		 *
 		 * 	Goes through the source looking for comments that could possibly contain documentation and returns them as a list.  These
 		 * 	comments are not guaranteed to have documentation in them, just to be acceptable candidates for them.  If there are no
 		 * 	comments it will return an empty list.
-		 * 	
+		 *
 		 * 	All the comments in the returned list will have their comment symbols marked as <CommentParsingType.CommentSymbol>
 		 * 	in the tokenizer.  This allows further operations to be done on them in a language independent manner.  If you want to also
 		 * 	filter out text boxes and lines, use <Comments.LineFinder>.
-		 * 	
+		 *
 		 * 	If you already have the source code in tokenized form it would be more efficient to pass it as a <Tokenizer>.
 		 */
 		public List<PossibleDocumentationComment> GetPossibleDocumentationComments (string source)
@@ -1065,9 +1065,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		// Function: GetPossibleDocumentationComments
-		// 
-		// Goes through the file looking for comments that could possibly contain documentation and returns them as a list.  These 
-		// comments are not guaranteed to have documentation in them, just to be acceptable candidates for them.  If there are no 
+		//
+		// Goes through the file looking for comments that could possibly contain documentation and returns them as a list.  These
+		// comments are not guaranteed to have documentation in them, just to be acceptable candidates for them.  If there are no
 		// comments it will return an empty list.
 		//
 		// All the comments in the returned list will have their comment symbols marked as <CommentParsingType.CommentSymbol>
@@ -1079,11 +1079,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		// The default implementation uses the comment symbols found in <Language> or passed to the constructor.  You can override
 		// this function if you need to do something more sophisticated, such as interpret the POD directives in Perl.
 		//
-		// Comments must be alone on a line to be a candidate for documentation, meaning that the comment symbol must be the 
+		// Comments must be alone on a line to be a candidate for documentation, meaning that the comment symbol must be the
 		// first non-whitespace character on a line, and in the case of block comments, nothing but whitespace may trail the closing
-		// symbol.  The latter rule is important because a comment may start correctly but not end so, as in this prototype with Splint 
+		// symbol.  The latter rule is important because a comment may start correctly but not end so, as in this prototype with Splint
 		// annotation:
-		// 
+		//
 		// > int get_array(integer_t id,
 		// >               /*@out@*/ array_t array);
 		//
@@ -1097,9 +1097,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		//
 		// It also goes through the code line by line in a simple manner, not accounting for things like strings, so if a language contains
 		// a multiline string whose content looks like a language comment it will be interpreted as one.  This isn't ideal but is accepted
-		// as a conscious tradeoff because there are actually many different string formats (literal quotes denoted with \", literal quotes 
-		// denoted with "", Perl's q{} forms and here doc) so you can't account for them all in a generalized way.  Also, putting this in 
-		// an independent stage even when using full language support means comments don't disappear the way prototypes do if the 
+		// as a conscious tradeoff because there are actually many different string formats (literal quotes denoted with \", literal quotes
+		// denoted with "", Perl's q{} forms and here doc) so you can't account for them all in a generalized way.  Also, putting this in
+		// an independent stage even when using full language support means comments don't disappear the way prototypes do if the
 		// parser gets tripped up on something like an unmatched brace.
 		//
 		//
@@ -1107,7 +1107,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			{
 			if (language.Type == Language.LanguageType.Container)
 				{  throw new Exceptions.BadContainerOperation("GetPossibleDocumentationComments");  }
-				
+
 			else if (language.Type == Language.LanguageType.TextFile)
 				{
 				List<PossibleDocumentationComment> possibleDocumentationComments = new List<PossibleDocumentationComment>(1);
@@ -1130,8 +1130,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					{
 					bool foundComment = false;
 					PossibleDocumentationComment possibleDocumentationComment = null;
-				
-				
+
+
 					// Javadoc block comments
 
 					// We test for these before regular block comments because they are usually extended versions of them, such
@@ -1141,8 +1141,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						{
 						foreach (var javadocBlockCommentSymbols in language.JavadocBlockCommentSymbols)
 							{
-							foundComment = TryToGetBlockComment(ref lineIterator, 
-																						 javadocBlockCommentSymbols.OpeningSymbol, 
+							foundComment = TryToGetBlockComment(ref lineIterator,
+																						 javadocBlockCommentSymbols.OpeningSymbol,
 																						 javadocBlockCommentSymbols.ClosingSymbol,
 																						 true, out possibleDocumentationComment);
 
@@ -1153,10 +1153,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						if (possibleDocumentationComment != null)
 							{  possibleDocumentationComment.Javadoc = true;  }
 						}
-					
-					
+
+
 					// Plain block comments
-					
+
 					// We test block comments ahead of line comments because in Lua the line comments are a substring of them: --
 					// versus --[[ and ]]--.
 
@@ -1164,9 +1164,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						{
 						foreach (var blockCommentSymbols in language.BlockCommentSymbols)
 							{
-							foundComment = TryToGetBlockComment(ref lineIterator, 
+							foundComment = TryToGetBlockComment(ref lineIterator,
 																						 blockCommentSymbols.OpeningSymbol,
-																						 blockCommentSymbols.ClosingSymbol, 
+																						 blockCommentSymbols.ClosingSymbol,
 																						 false, out possibleDocumentationComment);
 
 							if (foundComment)
@@ -1174,7 +1174,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 							}
 
 						// Skip Splint comments so that they can appear in prototypes.
-						if (possibleDocumentationComment != null && 
+						if (possibleDocumentationComment != null &&
 							possibleDocumentationComment.Start.FirstToken(LineBoundsMode.CommentContent).Character == '@')
 							{
 							LineIterator lastLine = possibleDocumentationComment.End;
@@ -1188,8 +1188,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 								{  possibleDocumentationComment = null;  }
 							}
 						}
-					
-					
+
+
 					// XML line comments
 
 					if (foundComment == false && language.HasXMLLineCommentSymbols)
@@ -1206,11 +1206,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						if (possibleDocumentationComment != null)
 							{  possibleDocumentationComment.XML = true;  }
 						}
-						
-						
+
+
 					// Ambiguous XML/Javadoc line comments
 
-					// If an XML comment is found we check the same position for Javadoc because they may share an opening 
+					// If an XML comment is found we check the same position for Javadoc because they may share an opening
 					// symbol, such as ///.
 
 					if (possibleDocumentationComment != null && possibleDocumentationComment.XML == true &&
@@ -1222,7 +1222,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 						foreach (var javadocLineCommentSymbols in language.JavadocLineCommentSymbols)
 							{
-							foundJavadocComment = TryToGetLineComment(ref javadocLineIterator, 
+							foundJavadocComment = TryToGetLineComment(ref javadocLineIterator,
 																								  javadocLineCommentSymbols.FirstLineSymbol,
 																								  javadocLineCommentSymbols.FollowingLinesSymbol,
 																								  true, out possibleJavadocDocumentationComment);
@@ -1233,7 +1233,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 						if (possibleJavadocDocumentationComment != null)
 							{
-							// If the Javadoc comment is longer we use that instead of the XML since it may have detected the first 
+							// If the Javadoc comment is longer we use that instead of the XML since it may have detected the first
 							// line as XML and ignored the rest for not having the same symbol.  For example:
 							//
 							// ## Comment
@@ -1261,7 +1261,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 								//
 								// ## Comment
 								//
-								// Is that a one line XML comment or a one line Javadoc comment?  We can't tell, so mark it as 
+								// Is that a one line XML comment or a one line Javadoc comment?  We can't tell, so mark it as
 								// potentially either.
 
 								if (possibleDocumentationComment.Start.LineNumber ==
@@ -1270,8 +1270,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 									possibleDocumentationComment.Javadoc = true;
 									// XML should already be set to true
 									}
-							
-								// If the comments are equal length but more than one line then it's just interpreting the XML as 
+
+								// If the comments are equal length but more than one line then it's just interpreting the XML as
 								// a Javadoc start with a vertical line for the remainder, so leave it as XML.  For example:
 								//
 								// ## Comment
@@ -1283,10 +1283,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 								}
 
 							// If the XML comment is longer just leave it and ignore the Javadoc one.
-					
+
 							}
 						}
-						
+
 
 					// Javadoc line comments
 
@@ -1294,7 +1294,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						{
 						foreach (var javadocLineCommentSymbols in language.JavadocLineCommentSymbols)
 							{
-							foundComment = TryToGetLineComment(ref lineIterator, 
+							foundComment = TryToGetLineComment(ref lineIterator,
 																					   javadocLineCommentSymbols.FirstLineSymbol,
 																					   javadocLineCommentSymbols.FollowingLinesSymbol,
 																					   true, out possibleDocumentationComment);
@@ -1309,7 +1309,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 					// Plain line comments
-				
+
 					if (foundComment == false && language.HasLineCommentSymbols)
 						{
 						foreach (var lineCommentSymbol in language.LineCommentSymbols)
@@ -1321,10 +1321,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 								{  break;  }
 							}
 						}
-					
-				
+
+
 					// Nada.
-				
+
 					if (foundComment == false)
 						{  lineIterator.Next();  }
 					else
@@ -1340,7 +1340,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 						// lineIterator would have been moved already if foundComment is true
 						}
-					
+
 					}
 
 				return possibleDocumentationComments;
@@ -1358,7 +1358,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: IsBuiltInType
-		 * Returns whether the text between the iterators is a built-in type such as "int" as opposed to a user-defined 
+		 * Returns whether the text between the iterators is a built-in type such as "int" as opposed to a user-defined
 		 * type.
 		 */
 		public bool IsBuiltInType (TokenIterator start, TokenIterator end)
@@ -1410,23 +1410,23 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			}
 
 
-			
+
 		// Group: Parsing Stages
 		// __________________________________________________________________________
-		
-			
+
+
 		/* Function: GetCommentElements
-		 * 
+		 *
 		 * Goes through the <PossibleDocumentationComments> looking for comment <Elements> that should be included in the
 		 * output.  If there are none, it will return an empty list.
-		 * 
+		 *
 		 * The default implementation sends each <PossibleDocumentationComment> to <Comments.Manager.Parse()> and then
 		 * converts the <Topics> to <Elements>.  There should be no need to change it.
 		 */
 		protected virtual List<Element> GetCommentElements (List<PossibleDocumentationComment> possibleDocumentationComments)
 			{
 			List<Topic> topics = new List<Topic>();
-				
+
 			foreach (var comment in possibleDocumentationComments)
 				{  EngineInstance.Comments.Parse(comment, language.ID, topics);  }
 
@@ -1513,11 +1513,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						}
 					}
 
-				// Scoped and group topics get a ParentElement.  Sections get treated like classes because we want any modifiers they 
+				// Scoped and group topics get a ParentElement.  Sections get treated like classes because we want any modifiers they
 				// have to be inherited by the topics that follow.
 				else if (commentType != null && topic.IsList == false &&
-						  (commentType.Scope == CommentType.ScopeValue.Start || 
-						   commentType.Scope == CommentType.ScopeValue.End || 
+						  (commentType.Scope == CommentType.ScopeValue.Start ||
+						   commentType.Scope == CommentType.ScopeValue.End ||
 						   topic.IsGroup))
 					{
 					ParentElement parentElement = new ParentElement(topic.CommentLineNumber, 1, Element.Flags.InComments);
@@ -1525,14 +1525,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					parentElement.DefaultChildLanguageID = topic.LanguageID;
 
 					if (topic.IsGroup)
-						{  
+						{
 						// Groups don't enfoce a maximum access level, they just set the default declared level.
 						parentElement.DefaultDeclaredChildAccessLevel = topic.DeclaredAccessLevel;
 						}
 					else // scope start or end
-						{  
+						{
 						parentElement.MaximumEffectiveChildAccessLevel = topic.DeclaredAccessLevel;
-						parentElement.DefaultDeclaredChildAccessLevel = AccessLevel.Public;  
+						parentElement.DefaultDeclaredChildAccessLevel = AccessLevel.Public;
 						}
 
 					elements.Add(parentElement);
@@ -1577,15 +1577,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: GetCodeElements
-		 * 
-		 * Goes through the file looking for code <Elements> that should be included in the output.  If there are none or the language 
+		 *
+		 * Goes through the file looking for code <Elements> that should be included in the output.  If there are none or the language
 		 * doesn't have full support, it will return an empty list.
-		 * 
+		 *
 		 * Implementation Requirements:
-		 * 
+		 *
 		 *		Subclasses override this function as part of providing full language support.  Any <Topics> returned within these <Elements>
 		 *		must meet these requirements:
-		 *		
+		 *
 		 *		- Every <Topic> must have a title set.
 		 *		- Every <Topic> must have a comment type ID set.
 		 *		- Every <Topic> must have a symbol set.
@@ -1603,17 +1603,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: AddBasicPrototypes
-		 * 
+		 *
 		 * Adds prototypes to the <Topics> for languages with basic support.  It examines the code between the end of each
-		 * comment topic and the next one (or the next <PossibleDocumentationComment>) and if it finds the topic title before it 
+		 * comment topic and the next one (or the next <PossibleDocumentationComment>) and if it finds the topic title before it
 		 * finds one of the language's prototype enders the prototype will be set to the code between the topic and the ender.
 		 *
 		 * This function does the basic looping of the search but throws the individual prototype detection to <AddBasicPrototype()>,
 		 * so languages with basic support can just override that to implement tweaks instead.
-		 * 
+		 *
 		 * This function will not apply a prototype to a <Topic> that already has one.
 		 */
-		protected virtual void AddBasicPrototypes (Tokenizer source, List<Element> elements, 
+		protected virtual void AddBasicPrototypes (Tokenizer source, List<Element> elements,
 																  List<PossibleDocumentationComment> possibleDocumentationComments)
 			{
 			int elementIndex = 0;
@@ -1622,20 +1622,20 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{
 				PossibleDocumentationComment comment = possibleDocumentationComments[commentIndex];
 
-				// Advance the element index to the last one before the end of this comment.  If there are multiple topics in a 
+				// Advance the element index to the last one before the end of this comment.  If there are multiple topics in a
 				// comment only the last one gets a prototype search.
 
-				while (elementIndex + 1 < elements.Count && 
+				while (elementIndex + 1 < elements.Count &&
 						 elements[elementIndex + 1].LineNumber < comment.End.LineNumber)
 					{  elementIndex++;  }
 
 				// Now back up past any embedded topics.  We don't want the last embedded topic to get the prototype
 				// instead of the parent topic.
 
-				while (elementIndex < elements.Count && 
+				while (elementIndex < elements.Count &&
 						 elements[elementIndex].Topic != null &&
-						 elements[elementIndex].Topic.IsEmbedded && 
-						 elementIndex > 0 && 
+						 elements[elementIndex].Topic.IsEmbedded &&
+						 elementIndex > 0 &&
 						 elements[elementIndex - 1].LineNumber >= comment.Start.LineNumber)
 					{  elementIndex--;  }
 
@@ -1643,9 +1643,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					 elements[elementIndex].Topic == null ||
 					 elements[elementIndex].LineNumber < comment.Start.LineNumber ||
 					 elements[elementIndex].LineNumber > comment.End.LineNumber)
-					{  
+					{
 					// We're out of topics or the one we're on isn't in this comment.
-					continue;  
+					continue;
 					}
 
 				// If it already has a prototype, probably from one embedded in a comment, don't search for a new one.
@@ -1683,10 +1683,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			PrototypeEnders prototypeEnders = language.GetPrototypeEndersFor(topic.CommentTypeID);
 
 			if (prototypeEnders == null)
-				{  
+				{
 				prototypeStart = startCode.FirstToken(LineBoundsMode.Everything);
 				prototypeEnd = prototypeStart;
-				return false;  
+				return false;
 				}
 
 			// Skip leading blank lines even in languages where line breaks matter.
@@ -1698,22 +1698,22 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			return TryToFindBasicPrototype(topic, start, limit, out prototypeStart, out prototypeEnd);
 			}
-			
-		
+
+
 		/* Function: TryToFindBasicPrototype
 		 * Attempts to find a prototype for the passed <Topic> between the iterators.  If one is found, it will be normalized and put in
 		 * <Topic.Prototoype>.
 		 */
-		protected virtual bool TryToFindBasicPrototype (Topic topic, TokenIterator start, TokenIterator limit, 
+		protected virtual bool TryToFindBasicPrototype (Topic topic, TokenIterator start, TokenIterator limit,
 																			out TokenIterator prototypeStart, out TokenIterator prototypeEnd)
 			{
 			PrototypeEnders prototypeEnders = language.GetPrototypeEndersFor(topic.CommentTypeID);
 
 			if (prototypeEnders == null)
-				{  
+				{
 				prototypeStart = limit;
 				prototypeEnd = limit;
-				return false;  
+				return false;
 				}
 
 			TokenIterator iterator = start;
@@ -1729,9 +1729,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				if (iterator.FundamentalType == FundamentalType.LineBreak)
 					{
 					if (prototypeEnders.IncludeLineBreaks && !lineHasExtender)
-						{  
+						{
 						goodPrototype = true;
-						break;  
+						break;
 						}
 					else
 						{
@@ -1773,14 +1773,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				// Ender Symbol, not in a bracket
 
 				// We test this before looking for opening brackets so the opening symbols can be used as enders.
-				else if (prototypeEnders.Symbols != null && 
+				else if (prototypeEnders.Symbols != null &&
 						   iterator.MatchesAnyAcrossTokens(prototypeEnders.Symbols, !language.CaseSensitive) != -1)
 					{
 					goodPrototype = true;
 					break;
 					}
 
-				
+
 				// Comments, Strings, and Brackets
 
 				// We test comments before brackets in case the opening symbols are used for comments.
@@ -1790,7 +1790,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						   TryToSkipBlock(ref iterator, false))
 					{
 					}
-					
+
 
 				// Everything Else
 
@@ -1822,8 +1822,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				return false;
 				}
 			}
-			
-		
+
+
 		/* Function: BasicPrototypeMatchesTitle
 		 * Returns whether the prototype between the iterators matches the title in the passed <Topic>.
 		 */
@@ -1835,7 +1835,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			Tokenizer tokenizer = prototypeStart.Tokenizer;
 
 			if (tokenizer.ContainsTextBetween(undecoratedTitle, true, prototypeStart, prototypeEnd))
-				{  
+				{
 				return true;
 				}
 
@@ -1865,13 +1865,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			return false;
 			}
-			
-		
+
+
 		/* Function: NormalizePrototype
-		 * 
+		 *
 		 * Puts the passed prototype in a form that's appropriate for the rest of the program.  It assumes the syntax is valid.  If
 		 * you already have the input in a <Tokenizer>, it is more efficient to call <NormalizePrototype(tokenizer)>.
-		 * 
+		 *
 		 * - Whitespace will be condensed.
 		 * - Most comments will be removed, excluding things like Splint comments.
 		 * - Line breaks will be removed, including extension characters if the language has them.
@@ -1883,9 +1883,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: NormalizePrototype
-		 * 
+		 *
 		 * Puts the passed prototype in a form that's appropriate for the rest of the program.  It assumes the syntax is valid.
-		 * 
+		 *
 		 * - Whitespace will be condensed.
 		 * - Most comments will be removed, excluding things like Splint comments.
 		 * - Line breaks will be removed, including extension characters if the language has them.
@@ -1989,7 +1989,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					commentContentEnd.PreviousByCharacters(closingSymbol.Length);
 
 					// Allow certain comments to appear in the output, such as those for Splint.  See splint.org.
-					if (input.MatchTextBetween(acceptablePrototypeCommentRegex, 
+					if (input.MatchTextBetween(acceptablePrototypeCommentRegex,
 																	  commentContentStart, commentContentEnd).Success)
 						{
 						output.Append(openingSymbol);
@@ -2045,7 +2045,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					{
 					iterator.AppendTokenTo(output);
 					lastWasWhitespace = false;
-					iterator.Next();  
+					iterator.Next();
 					}
 				}
 
@@ -2174,16 +2174,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: MergeElements
-		 * Combines code and comment <Elements> into one list.  The original <Elements> and/or <Topics> may be reused so don't use them 
+		 * Combines code and comment <Elements> into one list.  The original <Elements> and/or <Topics> may be reused so don't use them
 		 * after calling this function.
 		 */
 		protected List<Element> MergeElements (List<Element> commentElements, List<Element> codeElements)
 			{
-			if (codeElements == null || codeElements.Count == 0 || 
+			if (codeElements == null || codeElements.Count == 0 ||
 				(codeElements.Count == 1 && codeElements[0] is ParentElement && (codeElements[0] as ParentElement).IsRootElement))
 				{  return commentElements;  }
 
-			if (commentElements == null || commentElements.Count == 0 || 
+			if (commentElements == null || commentElements.Count == 0 ||
 				(commentElements.Count == 1 && commentElements[0] is ParentElement && (commentElements[0] as ParentElement).IsRootElement))
 				{  return codeElements;  }
 
@@ -2207,7 +2207,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				}
 
 
-			// Comments must appear above what they document, so any code elements that appear before the first comment element 
+			// Comments must appear above what they document, so any code elements that appear before the first comment element
 			// are added as is.
 
 			while (codeIndex < codeElements.Count && codeElements[codeIndex].FilePosition < commentElements[commentIndex].FilePosition)
@@ -2217,7 +2217,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				}
 
 
-			// Now find and loop through block pairs.  The comment block is all the consecutive comments appearing until the next code 
+			// Now find and loop through block pairs.  The comment block is all the consecutive comments appearing until the next code
 			// element.  The code block is that element and all consecutive elements appearing until the next comment element or the end
 			// of the file.
 
@@ -2243,7 +2243,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 				// First see if the last comment topic is headerless.  If so, it gets merged with the first code topic and everything else is
 				// added as is.
-				
+
 				int lastCommentIndex = commentIndex + commentCount - 1;
 
 				if (commentElements[lastCommentIndex].Topic != null &&
@@ -2306,10 +2306,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						// If there is a matching code element...
 						else
 							{
-							// Comment and code elements should match in order to avoid weird side effects like members being pulled out of their parents' 
-							// scope, so for non-list elements we enforce this.  We add all the code elements above the match as is; they are no longer 
+							// Comment and code elements should match in order to avoid weird side effects like members being pulled out of their parents'
+							// scope, so for non-list elements we enforce this.  We add all the code elements above the match as is; they are no longer
 							// candidates for matching.
-							
+
 							// Ideally we would do this for list topics as well, but we make an exception for them.  List topics are for documenting lots of
 							// small elements in one place, which means they're much more likely to be far from their code elements, and forcing the user
 							// to document them in the order in which they're defined is too restricting.  We'll make it the user's responsibility to not
@@ -2470,7 +2470,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: CanMergeTopics
-		 * Returns whether the <Topics> match and can be merged.  It is safe to pass null to this function.  If either topic is null it will 
+		 * Returns whether the <Topics> match and can be merged.  It is safe to pass null to this function.  If either topic is null it will
 		 * return false, even if both are.
 		 */
 		protected bool CanMergeTopics (Topic commentTopic, Topic codeTopic, bool allowHeaderlessTopics)
@@ -2525,7 +2525,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			Topic mergedTopic = new Topic(EngineInstance.CommentTypes);
 
 			// TopicID - Shouldn't be set on either.
-			
+
 			// Title - If the user specified one, we always want to use that.
 			if (commentTopic.Title != null)
 				{  mergedTopic.Title = commentTopic.Title;  }
@@ -2565,7 +2565,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			// CommentTypeID - If the user specified one, we always want to use that.
 			if (commentTopic.CommentTypeID != 0)
-				{  
+				{
 				mergedTopic.CommentTypeID = commentTopic.CommentTypeID;
 
 				// If this changed whether the topic defines a class, reset the symbols to the comment's
@@ -2598,7 +2598,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			// LanguageID - Use the code.
 			mergedTopic.LanguageID = codeTopic.LanguageID;
 
-			// PrototypeContext - Use the code.	
+			// PrototypeContext - Use the code.
 			mergedTopic.PrototypeContext = codeTopic.PrototypeContext;
 
 			// BodyContext - Use the code.
@@ -2607,7 +2607,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			return mergedTopic;
 			}
 
-			
+
 		/* Function: RemoveHeaderlessTopics
 		 * Deletes any <Topics> which do not have the Title field set, which means they were headerless and they were never merged
 		 * with a code topic.  It will remove their <Elements> if they serve no other purpose.
@@ -2620,15 +2620,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				Element element = elements[i];
 
 				if (element.Topic != null && element.Topic.Title == null)
-					{  
+					{
 					if ((element is ParentElement) == false && element.ClassParentLinks == null)
-						{  
-						elements.RemoveAt(i);  
+						{
+						elements.RemoveAt(i);
 						}
 					else
-						{  
+						{
 						element.Topic = null;
-						i++;  
+						i++;
 						}
 					}
 				else
@@ -2651,7 +2651,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			while (i < elements.Count)
 				{
 				if (elements[i] is ParentElement)
-					{  
+					{
 					ParentElement subParent = (ParentElement)elements[i];
 
 					if (subParent.Topic != null && subParent.Topic.IsGroup)
@@ -2749,7 +2749,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			while (i < elements.Count && parent.Contains(elements[i]))
 				{
 				if (elements[i] is ParentElement)
-					{  
+					{
 					ParentElement subParent = (ParentElement)elements[i];
 
 					if (subParent.Topic != null && subParent.Topic.IsGroup)
@@ -2803,7 +2803,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						while (i < elements.Count && parent.Contains(elements[i]));
 
 						int newGroups = AddAutomaticGroupingToRange(elements, startIndex, i);
-						
+
 						groupsAdded += newGroups;
 						i += newGroups;
 						}
@@ -2824,7 +2824,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: AddAutomaticGroupingToRange
-		 * Adds automatic grouping to the <Elements> between the indexes.  It assumes they are all in the same scope and there are 
+		 * Adds automatic grouping to the <Elements> between the indexes.  It assumes they are all in the same scope and there are
 		 * no <ParentElements> in this range.  It will return the number of elements added to the list, or zero if none.
 		 */
 		protected int AddAutomaticGroupingToRange (List<Element> elements, int startIndex, int endIndex)
@@ -2860,15 +2860,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			while (i < endIndex)
 				{
 				if (elements[i].Topic == null)
-					{  
+					{
 					i++;
-					continue;  
+					continue;
 					}
 
 				int effectiveCommentTypeID = elements[i].Topic.CommentTypeID;
 
 				if (elements[i].Topic.IsEnum)
-					{  
+					{
 					int typeCommentTypeID = EngineInstance.CommentTypes.IDFromKeyword("type", language.ID);
 
 					if (typeCommentTypeID != 0)
@@ -2894,7 +2894,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						for (int j = 0; j < i; j++)
 							{
 							if (elements[j].Topic != null)
-								{  
+								{
 								addGroup = true;
 								break;
 								}
@@ -2909,7 +2909,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 						ParentElement newGroupElement = new ParentElement(elements[i].LineNumber, elements[i].CharNumber, 0);
 						newGroupElement.Topic = newGroupTopic;
-					
+
 						elements.Insert(i, newGroupElement);
 						lastGroupAdded = newGroupElement;
 						lastGroupAddedIndex = i;
@@ -2960,7 +2960,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 		/* Function: ApplyFileAndLanguageIDs
 		 * Goes through all the <Elements> with <Topics> and applies the FileID and LanguageID properties.  All <Topics> will be set
-		 * to the passed FileID, but the LanguageID will be inherited from the <ParentElements>, or set to the default if none of them 
+		 * to the passed FileID, but the LanguageID will be inherited from the <ParentElements>, or set to the default if none of them
 		 * have one.
 		 */
 		protected void ApplyFileAndLanguageIDs (List<Element> elements, int defaultFileID, int defaultLanguageID)
@@ -3016,7 +3016,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 						if (parentIndex != -1)
 							{
-							elementAsParent.MaximumEffectiveChildAccessLevel = 
+							elementAsParent.MaximumEffectiveChildAccessLevel =
 								(elements[parentIndex] as ParentElement).DefaultDeclaredChildAccessLevel;
 							}
 						}
@@ -3061,11 +3061,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 					topic.EffectiveAccessLevel = topic.DeclaredAccessLevel;
 
-					for (int parentIndex = FindElementParent(elements, i); 
-						  parentIndex != -1; 
+					for (int parentIndex = FindElementParent(elements, i);
+						  parentIndex != -1;
 						  parentIndex = FindElementParent(elements, parentIndex))
 						{
-						topic.EffectiveAccessLevel = 
+						topic.EffectiveAccessLevel =
 							GenerateEffectiveAccessLevel(topic.EffectiveAccessLevel, (elements[parentIndex] as ParentElement).MaximumEffectiveChildAccessLevel);
 						}
 					}
@@ -3122,11 +3122,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			// ☐ Private + Protected Internal maximum = Private
 			// ☐ Private + Private maximum = Private
 			// ---------------------------
-			// * This isn't entirely accurate from a code perspective.  It's really limited to the intersection of protected and internal (as opposed 
+			// * This isn't entirely accurate from a code perspective.  It's really limited to the intersection of protected and internal (as opposed
 			//    to being accessible to the union of protected and internal, which is what the "protected internal" access level is) but we have
 			//    to choose one, so internal it is.
 
-			if (maximum == AccessLevel.Unknown || 
+			if (maximum == AccessLevel.Unknown ||
 				maximum == AccessLevel.Public)
 				{  return current;  }
 
@@ -3354,13 +3354,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: GenerateRemainingSymbols
-		 * 
+		 *
 		 * Finds any <Topics> that don't have their symbols set and generates them.  It will also generate <ClassStrings> and
 		 * <ParentElement.ChildContextStrings> when appropriate.
-		 * 
+		 *
 		 * Requirements:
-		 * 
-		 *		- This function assumes that all code element <Topics> have symbols and the only ones without them appear in the 
+		 *
+		 *		- This function assumes that all code element <Topics> have symbols and the only ones without them appear in the
 		 *		  comments only.
 		 *		- This function assumes all headerless <Topics> have already been removed.
 		 *		- This function assumes all <Topics> have LanguageID set.
@@ -3447,7 +3447,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						Language.EnumValues enumValue = 0;
 						if (commentType.IsEnum == true)
 							{  enumValue = Manager.FromID(topic.LanguageID).EnumValue;  }
-							
+
 						if (commentType.Scope == CommentType.ScopeValue.Start ||
 						    (commentType.IsEnum == true && enumValue == Language.EnumValues.UnderType))
 							{
@@ -3496,7 +3496,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					{  continue;  }
 
 				ParentElement parentElement = (ParentElement)elements[parentIndex];
-				
+
 				ContextString temp = elementAsParent.ChildContextString;
 				temp.InheritUsingStatementsFrom(parentElement.ChildContextString);
 				elementAsParent.ChildContextString = temp;
@@ -3566,7 +3566,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: ExtractClassParentLinks
-		 * Fills in <Element.ClassParentLinks> for any relevant <Topics>.  It is assumed that <Topics> already have all <ClassStrings>, 
+		 * Fills in <Element.ClassParentLinks> for any relevant <Topics>.  It is assumed that <Topics> already have all <ClassStrings>,
 		 * <ContextStrings>, language ID, and file ID set.
 		 */
 		protected void ExtractClassParentLinks (List<Element> elements)
@@ -3631,7 +3631,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: DetectParameterStyle
-		 * Determines whether the *single* parameter between the iterators uses the C or Pascal style.  Note that a Pascal prototype 
+		 * Determines whether the *single* parameter between the iterators uses the C or Pascal style.  Note that a Pascal prototype
 		 * may contain individual parameters that look like C style parameters, but it should always have at least one that looks like
 		 * a Pascal style parameter.
 		 */
@@ -3660,7 +3660,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					{
 					// There may be comments in the prototype if it's something we allowed there like a Splint comment or /*out*/.
 
-					// Strings don't really make sense in the prototype until the default value, but we need the parser to handle it 
+					// Strings don't really make sense in the prototype until the default value, but we need the parser to handle it
 					// anyway just so it doesn't lose its mind if one occurs.
 
 					// If we come across a block that doesn't immediately follow an identifier, it may be something like a C# property.
@@ -3681,7 +3681,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 */
 		protected ParsedPrototype.ParameterStyle DetectParameterStyle (ParsedPrototype prototype)
 			{
-			// We have to go through all the parameters to see if any are Pascal-style since some may appear as C-style.  For 
+			// We have to go through all the parameters to see if any are Pascal-style since some may appear as C-style.  For
 			// example:
 			//
 			// Function FunctionName (const a, b: string): integer;
@@ -3774,7 +3774,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					// just so it doesn't lose its mind if one occurs.
 
 					// If we come across a block that doesn't immediately follow an identifier, it may be something like a C# property so
-					// treat it as a modifier.  
+					// treat it as a modifier.
 
 					words++;
 					}
@@ -3841,8 +3841,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 							}
 						}
 					else if (words == 2)
-						{  
-						MarkType(wordStart, wordEnd);  
+						{
+						MarkType(wordStart, wordEnd);
 
 						// Go back and change any trailing * or & to parameter modifiers because even if they're textually attached to the type
 						// (int* x) they're actually part of the parameter in C++ (int *x).
@@ -3850,7 +3850,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						TokenIterator lookbehind = wordEnd;
 						lookbehind.Previous();
 
-						while (lookbehind >= wordStart && 
+						while (lookbehind >= wordStart &&
 								 (lookbehind.Character == '*' || lookbehind.Character == '&' || lookbehind.Character == '^') )
 							{
 							lookbehind.PrototypeParsingType = PrototypeParsingType.ParamModifier;
@@ -3873,7 +3873,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		protected void MarkPascalParameter (TokenIterator start, TokenIterator end)
 			{
 			// Pass 1: Count the number of "words" in the parameter prior to the default value and mark the default value.
-			// We'll figure out how to interpret the words in the second pass.  Also mark the colon as the name/type separator 
+			// We'll figure out how to interpret the words in the second pass.  Also mark the colon as the name/type separator
 			// if it exists.
 
 			int words = 0;
@@ -3935,7 +3935,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				else if (iterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
 					{  break;  }
 
-				
+
 				// "Words" we're interested in
 
 				else if (TryToSkipTypeOrVarName(ref iterator, end) ||
@@ -3950,7 +3950,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					// just so it doesn't lose its mind if one occurs.
 
 					// If we come across a block that doesn't immediately follow an identifier, it may be something like a C# property so
-					// treat it as a modifier.  
+					// treat it as a modifier.
 
 					words++;
 					}
@@ -3964,7 +3964,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 			// Pass 2: Mark the "words" we counted from the first pass.  Before the colon the order of the words goes
-			// [modifier] [modifier] [name].  After the colon it goes [modifier] [modifier] [type].  Not every parameter line will have 
+			// [modifier] [modifier] [name].  After the colon it goes [modifier] [modifier] [type].  Not every parameter line will have
 			// a colon as they could be sharing a type declaration.  An example of modifiers on each side is "const a: array of string".
 
 
@@ -3973,8 +3973,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			int wordsAfterColon;
 
 			if (wordsBeforeColon == 0)
-				{  
-				wordsBeforeColon = words;  
+				{
+				wordsBeforeColon = words;
 				wordsAfterColon = 0;
 				}
 			else
@@ -4029,7 +4029,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 							}
 						else
 							{
-							wordStart.SetPrototypeParsingTypeBetween(wordEnd, PrototypeParsingType.ParamModifier);  
+							wordStart.SetPrototypeParsingTypeBetween(wordEnd, PrototypeParsingType.ParamModifier);
 							}
 						}
 					else if (wordsBeforeColon == 1)
@@ -4080,7 +4080,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						wordEnd = iterator;
 
 						if (wordsAfterColon >= 2)
-							{  
+							{
 							if (foundBlock && wordEnd.TokenIndex - wordStart.TokenIndex >= 2)
 								{
 								wordStart.PrototypeParsingType = PrototypeParsingType.OpeningTypeModifier;
@@ -4091,7 +4091,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 								}
 							else
 								{
-								wordStart.SetPrototypeParsingTypeBetween(wordEnd, PrototypeParsingType.TypeModifier);  
+								wordStart.SetPrototypeParsingTypeBetween(wordEnd, PrototypeParsingType.TypeModifier);
 								}
 							}
 						else if (wordsAfterColon == 1)
@@ -4128,7 +4128,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					// just so it doesn't lose its mind if one occurs.
 
 					// If we come across a block that doesn't immediately follow an identifier, it may be something like a C# property so
-					// treat it as a modifier.  
+					// treat it as a modifier.
 
 					words++;
 					}
@@ -4178,8 +4178,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		protected void MarkType (TokenIterator start, TokenIterator end)
 			{
 			// Mark all pre-text symbols as type modifiers.  This includes :: on ::globals.
-			while (start < end && 
-					 start.FundamentalType != FundamentalType.Text && 
+			while (start < end &&
+					 start.FundamentalType != FundamentalType.Text &&
 					 start.Character != '_')
 				{
 				start.PrototypeParsingType = PrototypeParsingType.TypeModifier;
@@ -4265,7 +4265,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				TokenIterator startOfType = iterator;
 
 				while (iterator < end && iterator.Character != ',' && iterator.Character != ';')
-					{  
+					{
 					if (TryToSkipTypeOrVarName(ref iterator, end) ||
 						 TryToSkipComment(ref iterator) ||
 						 TryToSkipString(ref iterator) ||
@@ -4312,7 +4312,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					// just so it doesn't lose its mind if one occurs.
 
 					// If we come across a block that doesn't immediately follow an identifier, it may be something like a C# property so
-					// treat it as a modifier.  
+					// treat it as a modifier.
 
 					words++;
 					}
@@ -4370,8 +4370,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		protected void MarkName (TokenIterator start, TokenIterator end)
 			{
 			// Mark all pre-text symbols as param modifiers.  This includes :: on ::globals.
-			while (start < end && 
-					 start.FundamentalType != FundamentalType.Text && 
+			while (start < end &&
+					 start.FundamentalType != FundamentalType.Text &&
 					 start.Character != '_')
 				{
 				start.PrototypeParsingType = PrototypeParsingType.ParamModifier;
@@ -4403,7 +4403,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				if (TryToSkipBlock(ref blockEnd, true) && blockEnd <= end)
 					{
 					start.PrototypeParsingType = PrototypeParsingType.OpeningParamModifier;
-					
+
 					blockEnd.Previous();
 					blockEnd.PrototypeParsingType = PrototypeParsingType.ClosingParamModifier;
 
@@ -4425,22 +4425,22 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: TryToGetBlockComment
-		 * 
+		 *
 		 * If the iterator is on a line that starts with the opening symbol of a block comment, this function moves the iterator
 		 * past the entire comment and returns true.  If the comment is a candidate for documentation it will also return it as
 		 * a <PossibleDocumentationComment> and mark the symbols as <CommentParsingType.CommentSymbol>.  If the
 		 * line does not start with an opening comment symbol it will return false and leave the iterator where it is.
-		 * 
+		 *
 		 * Not all the block comments it finds will be candidates for documentation, since some will have text after the closing
 		 * symbol, so it's possible for this function to return true and have comment be null.  This is important because in Lua
-		 * the block comment symbol is --[[ and the line comment symbol is --, so if we didn't move past the block comment 
+		 * the block comment symbol is --[[ and the line comment symbol is --, so if we didn't move past the block comment
 		 * it could be interpreted as a line comment as well.
-		 * 
+		 *
 		 * If openingMustBeAlone is set, that means no symbol can appear immediately after the opening symbol.  If it does
-		 * the function will return false and not move past the comment.  This allows you to specifically detect something like 
+		 * the function will return false and not move past the comment.  This allows you to specifically detect something like
 		 * /** without also matching /******.
 		 */
-		protected bool TryToGetBlockComment (ref LineIterator lineIterator, 
+		protected bool TryToGetBlockComment (ref LineIterator lineIterator,
 																 string openingSymbol, string closingSymbol, bool openingMustBeAlone,
 																 out PossibleDocumentationComment comment)
 			{
@@ -4448,18 +4448,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			lineIterator.GetBounds(LineBoundsMode.ExcludeWhitespace, out firstToken, out endOfLine);
 
 			if (firstToken.MatchesAcrossTokens(openingSymbol) == false)
-				{  
+				{
 				comment = null;
 				return false;
 				}
 
-			// Advance past the opening symbol because it's possible for it to be the same as the closing one, such as with 
+			// Advance past the opening symbol because it's possible for it to be the same as the closing one, such as with
 			// Python's ''' and """ strings.
 			firstToken.NextByCharacters(openingSymbol.Length);
 
 			if (openingMustBeAlone && firstToken.FundamentalType == FundamentalType.Symbol)
-				{  
-				comment = null;  
+				{
+				comment = null;
 				return false;
 				}
 
@@ -4472,7 +4472,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			for (;;)
 				{
 				TokenIterator closingSymbolIterator;
-				
+
 				if (tokenizer.FindTokensBetween(closingSymbol, false, firstToken, endOfLine, out closingSymbolIterator) == true)
 					{
 					// Move past the end of the comment regardless of whether it's acceptable for documentation or not
@@ -4496,9 +4496,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				// If we're not in bounds that means there was an unclosed comment at the end of the file.  Skip it but don't treat
 				// it as a documentation candidate.
 				if (!lookahead.IsInBounds)
-					{  
+					{
 					comment = null;
-					break;  
+					break;
 					}
 
 				lookahead.GetBounds(LineBoundsMode.ExcludeWhitespace, out firstToken, out endOfLine);
@@ -4528,28 +4528,28 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: TryToGetLineComment
-		 * 
+		 *
 		 * If the iterator is on a line that starts with a line comment symbol, this function moves the iterator past the entire
 		 * comment and returns true.  If the comment is a candidate for documentation it will also return it as a
 		 * <PossibleDocumentationComment> and mark the symbols as <CommentParsingType.CommentSymbol>.  If the
 		 * line does not start with a line comment symbol it will return false and leave the iterator where it is.
-		 * 
+		 *
 		 * This function takes a separate comment symbol for the first line and all remaining lines, allowing you to detect
 		 * Javadoc line comments that start with ## and the remaining lines use #.  Both symbols can be the same if this isn't
 		 * required.
-		 * 
+		 *
 		 * If openingMustBeAlone is set, no symbol can appear immediately after the first line symbol.  If it does the function
-		 * will return false and not move past the comment.  This allows you to specifically detect something like ## without 
+		 * will return false and not move past the comment.  This allows you to specifically detect something like ## without
 		 * also matching #######.
 		 */
-		protected bool TryToGetLineComment (ref LineIterator lineIterator, 
+		protected bool TryToGetLineComment (ref LineIterator lineIterator,
 																string firstSymbol, string remainderSymbol, bool openingMustBeAlone,
 																out PossibleDocumentationComment comment)
 			{
 			TokenIterator firstToken = lineIterator.FirstToken(LineBoundsMode.ExcludeWhitespace);
 
 			if (firstToken.MatchesAcrossTokens(firstSymbol) == false)
-				{  
+				{
 				comment = null;
 				return false;
 				}
@@ -4560,7 +4560,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				nextToken.NextByCharacters(firstSymbol.Length);
 
 				if (nextToken.FundamentalType == FundamentalType.Symbol)
-					{  
+					{
 					comment = null;
 					return false;
 					}
@@ -4577,25 +4577,25 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			while (lineIterator.IsInBounds)
 				{
 				firstToken = lineIterator.FirstToken(LineBoundsMode.ExcludeWhitespace);
-					
+
 				if (firstToken.MatchesAcrossTokens(remainderSymbol) == false)
 					{  break;  }
 
 				firstToken.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, remainderSymbol.Length);
 				lineIterator.Next();
 				}
-			
+
 			comment.End = lineIterator;
 			return true;
 			}
 
 
 		/* Function: TryToSkipWhitespace
-		 * 
+		 *
 		 * If the iterator is on whitespace or a comment, move past it and return true.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight> (for comments)
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
@@ -4623,27 +4623,27 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: TryToSkipComment
-		 * 
-		 * If the iterator is on a comment symbol, moves it past the entire comment and returns true.  If you need information 
-		 * about the specific type of comment it was, you need to call <TryToSkipLineComment()> and <TryToSkipBlockComment()> 
+		 *
+		 * If the iterator is on a comment symbol, moves it past the entire comment and returns true.  If you need information
+		 * about the specific type of comment it was, you need to call <TryToSkipLineComment()> and <TryToSkipBlockComment()>
 		 * individually.
-		 * 
+		 *
 		 * Important:
-		 * 
+		 *
 		 *		When you're skipping over generic code without interpreting it, these functions should always be called in this order:
-		 * 
+		 *
 		 *		- <TryToSkipComment()>
 		 *		- <TryToSkipString()>
 		 *		- <TryToSkipBlock()>
-		 * 
-		 *		You want to check for comments before strings because Visual Basic uses the ' character for comments and you don't 
+		 *
+		 *		You want to check for comments before strings because Visual Basic uses the ' character for comments and you don't
 		 *		want the parser to interpret it as a string and search for a closing quote.
-		 *		
-		 *		You want to check for comments before blocks because Pascal uses braces for comments and you don't want to 
+		 *
+		 *		You want to check for comments before blocks because Pascal uses braces for comments and you don't want to
 		 *		interpret the comment content as code.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
@@ -4655,12 +4655,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: TryToSkipLineComment
-		 * 
-		 * If the iterator is on a line comment symbol, moves it past the entire comment, provides the symbol that was used, and 
+		 *
+		 * If the iterator is on a line comment symbol, moves it past the entire comment, provides the symbol that was used, and
 		 * returns true.  It will not skip the line break after the comment since that may be relevant to the calling code.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
@@ -4697,12 +4697,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: TryToSkipLineComment
-		 * 
-		 * If the iterator is on a line comment symbol, moves it past the entire comment and returns true.  It will not skip the line break 
+		 *
+		 * If the iterator is on a line comment symbol, moves it past the entire comment and returns true.  It will not skip the line break
 		 * after the comment since that may be relevant to the calling code.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
@@ -4715,17 +4715,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: TryToSkipBlockComment
-		 * 
-		 * If the iterator is on an opening block comment symbol, moves it past the entire comment, provides the comment symbols that 
+		 *
+		 * If the iterator is on an opening block comment symbol, moves it past the entire comment, provides the comment symbols that
 		 * were used, and returns true.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipBlockComment (ref TokenIterator iterator, out string openingSymbol, out string closingSymbol, 
+		protected bool TryToSkipBlockComment (ref TokenIterator iterator, out string openingSymbol, out string closingSymbol,
 																  ParseMode mode = ParseMode.IterateOnly)
 			{
 			openingSymbol = null;
@@ -4765,11 +4765,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: TryToSkipBlockComment
-		 * 
+		 *
 		 * If the iterator is on an opening block comment symbol, moves it past the entire comment and returns true.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
@@ -4782,25 +4782,25 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: TryToSkipString
-		 * 
+		 *
 		 * If the iterator is on a quote or apostrophe, moves it past the entire string and returns true.
-		 * 
+		 *
 		 * Important:
-		 * 
+		 *
 		 *		When you're skipping over generic code without interpreting it, these functions should always be called in this order:
-		 * 
+		 *
 		 *		- <TryToSkipComment()>
 		 *		- <TryToSkipString()>
 		 *		- <TryToSkipBlock()>
-		 * 
-		 *		You want to check for comments before strings because Visual Basic uses the ' character for comments and you don't 
+		 *
+		 *		You want to check for comments before strings because Visual Basic uses the ' character for comments and you don't
 		 *		want the parser to interpret it as a string and search for a closing quote.
-		 *		
-		 *		You want to check for comments before blocks because Pascal uses braces for comments and you don't want to 
+		 *
+		 *		You want to check for comments before blocks because Pascal uses braces for comments and you don't want to
 		 *		interpret the comment content as code.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
@@ -4824,7 +4824,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					}
 				else if (iterator.Character == '\\')
 					{  iterator.Next(2);  }
-				else 
+				else
 					{  iterator.Next();  }
 				}
 
@@ -4837,18 +4837,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: TryToSkipNumber
-		 * 
+		 *
 		 * If the iterator is on a numeric literal, moves the iterator past it and returns true.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		virtual protected bool TryToSkipNumber (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
-			if ( ((iterator.Character >= '0' && iterator.Character <= '9') || 
+			if ( ((iterator.Character >= '0' && iterator.Character <= '9') ||
 				   iterator.Character == '-' || iterator.Character == '+' || iterator.Character == '.') == false)
 				{  return false;  }
 
@@ -4858,7 +4858,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			bool isHex = false;
 
 			if (lookahead.Character == '-' || lookahead.Character == '+')
-				{  
+				{
 				// Distinguish between -1 and x-1
 
 				TokenIterator lookbehind = iterator;
@@ -4869,12 +4869,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				if (lookbehind.FundamentalType == FundamentalType.Text || lookbehind.Character == '_')
 					{  return false;  }
 
-				lookahead.Next();  
+				lookahead.Next();
 				}
 
 			if (lookahead.Character == '.')
-				{  
-				lookahead.Next();  
+				{
+				lookahead.Next();
 				passedPeriod = true;
 				}
 
@@ -4935,24 +4935,24 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: TryToSkipBlock
-		 * 
+		 *
 		 * If the iterator is on an opening symbol, moves it past the entire block and returns true.  This takes care of
 		 * nested blocks, strings, and comments, but otherwise doesn't parse the underlying code.  You must specify
 		 * whether to include < as an opening symbol because it may be relevant in some places (template definitions)
 		 * but detrimental in others (general code where < could mean less than and not have a closing >.)
-		 * 
+		 *
 		 * Important:
-		 * 
+		 *
 		 *		When you're skipping over generic code without interpreting it, these functions should always be called in this order:
-		 * 
+		 *
 		 *		- <TryToSkipComment()>
 		 *		- <TryToSkipString()>
 		 *		- <TryToSkipBlock()>
-		 * 
-		 *		You want to check for comments before strings because Visual Basic uses the ' character for comments and you don't 
+		 *
+		 *		You want to check for comments before strings because Visual Basic uses the ' character for comments and you don't
 		 *		want the parser to interpret it as a string and search for a closing quote.
-		 *		
-		 *		You want to check for comments before blocks because Pascal uses braces for comments and you don't want to 
+		 *
+		 *		You want to check for comments before blocks because Pascal uses braces for comments and you don't want to
 		 *		interpret the comment content as code.
 		 */
 		 protected bool TryToSkipBlock (ref TokenIterator iterator, bool includeAngleBrackets)
@@ -4997,11 +4997,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: TryToSkipTypeOrVarName
-		 * 
+		 *
 		 * If the iterator is on what could be a complex type or variable name, moves the iterator past it and returns true.
 		 * This supports things like name, $name, PkgA::Class*, int[], and List<List<void*, float>>.  It does not include anything
 		 * separated by a space, so modifiers like unsigned and const have to be handled separately.
-		 * 
+		 *
 		 * A limit is required since this will swallow a block following an identifier and that may not be desired or expected.  If you
 		 * genuinely don't need a limit, set it to <Tokenizer.LastToken>.
 		 */
@@ -5033,7 +5033,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						temp.PreviousPastWhitespace(PreviousPastWhitespaceMode.Iterator);
 
 						if (temp.MatchesToken("operator") || TryToSkipBlock(ref iterator, true) == false)
-							{  
+							{
 							do
 								{  iterator.Next();  }
 							while (iterator.Character == '<');
@@ -5044,7 +5044,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					else if (TryToSkipBlock(ref iterator, false))
 						{  }
 
-					// Catch freestanding symbols and consts like "int * x" and "int* const x".  However, cut off after the symbol so we don't 
+					// Catch freestanding symbols and consts like "int * x" and "int* const x".  However, cut off after the symbol so we don't
 					// include the x in "int *x".
 					else if (iterator.FundamentalType == FundamentalType.Whitespace)
 						{
@@ -5112,7 +5112,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: SimpleSyntaxHighlight
-		 * Applies syntax highlighting based on the passed keywords with the assumption that there's no unusual rules for 
+		 * Applies syntax highlighting based on the passed keywords with the assumption that there's no unusual rules for
 		 * comments or strings, and there's nothing like unquoted regular expressions to confuse a simple parser.  If no
 		 * keywords are passed it uses <defaultKeywords>.
 		 */
@@ -5122,7 +5122,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{  keywords = defaultKeywords;  }
 
 			TokenIterator iterator = source.FirstToken;
-			
+
 			while (iterator.IsInBounds)
 				{
 				if (TryToSkipComment(ref iterator, ParseMode.SyntaxHighlight) ||
@@ -5133,7 +5133,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				else if (iterator.FundamentalType == FundamentalType.Text || iterator.Character == '_')
 					{
 					TokenIterator endOfIdentifier = iterator;
-						
+
 					do
 						{  endOfIdentifier.Next();  }
 					while (endOfIdentifier.FundamentalType == FundamentalType.Text ||
@@ -5176,7 +5176,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					{  elementName = element.Topic.Title + " " + elementName;  }
 
 
-				// Make sure they have either InCode or InComments set.  We don't do this form ValidateElementsMode.Final because 
+				// Make sure they have either InCode or InComments set.  We don't do this form ValidateElementsMode.Final because
 				// automatic grouping will be applied which doesn't appear in either.  However, prior to that point every Element needs
 				// one or the other set.
 
@@ -5191,9 +5191,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 				if (element.LineNumber < lastLineNumber ||
 					 (element.LineNumber == lastLineNumber && element.CharNumber < lastCharNumber))
-					{  
+					{
 					throw new Exception("Element " + elementName + " doesn't appear in order.  " +
-															 "The previous element was at line " + lastLineNumber + ", char " + lastCharNumber + ".");  
+															 "The previous element was at line " + lastLineNumber + ", char " + lastCharNumber + ".");
 					}
 
 				lastLineNumber = element.LineNumber;
@@ -5201,16 +5201,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 				if (element is ParentElement)
-					{  
-					ParentElement elementAsParent = (ParentElement)element;  
+					{
+					ParentElement elementAsParent = (ParentElement)element;
 
 
 					// Make sure root only applies to the first element.
 
 					if (elementAsParent.IsRootElement == true && i != 0)
-						{  
+						{
 						throw new Exception("IsRootElement was set on " + elementName + " which is at position " + i + " in the list.  " +
-																 "IsRootElement can only be set on the first member of a list.");  
+																 "IsRootElement can only be set on the first member of a list.");
 						}
 
 
@@ -5270,7 +5270,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						{  throw new Exception("GetCodeElements() cannot return embedded topics.");  }
 					}
 
-				if ((mode == ValidateElementsMode.CommentElements || 
+				if ((mode == ValidateElementsMode.CommentElements ||
 					 mode == ValidateElementsMode.MergedElements ||
 					 mode == ValidateElementsMode.Final) &&
 					element.Topic != null)
@@ -5391,7 +5391,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		protected Language language;
 
 
-			
+
 		// Group: Static Variables
 		// __________________________________________________________________________
 
@@ -5404,18 +5404,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			"int", "int8", "int16", "int32", "int64", "uint", "uint8", "uint16", "uint32", "uint64",
 			"signed", "unsigned", "integer", "long", "ulong", "short", "ushort", "real", "float", "double", "decimal",
-			"float32", "float64", "float80", "void", "char", "string", "wchar", "wchar_t", "byte", "ubyte", "sbyte", 
+			"float32", "float64", "float80", "void", "char", "string", "wchar", "wchar_t", "byte", "ubyte", "sbyte",
 			"bool", "boolean", "true", "false", "null", "undef", "undefined", "var",
 
 			"function", "operator", "delegate", "event", "enum", "typedef",
 
 			"class", "struct", "interface", "template", "package", "union", "namespace", "using",
 
-			"base", "inherit", "inherits", "extend", "extends", "implement", "implements", 
+			"base", "inherit", "inherits", "extend", "extends", "implement", "implements",
 			"import", "export", "extern", "native", "override", "overload", "explicit", "implicit",
 			"super", "my", "our", "require", "this",
 
-			"public", "private", "protected", "internal", "static", "virtual", "abstract", "friend", 
+			"public", "private", "protected", "internal", "static", "virtual", "abstract", "friend",
 			"inline", "using", "final", "sealed", "register", "volatile",
 
 			"ref", "in", "out", "inout", "const", "constant", "get", "set",

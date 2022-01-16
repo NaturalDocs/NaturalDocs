@@ -1,19 +1,19 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles.TextFile
  * ____________________________________________________________________________
- * 
+ *
  * A class representing the contents of <Comments.txt>.
- * 
- * 
+ *
+ *
  * Multithreading: Not Thread Safe, Supports Multiple Readers
- * 
+ *
  *		This object doesn't have any locking built in, and so it is up to the class managing it to provide thread safety if needed.
  *		However, it does support multiple concurrent readers.  This means it can be used in read-only mode with no locking or
  *		in read/write mode with a ReaderWriterLock.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -27,11 +27,11 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 	{
 	public class TextFile
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: TextFile
 		 */
 		public TextFile ()
@@ -209,6 +209,6 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 		 * A list of <TextFileCommentTypes> in the order they appear in the text file, or null if there aren't any.
 		 */
 		protected List<TextFileCommentType> commentTypes;
-		 
+
 		}
 	}

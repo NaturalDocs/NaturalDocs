@@ -2,15 +2,15 @@
 # Natural Docs Default Language File, English (United States)
 #
 # To create a new language file, copy this one and rename it to replace
-# "default" with the locale code in all lowercase, such as 
+# "default" with the locale code in all lowercase, such as
 # "NaturalDocs.Engine.en-us.txt".  You can also omit the extension to have it
 # apply to all locales in that language, such as "NaturalDocs.Engine.en.txt".
-# They inherit from each other, so anything not found in 
+# They inherit from each other, so anything not found in
 # NaturalDocs.Engine.en-us.txt will be taken from NaturalDocs.Engine.en.txt,
 # and if it's not in there, from NaturalDocs.Engine.default.txt.
 #
 
-# This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+# This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 # Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 # Refer to License.txt for the complete details
 
@@ -228,9 +228,9 @@ Project.txt.TimestampSubstitutions.multiline {{{
 #    d     - Single digit day, when possible.  1 is "1".
 #    dd    - Always double digit day.  1 is "01".
 #    day   - Day with text extension.  1 is "1st".
-#    yy    - Double digit year.  2021 is "21".
-#    yyyy  - Four digit year.  2021 is "2021".
-#    year  - Four digit year.  2021 is "2021".
+#    yy    - Double digit year.  2022 is "22".
+#    yyyy  - Four digit year.  2022 is "2022".
+#    year  - Four digit year.  2022 is "2022".
 }}}
 Project.txt.StyleSyntax.multiline {{{
 # Style: [style]
@@ -512,7 +512,7 @@ Comments.txt.IgnoredKeywordsHeader.multiline {{{
 }}}
 
 Comments.txt.IgnoredKeywordsReference.multiline {{{
-# If you'd like to prevent keywords from being recognized by Natural Docs, 
+# If you'd like to prevent keywords from being recognized by Natural Docs,
 # you can do it like this:
 #
 # Ignore Keywords:
@@ -693,7 +693,7 @@ Languages.txt.SystemHeader.multiline {{{
 }}}
 
 Languages.txt.ProjectHeader.multiline {{{
-# This is the Natural Docs languages file for this project.  If you change 
+# This is the Natural Docs languages file for this project.  If you change
 # anything here, it will apply to THIS PROJECT ONLY.  You can edit the version
 # in Natural Docs' Config folder to make the changes apply to all projects,
 # but it's recommended that you edit this version instead.
@@ -720,7 +720,7 @@ Languages.txt.DeferredLanguagesReference.multiline {{{
 }}}
 
 Languages.txt.SystemLanguagesReference.multiline {{{
-# These settings define the languages Natural Docs knows how to parse.  Note 
+# These settings define the languages Natural Docs knows how to parse.  Note
 # that all lists are space separated so that commas can be used as values.
 #
 # Language: [name]
@@ -790,9 +790,9 @@ Languages.txt.SystemLanguagesReference.multiline {{{
 }}}
 
 Languages.txt.ProjectLanguagesReference.multiline {{{
-# These settings define the languages Natural Docs knows how to parse.  You 
+# These settings define the languages Natural Docs knows how to parse.  You
 # can define your own here or override the settings of the existing ones.
-# Note that all lists are space separated so that commas can be used as 
+# Note that all lists are space separated so that commas can be used as
 # values.
 #
 # Language: [name]
@@ -950,7 +950,7 @@ Style.txt.OnLoadReference.multiline {{{
 # Home OnLoad: [statement]
 #
 # You can limit it to just to the frame page, which handles the header,
-# footer, menu, summary, and search, or to content pages, which is the 
+# footer, menu, summary, and search, or to content pages, which is the
 # documentation in the rightmost panel, or to the home page.  If you do not
 # specify a page type it will be added to every page.
 #

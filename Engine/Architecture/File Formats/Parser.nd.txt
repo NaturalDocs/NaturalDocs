@@ -11,7 +11,7 @@ _______________________________________________________________________________
 	Topic: Header
 
 		> [[Binary Header]]
-		
+
 		The file starts with the standard binary file header as managed by <CodeClear.NaturalDocs.Engine.BinaryFile>.
 
 
@@ -35,7 +35,7 @@ _______________________________________________________________________________
 
 		A table is stored as a series of string pairs representing the keys and values.  It ends on a single null string.  They
 		are defined in this order:
-		
+
 		- BlockTypes
 		- SpecialHeadings
 		- AccessLevel
@@ -49,7 +49,7 @@ _______________________________________________________________________________
 		the same key to appear multiple times.  They are defined in this order:
 
 		- PluralConversions
-		- PossessiveConversions		
+		- PossessiveConversions
 
 
 Group: Revisions

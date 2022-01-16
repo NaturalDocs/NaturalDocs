@@ -1,7 +1,7 @@
 ﻿/*
 	Include in output:
 
-	This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+	This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 	Natural Docs is licensed under version 3 of the GNU Affero General Public
 	License (AGPL).  Refer to License.txt or www.naturaldocs.org for the
 	complete details.
@@ -95,23 +95,23 @@ var NDSummary = new function ()
 			if (oldLocation == undefined)
 				{  this.Build();  }
 
-			// If there's already a summary up, wait a short delay before replacing it with a loading notice.  If the data comes 
+			// If there's already a summary up, wait a short delay before replacing it with a loading notice.  If the data comes
 			// back fast enough this will allow us to transition directly from the old summary to the new one without causing a
 			// visible flicker.  This is important when running docs from the hard drive.
 			else if (this.delayedLoadingTimeout == undefined)
 				{
 				this.delayedLoadingTimeout = setTimeout( function ()
 					{
-					if (NDSummary.summaryLanguages == undefined) 
+					if (NDSummary.summaryLanguages == undefined)
 						{  NDSummary.Build();  }
 
 					clearTimeout(NDSummary.delayedLoadingTimout);
 					NDSummary.delayedLoadingTimeout = undefined;
-					}, 
+					},
 					$LoadingNoticeDelay);
 				}
 
-			
+
 			// Remove the previous loaders if there are any.
 
 			var head = document.getElementsByTagName("head")[0];
@@ -205,7 +205,7 @@ var NDSummary = new function ()
 						(i == 0 ? " first" : "") +
 						(i == this.summaryEntries.length - 1 ? " last" : "");
 
-					var href = "#" + NDFramePage.currentLocation.path + 
+					var href = "#" + NDFramePage.currentLocation.path +
 									(entry[$Entry_Symbol] != undefined ? ":" + entry[$Entry_Symbol] : "");
 
 					entryHTML.id = "SuEntry" + entry[$Entry_TopicID];
@@ -239,22 +239,22 @@ var NDSummary = new function ()
 			{  summaryContainer.appendChild(newContent);  }
 
 		newContent.scrollIntoView(true);
-		
+
 		// Don't resize on the loading notice to avoid unnecessary jumpiness.
 		if (this.summaryEntries != undefined)
 			{  NDFramePage.SizeSummaryToContent();  }
 		};
 
-	
+
 	/* Function: FinishNavigation
 		In some cases the content iframe can't be set by <NDFramePage.OnHashChange()> because the browser uses
 		case-insensitive anchors.  This function will set the iframe in a way that works with them in these situations.
 	*/
 	this.FinishNavigation = function ()
 		{
-		if (NDCore.CaseInsensitiveAnchors() && 
+		if (NDCore.CaseInsensitiveAnchors() &&
 			this.summaryEntries != undefined &&
-			NDFramePage.currentLocation != undefined && 
+			NDFramePage.currentLocation != undefined &&
 			NDFramePage.currentLocation.member != undefined)
 			{
 			var topicID = -1;

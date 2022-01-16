@@ -1,11 +1,11 @@
-/* 
+/*
  * Class: CodeClear.NaturalDocs.Engine.Config.ProjectConfig
  * ____________________________________________________________________________
- * 
+ *
  * A class representing the entire project configuration from <Project.txt> or equivalent sources.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -19,10 +19,10 @@ namespace CodeClear.NaturalDocs.Engine.Config
 	{
 	public class ProjectConfig
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
+
 
 		public ProjectConfig (Config.PropertySource source)
 			{
@@ -52,10 +52,10 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			}
 
 
-			
+
 		// Group: Properties
 		// __________________________________________________________________________
-		
+
 
 		/* Property: Source
 		 * The <Config.Source> of the entire configuration.
@@ -66,7 +66,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{  return source;  }
 			}
 
-		
+
 		/* Property: ProjectConfigFolder
 		 * The <AbsolutePath> where the project configuration is stored, or null if it hasn't been set.
 		 */
@@ -117,7 +117,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			get
 				{  return inputTargets;  }
 			}
-			
+
 		/* Property: FilterTargets
 		 * All the input filters defined in this file.  If there are none, the list will exist but be empty.
 		 */
@@ -126,7 +126,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			get
 				{  return filterTargets;  }
 			}
-			
+
 		/* Property: OutputTargets
 		 * All the output targets defined in this file.  If there are none, the list will exist but be empty.
 		 */
@@ -135,7 +135,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			get
 				{  return outputTargets;  }
 			}
-			
+
 		/* Property: TabWidth
 		 *	The number of spaces in a tab, or zero if it's undefined.
 		 */
@@ -146,7 +146,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			set
 				{  tabWidth = value;  }
 			}
-			
+
 		/* Property: DocumentedOnly
 		 * Whether the documentation should be limited to code elements that are explicitly documented.  Check <DocumentedOnlyPropertyLocation>
 		 * to determine whether it's defined.
@@ -158,7 +158,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			set
 				{  documentedOnly = value;  }
 			}
-			
+
 		/* Property: AutoGroup
 		 * Whether automatic grouping is on.  Check <AutoGroupPropertyLocation> to determine whether it's defined.
 		 */
@@ -169,7 +169,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			set
 				{  autoGroup = value;  }
 			}
-			
+
 		/* Property: ShrinkFiles
 		 * Whether to remove whitespace and comments from resource files like CSS and JavaScript in the output.
 		 */
@@ -180,12 +180,12 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			set
 				{  shrinkFiles = value;  }
 			}
-			
-	
-		
+
+
+
 		// Group: Property Locations
 		// __________________________________________________________________________
-	
+
 
 		/* Property: ProjectConfigFolderPropertyLocation
 		 * Where the <ProjectConfigFolder> property is defined, or <PropertySource.NotDefined> if it isn't.
@@ -219,8 +219,8 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			set
 				{  tabWidthPropertyLocation = value;  }
 			}
-			
-	
+
+
 		/* Property: DocumentedOnlyPropertyLocation
 		 * Where the <DocumentedOnly> property is defined, or <PropertySource.NotDefined> if it isn't.
 		 */
@@ -231,8 +231,8 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			set
 				{  documentedOnlyPropertyLocation = value;  }
 			}
-			
-	
+
+
 		/* Property: AutoGroupPropertyLocation
 		 * Where the <AutoGroup> property is defined, or <PropertySource.NotDefined> if it isn't.
 		 */
@@ -243,8 +243,8 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			set
 				{  autoGroupPropertyLocation = value;  }
 			}
-			
-	
+
+
 		/* Property: ShrinkFilesPropertyLocation
 		 * Where the <ShrinkFiles> property is defined, or <PropertySource.NotDefined> if it isn't.
 		 */
@@ -255,12 +255,12 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			set
 				{  shrinkFilesPropertyLocation = value;  }
 			}
-			
-	
-		
+
+
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
+
 		protected Config.PropertySource source;
 
 		protected AbsolutePath projectConfigFolder;

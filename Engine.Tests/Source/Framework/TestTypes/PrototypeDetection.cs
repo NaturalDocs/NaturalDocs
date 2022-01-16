@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes.PrototypeDetection
  * ____________________________________________________________________________
- * 
+ *
  * File-based tests to make sure Natural Docs can detect prototypes correctly.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -43,8 +43,8 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 				if (topics[i].Prototype == null)
 					{  output.Append("(No prototype detected)\n");  }
 				else
-					{  
-					output.Append(topics[i].Prototype);  
+					{
+					output.Append(topics[i].Prototype);
 					output.Append('\n');
 					}
 				}

@@ -1,16 +1,16 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Collections.StringSet
  * ____________________________________________________________________________
- * 
- * A general lookup table for tracking the existence of strings in a set.  This is preferable to a HashSet class 
+ *
+ * A general lookup table for tracking the existence of strings in a set.  This is preferable to a HashSet class
  * because
- * 
+ *
  * - It can apply the normalizations in <KeySettings>.
  * - It has a constructor that allows you to initialize it with an array of strings.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -26,8 +26,8 @@ namespace CodeClear.NaturalDocs.Engine.Collections
 
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Function: StringSet
 		 * Creates an empty set.
 		 */
@@ -35,20 +35,20 @@ namespace CodeClear.NaturalDocs.Engine.Collections
 			{
 			this.keySettings = keySettings;
 			}
-			
-		
+
+
 		/* Function: StringSet
 		 * Creates a set with the passed strings as members.
 		 */
 		public StringSet (KeySettings keySettings, params string[] members)
 			{
 			this.keySettings = keySettings;
-			
+
 			foreach (string member in members)
 				{  Add(member);  }
 			}
-			
-			
+
+
 		/* Function: Add
 		 * Adds a new string to the set.  Nothing happens if the string is already in it.
 		 */
@@ -56,8 +56,8 @@ namespace CodeClear.NaturalDocs.Engine.Collections
 			{
 			base.Add( key.NormalizeKey(keySettings) );
 			}
-			
-			
+
+
 		/* Function: Remove
 		 * Removes the string from the set.
 		 */
@@ -65,8 +65,8 @@ namespace CodeClear.NaturalDocs.Engine.Collections
 			{
 			return base.Remove( key.NormalizeKey(keySettings) );
 			}
-		
-			
+
+
 		/* Function: Contains
 		 * Returns whether the string exists in the set.  Always returns false for null.
 		 */
@@ -74,7 +74,7 @@ namespace CodeClear.NaturalDocs.Engine.Collections
 			{
 			if (key == null)
 				{  return false;  }
-				
+
 			return base.Contains( key.NormalizeKey(keySettings) );
 			}
 
@@ -108,16 +108,16 @@ namespace CodeClear.NaturalDocs.Engine.Collections
 			else
 				{  return set1.SetEquals(set2);  }
 			}
-			
-		
+
+
 		/* Function: operator !=
 		 */
 		public static bool operator!= (StringSet set1, StringSet set2)
 			{
 			return !(set1 == set2);
 			}
-			
-		
+
+
 		/* Function: Equals
 		 */
 		public override bool Equals (object other)
@@ -127,16 +127,16 @@ namespace CodeClear.NaturalDocs.Engine.Collections
 			else
 				{  return (this == (StringSet)other);  }
 			}
-			
-			
+
+
 		/* Function: GetHashCode
 		 */
 		public override int GetHashCode ()
 			{
 			return base.GetHashCode();
 			}
-			
-			
+
+
 		/* Function: WriteTo
 		 * Writes the contents of the string set to the passed binary file.
 		 */
@@ -174,8 +174,8 @@ namespace CodeClear.NaturalDocs.Engine.Collections
 
 		// Group: Properties
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Property: IsEmpty
 		 * Whether there are any strings in the set.
 		 */
@@ -185,33 +185,33 @@ namespace CodeClear.NaturalDocs.Engine.Collections
 				{  return (Count == 0);  }
 			}
 
-			
+
 
 		// Group: Variables
 		// __________________________________________________________________________
 
-			
+
 		/* var: keySettings
 		 * Which normalizations to apply to the keys.
 		 */
 		protected KeySettings keySettings;
 
 		}
-			
+
 
 
 
 
 	/* ___________________________________________________________________________
-	 * 
+	 *
 	 * Class: CodeClear.NaturalDocs.Engine.Collections.StringSet_BinaryFileExtensions
 	 * ___________________________________________________________________________
-	 * 
+	 *
 	 */
 	public static class StringSet_BinaryFileExtensions
 		{
 		/* Function: ReadStringSet
-		 * An extension method to <BinaryFile> which reads a string set from it.  Call with 
+		 * An extension method to <BinaryFile> which reads a string set from it.  Call with
 		 * "stringSet = binaryFile.ReadStringSet(ignoreCase, normalizeUnicode);"
 		 */
 		static public StringSet ReadStringSet (this BinaryFile binaryFile, KeySettings keySettings = KeySettings.Literal)

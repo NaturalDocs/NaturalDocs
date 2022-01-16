@@ -1,17 +1,17 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Component
  * ____________________________________________________________________________
- * 
+ *
  * A base class for all HTML components.
- * 
- * 
+ *
+ *
  * Multithreading: Not Thread Safe
- * 
+ *
  *		This class is only designed to be used by one thread at a time.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -48,23 +48,23 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		static public void WriteTextFile (Path path, string content)
 			{
 			try
-				{  
+				{
 				// This will create multiple subdirectories if needed, and will not throw an exception if it already exists.
-				System.IO.Directory.CreateDirectory(path.ParentFolder);  
+				System.IO.Directory.CreateDirectory(path.ParentFolder);
 				}
 			catch (Exception e)
 				{
 				throw new Exceptions.UserFriendly( Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFolder(name, exception)",
 																					 path.ParentFolder, e.Message) );
 				}
-				
+
 			try
-				{  
+				{
 				System.IO.File.WriteAllText(path, content, System.Text.Encoding.UTF8);
 				}
 			catch (Exception e)
 				{
-				throw new Exceptions.UserFriendly( Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFile(name, exception)", 
+				throw new Exceptions.UserFriendly( Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFile(name, exception)",
 																					 path, e.Message) );
 				}
 			}

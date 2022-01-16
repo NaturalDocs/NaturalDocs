@@ -1,25 +1,25 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototype
  * ____________________________________________________________________________
- * 
- * A class that wraps a <Tokenizer> for a prototype that's been marked with <PrototypeParsingTypes>, providing easier 
+ *
+ * A class that wraps a <Tokenizer> for a prototype that's been marked with <PrototypeParsingTypes>, providing easier
  * access to things like parameter lines.
- * 
+ *
  * Usage:
- * 
+ *
  *		The functions and properties obviously rely on the relevant tokens being set.  You cannot expect a proper result from
  *		<GetParameter()> or <NumberOfParameters> unless the tokens are marked with <PrototypeParsingType.StartOfParams>,
  *		<PrototypeParsingType.ParamSeparator>, etc.  Likewise, you can't get anything from <GetParameterName()> unless
  *		you also have tokens marked with <PrototypeParsingType.Name>.  However, you can set the parameter divider tokens,
  *		call <GetParameter()>, and then use those bounds to further parse the parameter and set tokens like
  *		<PrototypeParsingType.Name>.
- * 
+ *
  *		Section and parameter divisions are not calculated on the fly.  They are calculated once at object creation and then saved.
  *		If you make changes to section or parameter delimiting tokens call <RecalculateSections()> to make sure the changes are
  *		reflected in the other functions.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -39,10 +39,10 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 
 		/* Enum: ParameterStyle
-		 * 
+		 *
 		 * C - A C-style prototype with parameters in a form similar to "int x = 12".
 		 * Pascal - A Pascal-style prototype with parameters in a form similar to "x: int := 12".
-		 * 
+		 *
 		 * Typeless prototypes will be returned as C-style.
 		 */
 		public enum ParameterStyle : byte
@@ -52,8 +52,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: ParsedPrototype
 		 * Creates a new parsed prototype.
 		 */
@@ -78,7 +78,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			return sections[mainSectionIndex].GetAccessLevel();
 			}
 
-			
+
 		/* Function: GetBeforeParameters
 		 * Returns the bounds of the section of the prototype prior to the parameters and whether it exists.  If it has parameters,
 		 * it will include the starting symbol of the parameter list such as the opening parenthesis.  If there are no parameters, this
@@ -87,8 +87,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		public bool GetBeforeParameters (out TokenIterator beforeParametersStart, out TokenIterator beforeParametersEnd)
 			{
 			if (sections[mainSectionIndex] is ParameterSection)
-				{  
-				return (sections[mainSectionIndex] as ParameterSection).GetBeforeParameters(out beforeParametersStart, out beforeParametersEnd);  
+				{
+				return (sections[mainSectionIndex] as ParameterSection).GetBeforeParameters(out beforeParametersStart, out beforeParametersEnd);
 				}
 			else
 				{
@@ -106,8 +106,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		public bool GetParameter (int parameterIndex, out TokenIterator parameterStart, out TokenIterator parameterEnd)
 			{
 			if (sections[mainSectionIndex] is ParameterSection)
-				{  
-				return (sections[mainSectionIndex] as ParameterSection).GetParameterBounds(parameterIndex, out parameterStart, out parameterEnd);  
+				{
+				return (sections[mainSectionIndex] as ParameterSection).GetParameterBounds(parameterIndex, out parameterStart, out parameterEnd);
 				}
 			else
 				{
@@ -124,8 +124,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		public bool GetParameterName (int parameterIndex, out TokenIterator parameterNameStart, out TokenIterator parameterNameEnd)
 			{
 			if (sections[mainSectionIndex] is ParameterSection)
-				{  
-				return (sections[mainSectionIndex] as ParameterSection).GetParameterName(parameterIndex, out parameterNameStart, out parameterNameEnd);  
+				{
+				return (sections[mainSectionIndex] as ParameterSection).GetParameterName(parameterIndex, out parameterNameStart, out parameterNameEnd);
 				}
 			else
 				{
@@ -137,24 +137,24 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 
 		/* Function: BuildFullParameterType
-		 * 
+		 *
 		 * Returns the full type if one is marked by <PrototypeParsingType.Type> tokens, combining all its modifiers and qualifiers into
 		 * one continuous string.
-		 * 
+		 *
 		 * If the type and all its modifiers and qualifiers are continuous in the original <Tokenizer> it will return <TokenIterators> based
-		 * on it.  However, if the type and all its modifiers and qualifiers are NOT continuous it will create a separate <Tokenizer> to hold 
+		 * on it.  However, if the type and all its modifiers and qualifiers are NOT continuous it will create a separate <Tokenizer> to hold
 		 * a continuous version of it.  The returned bounds will be <TokenIterators> based on that rather than on the original <Tokenizer>.
 		 * The new <Tokenizer> will still contain the same <PrototypeParsingTypes> and <SyntaxHighlightingTypes> of the original.
-		 * 
-		 * If implied types is set and <SupportsImpliedTypes> is true this will return "int" for y in "int x, y".  If it is not set or 
+		 *
+		 * If implied types is set and <SupportsImpliedTypes> is true this will return "int" for y in "int x, y".  If it is not set or
 		 * <SupportsImpliedTypes> is false then it will return false for y.
 		 */
 		public bool BuildFullParameterType (int parameterIndex, out TokenIterator fullTypeStart, out TokenIterator fullTypeEnd,
 															bool impliedTypes = true)
 			{
 			if (sections[mainSectionIndex] is ParameterSection)
-				{  
-				return (sections[mainSectionIndex] as ParameterSection).BuildFullParameterType(parameterIndex, out fullTypeStart, out fullTypeEnd, 
+				{
+				return (sections[mainSectionIndex] as ParameterSection).BuildFullParameterType(parameterIndex, out fullTypeStart, out fullTypeEnd,
 																																	   (impliedTypes && supportsImpliedTypes));
 				}
 			else
@@ -167,18 +167,18 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 
 		/* Function: GetBaseParameterType
-		 * 
+		 *
 		 * Returns the bounds of the type of the passed parameter, or false if it couldn't find it.  This excludes modifiers and type
 		 * suffixes.
-		 * 
-		 * If implied types is set and <SupportsImpliedTypes> is true this will return "int" for y in "int x, y".  If it is not set or 
+		 *
+		 * If implied types is set and <SupportsImpliedTypes> is true this will return "int" for y in "int x, y".  If it is not set or
 		 * <SupportsImpliedTypes> is false then it will return false for y.
 		 */
 		public bool GetBaseParameterType (int parameterIndex, out TokenIterator start, out TokenIterator end, bool impliedTypes = true)
 			{
 			if (sections[mainSectionIndex] is ParameterSection)
-				{  
-				return (sections[mainSectionIndex] as ParameterSection).GetBaseParameterType(parameterIndex, out start, out end, 
+				{
+				return (sections[mainSectionIndex] as ParameterSection).GetBaseParameterType(parameterIndex, out start, out end,
 																																	  (impliedTypes && supportsImpliedTypes));
 				}
 			else
@@ -196,8 +196,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		public bool GetParameterDefaultValue (int parameterIndex, out TokenIterator defaultValueStart, out TokenIterator defaultValueEnd)
 			{
 			if (sections[mainSectionIndex] is ParameterSection)
-				{  
-				return (sections[mainSectionIndex] as ParameterSection).GetParameterDefaultValue(parameterIndex, out defaultValueStart, out defaultValueEnd);  
+				{
+				return (sections[mainSectionIndex] as ParameterSection).GetParameterDefaultValue(parameterIndex, out defaultValueStart, out defaultValueEnd);
 				}
 			else
 				{
@@ -225,18 +225,18 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				return false;
 				}
 			}
-			
+
 
 		/* Function: RecalculateSections
-		 * 
-		 * Recalculates the <Sections> list.  If you've set <MainSectionIndex> manually, it will have to be set again after calling this 
+		 *
+		 * Recalculates the <Sections> list.  If you've set <MainSectionIndex> manually, it will have to be set again after calling this
 		 * function.
-		 * 
+		 *
 		 * Sections are delimited with <PrototypeParsingType.StartOfPrototypeSection> and <PrototypeParsingType.EndOfPrototypeSection>.
-		 * Neither of these token types are required to appear, and if they do not the entire prototype will be in one section.  Also, they are 
-		 * not required to appear together.  Sections can be delimited by only start tokens or only end tokens, whichever is most convenient 
+		 * Neither of these token types are required to appear, and if they do not the entire prototype will be in one section.  Also, they are
+		 * not required to appear together.  Sections can be delimited by only start tokens or only end tokens, whichever is most convenient
 		 * to the language parser and won't interfere with marking other types.
-		 * 
+		 *
 		 * Each section containing <PrototypeParsingType.StartOfParams> will generate a <ParameterSection>.  All others will generate a
 		 * regular <Section>.
 		 */
@@ -337,8 +337,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 		// Group: Properties
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Property: Tokenizer
 		 * The tokenized prototype.
 		 */
@@ -377,7 +377,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		public int NumberOfParameters
 			{
 			get
-				{  
+				{
 				if (sections[mainSectionIndex] is ParameterSection)
 					{  return (sections[mainSectionIndex] as ParameterSection).NumberOfParameters;  }
 				else
@@ -413,10 +413,10 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			}
 
 
-		
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
+
 		/* var: tokenizer
 		 * The <Tokenizer> containing the full prototype.
 		 */

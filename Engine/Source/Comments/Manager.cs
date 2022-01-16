@@ -1,16 +1,16 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Comments.Manager
  * ____________________________________________________________________________
- * 
+ *
  * A module which will handle comment parsing.
- * 
- * 
+ *
+ *
  * Usage:
- * 
+ *
  *		- Call <Engine.Instance.Start()> which will start this module.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -24,11 +24,11 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 	{
 	public class Manager : Module
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Function: Manager
 		 */
 		public Manager (Engine.Instance engineInstance) : base (engineInstance)
@@ -45,9 +45,9 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 
 
 		/* Function: Start
-		 * 
+		 *
 		 * Dependencies:
-		 * 
+		 *
 		 *		- <Config.Manager> and <CommentTypes.Manager> must be started before using the rest of the class.
 		 */
 		public bool Start (Errors.ErrorList errors)
@@ -59,8 +59,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 			started = success;
 			return success;
 			}
-			
-			
+
+
 		/* Function: Parse
 		 * Parses the passed comment for documentation.  If successful it will return true and add <Topics> to the list.
 		 */
@@ -69,14 +69,14 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 			// Apply to all comments, not just Natural Docs'.  Javadoc comments may use a left line of stars which would
 			// need to be taken out.
 			LineFinder.MarkTextBoxes(comment);
-			
-			// First try Natural Docs while requiring a header.  If the first line is a header it's treated as Natural Docs content 
+
+			// First try Natural Docs while requiring a header.  If the first line is a header it's treated as Natural Docs content
 			// regardless of comment style.
 			if (naturalDocsParser.Parse(comment, languageID, topics, true) == true)
 				{  return true;  }
-				
+
 			// Next try Javadoc.  We test this before XML so it's not mistaken for it if it starts with a HTML tag.
-			if (comment.Javadoc && 
+			if (comment.Javadoc &&
 				javadocParser.Parse(comment, topics) == true)
 				{  return true;  }
 
@@ -85,21 +85,21 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 				xmlParser.Parse(comment, topics) == true)
 				{  return true;  }
 
-			// If neither of them were able to parse it, we can assume comments using the XML or Javadoc styles are headerless 
+			// If neither of them were able to parse it, we can assume comments using the XML or Javadoc styles are headerless
 			// Natural Docs comments.
 			if ((comment.Javadoc || comment.XML) &&
 				naturalDocsParser.Parse(comment, languageID, topics, false) == true)
 				{  return true;  }
-				
+
 			return false;
 			}
-			
-			
-			
+
+
+
 		// Group: Properties
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Property: NaturalDocsParser
 		 * A reference to <NaturalDocs.Parser> so that other code can call <NaturalDocs.Parser.LinkInterpretations()>.
 		 */
@@ -108,8 +108,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 			get
 				{  return naturalDocsParser;  }
 			}
-			
-			
+
+
 		/* Property: XMLParser
 		 * A reference to <XML.Parser>.
 		 */
@@ -128,8 +128,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 			get
 				{  return javadocParser;  }
 			}
-			
-			
+
+
 
 		// Group: Variables
 		// __________________________________________________________________________
@@ -138,6 +138,6 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 		protected NaturalDocs.Parser naturalDocsParser;
 		protected XML.Parser xmlParser;
 		protected Javadoc.Parser javadocParser;
-		
+
 		}
 	}

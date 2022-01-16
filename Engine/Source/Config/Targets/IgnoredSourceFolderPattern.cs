@@ -1,11 +1,11 @@
-/* 
+/*
  * Class: CodeClear.NaturalDocs.Engine.Config.Targets.IgnoredSourceFolderPattern
  * ____________________________________________________________________________
- * 
+ *
  * The configuration of an ignored source folder pattern.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -18,11 +18,11 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 	{
 	public class IgnoredSourceFolderPattern : Targets.Filter
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		public IgnoredSourceFolderPattern (PropertyLocation propertyLocation) : base (propertyLocation)
 			{
 			pattern = null;
@@ -79,11 +79,11 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		        {  patternPropertyLocation = value;  }
 		    }
 
-	
-		
+
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
+
 
 		protected string pattern;
 		protected PropertyLocation patternPropertyLocation;

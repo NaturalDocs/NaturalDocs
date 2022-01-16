@@ -1,20 +1,20 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.Menu
  * ____________________________________________________________________________
- * 
+ *
  * A class for generating a menu tree.
- * 
+ *
  * Usage:
- * 
+ *
  *		- Add files with <AddFile()>.
  *		- Add classes with <AddClass()>.
  *		- If desired, condense unnecessary folder levels with <Condense()>.  You cannot add more entries after calling
  *		  this.
  *		- Sort the members with <Sort()>.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -85,9 +85,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				foreach (var member in container.Members)
 					{
-					if (member is MenuEntries.Files.Folder && 
+					if (member is MenuEntries.Files.Folder &&
 						(member as MenuEntries.Files.Folder).PathFromFileSource == pathFromFileSource)
-						{  
+						{
 						folderEntry = (MenuEntries.Files.Folder)member;
 						break;
 						}
@@ -151,9 +151,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				foreach (var member in container.Members)
 					{
-					if (member is MenuEntries.Classes.Scope && 
+					if (member is MenuEntries.Classes.Scope &&
 						string.Compare((member as MenuEntries.Classes.Scope).WrappedScopeString, scopeSoFar, !caseSensitive) == 0)
-						{  
+						{
 						scopeEntry = (MenuEntries.Classes.Scope)member;
 						break;
 						}
@@ -161,7 +161,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				if (scopeEntry == null)
 					{
-					scopeEntry = new MenuEntries.Classes.Scope(Symbols.SymbolString.FromExportedString(scopeSoFar), 
+					scopeEntry = new MenuEntries.Classes.Scope(Symbols.SymbolString.FromExportedString(scopeSoFar),
 																					   classString.HierarchyID);
 					scopeEntry.Parent = container;
 					container.Members.Add(scopeEntry);
@@ -186,7 +186,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				// If there's only one file source we can remove the top level container.
 				if (fileRoot.Members.Count == 1)
-					{  
+					{
 					MenuEntries.Files.FileSource fileSourceEntry = (MenuEntries.Files.FileSource)fileRoot.Members[0];
 
 					// Overwrite the file source name with the tab title, especially since it might not be defined if there was only one.
@@ -212,7 +212,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						{
 						// If there's only one language we can remove the top level container.
 						if (hierarchyRoot.Members.Count == 1)
-							{  
+							{
 							MenuEntries.Classes.Language languageEntry = (MenuEntries.Classes.Language)hierarchyRoot.Members[0];
 
 							// We can overwrite the language name with the tab title.  We're not going to preserve an unnecessary level
@@ -230,7 +230,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						{
 						// If the only top level entry is a scope we can merge it
 						if (hierarchyRoot.Members.Count == 1 && hierarchyRoot.Members[0] is MenuEntries.Classes.Scope)
-							{  
+							{
 							MenuEntries.Classes.Scope scopeEntry = (MenuEntries.Classes.Scope)hierarchyRoot.Members[0];
 
 							// Move the scope title into CondensedTitles since we want it to be visible.
@@ -297,10 +297,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: FindOrCreateRoot
-		 * 
-		 * Finds and returns the root container associated with the passed file, creating one if it doesn't exist.  This will be a 
+		 *
+		 * Finds and returns the root container associated with the passed file, creating one if it doesn't exist.  This will be a
 		 * <MenuEntries.Files.FileSource> for the file's associated source, which is the second level under the hierarchy root.
-		 * 
+		 *
 		 * This function cannot be used after <Condense()> is called.
 		 */
 		protected MenuEntries.Files.FileSource FindOrCreateRoot (Files.File file)
@@ -341,12 +341,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: FindOrCreateRoot
-		 * 
-		 * Finds and returns the root container associated with the passed ClassString, creating one if it doesn't exist.  If the 
+		 *
+		 * Finds and returns the root container associated with the passed ClassString, creating one if it doesn't exist.  If the
 		 * hierarchy is language-specific this will be a <MenuEntries.Classes.Language> for the associated language, which is
-		 * the second level under the hierarchy root.  If it is language-agnostic it will be the root <MenuEntries.Container> 
+		 * the second level under the hierarchy root.  If it is language-agnostic it will be the root <MenuEntries.Container>
 		 * element.
-		 * 
+		 *
 		 * This function cannot be used after <Condense()> is called.
 		 */
 		protected MenuEntries.Container FindOrCreateRoot (Symbols.ClassString classString)
@@ -418,7 +418,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			}
 
 		/* Property: HierarchyRoots
-		 * The root <MenuEntries.Container> for each hierarchy menu, or null if there are none.  There will be one for each 
+		 * The root <MenuEntries.Container> for each hierarchy menu, or null if there are none.  There will be one for each
 		 * hierarchy ID in use.  They are in no particular order.
 		 */
 		public IList<MenuEntries.Container> HierarchyRoots
@@ -426,7 +426,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			get
 				{  return hierarchyRoots;  }
 			}
-			
+
 
 
 		// Group: Variables
@@ -438,7 +438,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		protected MenuEntries.Container fileRoot;
 
 		/* var: hierarchyRoots
-		 * The root <MenuEntries.Container> for each hierarchy menu, or null if there are none.  There will be one for each 
+		 * The root <MenuEntries.Container> for each hierarchy menu, or null if there are none.  There will be one for each
 		 * hierarchy ID in use.  They are in no particular order.
 		 */
 		protected List<MenuEntries.Container> hierarchyRoots;

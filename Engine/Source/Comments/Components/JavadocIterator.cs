@@ -1,14 +1,14 @@
-﻿/* 
+﻿/*
  * Struct: CodeClear.NaturalDocs.Engine.Comments.Components.JavadocIterator
  * ____________________________________________________________________________
- * 
+ *
  * A struct to handle walking through Javadoc/HTML-formatted content.  It moves by element, treating things
  * like tags and stretches of unformatted text as one step.  The iterator assumes you are going to walk through
  * it in a linear fashion rather than navigating a parsed HTML tree.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -105,7 +105,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 
 
 		/* Function: IsOn
-		 * Returns whether the iterator is on the passed <JavadocElementType>, tag type, and <JavadocTagForm>.  This function 
+		 * Returns whether the iterator is on the passed <JavadocElementType>, tag type, and <JavadocTagForm>.  This function
 		 * must be used with <JavadocElementType.JavadocTag> since that's the only type where it's relevant.  <JavadocElementType>
 		 * is passed anyway for consistency with other IsOn() functions.
 		 */
@@ -172,7 +172,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 			foreach (Capture capture in captures)
 			    {
 			    Match propertyMatch = HTMLTagPropertyRegex.Match(RawText, capture.Index, capture.Length);
-			    properties.Add( propertyMatch.Groups[1].ToString(), 
+			    properties.Add( propertyMatch.Groups[1].ToString(),
 									  DecodeHTMLPropertyValue(propertyMatch.Groups[2].Index, propertyMatch.Groups[2].Length) );
 			    }
 
@@ -199,10 +199,10 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 				found = true;
 				}
 			// If we're on a new line and either whitespace or a comment token...
-			else if ( ( RawTextIndex == 0 || 
+			else if ( ( RawTextIndex == 0 ||
 						  Tokenizer.FundamentalTypeOf(RawText[RawTextIndex - 1]) == FundamentalType.LineBreak )
 						&&
-						( tokenIterator.FundamentalType == FundamentalType.Whitespace || 
+						( tokenIterator.FundamentalType == FundamentalType.Whitespace ||
 						  tokenIterator.CommentParsingType == CommentParsingType.CommentSymbol ||
 						  tokenIterator.CommentParsingType == CommentParsingType.CommentDecoration ) )
 				{
@@ -212,7 +212,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 				TokenIterator lookahead = tokenIterator;
 
 				do
-					{  
+					{
 					length += lookahead.RawTextLength;
 					lookahead.Next();
 					}
@@ -267,13 +267,13 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 				TokenIterator lookahead = tokenIterator;
 				lookahead.NextByCharacters(2);
 
-				if (closingBrace != -1 && closingBrace < endingRawTextIndex && 
+				if (closingBrace != -1 && closingBrace < endingRawTextIndex &&
 					lookahead.FundamentalType == FundamentalType.Text &&
 					Javadoc.Parser.InlineTags.Contains(lookahead.String))
 					{
 					found = true;
 					type = JavadocElementType.JavadocTag;
-					tagType = lookahead.String; 
+					tagType = lookahead.String;
 					length = (closingBrace + 1) - RawTextIndex;
 					}
 				}
@@ -339,7 +339,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 			}
 
 
-		
+
 		// Group: Properties
 		// __________________________________________________________________________
 
@@ -374,9 +374,9 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 				if (length == 0)
 					{  return "";  }
 				else if (type == JavadocElementType.Indent)
-					{  
+					{
 					// Don't want comment symbols or tabs, so convert to spaces
-					return new string(' ', Indent);  
+					return new string(' ', Indent);
 					}
 				else
 					{  return RawText.Substring(RawTextIndex, length);  }
@@ -385,7 +385,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 
 
 		/* Property: TagType
-		 * If <Type> is <JavadocElementType.HTMLTag> or <JavadocElementType.JavadocTag>, this is the tag type as a string.  For example, 
+		 * If <Type> is <JavadocElementType.HTMLTag> or <JavadocElementType.JavadocTag>, this is the tag type as a string.  For example,
 		 * "<br />" would return "br" and "@param" will return "param".  HTML tag types will always be in lowercase.
 		 */
 		public string TagType
@@ -420,7 +420,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 
 
 		/* Property: JavadocTagValue
-		 * If <Type> is <JavadocElementType.JavadocTag> and <JavadocTagForm> is <JavadocTagForm.Inline>, this 
+		 * If <Type> is <JavadocElementType.JavadocTag> and <JavadocTagForm> is <JavadocTagForm.Inline>, this
 		 * is the content of the tag.  If there is none it will return null.
 		 */
 		public string JavadocTagValue
@@ -526,7 +526,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 				int indent = 0;
 				string rawText = RawText;
 				int rawTextIndex = RawTextIndex;
-			
+
 				for (int i = 0; i < length; i++)
 					{
 					if (rawText[rawTextIndex + i] == '\t')
@@ -537,7 +537,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 					else
 						{  indent++;  }
 					}
-				
+
 				return indent;
 				}
 			}

@@ -1,5 +1,5 @@
 ﻿
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -12,7 +12,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 	/* Struct: CodeClear.NaturalDocs.Engine.Languages.BlockCommentSymbols
 	 * ____________________________________________________________________________
-	 * 
+	 *
 	 * A struct representing a pair of strings which serve as the opening and closing symbols for a block comment.
 	 */
 	public struct BlockCommentSymbols
@@ -36,12 +36,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			return (a.openingSymbol == b.openingSymbol &&
 					   a.closingSymbol == b.closingSymbol);
 			}
-			
+
 		public static bool operator != (BlockCommentSymbols a, BlockCommentSymbols b)
 			{
 			return !(a == b);
 			}
-			
+
 		public override bool Equals (object o)
 			{
 			if (o is BlockCommentSymbols)
@@ -83,7 +83,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 	/* Struct: CodeClear.NaturalDocs.Engine.Languages.LineCommentSymbols
 	 * ____________________________________________________________________________
-	 * 
+	 *
 	 * A struct representing a pair of strings which serve and the first and following line comment symbols for comments
 	 * where that is significant, such as Javadoc comments.
 	 */
@@ -108,12 +108,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			return (a.firstLineSymbol == b.firstLineSymbol &&
 					   a.followingLinesSymbol == b.followingLinesSymbol);
 			}
-			
+
 		public static bool operator != (LineCommentSymbols a, LineCommentSymbols b)
 			{
 			return !(a == b);
 			}
-			
+
 		public override bool Equals (object o)
 			{
 			if (o is LineCommentSymbols)

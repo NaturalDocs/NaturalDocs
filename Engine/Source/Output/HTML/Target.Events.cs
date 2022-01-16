@@ -1,10 +1,10 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Target
  * ____________________________________________________________________________
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -85,7 +85,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 		public void OnStartPossiblyLongOperation (string operationName)
 			{  }
-		
+
 		public void OnEndPossiblyLongOperation ()
 			{  }
 
@@ -93,8 +93,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 		// Group: CodeDB.IChangeWatcher Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		public void OnAddTopic (Topic topic, CodeDB.EventAccessor eventAccessor)
 			{
 			// If this topic defines a class, it's possible it's now the best definition and thus we have to update the class prototypes
@@ -154,9 +154,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			finally
 				{  unprocessedChanges.Unlock();  }
 
-			// If the summary or prototype changed this means its tooltip changed.  Rebuild any file that contains links 
+			// If the summary or prototype changed this means its tooltip changed.  Rebuild any file that contains links
 			// to this topic.
-			if ((changeFlags & (Topic.ChangeFlags.Prototype | Topic.ChangeFlags.Summary | 
+			if ((changeFlags & (Topic.ChangeFlags.Prototype | Topic.ChangeFlags.Summary |
 												Topic.ChangeFlags.LanguageID | Topic.ChangeFlags.CommentTypeID)) != 0)
 				{
 				IDObjects.NumberSet linkFileIDs, linkClassIDs;
@@ -172,13 +172,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				if (newTopic.DefinesClass && (newTopic.ClassID != oldTopic.ClassID || oldTopic.DefinesClass == false))
 					{  eventAccessor.GetInfoOnClassParents(newTopic.ClassID, out newParentClassIDs, out newParentClassFileIDs);  }
 
-				if (linkFileIDs != null || linkClassIDs != null || 
+				if (linkFileIDs != null || linkClassIDs != null ||
 					oldParentClassIDs != null || oldParentClassFileIDs != null ||
 					newParentClassIDs != null || newParentClassFileIDs != null)
-					{  
+					{
 					unprocessedChanges.Lock();
 					try
-						{  
+						{
 						if (linkFileIDs != null)
 							{  unprocessedChanges.AddSourceFiles(linkFileIDs);  }
 						if (linkClassIDs != null)
@@ -234,8 +234,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			IDObjects.NumberSet filesThatDefineClass = null;
 
 			if (link.Type == LinkType.ClassParent)
-				{  
-				filesThatDefineClass = eventAccessor.GetFileIDsThatDefineClassID(link.ClassID);  
+				{
+				filesThatDefineClass = eventAccessor.GetFileIDsThatDefineClassID(link.ClassID);
 
 				// If it's resolved we have to rebuild all source files that define the target as well so its children get updated.
 				if (link.TargetClassID != 0)
@@ -269,14 +269,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			finally
 				{  unprocessedChanges.Unlock();  }
 			}
-		
+
 		public void OnChangeLinkTarget (Link link, int oldTargetTopicID, int oldTargetClassID, CodeDB.EventAccessor eventAccessor)
 			{
 			IDObjects.NumberSet filesThatDefineClass = null;
 
 			if (link.Type == LinkType.ClassParent)
 				{
-				filesThatDefineClass = eventAccessor.GetFileIDsThatDefineClassID(link.ClassID);  
+				filesThatDefineClass = eventAccessor.GetFileIDsThatDefineClassID(link.ClassID);
 
 				if (link.TargetClassID != 0)
 					{
@@ -353,14 +353,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					}
 				}
 			}
-		
+
 		public void OnDeleteLink (Link link, CodeDB.EventAccessor eventAccessor)
 			{
 			IDObjects.NumberSet filesThatDefineClass = null;
 
 			if (link.Type == LinkType.ClassParent)
 				{
-				filesThatDefineClass = eventAccessor.GetFileIDsThatDefineClassID(link.ClassID);  
+				filesThatDefineClass = eventAccessor.GetFileIDsThatDefineClassID(link.ClassID);
 
 				if (link.TargetClassID != 0)
 					{
@@ -393,7 +393,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 		public void OnAddImageLink (ImageLink imageLink, CodeDB.EventAccessor eventAccessor)
 			{
-			// We don't have to force any HTML to be rebuilt here.  This can only happen if the containing topic was 
+			// We don't have to force any HTML to be rebuilt here.  This can only happen if the containing topic was
 			// changed so we can rely on the topic code to handle that.
 
 			// However, this could change whether the image file is used or unused, so we have to add it to the list.
@@ -437,7 +437,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 		public void OnDeleteImageLink (ImageLink imageLink, CodeDB.EventAccessor eventAccessor)
 			{
-			// We don't have to force any HTML to be rebuilt here.  This can only happen if the containing topic was 
+			// We don't have to force any HTML to be rebuilt here.  This can only happen if the containing topic was
 			// changed so we can rely on the topic code to handle that.
 
 			// However, this could chang e whether the image file is used or unused, so we have to add it to the list.
@@ -454,9 +454,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		public void OnAddFile (File file)
 			{
 			if (file.Type == FileType.Style)
-				{  
+				{
 				// Add it to the build list.  The build function will check if it's part of a style we're using.
-				unprocessedChanges.AddStyleFile(file.ID);  
+				unprocessedChanges.AddStyleFile(file.ID);
 				}
 
 			else if (file.Type == FileType.Image)
@@ -471,9 +471,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		public void OnFileChanged (File file)
 			{
 			if (file.Type == FileType.Style)
-				{  
+				{
 				// Add it to the build list.  The build function will check if it's part of a style we're using.
-				unprocessedChanges.AddStyleFile(file.ID);  
+				unprocessedChanges.AddStyleFile(file.ID);
 				}
 
 			else if (file.Type == FileType.Image)
@@ -492,7 +492,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					{
 					accessor.GetReadOnlyLock();
 
-					List<ImageLink> imageLinks = accessor.GetImageLinksByTarget(file.ID, Delegates.NeverCancel, 
+					List<ImageLink> imageLinks = accessor.GetImageLinksByTarget(file.ID, Delegates.NeverCancel,
 																														  CodeDB.Accessor.GetImageLinkFlags.DontLookupClasses);
 
 					foreach (var imageLink in imageLinks)
@@ -506,11 +506,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					accessor.ReleaseLock();
 					}
 				finally
-					{  
+					{
 					if (accessor.HasLock)
 						{  accessor.ReleaseLock();  }
 
-					accessor.Dispose();  
+					accessor.Dispose();
 					}
 				}
 
@@ -520,9 +520,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		public void OnDeleteFile (File file)
 			{
 			if (file.Type == FileType.Style)
-				{  
+				{
 				// Add it to the build list.  The build function will check if it's part of a style we're using.
-				unprocessedChanges.AddStyleFile(file.ID);  
+				unprocessedChanges.AddStyleFile(file.ID);
 				}
 
 			else if (file.Type == FileType.Image)
@@ -543,7 +543,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		public void OnAddPrefix (string prefix, CodeDB.EventAccessor accessor)
 			{
 			unprocessedChanges.AddMainSearchFiles();
-			unprocessedChanges.AddSearchPrefix(prefix);  
+			unprocessedChanges.AddSearchPrefix(prefix);
 			}
 
 		public void OnUpdatePrefix (string prefix, CodeDB.EventAccessor accessor)
@@ -554,9 +554,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		public void OnDeletePrefix (string prefix, CodeDB.EventAccessor accessor)
 			{
 			unprocessedChanges.AddMainSearchFiles();
-			unprocessedChanges.AddSearchPrefix(prefix);  
+			unprocessedChanges.AddSearchPrefix(prefix);
 			}
 
 		}
 	}
-

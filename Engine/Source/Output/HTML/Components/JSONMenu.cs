@@ -1,20 +1,20 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.JSONMenu
  * ____________________________________________________________________________
- * 
- * A helper class to build a JSON representation of <Menu> for output.  It can also save the representation to JavaScript files as 
+ *
+ * A helper class to build a JSON representation of <Menu> for output.  It can also save the representation to JavaScript files as
  * documented in <JavaScript Menu Data>.
- * 
+ *
  * Usage:
- * 
+ *
  *		- Call <ConvertToJSON(Menu)> to create the JSON representation of the <Menu>.
  *		- If desired, call <AssignDataFiles()> to determine how the menu will be divided into files.  This will be called automatically
  *		  by <BuildDataFiles()> if you do not do it manually.
  *		- If desired, call <BuildDataFiles()> to create the output files.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -52,7 +52,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				{  fileRoot = (JSONMenuEntries.RootContainer)ConvertToJSON(menu.FileRoot, isRoot: true);  }
 			else
 				{  fileRoot = null;  }
-			
+
 			if (menu.HierarchyRoots != null)
 				{
 				hierarchyRoots = new List<JSONMenuEntries.RootContainer>( menu.HierarchyRoots.Count );
@@ -76,10 +76,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: AssignDataFiles
-		 * 
+		 *
 		 * Takes the JSON menu created by <ConvertToJSON()> and determines how it will be saved into individual data files.  After
 		 * this function is called you can retrieve the used data file numbers from <FileRoot> and <HierarchyRoots>.
-		 * 
+		 *
 		 * You do not need to call this function manually.  <BuildDataFiles()> will do it for you automatically if you do not.  However,
 		 * calling it manually allows you to inspect what the data files would be before they're actually created.
 		 */
@@ -91,7 +91,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				{  AssignDataFiles(fileRoot);  }
 
 			if (hierarchyRoots != null)
-				{  
+				{
 				foreach (var hierarchyRoot in hierarchyRoots)
 					{
 					if (hierarchyRoot.DataFileName == null)
@@ -102,25 +102,25 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: BuildDataFiles
-		 * 
-		 * Takes the JSON menu created by <ConvertToJSON()> and saves it as a series of JavaScript files as documented in 
-		 * <JavaScript Menu Data>.  This includes the tab information file.  Note that you have to call <ConvertToJSON()> prior to 
+		 *
+		 * Takes the JSON menu created by <ConvertToJSON()> and saves it as a series of JavaScript files as documented in
+		 * <JavaScript Menu Data>.  This includes the tab information file.  Note that you have to call <ConvertToJSON()> prior to
 		 * calling this function or no data files will be generated.
-		 * 
+		 *
 		 * This function will call <AssignDataFiles()> if you did not do it yourself.
 		 */
 		public void BuildDataFiles ()
 			{
 			try
-				{  
+				{
 				// This will create multiple subdirectories if needed, and will not throw an exception if it already exists.
 				System.IO.Directory.CreateDirectory( Paths.Menu.OutputFolder(context.Target.OutputFolder) );
 				}
 			catch (Exception e)
 				{
-				throw new Exceptions.UserFriendly( 
-					Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFolder(name, exception)", 
-									Paths.Menu.OutputFolder(context.Target.OutputFolder), e.Message) 
+				throw new Exceptions.UserFriendly(
+					Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFolder(name, exception)",
+									Paths.Menu.OutputFolder(context.Target.OutputFolder), e.Message)
 					);
 				}
 
@@ -132,7 +132,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				{  BuildDataFiles(fileRoot);  }
 
 			if (hierarchyRoots != null)
-				{  
+				{
 				foreach (var hierarchyRoot in hierarchyRoots)
 					{  BuildDataFiles(hierarchyRoot);  }
 				}
@@ -171,23 +171,23 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			json.Append('"');
 
 			string hashPath = null;
-				
+
 			if (menuEntry is MenuEntries.Files.File)
-				{  
+				{
 				var fileMenuEntry = (MenuEntries.Files.File)menuEntry;
 				var file = fileMenuEntry.WrappedFile;
 				var fileSource = EngineInstance.Files.FileSourceOf(file);
 
-				hashPath = Paths.SourceFile.HashPath(fileSource.Number, fileSource.MakeRelative(file.FileName));  
+				hashPath = Paths.SourceFile.HashPath(fileSource.Number, fileSource.MakeRelative(file.FileName));
 				}
 			else if (menuEntry is MenuEntries.Classes.Class)
-				{  
+				{
 				var classMenuEntry = (MenuEntries.Classes.Class)menuEntry;
 				var classString = classMenuEntry.WrappedClassString;
 				var hierarchy = EngineInstance.Hierarchies.FromID(classMenuEntry.HierarchyID);
 				var language = EngineInstance.Languages.FromID(classString.LanguageID);
 
-				hashPath = Paths.Class.HashPath(hierarchy, language, classString.Symbol);  
+				hashPath = Paths.Class.HashPath(hierarchy, language, classString.Symbol);
 				}
 			else
 				{  throw new NotImplementedException();  }
@@ -291,7 +291,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					}
 
 				var fileSourceEntry = (MenuEntries.Files.FileSource)parentEntry;
-				hashPath = Paths.SourceFile.FolderHashPath(fileSourceEntry.WrappedFileSource.Number, 
+				hashPath = Paths.SourceFile.FolderHashPath(fileSourceEntry.WrappedFileSource.Number,
 																				 folderEntry.PathFromFileSource );
 				}
 
@@ -371,7 +371,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 			if (hashPath != null)
-				{  
+				{
 				jsonBeforeMembers.Append('"');
 				jsonBeforeMembers.StringEscapeAndAppend(hashPath);
 				jsonBeforeMembers.Append('"');
@@ -428,7 +428,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			// The data file has to include all the members in this container no matter what, so we don't check the size against the limit
 			// yet.
 
-			int containerJSONSize = container.JSONBeforeMembers.Length + container.JSONAfterMembers.Length + 
+			int containerJSONSize = container.JSONBeforeMembers.Length + container.JSONAfterMembers.Length +
 												container.JSONLengthOfMembers;
 
 
@@ -502,7 +502,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				// If there's no more candidates, go through the list of inlined containers and add their subcontainers to the candidates
 				// list.  This allows us to continue inlining for multiple levels as long as we have space for it.
-				
+
 				// This algorithm causes inlining to happen breadth-first instead of depth-first, which we want, but it also allows lower
 				// depths to continue to be inlined even if the parent level couldn't be done completely.  It's possible that when there's
 				// no room for all the top-level containers a few more lower level ones could still be squeezed in.
@@ -527,7 +527,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: BuildDataFiles
-		 * Generates the output data file for the container.  It must have <JSONContainer.DataFileName> set.  If it finds any 
+		 * Generates the output data file for the container.  It must have <JSONContainer.DataFileName> set.  If it finds any
 		 * sub-containers that also have that set, it will recursively generate files for them as well.
 		 */
 		protected void BuildDataFiles (JSONMenuEntries.RootContainer root)
@@ -546,7 +546,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				{
 				var containerToBuild = containersToBuild.Pop();
 				string fileName = containerToBuild.DataFileName;
-				
+
 				StringBuilder output = new StringBuilder();
 				output.Append("NDMenu.OnSectionLoaded(\"");
 				output.StringEscapeAndAppend(fileName);
@@ -554,7 +554,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				if (addWhitespace)
 					{  output.AppendLine();  }
-				
+
 				AppendMembers(containerToBuild, output, 1, containersToBuild);
 
 				if (addWhitespace)
@@ -572,7 +572,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * through sub-containers as well.  This will not include the surrounding brackets, only the comma-separated member entries.
 		 * If it finds any sub-containers that start a new data file, it will add them to containersToBuild.
 		 */
-		protected void AppendMembers (JSONMenuEntries.Container container, StringBuilder output, int indent, 
+		protected void AppendMembers (JSONMenuEntries.Container container, StringBuilder output, int indent,
 													   Stack<JSONMenuEntries.Container> containersToBuild)
 			{
 			bool addWhitespace = (EngineInstance.Config.ShrinkFiles == false);
@@ -674,22 +674,22 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				if (potentialSourceFileHomePage == null)
 					{
 					throw new Exceptions.UserFriendly(
-						Locale.Get("NaturalDocs.Engine", "Error.HomePageSourceFileIsntInSourceFolders(file)", 
-										 Target.BuildState.CalculatedHomePage) 
+						Locale.Get("NaturalDocs.Engine", "Error.HomePageSourceFileIsntInSourceFolders(file)",
+										 Target.BuildState.CalculatedHomePage)
 						);
 					}
 				else if (potentialSourceFileHomePage.Type != Files.FileType.Source)
 					{
 					throw new Exceptions.UserFriendly(
-						Locale.Get("NaturalDocs.Engine", "Error.HomePageIsntASourceFileOrHTML(file)", 
-										 Target.BuildState.CalculatedHomePage) 
+						Locale.Get("NaturalDocs.Engine", "Error.HomePageIsntASourceFileOrHTML(file)",
+										 Target.BuildState.CalculatedHomePage)
 						);
 					}
 				else if (!Target.BuildState.SourceFileHasContent(potentialSourceFileHomePage.ID))
 					{
 					throw new Exceptions.UserFriendly(
-						Locale.Get("NaturalDocs.Engine", "Error.HomePageSourceFileDoesntHaveContent(file)", 
-										 Target.BuildState.CalculatedHomePage) 
+						Locale.Get("NaturalDocs.Engine", "Error.HomePageSourceFileDoesntHaveContent(file)",
+										 Target.BuildState.CalculatedHomePage)
 						);
 					}
 				else
@@ -802,19 +802,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			output.Append("\",");
 
 			if (hierarchy == null)
-				{  
+				{
 				output.Append("0,\"^");
 				output.StringEscapeAndAppend(simpleIdentifier);
 				output.Append("([0-9]*)$\"");
 				}
 			else if (hierarchy.IsLanguageSpecific)
-				{  
+				{
 				output.Append("1,\"^([A-Za-z]+)");
 				output.StringEscapeAndAppend(simpleIdentifier);
 				output.Append("$\"");
 				}
 			else // language-agnostic
-				{  
+				{
 				output.Append("2,\"^");
 				output.StringEscapeAndAppend(simpleIdentifier);
 				output.Append("$\"");
@@ -886,7 +886,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			get
 				{  return fileRoot;  }
 			}
-			
+
 
 		/* Property HierarchyRoots
 		 * The root container for each hierarchy menu, or null if there are none.  There will be one for each hierarchy ID in use.
@@ -935,4 +935,3 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 		}
 	}
-

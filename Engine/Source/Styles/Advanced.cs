@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Styles.Advanced
  * ____________________________________________________________________________
- * 
+ *
  * A class representing an advanced output style using <Style.txt>.
- *			
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -113,9 +113,9 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 
 		/* var: folder
-		 * 
+		 *
 		 * The path to the style's folder.
-		 * 
+		 *
 		 * This could technically just be retrieved from <configFile> via <Path.ParentFolder> at runtime, but it's used often enough that
 		 * it's worth storing it instead of generating it constantly.
 		 */

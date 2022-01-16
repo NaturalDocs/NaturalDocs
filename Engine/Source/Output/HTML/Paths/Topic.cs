@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Paths.Topic
  * ____________________________________________________________________________
- * 
+ *
  * Path functions relating to a single topic.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -23,12 +23,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 		{
 
 		/* Function: HashPath
-		 * 
-		 * Returns the hash path for the topic.  When appending this to the hash path of a file or class use a colon to separate 
+		 *
+		 * Returns the hash path for the topic.  When appending this to the hash path of a file or class use a colon to separate
 		 * them.
-		 * 
+		 *
 		 * Examples:
-		 * 
+		 *
 		 *		topic - Member
 		 *		topic + includeClass - Module.Module.Member
 		 */
@@ -88,7 +88,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 				string titleSymbol = SymbolString.FromPlainText(topic.Title, out ignore).ToString();
 				string fullSymbol = topic.Symbol.ToString();
 
-				if (titleSymbol.Length < fullSymbol.Length && 
+				if (titleSymbol.Length < fullSymbol.Length &&
 					 fullSymbol.Substring(fullSymbol.Length - titleSymbol.Length) == titleSymbol)
 					{
 					string classSymbol = fullSymbol.Substring(0, fullSymbol.Length - titleSymbol.Length);

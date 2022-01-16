@@ -1,14 +1,14 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Comments.XML.Parser
  * ____________________________________________________________________________
- * 
+ *
  * A parser to handle Microsoft's XML comment format.
- * 
- * 
+ *
+ *
  * Topic: Tag Support
- * 
+ *
  *		Supported Tags:
- *		
+ *
  *			code - Added to the body as a code block.
  *			example - Added to the body with a heading.  Both top-level and nested are supported.
  *			exception - Added to the body under an Exceptions heading.
@@ -26,33 +26,33 @@
  *			typeparam - Added to the body under a Type Parameters heading.
  *			typeparamref - Replaced with the name property in the body.
  *			value - Added to the beginning of the body without a header.
- *			
+ *
  *		Supported Non-Standard Tags:
- *		
+ *
  *			remarks - Treated as remark.  Found in Ookii.Dialogs documentation.
  *			a href - A link to an URL, or an e-mail address if it uses mailto.
  *			see href - See with the href property instead of cref.  Links to an URL, or an e-mail address if it uses mailto.
- *			see langword - See with the langword property instead of cref.  Langword is added as plain text.  Found in 
+ *			see langword - See with the langword property instead of cref.  Langword is added as plain text.  Found in
  *								  Ookii.Dialogs documentation.
- * 
+ *
  *		Unsupported Tags:
- *		
+ *
  *			c - Ignored.  It will be formatted as regular text.
- *			
+ *
  *				 If you support c then the question becomes whether to automatically format things like paramrefs the same
  *				 way.  Individual users may or may not religiously apply c tags everywhere and if the paramref formatting
  *				 doesn't match what they do the text will appear very inconsistent.  Ignoring c guarantees the text appears
  *				 consistently in every scenario, although at the cost of irritating those who actually use it.
- *				 
- *				 The other issue is if you decide to apply c formatting to things like paramrefs, then the output of XML 
- *				 comments will always look different from the output of Natural Docs comments even for users who never 
- *				 use c.  It's important for the documentation to be consistent as a whole regardless of the underlying format 
+ *
+ *				 The other issue is if you decide to apply c formatting to things like paramrefs, then the output of XML
+ *				 comments will always look different from the output of Natural Docs comments even for users who never
+ *				 use c.  It's important for the documentation to be consistent as a whole regardless of the underlying format
  *				 of individual comments.
- *				 
+ *
  *			include - Ignored.  Natural Docs is not set up to handle extracting external XML via query.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -70,41 +70,41 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 	{
 	public class Parser : Comments.Parser
 		{
-				
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Function: Parser
 		 */
 		public Parser (Comments.Manager manager) : base (manager)
 			{
 			}
-			
-			
+
+
 		/* Function: Parse
-		 * 
+		 *
 		 * Attempts to parse the passed comment into <Topics>.  Returns whether it was successful, and if so, adds them
 		 * to the list.  These fields will be set:
-		 * 
+		 *
 		 *		- CommentLineNumber
 		 *		- Body, if present
 		 *		- Summary, if available
 		 */
 		public bool Parse (PossibleDocumentationComment sourceComment, List<Topic> topics)
 			{
-			XMLIterator iterator = new XMLIterator(sourceComment.Start.FirstToken(Tokenization.LineBoundsMode.Everything), 
+			XMLIterator iterator = new XMLIterator(sourceComment.Start.FirstToken(Tokenization.LineBoundsMode.Everything),
 																	  sourceComment.End.FirstToken(Tokenization.LineBoundsMode.Everything));
 
 			while (iterator.Type == XMLElementType.Indent ||
 					 iterator.Type == XMLElementType.LineBreak)
 				{  iterator.Next();  }
-			
+
 			if (iterator.Type != XMLElementType.Tag)
 				{  return false;  }
 
 			XMLComment xmlComment = new XMLComment();
-			
+
 			while (iterator.IsInBounds)
 				{
 				if (TryToGetTopLevelTextSection(ref iterator, xmlComment) ||
@@ -119,9 +119,9 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 			Topic topic = GenerateTopic(xmlComment);
 
 			if (topic != null)
-				{  
+				{
 				topic.CommentLineNumber = sourceComment.Start.LineNumber;
-				topics.Add(topic);  
+				topics.Add(topic);
 				}
 
 			return true;
@@ -168,8 +168,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 
 
 		/* Function: TryToGetTopLevelListSection
-		 * If the iterator is on a top-level list section such as a param tag it will convert it to NDMarkup, add it to the 
-		 * comment in a list section, move the iterator past it, and return true.  Otherwise it returns false and nothing 
+		 * If the iterator is on a top-level list section such as a param tag it will convert it to NDMarkup, add it to the
+		 * comment in a list section, move the iterator past it, and return true.  Otherwise it returns false and nothing
 		 * is changed.
 		 */
 		protected bool TryToGetTopLevelListSection (ref XMLIterator iterator, XMLComment comment)
@@ -265,7 +265,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 							{  tagStack.CloseTag(iterator.TagType);  }
 						// Ignore standalone tags
 						}
-				
+
 					iterator.Next();
 					}
 
@@ -288,7 +288,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 
 
 		/* Function: TryToGetStandaloneLink
-		 * If the iterator is on a standalone link tag it will convert it to NDMarkup, add it to the output, move the iterator 
+		 * If the iterator is on a standalone link tag it will convert it to NDMarkup, add it to the output, move the iterator
 		 * past it, and return true.  Otherwise it will return false and nothing will be affected.
 		 */
 		protected bool TryToGetStandaloneLink (ref XMLIterator iterator, StringBuilder output)
@@ -347,7 +347,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 			string langword = iterator.TagProperty("langword");
 
 			if (keyword == "see" && langword != null)
-				{  
+				{
 				// Just replace it with the text
 				output.EntityEncodeAndAppend(langword);
 
@@ -361,7 +361,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 
 		/* Function: TryToGetNamedLink
 		 * If the iterator is on an opening link tag it will convert it and everything through the corresponding closing tag to
-		 * NDMarkup, add it to the output, move the iterator past it, and return true.  Otherwise it will return false and 
+		 * NDMarkup, add it to the output, move the iterator past it, and return true.  Otherwise it will return false and
 		 * nothing will be affected.
 		 */
 		protected bool TryToGetNamedLink (ref XMLIterator iterator, StringBuilder output)
@@ -477,7 +477,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 
 
 		/* Function: GetText
-		 * Converts a block of formatted text to NDMarkup and adds it to the output.  Entity chars will be encoded, recognized 
+		 * Converts a block of formatted text to NDMarkup and adds it to the output.  Entity chars will be encoded, recognized
 		 * XML tags will be converted, and unrecognized XML tags will be stripped.  It ends when it reaches the closing tag for
 		 * anything already on the tag stack.
 		 */
@@ -500,7 +500,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 					string text = iterator.String;
 					iterator.Next();
 
-					if (iterator.IsOn(XMLElementType.Text) || 
+					if (iterator.IsOn(XMLElementType.Text) ||
 						iterator.IsOn(XMLElementType.EntityChar))
 						{
 						StringBuilder textBuilder = new StringBuilder(text);
@@ -531,8 +531,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 
 				else if (iterator.IsOn(XMLElementType.LineBreak))
 					{
-					// Add a literal line break.  We'll replace these with spaces or double spaces later.  Right now we can't decide 
-					// which it should be because you can't run a regex directly on a StringBuilder and it would be inefficient to convert 
+					// Add a literal line break.  We'll replace these with spaces or double spaces later.  Right now we can't decide
+					// which it should be because you can't run a regex directly on a StringBuilder and it would be inefficient to convert
 					// it to a string on every line break.
 					output.Append('\n');
 
@@ -542,7 +542,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 				else if (iterator.IsOnTag("para"))
 					{
 					// Text can appear both inside and outside of <para> tags, and whitespace can appear between <para> tags that
-					// can be mistaken for content, so rather than put in a lot of logic we handle it in a very dirty but simple way.  Every 
+					// can be mistaken for content, so rather than put in a lot of logic we handle it in a very dirty but simple way.  Every
 					// <para> tag--opening, closing, standalone (technically invalid)--causes a paragraph break.  Normalize() will clean it
 					// up for us afterwards.
 
@@ -552,9 +552,9 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 					}
 
 				else if (iterator.IsOnTag("code", TagForm.Opening))
-					{  
+					{
 					output.Append("</p>");
-					GetCode(ref iterator, output, tagStack);  
+					GetCode(ref iterator, output, tagStack);
 					output.Append("<p>");
 					}
 
@@ -578,7 +578,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 					output.Append("<p>");
 					}
 
-				else if (iterator.IsOnTag("paramref") || 
+				else if (iterator.IsOnTag("paramref") ||
 						  iterator.IsOnTag("typeparamref"))
 					{
 					// Can't assume all the properties are set
@@ -594,7 +594,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 					{  }
 
 				else if (iterator.IsOnTag(TagForm.Opening))
-					{  
+					{
 					tagStack.OpenTag(iterator.TagType);
 					iterator.Next();
 					}
@@ -627,7 +627,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 
 		/* Function: GetUnformattedText
 		 * Converts a block of text to NDMarkup and adds it to the output, stripping out any formatting tags.  Entity chars will be
-		 * encoded.  Unlike <GetText()> this will not surround the output in paragraph tags.  It ends when it reaches the closing 
+		 * encoded.  Unlike <GetText()> this will not surround the output in paragraph tags.  It ends when it reaches the closing
 		 * tag for anything already on the tag stack.
 		 */
 		protected void GetUnformattedText (ref XMLIterator iterator, StringBuilder output, TagStack tagStack)
@@ -651,15 +651,15 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 
 				else if (iterator.IsOn(XMLElementType.LineBreak))
 					{
-					// Add a literal line break.  We'll replace these with spaces or double spaces later.  Right now we can't decide 
-					// which it should be because you can't run a regex directly on a StringBuilder and it would be inefficient to convert 
+					// Add a literal line break.  We'll replace these with spaces or double spaces later.  Right now we can't decide
+					// which it should be because you can't run a regex directly on a StringBuilder and it would be inefficient to convert
 					// it to a string on every line break.
 					output.Append('\n');
 
 					iterator.Next();
 					}
 
-				else if (iterator.IsOnTag("paramref") || 
+				else if (iterator.IsOnTag("paramref") ||
 						  iterator.IsOnTag("typeparamref"))
 					{
 					// Can't assume all the properties are set
@@ -673,7 +673,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 
 				else if (iterator.IsOnTag(TagForm.Opening))
 					{
-					tagStack.OpenTag(iterator.TagType);  
+					tagStack.OpenTag(iterator.TagType);
 					iterator.Next();
 					}
 
@@ -815,17 +815,17 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 			while (iterator.IsInBounds)
 				{
 				if (iterator.IsOnTag("list", TagForm.Closing))
-					{  
+					{
 					iterator.Next();
-					break;  
+					break;
 					}
 
 				else if (iterator.IsOnTag("item") ||
 						  iterator.IsOnTag("listheader"))
 					{
 					if (iterator.TagForm == TagForm.Opening)
-						{  
-						currentItem = new ListItem();  
+						{
+						currentItem = new ListItem();
 						currentItem.IsHeading = (iterator.TagType == "listheader");
 						}
 
@@ -922,7 +922,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 					foreach (var item in items)
 						{
 						output.Append("<de>");
-						
+
 						if (item.Term != null)
 							{  output.Append(item.Term);  }
 
@@ -1081,7 +1081,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 
 					if (listSection.MemberCount > 0)
 						{
-						string heading = Engine.Locale.SafeGet("NaturalDocs.Engine", "XML.Heading." + listSection.Name + "(count)", null, 
+						string heading = Engine.Locale.SafeGet("NaturalDocs.Engine", "XML.Heading." + listSection.Name + "(count)", null,
 																				  listSection.MemberCount);
 
 						if (heading != null)
@@ -1095,7 +1095,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 							body.Append("</h>");
 							}
 
-						// Parameters always get definition lists even if they don't have descriptions so that the type information can appear with 
+						// Parameters always get definition lists even if they don't have descriptions so that the type information can appear with
 						// them in HTML.
 						bool useDefinitionList = (listSection.Name == "param" || (listSection.MembersHaveNames && listSection.MembersHaveDescriptions));
 						bool addLinks = (listSection.Name == "exception" || listSection.Name == "permission" || listSection.Name == "seealso");
@@ -1174,7 +1174,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 
 
 		/* __________________________________________________________________________
-		 * 
+		 *
 		 * Struct: CodeClear.NaturalDocs.Engine.Comments.XML.Parser.ListItem
 		 * __________________________________________________________________________
 		 */

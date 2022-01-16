@@ -1,17 +1,17 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Config.ConfigFiles.TextFileParser
  * ____________________________________________________________________________
- * 
+ *
  * A class to handle loading and saving <Project.txt>.
- * 
- * 
+ *
+ *
  * Threading: Not Thread Safe
- * 
+ *
  *		The parser object may be reused, but multiple threads cannot use it at the same time.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -26,11 +26,11 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 	{
 	public class TextFileParser
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: TextFileParser
 		 */
 		public TextFileParser ()
@@ -40,7 +40,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			yesRegex = new Regex.Config.Yes();
 			noRegex = new Regex.Config.No();
-							
+
 			subtitleRegex = new Regex.Config.Subtitle();
 			timestampRegex = new Regex.Config.Timestamp();
 			homePageRegex = new Regex.Config.HomePage();
@@ -78,12 +78,12 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			using (var configFile = new ConfigFile())
 				{
 				// We don't condense value whitespace because some things like title, subtitle, and copyright may want multiple spaces.
-				bool openResult = configFile.Open(path, 
+				bool openResult = configFile.Open(path,
 																  PropertySource.ProjectFile,
 																  ConfigFile.FileFormatFlags.CondenseIdentifierWhitespace |
 																  ConfigFile.FileFormatFlags.MakeIdentifiersLowercase,
 																  errorList);
-														 
+
 				if (openResult == false)
 					{  return false;  }
 
@@ -96,7 +96,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 					var propertyLocation = new PropertyLocation(PropertySource.ProjectFile, configFile.FileName, configFile.LineNumber);
 
 					if (GetInputTargetHeader(lcIdentifier, value, propertyLocation, out var inputTarget, errorList))
-						{  
+						{
 						currentInputTarget = inputTarget;
 						currentOutputTarget = null;
 						}
@@ -106,7 +106,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 						currentOutputTarget = null;
 						}
 					else if (GetOutputTargetHeader(lcIdentifier, value, propertyLocation, out var outputTarget, errorList))
-						{  
+						{
 						currentInputTarget = null;
 						currentOutputTarget = outputTarget;
 						}
@@ -114,7 +114,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 							   GetOutputProperty(lcIdentifier, value, propertyLocation, currentOutputTarget, errorList))
 						{  }
 					else if (GetGlobalProperty(lcIdentifier, value, propertyLocation, errorList))
-						{  
+						{
 						currentInputTarget = null;
 						currentOutputTarget = null;
 						}
@@ -126,17 +126,17 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 							);
 						}
 					}
-				
+
 				configFile.Close();
 				}
-				
+
 			return (errorList.Count == originalErrorCount);
 			}
 
 
 		/* Function: GetInputTargetHeader
 		 * If the passed identifier starts an input target like "Source Folder", creates a new target object for it and returns true.  If it's
-		 * a recognized identifier but there is a syntax error in the value it will add an error to <errorList> and still return true.  It only 
+		 * a recognized identifier but there is a syntax error in the value it will add an error to <errorList> and still return true.  It only
 		 * returns false for unrecognized identifiers.
 		 */
 		protected bool GetInputTargetHeader (string lcIdentifier, string value, PropertyLocation propertyLocation,
@@ -161,7 +161,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				int number = 0;
 
 				if (int.TryParse(match.Groups[1].Value, out number))
-					{  
+					{
 					target.Number = number;
 					target.NumberPropertyLocation = propertyLocation;
 					}
@@ -170,14 +170,14 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				newTarget = target;
 				return true;
 				}
-				
+
 
 			// Image folder
 
 			match = imageFolderRegex.Match(lcIdentifier);
 
 			if (match.Success)
-				{  
+				{
 				var target = new Targets.ImageFolder(propertyLocation);
 				Path path = value;
 
@@ -190,7 +190,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				int number = 0;
 
 				if (int.TryParse(match.Groups[1].Value, out number))
-					{  
+					{
 					target.Number = number;
 					target.NumberPropertyLocation = propertyLocation;
 					}
@@ -201,22 +201,22 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				}
 
 			else
-				{  
+				{
 				newTarget = null;
-				return false;  
+				return false;
 				}
 		    }
 
 
 		/* Function: GetInputProperty
-		 * 
+		 *
 		 * If the passed identifier is an input property like Name or Encoding, adds it to the relevant object and returns true.  If
 		 * inputTarget is specified it will be added to that.  If it's null it will be added to <ProjectConfig.InputSettings>.
-		 * 
+		 *
 		 * If it's a recognized identifier but there's a syntax error in the value it will add an error to <errorList> and still return true.
 		 * It only returns false for unrecognized identifiers.
 		 */
-		protected bool GetInputProperty (string lcIdentifier, string value, PropertyLocation propertyLocation, 
+		protected bool GetInputProperty (string lcIdentifier, string value, PropertyLocation propertyLocation,
 														Targets.Input inputTarget, ErrorList errorList)
 			{
 
@@ -224,7 +224,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			if (lcIdentifier == "name")
 				{
-				 if (inputTarget is Targets.SourceFolder && 
+				 if (inputTarget is Targets.SourceFolder &&
 					(inputTarget as Targets.SourceFolder).Type == Files.InputType.Source)
 					{
 					(inputTarget as Targets.SourceFolder).Name = value;
@@ -251,7 +251,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 				return true;
 				}
-				
+
 			else
 				{  return false;  }
 			}
@@ -283,7 +283,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			//     ...
 			//     and all other permutations above with an integer in place of the encoding name
 
-			
+
 			// Split the path and the encoding
 
 			value = value.CondenseWhitespace();  // the edges should already be trimmed
@@ -294,8 +294,8 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			int spaceIndex = value.IndexOf(' ');
 
 			if (spaceIndex == -1)
-				{  
-				encoding = value;  
+				{
+				encoding = value;
 				path = null;
 				}
 			else
@@ -353,8 +353,8 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 					{  absoluteFolder = null;  }
 				}
 			else if (folder.IsAbsolute)
-				{  
-				absoluteFolder = (AbsolutePath)folder;  
+				{
+				absoluteFolder = (AbsolutePath)folder;
 				}
 			else // folder.IsRelative
 				{
@@ -371,7 +371,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			string encodingName;
 
 			// None of the valid encoding names start with a number, but use TryParse just in case
-			if (encoding[0] >= '0' && encoding[0] <= '9' && 
+			if (encoding[0] >= '0' && encoding[0] <= '9' &&
 				Int32.TryParse(encoding, out codePage))
 				{
 				// codePage set by TryParse
@@ -392,17 +392,17 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 		/* Function: GetFilterTargetHeader
 		 * If the passed identifier starts a filter target like "Ignore Source Folder", creates a new target for it and returns true.  If it's
-		 * a recognized identifier but there is a syntax error in the value it will add an error to <errorList> and still return true.  It 
+		 * a recognized identifier but there is a syntax error in the value it will add an error to <errorList> and still return true.  It
 		 * only returns false for unrecognized identifiers.
 		 */
-		protected bool GetFilterTargetHeader (string lcIdentifier, string value, PropertyLocation propertyLocation, 
+		protected bool GetFilterTargetHeader (string lcIdentifier, string value, PropertyLocation propertyLocation,
 															   out Targets.Filter newTarget, ErrorList errorList)
 			{
 
 			// Ignored source folder
-				
+
 			if (ignoredSourceFolderRegex.IsMatch(lcIdentifier))
-				{  
+				{
 				var target = new Targets.IgnoredSourceFolder(propertyLocation);
 				Path path = value;
 
@@ -416,12 +416,12 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				newTarget = target;
 				return true;
 				}
-				
+
 
 			// Ignored source folder pattern
-				
+
 			else if (ignoredSourceFolderPatternRegex.IsMatch(lcIdentifier))
-				{  
+				{
 				var target = new Targets.IgnoredSourceFolderPattern(propertyLocation);
 
 				target.Pattern = value;
@@ -433,26 +433,26 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				}
 
 			else
-				{  
+				{
 				newTarget = null;
-				return false;  
+				return false;
 				}
 		    }
 
 
 		/* Function: GetOutputTargetHeader
-		 * If the passed identifier starts an output target like "HTML Output Folder", creates a new target for it and returns true.  If 
+		 * If the passed identifier starts an output target like "HTML Output Folder", creates a new target for it and returns true.  If
 		 * it's a recognized identifier but there is a syntax error in the value it will add an error to <errorList> and still return true.
 		 * It only returns false for unrecognized identifiers.
 		 */
-		protected bool GetOutputTargetHeader (string lcIdentifier, string value, PropertyLocation propertyLocation, 
+		protected bool GetOutputTargetHeader (string lcIdentifier, string value, PropertyLocation propertyLocation,
 																 out Targets.Output newTarget, ErrorList errorList)
 			{
 
 			// HTML output folder
-				
+
 			if (htmlOutputFolderRegex.IsMatch(lcIdentifier))
-				{  
+				{
 				var target = new Targets.HTMLOutputFolder(propertyLocation);
 				Path path = value;
 
@@ -468,18 +468,18 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				}
 
 			else
-				{  
+				{
 				newTarget = null;
-				return false;  
+				return false;
 				}
 		    }
 
 
 		/* Function: GetOutputProperty
-		 * 
+		 *
 		 * If the passed identifier is an output property like Style, adds it to the relevant object and returns true.  If outputTarget
 		 * is specified it will be added to that.  If it's null it will be added to <ProjectConfig.OutputSettings>.
-		 * 
+		 *
 		 * If it's a recognized identifier but there's a syntax error in the value it will add an error to <errorList> and still return true.
 		 * It only returns false for unrecognized identifiers.
 		 */
@@ -557,10 +557,10 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 					{  path = propertyLocation.FileName.ParentFolder + "/" + path;  }
 
 				if (!System.IO.File.Exists(path))
-					{  
+					{
 					errorList.Add(
-						Locale.Get("NaturalDocs.Engine", "Project.txt.CantFindHomePageFile(name)", path), 
-						propertyLocation);  
+						Locale.Get("NaturalDocs.Engine", "Project.txt.CantFindHomePageFile(name)", path),
+						propertyLocation);
 					}
 
 				var outputSettings = outputTarget ?? projectConfig.OutputSettings;
@@ -591,15 +591,15 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			if (tabWidthRegex.IsMatch(lcIdentifier))
 				{
 				int tabWidth = 0;
-						
+
 				if (Int32.TryParse(value, out tabWidth) == true)
-					{  
+					{
 					projectConfig.TabWidth = tabWidth;
 					projectConfig.TabWidthPropertyLocation = propertyLocation;
 					}
 				else
 					{
-					errorList.Add( Locale.Get("NaturalDocs.Engine", "Error.TabWidthMustBeANumber"), 
+					errorList.Add( Locale.Get("NaturalDocs.Engine", "Error.TabWidthMustBeANumber"),
 									   propertyLocation.FileName, propertyLocation.LineNumber );
 					}
 
@@ -612,12 +612,12 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			else if (documentedOnlyRegex.IsMatch(lcIdentifier))
 				{
 				if (yesRegex.IsMatch(value))
-					{  
-					projectConfig.DocumentedOnly = true;  
+					{
+					projectConfig.DocumentedOnly = true;
 					projectConfig.DocumentedOnlyPropertyLocation = propertyLocation;
 					}
 				else if (noRegex.IsMatch(value))
-					{  
+					{
 					projectConfig.DocumentedOnly = false;
 					projectConfig.DocumentedOnlyPropertyLocation = propertyLocation;
 					}
@@ -636,13 +636,13 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			else if (autoGroupRegex.IsMatch(lcIdentifier))
 				{
 				if (yesRegex.IsMatch(value))
-					{  
-					projectConfig.AutoGroup = true;  
+					{
+					projectConfig.AutoGroup = true;
 					projectConfig.AutoGroupPropertyLocation = propertyLocation;
 					}
 				else if (noRegex.IsMatch(value))
-					{  
-					projectConfig.AutoGroup = false;  
+					{
+					projectConfig.AutoGroup = false;
 					projectConfig.AutoGroupPropertyLocation = propertyLocation;
 					}
 				else
@@ -667,24 +667,24 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 
 		/* Function: Save
-		 * 
+		 *
 		 * Saves the passed <ConfigData> into <Project.txt>, returning whether it was successful.  It will automatically skip
 		 * properties that shouldn't be saved into the file.
-		 * 
+		 *
 		 * Property Source:
-		 * 
+		 *
 		 *		<PropertySource.SystemDefault> - Will never be saved into <Project.txt>.
-		 *		
+		 *
 		 *		<PropertySource.SystemGenerated> - Will always be saved into <Project.txt>.  This allows things like source folder
-		 *			names and numbers to be written into <Project.txt> so that they remain consistent between runs and so it's easy 
+		 *			names and numbers to be written into <Project.txt> so that they remain consistent between runs and so it's easy
 		 *			for the user to edit them.
-		 *												 
-		 *		<PropertySource.CommandLine> - Global properties will not be saved into <Project.txt> so that settings don't get 
+		 *
+		 *		<PropertySource.CommandLine> - Global properties will not be saved into <Project.txt> so that settings don't get
 		 *			tattooed into place.  If someone specifies Documented Only on the command line it should turn off when they take
 		 *			it off the command line.  They shouldn't have to edit <Project.txt> as well.
-		 *										   
-		 *			Targets and their associated properties will be saved into <Project.txt>.  This allows a <Project.txt> file to be 
-		 *			generated from the command line so we can store secondary target settings.  Since <Project.txt> targets are 
+		 *
+		 *			Targets and their associated properties will be saved into <Project.txt>.  This allows a <Project.txt> file to be
+		 *			generated from the command line so we can store secondary target settings.  Since <Project.txt> targets are
 		 *			ignored except for secondary settings when they're specified on the command line, tattooing is less of an issue.
 		 */
 		public bool Save (Path path, ProjectConfig projectConfig, Errors.ErrorList errorList)
@@ -694,19 +694,19 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			StringBuilder output = new StringBuilder(1024);
 			Path projectFolder = path.ParentFolder;
-			
+
 			output.AppendLine("Format: " + Engine.Instance.VersionString);
 			output.AppendLine();
 
-			AppendFileHeader(output);			
-			
+			AppendFileHeader(output);
+
 			AppendProjectInfo(output, projectFolder);
 			AppendSourceTargets(output, projectFolder);
 			AppendFilterTargets(output, projectFolder);
 			AppendImageTargets(output, projectFolder);
 			AppendOutputTargets(output, projectFolder);
 			AppendGlobalSettings(output);
-			
+
 			return ConfigFile.SaveIfDifferent(path, output.ToString(), false, errorList);
 			}
 
@@ -771,27 +771,27 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				}
 
 			if (hasTitle)
-				{  
+				{
 				output.AppendLine("Title: " + projectConfig.OutputSettings.Title);
 
 				if (!hasSubtitle)
 					{  output.AppendLine();  }
 				}
-					
+
 			if (hasSubtitle)
 				{
 				output.AppendLine("Subtitle: " + projectConfig.OutputSettings.Subtitle);
 				output.AppendLine();
 				}
-					
+
 			if (hasCopyright)
 				{
 				output.AppendLine("Copyright: " + projectConfig.OutputSettings.Copyright);
 				output.AppendLine();
 				}
-			
+
 			if (hasTimestampCode)
-				{  
+				{
 				output.AppendLine("Timestamp: " + projectConfig.OutputSettings.TimestampCode);
 				output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.TimestampSubstitutions.multiline") );
 				output.AppendLine();
@@ -800,7 +800,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			if (hasStyleName)
 				{
 				output.AppendLine("Style: " + projectConfig.OutputSettings.StyleName);
-				
+
 				if (!hasHomePage)
 					{  output.AppendLine();  }
 				}
@@ -808,7 +808,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			if (hasHomePage)
 				{
 				Path relativePath = projectConfig.OutputSettings.HomePage.MakeRelativeTo(projectConfig.ProjectConfigFolder);
-				
+
 				output.AppendLine("Home Page: " + (relativePath != null ? relativePath : projectConfig.OutputSettings.HomePage));
 				output.AppendLine();
 				}
@@ -912,7 +912,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				// settings.
 				if (target is Targets.SourceFolder &&
 					target.PropertyLocation.Source != PropertySource.SystemDefault)
-					{  
+					{
 					AppendSourceFolder((Targets.SourceFolder)target, output, projectFolder);
 
 					output.AppendLine();
@@ -1001,7 +1001,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 						if (encodingRule.Folder != null)
 							{
 							if (inputTarget is Targets.SourceFolder)
-								{  
+								{
 								displayFolder = encodingRule.Folder.MakeRelativeTo( (inputTarget as Targets.SourceFolder).Folder );
 
 								// If the rule's folder isn't relative to the source folder, display as is
@@ -1222,15 +1222,15 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			if (outputTarget.TitlePropertyLocation.IsDefined &&
 				outputTarget.TitlePropertyLocation.Source != PropertySource.SystemDefault)
 				{  output.AppendLine("   Title: " + outputTarget.Title);  }
-					
+
 			if (outputTarget.SubtitlePropertyLocation.IsDefined &&
 				outputTarget.SubtitlePropertyLocation.Source != PropertySource.SystemDefault)
 				{  output.AppendLine("   Subtitle: " + outputTarget.Subtitle);  }
-					
+
 			if (outputTarget.CopyrightPropertyLocation.IsDefined &&
 				outputTarget.CopyrightPropertyLocation.Source != PropertySource.SystemDefault)
 				{  output.AppendLine("   Copyright: " + outputTarget.Copyright);  }
-			
+
 			if (outputTarget.TimestampCodePropertyLocation.IsDefined &&
 				outputTarget.TimestampCodePropertyLocation.Source != PropertySource.SystemDefault)
 				{  output.AppendLine("   Timestamp: " + outputTarget.TimestampCode);  }
@@ -1241,7 +1241,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			if (outputTarget.HomePagePropertyLocation.IsDefined &&
 				outputTarget.HomePagePropertyLocation.Source != PropertySource.SystemDefault)
-				{  
+				{
 				Path relativePath = outputTarget.HomePage.MakeRelativeTo(projectConfig.ProjectConfigFolder);
 				output.AppendLine("   Home Page: " + (relativePath != null ? relativePath : outputTarget.HomePage));
 				}
@@ -1271,7 +1271,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			bool hasAutoGroup = (projectConfig.AutoGroupPropertyLocation.IsDefined &&
 										  projectConfig.AutoGroupPropertyLocation.Source != PropertySource.SystemDefault &&
 										  projectConfig.AutoGroupPropertyLocation.Source != PropertySource.CommandLine);
-				
+
 			if (hasTabWidth)
 				{
 				output.AppendLine("Tab Width: " + projectConfig.TabWidth);
@@ -1346,6 +1346,6 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 		protected Regex.Config.IgnoredSourceFolder ignoredSourceFolderRegex;
 		protected Regex.Config.IgnoredSourceFolderPattern ignoredSourceFolderPatternRegex;
 		protected Regex.Config.Encoding encodingRegex;
-		
+
 		}
 	}

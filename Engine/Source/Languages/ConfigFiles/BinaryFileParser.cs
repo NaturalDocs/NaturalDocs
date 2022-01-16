@@ -1,17 +1,17 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Languages.ConfigFiles.BinaryFileParser
  * ____________________________________________________________________________
- * 
+ *
  * A class to handle loading and saving <Languages.nd>.
- * 
- * 
+ *
+ *
  * Multithreading: Not Thread Safe
- * 
+ *
  *		The parser object may be reused, but multiple threads cannot use it at the same time.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -24,11 +24,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 	{
 	public class BinaryFileParser
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: BinaryFileParser
 		 */
 		public BinaryFileParser ()
@@ -48,7 +48,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		public bool Load (Path filename, out Config config)
 			{
 			BinaryFile binaryFile = new BinaryFile();
-			
+
 			try
 				{
 				if (binaryFile.OpenForReading(filename) == false)
@@ -66,18 +66,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 				else
 					{
 					config = new Config();
-						
+
 					// [String: Language Name]
 					// [[Language Attributes]]
 					// ...
 					// [String: null]
-						
+
 					string languageName = binaryFile.ReadString();
 
 					while (languageName != null)
 						{
 						Language language = new Language(languageName);
-						
+
 						// [Int32: ID]
 						// [Byte: Type]
 						// [String: Simple Identifier]
@@ -85,31 +85,31 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 						// [Byte: Case Sensitive (1 or 0)]
 						// [String: Member Operator Symbol]
 						// [String: Line Extender Symbol]
-					
+
 						language.ID = binaryFile.ReadInt32();
-						
+
 						byte type = binaryFile.ReadByte();
 						if (Enum.IsDefined(typeof(Language.LanguageType), type))
 							{  language.Type = (Language.LanguageType)type;  }
 						else
-							{  
+							{
 							config = null;
 							return false;
 							}
-							
+
 						language.SimpleIdentifier = binaryFile.ReadString();
-						
+
 						byte enumValues = binaryFile.ReadByte();
 						if (Enum.IsDefined(typeof(Language.EnumValues), enumValues))
 							{  language.EnumValue = (Language.EnumValues)enumValues;  }
 						else
-							{  
+							{
 							config = null;
 							return false;
 							}
-						
-						language.CaseSensitive = (binaryFile.ReadByte() == 1);	
-						
+
+						language.CaseSensitive = (binaryFile.ReadByte() == 1);
+
 						language.MemberOperator = binaryFile.ReadString();
 						language.LineExtender = binaryFile.ReadString();
 
@@ -118,7 +118,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 						// [String: Javadoc First Line Comment Symbol] [String: Javadoc Following Lines Comment Symbol [] [] ... [String: null]
 						// [String: Javadoc Opening Block Comment Symbol] [String: Javadoc Closing Block Comment Symbol] [] [] ... [String: null]
 						// [String: XML Line Comment Symbol] [] ... [String: null]
-					
+
 						var lineCommentSymbols = ReadSymbolList(binaryFile);
 						if (lineCommentSymbols != null)
 							{  language.LineCommentSymbols = lineCommentSymbols;  }
@@ -157,16 +157,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 
 							commentTypeID = binaryFile.ReadInt32();
 							}
-						
+
 						config.AddLanguage(language);
 
 						languageName = binaryFile.ReadString();
 						}
-						
+
 					// [String: Alias] [Int32: Language ID] [] [] ... [String: Null]
-					
+
 					string alias = binaryFile.ReadString();
-					
+
 					while (alias != null)
 						{
 						int languageID = binaryFile.ReadInt32();
@@ -174,9 +174,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 
 						alias = binaryFile.ReadString();
 						}
-						
+
 					// [String: File Extension] [Int32: Language ID] [] [] ... [String: Null]
-					
+
 					string fileExtension = binaryFile.ReadString();
 
 					while (fileExtension != null)
@@ -186,7 +186,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 
 						fileExtension = binaryFile.ReadString();
 						}
-						
+
 					// [String: Shebang String] [Int32: Language ID] [] [] ... [String: Null]
 
 					string shebangString = binaryFile.ReadString();
@@ -210,86 +210,86 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 				if (binaryFile.IsOpen)
 					{  binaryFile.Close();  }
 				}
-				
+
 			return true;
 			}
-			
-			
+
+
 		/* Function: ReadSymbolList
-		 * A helper function used only by <Load()> which reads a sequence of string symbols.  The sequence ends when a null 
-		 * string is encountered.  If there are no strings in the sequence (the first one is null) it returns null instead of an empty 
+		 * A helper function used only by <Load()> which reads a sequence of string symbols.  The sequence ends when a null
+		 * string is encountered.  If there are no strings in the sequence (the first one is null) it returns null instead of an empty
 		 * list.
 		 */
 		protected List<string> ReadSymbolList (BinaryFile file)
 			{
 			string symbol = file.ReadString();
-			
+
 			if (symbol == null)
 				{  return null;  }
-				
+
 			List<string> symbolList = new List<string>();
 
-			do			
+			do
 				{
 				symbolList.Add(symbol);
 				symbol = file.ReadString();
 				}
 			while (symbol != null);
-				
+
 			return symbolList;
 			}
 
 
 		/* Function: ReadLineCommentSymbolsList
-		 * A helper function used only by <Load()> which reads a sequence of <LineCommentSymbols>.  The sequence ends 
+		 * A helper function used only by <Load()> which reads a sequence of <LineCommentSymbols>.  The sequence ends
 		 * when a null string is encountered.  If there are no strings in the sequence (the first one is null) it returns null instead
 		 * of an empty list.
 		 */
 		protected List<LineCommentSymbols> ReadLineCommentSymbolsList (BinaryFile file)
 			{
 			string symbol = file.ReadString();
-			
+
 			if (symbol == null)
 				{  return null;  }
-				
+
 			List<LineCommentSymbols> symbolList = new List<LineCommentSymbols>();
 
-			do			
+			do
 				{
 				symbolList.Add( new LineCommentSymbols(symbol, file.ReadString()) );
 				symbol = file.ReadString();
 				}
 			while (symbol != null);
-				
+
 			return symbolList;
 			}
 
-			
+
 		/* Function: ReadBlockCommentSymbolsList
-		 * A helper function used only by <Load()> which reads a sequence of <BlockCommentSymbols>.  The sequence ends 
+		 * A helper function used only by <Load()> which reads a sequence of <BlockCommentSymbols>.  The sequence ends
 		 * when a null string is encountered.  If there are no strings in the sequence (the first one is null) it returns null instead
 		 * of an empty list.
 		 */
 		protected List<BlockCommentSymbols> ReadBlockCommentSymbolsList (BinaryFile file)
 			{
 			string symbol = file.ReadString();
-			
+
 			if (symbol == null)
 				{  return null;  }
-				
+
 			List<BlockCommentSymbols> symbolList = new List<BlockCommentSymbols>();
 
-			do			
+			do
 				{
 				symbolList.Add( new BlockCommentSymbols(symbol, file.ReadString()) );
 				symbol = file.ReadString();
 				}
 			while (symbol != null);
-				
+
 			return symbolList;
 			}
 
-			
+
 
 		// Group: Saving Functions
 		// __________________________________________________________________________
@@ -322,7 +322,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// [Byte: Case Sensitive (1 or 0)]
 					// [String: Member Operator Symbol]
 					// [String: Line Extender Symbol]
-				
+
 					binaryFile.WriteInt32( language.ID );
 					binaryFile.WriteByte( (byte)language.Type );
 					binaryFile.WriteString( language.SimpleIdentifier );
@@ -330,13 +330,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					binaryFile.WriteByte( (byte)(language.CaseSensitive ? 1 : 0) );
 					binaryFile.WriteString( language.MemberOperator );
 					binaryFile.WriteString( language.LineExtender );
-					
+
 					// [String: Line Comment Symbol] [] ... [String: null]
 					// [String: Opening Block Comment Symbol] [String: Closing Block Comment Symbo] [] [] ... [String: null]
 					// [String: Javadoc First Line Comment Symbol] [String: Javadoc Following Lines Comment Symbol [] ... [String: null]
 					// [String: Javadoc Opening Block Comment Symbol] [String: Javadoc Closing Block Comment Symbol] [] [] ... [String: null]
 					// [String: XML Line Comment Symbol] [] ... [String: null]
-				
+
 					WriteSymbolList(binaryFile, language.LineCommentSymbols);
 					WriteBlockCommentSymbolsList(binaryFile, language.BlockCommentSymbols);
 					WriteLineCommentSymbolsList(binaryFile, language.JavadocLineCommentSymbols);
@@ -360,12 +360,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 							}
 						}
 
-					binaryFile.WriteInt32(0);					
+					binaryFile.WriteInt32(0);
 					}
-					
+
 				binaryFile.WriteString(null);
-				
-				
+
+
 				// [String: Alias] [Int32: Language ID] [] [] ... [String: Null]
 
 				foreach (KeyValuePair<string, int> aliasKVP in config.Aliases)
@@ -373,10 +373,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					binaryFile.WriteString( aliasKVP.Key );
 					binaryFile.WriteInt32( aliasKVP.Value );
 					}
-					
+
 				binaryFile.WriteString(null);
-				
-				
+
+
 				// [String: File Extension] [Int32: Language ID] [] [] ... [String: Null]
 
 				foreach (KeyValuePair<string, int> fileExtensionKVP in config.FileExtensions)
@@ -384,10 +384,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					binaryFile.WriteString( fileExtensionKVP.Key );
 					binaryFile.WriteInt32( fileExtensionKVP.Value );
 					}
-					
+
 				binaryFile.WriteString(null);
-				
-				
+
+
 				// [String: Shebang String] [Int32: Language ID] [] [] ... [String: Null]
 
 				foreach (KeyValuePair<string, int> shebangStringKVP in config.ShebangStrings)
@@ -395,17 +395,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					binaryFile.WriteString( shebangStringKVP.Key );
 					binaryFile.WriteInt32( shebangStringKVP.Value );
 					}
-					
+
 				binaryFile.WriteString(null);
 				}
-				
+
 			finally
 				{
 				binaryFile.Close();
 				}
 			}
-			
-			
+
+
 		/* Function: WriteSymbolList
 		 * A helper function used only by <Save()> which writes a list of symbol strings to the file.  The strings are written in
 		 * sequence and followed by a null string.  It is okay to pass null to this function, it will be treated as an empty list.
@@ -417,13 +417,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 				foreach (var symbol in symbolList)
 					{  file.WriteString(symbol);  }
 				}
-				
+
 			file.WriteString(null);
 			}
 
 		/* Function: WriteLineCommentSymbolsList
 		 * A helper function used only by <Save()> which writes a list of <LineCommentStrings> to the file.  The strings
-		 * are written in sequence and followed by a null string.  It is okay to pass null to this function, it will be treated 
+		 * are written in sequence and followed by a null string.  It is okay to pass null to this function, it will be treated
 		 * as an empty array.
 		 */
 		private void WriteLineCommentSymbolsList (BinaryFile file, IList<LineCommentSymbols> lineCommentSymbolsList)
@@ -431,18 +431,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			if (lineCommentSymbolsList != null)
 				{
 				foreach (var lineCommentSymbols in lineCommentSymbolsList)
-					{  
+					{
 					file.WriteString(lineCommentSymbols.FirstLineSymbol);
 					file.WriteString(lineCommentSymbols.FollowingLinesSymbol);
 					}
 				}
-				
+
 			file.WriteString(null);
 			}
 
 		/* Function: WriteBlockCommentSymbolsList
 		 * A helper function used only by <Save()> which writes a list of <BlockCommentSymbols> to the file.  The strings
-		 * are written in sequence and followed by a null string.  It is okay to pass null to this function, it will be treated 
+		 * are written in sequence and followed by a null string.  It is okay to pass null to this function, it will be treated
 		 * as an empty array.
 		 */
 		private void WriteBlockCommentSymbolsList (BinaryFile file, IList<BlockCommentSymbols> blockCommentSymbolsList)
@@ -450,12 +450,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			if (blockCommentSymbolsList != null)
 				{
 				foreach (var blockCommentSymbols in blockCommentSymbolsList)
-					{  
+					{
 					file.WriteString(blockCommentSymbols.OpeningSymbol);
 					file.WriteString(blockCommentSymbols.ClosingSymbol);
 					}
 				}
-				
+
 			file.WriteString(null);
 			}
 

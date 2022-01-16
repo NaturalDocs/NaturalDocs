@@ -1,17 +1,17 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Hierarchies.Manager
  * ____________________________________________________________________________
- * 
+ *
  * A module to handle the different hierarchies within Natural Docs.
- * 
- * 
+ *
+ *
  * Topic: Usage
- * 
+ *
  *		- Call <Engine.Instance.Start()> which will start this module.
- *			
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -24,11 +24,11 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 	{
 	public class Manager : Module
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: Manager
 		 */
 		public Manager (Engine.Instance engineInstance) : base (engineInstance)
@@ -40,21 +40,21 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 		protected override void Dispose (bool strictRulesApply)
 			{
 			}
-		
+
 		/* Function: Start
-		 * 
+		 *
 		 * Starts the module, returning whether it was successful.  If there were any errors they will be added to errorList.
-		 * 
+		 *
 		 * Dependencies:
-		 * 
+		 *
 		 *		- Call <Languages.Manager.Start_Stage1()> before calling this function.
 		 */
 		public bool Start (Errors.ErrorList errorList)
 			{
 			var classHierarchy = new Hierarchy(
 				id: 1,
-				name: "Class", 
-				pluralName: "Classes", 
+				name: "Class",
+				pluralName: "Classes",
 				simpleIdentifier: "Class",
 				pluralSimpleIdentifier: "Classes",
 				isLanguageSpecific: true);
@@ -63,7 +63,7 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 
 			var databaseHierarchy = new Hierarchy(
 				id: 2,
-				name: "Database", 
+				name: "Database",
 				pluralName: "Database", // we don't want "Databases"
 				simpleIdentifier: "Database",
 				pluralSimpleIdentifier: "Database", // we don't want "Databases"

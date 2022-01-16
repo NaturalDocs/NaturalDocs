@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Comments.Components.HTMLEntityChars
  * ____________________________________________________________________________
- * 
+ *
  * A static class to handle entity chars that may appear in HTML or XML.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -127,8 +127,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 			for (;;)
 				{
 				if (ampIndex > index)
-					{  
-					decodedText.Append(text, index, ampIndex - index);  
+					{
+					decodedText.Append(text, index, ampIndex - index);
 					index = ampIndex;
 					}
 
@@ -164,7 +164,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 
 		private static char Lookup (string text)
 			{
-			// According to StackOverflow using a switch statement this way causes the compiler to generate a hash lookup table instead of 
+			// According to StackOverflow using a switch statement this way causes the compiler to generate a hash lookup table instead of
 			// a series of if-else statements, so although this is ugly it's the most efficient way to have a compile-time constant lookup table.
 
 			// http://stackoverflow.com/questions/268084/creating-a-constant-dictionary-in-c-sharp

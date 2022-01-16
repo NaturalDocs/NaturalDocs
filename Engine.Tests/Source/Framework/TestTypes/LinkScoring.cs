@@ -1,14 +1,14 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes.LinkScoring
  * ____________________________________________________________________________
- * 
+ *
  * A class to test <Engine.CodeDB.Manager.ScoreLink>.
- * 
+ *
  * Commands:
- * 
+ *
  *		> // text
  *		Comment.
- *		
+ *
  *		> Topic.[property] = "value"
  *		Sets the topic property to that value.  Possibilities are:
  *		   > Topic.LanguageName = "C#"
@@ -17,7 +17,7 @@
  *		   > Topic.Body = "<p>This is my function.</p>" or null
  *		   > Topic.Prototype = "void FunctionName (int x)" or null
  *		   > Topic.Scope = "ClassName" or null
- *		
+ *
  *		> Link.[property] = "value"
  *		Sets the link property to that value.  Possibilities are:
  *			> Link.LanguageName = "C#"
@@ -30,14 +30,14 @@
  *			> Link.Using = null
  *			> Link.Using += add prefix "PackageA.PackageB"
  *			> Link.Using += replace prefix "PackageA" with "PackageB"
- *		
+ *
  *		> Score
  *		Generates a score between the current link and topic settings.
- *		
+ *
  *		> Show [property], [property] ...
  *		Sets the properties that will be shown by a Score command.  This lets you limit the output to just what's
  *		being tested.  Defaults to All.  Possible values are:
- *		
+ *
  *			All - Show everything
  *			RawScore - The generated value in hex.
  *			Language - Whether the topic matches the link's language (L)
@@ -48,15 +48,15 @@
  *			Body - Whether the topic has a body (B, b)
  *			Prototype - Whether the topic has a prototype (R, r)
  *			SameSymbol - How high on the list of topics that define the same symbol in the same file this is (F)
- *			
+ *
  *		Link and topic settings persist, so you can set them both up, use "score", then change one or two
  *		properties and use "score" again.
- *		
+ *
  *		The code will tolerate semicolons after commands.  They're not necessary, but due to its similarity to
  *		actual code they're handled just in case.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -113,13 +113,13 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 					value = match.Groups[3].ToString();
 
 					if (value.Length >= 2 && value[0] == '"' && value[value.Length - 1] == '"')
-						{  
-						valueString = value.Substring(1, value.Length - 2).Trim();  
+						{
+						valueString = value.Substring(1, value.Length - 2).Trim();
 						}
 					else
-						{  
+						{
 						value = value.ToLower();
-						valueString = null;  
+						valueString = null;
 						}
 					}
 				else
@@ -144,7 +144,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 					}
 
 				var lcCommand = command.ToLower();
-				
+
 				try
 					{
 					if (command == "")
@@ -156,7 +156,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 							}
 						}
 					else if (command.StartsWith("//"))
-						{  
+						{
 						output.AppendLine(command);
 						lastWasLineBreak = false;
 						}
@@ -220,7 +220,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 						else if (property == "scope")
 							{
 							if (value == "null")
-								{  
+								{
 								ContextString temp = topic.PrototypeContext;
 								temp.Scope = new SymbolString();
 								topic.PrototypeContext = temp;
@@ -228,7 +228,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 							else if (valueString == null)
 								{  throw new Exception("Topic.Scope must be set to null or a string value.");  }
 							else
-								{  
+								{
 								ContextString temp = topic.PrototypeContext;
 								temp.Scope = SymbolString.FromPlainText_NoParameters(valueString);
 								topic.PrototypeContext = temp;
@@ -244,7 +244,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 					// Link properties
 
 					else if (target == "link")
-						{  
+						{
 						if (property == "languagename")
 							{
 							if (valueString == null)
@@ -261,7 +261,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 							{
 							if (valueString == null)
 								{  throw new Exception("Link.Type must be set to a string value.");  }
-							
+
 							string lcValueString = valueString.ToLower();
 
 							if (lcValueString == "naturaldocs" || lcValueString == "natural docs")
@@ -322,7 +322,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 
 								temp.AddUsingStatement(
 									UsingString.FromParameters(
-										UsingString.UsingType.AddPrefix, 
+										UsingString.UsingType.AddPrefix,
 										SymbolString.FromPlainText_NoParameters(add)
 										)
 									);
@@ -342,7 +342,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 
 								temp.AddUsingStatement(
 									UsingString.FromParameters(
-										UsingString.UsingType.ReplacePrefix, 
+										UsingString.UsingType.ReplacePrefix,
 										SymbolString.FromPlainText_NoParameters(add),
 										SymbolString.FromPlainText_NoParameters(remove)
 										)
@@ -389,7 +389,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 						if (commentType.Scope == Engine.CommentTypes.CommentType.ScopeValue.Normal &&
 							 topic.PrototypeContext.ScopeIsGlobal == false)
 							{
-							topicSymbol = topic.PrototypeContext.Scope + topicSymbol;  
+							topicSymbol = topic.PrototypeContext.Scope + topicSymbol;
 							}
 
 						topic.Symbol = topicSymbol;
@@ -411,7 +411,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 							link.EndingSymbol = linkSymbol.EndingSymbol;
 							}
 
-	
+
 						// Show topic
 
 						if (!lastWasLineBreak)
@@ -457,8 +457,8 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 							foreach (var usingStatement in usingStatements)
 								{
 								if (usingStatement.Type == UsingString.UsingType.AddPrefix)
-									{  
-									output.AppendLine("   Using: Add Prefix " + usingStatement.PrefixToAdd.FormatWithSeparator('.'));  
+									{
+									output.AppendLine("   Using: Add Prefix " + usingStatement.PrefixToAdd.FormatWithSeparator('.'));
 									}
 								else if (usingStatement.Type == UsingString.UsingType.ReplacePrefix)
 									{
@@ -480,8 +480,8 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 						if (link.Type == LinkType.NaturalDocs)
 							{
 							string ignore;
-							interpretations = EngineInstance.Comments.NaturalDocsParser.LinkInterpretations(link.TextOrSymbol, 
-																								Engine.Comments.NaturalDocs.Parser.LinkInterpretationFlags.AllowNamedLinks | 
+							interpretations = EngineInstance.Comments.NaturalDocsParser.LinkInterpretations(link.TextOrSymbol,
+																								Engine.Comments.NaturalDocs.Parser.LinkInterpretationFlags.AllowNamedLinks |
 																								Engine.Comments.NaturalDocs.Parser.LinkInterpretationFlags.AllowPluralsAndPossessives,
 																								out ignore);
 							}
@@ -571,7 +571,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 								}
 
 							if (show.Contains("all") || show.Contains("scope"))
-								{  
+								{
 								output.AppendLine("   " + (1023 - SValue) + " - Scope index");
 								output.AppendLine("      (" + SValue + " score)");
 								}
@@ -585,7 +585,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 								{
 								output.AppendLine("   " + (BValue == 1 ? "☒" : "☐") + " - Body");
 								if (BValue == 1)
-									{  
+									{
 									output.Append("      (" + bValue + " score, " + (bValue * 16));
 
 									if (bValue == 0xFF)
@@ -601,7 +601,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 								{
 								output.AppendLine("   " + (RValue == 1 ? "☒" : "☐") + " - Prototype");
 								if (RValue == 1)
-									{  
+									{
 									output.Append("      (" + rValue + " score, " + (rValue * 16));
 
 									if (rValue == 0x3F)
@@ -639,11 +639,11 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 			return output.ToString();
 			}
 
-		protected static Regex GetPropertyRegex = new Regex(@"^[ \t]*(Topic|Link)\.([a-z]+)[ \t]*=[ \t]*(null|"".*"")[ \t]*$", 
+		protected static Regex GetPropertyRegex = new Regex(@"^[ \t]*(Topic|Link)\.([a-z]+)[ \t]*=[ \t]*(null|"".*"")[ \t]*$",
 																				  RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.IgnoreCase);
-		protected static Regex AddPrefixRegex = new Regex(@"^[ \t]*Link\.Using[ \t]*(\+?=)[ \t]*Add Prefix ""(.*)""[ \t]*$", 
+		protected static Regex AddPrefixRegex = new Regex(@"^[ \t]*Link\.Using[ \t]*(\+?=)[ \t]*Add Prefix ""(.*)""[ \t]*$",
 																			  RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.IgnoreCase);
-		protected static Regex ReplacePrefixRegex = new Regex(@"^[ \t]*Link\.Using[ \t]*(\+?=)[ \t]*Replace Prefix ""(.*)"" with ""(.*)""[ \t]*$", 
+		protected static Regex ReplacePrefixRegex = new Regex(@"^[ \t]*Link\.Using[ \t]*(\+?=)[ \t]*Replace Prefix ""(.*)"" with ""(.*)""[ \t]*$",
 																					RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.IgnoreCase);
 
 		}

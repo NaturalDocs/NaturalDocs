@@ -1,17 +1,17 @@
-﻿/* 
+﻿/*
  * Struct: CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles.TextFileKeywordDefinition
  * ____________________________________________________________________________
- * 
+ *
  * A struct encapsulating information about a keyword parsed from a <ConfigFiles.TextFile>.
- * 
- * 
+ *
+ *
  * Multithreading: Thread Safe, Read-Only
- * 
+ *
  *		This object is read-only after it is created and thus is inherently thread safe.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -26,8 +26,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: TextFileKeywordDefinition
 		 */
 		public TextFileKeywordDefinition (string keyword, string plural = null)
@@ -48,8 +48,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 
 		// Group: Properties
 		// __________________________________________________________________________
-			
-			
+
+
 		/* Property: Keyword
 		 */
 		public string Keyword
@@ -76,8 +76,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 				{  return plural;  }
 			}
 
-				
-		
+
+
 		// Group: Variables
 		// __________________________________________________________________________
 

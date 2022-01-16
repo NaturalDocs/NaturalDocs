@@ -4,36 +4,36 @@ _______________________________________________________________________________
 
 Topic: Topic Symbols
 
-	Every topic generates a symbol.  It represents it's fully resolved name in the code, so a topic "Function (int, int)" 
-	appearing in "Namespace::Class" would conceptually have the symbol "Namespace::Class::Function (int, int)".  
+	Every topic generates a symbol.  It represents it's fully resolved name in the code, so a topic "Function (int, int)"
+	appearing in "Namespace::Class" would conceptually have the symbol "Namespace::Class::Function (int, int)".
 	Conceptually, because in reality symbols are normalized and parameters are separate:
-	
-	- Member operators are replaced by a standard character, which we'll represent in this document with |, so the part 
+
+	- Member operators are replaced by a standard character, which we'll represent in this document with |, so the part
 		before the parentheses is actually "Namespace|Class|Function".  It would be the same for "Namespace.Class.Function".
 	- Unnecessary whitespace is removed, which is usually any whitespace not in between two letters.
-	- Parentheses appearing in the topic title are removed, normalized, and stored separately as the title parameters.  In 
+	- Parentheses appearing in the topic title are removed, normalized, and stored separately as the title parameters.  In
 	  this case it would be converted to "int|int".
-	- If the topic has a prototype with typed parameters, those types become the prototype parameters.  Something 
-	  documented with "Function: FunctionName" that has a prototype of "void FunctionName (int x, float y)" will have a generated 
+	- If the topic has a prototype with typed parameters, those types become the prototype parameters.  Something
+	  documented with "Function: FunctionName" that has a prototype of "void FunctionName (int x, float y)" will have a generated
 	  parameter string "int|float".
 	- Case is preserved regardless of whether the underlying language is case sensitive.
 	- Leading and trailing member operators are removed.  Multiple consecutive ones are condensed.
 
 	Topics will also store the ID of the class they appear in, but note that the fully resolved symbol may go more than one
-	level deeper than the class.  This is so if you define "File.txt" or "This vs. That" topics in "MyClass", the periods don't 
-	cause Natural Docs to assume there's "MyClass.File" and "MyClass.This vs" classes.  In C# you can also use 
+	level deeper than the class.  This is so if you define "File.txt" or "This vs. That" topics in "MyClass", the periods don't
+	cause Natural Docs to assume there's "MyClass.File" and "MyClass.This vs" classes.  In C# you can also use
 	"Interface.Function" to define a particular interface's function when a class implements multiple interfaces which use the
 	same function name.  In all these cases the extra periods will still be converted in the symbol as if they represented nested
 	classes, as it would be difficult to resolve links otherwise, but the topics are still associated with the class they appeared
 	in.  This means the topic symbol will usually be a superstring of the class symbol, but you can't assume there's no
-	member operators beyond it.  
-	
+	member operators beyond it.
+
 	On a similar note there could also be "always global" topics associated with a class.  The symbol will be global but the
 	topic will still have the ID of the class it appears in, and the symbol will not be a superstring of the class's symbol at all.
 
 	The last section of the symbol sans parentheses is called the ending symbol, so for "Namespace::Class::Function (int, int)"
-	it would be "Function".  These are converted to lowercase for case insensitivity and stored in an additional field to allow 
-	links to look up every topic that uses a particular ending symbol in order to find possible matches regardless of case, scope, 
+	it would be "Function".  These are converted to lowercase for case insensitivity and stored in an additional field to allow
+	links to look up every topic that uses a particular ending symbol in order to find possible matches regardless of case, scope,
 	or parameters.
 
 
@@ -44,8 +44,8 @@ Topic: Link Types
 	Natural Docs Links - When someone writes "<Class.Member>" in a comment.
 	Class Parent Links - When a class defines a parent, such as "class Child : ParentClass".
 	Type Links - For linking types appearing in function and variable prototypes back to their definition.
- 
-	All three types of links depend on context to be resolved, such as what scope they're appearing in and what "using" 
+
+	All three types of links depend on context to be resolved, such as what scope they're appearing in and what "using"
 	statements are in effect.  Yes, even class parent links as C# applies "using" statements to them.
 
 
@@ -54,15 +54,15 @@ Topic: Scoring Links
 	Type and Class Parent Links:
 
 	Type and Class Parent links are simpler as they are meant to be exact.  There are no plurals, possessives, "at" naming,
-	or parameters to worry about.  When a new link needs to be resolved, it first generates a normalized symbol based on 
-	the link text.  This is exactly the same process topic symbols go through, except these types of links won't have parentheses 
+	or parameters to worry about.  When a new link needs to be resolved, it first generates a normalized symbol based on
+	the link text.  This is exactly the same process topic symbols go through, except these types of links won't have parentheses
 	to strip off.  A case insensitive ending symbol is also generated, and these two values are stored in the link's database
 	record.
-	
+
 	The database is queried for all topics that use the ending symbol and match the language ID, as cross-language linking isn't
 	appropriate here.  Each topic is given a numerical score based on many factors:
-		
-		- How good a match the scope is.  A link prefers to resolve to a topic in its own class before globals or topics found via 
+
+		- How good a match the scope is.  A link prefers to resolve to a topic in its own class before globals or topics found via
 		  "using" statements.  This is also used to weed out impossible matches.
 		- Whether the case matches, depending on the language's case sensitivity setting.  Some languages are case sensitive,
 		  some are not, and if it's not known then it will favor case sensitive matches but accept both.
@@ -79,25 +79,25 @@ Topic: Scoring Links
 	the possible interpretations as needed rather than storing each possibility in the database.
 
 	First, like topic symbols, the parentheses are separated off and normalized as the parameters.
-	
+
 	Next, the remaining text is searched for "at" keywords, which may result in multiple interpretations.  "X at Y" can be
 	interpreted as a link named X that goes to Y, or as a link that goes to the literal symbol "X at Y".  Similarly, "X at Y at Z"
 	can be "X" -> "Y at Z", or "X at Y" -> "Z", or the literal "X at Y at Z".
 
 	For each interpretation, the target text is normalized as the symbol, and the ending segment of the symbol is converted into
 	a case insensitive ending symbol.
-	
-	Next each ending symbol is checked for the possibility of being a plural and/or possessive form.  If so, additional interpretations 
-	are generated to handle the singular forms and are stored in the database in <CodeDB.AlternativeLinkEndingSymbols>.  They 
-	may not all exist or make sense as they're just guesses.  For example, "leaves" can be translated into "leave", "leav", "leafe", 
-	and "leaf" as the plural of all those words could be "leaves".  A more sophisticated analysis to try to weed out things like "leav" 
-	isn't necessary as we can just rely on there being no targets defined for them.  All possible singular forms are also lowercase 
+
+	Next each ending symbol is checked for the possibility of being a plural and/or possessive form.  If so, additional interpretations
+	are generated to handle the singular forms and are stored in the database in <CodeDB.AlternativeLinkEndingSymbols>.  They
+	may not all exist or make sense as they're just guesses.  For example, "leaves" can be translated into "leave", "leav", "leafe",
+	and "leaf" as the plural of all those words could be "leaves".  A more sophisticated analysis to try to weed out things like "leav"
+	isn't necessary as we can just rely on there being no targets defined for them.  All possible singular forms are also lowercase
 	for case insensitivity like the ending symbol.
 
 	The database is queried for all topics that use the ending symbol or any of its possible singular forms.  Each topic is given a
 	numerical score based on many factors:
-		
-		- Whether the topic matches the original ending symbol or a possible singular form.  Exact matches take precedence 
+
+		- Whether the topic matches the original ending symbol or a possible singular form.  Exact matches take precedence
 		  over generated singular forms.
 		- How good a match the scope is.  A link prefers to resolve to a topic in its own class before globals or topics found via
 		  "using" statements.  This is also used to weed out impossible matches.
@@ -114,13 +114,13 @@ Topic: Scoring Links
 
 Topic: Resolving Links
 
-	The best target for the link is chosen based on score and stored in the link's database record.  Links are identified by the 
-	unique combination of normalized symbol, context, type, defining file ID, defining class ID, and language ID.  If two or more 
-	links appearing in the code create the same combination of those elements they're considered the same link, but if even one 
+	The best target for the link is chosen based on score and stored in the link's database record.  Links are identified by the
+	unique combination of normalized symbol, context, type, defining file ID, defining class ID, and language ID.  If two or more
+	links appearing in the code create the same combination of those elements they're considered the same link, but if even one
 	differs they're separate.  Why?
 
 	- Links are used for resolving.
-		- If two links appear in the exact same context with the exact same attributes, they will always resolve to the same 
+		- If two links appear in the exact same context with the exact same attributes, they will always resolve to the same
 			target and so storing them individually doesn't serve a purpose.
 		- If two otherwise equivalent links have different cases, defining classes, or contexts they have the possibility of resolving
 		  differently and must be handled individually.
@@ -137,19 +137,19 @@ Topic: Resolving Links
 
 Topic: Maintaining Links
 
-	When a new link is created, it is resolved as described in <Resolving Links> and stored along with its definition in 
-	<CodeDB.Links>.  For text links that have generated singular forms, those forms are stored in 
+	When a new link is created, it is resolved as described in <Resolving Links> and stored along with its definition in
+	<CodeDB.Links>.  For text links that have generated singular forms, those forms are stored in
 	<CodeDB.AlternativeLinkEndingSymbols>.  This happens even if the link didn't resolve to anything.
-	
-	If a link is deleted it is simply removed from the database.  Since changes to the context results in a completely different link 
-	as far as the database is concerned, adding or removing a "using" statement is handled by the old forms of the links being 
+
+	If a link is deleted it is simply removed from the database.  Since changes to the context results in a completely different link
+	as far as the database is concerned, adding or removing a "using" statement is handled by the old forms of the links being
 	treated as removed and the new forms being treated as new.
 
 	If a topic changes, it is able to retrieve all links that could possibly resolve to it with <CodeDB.Links> and
-	<CodeDB.AlternativeLinkEndingSymbols>.  It can then generate its score for those links to see whether it serves as a better 
+	<CodeDB.AlternativeLinkEndingSymbols>.  It can then generate its score for those links to see whether it serves as a better
 	target for any of them.  If so the link's target is updated and its file/class it's defined in are marked for rebuilding.
 
-	If a topic is removed, it retrieves all links that have it as its target.  Those links are marked for reresolving and its file/class 
+	If a topic is removed, it retrieves all links that have it as its target.  Those links are marked for reresolving and its file/class
 	marked for rebuilding.  The links are reresolved because it may resolve to a different target now instead of being undefined.
 
 	If a topic is added, it retrieves all links that could possibly resolve to it and generates its score to see whether it serves as

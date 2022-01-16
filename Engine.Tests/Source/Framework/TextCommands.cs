@@ -1,17 +1,17 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.TextCommands
  * ____________________________________________________________________________
- * 
- * A base class for automated tests where the input files are text files interpreted line by line as commands.  They're 
- * loaded from a folder, interpreted by the derived class, and the output is saved to files and compared to other files 
+ *
+ * A base class for automated tests where the input files are text files interpreted line by line as commands.  They're
+ * loaded from a folder, interpreted by the derived class, and the output is saved to files and compared to other files
  * containing the expected result.
- * 
+ *
  * The benefit of this approach is that you never have to hand code the output.  You can run the tests without
  *	 an expected output file, look over the actual output file, and if it's acceptable rename it to become the
  *	 expected output file.
- *		  
+ *
  * Usage:
- * 
+ *
  *		- Derive a class that has the [TestFixture] attribute.
  *		- Create a function with the [Test] attribute that calls <TestFolder()>, pointing it to the input files.
  *		- Define <OutputOf()> to convert the data to string output.
@@ -19,10 +19,10 @@
  *		- A corresponding file "[Test Name] - Actual Output.txt" will be created for each one.
  *		- If it matches the contents of the file "[Test Name] - Expected Output.txt", the test will pass.  If it doesn't,
  *		  that file doesn't exist, or an exception was thrown, the test will fail.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -51,13 +51,13 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 
 		/* Function: OutputOf
-		 * 
+		 *
 		 * Override this function to interpret the lines and generate the output for the passed data.
-		 * 
+		 *
 		 * You do not need to worry about catching exceptions unless the test is supposed to trigger them.  Uncaught exceptions
-		 * will be handled automatically and cause the test to fail.  If the exception was intended as part of correct operation then 
+		 * will be handled automatically and cause the test to fail.  If the exception was intended as part of correct operation then
 		 * you must catch it to prevent this.
-		 * 
+		 *
 		 * This function should not return null or an empty string as part of a successful test.  Doing so will cause the test to fail.
 		 * If a test is supposed to generated no output, return a string such as "test successful" instead.
 		 */
@@ -70,7 +70,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 		public void TestFolder (Path testDataFolder, Path projectConfigFolder = default(Path))
 			{
 			TestList allTests = new TestList();
-			
+
 			engineInstanceManager = new EngineInstanceManager();
 			engineInstanceManager.Start(testDataFolder, projectConfigFolder);
 
@@ -103,7 +103,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 				}
 
 			finally
-				{  
+				{
 				engineInstanceManager.Dispose();
 				engineInstanceManager = null;
 				}

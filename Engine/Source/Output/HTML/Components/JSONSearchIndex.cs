@@ -1,23 +1,23 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.JSONSearchIndex
  * ____________________________________________________________________________
- * 
+ *
  * A helper class to build JavaScript search data for <HTML.Targets>.  See <JavaScript Search Data> for the
  * output format.
- * 
+ *
  * Topic: Usage
- *		
+ *
  *		- Create a JSSearchData object.
  *		- Call <ConvertToJSON()>.
  *		- Call <BuildIndexDataFile()> and <BuildPrefixDataFile()> as necessary.
- * 
+ *
  * Threading: Not Thread Safe
- * 
+ *
  *		This class is only designed to be used by one thread at a time.  Each thread should create its own object.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -126,10 +126,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: BuildPrefixDataFile
-		 * 
+		 *
 		 * Creates a data file for a single prefix as described in <JavaScript Search Data>.  It requires a <CodeDB.Accessor> to
 		 * be able to get information about each search result, such as what type it is and the hash path needed to get t oit.
-		 * 
+		 *
 		 * Pass a <CancelDelegate> if you need to be able to interrupt the process, or <Delegates.NeverCancel> if not.
 		 */
 		public void BuildPrefixDataFile (string prefix, CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
@@ -145,19 +145,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				{
 				if (System.IO.File.Exists(path))
 					{  System.IO.File.Delete(path);  }
-					
+
 				return;
 				}
 
 			SortKeywordEntries(keywordEntries);
 
 			foreach (var keywordEntry in keywordEntries)
-				{  
+				{
 				SortTopicEntries(keywordEntry);
 				RemoveDuplicateTopics(keywordEntry);
 				}
 
-		
+
 			// Build the list of all used comment types
 
 			if (usedCommentTypes == null)
@@ -228,7 +228,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 		/* Function: GetPrefixKeywords
 		 */
-		protected List<SearchIndex.Entries.Keyword> GetPrefixKeywords (string prefix, CodeDB.Accessor accessor, 
+		protected List<SearchIndex.Entries.Keyword> GetPrefixKeywords (string prefix, CodeDB.Accessor accessor,
 																										CancelDelegate cancelDelegate)
 			{
 			return SearchIndex.GetKeywordEntries(prefix, accessor, cancelDelegate);
@@ -241,7 +241,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			{
 			// Compare case-insensitively at first, then use case sensitivity to break ties.
 
-			keywordEntries.Sort( 
+			keywordEntries.Sort(
 				delegate (SearchIndex.Entries.Keyword a, SearchIndex.Entries.Keyword b)
 					{
 					int result = string.Compare(a.DisplayName, b.DisplayName, true);
@@ -264,18 +264,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			topicEntries.Sort(
 				delegate (SearchIndex.Entries.Topic a, SearchIndex.Entries.Topic b)
 					{
-					// Sort by the non-qualifier part first since they'll be displayed in "Name, Class" format.  The below code is just 
+					// Sort by the non-qualifier part first since they'll be displayed in "Name, Class" format.  The below code is just
 					// an elaborate way of doing that without allocating intermediate strings for each comparison.
 
 					int aNonQualifierLength = a.DisplayName.Length - a.EndOfDisplayNameQualifiers;
 					int bNonQualifierLength = b.DisplayName.Length - b.EndOfDisplayNameQualifiers;
-					int shorterNonQualifierLength = (aNonQualifierLength < bNonQualifierLength ? 
+					int shorterNonQualifierLength = (aNonQualifierLength < bNonQualifierLength ?
 																	aNonQualifierLength : bNonQualifierLength);
 
 
 					// Compare non-qualifiers in a case-insensitive way first.
 
-					int result = string.Compare(a.DisplayName, a.EndOfDisplayNameQualifiers, 
+					int result = string.Compare(a.DisplayName, a.EndOfDisplayNameQualifiers,
 															b.DisplayName, b.EndOfDisplayNameQualifiers, shorterNonQualifierLength, true);
 
 					if (result != 0)
@@ -299,13 +299,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 					// Still equal, now compare the qualifiers in a case-sensitive way to break ties.
 
-					result = string.Compare(a.DisplayName, a.EndOfDisplayNameQualifiers, 
+					result = string.Compare(a.DisplayName, a.EndOfDisplayNameQualifiers,
 														b.DisplayName, b.EndOfDisplayNameQualifiers, shorterNonQualifierLength, false);
 
 					if (result != 0)
 						{  return result;  }
 
-					int shorterQualifierLength = (a.EndOfDisplayNameQualifiers < b.EndOfDisplayNameQualifiers ? 
+					int shorterQualifierLength = (a.EndOfDisplayNameQualifiers < b.EndOfDisplayNameQualifiers ?
 															   a.EndOfDisplayNameQualifiers : b.EndOfDisplayNameQualifiers);
 
 
@@ -334,7 +334,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 					if (a.WrappedTopic.LanguageID != b.WrappedTopic.LanguageID)
 						{
-						return string.Compare(EngineInstance.Languages.FromID(a.WrappedTopic.LanguageID).Name, 
+						return string.Compare(EngineInstance.Languages.FromID(a.WrappedTopic.LanguageID).Name,
 														 EngineInstance.Languages.FromID(b.WrappedTopic.LanguageID).Name, true);
 						}
 
@@ -343,7 +343,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 					if (a.WrappedTopic.FileID != b.WrappedTopic.FileID)
 						{
-						return string.Compare(EngineInstance.Files.FromID(a.WrappedTopic.FileID).FileName, 
+						return string.Compare(EngineInstance.Files.FromID(a.WrappedTopic.FileID).FileName,
 														 EngineInstance.Files.FromID(b.WrappedTopic.FileID).FileName, true);
 						}
 
@@ -380,7 +380,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			for (int i = 0; i < topicEntries.Count; i++)
 				{
-				int keywordIndex = topicEntries[i].SearchText.IndexOf(keywordEntry.SearchText, 
+				int keywordIndex = topicEntries[i].SearchText.IndexOf(keywordEntry.SearchText,
 																								topicEntries[i].EndOfSearchTextQualifiers);
 
 				if (keywordIndex == topicEntries[i].EndOfSearchTextQualifiers)
@@ -397,7 +397,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				for (int i = topicEntries.Count - 1; i >= 0; i--)
 					{
-					int keywordIndex = topicEntries[i].SearchText.IndexOf(keywordEntry.SearchText, 
+					int keywordIndex = topicEntries[i].SearchText.IndexOf(keywordEntry.SearchText,
 																									topicEntries[i].EndOfSearchTextQualifiers);
 
 					if (keywordIndex == topicEntries[i].EndOfSearchTextQualifiers)
@@ -416,7 +416,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: RemoveDuplicateTopics
-		 * Removes topics from the results which have the same letter for letter display names.  An exception is made if 
+		 * Removes topics from the results which have the same letter for letter display names.  An exception is made if
 		 * they have different languages.
 		 */
 		protected void RemoveDuplicateTopics (SearchIndex.Entries.Keyword keywordEntry)
@@ -479,7 +479,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					{
 					var other = keywordEntry.TopicEntries[i + 1];
 
-					if (topicEntry.DisplayName == other.DisplayName && 
+					if (topicEntry.DisplayName == other.DisplayName &&
 						topicEntry.WrappedTopic.LanguageID != other.WrappedTopic.LanguageID)
 						{  includeLanguage = true;  }
 					}
@@ -488,7 +488,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					{
 					var other = keywordEntry.TopicEntries[i - 1];
 
-					if (topicEntry.DisplayName == other.DisplayName && 
+					if (topicEntry.DisplayName == other.DisplayName &&
 						topicEntry.WrappedTopic.LanguageID != other.WrappedTopic.LanguageID)
 						{  includeLanguage = true;  }
 					}
@@ -506,7 +506,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		/* Function: AppendTopic
 		 * Appends a topic entry as a JSON array.
 		 */
-		protected void AppendTopic (SearchIndex.Entries.Topic topicEntry, string keywordHTMLName, bool includeLanguage, 
+		protected void AppendTopic (SearchIndex.Entries.Topic topicEntry, string keywordHTMLName, bool includeLanguage,
 												 StringBuilder output)
 			{
 			string topicHTMLPrefix, topicHTMLName, topicSearchText;
@@ -525,7 +525,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					{  topicHTMLPrefix = topicHTMLPrefix.Substring(0, topicHTMLPrefix.Length - 1);  }
 				else if (topicHTMLPrefix.EndsWith("::") || topicHTMLPrefix.EndsWith("->"))
 					{  topicHTMLPrefix = topicHTMLPrefix.Substring(0, topicHTMLPrefix.Length - 2);  }
-						
+
 				topicHTMLPrefix = topicHTMLPrefix.ToHTML();
 				topicHTMLName = topicEntry.DisplayName.Substring(topicEntry.EndOfDisplayNameQualifiers).ToHTML();
 				topicSearchText = topicEntry.SearchText.Substring(topicEntry.EndOfSearchTextQualifiers);
@@ -582,7 +582,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				{
 				output.Append(",\"");
 
-				Context classContext = new Context(context.Target, topicEntry.WrappedTopic.ClassID, topicEntry.WrappedTopic.ClassString, 
+				Context classContext = new Context(context.Target, topicEntry.WrappedTopic.ClassID, topicEntry.WrappedTopic.ClassString,
 																	  topicEntry.WrappedTopic);
 				output.StringEscapeAndAppend(classContext.HashPath);
 
@@ -656,4 +656,3 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 		}
 	}
-

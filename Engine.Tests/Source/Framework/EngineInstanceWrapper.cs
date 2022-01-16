@@ -1,21 +1,21 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.EngineInstanceManager
  * ____________________________________________________________________________
- * 
+ *
  * A class that simplifies configuring and running <NaturalDocs.Engine.Instance> for tests.
- * 
+ *
  * Usage:
- * 
+ *
  *		- Call <Start()> with a folder of test data.
- *			
+ *
  *		- Call <Run()> if you want to generate HTML.  This is not necessary if you only want to test text conversion
  *		  functions directly.
- *		  
+ *
  *		- Call <Dispose()> when you're done.  This will remove the temporary folders in addition to disposing of the engine.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -51,18 +51,18 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 
 		/* Function: Start
-		 * 
+		 *
 		 * Starts <Engine.Instance> using the passed folder of test data.
-		 * 
+		 *
 		 * If the test data folder is relative it will look for a "Engine.Tests.Data" subfolder where the executing assembly is.  If
 		 * one doesn't exist, it will check each parent folder for it.  Once found it will make the test data folder relative to that.
-		 * 
+		 *
 		 * If projectConfigFolder is relative it follows the same rules as the test data folder.  If it's not specified all defaults will
 		 * be used as if the project didn't have any configuration files defined.
-		 * 
+		 *
 		 * If keepOutputFolder is true, the HTML output folder will not be deleted after the engine is disposed of.
 		 */
-		public void Start (Path testDataFolder, Path projectConfigFolder = default(Path), bool keepOutputFolder = false, 
+		public void Start (Path testDataFolder, Path projectConfigFolder = default(Path), bool keepOutputFolder = false,
 								 string outputTitle = null, string outputSubtitle = null, string outputStyle = null, bool autoGroup = false)
 			{
 
@@ -106,7 +106,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 			// projectConfigFolder
 
 			if (projectConfigFolder == null)
-				{  
+				{
 				projectConfigFolder = temporaryFolderRoot + "/Project";
 				this.projectConfigFolder = (AbsolutePath)projectConfigFolder;
 				}
@@ -182,10 +182,10 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 			config.InputTargets.Add(inputTarget);
 
 			var outputTarget = new Config.Targets.HTMLOutputFolder(Config.PropertySource.CommandLine);
-			
+
 			outputTarget.Folder = outputFolder;
 			outputTarget.FolderPropertyLocation = Config.PropertySource.CommandLine;
-			
+
 			if (outputTitle != null)
 				{
 				outputTarget.Title = outputTitle;
@@ -214,7 +214,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 				message.Append("Could not start the Natural Docs engine for testing:");
 
 				foreach (var error in startupErrors)
-					{  
+					{
 					message.Append("\n - ");
 					if (error.File != null)
 						{  message.Append(error.File + " line " + error.LineNumber + ": ");  }
@@ -237,7 +237,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 			adder.Dispose();
 
 			EngineInstance.Files.DeleteFilesNotReAdded(Engine.Delegates.NeverCancel);
-			
+
 			var changeProcessor = EngineInstance.Files.CreateChangeProcessor();
 			changeProcessor.WorkOnProcessingChanges(Engine.Delegates.NeverCancel);
 			changeProcessor.Dispose();
@@ -246,7 +246,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 			builder.WorkOnUpdatingOutput(Engine.Delegates.NeverCancel);
 			builder.WorkOnFinalizingOutput(Engine.Delegates.NeverCancel);
 			builder.Dispose();
-						
+
 			EngineInstance.Cleanup(Delegates.NeverCancel);
 			}
 

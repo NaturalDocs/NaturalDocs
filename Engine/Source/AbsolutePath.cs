@@ -1,16 +1,16 @@
-﻿/* 
+﻿/*
  * Struct: CodeClear.NaturalDocs.Engine.AbsolutePath
  * ____________________________________________________________________________
- * 
+ *
  * A struct encapsulating a file path string which must be absolute.  This is a subset of the <Path> struct
  * which only contains the functionality relevant to absolute paths.  It's good for code clarity and safety to
  * use this instead of <Path> when the value must be absolute.
- * 
+ *
  * See <Path> for more details on why these structs are used at all.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -23,11 +23,11 @@ namespace CodeClear.NaturalDocs.Engine
 	{
 	public struct AbsolutePath : IComparable
 		{
-		
+
 		// Group: Constructors
 		// __________________________________________________________________________
-		
-			
+
+
 		/* Constructor: AbsolutePath (string)
 		 */
 		public AbsolutePath (string pathString) : this (new Path(pathString))
@@ -48,8 +48,8 @@ namespace CodeClear.NaturalDocs.Engine
 
 		// Group: Properties
 		// __________________________________________________________________________
-		
-			
+
+
 		/* Property: Length
 		 * The length of the path string.
 		 */
@@ -58,7 +58,7 @@ namespace CodeClear.NaturalDocs.Engine
 			get
 				{  return path.Length;  }
 			}
-			
+
 		/* Property: IsAbsolute
 		 * Whether the path is absolute.  This will always be true, it's just for consistency with <Path>.
 		 */
@@ -67,7 +67,7 @@ namespace CodeClear.NaturalDocs.Engine
 			get
 				{  return true;  }
 			}
-			
+
 		/* Property: IsRelative
 		 * Whether the path is relative.  This will always be false, it's just for consistency with <Path>.
 		 */
@@ -76,7 +76,7 @@ namespace CodeClear.NaturalDocs.Engine
 			get
 				{  return false;  }
 			}
-		
+
 		/* Property: Prefix
 		 * The prefix of the path.  The prefix can be "C:", "\\server", or "/".
 		 */
@@ -87,18 +87,18 @@ namespace CodeClear.NaturalDocs.Engine
 			}
 
 		/* Property: Extension
-		 * 
-		 * The file extension of the path, or null if there is none.  
-		 * 
-		 * Files that start with a dot are not considered to have extensions unless there is another dot in their name, so ".file" 
+		 *
+		 * The file extension of the path, or null if there is none.
+		 *
+		 * Files that start with a dot are not considered to have extensions unless there is another dot in their name, so ".file"
 		 * has no extension but ".file.txt" has a "txt" extension.
 		 */
 		public string Extension
 			{
 			get
-				{  return path.Extension;  }				
+				{  return path.Extension;  }
 			}
-			
+
 		/* Property: ParentFolder
 		 * The parent folder of the path.  If the path is to a file, it will be a path to its containing folder.  If the path is to a folder, it
 		 * will be the folder above it.  It will stop at the volume, so the parent folder of C: is C:.
@@ -113,7 +113,7 @@ namespace CodeClear.NaturalDocs.Engine
 				return parent;
 				}
 			}
-			
+
 		/* Property: NameWithoutPath
 		 * The file name without its path.
 		 */
@@ -122,12 +122,12 @@ namespace CodeClear.NaturalDocs.Engine
 			get
 				{  return path.NameWithoutPath;  }
 			}
-			
+
 		/* Property: NameWithoutPathOrExtension
-		 * 
+		 *
 		 * The file name without its path or extension.
-		 * 
-		 * Files that start with a dot are not considered to have extensions unless there is another dot in their name, so ".file" 
+		 *
+		 * Files that start with a dot are not considered to have extensions unless there is another dot in their name, so ".file"
 		 * has no extension but ".file.txt" has a "txt" extension.
 		 */
 		public string NameWithoutPathOrExtension
@@ -135,13 +135,13 @@ namespace CodeClear.NaturalDocs.Engine
 			get
 				{  return path.NameWithoutPathOrExtension;  }
 			}
-			
-			
+
+
 
 		// Group: Functions
 		// __________________________________________________________________________
-		
-			
+
+
 		/* Function: Contains
 		 * Returns whether this path contains the passed one, meaning it's a higher level folder.
 		 */
@@ -149,8 +149,8 @@ namespace CodeClear.NaturalDocs.Engine
 			{
 			return path.Contains(other);
 			}
-			
-			
+
+
 		/* Function: MakeRelativeTo
 		 * Returns the path as one relative to the passed folder, if possible.  If it's not possible (for example, if they're on
 		 * different drive letters) it returns null.
@@ -159,8 +159,8 @@ namespace CodeClear.NaturalDocs.Engine
 			{
 			return path.MakeRelativeTo(folder);
 			}
-			
-			
+
+
 		/* Function: Split
 		 * Splits the path into a prefix and a list of strings, each representing a segment of it.  Prefix will be set to something like "C:",
 		 * "\\server", or "/".  The sections array will have an entry for each folder name and one for the file name if there was one.  No
@@ -171,7 +171,7 @@ namespace CodeClear.NaturalDocs.Engine
 			path.Split(out prefix, out sections);
 			}
 
-			
+
 		/* Function: ToURL
 		 * Converts the path to an URL string, meaning it will always use slashes as separators, even on Windows.
 		 */
@@ -181,11 +181,11 @@ namespace CodeClear.NaturalDocs.Engine
 			}
 
 
-			
+
 		// Group: Operators
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Operator: operator string (AbsolutePath)
 		 * A cast operator to convert the AbsolutePath to a string.
 		 */
@@ -193,7 +193,7 @@ namespace CodeClear.NaturalDocs.Engine
 			{
 			return (string)absolutePath.path;
 			}
-			
+
 		/* Operator: operator Path (AbsolutePath)
 		 * A cast operator to convert the AbsolutePath to a <Path>.
 		 */
@@ -201,7 +201,7 @@ namespace CodeClear.NaturalDocs.Engine
 			{
 			return absolutePath.path;
 			}
-			
+
 		/* Operator: operator AbsolutePath (string)
 		 * A cast operator to convert a string to an AbsolutePath.  The string will be normalized.  It will throw
 		 * an exception if it's a relative path.
@@ -210,7 +210,7 @@ namespace CodeClear.NaturalDocs.Engine
 			{
 			return new AbsolutePath(pathString);
 			}
-			
+
 		/* Operator: operator AbsolutePath (Path)
 		 * A cast operator to convert a <Path> to an AbsolutePath.  It will throw an exception if it's relative.
 		 */
@@ -218,7 +218,7 @@ namespace CodeClear.NaturalDocs.Engine
 			{
 			return new AbsolutePath(path);
 			}
-			
+
 		/* Operator: operator ==
 		 */
 		public static bool operator== (AbsolutePath a, AbsolutePath b)
@@ -240,7 +240,7 @@ namespace CodeClear.NaturalDocs.Engine
 			{
 			return path.ToString();
 			}
-			
+
 		/* Function: GetHashCode
 		 */
 		public override int GetHashCode ()
@@ -259,7 +259,7 @@ namespace CodeClear.NaturalDocs.Engine
 			else
 				{  return false;  }
 			}
-			
+
 		/* Function: CompareTo
 		 */
 		public int CompareTo (object other)
@@ -267,12 +267,12 @@ namespace CodeClear.NaturalDocs.Engine
 			return path.CompareTo(other);
 			}
 
-			
-		
+
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
-		
+
+
 		/* var: path
 		 * The <Path> struct this encapsulates.
 		 */

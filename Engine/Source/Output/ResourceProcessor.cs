@@ -5,7 +5,7 @@
  * A base class used for shared functionality when processing JS and CSS files.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -45,8 +45,8 @@ namespace CodeClear.NaturalDocs.Engine.Output
 
 		/* Function: GetPossibleDocumentationComments
 		 *
-		 * Goes through the file looking for comments that could possibly contain documentation and returns them as a list.  These 
-		 * comments are not guaranteed to have documentation in them, just to be acceptable candidates for them.  If there are no 
+		 * Goes through the file looking for comments that could possibly contain documentation and returns them as a list.  These
+		 * comments are not guaranteed to have documentation in them, just to be acceptable candidates for them.  If there are no
 		 * comments it will return an empty list.
 		 */
 		protected List<PossibleDocumentationComment> GetPossibleDocumentationComments (Tokenizer source)
@@ -59,17 +59,17 @@ namespace CodeClear.NaturalDocs.Engine.Output
 				{
 				bool foundComment = false;
 				PossibleDocumentationComment possibleDocumentationComment = null;
-				
+
 				// Block comments
 				if (blockCommentStringPairs != null)
 					{
 					for (int i = 0; foundComment == false && i < blockCommentStringPairs.Length; i += 2)
 						{
-						foundComment = TryToGetBlockComment(ref lineIterator, blockCommentStringPairs[i], blockCommentStringPairs[i+1], 
+						foundComment = TryToGetBlockComment(ref lineIterator, blockCommentStringPairs[i], blockCommentStringPairs[i+1],
 																					 out possibleDocumentationComment);
 						}
 					}
-					
+
 				// Plain line comments
 				if (foundComment == false && lineCommentStrings != null)
 					{
@@ -78,7 +78,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 						foundComment = TryToGetLineComment(ref lineIterator, lineCommentStrings[i], out possibleDocumentationComment);
 						}
 					}
-				
+
 				// Nada.
 				if (foundComment == false)
 					{  lineIterator.Next();  }
@@ -96,12 +96,12 @@ namespace CodeClear.NaturalDocs.Engine.Output
 
 
 		/* Function: TryToGetBlockComment
-		 * 
+		 *
 		 * If the iterator is on a line that starts with the opening symbol of a block comment, this function moves the iterator
 		 * past the entire comment and returns true.  If the comment is a candidate for documentation it will also return it as
 		 * a <PossibleDocumentationComment> and mark the symbols as <CommentParsingType.CommentSymbol>.  If the
 		 * line does not start with an opening comment symbol it will return false and leave the iterator where it is.
-		 * 
+		 *
 		 * Not all the block comments it finds will be candidates for documentation, since some will have text after the closing
 		 * symbol, so it's possible for this function to return true and have comment be null.
 		 */
@@ -112,12 +112,12 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			lineIterator.GetBounds(LineBoundsMode.ExcludeWhitespace, out firstToken, out endOfLine);
 
 			if (firstToken.MatchesAcrossTokens(openingSymbol) == false)
-				{  
+				{
 				comment = null;
 				return false;
 				}
 
-			// Advance past the opening symbol because it's possible for it to be the same as the closing one, such as with 
+			// Advance past the opening symbol because it's possible for it to be the same as the closing one, such as with
 			// Python's ''' and """ strings.
 			firstToken.NextByCharacters(openingSymbol.Length);
 
@@ -130,7 +130,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			for (;;)
 				{
 				TokenIterator closingSymbolIterator;
-				
+
 				if (tokenizer.FindTokensBetween(closingSymbol, false, firstToken, endOfLine, out closingSymbolIterator) == true)
 					{
 					// Move past the end of the comment regardless of whether it's acceptable for documentation or not
@@ -154,9 +154,9 @@ namespace CodeClear.NaturalDocs.Engine.Output
 				// If we're not in bounds that means there was an unclosed comment at the end of the file.  Skip it but don't treat
 				// it as a documentation candidate.
 				if (!lookahead.IsInBounds)
-					{  
+					{
 					comment = null;
-					break;  
+					break;
 					}
 
 				lookahead.GetBounds(LineBoundsMode.ExcludeWhitespace, out firstToken, out endOfLine);
@@ -188,16 +188,16 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		/* Function: TryToGetLineComment
 		 * If the iterator is on a line that starts with a line comment symbol, this function moves the iterator past the entire
 		 * comment and returns true.  If the comment is a candidate for documentation it will also return it as a
-		 * <PossibleDocumentationComment>.  If the line does not start with a line comment symbol it will return false and 
+		 * <PossibleDocumentationComment>.  If the line does not start with a line comment symbol it will return false and
 		 * leave the iterator where it is.
 		 */
-		protected bool TryToGetLineComment (ref LineIterator lineIterator, string commentSymbol, 
+		protected bool TryToGetLineComment (ref LineIterator lineIterator, string commentSymbol,
 																out PossibleDocumentationComment comment)
 			{
 			TokenIterator firstToken = lineIterator.FirstToken(LineBoundsMode.ExcludeWhitespace);
 
 			if (firstToken.MatchesAcrossTokens(commentSymbol) == false)
-				{  
+				{
 				comment = null;
 				return false;
 				}
@@ -213,14 +213,14 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			while (lineIterator.IsInBounds)
 				{
 				firstToken = lineIterator.FirstToken(LineBoundsMode.ExcludeWhitespace);
-					
+
 				if (firstToken.MatchesAcrossTokens(commentSymbol) == false)
 					{  break;  }
 
 				firstToken.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, commentSymbol.Length);
 				lineIterator.Next();
 				}
-			
+
 			comment.End = lineIterator;
 			return true;
 			}
@@ -359,7 +359,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			TokenIterator iterator = source.FirstToken;
 
 
-			// Find the first valid substitution identifier or definition.  If there aren't any we don't want to \do unnecessary memory 
+			// Find the first valid substitution identifier or definition.  If there aren't any we don't want to \do unnecessary memory
 			// allocation and processing.
 
 			bool foundSubstitution = false;
@@ -453,7 +453,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 
 				if (tokenizer.RawText == currentResult)
 					{  break;  }
-				
+
 				currentResult = tokenizer.RawText;
 				rounds++;
 				}
@@ -468,11 +468,11 @@ namespace CodeClear.NaturalDocs.Engine.Output
 
 
 		/* Function: GenericSkip
-		 * 
+		 *
 		 * Moves the iterator ahead one code element, which could be a single token, whitespace, an entire comment, or an entire
 		 * string.  The important part is that this skips comments and strings all in one step so that anything appearing inside them
 		 * will not be misinterpreted as code.
-		 * 
+		 *
 		 * It is virtual so you can extend it to handle things like regular expressions.  The default implementation handles strings
 		 * and comments based on LineCommentStrings, BlockCommentStringPairs, and <QuoteCharacters>.
 		 */
@@ -480,8 +480,8 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			{
 			if (!TryToSkipComment(ref iterator) &&
 				!TryToSkipString(ref iterator))
-				{  
-				iterator.Next();  
+				{
+				iterator.Next();
 				}
 			}
 
@@ -678,14 +678,14 @@ namespace CodeClear.NaturalDocs.Engine.Output
 
 			// Locale substitutions
 			if (lookahead.MatchesAcrossTokens("Locale{"))
-				{  
+				{
 				identifier = null;
 				return false;
 				}
 
 			while (lookahead.IsInBounds &&
 					(lookahead.FundamentalType == FundamentalType.Text ||
-					lookahead.Character == '.' || 
+					lookahead.Character == '.' ||
 					lookahead.Character == '_'))
 				{  lookahead.Next();  }
 
@@ -742,10 +742,10 @@ namespace CodeClear.NaturalDocs.Engine.Output
 
 
 		/* Function: TryToSkipSubstitutionDefinition
-		 * 
-		 * If the iterator is on a valid substitution definition, advances it past it, determines its properties, and returns true.  Otherwise the 
+		 *
+		 * If the iterator is on a valid substitution definition, advances it past it, determines its properties, and returns true.  Otherwise the
 		 * iterator will be left alone and it will return false.
-		 * 
+		 *
 		 * identifier - "$identifier" in "$identifier = value;"
 		 * value - "value" in "$identifier = value;"
 		 * declaration - "$identifier = value;" in "$identifier = value;"
@@ -760,18 +760,18 @@ namespace CodeClear.NaturalDocs.Engine.Output
 
 			if (TryToSkipSubstitutionIdentifier(ref lookahead, out identifier) == false)
 				{  return false;  }
-			
+
 			lookahead.NextPastWhitespace();
 
 			if (lookahead.Character != ':' && lookahead.Character != '=')
 				{
 				identifier = null;
-				return false;  
+				return false;
 				}
 
 			lookahead.Next();
 			lookahead.NextPastWhitespace();
-			
+
 			TokenIterator startOfValue = lookahead;
 
 			while (lookahead.IsInBounds && lookahead.Character != ';' && lookahead.FundamentalType != FundamentalType.LineBreak)
@@ -818,7 +818,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 					{  lineCommentStrings = null;  }
 				}
 			}
-			
+
 		/* Property: BlockCommentStringPairs
 		 * An array of string pairs representing start and stop block comment symbols.  Will be null if none are defined.
 		 */
@@ -829,17 +829,17 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			set
 				{
 				if (value != null && value.Length != 0)
-					{  
+					{
 					if (value.Length % 2 == 1)
 						{  throw new Engine.Exceptions.ArrayDidntHaveEvenLength("BlockCommentStringPairs");  }
 
-					blockCommentStringPairs = value;  
+					blockCommentStringPairs = value;
 					}
 				else
 					{  blockCommentStringPairs = null;  }
 				}
 			}
-			
+
 
 
 		// Group: Variables
@@ -854,12 +854,12 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		 * An array of strings that start line comments.
 		 */
 		protected string[] lineCommentStrings;
-		
+
 		/* var: blockCommentStringPairs
 		 * An array of string pairs that start and end block comments.
 		 */
 		protected string[] blockCommentStringPairs;
-		
+
 
 
 		// Group: Static Variables

@@ -1,11 +1,11 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.CLI.StatusManagers.Building
  * ____________________________________________________________________________
- * 
+ *
  * A class to monitor the output building stage.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -17,7 +17,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 	{
 	public class Building : StatusManager
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
 
@@ -60,7 +60,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 			long workDone = totalWork - workRemaining;
 			int newPercentage = (int)((100 * workDone) / totalWork);
-			
+
 			// Another sanity check.  We use > instead of != because we don't want the percentage to ever go down.  It's better
 			// for the percentage to just stall until it catches up again as that's less confusing to the user.
 			if (newPercentage > lastPercentageDone)
@@ -68,7 +68,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 				System.Console.WriteLine(
 					Engine.Locale.Get("NaturalDocs.CLI", "Status.OutputBuildingUpdate(percent)", newPercentage)
 					);
-					
+
 				lastPercentageDone = newPercentage;
 				}
 			}
@@ -76,7 +76,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 		// Group: Variables
 		// __________________________________________________________________________
-		
+
 		protected Engine.Output.Builder builderProcess;
 
 		protected long totalWork;

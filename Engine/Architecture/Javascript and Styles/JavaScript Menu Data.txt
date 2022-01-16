@@ -31,14 +31,14 @@ _______________________________________________________________________________
 			of a hierarchy.
 
 			The second member is the folder name associated with it.
-		
+
 			The third member is the type as a numeric constant with one of these values:
 
 			0 - Files
 			1 - Language-specific hierarchy
 			2 - Language-agnostic hierarchy
 
-			The fourth member is a regular expression string (not a RegExp object itself) that's used to determine whether a prefix 
+			The fourth member is a regular expression string (not a RegExp object itself) that's used to determine whether a prefix
 			belongs to the location type.  For example, the Class regex should match "CSharpClass" and "JavaScriptClass".
 
 			For file and language-specific hierarchy locations, the regular expression will include a single capture that returns the file
@@ -53,7 +53,7 @@ _______________________________________________________________________________
 
 	Topic: Tab Information
 
-		Information about which tabs are available in the menu is also stored in [Output Folder]\menu\tabs.js.  The file contains a 
+		Information about which tabs are available in the menu is also stored in [Output Folder]\menu\tabs.js.  The file contains a
 		call to the function NDMenu.OnTabsLoaded() that looks like this:
 
 		> NDMenu.OnTabsLoaded([
@@ -66,55 +66,55 @@ _______________________________________________________________________________
 		> [ "Simple Identifier", "HTML Title", "Partial Hash Path", "FileWithContents.js" ]
 		> [ "Simple Identifier", ["HTML Title", "HTML Title 2", "HTML Title 3"], "Partial Hash Path", "FileWithContents.js" ]
 
-		The first member is a string representing the simple identifier of the location the tab is associated with.  It will be the string 
+		The first member is a string representing the simple identifier of the location the tab is associated with.  It will be the string
 		"File" or the simple identifier of a hierarchy so it is safe to include in CSS names.
 
-		The second member is the title in HTML, and it may be a string or an array of strings.  If it's an array of strings, that means 
+		The second member is the title in HTML, and it may be a string or an array of strings.  If it's an array of strings, that means
 		the menu has been condensed and multiple layers of containers have been combined into it.
-		
+
 		The third member is the hash path, which may be undefined.  If the menu was condensed containers that had hash paths
 		may have been combined with the root container, giving the tab a hash path.
-		
-		The fourth member is the root file which contains the data for that particular tab.  It's stored in the menu subfolder of the 
+
+		The fourth member is the root file which contains the data for that particular tab.  It's stored in the menu subfolder of the
 		output folder, just like tabs.js.
 
 
 	Topic: Menu Sections
 
 		The menu data is stored in multiple files which can have names like files2.js or classes.js.  When executed, they call
-		NDMenu.OnSectionLoaded(), passing the file name and part of the menu it stores as an array of entries.  Each entry is itself 
+		NDMenu.OnSectionLoaded(), passing the file name and part of the menu it stores as an array of entries.  Each entry is itself
 		an array whose first value is its type.
 
 		> NDMenu.OnSectionLoaded( "files2.js", [ ... ] );
-		
+
 		Target Entries:
-		
+
 			> [1, "HTML Title", "Hash Path"]
 			> [1, "HTML Title"]
-			
+
 			Target entries represent a content page, such as a source file or class.  The first value is always 1, and the second
 			value is the title in HTML.
-			
-			The third value is the hash path and is optional.  If it isn't specified, that means it's the same as the title.  The hash 
-			path only represents the last portion of the path, such as "SourceFile.cs" in "File:Folder/Folder/SourceFile.cs", so to 
+
+			The third value is the hash path and is optional.  If it isn't specified, that means it's the same as the title.  The hash
+			path only represents the last portion of the path, such as "SourceFile.cs" in "File:Folder/Folder/SourceFile.cs", so to
 			get the full path you must concatenate it to its container's hash path.
-			
+
 		Container Entries:
-		
+
 			> [2, "HTML Title", "Partial Hash Path", [ members ]]
 			> [2, "HTML Title", "Partial Hash Path", "MenuDataFileName.js" ]
 			> [2, ["HTML Title", "HTML Title 2", "HTML Title 3"], "Partial Hash Path", [ members ]]
 			> [2, ["HTML Title", "HTML Title 2", "HTML Title 3"], "Partial Hash Path", "MenuDataFileName.js"]
-	
+
 			Container entries represent another layer of the menu, such as a file folder.  The first value is always 2.
-			
-			The second value is the title in HTML, and it may be a string or an array of strings.  If it's an array of strings, that means 
+
+			The second value is the title in HTML, and it may be a string or an array of strings.  If it's an array of strings, that means
 			the menu has been condensed and multiple layers of containers have been combined into one.
-			
-			The third value is the hash path, which is the absolute path of everything up to the last element, such as "File:Path/Path/" 
-			or "CSharpClass:Namespace.Namespace.".  It will never be relative so you don't have to climb up the hierarchy to 
-			construct the full path.  It includes the trailing separator symbol so the target hash path can be concatenated directly 
+
+			The third value is the hash path, which is the absolute path of everything up to the last element, such as "File:Path/Path/"
+			or "CSharpClass:Namespace.Namespace.".  It will never be relative so you don't have to climb up the hierarchy to
+			construct the full path.  It includes the trailing separator symbol so the target hash path can be concatenated directly
 			on to it.
-			
+
 			The fourth value is its members and they may be specified inline as an array or be a string representing the data file they
 			are stored in.  It will not include a path.

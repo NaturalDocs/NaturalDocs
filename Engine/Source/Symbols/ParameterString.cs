@@ -1,16 +1,16 @@
-﻿/* 
+﻿/*
  * Struct: CodeClear.NaturalDocs.Engine.Symbols.ParameterString
  * ____________________________________________________________________________
- * 
+ *
  * A struct encapsulating parameters from a symbol, which is a normalized way of representing the parenthetical
  * section of a code element or topic, such as "(int, int)" in "PackageA.PackageB.FunctionC(int, int)".  It supports
  * alternative braces as well such as "this[int]" and "Template<T>".  When generated from prototypes,
  * ParameterStrings only store the types of each parameter, not the names or default values.
- * 
+ *
  * The encoding uses SeparatorChars.Level1.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -25,7 +25,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 	{
 	public struct ParameterString : IComparable
 		{
-		
+
 		// Group: Constants
 		// __________________________________________________________________________
 
@@ -38,8 +38,8 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Function: ParameterString
 		 */
 		private ParameterString (string newParameterString)
@@ -61,7 +61,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 
 			if (input.Length >= 2 && IsClosingBrace(input[index]))
 				{
-				// We have to count the braces so it correctly returns "(paren2)" from "text (paren) text2 (paren2)" and not 
+				// We have to count the braces so it correctly returns "(paren2)" from "text (paren) text2 (paren2)" and not
 				// "(paren) text2 (paren2)".  We also want to handle nested braces.
 
 				Collections.SafeStack<char> braces = new Collections.SafeStack<char>();
@@ -78,13 +78,13 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 						{  break;  }
 
 					if (IsClosingBrace(input[index]))
-						{  
-						braces.Push(input[index]);  
+						{
+						braces.Push(input[index]);
 						}
 					else // IsOpeningBrace(input[index])
 						{
 						if (BracesMatch(input[index], braces.Peek()))
-							{  
+							{
 							braces.Pop();
 
 							if (braces.Count == 0)
@@ -142,7 +142,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 
 
 		/* Function: FromExportedString
-		 * Creates a ParameterString from the passed string which originally came from another ParameterString object.  This skips 
+		 * Creates a ParameterString from the passed string which originally came from another ParameterString object.  This skips
 		 * the normalization stage because it should already be in the proper format.  Only use this when retrieving ParameterStrings
 		 * that were stored as plain text in a database or other data file.
 		 */
@@ -219,7 +219,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 				char character = input[index];
 
 				if (IsOpeningBrace(character))
-					{  
+					{
 					braces.Push(character);
 					}
 				else if (BracesMatch(braces.Peek(), character))
@@ -261,7 +261,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 				int separatorCharIndex = parameterString.IndexOf(SeparatorChar, parameterCharIndex);
 
 				if (separatorCharIndex == -1)
-					{  
+					{
 					start = new SimpleTokenIterator();
 					end = new SimpleTokenIterator();
 					return false;
@@ -280,8 +280,8 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			return true;
 			}
 
-			
-			
+
+
 		// Group: Properties
 		// __________________________________________________________________________
 
@@ -304,8 +304,8 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 
 		// Group: Operators
 		// __________________________________________________________________________
-		
-		
+
+
 		/* operator: operator string
 		 * A cast operator to covert the params to a string.
 		 */
@@ -313,7 +313,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			{
 			return p.parameterString;
 			}
-						
+
 		/* Operator: operator ==
 		 */
 		public static bool operator== (ParameterString a, object b)
@@ -337,7 +337,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			{
 			return parameterString;
 			}
-			
+
 		/* Function: GetHashCode
 		 */
 		public override int GetHashCode ()
@@ -361,25 +361,25 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			else
 				{  return false;  }
 			}
-			
+
 		/* Function: CompareTo
 		 */
 		public int CompareTo (object other)
 			{
 			return parameterString.CompareTo(other);
 			}
-		
-			
-		
+
+
+
 		// Group: Private Functions
 		// __________________________________________________________________________
 
 
 		/* Function: NormalizeAndAppend
-		 * 
+		 *
 		 * Normalizes the individual parameter and appends it to the passed StringBuilder.  It does not append a <SeparatorChar>,
 		 * that must be done by the calling code.
-		 * 
+		 *
 		 *		- Applies canonical normalization to Unicode (FormC).
 		 *		- Removes all existing instances of the <SeparatorChars>.
 		 *		- Whitespace is removed unless it is between two text characters as defined by <Tokenizer.FundamentalTypeOf()>.
@@ -395,16 +395,16 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 
 			if (parameter == "")
 				{  return;  }
-				
+
 			parameter = parameter.Normalize(System.Text.NormalizationForm.FormC);  // Canonical decomposition and recombination
 
 			int nextChar = parameter.IndexOfAny(SeparatorCharsAndWhitespace);
 			int index = 0;
-			
-			// Set to true if we just passed whitespace, since we only want to add it to the normalized string if it's between two 
+
+			// Set to true if we just passed whitespace, since we only want to add it to the normalized string if it's between two
 			// text characters.  We also want to condense multiple characters to a single space.
 			bool addWhitespace = false;
-			
+
 			while (nextChar != -1)
 				{
 				if (nextChar > index)
@@ -415,7 +415,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 						{
 						output.Append(' ');
 						}
-					
+
 					output.Append(parameter, index, nextChar - index);
 					addWhitespace = false;
 					}
@@ -424,16 +424,16 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 					{
 					// Ignore, doesn't affect anything.
 					index = nextChar + 1;
-					}				
+					}
 				else if (parameter[nextChar] == ' ' || parameter[nextChar] == '\t')
-					{  
+					{
 					addWhitespace = true;
-					index = nextChar + 1;  
+					index = nextChar + 1;
 					}
 
 				nextChar = parameter.IndexOfAny(SeparatorCharsAndWhitespace, index);
 				}
-			
+
 			if (index < parameter.Length)
 				{
 				if (addWhitespace && output.Length > 0 &&
@@ -442,7 +442,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 					{
 					output.Append(' ');
 					}
-				
+
 				output.Append(parameter, index, parameter.Length - index);
 				}
 			}
@@ -470,13 +470,13 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 
 		// Group: Variables
 		// __________________________________________________________________________
-		
-		
+
+
 		/* string: parameterString
 		 * The parameter string, _always_ in normalized form.
 		 */
 		private string parameterString;
-	
+
 
 
 		// Group: Static Variables
@@ -486,7 +486,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 		/* var: SeparatorCharAndWhitespace
 		 * An array containing the whitespace and separator characters.
 		 */
-		static private char[] SeparatorCharsAndWhitespace = new char[] { ' ', '\t', 
+		static private char[] SeparatorCharsAndWhitespace = new char[] { ' ', '\t',
 																								  SeparatorChars.Level1, SeparatorChars.Level2,
 																								  SeparatorChars.Level3, SeparatorChars.Level4 };
 

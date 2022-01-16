@@ -1,17 +1,17 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles.TextFileParser
  * ____________________________________________________________________________
- * 
+ *
  * A class to handle loading and saving <Comments.txt> and Topics.txt.
- * 
- * 
+ *
+ *
  * Multithreading: Not Thread Safe
- * 
+ *
  *		The parser object may be reused, but multiple threads cannot use it at the same time.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -24,11 +24,11 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 	{
 	public class TextFileParser
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: TextFileParser
 		 */
 		public TextFileParser ()
@@ -68,41 +68,41 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 
 
 		/* Function: Load
-		 * 
-		 * Loads the contents of a <Comments.txt> file into a <ConfigFiles.TextFile>, returning whether it was successful.  If it 
+		 *
+		 * Loads the contents of a <Comments.txt> file into a <ConfigFiles.TextFile>, returning whether it was successful.  If it
 		 * was unsuccessful config will be null and it will place errors on the errorList.
-		 * 
+		 *
 		 * Parameters:
-		 * 
+		 *
 		 *		filename - The <Path> where the file is located.
 		 *		propertySource - The <Engine.Config.PropertySource> associated with the file.
 		 *		errorList - If it couldn't successfully parse the file it will add error messages to this list.
 		 *		config - The contents of the file as a <ConfigFiles.TextFile>.
 		 */
-		public bool Load (Path filename, Engine.Config.PropertySource propertySource, Errors.ErrorList errorList, 
+		public bool Load (Path filename, Engine.Config.PropertySource propertySource, Errors.ErrorList errorList,
 								 out ConfigFiles.TextFile config)
 			{
 			int previousErrorCount = errorList.Count;
 
 			using (ConfigFile file = new ConfigFile())
 				{
-				bool openResult = file.Open(filename, 
+				bool openResult = file.Open(filename,
 														 propertySource,
 														 ConfigFile.FileFormatFlags.CondenseIdentifierWhitespace |
-														 ConfigFile.FileFormatFlags.CondenseValueWhitespace | 
-														 ConfigFile.FileFormatFlags.SupportsNullValueLines | 
+														 ConfigFile.FileFormatFlags.CondenseValueWhitespace |
+														 ConfigFile.FileFormatFlags.SupportsNullValueLines |
 														 ConfigFile.FileFormatFlags.SupportsRawValueLines |
-														 ConfigFile.FileFormatFlags.MakeIdentifiersLowercase, 
+														 ConfigFile.FileFormatFlags.MakeIdentifiersLowercase,
 														 errorList);
-														 
+
 				if (openResult == false)
-					{  
+					{
 					config = null;
 					return false;
 					}
 
 				config = new ConfigFiles.TextFile();
-				
+
 				TextFileCommentType currentCommentType = null;
 				TextFileKeywordGroup currentKeywordGroup = null;
 				bool inKeywords = false;
@@ -114,7 +114,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 					//
 					// Identifierless lines
 					//
-					
+
 					if (identifier == null)
 						{
 
@@ -128,7 +128,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 
 							string keyword, pluralKeyword;
 							int commaIndex = value.IndexOf(',');
-							
+
 							if (commaIndex == -1)
 								{
 								keyword = value;
@@ -146,8 +146,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 										);
 									}
 								}
-							
-								
+
+
 							// Check for banned characters
 
 							int bannedCharIndex = keyword.IndexOfAny(BannedKeywordChars);
@@ -165,8 +165,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 
 							if (bannedChar != '\0')
 								{
-								file.AddError( 
-									Locale.Get("NaturalDocs.Engine", "Comments.txt.KeywordsCannotContain(char)", bannedChar) 
+								file.AddError(
+									Locale.Get("NaturalDocs.Engine", "Comments.txt.KeywordsCannotContain(char)", bannedChar)
 									);
 								// Continue parsing
 								}
@@ -214,7 +214,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 						// Continue so we don't need to put all the identifier handling code in an else.
 						continue;
 						}
-						
+
 
 					// If we're here the line has an identifier
 					currentKeywordGroup = null;
@@ -298,32 +298,32 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 							file.AddError(
 								Locale.Get("NaturalDocs.Engine", "Comments.txt.CommentTypeAlreadyExists(name)", value)
 								);
-							
+
 							// Continue parsing.  We'll throw this into the existing type even though it shouldn't be overwriting
 							// its values because we want to find any other errors there are in the file.
 							currentCommentType = existingCommentType;
 							}
-							
+
 						else
 							{
 							// There is no 1.6, but this covers all the 2.0 prereleases.
 							if (file.Version < "1.6" && String.Compare(value, "generic", true) == 0)
 								{  value = "Information";  }
-								
+
 							currentCommentType = new TextFileCommentType(value, file.PropertyLocation);
 							config.AddCommentType(currentCommentType);
-							}								
+							}
 						}
-						
-						
+
+
 					//
 					// Alter Comment Type
 					//
-					
+
 					else if (alterCommentTypeRegex.IsMatch(identifier))
 						{
 						// We don't check if the name exists because it may exist in a different file.  We also don't check if it exists
-						// in the current file because using Alter is valid (if unnecessary) in that case and we don't want to combine 
+						// in the current file because using Alter is valid (if unnecessary) in that case and we don't want to combine
 						// their definitions.  Why?  Consider this:
 						//
 						// Comment Type: Comment Type A
@@ -346,7 +346,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 					//
 					// (Plural) Display Name (From Locale)
 					//
-						
+
 					else if (displayNameRegex.IsMatch(identifier))
 						{
 						if (currentCommentType == null)
@@ -358,7 +358,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 								);
 							}
 						else
-							{						
+							{
 							currentCommentType.SetDisplayName(value, file.PropertyLocation);
 							}
 						}
@@ -373,7 +373,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 								);
 							}
 						else
-							{						
+							{
 							currentCommentType.SetPluralDisplayName(value, file.PropertyLocation);
 							}
 						}
@@ -388,7 +388,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 								);
 							}
 						else
-							{						
+							{
 							currentCommentType.SetDisplayNameFromLocale(value, file.PropertyLocation);
 							}
 						}
@@ -403,16 +403,16 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 								);
 							}
 						else
-							{						
+							{
 							currentCommentType.SetPluralDisplayNameFromLocale(value, file.PropertyLocation);
 							}
 						}
-						
-						
+
+
 					//
 					// Simple Identifier
 					//
-						
+
 					else if (identifier == "simple identifier")
 						{
 						if (currentCommentType == null)
@@ -424,16 +424,16 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 								);
 							}
 						else
-							{						
+							{
 							currentCommentType.SetSimpleIdentifier(value, file.PropertyLocation);
 							}
 						}
-						
-						
+
+
 					//
 					// Scope
 					//
-					
+
 					else if (identifier == "scope")
 						{
 						if (currentCommentType == null)
@@ -441,7 +441,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 						else
 							{
 							value = value.ToLower();
-							
+
 							if (value == "normal")
 								{  currentCommentType.SetScope(CommentType.ScopeValue.Normal, file.PropertyLocation);  }
 							else if (startRegex.IsMatch(value))
@@ -458,12 +458,12 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 								}
 							}
 						}
-						
-						
+
+
 					//
 					// Flags and Hierarchy
 					//
-					
+
 					else if (flagsRegex.IsMatch(identifier))
 						{
 						if (currentCommentType == null)
@@ -471,12 +471,12 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 						else
 							{
 							value = value.ToLower();
-							
+
 							if (!string.IsNullOrEmpty(value))
 								{
 								string[] flagStrings = commaSeparatorRegex.Split(value);
 								CommentType.FlagValue flagsValue = default;
-							
+
 								foreach (string flagString in flagStrings)
 									{
 									if (flagString == "code")
@@ -498,7 +498,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 											currentCommentType.SetHierarchyName(hierarchyMatch.Groups[1].ToString(), file.PropertyLocation);
 											}
 										else if (string.IsNullOrEmpty(flagString) == false)
-											{  
+											{
 											file.AddError(
 												Locale.Get("NaturalDocs.Engine", "Comments.txt.UnrecognizedValue(keyword, value)", "Flags", flagString)
 												);
@@ -510,12 +510,12 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 								}
 							}
 						}
-					
-					
-					// 
+
+
+					//
 					// Class Hierarchy (deprecated, convert to flag)
 					//
-					
+
 					else if (classHierarchyRegex.IsMatch(identifier))
 						{
 						if (currentCommentType == null)
@@ -527,7 +527,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 							if (yesRegex.IsMatch(value))
 								{  currentCommentType.SetHierarchyName("Class", file.PropertyLocation);  }
 							else if (noRegex.IsMatch(value))
-								{  
+								{
 								if (currentCommentType.HierarchyName != null &&
 									currentCommentType.HierarchyName.ToLower() == "class")
 									{  currentCommentType.SetHierarchyName(null, file.PropertyLocation);  }
@@ -540,8 +540,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 								}
 							}
 						}
-						
-						
+
+
 					//
 					// Keywords
 					//
@@ -555,18 +555,18 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 							currentKeywordGroup = new TextFileKeywordGroup(file.PropertyLocation);
 							currentCommentType.AddKeywordGroup(currentKeywordGroup);
 							inKeywords = true;
-							
+
 							if (!string.IsNullOrEmpty(value))
 								{
 								string[] keywordsArray = commaSeparatorRegex.Split(value);
-								
+
 								foreach (string keyword in keywordsArray)
 									{
 									int bannedChar = keyword.IndexOfAny(BannedKeywordChars);
 									if (bannedChar != -1)
 										{
-										file.AddError( 
-											Locale.Get("NaturalDocs.Engine", "Comments.txt.KeywordsCannotContain(char)", keyword[bannedChar]) 
+										file.AddError(
+											Locale.Get("NaturalDocs.Engine", "Comments.txt.KeywordsCannotContain(char)", keyword[bannedChar])
 											);
 										// Continue parsing
 										}
@@ -576,8 +576,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 								}
 							}
 						}
-						
-						
+
+
 					//
 					// Language-Specific Keywords
 					//
@@ -596,18 +596,18 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 							currentKeywordGroup = new TextFileKeywordGroup(file.PropertyLocation, languageName);
 							currentCommentType.AddKeywordGroup(currentKeywordGroup);
 							inKeywords = true;
-							
+
 							if (!string.IsNullOrEmpty(value))
 								{
 								string[] keywordsArray = commaSeparatorRegex.Split(value);
-								
+
 								foreach (string keyword in keywordsArray)
 									{
 									int bannedChar = keyword.IndexOfAny(BannedKeywordChars);
 									if (bannedChar != -1)
 										{
-										file.AddError( 
-											Locale.Get("NaturalDocs.Engine", "Comments.txt.KeywordsCannotContain(char)", keyword[bannedChar]) 
+										file.AddError(
+											Locale.Get("NaturalDocs.Engine", "Comments.txt.KeywordsCannotContain(char)", keyword[bannedChar])
 											);
 										// Continue parsing
 										}
@@ -617,16 +617,16 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 								}
 							}
 						}
-						
-						
+
+
 					//
 					// Deprecated keywords: Can Group With, Page Title if First
 					//
-					
+
 					else if (identifier == "index" ||
 							   identifier == "index with" ||
 							   breakListsRegex.IsMatch(identifier) ||
-							   identifier == "can group with" || 
+							   identifier == "can group with" ||
 							   identifier == "page title if first")
 						{
 						// Ignore and continue
@@ -636,31 +636,31 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 					//
 					// Unrecognized keywords
 					//
-					
+
 					else
 						{
 						file.AddError(
 							Locale.Get("NaturalDocs.Engine", "Comments.txt.UnrecognizedKeyword(keyword)", identifier)
 							);
 						}
-										
+
 					}  // while (file.Get)
 
-				file.Close();				
+				file.Close();
 				}
-				
-				
+
+
 			if (errorList.Count == previousErrorCount)
-				{  
-				return true;  
+				{
+				return true;
 				}
 			else
-				{  
+				{
 				config = null;
 				return false;
 				}
 			}
-			
+
 
 		/* Function: AddNeedsCommentTypeError
 		 * A shortcut function only used by <Load()> which adds an error stating that the passed keyword needs to appear
@@ -680,21 +680,21 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 
 
 		/* Function: Save
-		 * 
+		 *
 		 * Saves the passed information into a configuration file if it's different from the one on disk.
-		 * 
+		 *
 		 * Parameters:
-		 * 
+		 *
 		 *		filename - The <Path> where the file should be saved.
 		 *		propertySource - The <Engine.Config.PropertySource> associated with the file.  It must be
-		 *								 <Engine.Config.PropertySource.ProjectCommentsFile> or 
+		 *								 <Engine.Config.PropertySource.ProjectCommentsFile> or
 		 *								 <Engine.Config.PropertySource.SystemCommentsFile>.
 		 *		config - The configuration to be saved.
 		 *		errorList - If it couldn't successfully save the file it will add error messages to this list.  This list may be null if
 		 *						you don't need the error.
-		 *		
+		 *
 		 * Returns:
-		 * 
+		 *
 		 *		Whether it was able to successfully save the file without any errors.  If the file didn't need saving because
 		 *		the generated file was the same as the one on disk, this will still return true.
 		 */
@@ -704,26 +704,26 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 			System.Text.StringBuilder output = new System.Text.StringBuilder(1024);
 
 			string projectOrSystem;
-			
+
 			if (propertySource == Engine.Config.PropertySource.ProjectCommentsFile)
 				{  projectOrSystem = "Project";  }
 			else if (propertySource == Engine.Config.PropertySource.SystemCommentsFile)
 				{  projectOrSystem = "System";  }
 			else
 				{  throw new InvalidOperationException();  }
-			
-			
+
+
 			// Header
-			
+
 			output.AppendLine("Format: " + Engine.Instance.VersionString);
 			output.AppendLine();
 			output.Append( Locale.Get("NaturalDocs.Engine", "Comments.txt." + projectOrSystem + "Header.multiline") );
 			output.AppendLine();
 			output.AppendLine();
-			
-			
+
+
 			// Ignored Keywords
-			
+
 			if (config.HasIgnoredKeywords)
 				{
 				output.Append( Locale.Get("NaturalDocs.Engine", "Comments.txt.IgnoredKeywordsHeader.multiline") );
@@ -748,10 +748,10 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 					}
 				// Add nothing for the system config file.
 				}
-			
-			
+
+
 			// Tags
-			
+
 			// Tags are undocumented so don't include any of the syntax reference.  Do include the content if it's there though.
 
 			//output.Append( Locale.Get("NaturalDocs.Engine", "Comments.txt.TagsHeader.multiline") );
@@ -774,27 +774,27 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 
 			//output.AppendLine();
 			//output.AppendLine();
-				
-				
+
+
 			// Comment Types
-			
+
 			output.Append( Locale.Get("NaturalDocs.Engine", "Comments.txt.CommentTypesHeader.multiline") );
 
 			if (config.HasCommentTypes)
 				{
-				output.Append( Locale.Get("NaturalDocs.Engine", "Comments.txt.DeferredCommentTypesReference.multiline") );				
+				output.Append( Locale.Get("NaturalDocs.Engine", "Comments.txt.DeferredCommentTypesReference.multiline") );
 				output.AppendLine();
 
 				foreach (var commentType in config.CommentTypes)
 					{
 					if (commentType.AlterType == true)
 						{  output.Append("Alter ");  }
-					
+
 					output.AppendLine("Comment Type: " + commentType.Name);
 					int oldGroupNumber = 0;
-				
+
 					if (commentType.HasDisplayName)
-						{  
+						{
 						AppendLineBreakOnGroupChange(1, ref oldGroupNumber, output);
 						output.AppendLine("   Display Name: " + commentType.DisplayName);
 						}
@@ -818,32 +818,32 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 						AppendLineBreakOnGroupChange(1, ref oldGroupNumber, output);
 						output.AppendLine("   Simple Identifier: " + commentType.SimpleIdentifier);
 						}
-					
+
 					if (commentType.HasScope)
 						{
 						AppendLineBreakOnGroupChange(2, ref oldGroupNumber, output);
 
 						output.Append("   Scope: ");
-					
+
 						switch ((CommentType.ScopeValue)commentType.Scope)
 							{
 							case CommentType.ScopeValue.Normal:
 								output.AppendLine("Normal");
 								break;
-							case CommentType.ScopeValue.Start: 
+							case CommentType.ScopeValue.Start:
 								output.AppendLine("Start");
 								break;
-							case CommentType.ScopeValue.End: 
+							case CommentType.ScopeValue.End:
 								output.AppendLine("End");
 								break;
-							case CommentType.ScopeValue.AlwaysGlobal: 
+							case CommentType.ScopeValue.AlwaysGlobal:
 								output.AppendLine("Always Global");
 								break;
-							default: 
+							default:
 								throw new NotImplementedException();
 							}
 						}
-					
+
 					if (commentType.HasFlags || commentType.HasHierarchyName)
 						{
 						AppendLineBreakOnGroupChange(2, ref oldGroupNumber, output);
@@ -854,7 +854,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 						if (commentType.HasFlags)
 							{
 							var flagsValue = (CommentType.FlagValue)commentType.Flags;
-					
+
 							if ( (flagsValue & CommentType.FlagValue.Code) != 0)
 								{  flagStrings.Add("Code");  }
 							if ( (flagsValue & CommentType.FlagValue.File) != 0)
@@ -882,7 +882,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 
 						output.AppendLine();
 						}
-					
+
 					if (commentType.HasKeywordGroups)
 						{
 						foreach (var keywordGroup in commentType.KeywordGroups)
@@ -906,14 +906,14 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 				{  output.AppendLine();  }
 
 			output.Append( Locale.Get("NaturalDocs.Engine", "Comments.txt." + projectOrSystem + "CommentTypesReference.multiline") );
-				
-				
+
+
 			// Compare with previous file and write to disk
-			
+
 			return ConfigFile.SaveIfDifferent(filename, output.ToString(), noErrorOnFail: (errorList == null), errorList);
 			}
-			
-			
+
+
 		/* Function: AppendKeywordGroup
 		 * A function used only by <Save()> that adds a keyword group to the passed StringBuilder.
 		 */
@@ -930,9 +930,9 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 				}
 			}
 
-			
+
 		/* Function: AppendLineBreakOnGroupChange
-		 * A shortcut function used only by <Save()> which inserts a line break between groups.  It will also update 
+		 * A shortcut function used only by <Save()> which inserts a line break between groups.  It will also update
 		 * oldGroupNumber automatically.
 		 */
 		private void AppendLineBreakOnGroupChange (int groupNumber, ref int oldGroupNumber, System.Text.StringBuilder output)
@@ -985,6 +985,6 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 		 */
 		protected static char[] BannedKeywordChars = { '{', '}', ',', '#', ':' };
 
-		 
+
 		}
 	}

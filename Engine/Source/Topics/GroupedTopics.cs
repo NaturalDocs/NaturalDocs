@@ -1,11 +1,11 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Topics.GroupedTopics
  * ____________________________________________________________________________
- * 
+ *
  * A list of <Topics> divided into <TopicGroups>.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -34,7 +34,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 
 
 		/* Function: CreateGroup
-		 * Creates a grouping in the topic list.  Groups do not have to encompass every topic but they must be created 
+		 * Creates a grouping in the topic list.  Groups do not have to encompass every topic but they must be created
 		 * in order and must not overlap.
 		 */
 		public void CreateGroup (int startingIndex, int count)
@@ -63,8 +63,8 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 			var groupToRemove = groups[groupIndex];
 
 			if (groupToRemove.Count > 0)
-				{  
-				topics.RemoveRange(groupToRemove.StartingIndex, groupToRemove.Count);  
+				{
+				topics.RemoveRange(groupToRemove.StartingIndex, groupToRemove.Count);
 
 				for (int i = groupIndex + 1; i < groups.Count; i++)
 					{  groups[i].StartingIndex -= groupToRemove.Count;  }

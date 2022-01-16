@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Paths.Style
  * ____________________________________________________________________________
- * 
+ *
  * Path functions relating to styles in HTML output.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -35,12 +35,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 
 
 		/* Function: OutputFolder
-		 * 
+		 *
 		 * Returns the output folder for style files.  If you include the style name, it will be the output folder for that
 		 * particular style.  If you do not, it will be the root output folder for all styles.
-		 * 
+		 *
 		 * Examples:
-		 * 
+		 *
 		 *		targetOutputFolder - C:\Project\Documentation\styles
 		 *		targetOutputFolder + styleName - C:\Project\Documentation\styles\Red
 		 */
@@ -50,11 +50,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 			result.Append("/styles");
 
 			if (styleName != null)
-				{  
+				{
 				result.Append('/');
 				result.Append(Paths.Utilities.Sanitize(styleName));
 				}
-			
+
 			return result.ToString();
 			}
 

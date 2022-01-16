@@ -1,14 +1,14 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Comments.Components.SectionedComment
  * ____________________________________________________________________________
- * 
- * A class to manage the generated output for comments that can be divided into named sections.  This is used primarily 
+ *
+ * A class to manage the generated output for comments that can be divided into named sections.  This is used primarily
  * for Javadoc and XML comments.  For example, all @param lines in Javadoc will be condensed into a single "Parameters"
  * section.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -34,15 +34,15 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 			sections = new List<Section>();
 			}
 
-		
+
 		/* Function: GetOrCreateTextSection
 		 * Returns a <TextSection> associated with the passed name.  If the last section in the comment has the same name
-		 * it will be returned so new content can be appended to it.  If it doesn't this will create a new section, add it to the 
+		 * it will be returned so new content can be appended to it.  If it doesn't this will create a new section, add it to the
 		 * end of the list and return it.
 		 */
 		public TextSection GetOrCreateTextSection (string name)
 			{
-			if (sections.Count > 0 && 
+			if (sections.Count > 0 &&
 				sections[sections.Count - 1] is TextSection &&
 				sections[sections.Count - 1].Name == name)
 				{  return (sections[sections.Count - 1] as TextSection);  }
@@ -74,7 +74,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 			}
 
 
-		
+
 		// Group: Properties
 		// __________________________________________________________________________
 
@@ -99,12 +99,12 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 
 
 		/* __________________________________________________________________________
-		 * 
+		 *
 		 * Class: CodeClear.NaturalDocs.Engine.Comments.Components.SectionedComment.Section
 		 * __________________________________________________________________________
-		 * 
+		 *
 		 * A base class for all comment sections.
-		 * 
+		 *
 		 */
 		public abstract class Section
 			{
@@ -118,7 +118,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 
 
 		/* __________________________________________________________________________
-		 * 
+		 *
 		 * Struct: CodeClear.NaturalDocs.Engine.Comments.Components.SectionedComment.TextSection
 		 * __________________________________________________________________________
 		 */
@@ -139,7 +139,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 
 
 		/* __________________________________________________________________________
-		 * 
+		 *
 		 * Struct: CodeClear.NaturalDocs.Engine.Comments.Components.SectionedComment.ListSection
 		 * __________________________________________________________________________
 		 */
@@ -194,7 +194,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 
 
 		/* __________________________________________________________________________
-		 * 
+		 *
 		 * Struct: CodeClear.NaturalDocs.Engine.Comments.Components.SectionedComment.ListMember
 		 * __________________________________________________________________________
 		 */

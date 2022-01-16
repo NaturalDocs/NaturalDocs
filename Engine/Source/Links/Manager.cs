@@ -1,20 +1,20 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Links.Manager
  * ____________________________________________________________________________
- * 
- * A module that manages scoring links.  Links and their targets are still stored in <CodeDB.Manager>, but this handles 
+ *
+ * A module that manages scoring links.  Links and their targets are still stored in <CodeDB.Manager>, but this handles
  * the logic of determining how well each link and target match and generating scores for them.
- * 
- * 
+ *
+ *
  * Multithreading: Thread Safety Notes
- * 
+ *
  *		Externally, this class is thread safe.
- *		
+ *
  *		Internally, the only variable is <unprocessedChanges> which is thread safe so it doesn't need protection.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -72,7 +72,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 
 		/* var: UnprocessedChanges
-		 * 
+		 *
 		 * Returns the <Links.UnprocessedChanges> of all the unprocessed link changes that have been detected.
 		 */
 		public UnprocessedChanges UnprocessedChanges
@@ -88,11 +88,11 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 
 		/* var: unprocessedChanges
-		 * 
+		 *
 		 * All the unprocessed link changes that have been detected.
-		 * 
+		 *
 		 * Thread Safety:
-		 * 
+		 *
 		 *		This object is thread safe and can be accessed whenever.
 		 */
 		protected UnprocessedChanges unprocessedChanges;

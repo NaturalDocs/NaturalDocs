@@ -1,14 +1,14 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Comments.Javadoc.Parser
  * ____________________________________________________________________________
- * 
+ *
  * A parser to handle the Javadoc comment format.
- * 
- * 
+ *
+ *
  * Topic: Tag Support
- * 
+ *
  *		Supported Javadoc Tags:
- * 
+ *
  *			- @author
  *			- @deprecated
  *			- @exception
@@ -22,17 +22,17 @@
  *			- {@link}
  *			- {@linkPlain}
  *			- {@literal}
- * 
+ *
  *		Supported HTML Tags:
- * 
+ *
  *			- p
  *			- b, i, u, strong (converted to b), em (converted to i)
  *			- pre
  *			- ul, ol (converted to ul), li
  *			- a href for absolute URLs and e-mail addresses
- *			
+ *
  *		Unsupported:
- * 
+ *
  *			- @serial
  *			- @serialField
  *			- @serialData
@@ -48,10 +48,10 @@
  *				   having one.  Javadoc also supports having the left line partially exist so that you can have a
  *				   line of stars normally but still paste a code segment in without reformatting it.  Natural Docs
  *				   does not support this.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -78,30 +78,30 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 			{  Normal, ListItem  }
 
 
-				
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Function: Parser
 		 */
 		public Parser (Comments.Manager manager) : base (manager)
 			{
 			}
-			
-			
+
+
 		/* Function: Parse
-		 * 
+		 *
 		 * Attempts to parse the passed comment into <Topics>.  Returns whether it was successful, and if so, adds them
 		 * to the list.  These fields will be set:
-		 * 
+		 *
 		 *		- CommentLineNumber
 		 *		- Body, if present
 		 *		- Summary, if available
 		 */
 		public bool Parse (PossibleDocumentationComment sourceComment, List<Topic> topics)
 			{
-			if (HasAnyTag(sourceComment.Start.FirstToken(LineBoundsMode.CommentContent), 
+			if (HasAnyTag(sourceComment.Start.FirstToken(LineBoundsMode.CommentContent),
 								sourceComment.End.FirstToken(LineBoundsMode.Everything)) == false)
 				{  return false;  }
 
@@ -111,7 +111,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 				{  firstBlockLine.Next();  }
 
 			JavadocComment parsedComment = new JavadocComment();
-			
+
 			if (sourceComment.Start < firstBlockLine)
 				{  parsedComment.Description = GetText(sourceComment.Start, firstBlockLine);  }
 
@@ -213,8 +213,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 
 
 		/* Function: TryToGetBlock
-		 * If the iterator is on a line that starts with one of the <BlockTags>, parses it, adds its content to the comment, 
-		 * moves the iterator past it, and returns true.  If it is not at the start of a tag block it will return false and change 
+		 * If the iterator is on a line that starts with one of the <BlockTags>, parses it, adds its content to the comment,
+		 * moves the iterator past it, and returns true.  If it is not at the start of a tag block it will return false and change
 		 * nothing.
 		 */
 		protected bool TryToGetBlock (ref LineIterator lineIterator, LineIterator limit, JavadocComment comment)
@@ -405,7 +405,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 						lookahead.NextByCharacters(2);
 						}
 					else
-						{  break;  }	
+						{  break;  }
 					}
 				}
 
@@ -441,11 +441,11 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 
 
 		/* Function: GetText
-		 * 
+		 *
 		 * Converts a stretch of formatted text to NDMarkup.
-		 * 
+		 *
 		 * Modes:
-		 * 
+		 *
 		 *		Normal - The iterator continues until it goes out of bounds.
 		 *		ListItem - The iterator continues until it reaches a closing li tag.  It also skips certain formatting that is not supported
 		 *					  in list items in NDMarkup.
@@ -474,8 +474,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 
 			    else if (iterator.IsOn(JavadocElementType.LineBreak))
 			        {
-			        // Add a literal line break.  We'll replace these with spaces or double spaces later.  Right now we can't decide 
-			        // which it should be because you can't run a regex directly on a StringBuilder and it would be inefficient to convert 
+			        // Add a literal line break.  We'll replace these with spaces or double spaces later.  Right now we can't decide
+			        // which it should be because you can't run a regex directly on a StringBuilder and it would be inefficient to convert
 			        // it to a string on every line break.
 			        output.Append('\n');
 
@@ -486,7 +486,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 					{
 					// Text can appear both inside and outside of <p> tags, whitespace can appear between <p> tags that can be
 					// mistaken for content, and people can use <p> tags as standalone rather than opening tags.  Rather than put in
-					// logic to try to account for all of this we handle it in a very dirty but simple way.  Every <p> tag--opening, closing, 
+					// logic to try to account for all of this we handle it in a very dirty but simple way.  Every <p> tag--opening, closing,
 					// or standalone--causes a paragraph break.  Normalize() will clean it up for us afterwards.
 
 					tagStack.CloseTag(1, output);  // Reuse our surrounding tag
@@ -494,7 +494,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 					iterator.Next();
 					}
 
-				else if (iterator.IsOnHTMLTag("b") || 
+				else if (iterator.IsOnHTMLTag("b") ||
 						  iterator.IsOnHTMLTag("strong"))
 					{
 					if (iterator.HTMLTagForm == TagForm.Opening)
@@ -510,7 +510,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 					iterator.Next();
 					}
 
-				else if (iterator.IsOnHTMLTag("i") || 
+				else if (iterator.IsOnHTMLTag("i") ||
 						  iterator.IsOnHTMLTag("em"))
 					{
 					if (iterator.HTMLTagForm == TagForm.Opening)
@@ -542,13 +542,13 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 					}
 
 				else if (iterator.IsOnHTMLTag("pre", TagForm.Opening) && mode == GetTextMode.Normal)  // Ignore pre's in list items
-					{  
+					{
 					output.Append("</p>");
 					GetPre(ref iterator, output);
 					output.Append("<p>");
 					}
 
-				else if (iterator.IsOnHTMLTag("ul") || 
+				else if (iterator.IsOnHTMLTag("ul") ||
 						  iterator.IsOnHTMLTag("ol"))
 					{
 					if (iterator.HTMLTagForm == TagForm.Opening)
@@ -564,8 +564,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 					}
 
 				else if (iterator.IsOnHTMLTag("li", TagForm.Closing) && mode == GetTextMode.ListItem)
-					{  
-					break;  
+					{
+					break;
 					}
 
 				else if (iterator.IsOnHTMLTag("a", TagForm.Opening))
@@ -600,7 +600,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 					description = Normalize(description);
 
 					if (description == null || description == "")
-						{  
+						{
 						output.Append("<link type=\"naturaldocs\" originaltext=\"");
 						output.EntityEncodeAndAppend(symbol);
 						output.Append("\">");
@@ -851,7 +851,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 		protected void GetList (ref JavadocIterator iterator, StringBuilder output)
 			{
 			#if DEBUG
-			if (iterator.IsOnHTMLTag("ul", TagForm.Opening) == false && 
+			if (iterator.IsOnHTMLTag("ul", TagForm.Opening) == false &&
 				iterator.IsOnHTMLTag("ol", TagForm.Opening) == false)
 				{  throw new Exception("GetList() can only be called when the iterator is on an opening ol or ul tag.");  }
 			#endif
@@ -904,7 +904,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 
 			StringBuilder label = new StringBuilder();
 
-			while (iterator.IsInBounds && 
+			while (iterator.IsInBounds &&
 					 iterator.IsOnHTMLTag("a", TagForm.Closing) == false)
 				{
 				if (iterator.IsOn(JavadocElementType.Text))
@@ -914,7 +914,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 				else if (iterator.IsOn(JavadocElementType.LineBreak))
 					{  label.Append('\n');  }
 				// Ignore everything else, including tags
-				
+
 				iterator.Next();
 				}
 
@@ -969,7 +969,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 			StringBuilder symbol = new StringBuilder();
 
 			// In Javadoc, spaces are only allowed in parentheses.  We're going to go further and allow them in any braces to support
-			// templates and other languages.  However, for angle brackets they must be preceded by a comma.  This allows 
+			// templates and other languages.  However, for angle brackets they must be preceded by a comma.  This allows
 			// "Template<A, B>" to be supported while not getting tripped on "operator<".
 
 			// Most symbols won't have braces so create this on demand.
@@ -1035,8 +1035,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 			// Javadoc uses Class.Class#Member.  First remove leading hashes to handle just #Member
 			while (symbol.Length > 0 && symbol[0] == '#')
 				{  symbol.Remove(0, 1);  }
-			
-			// Convert any remaining hashes to dots.  Ideally we would use the language's native member operator but it's not 
+
+			// Convert any remaining hashes to dots.  Ideally we would use the language's native member operator but it's not
 			// easy to get it here.
 			return symbol.ToString().Replace('#', '.');
 			}
@@ -1099,7 +1099,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 
 					if (listSection.MemberCount > 0)
 						{
-						string heading = Engine.Locale.SafeGet("NaturalDocs.Engine", "Javadoc.Heading." + listSection.Name + "(count)", null, 
+						string heading = Engine.Locale.SafeGet("NaturalDocs.Engine", "Javadoc.Heading." + listSection.Name + "(count)", null,
 																				listSection.MemberCount);
 
 						if (heading != null)
@@ -1113,7 +1113,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 							body.Append("</h>");
 							}
 
-						// Parameters always get definition lists even if they don't have descriptions so that the type information can appear with 
+						// Parameters always get definition lists even if they don't have descriptions so that the type information can appear with
 						// them in HTML.
 						bool useDefinitionList = (listSection.Name == "param" || (listSection.MembersHaveNames && listSection.MembersHaveDescriptions));
 						bool addLinks = (listSection.Name == "exception" || listSection.Name == "throws");
@@ -1131,11 +1131,11 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 								{  body.Append("<li>");  }
 
 							if (listMember.Name != null)
-								{  
+								{
 								if (addLinks)
 									{  body.Append("<link type=\"naturaldocs\" originaltext=\"");  }
 
-								body.EntityEncodeAndAppend(listMember.Name);  
+								body.EntityEncodeAndAppend(listMember.Name);
 
 								if (addLinks)
 									{  body.Append("\">");  }
@@ -1185,7 +1185,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 		// __________________________________________________________________________
 
 
-		public static StringSet BlockTags = new StringSet (KeySettings.Literal, 
+		public static StringSet BlockTags = new StringSet (KeySettings.Literal,
 			"author", "deprecated", "exception", "param", "return", "see", "serial", "serialData", "serialField",
 			"since", "throws", "version");
 

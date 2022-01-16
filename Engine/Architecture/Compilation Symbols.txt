@@ -9,20 +9,20 @@ Macros: SQLite Character Mode
 
 	SQLITE_UTF8 - Use SQLite in UTF-8 mode.
 	SQLITE_UTF16 - Use SQLite in UTF-16 mode.
-	
-	Running in UTF-8 mode means a smaller database file, which means less disk access and less memory use.  It also 
-	means more of the database can stay in the memory it does use.  However, it also means strings have to be constantly 
+
+	Running in UTF-8 mode means a smaller database file, which means less disk access and less memory use.  It also
+	means more of the database can stay in the memory it does use.  However, it also means strings have to be constantly
 	converted between SQLite's UTF-8 strings and C#'s native UTF-16 ones.  Having these symbols available lets you
 	easily test the performance tradeoff.
 
-	Testing in March 2020 after upgrading SQLite to 3.31.1 showed that using UTF-16 speeds up the parsing and link 
-	resolving stages, but you give almost all of it back on the building stage.  Therefore it's not worth the extra memory 
+	Testing in March 2020 after upgrading SQLite to 3.31.1 showed that using UTF-16 speeds up the parsing and link
+	resolving stages, but you give almost all of it back on the building stage.  Therefore it's not worth the extra memory
 	and disk space.
-	
+
 	Note, however, that this only applies to new databases.  When testing, you must delete CodeDB.nd for it to really take
 	effect.
-	
-	
+
+
 Macro: SHOW_NDMARKUP
 
 	If defined, Natural Docs will put a copy of the <NDMarkup> in the output.

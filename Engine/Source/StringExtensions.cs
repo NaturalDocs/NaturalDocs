@@ -1,11 +1,11 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.StringExtensions
  * ____________________________________________________________________________
- * 
+ *
  * A static class for all the functions added to the string type.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -23,7 +23,7 @@ namespace CodeClear.NaturalDocs.Engine
 		// Group: Functions
 		// __________________________________________________________________________
 
-		
+
 		/* Function: CondenseWhitespace
 		 * Replaces all strings of whitespace characters with a single space.
 		 */
@@ -31,7 +31,7 @@ namespace CodeClear.NaturalDocs.Engine
 			{
 			return WhitespaceCharsRegex.Replace(input, " ");
 			}
-		
+
 		/* Function: RemoveWhitespace
 		 * Removes all whitespace from the string.
 		 */
@@ -73,7 +73,7 @@ namespace CodeClear.NaturalDocs.Engine
 			{
 			return input.Split(LineBreakChars, StringSplitOptions.RemoveEmptyEntries);
 			}
-		
+
 		/* Function: NormalizeKey
 		 * Normalizes a string key by applying <Collections.KeySettings>.
 		 */
@@ -83,31 +83,31 @@ namespace CodeClear.NaturalDocs.Engine
 				{  key = key.ToLower();  }
 			if ((keySettings & Collections.KeySettings.NormalizeUnicode) != 0)
 				{  key = key.Normalize(System.Text.NormalizationForm.FormKC);  }
-				
+
 			return key;
 			}
-			
+
 		/* Function: OnlyAToZ
 		 * Converts the passed string to a version that only contains the letters A to Z.  All other characters are stripped or
 		 * replaced with related characters.  If there are no ASCII characters available it returns null.
 		 */
 		public static string OnlyAToZ (this string input)
 			{
-			// Use a compatibility decomposition to increase the chances of finding ASCII letters.  Hopefully some accented 
+			// Use a compatibility decomposition to increase the chances of finding ASCII letters.  Hopefully some accented
 			// Latin characters will be separated into ASCII characters and combining characters.
 			string result = input.Normalize(System.Text.NormalizationForm.FormKD);
 
 			Regex.NonASCIILetters nonASCIILettersRegex = new Regex.NonASCIILetters();
 			result = nonASCIILettersRegex.Replace(result, "");
-				
+
 			if (String.IsNullOrEmpty(result))
 				{  result = null;  }
-				
+
 			return result;
 			}
 
 		/* Function: ToHTML
-		 * Converts the plain text string to HTML.  This encodes <, >, ", and & as entity characters and encodes double 
+		 * Converts the plain text string to HTML.  This encodes <, >, ", and & as entity characters and encodes double
 		 * spaces with &nbsp;.
 		 */
 		public static string ToHTML (this string text)
@@ -124,11 +124,11 @@ namespace CodeClear.NaturalDocs.Engine
 		 */
 		public static string ConvertCopyrightAndTrademark (this string input)
 			{
-			return CopyrightAndTrademarkRegex.Replace(input, 
+			return CopyrightAndTrademarkRegex.Replace(input,
 				delegate (Match match)
 					{
 					string lcMatch = match.Value.ToLower();
-					
+
 					if (lcMatch == "(c)")
 						{  return "©";  }
 					else if (lcMatch == "(r)")
@@ -147,7 +147,7 @@ namespace CodeClear.NaturalDocs.Engine
 			{
 			return LineBreakRegex.Replace(input, "<br>");
 			}
-		 
+
 
 		/* Function: ConvertMultipleWhitespaceChars
 		 * Replaces instances of at least two whitespace characters in a row with &nbsp; and a space.  If you plan to use this and
@@ -190,14 +190,14 @@ namespace CodeClear.NaturalDocs.Engine
 			return count;
 			}
 
-		
+
 
 		// Group: Entity and Escapement Functions
-		// __________________________________________________________________________					
+		// __________________________________________________________________________
 
 
 		/* Function: EntityEncode
-		 * Returns the input character as a string with <, >, ", and & replaced by their entity encodings.  Technically an 
+		 * Returns the input character as a string with <, >, ", and & replaced by their entity encodings.  Technically an
 		 * extension to char instead of string.
 		 */
 		public static string EntityEncode (this char input)
@@ -230,7 +230,7 @@ namespace CodeClear.NaturalDocs.Engine
 			output.EntityEncodeAndAppend(input);
 			return output.ToString();
 			}
-		
+
 
 		/* Function: EntityDecode
 		 * Returns the string with <, >, ", and & restored from their entity encodings.
@@ -251,7 +251,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 		/* Function: StringEscape
 		 * Returns the string with ", ', and \ escaped so that they can be put into a JavaScript string.  If the result will be
-		 * appended to a StringBuilder, it is more efficient to use <StringBuilderExtensions.StringEscapeAndAppend()> 
+		 * appended to a StringBuilder, it is more efficient to use <StringBuilderExtensions.StringEscapeAndAppend()>
 		 * instead of this function.
 		 */
 		public static string StringEscape (this string input)
@@ -270,7 +270,7 @@ namespace CodeClear.NaturalDocs.Engine
 		// __________________________________________________________________________
 
 		/* var: EntityCharLiterals
-		 * An array of characters that would need to be converted to entity characters in <NDMarkup>.  Useful for 
+		 * An array of characters that would need to be converted to entity characters in <NDMarkup>.  Useful for
 		 * String.IndexOfAny(char[]).
 		 */
 		static public char[] EntityCharLiterals = new char[] { '"', '&', '<', '>' };
@@ -286,6 +286,6 @@ namespace CodeClear.NaturalDocs.Engine
 		static public Regex.NDMarkup.CopyrightAndTrademark CopyrightAndTrademarkRegex = new Regex.NDMarkup.CopyrightAndTrademark();
 		static public Regex.MultipleWhitespaceChars MultipleWhitespaceCharsRegex = new Regex.MultipleWhitespaceChars();
 		static public Regex.LineBreak LineBreakRegex = new Regex.LineBreak();
-			
+
 		}
 	}

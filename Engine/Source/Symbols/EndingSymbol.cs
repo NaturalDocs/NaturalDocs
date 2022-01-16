@@ -1,13 +1,13 @@
-﻿/* 
+﻿/*
  * Struct: CodeClear.NaturalDocs.Engine.Symbols.EndingSymbol
  * ____________________________________________________________________________
- * 
- * A struct encapsulating the ending symbol from a symbol string, which is a normalized way of representing 
+ *
+ * A struct encapsulating the ending symbol from a symbol string, which is a normalized way of representing
  * the last part of a hierarchal code element or topic, such as "functionc" in "PackageA.PackageB.FunctionC".
  * Unlike <SymbolStrings>, ending symbols are case-insensitive.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -19,11 +19,11 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 	{
 	public struct EndingSymbol : IComparable
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Function: EndingSymbol
 		 */
 		private EndingSymbol (string newEndingSymbol)
@@ -31,9 +31,9 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			endingSymbol = newEndingSymbol;
 			}
 
-			
+
 		/* Function: FromExportedString
-		 * Creates an EndingSymbol from the passed string which originally came from another EndingSymbol object.  This skips 
+		 * Creates an EndingSymbol from the passed string which originally came from another EndingSymbol object.  This skips
 		 * the normalization stage because it should already be in the proper format.  Only use this when retrieving EndingSymbols
 		 * that were stored as plain text in a database or other data file.
 		 */
@@ -44,8 +44,8 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 
 		   return new EndingSymbol(exportedEndingSymbol);
 		   }
-			
-		
+
+
 		/* Function: FromSymbolStringSegment
 		 * Creates an EndingSymbol from a segment of text split off from a <SymbolString>.  This function should only be called by
 		 * <SymbolString>, other code should use <SymbolString.EndingSymbol> instead.  This assumes the string segment has
@@ -59,13 +59,13 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 
 			return new EndingSymbol(symbolStringSegment);
 		   }
-			
-		
-		
+
+
+
 		// Group: Operators
 		// __________________________________________________________________________
-		
-		
+
+
 		/* operator: operator string
 		 * A cast operator to covert the symbol to a string.
 		 */
@@ -73,7 +73,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 		   {
 		   return endingSymbolObject.endingSymbol;
 		   }
-						
+
 		/* Operator: operator ==
 		 */
 		public static bool operator== (EndingSymbol a, object b)
@@ -97,7 +97,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 		   {
 		   return endingSymbol;
 		   }
-			
+
 		/* Function: GetHashCode
 		 */
 		public override int GetHashCode ()
@@ -121,24 +121,24 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 		   else
 		      {  return false;  }
 		   }
-			
+
 		/* Function: CompareTo
 		 */
 		public int CompareTo (object other)
 		   {
 		   return endingSymbol.CompareTo(other);
 		   }
-		
-			
-			
+
+
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
-		
+
+
 		/* string: endingSymbol
 		 * The symbol, _always_ in normalized form.
 		 */
 		private string endingSymbol;
-	
+
 		}
 	}

@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Languages.Parsers.CSharp
  * ____________________________________________________________________________
- * 
+ *
  * Full language support parser for C#.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -38,11 +38,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			{  GlobalOnly, LocalOnly, Any  }
 
 
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: CSharp
 		 */
 		public CSharp (Engine.Instance engineInstance, Language language) : base (engineInstance, language)
@@ -65,7 +65,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			    {
 				parsed = TryToSkipFunction(ref startOfPrototype, ParseMode.ParsePrototype);
 			    }
-			
+
 			if (!parsed &&
 				(commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("variable", language.ID) ||
 				 commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("constant", language.ID) ||
@@ -140,9 +140,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: GetCodeElements
-		 * 
+		 *
 		 * Topic Properties:
-		 * 
+		 *
 		 *		TopicID - Not set.
 		 *		Title - Set.
 		 *		Body - Not applicable.
@@ -162,7 +162,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *		LanguageID - Set only on root element.
 		 *		PrototypeContext - Not set.
 		 *		BodyContext - Not set.
-		 *		
+		 *
 		 */
 		override public List<Element> GetCodeElements (Tokenizer source)
 			{
@@ -189,12 +189,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: GetCodeElements
-		 * 
-		 * Adds code elements to the list until it reaches the end of the file or optionally passes a specific character.  This will 
-		 * recursively go into nested classes and namespaces.  The stop character must appear on its own and not inside a 
-		 * block, string, or comment, so to use '}' you must start past the opening brace.  The iterator will be left past the stop 
+		 *
+		 * Adds code elements to the list until it reaches the end of the file or optionally passes a specific character.  This will
+		 * recursively go into nested classes and namespaces.  The stop character must appear on its own and not inside a
+		 * block, string, or comment, so to use '}' you must start past the opening brace.  The iterator will be left past the stop
 		 * character or at the end of the file.
-		 * 
+		 *
 		 * If you want to skip a block without searching for elements within it, use <GenericSkipUntilAfter()> instead.
 		 */
 		protected void GetCodeElements (ref TokenIterator iterator, List<Element> elements, SymbolString scope,
@@ -308,7 +308,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				else if (iterator.FundamentalType == FundamentalType.Text || iterator.Character == '_')
 					{
 					TokenIterator endOfIdentifier = iterator;
-						
+
 					do
 						{  endOfIdentifier.Next();  }
 					while (endOfIdentifier.FundamentalType == FundamentalType.Text ||
@@ -326,12 +326,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					}
 
 				else
-					{  
+					{
 					if (iterator.FundamentalType != FundamentalType.Whitespace &&
 						iterator.FundamentalType != FundamentalType.LineBreak)
 						{  lastCodeToken = iterator;  }
 
-					iterator.Next();  
+					iterator.Next();
 					}
 				}
 			}
@@ -352,18 +352,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipUsingStatement
-		 * 
+		 *
 		 * If the iterator is on a using statement, moves it past it and returns true.  If the mode is set to <ParseMode.CreateElements> it will
 		 * add it to the most recent <ParentElement>.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.CreateElements>
 		 *			- The elements and scope parameters must be set.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipUsingStatement (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null, 
+		protected bool TryToSkipUsingStatement (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null,
 																SymbolString scope = default(SymbolString))
 			{
 			#if DEBUG
@@ -420,7 +420,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				// find it manually, treating -1 as meaning it contains the current position.
 
 				int parentIndex = -1;
-				
+
 				for (int i = elements.Count - 1; i >= 0; i--)
 					{
 					if (elements[i] is ParentElement)
@@ -453,18 +453,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipNamespace
-		 * 
+		 *
 		 * If the iterator is on a namespace element, moves it past it and returns true.  If the mode is set to <ParseMode.CreateElements>
 		 * it will add it to the list of <Elements>.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.CreateElements>
 		 *			- The elements and scope parameters must be set.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipNamespace (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null, 
+		protected bool TryToSkipNamespace (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null,
 														  SymbolString scope = default(SymbolString))
 			{
 			#if DEBUG
@@ -472,7 +472,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{  throw new Exception("Elements and scope must be set when using ParseMode.CreateElements.");  }
 			#endif
 
-			// Namespaces may not have attributes.  There may be global attributes above them in the file, but they do not apply to the 
+			// Namespaces may not have attributes.  There may be global attributes above them in the file, but they do not apply to the
 			// namespace itself.  Namespaces embedded in other namespaces do not have attributes at all.
 
 			if (iterator.MatchesToken("namespace") == false)
@@ -532,19 +532,19 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipClass
-		 * 
-		 * If the iterator is on a class, struct, or interface element, moves it past it and returns true.  If the mode is set to 
+		 *
+		 * If the iterator is on a class, struct, or interface element, moves it past it and returns true.  If the mode is set to
 		 * <ParseMode.CreateElements> it will add it to the list of <Elements>.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParseClassPrototype>
 		 *		- <ParseMode.CreateElements>
 		 *			- The elements and scope parameters must be set.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipClass (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null, 
+		protected bool TryToSkipClass (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null,
 												  SymbolString scope = default(SymbolString))
 			{
 			// Classes, Structs, Interfaces, Records
@@ -571,17 +571,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			TokenIterator startOfModifiers = lookahead;
 			TokenIterator endOfModifiers = lookahead;
-			
+
 			AccessLevel accessLevel;
 
 			// This covers "partial" as well, even though that's listed separately in the documentaton.
 			if (TryToSkipModifiers(ref lookahead, out accessLevel, mode))
-				{  
+				{
 				endOfModifiers = lookahead;
-				TryToSkipWhitespace(ref lookahead);  
+				TryToSkipWhitespace(ref lookahead);
 				}
 
-			if (mode == ParseMode.ParseClassPrototype && 
+			if (mode == ParseMode.ParseClassPrototype &&
 				endOfModifiers > startOfModifiers)
 				{  startOfModifiers.SetClassPrototypeParsingTypeBetween(endOfModifiers, ClassPrototypeParsingType.Modifier);  }
 
@@ -592,9 +592,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				lookahead.MatchesToken("struct") == false &&
 				lookahead.MatchesToken("interface") == false &&
 				lookahead.MatchesToken("record") == false)
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 
 			string keyword = lookahead.String;
@@ -610,9 +610,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			string name;
 			if (TryToSkipIdentifier(ref lookahead, out name, mode, PrototypeParsingType.Name) == false)
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 
 			TryToSkipWhitespace(ref lookahead);
@@ -631,7 +631,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			bool hasRecordParameters = false;
 
 			if (keyword == "record" && TryToSkipParameters(ref lookahead, mode))
-				{  
+				{
 				hasRecordParameters = true;
 				endOfRecordParameters = lookahead;
 
@@ -641,7 +641,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Base classes and interfaces
 
-			// If you have "record MyRec (int X, int Y) : ParentRec (X)", then X is defined in the parent record and inherited.  It will 
+			// If you have "record MyRec (int X, int Y) : ParentRec (X)", then X is defined in the parent record and inherited.  It will
 			// not be defined as a new property in MyRec.  Therefore we need to collect the names that appear in the parent statements
 			// so we can ignore them when creating new properties.
 			StringSet ignoredRecordParameters = null;
@@ -672,7 +672,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					// Parent record parameters
 
 					if (keyword == "record" && lookahead.Character == '(')
-						{  
+						{
 						if (ignoredRecordParameters == null)
 							{  ignoredRecordParameters = new StringSet();  }
 
@@ -735,9 +735,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			if (lookahead.Character != '{' &&
 				lookahead.Character != ';' &&
 				lookahead.IsInBounds)
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 
 
@@ -815,7 +815,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 									{
 
 									// Construct a prototype
-									
+
 									// Start by getting the full parameter line.
 									TokenIterator fullParameterStart, fullParameterEnd;
 									parametersPrototype.GetParameter(i, out fullParameterStart, out fullParameterEnd);
@@ -830,8 +830,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 											   paramLookBehind.PrototypeParsingType == PrototypeParsingType.DefaultValueSeparator ||
 											   paramLookBehind.FundamentalType == FundamentalType.Whitespace ||
 											   paramLookBehind.FundamentalType == FundamentalType.LineBreak))
-										{  
-										fullParameterEnd.Previous();  
+										{
+										fullParameterEnd.Previous();
 										paramLookBehind.Previous();
 										}
 
@@ -929,19 +929,19 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipFunction
-		 * 
-		 * If the iterator is on a function, delegate, or operator other than a conversion or indexer, moves it past it and returns true.  If the 
+		 *
+		 * If the iterator is on a function, delegate, or operator other than a conversion or indexer, moves it past it and returns true.  If the
 		 * mode is set to <ParseMode.CreateElements> it will add it to the list of <Elements>.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.CreateElements>
 		 *			- The elements and scope parameters must be set.
 		 *		- <ParseMode.ParsePrototype>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipFunction (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null, 
+		protected bool TryToSkipFunction (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null,
 													   SymbolString scope = default(SymbolString))
 			{
 			// Functions, Delegates, Operators
@@ -955,7 +955,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 			// Attributes
-			
+
 			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode, PrototypeParsingType.StartOfPrototypeSection))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
@@ -981,9 +981,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					  lookahead.MatchesToken("explicit") ||
 					  lookahead.MatchesToken("enum") ||
 					  lookahead.MatchesToken("using"))
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 
 			if (keyword == null)
@@ -998,9 +998,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// Return type
 
 			if (TryToSkipType(ref lookahead, mode) == false)
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 
 			TryToSkipWhitespace(ref lookahead);
@@ -1010,9 +1010,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			string name;
 			if (TryToSkipIdentifier(ref lookahead, out name, mode, PrototypeParsingType.Name) == false)
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 
 			TryToSkipWhitespace(ref lookahead);
@@ -1075,9 +1075,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				lookahead.Character != '{' &&
 				lookahead.Character != ';' &&
 				lookahead.MatchesAcrossTokens("=>") == false)
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 
 
@@ -1129,12 +1129,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipConstructor
-		 * 
+		 *
 		 * If the iterator is on a constructor or destructor, moves it past it and returns true.  If the mode is set to <ParseMode.CreateElements>
 		 * it will add it to the list of <Elements>.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.CreateElements>
 		 *			- The elements and scope parameters must be set.
@@ -1155,7 +1155,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 			// Attributes
-			
+
 			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode, PrototypeParsingType.StartOfPrototypeSection))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
@@ -1190,9 +1190,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			string name;
 			if (TryToSkipIdentifier(ref lookahead, out name, mode, PrototypeParsingType.Name) == false)
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 
 			if (name == "delegate" ||
@@ -1202,9 +1202,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				name == "explicit" ||
 				name == "enum" ||
 				name == "using")
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 
 			if (keyword == "destructor")
@@ -1234,18 +1234,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 				if (lookahead.MatchesToken("base") == false &&
 					lookahead.MatchesToken("this") == false)
-					{  
+					{
 					ResetTokensBetween(iterator, lookahead, mode);
-					return false;  
+					return false;
 					}
 
 				lookahead.Next();
 				TryToSkipWhitespace(ref lookahead);
 
 				if (lookahead.Character != '(')
-					{  
+					{
 					ResetTokensBetween(iterator, lookahead, mode);
-					return false;  
+					return false;
 					}
 
 				lookahead.Next();
@@ -1257,9 +1257,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				lookahead.Character != '{' &&
 				lookahead.Character != ';' &&
 				lookahead.MatchesAcrossTokens("=>") == false)
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 
 
@@ -1311,19 +1311,19 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipConversionOperator
-		 * 
+		 *
 		 * If the iterator is on a conversion operator, moves it past it and returns true.  If the mode is set to <ParseMode.CreateElements>
 		 * it will add it to the list of <Elements>.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.CreateElements>
 		 *			- The elements and scope parameters must be set.
 		 *		- <ParseMode.ParsePrototype>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipConversionOperator (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, 
+		protected bool TryToSkipConversionOperator (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
 																	 List<Element> elements = null, SymbolString scope = default(SymbolString))
 			{
 			#if DEBUG
@@ -1335,7 +1335,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 			// Attributes
-			
+
 			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode, PrototypeParsingType.StartOfPrototypeSection))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
@@ -1353,18 +1353,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (lookahead.MatchesToken("implicit") == false &&
 				lookahead.MatchesToken("explicit") == false)
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 
 			lookahead.Next();
 			TryToSkipWhitespace(ref lookahead);
 
 			if (lookahead.MatchesToken("operator") == false)
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 
 			if (mode == ParseMode.ParsePrototype)
@@ -1381,9 +1381,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// IterateOnly so we don't mark it as a type when using ParseMode.ParsePrototype
 			if (TryToSkipType(ref lookahead, ParseMode.IterateOnly) == false)
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 
 			startOfType.AppendTextBetweenTo(lookahead, name);
@@ -1408,9 +1408,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				lookahead.Character != '{' &&
 				lookahead.Character != ';' &&
 				lookahead.MatchesAcrossTokens("=>") == false)
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 
 
@@ -1462,19 +1462,19 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipVariable
-		 * 
+		 *
 		 * If the iterator is on a variable, constant, or event, moves it past it and returns true.  If the mode is set to <ParseMode.CreateElements>
 		 * it will add it to the list of <Elements>.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.CreateElements>
 		 *			- The elements and scope parameters must be set.
 		 *		- <ParseMode.ParsePrototype>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipVariable (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null, 
+		protected bool TryToSkipVariable (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null,
 													 SymbolString scope = default(SymbolString))
 			{
 			// Variables, Constants, Events
@@ -1488,7 +1488,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 			// Attributes
-			
+
 			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode, PrototypeParsingType.StartOfPrototypeSection))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
@@ -1530,9 +1530,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						  lookahead.MatchesToken("explicit") ||
 						  lookahead.MatchesToken("enum") ||
 						  lookahead.MatchesToken("using"))
-					{  
+					{
 					ResetTokensBetween(iterator, lookahead, mode);
-					return false;  
+					return false;
 					}
 
 				if (keyword == null)
@@ -1544,9 +1544,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					}
 
 				if (TryToSkipType(ref lookahead, mode) == false)
-					{  
+					{
 					ResetTokensBetween(iterator, lookahead, mode);
-					return false;  
+					return false;
 					}
 
 				endOfType = lookahead;
@@ -1558,9 +1558,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			string name;
 			if (TryToSkipIdentifier(ref lookahead, out name, mode, PrototypeParsingType.Name) == false)
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 
 			TryToSkipWhitespace(ref lookahead);
@@ -1582,7 +1582,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				if (lookahead.Character != ']')
 					{
 					ResetTokensBetween(iterator, lookahead, mode);
-					return false;						
+					return false;
 					}
 
 				if (mode == ParseMode.ParsePrototype)
@@ -1597,9 +1597,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				lookahead.Character != ',' &&
 				( lookahead.Character != '=') ||
 				  lookahead.MatchesAcrossTokens("=>") )
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 
 
@@ -1624,7 +1624,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				elements.Add(variableElement);
 				}
 
-			
+
 			// Multiple declarations and default values
 
 			while (lookahead.IsInBounds && lookahead.Character != ';')
@@ -1637,8 +1637,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					lookahead.Next();
 					TokenIterator startOfDefaultValue = lookahead;
 
-					while (lookahead.IsInBounds && 
-							 lookahead.Character != ',' && 
+					while (lookahead.IsInBounds &&
+							 lookahead.Character != ',' &&
 							 lookahead.Character != ';')
 						{  GenericSkip(ref lookahead);  }
 
@@ -1659,8 +1659,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					TryToSkipWhitespace(ref lookahead);
 
 					if (lookahead.IsInBounds &&
-						lookahead.Character != ';' && 
-						lookahead.Character != ',' && 
+						lookahead.Character != ';' &&
+						lookahead.Character != ',' &&
 						lookahead.Character != '=')
 						{  break;  }
 
@@ -1694,19 +1694,19 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipProperty
-		 * 
+		 *
 		 * If the iterator is on a property, indexer, or event declared like a property, moves it past it and returns true.  If the mode is set to
 		 * <ParseMode.CreateElements> it will add it to the list of <Elements>.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.CreateElements>
 		 *			- The elements and scope parameters must be set.
 		 *		- <ParseMode.ParsePrototype>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipProperty (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null, 
+		protected bool TryToSkipProperty (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null,
 													  SymbolString scope = default(SymbolString))
 			{
 			// Properties, Indexers, Events
@@ -1720,7 +1720,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 			// Attributes
-			
+
 			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode, PrototypeParsingType.StartOfPrototypeSection))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
@@ -1745,9 +1745,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					  lookahead.MatchesToken("enum") ||
 					  lookahead.MatchesToken("delegate") ||
 					  lookahead.MatchesToken("using"))
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 
 			if (keyword == null)
@@ -1762,9 +1762,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// Type
 
 			if (TryToSkipType(ref lookahead, mode) == false)
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 
 			TryToSkipWhitespace(ref lookahead);
@@ -1774,9 +1774,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			string name;
 			if (TryToSkipIdentifier(ref lookahead, out name, mode, PrototypeParsingType.Name) == false)
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 
 			TryToSkipWhitespace(ref lookahead);
@@ -1790,9 +1790,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				keyword = "operator";
 
 				if (!TryToSkipParameters(ref lookahead, mode, openingSymbol: '['))
-					{  
+					{
 					ResetTokensBetween(iterator, lookahead, mode);
-					return false;  
+					return false;
 					}
 
 				TryToSkipWhitespace(ref lookahead);
@@ -1801,9 +1801,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (lookahead.Character != '{' &&
 				lookahead.MatchesAcrossTokens("=>") == false)
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 
 
@@ -1826,7 +1826,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					while (lookahead.IsInBounds && lookahead.Character != '}')
 						{
 						TokenIterator startOfAccessor = lookahead;
-				
+
 						if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly))
 							{  TryToSkipWhitespace(ref lookahead);  }
 
@@ -1839,20 +1839,20 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 						if (keyword == "property" || keyword == "operator")
 							{
-							validAccessor = (lookahead.MatchesToken("get") || 
-													 lookahead.MatchesToken("set") || 
+							validAccessor = (lookahead.MatchesToken("get") ||
+													 lookahead.MatchesToken("set") ||
 													 lookahead.MatchesToken("init"));
 							}
 						else if (keyword == "event")
 							{
-							validAccessor = (lookahead.MatchesToken("add") || 
+							validAccessor = (lookahead.MatchesToken("add") ||
 													 lookahead.MatchesToken("remove"));
 							}
 
 						if (!validAccessor)
-							{  
+							{
 							ResetTokensBetween(iterator, lookahead, mode);
-							return false;  
+							return false;
 							}
 
 						lookahead.Next();
@@ -1946,19 +1946,19 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipEnum
-		 * 
+		 *
 		 * If the iterator is on an enum, moves it past it and returns true.  If the mode is set to <ParseMode.CreateElements> it will add it
 		 * to the list of <Elements>.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.CreateElements>
 		 *			- The elements and scope parameters must be set.
 		 *		- <ParseMode.ParsePrototype>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipEnum (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null, 
+		protected bool TryToSkipEnum (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null,
 												  SymbolString scope = default(SymbolString))
 			{
 			#if DEBUG
@@ -1970,7 +1970,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 			// Attributes
-			
+
 			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode, PrototypeParsingType.StartOfPrototypeSection))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
@@ -1986,9 +1986,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// Keyword
 
 			if (lookahead.MatchesToken("enum") == false)
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 
 			lookahead.Next();
@@ -1999,9 +1999,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			string name;
 			if (TryToSkipIdentifier(ref lookahead, out name, mode, PrototypeParsingType.Name) == false)
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 
 			TryToSkipWhitespace(ref lookahead);
@@ -2015,9 +2015,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				TryToSkipWhitespace(ref lookahead);
 
 				if (TryToSkipType(ref lookahead, mode) == false)
-					{  
+					{
 					ResetTokensBetween(iterator, lookahead, mode);
-					return false;  
+					return false;
 					}
 
 				TryToSkipWhitespace(ref lookahead);
@@ -2025,9 +2025,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (lookahead.IsInBounds &&
 				lookahead.Character != '{')
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 
 
@@ -2073,12 +2073,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					GenericSkipUntilAfter(ref iterator, '}');
 
 					enumElement.EndingLineNumber = iterator.LineNumber;
-					enumElement.EndingCharNumber = iterator.CharNumber; 
+					enumElement.EndingCharNumber = iterator.CharNumber;
 					}
 
 				return true;
 				}
-			
+
 			else // mode isn't CreateElements
 				{
 				iterator = lookahead;
@@ -2092,7 +2092,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				return true;
 				}
 			}
-			
+
 
 
 		// Group: Component Parsing Functions
@@ -2100,12 +2100,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipParameters
-		 * 
+		 *
 		 * Tries to move the iterator past a comma-separated list of parameters in parentheses or brackets.  The opening symbol
 		 * defaults to ( but can be set to [ or <.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParsePrototype>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
@@ -2174,20 +2174,20 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				return true;
 				}
 			else
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 			}
 
 
 		/* Function: TryToSkipParameter
-		 * 
+		 *
 		 * Tries to move the iterator past a parameter, such as "int x" or "IList<int> y = null".  The parameter ends at a comma or
 		 * the closing symbol, which defaults to a closing parenthesis.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParsePrototype>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
@@ -2213,17 +2213,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 			if (TryToSkipType(ref lookahead, mode) == false)
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 
 			TryToSkipWhitespace(ref lookahead);
 
 			if (TryToSkipIdentifier(ref lookahead, mode, PrototypeParsingType.Name) == false)
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 
 			TryToSkipWhitespace(ref lookahead);
@@ -2245,26 +2245,26 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					{  startOfDefaultValue.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.DefaultValue);  }
 				}
 
-			if (lookahead.Character == ',' || 
+			if (lookahead.Character == ',' ||
 				lookahead.Character == closingSymbol)
 				{
 				iterator = lookahead;
 				return true;
 				}
 			else
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 			}
 
 
 		/* Function: TryToSkipTuple
-		 * 
+		 *
 		 * Tries to move the iterator past a tuple, which may or not have names, multiple members, or embedded tuples.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParsePrototype>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
@@ -2309,18 +2309,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				else
 					{
 					ResetTokensBetween(iterator, lookahead, mode);
-					return false;  
+					return false;
 					}
 				}
 			}
 
 
 		/* Function: TryToSkipTupleMember
-		 * 
+		 *
 		 * Tries to move the iterator past a member of a tuple, which is a type and optionally a name.  The type can be another tuple.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParsePrototype>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
@@ -2339,11 +2339,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			lookahead.NextPastWhitespace();
 
 			if (TryToSkipUnqualifiedIdentifier(ref lookahead, mode))
-				{  
+				{
 				if (mode == ParseMode.ParsePrototype)
 					{
 					iterator.NextPastWhitespace();
-					iterator.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.TupleMemberName);  
+					iterator.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.TupleMemberName);
 					}
 
 				iterator = lookahead;
@@ -2354,11 +2354,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipFunctionPointer
-		 * 
+		 *
 		 * Tries to move the iterator past a function pointer, such as "delegate*<int>" or "delegate unmanaged[Cdecl]<float>".
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParsePrototype>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
@@ -2452,12 +2452,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipType
-		 * 
+		 *
 		 * Tries to move the iterator past a type, such as "int", "(int, string)", "System.Collections.Generic.List<int>", or "int[]".  This can
 		 * handle tuples and accepts "void" as a valid type.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParsePrototype>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
@@ -2545,7 +2545,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				else if (lookahead.IsInBounds == false)
 					{
 					ResetTokensBetween(iterator, lookahead, mode);
-					return false;						
+					return false;
 					}
 				else
 					{  break;  }
@@ -2556,56 +2556,56 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipIdentifier
-		 * 
+		 *
 		 * Attempts to skip past and retrieve an identifier, such as "X.Y.Z".  Use <TryToSkipUnqualifiedIdentifier()> if you only want to
 		 * retrieve a single segment.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParsePrototype>
 		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.Name> or
-		 *			  <PrototypeParsingType.Type>.  If set to Type, it will use both <PrototypeParsingType.Type> and 
+		 *			  <PrototypeParsingType.Type>.  If set to Type, it will use both <PrototypeParsingType.Type> and
 		 *			  <PrototypeParsingType.TypeQualifier>.
 		 *		- <ParseMode.ParseClassPrototype>
 		 *			- The tokens will be marked with <ClassPrototypeParsingType.Name>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipIdentifier (ref TokenIterator iterator, out string identifier, ParseMode mode = ParseMode.IterateOnly, 
+		protected bool TryToSkipIdentifier (ref TokenIterator iterator, out string identifier, ParseMode mode = ParseMode.IterateOnly,
 													   PrototypeParsingType prototypeParsingType = PrototypeParsingType.Name)
 			{
 			TokenIterator start = iterator;
 
 			if (TryToSkipIdentifier(ref iterator, mode, prototypeParsingType))
-				{  
+				{
 				identifier = start.TextBetween(iterator);
 				return true;
 				}
 			else
-				{  
-				identifier = null;  
+				{
+				identifier = null;
 				return false;
 				}
 			}
 
 
 		/* Function: TryToSkipIdentifier
-		 * 
+		 *
 		 * Tries to move the iterator past a qualified identifier, such as "X.Y.Z".  Use <TryToSkipUnqualifiedIdentifier()> if you only want
 		 * to skip a single segment.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParsePrototype>
 		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.Name> or
-		 *			  <PrototypeParsingType.Type>.  If set to Type, it will use both <PrototypeParsingType.Type> and 
+		 *			  <PrototypeParsingType.Type>.  If set to Type, it will use both <PrototypeParsingType.Type> and
 		 *			  <PrototypeParsingType.TypeQualifier>.
 		 *		- <ParseMode.ParseClassPrototype>
 		 *			- The tokens will be marked with <ClassPrototypeParsingType.Name>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipIdentifier (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, 
+		protected bool TryToSkipIdentifier (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
 													   PrototypeParsingType prototypeParsingType = PrototypeParsingType.Name)
 			{
 			TokenIterator lookahead = iterator;
@@ -2623,14 +2623,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				if (lookahead.Character == '.')
 					{
 					if (lookahead.MatchesAcrossTokens("..") && iterator.MatchesToken("operator", true))
-						{  break;  }	
+						{  break;  }
 
-					lookahead.Next();  
+					lookahead.Next();
 					}
 				else if (lookahead.MatchesAcrossTokens("::"))
-					{  
+					{
 					// :: can be used with "extern alias" identifiers.
-					lookahead.Next(2);  
+					lookahead.Next(2);
 					}
 				else
 					{  break;  }
@@ -2660,11 +2660,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipUnqualifiedIdentifier
-		 * 
+		 *
 		 * Tries to move the iterator past a single unqualified identifier, which means only "X" in "X.Y.Z".
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
@@ -2699,18 +2699,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipTemplateSignature
-		 * 
+		 *
 		 * Tries to move the iterator past a template signature, such as "<int>" in "List<int>".  It can handle nested templates.  If isType is
 		 * false, it will move past the signature in template declarations, such as "<X, in Y>" in "class Template<X, in Y>".
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParsePrototype>
 		 *			- If isType is true, it will mark tokens with these types, including in nested templates:
 		 *				- <PrototypeParsingType.OpeningTypeSuffix>
 		 *				- <PrototypeParsingType.ClosingTypeSuffix>
-		 *				- <PrototypeParsingType.Type> 
+		 *				- <PrototypeParsingType.Type>
 		 *				- <PrototypeParsingType.TypeQualifier>
 		 *				- <PrototypeParsingType.TypeModifier>
 		 *			- If isType is false, it will mark everything with <PrototypeParsingType.NameSuffix_PartOfType>.
@@ -2743,7 +2743,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					else // not a type
 						{
 						// In interfaces and delegates there is an additional in/out modifier that can be applied to each one.
-						if (lookahead.MatchesToken("in") || 
+						if (lookahead.MatchesToken("in") ||
 							lookahead.MatchesToken("out"))
 							{
 							lookahead.Next();
@@ -2774,13 +2774,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				if (mode == ParseMode.ParsePrototype)
 					{
 					if (isType)
-						{  
+						{
 						iterator.PrototypeParsingType = PrototypeParsingType.OpeningTypeModifier;
-						lookahead.PrototypeParsingType = PrototypeParsingType.ClosingTypeModifier;  
+						lookahead.PrototypeParsingType = PrototypeParsingType.ClosingTypeModifier;
 						lookahead.Next();
 						}
 					else
-						{  
+						{
 						iterator.PrototypeParsingType = PrototypeParsingType.OpeningParamModifier;
 						lookahead.PrototypeParsingType = PrototypeParsingType.ClosingParamModifier;
 						lookahead.Next();
@@ -2806,12 +2806,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipWhereClause
-		 * 
+		 *
 		 * Tries to move the iterator past a where clause, such as "where struct, new()".  This only covers a single where clause, so you
 		 * may have to call this in a loop to get them all.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParsePrototype>
 		 *			- It will be marked with <PrototypeParsingType.StartOfPostPrototypeLine> and <PrototypeParsingType.PostPrototypeLine>.
@@ -2920,11 +2920,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipAttributes
-		 * 
+		 *
 		 * Tries to move the iterator past a group of attributes which may be separated by whitespace.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- <ParseMode.ParsePrototype>
@@ -2935,7 +2935,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *			- Will mark the first one with <ClassPrototypeParsingType.StartOfPrePrototypeLine> and the rest with <ClassPrototypeParsingType.PrePrototypeLine>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipAttributes (ref TokenIterator iterator, AttributeTarget type = AttributeTarget.Any, 
+		protected bool TryToSkipAttributes (ref TokenIterator iterator, AttributeTarget type = AttributeTarget.Any,
 														   ParseMode mode = ParseMode.IterateOnly,
 														   PrototypeParsingType prototypeParsingType = PrototypeParsingType.TypeModifier)
 			{
@@ -2958,12 +2958,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipAttribute
-		 * 
+		 *
 		 * Tries to move the iterator past a single attribute.  Note that there may be more than one attribute in a row, so use <TryToSkipAttributes()>
 		 * if you need to move past all of them.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- <ParseMode.ParsePrototype>
@@ -2974,8 +2974,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *			- Will mark the first one with <ClassPrototypeParsingType.StartOfPrePrototypeLine> and the rest with <ClassPrototypeParsingType.PrePrototypeLine>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipAttribute (ref TokenIterator iterator, AttributeTarget type = AttributeTarget.Any, 
-														 ParseMode mode = ParseMode.IterateOnly, 
+		protected bool TryToSkipAttribute (ref TokenIterator iterator, AttributeTarget type = AttributeTarget.Any,
+														 ParseMode mode = ParseMode.IterateOnly,
 														 PrototypeParsingType prototypeParsingType = PrototypeParsingType.TypeModifier)
 			{
 			if (iterator.Character != '[')
@@ -3007,13 +3007,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			if (mode == ParseMode.SyntaxHighlight)
 				{  startOfAttribute.SetSyntaxHighlightingTypeBetween(iterator, SyntaxHighlightingType.Metadata);  }
 			else if (mode == ParseMode.ParsePrototype)
-				{  
+				{
 				if (prototypeParsingType == PrototypeParsingType.StartOfPrototypeSection ||
 					prototypeParsingType == PrototypeParsingType.TypeModifier ||
 					prototypeParsingType == PrototypeParsingType.OpeningTypeModifier ||
 					prototypeParsingType == PrototypeParsingType.ParamModifier ||
 					prototypeParsingType == PrototypeParsingType.OpeningParamModifier)
-					{  
+					{
 					PrototypeParsingType openingType, closingType;
 
 					if (prototypeParsingType == PrototypeParsingType.StartOfPrototypeSection)
@@ -3045,8 +3045,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					{  startOfAttribute.SetPrototypeParsingTypeBetween(iterator, prototypeParsingType);  }
 				}
 			else if (mode == ParseMode.ParseClassPrototype)
-				{  
-				startOfAttribute.SetClassPrototypeParsingTypeBetween(iterator, ClassPrototypeParsingType.PrePrototypeLine);  
+				{
+				startOfAttribute.SetClassPrototypeParsingTypeBetween(iterator, ClassPrototypeParsingType.PrePrototypeLine);
 				startOfAttribute.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfPrePrototypeLine;
 				}
 
@@ -3055,11 +3055,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipModifiers
-		 * 
+		 *
 		 * Attempts to skip one or more modifiers such as "public" or "static".
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- <ParseMode.ParsePrototype>
@@ -3074,12 +3074,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipModifiers
-		 * 
+		 *
 		 * Attempts to skip one or more modifiers such as "public" or "static".  If they contained access modifiers it will return it, or <AccessLevel.Unknown>
 		 * if not.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- <ParseMode.ParsePrototype>
@@ -3098,7 +3098,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					{  accessLevel = AccessLevel.Public;  }
 
 				else if (lookahead.MatchesToken("private"))
-					{  
+					{
 					if (accessLevel == AccessLevel.Protected)
 						{  accessLevel = AccessLevel.PrivateProtected;  }
 					else
@@ -3106,7 +3106,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					}
 
 				else if (lookahead.MatchesToken("protected"))
-					{  
+					{
 					if (accessLevel == AccessLevel.Internal)
 						{  accessLevel = AccessLevel.ProtectedInternal;  }
 					else if (accessLevel == AccessLevel.Private)
@@ -3149,9 +3149,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: GenericSkip
-		 * 
+		 *
 		 * Advances the iterator one place through general code.
-		 * 
+		 *
 		 * - If the position is on a string, it will skip it completely.
 		 * - If the position is on an opening brace, parenthesis, or bracket it will skip until the past the closing symbol.
 		 *	  It can optionally do this for angle brackets but won't by default.
@@ -3161,19 +3161,19 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		protected void GenericSkip (ref TokenIterator iterator, bool angleBracketsAsBlocks = false)
 			{
 			if (iterator.Character == '(')
-				{  
+				{
 				iterator.Next();
-				GenericSkipUntilAfter(ref iterator, ')');  
+				GenericSkipUntilAfter(ref iterator, ')');
 				}
 			else if (iterator.Character == '[')
-				{  
+				{
 				iterator.Next();
-				GenericSkipUntilAfter(ref iterator, ']');  
+				GenericSkipUntilAfter(ref iterator, ']');
 				}
 			else if (iterator.Character == '{')
-				{  
+				{
 				iterator.Next();
-				GenericSkipUntilAfter(ref iterator, '}');  
+				GenericSkipUntilAfter(ref iterator, '}');
 				}
 			else if (iterator.Character == '<')
 				{
@@ -3238,9 +3238,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipPreprocessingDirective
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
@@ -3264,23 +3264,23 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// Line comments (and only line comments) are allowed after directives.
 			do
 				{  iterator.Next();  }
-			while (iterator.IsInBounds && 
+			while (iterator.IsInBounds &&
 					 iterator.FundamentalType != FundamentalType.LineBreak &&
 					 iterator.MatchesAcrossTokens("//") == false);
 
 			if (mode == ParseMode.SyntaxHighlight)
 				{  startOfDirective.SetSyntaxHighlightingTypeBetween(iterator, SyntaxHighlightingType.PreprocessingDirective);  }
-			
+
 			return true;
 			}
 
 
 		/* Function: TryToSkipWhitespace
-		 * 
+		 *
 		 * Includes comments.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
@@ -3307,9 +3307,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipComment
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
@@ -3322,9 +3322,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipLineComment
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
@@ -3351,9 +3351,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipBlockComment
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
@@ -3383,11 +3383,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipString
-		 * 
+		 *
 		 * This covers string, $string, @string, $@string, and character constants.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
@@ -3405,7 +3405,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			bool interpolated = false;
 			bool literal = false;
-			
+
 			if (lookahead.MatchesAcrossTokens("$@") ||
 				lookahead.MatchesAcrossTokens("@$"))
 				{
@@ -3474,18 +3474,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipNumber
-		 * 
+		 *
 		 * If the iterator is on a numeric literal, moves the iterator past it and returns true.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		override protected bool TryToSkipNumber (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
-			if ( ((iterator.Character >= '0' && iterator.Character <= '9') || 
+			if ( ((iterator.Character >= '0' && iterator.Character <= '9') ||
 				   iterator.Character == '-' || iterator.Character == '+' || iterator.Character == '.') == false)
 				{  return false;  }
 
@@ -3496,7 +3496,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			bool isBinary = false;
 
 			if (lookahead.Character == '-' || lookahead.Character == '+')
-				{  
+				{
 				// Distinguish between -1 and x-1
 
 				TokenIterator lookbehind = iterator;
@@ -3507,12 +3507,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				if (lookbehind.FundamentalType == FundamentalType.Text || lookbehind.Character == '_')
 					{  return false;  }
 
-				lookahead.Next();  
+				lookahead.Next();
 				}
 
 			if (lookahead.Character == '.')
-				{  
-				lookahead.Next();  
+				{
+				lookahead.Next();
 				passedPeriod = true;
 				}
 

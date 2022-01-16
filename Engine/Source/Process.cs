@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Process
  * ____________________________________________________________________________
- * 
+ *
  * A base class for a major process to be run against a Natural Docs module.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -18,10 +18,10 @@ namespace CodeClear.NaturalDocs.Engine
 	{
 	abstract public class Process : IDisposable
 		{
-		
+
 		// Group: Functions
 		// ________________________________________________________________________
-		
+
 		public Process (Engine.Instance engineInstance)
 			{
 			this.engineInstance = engineInstance;

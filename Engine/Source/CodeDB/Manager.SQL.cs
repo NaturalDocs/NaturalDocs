@@ -1,8 +1,8 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.CodeDB.Manager
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -14,8 +14,8 @@ using System.Collections.Generic;
 namespace CodeClear.NaturalDocs.Engine.CodeDB
 	{
 	public partial class Manager
-		{		
-		
+		{
+
 		/* Function: CreateDatabase
 		 * Assumes the database is completely empty, not just of data but of table definitions too, and initializes it.
 		 * Also initializes the system variables so you don't have to call <LoadSystemVariables()> afterwards.
@@ -28,17 +28,17 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 																			"UsedImageLinkIDs TEXT NOT NULL, " +
 																			"UsedClassIDs TEXT NOT NULL, " +
 																			"UsedContextIDs TEXT NOT NULL )");
-			
+
 			connection.Execute("INSERT INTO System (Version, UsedTopicIDs, UsedLinkIDs, UsedImageLinkIDs, UsedClassIDs, UsedContextIDs) " +
-										"VALUES (?,?,?,?,?,?)", 
+										"VALUES (?,?,?,?,?,?)",
 										Engine.Instance.VersionString, IDObjects.NumberSet.EmptySetString, IDObjects.NumberSet.EmptySetString,
 										IDObjects.NumberSet.EmptySetString, IDObjects.NumberSet.EmptySetString, IDObjects.NumberSet.EmptySetString);
 			usedTopicIDs.Clear();
 			usedLinkIDs.Clear();
 			usedClassIDs.Clear();
 			usedContextIDs.Clear();
-			
-			
+
+
 			connection.Execute("CREATE TABLE Topics (TopicID INTEGER PRIMARY KEY NOT NULL, " +
 																		  "Title TEXT NOT NULL, " +
 																		  "Body TEXT, " +
@@ -62,7 +62,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 																		  "LanguageID INTEGER NOT NULL, " +
 																		  "PrototypeContextID INTEGER NOT NULL, " +
 																		  "BodyContextID INTEGER NOT NULL )");
-																	   
+
 			connection.Execute("CREATE INDEX TopicsByFile ON Topics (FileID, FilePosition)");
 			connection.Execute("CREATE INDEX TopicsByClass ON Topics (ClassID, FileID, FilePosition)");
 			connection.Execute("CREATE INDEX TopicsByClassDefinition ON Topics (ClassID, DefinesClass)");
@@ -80,7 +80,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 																		"TargetTopicID INTEGER NOT NULL, " +
 																		"TargetClassID INTEGER NOT NULL, " +
 																		"TargetScore INTEGER NOT NULL )");
-																	   
+
 			connection.Execute("CREATE INDEX LinksByFileAndType ON Links (FileID, Type)");
 			connection.Execute("CREATE INDEX LinksByClass ON Links (ClassID, Type)");
 			connection.Execute("CREATE INDEX LinksByEndingSymbols ON Links (EndingSymbol)");
@@ -91,7 +91,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			connection.Execute("CREATE TABLE AlternativeLinkEndingSymbols (LinkID INTEGER NOT NULL, " +
 																											 "EndingSymbol TEXT NOT NULL, " +
 																											 "PRIMARY KEY (LinkID, EndingSymbol) )");
-																	   
+
 			connection.Execute("CREATE INDEX AlternativeLinkEndingSymbolsBySymbol ON AlternativeLinkEndingSymbols (EndingSymbol)");
 
 
@@ -114,20 +114,20 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 																			"ClassString TEXT, " +
 																			"LookupKey TEXT NOT NULL, " +
 																			"ReferenceCount INTEGER NOT NULL )");
-																	   
+
 			connection.Execute("CREATE INDEX ClassesByLookupKey ON Classes (LookupKey)");
 
 
 			connection.Execute("CREATE TABLE Contexts (ContextID INTEGER PRIMARY KEY NOT NULL, " +
 																			  "ContextString TEXT NOT NULL, " +
 																			  "ReferenceCount INTEGER NOT NULL )");
-																	   
+
 			connection.Execute("CREATE INDEX ContextsByContextString ON Contexts (ContextString)");
 			}
 
 
 		/* Function: ResetDatabase
-		 * Removes all data from the database and creates a fresh set of tables.  Also initializes the system variables so you don't 
+		 * Removes all data from the database and creates a fresh set of tables.  Also initializes the system variables so you don't
 		 * have to call <LoadSystemVariables()> afterwards.
 		 */
 		protected void ResetDatabase ()
@@ -151,16 +151,16 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			{
 			using (SQLite.Query query = connection.Query("SELECT Version FROM System"))
 				{
-				query.Step();			
+				query.Step();
 				return new Version( query.StringColumn(0) );
 				}
 			}
-			
-			
+
+
 		/* Function: LoadSystemVariables
-		 * 
+		 *
 		 * Retrieves various system variables from the database.  This currently includes:
-		 * 
+		 *
 		 *		- <UsedTopicIDs>
 		 *		- <UsedLinkIDs>
 		 *		- <UsedImageLinkIDs>
@@ -173,7 +173,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 																			   "from System"))
 				{
 				query.Step();
-				
+
 				usedTopicIDs.SetTo( query.NextStringColumn() );
 				usedLinkIDs.SetTo( query.NextStringColumn() );
 				usedImageLinkIDs.SetTo( query.NextStringColumn() );
@@ -181,17 +181,17 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				usedContextIDs.SetTo( query.NextStringColumn() );
 				}
 			}
-			
-			
+
+
 		/* Function: SaveSystemVariablesAndVersion
 		 * Saves various system variables to the database, as well as setting the version variable to the current version.
 		 */
 		protected void SaveSystemVariablesAndVersion ()
 			{
-			connection.Execute("UPDATE System SET Version=?, UsedTopicIDs=?, UsedLinkIDs=?, UsedImageLinkIDs=?, UsedClassIDs=?, UsedContextIDs=?", 
+			connection.Execute("UPDATE System SET Version=?, UsedTopicIDs=?, UsedLinkIDs=?, UsedImageLinkIDs=?, UsedClassIDs=?, UsedContextIDs=?",
 										 Engine.Instance.VersionString, usedTopicIDs.ToString(), usedLinkIDs.ToString(), usedImageLinkIDs.ToString(),
 										 usedClassIDs.ToString(), usedContextIDs.ToString());
 			}
-			
+
 		}
 	}

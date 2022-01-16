@@ -1,11 +1,11 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Links.LinkInterpretation
  * ____________________________________________________________________________
- * 
+ *
  * A class representing a possible interpretation of a Natural Docs link in <NDMarkup>.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -17,11 +17,11 @@ namespace CodeClear.NaturalDocs.Engine.Links
 	{
 	public class LinkInterpretation
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Function: LinkInterpretation
 		 */
 		public LinkInterpretation ()
@@ -32,13 +32,13 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			pluralConversion = false;
 			possessiveConversion = false;
 			}
-						
-			
-			
+
+
+
 		// Group: Properties
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Property: Target
 		 * The link target.
 		 */
@@ -49,7 +49,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			set
 				{  target = value;  }
 			}
-			
+
 		/* Property: Text
 		 * The link text.  If you set it to null, it will automatically return <Target> when you attempt to read it.
 		 */
@@ -95,7 +95,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			{
 			get
 				{  return possessiveConversion;  }
-			set	
+			set
 				{  possessiveConversion = value;  }
 			}
 
@@ -107,41 +107,41 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			get
 				{  return (!NamedLink && !PluralConversion && !PossessiveConversion);  }
 			}
-			
-			
-			
+
+
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
-		
+
+
 		/* var: target
-		 * 
+		 *
 		 * The link target.
-		 * 
+		 *
 		 * This isn't a SymbolString because LinkInterpretations may be used to find named URL and e-mail links, not
 		 * just Natural Docs links, and the target shouldn't be normalized in those cases.
 		 */
 		protected string target;
-		
+
 		/* var: text
 		 * The link text, if different than the target.  If null, <Text> returns <target>.
 		 */
 		protected string text;
-		
+
 		/* var: namedLink
 		 * Whether the interpretation was made with a named link.
 		 */
 		protected bool namedLink;
-		
+
 		/* var: pluralConversion
 		 * Whether the interpretation was made with a plural conversion.
 		 */
 		protected bool pluralConversion;
-		
+
 		/* var: possessiveConversion
 		 * Whether the interpretation was made with a possessive conversion.
 		 */
 		protected bool possessiveConversion;
-		
+
 		}
 	}

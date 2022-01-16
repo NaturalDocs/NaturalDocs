@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes.SearchKeywords
  * ____________________________________________________________________________
- * 
+ *
  * File-based tests to make sure Natural Docs can generate search keywords correctly.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -50,7 +50,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 					output.Append('(');
 					output.Append(searchEntry.DisplayName, 0, searchEntry.EndOfDisplayNameQualifiers);
 					output.Append(')');
-					output.Append(searchEntry.DisplayName, searchEntry.EndOfDisplayNameQualifiers, 
+					output.Append(searchEntry.DisplayName, searchEntry.EndOfDisplayNameQualifiers,
 										 searchEntry.DisplayName.Length - searchEntry.EndOfDisplayNameQualifiers);
 					output.AppendLine();
 					}
@@ -64,7 +64,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 					output.Append('(');
 					output.Append(searchEntry.SearchText, 0, searchEntry.EndOfSearchTextQualifiers);
 					output.Append(')');
-					output.Append(searchEntry.SearchText, searchEntry.EndOfSearchTextQualifiers, 
+					output.Append(searchEntry.SearchText, searchEntry.EndOfSearchTextQualifiers,
 										 searchEntry.SearchText.Length - searchEntry.EndOfSearchTextQualifiers);
 					output.AppendLine();
 					}

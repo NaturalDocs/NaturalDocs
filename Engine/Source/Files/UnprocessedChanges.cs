@@ -1,21 +1,21 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Files.UnprocessedChanges
  * ____________________________________________________________________________
- * 
+ *
  * An object which stores all the unprocessed file changes that have been detected and allows them to be retrieved
  * for processing.  In addition to source files, this includes image files that can be referenced with "(see image.jpg)"
  * and extras tied to CSS styles.
- * 
- * 
+ *
+ *
  * Multithreading: Thread Safety Notes
- * 
+ *
  *		Externally, this class is thread safe.
- *		
+ *
  *		Internally, all variable accesses must use a monitor on <accessLock>.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -28,10 +28,10 @@ namespace CodeClear.NaturalDocs.Engine.Files
 	{
 	public class UnprocessedChanges
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
+
 
 		/* Function: UnprocessedChanges
 		 */
@@ -39,11 +39,11 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			{
 			newOrChangedFileIDs = new IDObjects.NumberSet();
 			deletedFileIDs = new IDObjects.NumberSet();
-			
+
 			accessLock = new object();
 			}
-			
-			
+
+
 		public void AddNewFile (File file)
 			{
 			lock (accessLock)
@@ -52,8 +52,8 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				newOrChangedFileIDs.Add(file.ID);
 				}
 			}
-			
-			
+
+
 		public void AddNewFiles (IDObjects.NumberSet fileIDs)
 			{
 			lock (accessLock)
@@ -62,8 +62,8 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				newOrChangedFileIDs.Add(fileIDs);
 				}
 			}
-			
-			
+
+
 		public void AddChangedFile (File file)
 			{
 			lock (accessLock)
@@ -72,8 +72,8 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				newOrChangedFileIDs.Add(file.ID);
 				}
 			}
-			
-			
+
+
 		public void AddChangedFiles (IDObjects.NumberSet fileIDs)
 			{
 			lock (accessLock)
@@ -82,8 +82,8 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				newOrChangedFileIDs.Add(fileIDs);
 				}
 			}
-			
-			
+
+
 		public void AddDeletedFile (File file)
 			{
 			lock (accessLock)
@@ -92,7 +92,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				deletedFileIDs.Add(file.ID);
 				}
 			}
-			
+
 
 
 		/* Function: GetStatus
@@ -114,7 +114,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 
 		/* Function: PickNewOrChangedFileID
-		 * Picks an added or changed file ID to work on, if there are any.  It will be removed from the list of unprocessed 
+		 * Picks an added or changed file ID to work on, if there are any.  It will be removed from the list of unprocessed
 		 * changes.  If there aren't any it will return zero.
 		 */
 		public int PickNewOrChangedFileID ()
@@ -124,8 +124,8 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				return newOrChangedFileIDs.Pop();
 				}
 			}
-			
-			
+
+
 		/* Function: PickDeletedFileID
 		 * Picks a deleted file to work on, if there are any.  It will be removed from the list of unprocessed changes.  If there
 		 * aren't any it will return zero.
@@ -172,31 +172,31 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 		// Group: Variables
 		// __________________________________________________________________________
-		
+
 
 		/* var: newOrChangedFileIDs
-		 * 
-		 * A <IDObjects.NumberSet> of the file IDs which have been added or changed and have yet to be 
+		 *
+		 * A <IDObjects.NumberSet> of the file IDs which have been added or changed and have yet to be
 		 * processed.
-		 * 
+		 *
 		 * Thread Safety:
-		 * 
+		 *
 		 *		You must hold <accessLock> in order to use this variable.
 		 */
 		protected IDObjects.NumberSet newOrChangedFileIDs;
-		
+
 
 		/* var: deletedFileIDs
-		 * 
+		 *
 		 * A <IDObjects.NumberSet> of the file IDs which have been deleted and have yet to be processed.
-		 * 
+		 *
 		 * Thread Safety:
-		 * 
+		 *
 		 *		You must hold <accessLock> in order to use this variable.
 		 */
 		protected IDObjects.NumberSet deletedFileIDs;
-				
-				
+
+
 		/* var: accessLock
 		 * An object used for a monitor that prevents more than one thread from accessing any of the variables
 		 * at a time.

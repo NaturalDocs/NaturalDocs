@@ -1,30 +1,30 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Prototypes.ParsedClassPrototype
  * ____________________________________________________________________________
- * 
- * A class that wraps a <Tokenizer> for a prototype that's been marked with <ClassPrototypeParsingTypes>, providing easier 
+ *
+ * A class that wraps a <Tokenizer> for a prototype that's been marked with <ClassPrototypeParsingTypes>, providing easier
  * access to things like parent lines.
- * 
+ *
  * Usage:
- * 
+ *
  *		The functions and properties obviously rely on the relevant tokens being set.  You cannot expect a proper result from
  *		<GetParent()> or <NumberOfParents> unless the tokens are marked with <ClassPrototypeParsingType.StartOfParents>
  *		and <ClassPrototypeParsingType.ParentSeparator>.  Likewise, you can't get anything from <GetParentName()> unless
  *		you also have tokens marked with <ClassPrototypeParsingType.Name>.  However, you can set the parent divider tokens,
- *		call <GetParent()>, and then use those bounds to further parse the parent and set tokens like 
+ *		call <GetParent()>, and then use those bounds to further parse the parent and set tokens like
  *		<ClassPrototypeParsingType.Name>.
- *		
- *		You can set multiple consecutive tokens to <ClassPrototypeParsingType.StartOfParents> and 
+ *
+ *		You can set multiple consecutive tokens to <ClassPrototypeParsingType.StartOfParents> and
  *		<ClassPrototypeParsingType.ParentSeparator> and they will be counted as one separator.  However, all whitespace in
  *		between them must be marked as well.
- * 
+ *
  *		An important thing to remember though is that the parent divisions are calculated once and saved.  Only call functions like
  *		<GetParent()> after *ALL* the separator tokens (<ClassPrototypeParsingType.StartOfParents>,
- *		<ClassPrototypeParsingType.ParentSeparator>, and optionally <ClassPrototypeParsingType.StartOfBody>) are set and will 
+ *		<ClassPrototypeParsingType.ParentSeparator>, and optionally <ClassPrototypeParsingType.StartOfBody>) are set and will
  *		not change going forward.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -44,7 +44,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 
 		/* Enum: SectionType
-		 * 
+		 *
 		 * PrePrototypeLine - A line that should appear separately before the prototype.
 		 * BeforeParents - The prototype prior to the parents.  If there are no parents, this will be the entire prototype.
 		 * Parent - An individual parent.  This will not include separators.
@@ -58,8 +58,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: ParsedClassPrototype
 		 * Creates a new parsed prototype.
 		 */
@@ -133,7 +133,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					if (iterator.MatchesToken("public"))
 						{  accessLevel = Languages.AccessLevel.Public;  }
 					else if (iterator.MatchesToken("private"))
-						{  
+						{
 						if (accessLevel == Languages.AccessLevel.Protected)
 							{  accessLevel = Languages.AccessLevel.PrivateProtected;  }
 						else
@@ -240,7 +240,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 			// Pre-Prototype Lines
 
-			while (iterator.IsInBounds && 
+			while (iterator.IsInBounds &&
 					 iterator.ClassPrototypeParsingType == ClassPrototypeParsingType.StartOfPrePrototypeLine)
 				{
 				section = new Section();
@@ -249,7 +249,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 				do
 					{  iterator.Next();  }
-				while (iterator.IsInBounds && 
+				while (iterator.IsInBounds &&
 						 iterator.ClassPrototypeParsingType == ClassPrototypeParsingType.PrePrototypeLine);
 
 				section.EndIndex = iterator.TokenIndex;
@@ -267,7 +267,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			section.Type = SectionType.BeforeParents;
 			section.StartIndex = startOfSection.TokenIndex;
 
-			while (iterator.IsInBounds && 
+			while (iterator.IsInBounds &&
 					iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfParents &&
 					iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfPostPrototypeLine &&
 					iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfBody)
@@ -338,7 +338,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				section.Type = SectionType.AfterParents;
 				section.StartIndex = iterator.TokenIndex;
 
-				do 
+				do
 					{  iterator.Next();  }
 				while (iterator.IsInBounds &&
 						  iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfPostPrototypeLine &&
@@ -354,7 +354,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 			// Post-Prototype Lines
 
-			while (iterator.IsInBounds && 
+			while (iterator.IsInBounds &&
 					 iterator.ClassPrototypeParsingType == ClassPrototypeParsingType.StartOfPostPrototypeLine)
 				{
 				section = new Section();
@@ -363,7 +363,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 				do
 					{  iterator.Next();  }
-				while (iterator.IsInBounds && 
+				while (iterator.IsInBounds &&
 						 iterator.ClassPrototypeParsingType == ClassPrototypeParsingType.PostPrototypeLine);
 
 				section.EndIndex = iterator.TokenIndex;
@@ -449,7 +449,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 			return null;
 			}
-			
+
 
 		/* Function: CountSections
 		 * Returns the number of sections with the passed type.
@@ -474,8 +474,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 		// Group: Properties
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Property: Tokenizer
 		 * The tokenized prototype.
 		 */
@@ -491,7 +491,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		public int NumberOfPrePrototypeLines
 			{
 			get
-				{  
+				{
 				return CountSections(SectionType.PrePrototypeLine);
 				}
 			}
@@ -502,7 +502,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		public int NumberOfPostPrototypeLines
 			{
 			get
-				{  
+				{
 				return CountSections(SectionType.PostPrototypeLine);
 				}
 			}
@@ -513,16 +513,16 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		public int NumberOfParents
 			{
 			get
-				{  
+				{
 				return CountSections(SectionType.Parent);
 				}
 			}
 
 
-		
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
+
 		/* var: tokenizer
 		 * The <Tokenizer> containing the full prototype.
 		 */
@@ -536,7 +536,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 
 		/* ___________________________________________________________________________
-		 * 
+		 *
 		 * Class: CodeClear.NaturalDocs.Engine.Prototypes.ParsedClassPrototype.Section
 		 * ___________________________________________________________________________
 		 */
@@ -548,7 +548,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				EndIndex = 0;
 				Type = SectionType.BeforeParents;
 				}
-			
+
 			public int StartIndex;
 			public int EndIndex;
 			public SectionType Type;

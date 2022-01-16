@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Languages.PrototypeEnders
  * ____________________________________________________________________________
- * 
+ *
  * A simple class to hold information about what can end a prototype.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -104,7 +104,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 		// Group: Operators
 		// __________________________________________________________________________
-		
+
 		/* Function: operator ==
 		 * Returns whether all the prototype enders are equal.
 		 */
@@ -147,7 +147,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			return true;
 			}
-			
+
 		/* Function: operator !=
 		 * Returns if any of the prototype enders are different.
 		 */
@@ -155,7 +155,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			{
 			return !(prototypeEnders1 == prototypeEnders2);
 			}
-			
+
 		public override bool Equals (object o)
 			{
 			if (o is PrototypeEnders)
@@ -202,7 +202,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			}
 
 		/* Property: Symbols
-		 * The symbols which end prototypes, or null if none.  Line breaks are not included here; you must check 
+		 * The symbols which end prototypes, or null if none.  Line breaks are not included here; you must check
 		 * <IncludeLineBreaks> instead.
 		 */
 		public List<string> Symbols

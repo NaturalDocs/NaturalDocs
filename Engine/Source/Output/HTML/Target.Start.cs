@@ -1,9 +1,9 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Target
  * ____________________________________________________________________________
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -21,10 +21,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		public override bool Start (Errors.ErrorList errorList)
-			{  
+			{
 			int errors = errorList.Count;
 			StartupIssues newStartupIssues = StartupIssues.None;
 
@@ -53,7 +53,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				}
 
 			else if (EngineInstance.Styles.StyleExists(styleName))
-				{  
+				{
 				style = EngineInstance.Styles.LoadStyle(styleName, errorList, config.StyleNamePropertyLocation);
 				}
 
@@ -75,7 +75,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			else
 				{
-				errorList.Add( Locale.Get("NaturalDocs.Engine", "Style.txt.CantFindStyle(name)", styleName), 
+				errorList.Add( Locale.Get("NaturalDocs.Engine", "Style.txt.CantFindStyle(name)", styleName),
 									 config.StyleNamePropertyLocation );
 				return false;
 				}
@@ -95,10 +95,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			List<Style> previousStyles;
 			List<FileSourceInfo> previousFileSourceInfoList;
 			bool hasBinaryConfigFile = false;
-			
+
 			if (!EngineInstance.HasIssues( StartupIssues.NeedToStartFresh ))
 				{
-				hasBinaryConfigFile = binaryConfigParser.Load(WorkingDataFolder + "/Config.nd", out previousOutputSettings, 
+				hasBinaryConfigFile = binaryConfigParser.Load(WorkingDataFolder + "/Config.nd", out previousOutputSettings,
 																					out previousStyles, out previousFileSourceInfoList);
 				}
 			else // start fresh
@@ -119,7 +119,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 																Config.Subtitle != previousOutputSettings.Subtitle ||
 																Config.Copyright != previousOutputSettings.Copyright);
 
-			
+
 			//
 			// Compare to the previous list of styles.
 			//
@@ -161,7 +161,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 						}
 					}
 
-				// Reparse styles on anything new.  If a style is new we can't assume all its files are going to be sent to the 
+				// Reparse styles on anything new.  If a style is new we can't assume all its files are going to be sent to the
 				// IChangeWatcher functions because another output target may have been using it, and thus they are already in
 				// Files.Manager.
 
@@ -211,7 +211,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			if (!hasBinaryConfigFile)
 				{
-				// If we don't have the binary config file we need to rebuild all the output because we don't know which FileSource was 
+				// If we don't have the binary config file we need to rebuild all the output because we don't know which FileSource was
 				// previously set to which number, which determines which output folder they use, like /files vs /files2.
 				newStartupIssues |= StartupIssues.NeedToRebuildAllOutput;
 
@@ -245,7 +245,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 						{
 						hasDeletions = true;
 						Path outputFolder;
-						
+
 						if (previousFileSourceInfo.Type == InputType.Source)
 							{  outputFolder = Paths.SourceFile.OutputFolder(OutputFolder, previousFileSourceInfo.Number);  }
 						else if (previousFileSourceInfo.Type == InputType.Image)
@@ -276,13 +276,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 							}
 
 						if (!foundMatch)
-							{  
+							{
 							hasAdditions = true;
 							break;
 							}
 						}
 					}
-					
+
 
 				// If there were both additions and deletions, force a rebuild.  This covers if a FileSource was simply moved from one
 				// number to another, in which case the rebuild is required to populate the new folder.  This also covers if a folder
@@ -300,7 +300,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			ConfigFiles.BinaryBuildStateParser buildStateParser = new ConfigFiles.BinaryBuildStateParser();
 			bool hasBinaryBuildStateFile = false;
-			
+
 			if (!EngineInstance.HasIssues( StartupIssues.NeedToStartFresh |
 														 StartupIssues.FileIDsInvalidated |
 														 StartupIssues.CodeIDsInvalidated |
@@ -309,7 +309,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				hasBinaryBuildStateFile = buildStateParser.Load(WorkingDataFolder + "/BuildState.nd", out buildState, out unprocessedChanges);
 				}
 			else // start fresh
-				{  
+				{
 				buildState = new BuildState();
 				unprocessedChanges = new UnprocessedChanges();
 				}
@@ -317,7 +317,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			if (!hasBinaryBuildStateFile)
 				{
 				// If we don't have a build state file we need to reparse all the source files because we need to know sourceFilesWithContent
-				// and classesWithContent.  We also need to rebuild all the output because we don't know if there was anything left in 
+				// and classesWithContent.  We also need to rebuild all the output because we don't know if there was anything left in
 				// sourceFilesToRebuild from the last run.  But those two flags actually aren't enough, because it will reparse those files, send
 				// them to CodeDB, and then CodeDB won't send topic updates if the underlying content hasn't changed.  We'd actually need
 				// to add all files and classes to UnprocessedChanges, but the Files module isn't started yet.  So fuck it, blow it all up and start
@@ -352,7 +352,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					bool isSystemStyle = EngineInstance.Config.SystemStyleFolder.Contains(advancedStyle.ConfigFile);
 
 					// No error on save for system styles.
-					styleParser.Save(advancedStyle, errorList, noErrorOnFail: isSystemStyle);  
+					styleParser.Save(advancedStyle, errorList, noErrorOnFail: isSystemStyle);
 					}
 				}
 
@@ -450,7 +450,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				if (!hasBinaryConfigFile || titlesAndCopyrightChanged || timestampChanged)
 					{  unprocessedChanges.AddFramePage();  }
 
-				if (!hasBinaryConfigFile || hasStyleChanges)	
+				if (!hasBinaryConfigFile || hasStyleChanges)
 					{  unprocessedChanges.AddMainStyleFiles();  }
 
 				if (!hasBinaryConfigFile || homePageChanged || titlesAndCopyrightChanged ||

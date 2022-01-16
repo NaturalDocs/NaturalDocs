@@ -1,19 +1,19 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.CommentTypes.Config
  * ____________________________________________________________________________
- * 
+ *
  * A class representing a complete configuration after all <Comments.txt> values have been combined.
- * 
- * 
+ *
+ *
  * Multithreading: Not Thread Safe, Supports Multiple Readers
- * 
+ *
  *		This object doesn't have any locking built in, and so it is up to the class managing it to provide thread safety if needed.
  *		However, it does support multiple concurrent readers.  This means it can be used in read-only mode with no locking or
  *		in read/write mode with a ReaderWriterLock.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -27,11 +27,11 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 	{
 	public class Config
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: Config
 		 */
 		public Config ()
@@ -50,8 +50,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 
 		/* Function: KeywordDefinition
-		 * Returns the <KeywordDefinition> which matches the passed name and language ID, or null if none.  If language ID is 
-		 * zero it will only return language agnostic definitions, whereas if it has a value it will also search the language-specific 
+		 * Returns the <KeywordDefinition> which matches the passed name and language ID, or null if none.  If language ID is
+		 * zero it will only return language agnostic definitions, whereas if it has a value it will also search the language-specific
 		 * definitions and favor those if there are both.
 		 */
 		public KeywordDefinition KeywordDefinition (string keyword, int languageID)
@@ -96,7 +96,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 
 		/* Function: CommentTypeFromKeyword
-		 * Returns the <CommentType> associated with the passed keyword and language, or null if none.  The language ID 
+		 * Returns the <CommentType> associated with the passed keyword and language, or null if none.  The language ID
 		 * should be set to the language the keyword appears in, though it can also be zero to only return comment types from
 		 * language agnostic keywords.
 		 */
@@ -113,7 +113,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 		/* Function: CommentTypeFromKeyword
 		 * Returns the <CommentType> associated with the passed keyword and language, or null if none.  Also returns whether
-		 * it was singular or plural.  The language ID should be set to the language the keyword appears in, though it can also be 
+		 * it was singular or plural.  The language ID should be set to the language the keyword appears in, though it can also be
 		 * zero to only return comment types from language agnostic keywords.
 		 */
 		public CommentType CommentTypeFromKeyword (string keyword, int languageID, out bool isPlural)
@@ -121,17 +121,17 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			var keywordDefinition = KeywordDefinition(keyword, languageID);
 
 			if (keywordDefinition != null)
-				{  
+				{
 				isPlural = keywordDefinition.Plural;
 				return commentTypes[keywordDefinition.CommentTypeID];
 				}
 			else
-				{  
+				{
 				isPlural = false;
-				return null;  
+				return null;
 				}
 			}
-			
+
 		/* Function: CommentTypeFromName
 		 * Returns the <CommentType> associated with the passed name, or null if none.
 		 */
@@ -139,7 +139,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			{
 			return commentTypes[name];
 			}
-			
+
 		/* Function: CommentTypeFromID
 		 * Returns the <CommentType> associated with the passed ID, or null if none.
 		 */
@@ -147,7 +147,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			{
 			return commentTypes[commentTypeID];
 			}
-			
+
 		/* Function: UsedCommentTypeIDs
 		 * Returns a set of all the used comment type IDs.
 		 */
@@ -163,7 +163,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			{
 			return tags[name];
 			}
-			
+
 		/* Function: TagFromID
 		 * Returns the <Tag> associated with the passed ID, or null if none.
 		 */
@@ -201,7 +201,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			}
 
 		/* Function: AddKeywordDefinition
-		 * Adds a keyword definition to the configuration.  If a definition already exists for the keyword but with a different 
+		 * Adds a keyword definition to the configuration.  If a definition already exists for the keyword but with a different
 		 * language ID, both definitions will be stored.  If a definition already exists with the same language ID, this one will
 		 * overwrite the previous one.
 		 */
@@ -254,7 +254,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			}
 
 
-		
+
 		// Group: Operators
 		// __________________________________________________________________________
 
@@ -338,8 +338,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 			return true;
 			}
-			
-		
+
+
 		/* Function: operator !=
 		 * Returns whether any of the settings of the two configurations are different.
 		 */
@@ -347,8 +347,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			{
 			return !(config1 == config2);
 			}
-			
-		
+
+
 		public override bool Equals (object o)
 			{
 			if (o is Config)
@@ -360,9 +360,9 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 		public override int GetHashCode ()
 			{
-			return ( (commentTypes.Count) ^ 
-						(tags.Count << 8) ^ 
-						(singleDefinitionKeywords.Count << 16) ^ 
+			return ( (commentTypes.Count) ^
+						(tags.Count << 8) ^
+						(singleDefinitionKeywords.Count << 16) ^
 						(multiDefinitionKeywords.Count << 24) );
 			}
 
@@ -398,7 +398,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 		public IEnumerable<KeywordDefinition> KeywordDefinitions
 			{
 			get
-				{  
+				{
 				foreach (var definition in singleDefinitionKeywords.Values)
 					{  yield return definition;  }
 
@@ -420,12 +420,12 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 		 * Manages all the <CommentTypes> by their case-insensitive name or ID number.
 		 */
 		protected IDObjects.Manager<CommentType> commentTypes;
-		
+
 		/* var: tags
 		 * Manages all the <Tags> by their case-insensitive name or ID number.
 		 */
 		protected IDObjects.Manager<Tag> tags;
-		
+
 		/* var: singleDefinitionKeywords
 		 * Manages all the keywords which only have a single <KeywordDefinition> by their case-insensitive names.
 		 */
@@ -440,8 +440,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 		// Group: Constants
 		// __________________________________________________________________________
-		
-		
+
+
 		public const KeySettings KeySettingsForKeywords = KeySettings.IgnoreCase | KeySettings.NormalizeUnicode;
 		public const KeySettings KeySettingsForCommentTypes = KeySettings.IgnoreCase | KeySettings.NormalizeUnicode;
 		public const KeySettings KeySettingsForTags = KeySettings.IgnoreCase | KeySettings.NormalizeUnicode;

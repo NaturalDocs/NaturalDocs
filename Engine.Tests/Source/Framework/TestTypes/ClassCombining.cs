@@ -1,13 +1,13 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes.ClassCombining
  * ____________________________________________________________________________
- * 
+ *
  * File-based tests to make sure Natural Docs can merge topics from multiple files into a single coherent list
  * for a class view.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -43,8 +43,8 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 				char decoration = '\0';
 
 				if (i == 0)
-					{  
-					indent = 0;  
+					{
+					indent = 0;
 					decoration = '_';
 					}
 				else if (topics[i].IsGroup)
@@ -74,13 +74,13 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 				if (topics[i].Prototype != null)
 					{
 					output.Append(' ', indent);
-					output.AppendLine('[' + topics[i].Prototype + ']');  
+					output.AppendLine('[' + topics[i].Prototype + ']');
 					}
 
 				if (topics[i].Body != null)
-					{  
+					{
 					output.Append(' ', indent);
-					output.AppendLine(topics[i].Body);  
+					output.AppendLine(topics[i].Body);
 					}
 
 				if (decoration != '\0')

@@ -1,15 +1,15 @@
-﻿/* 
+﻿/*
  * Struct: CodeClear.NaturalDocs.Engine.Symbols.ClassString
  * ____________________________________________________________________________
- * 
+ *
  * A struct encapsulating a class string, which is a normalized way of representing what class a given
  * topic is in.  This also covers databases and any other hierarchy that uses a class ID.
- * 
- * The encoding uses <SeparatorChars.Level2> since it encapsulates a <SymbolString> which uses 
+ *
+ * The encoding uses <SeparatorChars.Level2> since it encapsulates a <SymbolString> which uses
  * <SeparatorChars.Level1>.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -36,8 +36,8 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Function: ClassString
 		 */
 		private ClassString (string classString, string lookupKey)
@@ -46,7 +46,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			this.lookupKey = lookupKey;
 			}
 
-			
+
 		/* Function: FromParameters
 		 * Creates a ClassString from the passed parameters.
 		 */
@@ -92,7 +92,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 
 		/* Function: FromExportedString
 		 * Creates a ClassString from the passed string which originally came from another ClassString object.  This assumes the
-		 * string is already be in the proper format.  Only use this when retrieving ClassStrings that were stored as plain text 
+		 * string is already be in the proper format.  Only use this when retrieving ClassStrings that were stored as plain text
 		 * in a database or other data file.
 		 */
 		static public ClassString FromExportedString (string exportedClassString)
@@ -127,13 +127,13 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 
 			return new ClassString(classString, lookupKey);
 			}
-			
-		
-		
+
+
+
 		// Group: Properties
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Property: Symbol
 		 * The class as a <SymbolString>.
 		 */
@@ -195,12 +195,12 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 
 
 		/* Property: CaseSensitive
-		 * 
+		 *
 		 * Fooled you.  There actually is no CaseSensitive property.  You don't have to worry about handling case sensitivity
 		 * yourself, just use <LookupKey> for comparisons instead.
-		 * 
-		 * Why is there no CaseSensitive property?  Because if there was somebody might mistakenly take it to mean they 
-		 * should lowercase the string for comparisons instead of using <LookupKey>.  That's bad, as the part that encodes 
+		 *
+		 * Why is there no CaseSensitive property?  Because if there was somebody might mistakenly take it to mean they
+		 * should lowercase the string for comparisons instead of using <LookupKey>.  That's bad, as the part that encodes
 		 * <LanguageID> is always case sensitive and would be corrupted.  So this note serves as a warning for the people
 		 * who might be looking for it.
 		 */
@@ -222,12 +222,12 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 
 
 		/* Function: AppendBase64Int
-		 * 
+		 *
 		 * Appends a base64-encoded integer to the StringBuilder.  Remember to append a <SeparatorChar>
 		 * afterwards since it's required by <DecodeBase64Int()>.
-		 * 
+		 *
 		 * Format:
-		 * 
+		 *
 		 *   - The integer is encoded in base64 using the following charset: 0-9, A-Z, a-z, !, @.
 		 *   - The encoding is little endian, so the first characters are the lowest order bits.  This is just for ease
 		 *      of encoding since it's unlikely we'll need more than one character in practice.
@@ -298,8 +298,8 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 
 		// Group: Operators
 		// __________________________________________________________________________
-		
-		
+
+
 		/* operator: operator string
 		 * A cast operator to covert the ClassString to a string.
 		 */
@@ -307,7 +307,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			{
 			return classString.classString;
 			}
-						
+
 		/* Operator: operator ==
 		 * This compares using <LookupKey> instead of <ToString()>.
 		 */
@@ -333,7 +333,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			{
 			return classString;
 			}
-			
+
 		/* Function: GetHashCode
 		 * This is generated from <LookupKey> instead of <ToString()>.
 		 */
@@ -359,7 +359,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			else
 				{  return false;  }
 			}
-			
+
 		/* Function: CompareTo
 		 * This compares using <LookupKey> instead of <ToString()>.
 		 */
@@ -367,17 +367,17 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			{
 			return lookupKey.CompareTo(other);
 			}
-		
-			
-		
+
+
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
-		
+
+
 		/* string: classString
-		 * 
+		 *
 		 * The combined class string.
-		 * 
+		 *
 		 * - First will be the character 'C' or 'i' depending on whether it's case-sensitive or not.
 		 * - Next will be the hierarchy ID encoded in base64, followed by a <SeparatorChar>.
 		 * - Next will be the language ID encoded in base64, followed by a <SeparatorChar>.
@@ -390,6 +390,6 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 		 * with the <SymbolString> part in lowercase.
 		 */
 		private string lookupKey;
-	
+
 		}
 	}

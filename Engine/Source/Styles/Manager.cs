@@ -1,25 +1,25 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Styles.Manager
  * ____________________________________________________________________________
- * 
+ *
  * A class to manage all the output styles.
- * 
- * 
+ *
+ *
  * Usage:
- * 
+ *
  *		- Start the module with <Start()>.
- *		
+ *
  *		- Load styles with <LoadStyle()>.  The module has to be started before you can do this.
- *		
- *	
+ *
+ *
  *	Threading: Thread Safe
- *	
+ *
  *		This class is only changed while styles are being loaded.  After that point it should be treated as read-only.  If these
  *		rules are followed it is effectively thread safe.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -56,8 +56,8 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 
 		/* Function: Start
-		 * Initializes the manager and returns whether all the settings are correct and that execution is ready to begin.  
-		 * If there are problems they are added as <Errors> to the errorList parameter.  This class is *not* designed to allow 
+		 * Initializes the manager and returns whether all the settings are correct and that execution is ready to begin.
+		 * If there are problems they are added as <Errors> to the errorList parameter.  This class is *not* designed to allow
 		 * multiple attempts.  If this function fails scrap the entire <Engine.Instance> and start again.
 		 */
 		public bool Start (ErrorList errorList)
@@ -73,11 +73,11 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 
 		/* Function: LoadStyle
-		 * 
+		 *
 		 * Attempts to load a <Style> with the passed name, returning it if successful.  It will also load any inherited styles.
-		 * If it couldn't find the style or there were errors in its configuration files it will add them to the error list and return 
+		 * If it couldn't find the style or there were errors in its configuration files it will add them to the error list and return
 		 * null.  Pass a <Config.PropertyLocation> so it will be able to attach where it was specified to the error message.
-		 * 
+		 *
 		 * All loaded styles will be tracked by the <Styles.FileSource> automatically.  However, if you're adding a new style to
 		 * an output target you should set <ReparseStyleFiles> so the new target will see all its files.  Otherwise if the style
 		 * was previously used by a different output target it will be already loaded and the new one won't see them.
@@ -125,7 +125,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 				{  throw new NotImplementedException();  }
 
 
-			// Add it to the loaded styles list before processing inherited styles so circular dependencies don't create an 
+			// Add it to the loaded styles list before processing inherited styles so circular dependencies don't create an
 			// infinite loop.
 
 			loadedStyles.Add(style);
@@ -186,7 +186,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 
 		/* Function: LocateStyleOnDisk
-		 * Attempts to locate the style associated with the passed name, returning a basic <Style> object if found or null if not.  It 
+		 * Attempts to locate the style associated with the passed name, returning a basic <Style> object if found or null if not.  It
 		 * will not fill in the <Style>'s properties other than its name and paths.
 		 */
 		protected Style LocateStyleOnDisk (string name)
@@ -254,7 +254,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		 * A <StringSet> of the supported extensions for files associated with styles.  This includes image extensions but not .html for
 		 * the home page file.
 		 */
-		static public StringSet FileExtensions = new StringSet (KeySettings.IgnoreCase, new string[] { "css", "js", "json", 
+		static public StringSet FileExtensions = new StringSet (KeySettings.IgnoreCase, new string[] { "css", "js", "json",
 																																				 "gif", "jpg", "jpeg", "png", "bmp", "svg",
 																																				 "woff", "eot", "svg", "ttf" });
 

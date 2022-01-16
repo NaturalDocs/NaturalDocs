@@ -1,26 +1,26 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.SourceToElements
  * ____________________________________________________________________________
- * 
- * A base class for automated tests where sample source files are loaded from a folder, converted to <Elements>, 
+ *
+ * A base class for automated tests where sample source files are loaded from a folder, converted to <Elements>,
  * and the properties of those elements are saved to files and compared to other files containing the expected result.
- * 
+ *
  * The benefit of this approach is that you never have to hand code the output.  You can run the tests without
  *	an expected output file, look over the actual output file, and if it's acceptable rename it to become the
  *	expected output file.
  *
  * Usage:
- * 
+ *
  *		- Derive a class that has the [TestFixture] attribute.
  *		- Create a function with the [Test] attribute that calls <TestFolder()>, pointing it to the input files.
  *		- All files in the test folder in the format "[Test Name] - Input.[extension]" will be tested when NUnit runs.
  *		- A corresponding file "[Test Name] - Actual Output.txt" will be created for each one.
  *		- If it matches the contents of the file "[Test Name] - Expected Output.txt", the test will pass.  If it doesn't,
  *		  that file doesn't exist, or an exception was thrown, the test will fail.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -71,9 +71,9 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 					if (elements[j] is ParentElement)
 						{
 						if ( (elements[j] as ParentElement).Contains(element) )
-							{  
-							indent += 2;  
-							
+							{
+							indent += 2;
+
 							if (parentElement == null)
 								{  parentElement = (ParentElement)elements[j];  }
 							}
@@ -81,9 +81,9 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 					}
 
 				if (i > 0)
-					{  
+					{
 					output.Append(' ', indent);
-					output.AppendLine("---------------");  
+					output.AppendLine("---------------");
 					}
 
 
@@ -94,7 +94,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 					{  output.AppendLine("[Root Element]");  }
 				else if (element.Topic == null)
 					{  output.AppendLine("(no topic)");  }
-				else 
+				else
 					{
 					output.Append( EngineInstance.CommentTypes.FromID(element.Topic.CommentTypeID).Name + ": " );
 
@@ -123,7 +123,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 					{
 					output.Append(' ', indent);
 					output.Append("(line " + element.LineNumber + ", char " + element.CharNumber);
-					
+
 					if (parentElement.IsRootElement == false)
 						{
 						output.Append(", child of ");
@@ -179,12 +179,12 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 								output.Append("- Child Using Statement: ");
 
 								if (usingStatement.Type == UsingString.UsingType.AddPrefix)
-									{  
+									{
 									output.AppendLine("Add " + usingStatement.PrefixToAdd.FormatWithSeparator('.'));
 									}
 								else if (usingStatement.Type == UsingString.UsingType.ReplacePrefix)
-									{  
-									output.AppendLine("Replace " + usingStatement.PrefixToRemove.FormatWithSeparator('.') + 
+									{
+									output.AppendLine("Replace " + usingStatement.PrefixToRemove.FormatWithSeparator('.') +
 																		 " with " + usingStatement.PrefixToAdd.FormatWithSeparator('.'));
 									}
 								else
@@ -207,7 +207,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 		public void TestFolder (Path testDataFolder, Path projectConfigFolder = default(Path))
 			{
 			TestList allTests = new TestList();
-			
+
 			engineInstanceManager = new EngineInstanceManager();
 			engineInstanceManager.Start(testDataFolder, projectConfigFolder);
 
@@ -239,7 +239,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 							if (codeElements == null)
 								{  throw new Exception("GetCodeElements() returned null.");  }
 
-							test.SetActualOutput( OutputOf(codeElements) );  
+							test.SetActualOutput( OutputOf(codeElements) );
 							}
 						catch (Exception e)
 							{  test.TestException = e;  }
@@ -251,8 +251,8 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 				}
 
 			finally
-				{  
-				engineInstanceManager.Dispose();  
+				{
+				engineInstanceManager.Dispose();
 				engineInstanceManager = null;
 				}
 

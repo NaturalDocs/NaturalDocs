@@ -5,7 +5,7 @@
  * A class used to process CSS files, such as performing substitutions and removing whitespace.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -42,7 +42,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 			if (!shrink)
 				{  return source.RawText;  }
 
-			
+
 			// Search comments for sections to include in the output
 
 			StringBuilder output = new StringBuilder(css.Length);
@@ -80,7 +80,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 						safeToCondenseAround.IndexOf(nextChar) == -1) )
 						{  output.Append(' ');  }
 					}
-				else 
+				else
 					{
 					TokenIterator prevIterator = iterator;
 

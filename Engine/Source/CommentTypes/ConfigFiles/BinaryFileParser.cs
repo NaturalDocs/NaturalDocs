@@ -1,17 +1,17 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles.BinaryFileParser
  * ____________________________________________________________________________
- * 
+ *
  * A class to handle loading and saving <Comments.nd>.
- * 
- * 
+ *
+ *
  * Multithreading: Not Thread Safe
- * 
+ *
  *		The parser object may be reused, but multiple threads cannot use it at the same time.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -23,11 +23,11 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 	{
 	public class BinaryFileParser
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: BinaryFileParser
 		 */
 		public BinaryFileParser ()
@@ -42,7 +42,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 		public bool Load (Path filename, out Config config)
 			{
 			BinaryFile binaryFile = new BinaryFile();
-			
+
 			try
 				{
 				if (binaryFile.OpenForReading(filename) == false)
@@ -60,14 +60,14 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 				else
 					{
 					config = new Config();
-					
+
 					// [String: Tag Name]
 					// [Int32: ID]
 					// ...
 					// [String: null]
-					
+
 					string tagName = binaryFile.ReadString();
-					
+
 					while (tagName != null)
 						{
 						Tag tag = new Tag(tagName);
@@ -76,7 +76,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 
 						tagName = binaryFile.ReadString();
 						}
-						
+
 
 					// [String: Comment Type Name]
 					// [Int32: ID]
@@ -88,19 +88,19 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 					// [Byte: Flags]
 					// ...
 					// [String: null]
-						
+
 					string commentTypeName = binaryFile.ReadString();
-					
+
 					while (commentTypeName != null)
 						{
 						CommentType commentType = new CommentType(commentTypeName);
-						
+
 						commentType.ID = binaryFile.ReadInt32();
 						commentType.DisplayName = binaryFile.ReadString();
 						commentType.PluralDisplayName = binaryFile.ReadString();
 						commentType.SimpleIdentifier = binaryFile.ReadString();
 
-						// We don't have to validate the scope and flag values because they're only used to compare to the text file 
+						// We don't have to validate the scope and flag values because they're only used to compare to the text file
 						// versions, which are validated.  If these are invalid they'll just show up as changed.
 
 						commentType.Scope = (CommentType.ScopeValue)binaryFile.ReadByte();
@@ -112,11 +112,11 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 						commentType.Flags = (CommentType.FlagValue)binaryFile.ReadByte();
 
 						config.AddCommentType(commentType);
-						
+
 						commentTypeName = binaryFile.ReadString();
 						}
 
-						
+
 					// [String: Keyword]
 					// [Byte: Plural (0 or 1)]
 					// [Int32: Comment Type ID]
@@ -144,16 +144,16 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 					}
 				}
 			catch
-				{  
+				{
 				config = null;
 				return false;
 				}
 			finally
-				{  
+				{
 				if (binaryFile.IsOpen)
 					{  binaryFile.Close();  }
 				}
-				
+
 			return true;
 			}
 
@@ -173,15 +173,15 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 				// [Int32: ID]
 				// ...
 				// [String: null]
-				
+
 				foreach (var tag in config.Tags)
 					{
 					binaryFile.WriteString(tag.Name);
 					binaryFile.WriteInt32(tag.ID);
 					}
-					
+
 				binaryFile.WriteString(null);
-				
+
 
 				// [String: Comment Type Name]
 				// [Int32: ID]
@@ -205,10 +205,10 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 					binaryFile.WriteInt32( commentType.HierarchyID );
 					binaryFile.WriteByte( (byte)commentType.Flags );
 					}
-					
+
 				binaryFile.WriteString(null);
-				
-				
+
+
 				// [String: Keyword]
 				// [Byte: Plural (0 or 1)]
 				// [Int32: Comment Type ID]
@@ -226,12 +226,12 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 
 				binaryFile.WriteString(null);
 				}
-				
+
 			finally
 				{
 				binaryFile.Close();
 				}
 			}
-		 
+
 		}
 	}

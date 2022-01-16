@@ -1,8 +1,8 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.CodeDB.Accessor
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -20,31 +20,31 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 	{
 	public partial class Accessor
 		{
-		
+
 		// Group: Topic Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Function: GetTopics
-		 * 
-		 * A generic function for retrieving all the <Topics> that satisfy the passed WHERE clause.  If there are none it will return 
+		 *
+		 * A generic function for retrieving all the <Topics> that satisfy the passed WHERE clause.  If there are none it will return
 		 * an empty list.
-		 * 
+		 *
 		 * Parameters:
-		 * 
+		 *
 		 *		whereClause - The SQL WHERE clause to apply to the query, such as "Topics.FileID=?".  It's recommended that you
 		 *								  add the table name to fully qualify columns.
-		 *		orderByClause - The SQL ORDER BY clause to apply to the query, such as "Topics.FilePosition ASC", or null if 
+		 *		orderByClause - The SQL ORDER BY clause to apply to the query, such as "Topics.FilePosition ASC", or null if
 		 *									 none.  It's recommended that you add the table name to fully qualify columns.
 		 *		clauseParameters - Any parameters needed for question marks in the WHERE and ORDER BY clauses, or null if none.
 		 *		cancelled - A <CancelDelegate> you can use to interrupt this process.  Pass <Delegates.NeverCancel> if you won't
 		 *							 need to.
-		 *		getTopicFlags - If you don't need every property in the <Topic> object you can use this to filter some out to save 
-		 *									 memory or processing time.  In debug builds <Topic> will enforce these settings to prevent programming 
+		 *		getTopicFlags - If you don't need every property in the <Topic> object you can use this to filter some out to save
+		 *									 memory or processing time.  In debug builds <Topic> will enforce these settings to prevent programming
 		 *									 errors.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- You must have at least a read-only lock.
 		 */
 		protected List<Topic> GetTopics (string whereClause, string orderByClause, object[] clauseParameters,
@@ -53,7 +53,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			#if DEBUG
 			if (whereClause == null)
 				{  throw new Exception ("You must define a WHERE clause when calling GetTopics().");  }
-			#endif 
+			#endif
 
 			RequireAtLeast(LockType.ReadOnly);
 
@@ -64,13 +64,13 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			bool lookupContexts = ((getTopicFlags & GetTopicFlags.DontLookupContexts) == 0);
 			bool includeSummary = ((getTopicFlags & GetTopicFlags.DontIncludeSummary) == 0);
 			bool includePrototype = ((getTopicFlags & GetTopicFlags.DontIncludePrototype) == 0);
-						
+
 			StringBuilder queryText = new StringBuilder("SELECT TopicID, Title, Symbol, SymbolDefinitionNumber, " +
 																				  "Topics.ClassID, IsList, IsEmbedded, CommentTypeID, DeclaredAccessLevel, " +
 																				  "EffectiveAccessLevel, Tags, CommentLineNumber, CodeLineNumber, " +
 																				  "LanguageID, PrototypeContextID, BodyContextID, FileID, FilePosition ");
 
-			// DefinesClass is a read-only property in Topic so we don't have to retrieve it from the database.  Topic will calculate it from 
+			// DefinesClass is a read-only property in Topic so we don't have to retrieve it from the database.  Topic will calculate it from
 			// CommentTypeID.  We only store it in the database so we can use it to filter queries.
 
 			if (bodyLengthOnly)
@@ -89,20 +89,20 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 			if (lookupContexts)
 				{  queryText.Append(", PContexts.ContextString, BContexts.ContextString ");  }
-																								
+
 			queryText.Append("FROM Topics ");
 
 			if (lookupClasses)
 				{  queryText.Append("LEFT OUTER JOIN Classes ON Classes.ClassID = Topics.ClassID ");  }
-			
+
 			if (lookupContexts)
-				{  
+				{
 				queryText.Append("LEFT OUTER JOIN Contexts AS PContexts ON PContexts.ContextID = PrototypeContextID " +
-										 "LEFT OUTER JOIN Contexts AS BContexts ON BContexts.ContextID = BodyContextID ");  
+										 "LEFT OUTER JOIN Contexts AS BContexts ON BContexts.ContextID = BodyContextID ");
 				}
-				
+
 			queryText.Append("WHERE ");
-			
+
 			queryText.Append('(');
 			queryText.Append(whereClause);
 			queryText.Append(')');
@@ -118,7 +118,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				while (query.Step() && !cancelled())
 					{
 					Topic topic = new Topic(EngineInstance.CommentTypes);
-					
+
 					topic.TopicID = query.NextIntColumn();
 					topic.Title = query.NextStringColumn();
 					topic.Symbol = SymbolString.FromExportedString( query.NextStringColumn() );
@@ -144,8 +144,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 					topic.IgnoredFields = Topic.IgnoreFields.None;
 
 					if (bodyLengthOnly)
-						{  
-						topic.BodyLength = query.NextIntColumn();  
+						{
+						topic.BodyLength = query.NextIntColumn();
 						topic.IgnoredFields |= Topic.IgnoreFields.Body;
 						}
 					else
@@ -188,18 +188,18 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 			return topics;
 			}
-			
-			
+
+
 		/* Function: GetTopicsInFile
-		 * 
-		 * Retrieves a list of all the topics present in the passed file ID.  If there are none it will return an empty list.  Pass a 
+		 *
+		 * Retrieves a list of all the topics present in the passed file ID.  If there are none it will return an empty list.  Pass a
 		 * <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
-		 * 
+		 *
 		 * If you don't need every property in the <Topic> object you can use <GetTopicFlags> to filter some out to save
 		 * memory or processing time.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- You must have at least a read-only lock.
 		 */
 		public List<Topic> GetTopicsInFile (int fileID, CancelDelegate cancelled, GetTopicFlags getTopicFlags = GetTopicFlags.Everything)
@@ -211,19 +211,19 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 			return GetTopics("Topics.FileID=?", "Topics.FilePosition ASC", clauseParams, cancelled, getTopicFlags);
 			}
-			
-			
+
+
 		/* Function: GetTopicsInClass
-		 * 
-		 * Retrieves a list of all the topics present in the passed class ID.  The topics will be grouped by file, but the files will be in no 
-		 * particular order.  If there are no topics it will return an empty list.  Pass a <CancelDelegate> if you'd like to be able to interrupt 
+		 *
+		 * Retrieves a list of all the topics present in the passed class ID.  The topics will be grouped by file, but the files will be in no
+		 * particular order.  If there are no topics it will return an empty list.  Pass a <CancelDelegate> if you'd like to be able to interrupt
 		 * this process, or <Delegates.NeverCancel> if not.
-		 * 
+		 *
 		 * If you don't need every property in the <Topic> object you can use <GetTopicFlags> to filter some out to save memory
 		 * or processing time.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- You must have at least a read-only lock.
 		 */
 		public List<Topic> GetTopicsInClass (int classID, CancelDelegate cancelled, GetTopicFlags getTopicFlags = GetTopicFlags.Everything)
@@ -244,29 +244,29 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			// What the hell?  Okay, so it's possible for files to always get the same file ID relative to each other.  If Platform A always
 			// returns the files in a folder in alphabetical order, file 1 could always have a lower ID than file 2 and thus always appear
 			// first when ordering the query by file ID.  If this happens to be the desired order then it can lead to code which appears
-			// to behave correctly but actually doesn't -- it's depending on a side effect that isn't guaranteed.  It's only when someone 
+			// to behave correctly but actually doesn't -- it's depending on a side effect that isn't guaranteed.  It's only when someone
 			// runs it on Platform B where the files are returned in any order that this screws up and leads to unpredictable output.  So
 			// instead we guarantee it's your problem NOW to force you handle it correctly.
 			#endif
 
 			return GetTopics("Topics.ClassID=?", orderBy, clauseParams, cancelled, getTopicFlags);
 			}
-			
-			
+
+
 		/* Function: GetTopicsByID
-		 * 
-		 * Retrieves all the <Topics> present in a list of topic IDs.  If there are none it will return an empty list.  Pass a <CancelDelegate> if 
+		 *
+		 * Retrieves all the <Topics> present in a list of topic IDs.  If there are none it will return an empty list.  Pass a <CancelDelegate> if
 		 * you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
-		 * 
+		 *
 		 * If you don't need every property in the <Topic> object you can set <Topic.IgnoreFields> to filter some out.  Not every
 		 * flag will be respected by the query but some that will save a lot of memory or processing time may be.  In debug builds
 		 * <Topic> will enforce these settings regardless of whether the query filled them in or not to prevent programming errors.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- You must have at least a read-only lock.
 		 */
-		public List<Topic> GetTopicsByID (IDObjects.NumberSet topicIDs, CancelDelegate cancelled, 
+		public List<Topic> GetTopicsByID (IDObjects.NumberSet topicIDs, CancelDelegate cancelled,
 														  GetTopicFlags getTopicFlags = GetTopicFlags.Everything)
 			{
 			RequireAtLeast(LockType.ReadOnly);
@@ -276,7 +276,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 			List<Topic> topics = null;
 			IDObjects.NumberSet remainingTopicIDs = topicIDs;
-			
+
 			do
 				{
 				IDObjects.NumberSet temp;
@@ -295,22 +295,22 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 			return topics;
 			}
-			
-			
+
+
 		/* Function: GetTopicsByEndingSymbol
-		 * 
+		 *
 		 * Retrieves a list of all the topics which use one of the passed <EndingSymbols>.  If there are none it will return an empty
 		 * list.  Pass a <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
-		 * 
+		 *
 		 * If you don't need every property in the <Topic> object you can set <Topic.IgnoreFields> to filter some out.  Not every
 		 * flag will be respected by the query but some that will save a lot of memory or processing time may be.  In debug builds
 		 * <Topic> will enforce these settings regardless of whether the query filled them in or not to prevent programming errors.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- You must have at least a read-only lock.
 		 */
-		public List<Topic> GetTopicsByEndingSymbol (IEnumerable<EndingSymbol> endingSymbols, CancelDelegate cancelled, 
+		public List<Topic> GetTopicsByEndingSymbol (IEnumerable<EndingSymbol> endingSymbols, CancelDelegate cancelled,
 																						 GetTopicFlags getTopicFlags = GetTopicFlags.Everything)
 			{
 			RequireAtLeast(LockType.ReadOnly);
@@ -332,31 +332,31 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 			return GetTopics(whereClause.ToString(), null, clauseParameters.ToArray(), cancelled, getTopicFlags);
 			}
-			
-			
+
+
 		/* Function: GetBestClassDefinitionTopics
-		 * 
-		 * Retrieves a list of all the <Topics> that serve as the best class definitions of the passed class IDs.  There will only be one 
-		 * <Topic> per class ID, even if multiple <Topics> define them.  If a class ID doesn't have any <Topics> that define it (as 
+		 *
+		 * Retrieves a list of all the <Topics> that serve as the best class definitions of the passed class IDs.  There will only be one
+		 * <Topic> per class ID, even if multiple <Topics> define them.  If a class ID doesn't have any <Topics> that define it (as
 		 * opposed to just being a member of it) it will not have an entry in the list.
-		 * 
+		 *
 		 * Pass a <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
-		 * 
+		 *
 		 * If you don't need every property in the <Topic> object you can use <GetTopicFlags> to filter some out to save memory
 		 * or processing time.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- You must have at least a read-only lock.
 		 */
-		public List<Topic> GetBestClassDefinitionTopics (IDObjects.NumberSet classIDs, CancelDelegate cancelled, 
+		public List<Topic> GetBestClassDefinitionTopics (IDObjects.NumberSet classIDs, CancelDelegate cancelled,
 																		 GetTopicFlags getTopicFlags = GetTopicFlags.Everything)
 			{
 			RequireAtLeast(LockType.ReadOnly);
 
 			List<Topic> topics = null;
 			IDObjects.NumberSet remainingClassIDs = classIDs;
-			
+
 			do
 				{
 				IDObjects.NumberSet temp;
@@ -395,16 +395,16 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 		/* Function: AddTopic
-		 * 
-		 * Adds a <Topic> to the database.  Assumes it doesn't exist; if it does, you need to use <UpdateTopic()> or call <DeleteTopic()> 
+		 *
+		 * Adds a <Topic> to the database.  Assumes it doesn't exist; if it does, you need to use <UpdateTopic()> or call <DeleteTopic()>
 		 * first.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- Requires a read/write lock.  Read/possible write locks will be upgraded automatically.
-		 * 
+		 *
 		 * Topic Requirements:
-		 * 
+		 *
 		 *		TopicID - Must be zero.  This will be automatically assigned and the <Topic> updated.
 		 *		Title - Must be set.
 		 *		Body - Can be null.
@@ -458,7 +458,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			RequireZero("AddTopic", "PrototypeContextID", topic.PrototypeContextID);
 			// BodyContext
 			RequireZero("AddTopic", "BodyContextID", topic.BodyContextID);
-			
+
 			RequireAtLeast(LockType.ReadWrite);
 			BeginTransaction();
 
@@ -468,7 +468,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				topic.ClassID = GetOrCreateClassID(topic.ClassString);
 				topic.BodyContextID = GetOrCreateContextID(topic.BodyContext);
 				topic.PrototypeContextID = GetOrCreateContextID(topic.PrototypeContext);
-			
+
 				connection.Execute("INSERT INTO Topics (TopicID, Title, Body, Summary, Prototype, Symbol, SymbolDefinitionNumber, ClassID, " +
 														"DefinesClass, IsList, IsEmbedded, EndingSymbol, CommentTypeID, DeclaredAccessLevel, EffectiveAccessLevel, " +
 														"Tags, FileID, FilePosition, CommentLineNumber, CodeLineNumber, LanguageID, PrototypeContextID, " +
@@ -476,11 +476,11 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 													"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 													topic.TopicID, topic.Title, topic.Body, topic.Summary, topic.Prototype, topic.Symbol, topic.SymbolDefinitionNumber,
 													topic.ClassID, (topic.DefinesClass ? 1 : 0), (topic.IsList ? 1 : 0), (topic.IsEmbedded ? 1 : 0), topic.Symbol.EndingSymbol,
-													topic.CommentTypeID, (int)topic.DeclaredAccessLevel, (int)topic.EffectiveAccessLevel, topic.TagString, topic.FileID, 
-													topic.FilePosition, topic.CommentLineNumber, topic.CodeLineNumber, topic.LanguageID, topic.PrototypeContextID, 
-													topic.BodyContextID										 
+													topic.CommentTypeID, (int)topic.DeclaredAccessLevel, (int)topic.EffectiveAccessLevel, topic.TagString, topic.FileID,
+													topic.FilePosition, topic.CommentLineNumber, topic.CodeLineNumber, topic.LanguageID, topic.PrototypeContextID,
+													topic.BodyContextID
 													);
-			
+
 				Manager.UsedTopicIDs.Add(topic.TopicID);
 
 				Manager.ClassIDReferenceChangeCache.AddReference(topic.ClassID);
@@ -494,12 +494,12 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				RollbackTransactionForException();
 				throw;
 				}
-			
+
 
 			// Notify change watchers
-			
+
 			IList<IChangeWatcher> changeWatchers = Manager.LockChangeWatchers();
-			
+
 			try
 				{
 				if (changeWatchers.Count > 0)
@@ -518,22 +518,22 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 		/* Function: UpdateTopic
-		 * 
+		 *
 		 * Performs minor updates to an existing <Topic> in the database as determined by <Topic.DatabaseCompare()>.  If
 		 * <Topic.DatabaseCompare()> returns <Topic.DatabaseCompareResult.Different> instead of
 		 * <Topic.DatabaseCompareResult.Similar_WontAffectLinking> you cannot use this function.  You must delete the old topic
 		 * and add it as a new one instead.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- Requires a read/write lock.  Read/possible write locks will be upgraded automatically.
-		 *		
+		 *
 		 * Topic Requirements:
-		 * 
+		 *
 		 *		- newTopic must have all properties filled in *except* certain IDs, as in <AddTopic()>.
 		 *		  - As in <AddTopic()>, these IDs will be filled in for you.
 		 *		- oldTopic must have all properties filled in *including* certain IDs, as in <DeleteTopic()>.
-		 *		- The topics must be similar enough that <Topic.DatabaseCompare()> returns 
+		 *		- The topics must be similar enough that <Topic.DatabaseCompare()> returns
 		 *			<Topic.DatabaseCompareResult.Similar_WontAffectLinking>.
 		 */
 		public void UpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags)
@@ -557,14 +557,14 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				// must change as well.
 
 				newTopic.TopicID = oldTopic.TopicID;
-			
+
 				if (classChanged)
 					{  newTopic.ClassID = GetOrCreateClassID(newTopic.ClassString);  }
 				else
 					{  newTopic.ClassID = oldTopic.ClassID;  }
 
 				if (contextsChanged)
-					{  
+					{
 					newTopic.BodyContextID = GetOrCreateContextID(newTopic.BodyContext);
 					newTopic.PrototypeContextID = GetOrCreateContextID(newTopic.PrototypeContext);
 					}
@@ -585,8 +585,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 					connection.Execute("UPDATE Topics SET Summary=?, DeclaredAccessLevel=?, FilePosition=?, CommentLineNumber=?, CodeLineNumber=?, " +
 															"ClassID=?, PrototypeContextID=?, BodyContextID=?, IsList=?, IsEmbedded=? " +
 														"WHERE TopicID = ?",
-														newTopic.Summary, (int)newTopic.DeclaredAccessLevel, newTopic.FilePosition, newTopic.CommentLineNumber, 
-														newTopic.CodeLineNumber, newTopic.ClassID, newTopic.PrototypeContextID, newTopic.BodyContextID, 
+														newTopic.Summary, (int)newTopic.DeclaredAccessLevel, newTopic.FilePosition, newTopic.CommentLineNumber,
+														newTopic.CodeLineNumber, newTopic.ClassID, newTopic.PrototypeContextID, newTopic.BodyContextID,
 														(newTopic.IsList ? 1 : 0), (newTopic.IsEmbedded ? 1 : 0), oldTopic.TopicID);
 					}
 
@@ -619,7 +619,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			// Notify change watchers
 
 			IList<IChangeWatcher> changeWatchers = Manager.LockChangeWatchers();
-			
+
 			try
 				{
 				if (changeWatchers.Count > 0)
@@ -635,21 +635,21 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				Manager.ReleaseChangeWatchers();
 				}
 			}
-			
-			
+
+
 		/* Function: DeleteTopic
-		 * 
+		 *
 		 * Removes a topic from the database.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- Requires a read/write lock.  Read/possible write locks will be upgraded automatically.
-		 *		
+		 *
 		 * Topic Requirements:
-		 * 
+		 *
 		 *		The topic must have been retrieved from the database, and thus have all its fields set.  It's important because
 		 *		it will be passed to the change watchers which may need them.
-		 *		
+		 *
 		 *		TopicID - Must be set.
 		 *		Title - Must be set.
 		 *		Body - Can be null.
@@ -724,7 +724,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			// Notify the change watchers BEFORE we actually perform the deletion.
 
 			IList<IChangeWatcher> changeWatchers = Manager.LockChangeWatchers();
-			
+
 			try
 				{
 				if (changeWatchers.Count > 0)
@@ -764,7 +764,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				// Delete the actual topic.
 
 				connection.Execute("DELETE FROM Topics WHERE TopicID = ?", topic.TopicID);
-			
+
 				Manager.UsedTopicIDs.Remove(topic.TopicID);
 				Manager.ClassIDReferenceChangeCache.RemoveReference(topic.ClassID);
 				Manager.ContextIDReferenceChangeCache.RemoveReference(topic.PrototypeContextID);
@@ -778,21 +778,21 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				throw;
 				}
 			}
-			
-			
+
+
 		/* Function: UpdateTopicsInFile
-		 * 
+		 *
 		 * Replaces all the topics in the database under the passed file ID with the passed list.  It will query the existing topics itself,
 		 * perform a comparison, and call <AddTopic()>, <UpdateTopic()>, and <DeleteTopic()> as necessary.  Pass a <CancelDelegate>
 		 * if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- Requires at least a read/possible write lock.  If any changes occur, it will be upgraded automatically.
 		 *		- The new topics must be in comment line order.
-		 * 
+		 *
 		 * Topic Requirements:
-		 * 
+		 *
 		 *		TopicID - Must be zero.  These will be automatically assigned and the <Topics> updated.
 		 *		Title - Must be set.
 		 *		Body - Can be null.
@@ -846,17 +846,17 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 					embeddedTopicsInARow++;
 
 					if (embeddedTopicsInARow > lastNonEmbeddedTopicSymbolCount)
-						{  
+						{
 						throw new Exception ("Topic " + lastNonEmbeddedTopic.Title + " has " + lastNonEmbeddedTopicSymbolCount + " embedded " +
-																  "topics but more than that followed it in the list.");  
+																  "topics but more than that followed it in the list.");
 						}
 					}
 				else // not embedded
 					{
 					if (lastNonEmbeddedTopic != null && embeddedTopicsInARow < lastNonEmbeddedTopicSymbolCount)
-						{  
+						{
 						throw new Exception ("Topic " + lastNonEmbeddedTopic.Title + " has " + lastNonEmbeddedTopicSymbolCount + " embedded " +
-																  "topics but " + embeddedTopicsInARow + " followed it in the list.");  
+																  "topics but " + embeddedTopicsInARow + " followed it in the list.");
 						}
 
 					lastNonEmbeddedTopic = newTopic;
@@ -877,9 +877,9 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				}
 
 			if (lastNonEmbeddedTopic != null && embeddedTopicsInARow < lastNonEmbeddedTopicSymbolCount)
-				{  
+				{
 				throw new Exception ("Topic " + lastNonEmbeddedTopic.Title + " has " + lastNonEmbeddedTopicSymbolCount + " embedded " +
-															"topics but " + embeddedTopicsInARow + " followed it in the list.");  
+															"topics but " + embeddedTopicsInARow + " followed it in the list.");
 				}
 			#endif
 
@@ -898,26 +898,26 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 						}
 					}
 				}
-			
+
 			RequireAtLeast(LockType.ReadPossibleWrite);
 
 			List<Topic> oldTopics = GetTopicsInFile(fileID, cancelled);
 			bool madeChanges = false;
-			
+
 			try
 				{
-				
+
 				foreach (Topic newTopic in newTopics)
 					{
 					if (cancelled())
 						{  break;  }
-						
+
 					bool foundMatch = false;
 					for (int i = 0; foundMatch == false && i < oldTopics.Count; i++)
 						{
 						Topic.ChangeFlags changeFlags;
 						Topic.DatabaseCompareResult result = newTopic.DatabaseCompare(oldTopics[i], out changeFlags);
-						
+
 						if (result == Topic.DatabaseCompareResult.Same)
 							{
 							foundMatch = true;
@@ -935,13 +935,13 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 								BeginTransaction();
 								madeChanges = true;
 								}
-								
+
 							foundMatch = true;
 							UpdateTopic(oldTopics[i], newTopic, changeFlags);
 							oldTopics.RemoveAt(i);
 							}
 						}
-						
+
 					if (foundMatch == false)
 						{
 						if (madeChanges == false)
@@ -950,11 +950,11 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 							BeginTransaction();
 							madeChanges = true;
 							}
-							
+
 						AddTopic(newTopic);
 						}
 					}
-					
+
 				// All matches would have been removed, so anything left in oldTopics was deleted.
 				if (oldTopics.Count > 0 && !cancelled())
 					{
@@ -964,16 +964,16 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 						BeginTransaction();
 						madeChanges = true;
 						}
-						
+
 					foreach (Topic oldTopic in oldTopics)
-						{  
+						{
 						if (cancelled())
 							{  break;  }
 
-						DeleteTopic(oldTopic);  
+						DeleteTopic(oldTopic);
 						}
 					}
-					
+
 				if (madeChanges == true)
 					{
 					CommitTransaction();
@@ -983,38 +983,38 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				{
 				if (madeChanges == true)
 					{  RollbackTransactionForException();  }
-					
+
 				throw;
 				}
 			}
-			
-			
+
+
 		/* Function: DeleteTopicsInFile
-		 * 
+		 *
 		 * Deletes all the topics in the database under the passed file ID.  Pass a <CancelDelegate> if you'd like to be able to
 		 * interrupt this process, or <Delegates.NeverCancel> if not.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- Requires at least a read/possible write lock.  If any deletions occur, it will be upgraded automatically.
 		 */
 		public void DeleteTopicsInFile (int fileID, CancelDelegate cancelled)
 			{
 			RequireAtLeast(LockType.ReadPossibleWrite);
-			
+
 			List<Topic> topics = GetTopicsInFile(fileID, cancelled);
-			
+
 			if (topics.Count > 0 && !cancelled())
 				{
 				RequireAtLeast(LockType.ReadWrite);
 				BeginTransaction();
-				
+
 				try
-					{	
+					{
 					foreach (Topic topic in topics)
-						{  
+						{
 						DeleteTopic(topic);
-					
+
 						if (cancelled())
 							{  break;  }
 						}
@@ -1036,22 +1036,22 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 		/* Function: GetLinks
-		 * 
-		 * A generic function for retrieving all the <Links> that satisfy the passed WHERE clause.  If there are none it will return 
+		 *
+		 * A generic function for retrieving all the <Links> that satisfy the passed WHERE clause.  If there are none it will return
 		 * an empty list.
-		 * 
+		 *
 		 * Parameters:
-		 * 
+		 *
 		 *		whereClause - The SQL WHERE clause to apply to the query, such as "Links.FileID=?".  It's recommended that you
 		 *									  add the table name to fully qualify columns.
 		 *		clauseParameters - Any parameters needed for question marks in the WHERE clause, or null if none.
 		 *		cancelled - A <CancelDelegate> you can use to interrupt this process.  Pass <Delegates.NeverCancel> if you won't
 		 *							 need to.
-		 *		getLinkFlags - If you don't need every property in the <Link> object you can use this to filter some out to save 
+		 *		getLinkFlags - If you don't need every property in the <Link> object you can use this to filter some out to save
 		 *								  processing time.  In debug builds <Link> will enforce these settings to prevent programming errors.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- You must have at least a read-only lock.
 		 */
 		protected List<Link> GetLinks (string whereClause, object[] clauseParameters, CancelDelegate cancelled,
@@ -1060,7 +1060,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			#if DEBUG
 			if (whereClause == null)
 				{  throw new Exception ("You must define a WHERE clause when calling GetLinks().");  }
-			#endif 
+			#endif
 
 			RequireAtLeast(LockType.ReadOnly);
 
@@ -1085,7 +1085,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				{  queryText.Append("LEFT OUTER JOIN Contexts ON Contexts.ContextID = Links.ContextID ");  }
 
 			queryText.Append("WHERE ");
-			
+
 			queryText.Append('(');
 			queryText.Append(whereClause);
 			queryText.Append(')');
@@ -1128,31 +1128,31 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 						{  contextIDLookupCache.Add(link.Context, link.ContextID);  }
 					}
 				}
-			
+
 			return links;
 			}
 
 
 		/* Function: GetLinkByID
-		 * 
+		 *
 		 * Retrieves a link by its ID.  Assumes the link already exists.
-		 * 
-		 * If you don't need every property in the <Link> object you can use <GetLinkFlags> to filter some out and save 
+		 *
+		 * If you don't need every property in the <Link> object you can use <GetLinkFlags> to filter some out and save
 		 * processing time.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- You must have at least a read-only lock.
 		 */
 		public Link GetLinkByID (int linkID, GetLinkFlags getLinkFlags = GetLinkFlags.Everything)
 			{
 			RequireAtLeast(LockType.ReadOnly);
-			
+
 			object[] parameters = new object[1];
 			parameters[0] = linkID;
 
 			List<Link> links = GetLinks("Links.LinkID=?", parameters, Delegates.NeverCancel, getLinkFlags);
-			
+
 			#if DEBUG
 			if (links.Count == 0)
 				{  throw new Exception ("Tried to look up link ID " + linkID + " which doesn't exist.");  }
@@ -1163,21 +1163,21 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 		/* Function: GetLinksInFile
-		 * 
-		 * Retrieves a list of all the links present in the passed file ID.  If there are none it will return an empty list.  Pass a 
+		 *
+		 * Retrieves a list of all the links present in the passed file ID.  If there are none it will return an empty list.  Pass a
 		 * <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
-		 * 
-		 * If you don't need every property in the <Link> object you can use <GetLinkFlags> to filter some out and save 
+		 *
+		 * If you don't need every property in the <Link> object you can use <GetLinkFlags> to filter some out and save
 		 * processing time.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- You must have at least a read-only lock.
 		 */
 		public List<Link> GetLinksInFile (int fileID, CancelDelegate cancelled, GetLinkFlags getLinkFlags = GetLinkFlags.Everything)
 			{
 			RequireAtLeast(LockType.ReadOnly);
-			
+
 			object[] parameters = new object[1];
 			parameters[0] = fileID;
 
@@ -1186,21 +1186,21 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 		/* Function: GetLinksInClass
-		 * 
-		 * Retrieves a list of all the links present in the passed class ID.  If there are none it will return an empty list.  Pass a 
+		 *
+		 * Retrieves a list of all the links present in the passed class ID.  If there are none it will return an empty list.  Pass a
 		 * <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
-		 * 
-		 * If you don't need every property in the <Link> object you can use <GetLinkFlags> to filter some out and save 
+		 *
+		 * If you don't need every property in the <Link> object you can use <GetLinkFlags> to filter some out and save
 		 * processing time.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- You must have at least a read-only lock.
 		 */
 		public List<Link> GetLinksInClass (int classID, CancelDelegate cancelled, GetLinkFlags getLinkFlags = GetLinkFlags.Everything)
 			{
 			RequireAtLeast(LockType.ReadOnly);
-			
+
 			object[] parameters = new object[1];
 			parameters[0] = classID;
 
@@ -1209,22 +1209,22 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 		/* Function: GetNaturalDocsLinksInFiles
-		 * 
-		 * Retrieves a list of all the Natural Docs links present in the passed file IDs.  If there are none it will return an empty list.  
+		 *
+		 * Retrieves a list of all the Natural Docs links present in the passed file IDs.  If there are none it will return an empty list.
 		 * Pass a <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
-		 * 
-		 * If you don't need every property in the <Link> object you can use <GetLinkFlags> to filter some out and save 
+		 *
+		 * If you don't need every property in the <Link> object you can use <GetLinkFlags> to filter some out and save
 		 * processing time.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- You must have at least a read-only lock.
 		 */
-		public List<Link> GetNaturalDocsLinksInFiles (IDObjects.NumberSet fileIDs, CancelDelegate cancelled, 
+		public List<Link> GetNaturalDocsLinksInFiles (IDObjects.NumberSet fileIDs, CancelDelegate cancelled,
 																		  GetLinkFlags getLinkFlags = GetLinkFlags.Everything)
 			{
 			RequireAtLeast(LockType.ReadOnly);
-			
+
 			List<Link> links = null;
 			IDObjects.NumberSet fileIDsRemaining = fileIDs;
 
@@ -1232,7 +1232,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				{
 				IDObjects.NumberSet temp;
 
-				List<Link> linkBatch = GetLinks("Links.Type=? AND " + ColumnIsInNumberSetExpression("Links.FileID", fileIDsRemaining, out temp), 
+				List<Link> linkBatch = GetLinks("Links.Type=? AND " + ColumnIsInNumberSetExpression("Links.FileID", fileIDsRemaining, out temp),
 																new object[] { (int)LinkType.NaturalDocs }, cancelled, getLinkFlags);
 
 				fileIDsRemaining = temp;
@@ -1249,18 +1249,18 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 		/* Function: GetClassParentLinksInClasses
-		 * 
-		 * Retrieves a list of all the class parent links present for the passed class IDs.  If there are none it will return an empty list.  Pass a 
+		 *
+		 * Retrieves a list of all the class parent links present for the passed class IDs.  If there are none it will return an empty list.  Pass a
 		 * <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
-		 * 
-		 * If you don't need every property in the <Link> object you can use <GetLinkFlags> to filter some out and save 
+		 *
+		 * If you don't need every property in the <Link> object you can use <GetLinkFlags> to filter some out and save
 		 * processing time.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- You must have at least a read-only lock.
 		 */
-		public List<Link> GetClassParentLinksInClasses (IDObjects.NumberSet classIDs, CancelDelegate cancelled, 
+		public List<Link> GetClassParentLinksInClasses (IDObjects.NumberSet classIDs, CancelDelegate cancelled,
 																			   GetLinkFlags getLinkFlags = GetLinkFlags.Everything)
 			{
 			RequireAtLeast(LockType.ReadOnly);
@@ -1271,7 +1271,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			do
 				{
 				IDObjects.NumberSet temp;
-			
+
 				List<Link> linkBatch = GetLinks(ColumnIsInNumberSetExpression("Links.ClassID", remainingClassIDs, out temp) + " AND Links.Type=?",
 															   new object[] { (int)LinkType.ClassParent }, cancelled, getLinkFlags);
 
@@ -1289,23 +1289,23 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 		/* Function: GetClassParentLinksToClasses
-		 * 
-		 * Retrieves a list of all the class parent links that resolve to the passed class IDs.  If there are none it will return 
-		 * an empty list.  Pass a <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> 
+		 *
+		 * Retrieves a list of all the class parent links that resolve to the passed class IDs.  If there are none it will return
+		 * an empty list.  Pass a <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel>
 		 * if not.
-		 * 
-		 * If you don't need every property in the <Link> object you can use <GetLinkFlags> to filter some out and save 
+		 *
+		 * If you don't need every property in the <Link> object you can use <GetLinkFlags> to filter some out and save
 		 * processing time.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- You must have at least a read-only lock.
 		 */
-		public List<Link> GetClassParentLinksToClasses (IDObjects.NumberSet classIDs, CancelDelegate cancelled, 
+		public List<Link> GetClassParentLinksToClasses (IDObjects.NumberSet classIDs, CancelDelegate cancelled,
 																		GetLinkFlags getLinkFlags = GetLinkFlags.Everything)
 			{
 			RequireAtLeast(LockType.ReadOnly);
-			
+
 			List<Link> links = null;
 			IDObjects.NumberSet remainingClassIDs = classIDs;
 
@@ -1330,24 +1330,24 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 		/* Function: GetLinksByEndingSymbol
-		 * 
-		 * Retrieves a list of all the <Links> present that use the passed <EndingSymbol>.  Note that this also searches 
+		 *
+		 * Retrieves a list of all the <Links> present that use the passed <EndingSymbol>.  Note that this also searches
 		 * <CodeDB.AlternativeLinkEndingSymbols> so the actual <Link> object may not have the passed <EndingSymbol>
-		 * as a property.  If there are none it will return an empty list.  Pass a <CancelDelegate> if you'd like to be able to 
+		 * as a property.  If there are none it will return an empty list.  Pass a <CancelDelegate> if you'd like to be able to
 		 * interrupt this process, or <Delegates.NeverCancel> if not.
-		 * 
-		 * If you don't need every property in the <Link> object you can use <GetLinkFlags> to filter some out and save 
+		 *
+		 * If you don't need every property in the <Link> object you can use <GetLinkFlags> to filter some out and save
 		 * processing time.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- You must have at least a read-only lock.
 		 */
 		public List<Link> GetLinksByEndingSymbol (EndingSymbol endingSymbol, CancelDelegate cancelled,
 																		GetLinkFlags getLinkFlags = GetLinkFlags.Everything)
 			{
 			RequireAtLeast(LockType.ReadOnly);
-			
+
 
 			// Get links which have it as their primary ending symbol
 
@@ -1360,7 +1360,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			// Find link IDs that have it as an alternative ending symbol
 
 			IDObjects.NumberSet alternativeLinkIDs = new IDObjects.NumberSet();
-			
+
 			using (SQLite.Query query = connection.Query("SELECT LinkID FROM AlternativeLinkEndingSymbols " +
 																										"WHERE EndingSymbol = ?", endingSymbol.ToString()))
 				{
@@ -1374,7 +1374,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			if (!alternativeLinkIDs.IsEmpty)
 				{
 				IDObjects.NumberSet remainingAlternativeLinkIDs = alternativeLinkIDs;
-				
+
 				do
 					{
 					IDObjects.NumberSet temp;
@@ -1391,15 +1391,15 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 		/* Function: AddLink
-		 * 
+		 *
 		 * Adds a <Link> to the database.  Assumes it doesn't already exist.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- Requires a read/write lock.  Read/possible write locks will be upgraded automatically.
-		 * 
+		 *
 		 * Link Requirements:
-		 * 
+		 *
 		 *		LinkID - Must be zero.  This will be automatically assigned and the <Link> updated.
 		 *		Type - Must be set.
 		 *		TextOrSymbol - Must be set.
@@ -1448,8 +1448,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				// We don't need to set Flags.AllowNamedLinks because we only need the ending symbols, which will be the same either way.
 				// For example, <x at y> and <x: y> will still always end up with y as the ending symbol regardless of whether you search for
 				// named links or not, so we can avoid the extra processing.
-				List<LinkInterpretation> linkInterpretations = 
-					EngineInstance.Comments.NaturalDocsParser.LinkInterpretations(link.Text, 
+				List<LinkInterpretation> linkInterpretations =
+					EngineInstance.Comments.NaturalDocsParser.LinkInterpretations(link.Text,
 																												Comments.NaturalDocs.Parser.LinkInterpretationFlags.AllowPluralsAndPossessives |
 																												Comments.NaturalDocs.Parser.LinkInterpretationFlags.AllowNamedLinks |
 																												Comments.NaturalDocs.Parser.LinkInterpretationFlags.FromOriginalText,
@@ -1468,7 +1468,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				}
 			else
 				{  link.EndingSymbol = link.Symbol.EndingSymbol;  }
-			
+
 
 			RequireAtLeast(LockType.ReadWrite);
 			BeginTransaction();
@@ -1482,7 +1482,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				connection.Execute("INSERT INTO Links (LinkID, Type, TextOrSymbol, ContextID, FileID, ClassID, LanguageID, EndingSymbol, " +
 														"TargetTopicID, TargetClassID, TargetScore) " +
 													"VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0)",
-													link.LinkID, (int)link.Type, link.TextOrSymbol, link.ContextID, link.FileID, link.ClassID, link.LanguageID, 
+													link.LinkID, (int)link.Type, link.TextOrSymbol, link.ContextID, link.FileID, link.ClassID, link.LanguageID,
 													link.EndingSymbol.ToString()
 													);
 
@@ -1510,9 +1510,9 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 			// Notify change watchers
-			
+
 			IList<IChangeWatcher> changeWatchers = Manager.LockChangeWatchers();
-			
+
 			try
 				{
 				if (changeWatchers.Count > 0)
@@ -1528,20 +1528,20 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				Manager.ReleaseChangeWatchers();
 				}
 			}
-			
-			
+
+
 		/* Function: DeleteLink
-		 * 
+		 *
 		 * Removes a <Link> from the database.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- Requires a read/write lock.  Read/possible write locks will be upgraded automatically.
-		 * 
+		 *
 		 * Link Requirements:
-		 * 
+		 *
 		 *		The link must have been retrieved from the database, and thus have all its fields set.
-		 * 
+		 *
 		 *		LinkID - Must be set.
 		 *		Type - Must be set.
 		 *		TextOrSymbol - Must be set.
@@ -1580,7 +1580,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			// Notify the change watchers BEFORE we actually perform the deletion.
 
 			IList<IChangeWatcher> changeWatchers = Manager.LockChangeWatchers();
-			
+
 			try
 				{
 				if (changeWatchers.Count > 0)
@@ -1604,7 +1604,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			try
 				{
 				connection.Execute("DELETE FROM Links WHERE LinkID=?", link.LinkID);
-			
+
 				Manager.UsedLinkIDs.Remove(link.LinkID);
 				Manager.ContextIDReferenceChangeCache.RemoveReference(link.ContextID);
 				Manager.ClassIDReferenceChangeCache.RemoveReference(link.ClassID);
@@ -1622,20 +1622,20 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				throw;
 				}
 			}
-			
-			
+
+
 		/* Function: UpdateLinksInFile
-		 * 
-		 * Replaces all the links in the database under the passed file ID with the passed list.  It will query the existing links 
+		 *
+		 * Replaces all the links in the database under the passed file ID with the passed list.  It will query the existing links
 		 * itself, perform a comparison, and call <AddLink()> and <DeleteLink()> as necessary.  Pass a <CancelDelegate> if
 		 * you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- Requires at least a read/possible write lock.  If any changes occur, it will be upgraded automatically.
-		 * 
+		 *
 		 * Link Requirements:
-		 * 
+		 *
 		 *		LinkID - Must be zero.  This will be automatically assigned and the <Link> updated.
 		 *		Type - Must be set.
 		 *		TextOrSymbol - Must be set.
@@ -1657,18 +1657,18 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 					{  throw new Exception ("Can't update links in file if the file IDs don't match.");  }
 				// We'll leave the rest of the topic field validation to AddLink() and DeleteLink().
 				}
-			
+
 			List<Link> oldLinks = GetLinksInFile(fileID, cancelled);
 			bool madeChanges = false;
-			
+
 			try
 				{
-				
+
 				foreach (Link newLink in newLinks)
 					{
 					if (cancelled())
 						{  break;  }
-						
+
 					bool foundMatch = false;
 					for (int i = 0; foundMatch == false && i < oldLinks.Count; i++)
 						{
@@ -1679,7 +1679,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 							oldLinks.RemoveAt(i);
 							}
 						}
-						
+
 					if (foundMatch == false)
 						{
 						if (madeChanges == false)
@@ -1688,11 +1688,11 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 							BeginTransaction();
 							madeChanges = true;
 							}
-							
+
 						AddLink(newLink);
 						}
 					}
-					
+
 				// All matches would have been removed, so anything left in oldLinks was deleted.
 				if (oldLinks.Count > 0 && !cancelled())
 					{
@@ -1702,16 +1702,16 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 						BeginTransaction();
 						madeChanges = true;
 						}
-						
+
 					foreach (Link oldLink in oldLinks)
-						{  
+						{
 						if (cancelled())
 							{  break;  }
 
-						DeleteLink(oldLink);  
+						DeleteLink(oldLink);
 						}
 					}
-					
+
 				if (madeChanges == true)
 					{
 					CommitTransaction();
@@ -1721,38 +1721,38 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				{
 				if (madeChanges == true)
 					{  RollbackTransactionForException();  }
-					
+
 				throw;
 				}
 			}
 
 
 		/* Function: DeleteLinksInFile
-		 * 
+		 *
 		 * Deletes all the links in the database under the passed file ID.  Pass a <CancelDelegate> if you'd like to be able to
 		 * interrupt this process, or <Delegates.NeverCancel> if not.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- Requires at least a read/possible write lock.  If any deletions occur, it will be upgraded automatically.
 		 */
 		public void DeleteLinksInFile (int fileID, CancelDelegate cancelled)
 			{
 			RequireAtLeast(LockType.ReadPossibleWrite);
-			
+
 			List<Link> links = GetLinksInFile(fileID, cancelled);
-			
+
 			if (links.Count > 0 && !cancelled())
 				{
 				RequireAtLeast(LockType.ReadWrite);
 				BeginTransaction();
-				
+
 				try
-					{	
+					{
 					foreach (Link link in links)
-						{  
+						{
 						DeleteLink(link);
-					
+
 						if (cancelled())
 							{  break;  }
 						}
@@ -1767,14 +1767,14 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				}
 			}
 
-			
+
 		/* Function: GetAlternativeLinkEndingSymbols
-		 * 
+		 *
 		 * Retrieves the list of alternative <EndingSymbols> for a link ID.  It will not include the <EndingSymbol> stored in the
 		 * <Link> itself.  If there are no alternative symbols it will return null.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- You must have at least a read-only lock.
 		 */
 		public List<EndingSymbol> GetAlternativeLinkEndingSymbols (int linkID)
@@ -1785,7 +1785,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 			using (SQLite.Query query = connection.Query("SELECT EndingSymbol " +
 																								"FROM AlternativeLinkEndingSymbols " +
-																								"WHERE LinkID = ?", 
+																								"WHERE LinkID = ?",
 																								linkID))
 				{
 				while (query.Step())
@@ -1802,11 +1802,11 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 		/* Function: UpdateLinkTarget
-		 * 
+		 *
 		 * Updates the score and interpretation of a link in the database.  Assumes both IDs already exist.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- Requires a read/write lock.  Read/possible write locks will be upgraded automatically.
 		 */
 		public void UpdateLinkTarget (Link link, int oldTargetTopicID, int oldTargetClassID)
@@ -1828,9 +1828,9 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 			// Notify change watchers
-			
+
 			IList<IChangeWatcher> changeWatchers = Manager.LockChangeWatchers();
-			
+
 			try
 				{
 				if (changeWatchers.Count > 0)
@@ -1854,23 +1854,23 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 		/* Function: GetImageLinks
-		 * 
+		 *
 		 * A generic function for retrieving all the <ImageLinks> that satisfy the passed WHERE clause.  If there are none it will
 		 * return an empty list.
-		 * 
+		 *
 		 * Parameters:
-		 * 
+		 *
 		 *		whereClause - The SQL WHERE clause to apply to the query, such as "ImageLinks.FileID=?".  It's recommended that
 		 *							  you add the table name to fully qualify columns.
 		 *		clauseParameters - Any parameters needed for question marks in the WHERE clause, or null if none.
 		 *		cancelled - A <CancelDelegate> you can use to interrupt this process.  Pass <Delegates.NeverCancel> if you won't
 		 *						need to.
 		 *		getImageLinkFlags - If you don't need every property in the <ImageLink> object you can use this to filter some out
-		 *									 to save processing time.  In debug builds <ImageLink> will enforce these settings to prevent 
+		 *									 to save processing time.  In debug builds <ImageLink> will enforce these settings to prevent
 		 *									 programming errors.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- You must have at least a read-only lock.
 		 */
 		protected List<ImageLink> GetImageLinks (string whereClause, object[] clauseParameters, CancelDelegate cancelled,
@@ -1879,7 +1879,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			#if DEBUG
 			if (whereClause == null)
 				{  throw new Exception ("You must define a WHERE clause when calling GetImageLinks().");  }
-			#endif 
+			#endif
 
 			RequireAtLeast(LockType.ReadOnly);
 
@@ -1898,7 +1898,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				{  queryText.Append("LEFT OUTER JOIN Classes ON Classes.ClassID = ImageLinks.ClassID ");  }
 
 			queryText.Append("WHERE ");
-			
+
 			queryText.Append('(');
 			queryText.Append(whereClause);
 			queryText.Append(')');
@@ -1930,31 +1930,31 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 						{  classIDLookupCache.Add(imageLink.ClassString, imageLink.ClassID);  }
 					}
 				}
-			
+
 			return imageLinks;
 			}
 
 
 		/* Function: GetImageLinkByID
-		 * 
+		 *
 		 * Retrieves an image link by its ID.  Assumes the link already exists.
-		 * 
-		 * If you don't need every property in the <ImageLink> object you can use <GetImageLinkFlags> to filter some out 
+		 *
+		 * If you don't need every property in the <ImageLink> object you can use <GetImageLinkFlags> to filter some out
 		 * and save processing time.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- You must have at least a read-only lock.
 		 */
 		public ImageLink GetImageLinkByID (int imageLinkID, GetImageLinkFlags getImageLinkFlags = GetImageLinkFlags.Everything)
 			{
 			RequireAtLeast(LockType.ReadOnly);
-			
+
 			object[] parameters = new object[1];
 			parameters[0] = imageLinkID;
 
 			List<ImageLink> imageLinks = GetImageLinks("ImageLinks.ImageLinkID=?", parameters, Delegates.NeverCancel, getImageLinkFlags);
-			
+
 			#if DEBUG
 			if (imageLinks.Count == 0)
 				{  throw new Exception ("Tried to look up image link ID " + imageLinkID + " which doesn't exist.");  }
@@ -1965,23 +1965,23 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 		/* Function: GetImageLinksByFileName
-		 * 
+		 *
 		 * Retrieves a list of all the image links which use the passed lowercase file name.  If there are none it will return an
-		 * empty list.  Pass a <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> 
+		 * empty list.  Pass a <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel>
 		 * if not.
-		 * 
-		 * If you don't need every property in the <ImageLink> object you can use <GetImageLinkFlags> to filter some out 
+		 *
+		 * If you don't need every property in the <ImageLink> object you can use <GetImageLinkFlags> to filter some out
 		 * and save processing time.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- You must have at least a read-only lock.
 		 */
 		public List<ImageLink> GetImageLinksByFileName (string fileName, CancelDelegate cancelled,
 																				   GetImageLinkFlags getImageLinkFlags = GetImageLinkFlags.Everything)
 			{
 			RequireAtLeast(LockType.ReadOnly);
-			
+
 			object[] parameters = new object[1];
 			parameters[0] = fileName.ToLower();
 
@@ -1990,23 +1990,23 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 		/* Function: GetImageLinksByTarget
-		 * 
+		 *
 		 * Retrieves a list of all the image links which resolve to the passed image file ID.  If there are none it will return an
-		 * empty list.  Pass a <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> 
+		 * empty list.  Pass a <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel>
 		 * if not.
-		 * 
-		 * If you don't need every property in the <ImageLink> object you can use <GetImageLinkFlags> to filter some out 
+		 *
+		 * If you don't need every property in the <ImageLink> object you can use <GetImageLinkFlags> to filter some out
 		 * and save processing time.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- You must have at least a read-only lock.
 		 */
 		public List<ImageLink> GetImageLinksByTarget (int imageFileID, CancelDelegate cancelled,
 																			   GetImageLinkFlags getImageLinkFlags = GetImageLinkFlags.Everything)
 			{
 			RequireAtLeast(LockType.ReadOnly);
-			
+
 			object[] parameters = new object[1];
 			parameters[0] = imageFileID;
 
@@ -2015,22 +2015,22 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 		/* Function: GetImageLinksInFile
-		 * 
+		 *
 		 * Retrieves a list of all the image links present in the passed file ID.  If there are none it will return an empty list.
 		 * Pass a <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
-		 * 
-		 * If you don't need every property in the <ImageLink> object you can use <GetImageLinkFlags> to filter some 
+		 *
+		 * If you don't need every property in the <ImageLink> object you can use <GetImageLinkFlags> to filter some
 		 * out and save processing time.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- You must have at least a read-only lock.
 		 */
-		public List<ImageLink> GetImageLinksInFile (int fileID, CancelDelegate cancelled, 
+		public List<ImageLink> GetImageLinksInFile (int fileID, CancelDelegate cancelled,
 																		   GetImageLinkFlags getImageLinkFlags = GetImageLinkFlags.Everything)
 			{
 			RequireAtLeast(LockType.ReadOnly);
-			
+
 			object[] parameters = new object[1];
 			parameters[0] = fileID;
 
@@ -2039,22 +2039,22 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 		/* Function: GetImageLinksInFiles
-		 * 
+		 *
 		 * Retrieves a list of all the image links present in the passed file IDs.  If there are none it will return an empty list.
 		 * Pass a <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
-		 * 
-		 * If you don't need every property in the <ImageLink> object you can use <GetImageLinkFlags> to filter some 
+		 *
+		 * If you don't need every property in the <ImageLink> object you can use <GetImageLinkFlags> to filter some
 		 * out and save processing time.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- You must have at least a read-only lock.
 		 */
-		public List<ImageLink> GetImageLinksInFiles (IDObjects.NumberSet fileIDs, CancelDelegate cancelled, 
+		public List<ImageLink> GetImageLinksInFiles (IDObjects.NumberSet fileIDs, CancelDelegate cancelled,
 																		   GetImageLinkFlags getImageLinkFlags = GetImageLinkFlags.Everything)
 			{
 			RequireAtLeast(LockType.ReadOnly);
-			
+
 			List<ImageLink> imageLinks = null;
 			IDObjects.NumberSet fileIDsRemaining = fileIDs;
 
@@ -2062,7 +2062,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				{
 				IDObjects.NumberSet temp;
 
-				List<ImageLink> imageLinkBatch = GetImageLinks(ColumnIsInNumberSetExpression("ImageLinks.FileID", fileIDsRemaining, out temp), 
+				List<ImageLink> imageLinkBatch = GetImageLinks(ColumnIsInNumberSetExpression("ImageLinks.FileID", fileIDsRemaining, out temp),
 																							null, cancelled, getImageLinkFlags);
 
 				fileIDsRemaining = temp;
@@ -2079,22 +2079,22 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 		/* Function: GetImageLinksInClass
-		 * 
+		 *
 		 * Retrieves a list of all the image links present in the passed class ID.  If there are none it will return an empty list.
 		 * Pass a <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
-		 * 
-		 * If you don't need every property in the <ImageLink> object you can use <GetImageLinkFlags> to filter some 
+		 *
+		 * If you don't need every property in the <ImageLink> object you can use <GetImageLinkFlags> to filter some
 		 * out and save processing time.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- You must have at least a read-only lock.
 		 */
-		public List<ImageLink> GetImageLinksInClass (int classID, CancelDelegate cancelled, 
+		public List<ImageLink> GetImageLinksInClass (int classID, CancelDelegate cancelled,
 																			  GetImageLinkFlags getImageLinkFlags = GetImageLinkFlags.Everything)
 			{
 			RequireAtLeast(LockType.ReadOnly);
-			
+
 			object[] parameters = new object[1];
 			parameters[0] = classID;
 
@@ -2103,18 +2103,18 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 		/* Function: GetImageLinkIDsByTarget
-		 * 
-		 * Retrieves the set of all the image links IDs which resolve to the passed file ID.  If there are none it will return an 
+		 *
+		 * Retrieves the set of all the image links IDs which resolve to the passed file ID.  If there are none it will return an
 		 * empty set.  Pass a <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- You must have at least a read-only lock.
 		 */
 		public IDObjects.NumberSet GetImageLinkIDsByTarget (int targetFileID, CancelDelegate cancelled)
 			{
 			RequireAtLeast(LockType.ReadOnly);
-			
+
 			IDObjects.NumberSet linksAffected = new IDObjects.NumberSet();
 
 			using (SQLite.Query query = connection.Query("SELECT ImageLinkID FROM ImageLinks WHERE TargetFileID=?", targetFileID))
@@ -2128,15 +2128,15 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 		/* Function: AddImageLink
-		 * 
+		 *
 		 * Adds an <ImageLink> to the database.  Assumes it doesn't already exist.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- Requires a read/write lock.  Read/possible write locks will be upgraded automatically.
-		 * 
+		 *
 		 * Link Requirements:
-		 * 
+		 *
 		 *		ImageLinkID - Must be zero.  This will be automatically assigned and the <ImageLink> updated.
 		 *		OriginalText - Must be set.
 		 *		Path - Must be set.
@@ -2185,9 +2185,9 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 			// Notify change watchers
-			
+
 			IList<IChangeWatcher> changeWatchers = Manager.LockChangeWatchers();
-			
+
 			try
 				{
 				if (changeWatchers.Count > 0)
@@ -2203,20 +2203,20 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				Manager.ReleaseChangeWatchers();
 				}
 			}
-			
-			
+
+
 		/* Function: DeleteImageLink
-		 * 
+		 *
 		 * Removes an <ImageLink> from the database.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- Requires a read/write lock.  Read/possible write locks will be upgraded automatically.
-		 * 
+		 *
 		 * Link Requirements:
-		 * 
+		 *
 		 *		The image link must have been retrieved from the database, and thus have all its fields set.
-		 * 
+		 *
 		 *		ImageLinkID - Must be set.
 		 *		OriginalText - Must be set.
 		 *		Path - Must be set.
@@ -2244,7 +2244,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			// Notify the change watchers BEFORE we actually perform the deletion.
 
 			IList<IChangeWatcher> changeWatchers = Manager.LockChangeWatchers();
-			
+
 			try
 				{
 				if (changeWatchers.Count > 0)
@@ -2268,7 +2268,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			try
 				{
 				connection.Execute("DELETE FROM ImageLinks WHERE ImageLinkID=?", imageLink.ImageLinkID);
-			
+
 				Manager.UsedImageLinkIDs.Remove(imageLink.ImageLinkID);
 				Manager.ClassIDReferenceChangeCache.RemoveReference(imageLink.ClassID);
 
@@ -2292,18 +2292,18 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 					{  throw new Exception ("Can't update links in file if the file IDs don't match.");  }
 				// We'll leave the rest of the topic field validation to AddLink() and DeleteLink().
 				}
-			
+
 			List<ImageLink> oldLinks = GetImageLinksInFile(fileID, cancelled);
 			bool madeChanges = false;
-			
+
 			try
 				{
-				
+
 				foreach (ImageLink newLink in newLinks)
 					{
 					if (cancelled())
 						{  break;  }
-						
+
 					bool foundMatch = false;
 					for (int i = 0; foundMatch == false && i < oldLinks.Count; i++)
 						{
@@ -2314,7 +2314,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 							oldLinks.RemoveAt(i);
 							}
 						}
-						
+
 					if (foundMatch == false)
 						{
 						if (madeChanges == false)
@@ -2323,11 +2323,11 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 							BeginTransaction();
 							madeChanges = true;
 							}
-							
+
 						AddImageLink(newLink);
 						}
 					}
-					
+
 				// All matches would have been removed, so anything left in oldLinks was deleted.
 				if (oldLinks.Count > 0 && !cancelled())
 					{
@@ -2337,16 +2337,16 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 						BeginTransaction();
 						madeChanges = true;
 						}
-						
+
 					foreach (ImageLink oldLink in oldLinks)
-						{  
+						{
 						if (cancelled())
 							{  break;  }
 
-						DeleteImageLink(oldLink);  
+						DeleteImageLink(oldLink);
 						}
 					}
-					
+
 				if (madeChanges == true)
 					{
 					CommitTransaction();
@@ -2356,60 +2356,60 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				{
 				if (madeChanges == true)
 					{  RollbackTransactionForException();  }
-					
+
 				throw;
 				}
 			}
 
 
 		/* Function: IsTargetOfImageLink
-		 * 
+		 *
 		 * Returns whether the passed file ID is the target of any image link.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- You must have at least a read-only lock.
 		 */
 		public bool IsTargetOfImageLink (int imageFileID)
 			{
 			RequireAtLeast(LockType.ReadOnly);
-			
+
 			using (SQLite.Query query = connection.Query("SELECT ImageLinkID FROM ImageLinks WHERE TargetFileID=? LIMIT 1", imageFileID))
 				{
 				if (query.Step())
 					{  return true;  }
 				}
-			
+
 			return false;
 			}
 
 
 		/* Function: DeleteImageLinksInFile
-		 * 
+		 *
 		 * Deletes all the image links in the database under the passed file ID.  Pass a <CancelDelegate> if you'd like to be able to
 		 * interrupt this process, or <Delegates.NeverCancel> if not.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- Requires at least a read/possible write lock.  If any deletions occur, it will be upgraded automatically.
 		 */
 		public void DeleteImageLinksInFile (int fileID, CancelDelegate cancelled)
 			{
 			RequireAtLeast(LockType.ReadPossibleWrite);
-			
+
 			List<ImageLink> links = GetImageLinksInFile(fileID, cancelled);
-			
+
 			if (links.Count > 0 && !cancelled())
 				{
 				RequireAtLeast(LockType.ReadWrite);
 				BeginTransaction();
-				
+
 				try
-					{	
+					{
 					foreach (ImageLink link in links)
-						{  
+						{
 						DeleteImageLink(link);
-					
+
 						if (cancelled())
 							{  break;  }
 						}
@@ -2424,13 +2424,13 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				}
 			}
 
-			
+
 		/* Function: UpdateImageLinkTarget
-		 * 
+		 *
 		 * Updates the score and interpretation of an image link in the database.  Assumes both IDs already exist.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- Requires a read/write lock.  Read/possible write locks will be upgraded automatically.
 		 */
 		public void UpdateImageLinkTarget (ImageLink imageLink, int oldTargetFileID)
@@ -2440,7 +2440,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			BeginTransaction();
 			try
 				{
-				connection.Execute("UPDATE ImageLinks SET TargetFileID=?, TargetScore=? WHERE ImageLinkID=?", 
+				connection.Execute("UPDATE ImageLinks SET TargetFileID=?, TargetScore=? WHERE ImageLinkID=?",
 											 imageLink.TargetFileID, imageLink.TargetScore, imageLink.ImageLinkID);
 				CommitTransaction();
 				}
@@ -2452,9 +2452,9 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 			// Notify change watchers
-			
+
 			IList<IChangeWatcher> changeWatchers = Manager.LockChangeWatchers();
-			
+
 			try
 				{
 				if (changeWatchers.Count > 0)
@@ -2478,12 +2478,12 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 		/* Function: GetClassByID
-		 * 
+		 *
 		 * Retrieves the class with the passed ID.  Even if a class has been deleted this will still return a <ClassString> until
 		 * <Cleanup()> is called.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- You must have at least a read-only lock.
 		 */
 		public ClassString GetClassByID (int classID)
@@ -2506,13 +2506,13 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 		/* Function: GetClassesByID
-		 * 
+		 *
 		 * Retrieves a list of all the classes defined in the database within the passed NumberSet.  Pass a <CancelDelegate> if you'd
 		 * like to be able to interrupt this process, or <Delegates.NeverCancel> if not.  If some of the classes have been deleted this
 		 * will still return values for them until <Cleanup()> is called.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- You must have at least a read-only lock.
 		 */
 		public List<ClassString> GetClassesByID (IDObjects.NumberSet ids, CancelDelegate cancelled)
@@ -2526,7 +2526,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 			// DEPENDENCY: This function assumes that CacheOrCreateClassIDs() immediately puts a record in the database for
-			// new class IDs, and thus we'll be able to get everything from the database even if the change cache hasn't been flushed 
+			// new class IDs, and thus we'll be able to get everything from the database even if the change cache hasn't been flushed
 			// yet.
 
 			IDObjects.NumberSet remainingIDs = ids;
@@ -2544,7 +2544,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 						ClassString classString = ClassString.FromExportedString(query.StringColumn(0));
 
 						classes.Add(classString);
-					
+
 						if (cancelled())
 							{  break;  }
 						}
@@ -2557,13 +2557,13 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 		/* Function: GetOrCreateClassID
-		 * 
+		 *
 		 * Retrieves the ID for the <ClassString>.  If an existing ID cannot be found, one will be created.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- Requires at least a read/possible write lock.  If a new class ID is created, it will be upgraded automatically.
-		 *		
+		 *
 		 */
 		public int GetOrCreateClassID (ClassString classString)
 			{
@@ -2577,7 +2577,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 			if (classString == null)
 				{  return 0;  }
-				
+
 			if (classIDLookupCache.Contains(classString))
 				{  return classIDLookupCache[classString];  }
 
@@ -2589,7 +2589,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			using (SQLite.Query query = connection.Query("SELECT ClassID FROM Classes WHERE LookupKey=?", classString.LookupKey))
 				{
 				if (query.Step())
-					{  
+					{
 					classID = query.IntColumn(0);
 
 					classIDLookupCache.Add(classString, classID);
@@ -2603,7 +2603,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			// DEPENDENCY: GetClassByID() and GetClassesByID() assume *every* newly created class ID will have a record
 			// in the database, even if the change cache hasn't been flushed yet.
 
-			// DEPENDENCY: FlushClassIDReferenceChangeCache() assumes *every* newly created class ID will have an 
+			// DEPENDENCY: FlushClassIDReferenceChangeCache() assumes *every* newly created class ID will have an
 			// entry in CodeDB.ClassIDReferenceChangeCache with database references set to zero.
 
 			RequireAtLeast(LockType.ReadWrite);
@@ -2634,11 +2634,11 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 		/* Function: FlushClassIDReferenceChangeCache
-		 * 
+		 *
 		 * Applies anything waiting in <CodeDB.Manager.ClassIDReferenceChangeCache> to the database.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- Requires at least a read/possible write lock.  If the database needs to be updated it will be upgraded automatically.
 		 */
 		public void FlushClassIDReferenceChangeCache (CancelDelegate cancelled)
@@ -2666,7 +2666,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			//
 			// - Therefore, any cache entry with an unknown number of database references has a non-zero number in the database.
 			//
-			// - Therefore, we can ignore cache entries where the reference count change is zero (equal numbers of references 
+			// - Therefore, we can ignore cache entries where the reference count change is zero (equal numbers of references
 			//   were added and removed) and the database reference count is unknown.  This will not result it any zero reference
 			//   records getting stranded in the database.
 
@@ -2678,10 +2678,10 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				if (cacheEntry.DatabaseReferenceCountKnown == false && cacheEntry.ReferenceChange != 0)
 					{  idsToLookup.Add(cacheEntry.ID);  }
 
-				// Also see if there are changes in the cache at all, since we can avoid waiting for a read/write lock if not.  A 
-				// ReferenceChange of zero still counts if DatabaseReferenceCount is also zero because that's an empty record we 
+				// Also see if there are changes in the cache at all, since we can avoid waiting for a read/write lock if not.  A
+				// ReferenceChange of zero still counts if DatabaseReferenceCount is also zero because that's an empty record we
 				// have to remove.
-				if (cacheEntry.ReferenceChange != 0 || 
+				if (cacheEntry.ReferenceChange != 0 ||
 					 (cacheEntry.DatabaseReferenceCountKnown && cacheEntry.DatabaseReferenceCount == 0) )
 					{  hasChanges = true;  }
 				}
@@ -2690,7 +2690,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				{  return;  }
 
 
-			// We have to do this before filling in the cache because ClassIDReferenceChangeCache is governed by the same lock 
+			// We have to do this before filling in the cache because ClassIDReferenceChangeCache is governed by the same lock
 			// as the database, so we need read/write to change it even though we're not changing actual records yet.
 
 			RequireAtLeast(LockType.ReadWrite);
@@ -2726,9 +2726,9 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				}
 
 
-			// Update the database records that need it, but just collect the IDs of the database records to be deleted for a 
+			// Update the database records that need it, but just collect the IDs of the database records to be deleted for a
 			// second pass.
-			
+
 			BeginTransaction();
 
 			try
@@ -2745,15 +2745,15 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 						// Sanity checks
 						#if DEBUG
 						if (cacheEntry.DatabaseReferenceCountKnown == false && cacheEntry.ReferenceChange != 0)
-							{  
-							throw new Exception("ClassIDReferenceChangeCache entry " + cacheEntry.ID + 
-																  " was not properly filled in before flushing.");  
+							{
+							throw new Exception("ClassIDReferenceChangeCache entry " + cacheEntry.ID +
+																  " was not properly filled in before flushing.");
 							}
-						if (cacheEntry.DatabaseReferenceCountKnown == true && 
+						if (cacheEntry.DatabaseReferenceCountKnown == true &&
 							 cacheEntry.DatabaseReferenceCount + cacheEntry.ReferenceChange < 0)
-							{  
-							throw new Exception("ClassIDReferenceChangeCache entry " + cacheEntry.ID + 
-																  " led to a negative reference count.");  
+							{
+							throw new Exception("ClassIDReferenceChangeCache entry " + cacheEntry.ID +
+																  " led to a negative reference count.");
 							}
 						#endif
 
@@ -2769,14 +2769,14 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 								updateQuery.Step();
 								updateQuery.Reset(true);
 
-								// Update the cache entry so it stays valid in case the operation is cancelled before the cache is emptied.  We 
+								// Update the cache entry so it stays valid in case the operation is cancelled before the cache is emptied.  We
 								// can't remove the entry from the set while we're iterating through it.
 								cacheEntry.DatabaseReferenceCount += cacheEntry.ReferenceChange;
 								cacheEntry.ReferenceChange = 0;
 								}
 
 							if (cancelled())
-								{  
+								{
 								CommitTransaction();
 								return;
 								}
@@ -2786,7 +2786,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 				// Delete zero-reference database records.
-			
+
 				if (idsToDelete.IsEmpty == false)
 					{
 					IDObjects.NumberSet remainingIDsToDelete = idsToDelete;
@@ -2822,11 +2822,11 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 		/* Function: GetOrCreateContextID
-		 * 
+		 *
 		 * Retrieves the ID for the <ContextString>.  If an existing ID cannot be found, one will be created.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- Requires at least a read/possible write lock.  If new contexts are created, it will be upgraded automatically.
 		 */
 		public int GetOrCreateContextID (ContextString contextString)
@@ -2836,12 +2836,12 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 			RequireAtLeast(LockType.ReadPossibleWrite);
 
-			
+
 			// First check for null and cached values
 
 			if (contextString == null)
 				{  return 0;  }
-				
+
 			if (contextIDLookupCache.Contains(contextString))
 				{  return contextIDLookupCache[contextString];  }
 
@@ -2853,7 +2853,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			using (SQLite.Query query = connection.Query("SELECT ContextID FROM Contexts WHERE ContextString=?", contextString.ToString()))
 				{
 				if (query.Step())
-					{  
+					{
 					contextID = query.IntColumn(0);
 
 					contextIDLookupCache.Add(contextString, contextID);
@@ -2864,7 +2864,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 			// If it's not in the database, create it
 
-			// DEPENDENCY: FlushContextIDReferenceChangeCache() assumes *every* newly created context ID will have an 
+			// DEPENDENCY: FlushContextIDReferenceChangeCache() assumes *every* newly created context ID will have an
 			// entry in CodeDB.ContextIDReferenceChangeCache with database references set to zero.
 
 			RequireAtLeast(LockType.ReadWrite);
@@ -2895,11 +2895,11 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 		/* Function: FlushContextIDReferenceChangeCache
-		 * 
+		 *
 		 * Applies anything waiting in <CodeDB.Manager.ContextIDReferenceChangeCache> to the database.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- Requires at least a read/possible write lock.  If the database needs to be updated it will be upgraded automatically.
 		 */
 		public void FlushContextIDReferenceChangeCache (CancelDelegate cancelled)
@@ -2927,7 +2927,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			//
 			// - Therefore, any cache entry with an unknown number of database references has a non-zero number in the database.
 			//
-			// - Therefore, we can ignore cache entries where the reference count change is zero (equal numbers of references 
+			// - Therefore, we can ignore cache entries where the reference count change is zero (equal numbers of references
 			//   were added and removed) and the database reference count is unknown.  This will not result it any zero reference
 			//   records getting stranded in the database.
 
@@ -2939,10 +2939,10 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				if (cacheEntry.DatabaseReferenceCountKnown == false && cacheEntry.ReferenceChange != 0)
 					{  idsToLookup.Add(cacheEntry.ID);  }
 
-				// Also see if there are changes in the cache at all, since we can avoid waiting for a read/write lock if not.  A 
+				// Also see if there are changes in the cache at all, since we can avoid waiting for a read/write lock if not.  A
 				// ReferenceChange of zero still counts if DatabaseReferenceCount is also zero because that's an empty record we
 				// have to remove.
-				if (cacheEntry.ReferenceChange != 0 || 
+				if (cacheEntry.ReferenceChange != 0 ||
 					 (cacheEntry.DatabaseReferenceCountKnown && cacheEntry.DatabaseReferenceCount == 0) )
 					{  hasChanges = true;  }
 				}
@@ -2951,7 +2951,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				{  return;  }
 
 
-			// We have to do this before filling in the cache because ContextIDReferenceChangeCache is governed by the same lock 
+			// We have to do this before filling in the cache because ContextIDReferenceChangeCache is governed by the same lock
 			// as the database, so we need read/write to change it even though we're not changing actual records yet.
 
 			RequireAtLeast(LockType.ReadWrite);
@@ -2971,7 +2971,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 					if (cancelled())
 						{  return;  }
-			
+
 					using (SQLite.Query query = connection.Query(queryText))
 						{
 						while (query.Step())
@@ -2987,9 +2987,9 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				}
 
 
-			// Update the database records that need it, but just collect the IDs of the database records to be deleted for a 
+			// Update the database records that need it, but just collect the IDs of the database records to be deleted for a
 			// second pass.
-			
+
 			BeginTransaction();
 
 			try
@@ -3006,15 +3006,15 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 						// Sanity checks
 						#if DEBUG
 						if (cacheEntry.DatabaseReferenceCountKnown == false && cacheEntry.ReferenceChange != 0)
-							{  
-							throw new Exception("ContextIDReferenceChangeCache entry " + cacheEntry.ID + 
-																  " was not properly filled in before flushing.");  
+							{
+							throw new Exception("ContextIDReferenceChangeCache entry " + cacheEntry.ID +
+																  " was not properly filled in before flushing.");
 							}
-						if (cacheEntry.DatabaseReferenceCountKnown == true && 
+						if (cacheEntry.DatabaseReferenceCountKnown == true &&
 							 cacheEntry.DatabaseReferenceCount + cacheEntry.ReferenceChange < 0)
-							{  
-							throw new Exception("ContextIDReferenceChangeCache entry " + cacheEntry.ID + 
-																  " led to a negative reference count.");  
+							{
+							throw new Exception("ContextIDReferenceChangeCache entry " + cacheEntry.ID +
+																  " led to a negative reference count.");
 							}
 						#endif
 
@@ -3030,14 +3030,14 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 								updateQuery.Step();
 								updateQuery.Reset(true);
 
-								// Update the cache entry so it stays valid in case the operation is cancelled before the cache is emptied.  We 
+								// Update the cache entry so it stays valid in case the operation is cancelled before the cache is emptied.  We
 								// can't remove the entry from the set while we're iterating through it.
 								cacheEntry.DatabaseReferenceCount += cacheEntry.ReferenceChange;
 								cacheEntry.ReferenceChange = 0;
 								}
 
 							if (cancelled())
-								{  
+								{
 								CommitTransaction();
 								return;
 								}
@@ -3047,7 +3047,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 				// Delete zero-reference database records.
-			
+
 				if (idsToDelete.IsEmpty == false)
 					{
 					IDObjects.NumberSet remainingIDsToDelete = idsToDelete;
@@ -3080,19 +3080,19 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 		// Group: Transaction Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Function: BeginTransaction
-		 * 
+		 *
 		 * Starts a new transaction.  Transactions can be nested within one another.
-		 * 
-		 * All transactions MUST BE COMMITTED except in error conditions like exceptions.  There are other changes to 
-		 * Natural Docs' state that occur with each change independent of transactions so they would not be rolled back 
+		 *
+		 * All transactions MUST BE COMMITTED except in error conditions like exceptions.  There are other changes to
+		 * Natural Docs' state that occur with each change independent of transactions so they would not be rolled back
 		 * with the database.  Also, SQLite doesn't support nested transactions, that's an abstraction implemented by this
 		 * class.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- You must have a read/write lock.  Read/possible write locks will be upgraded automatically.
 		 */
 		protected void BeginTransaction ()
@@ -3108,13 +3108,13 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 			transactionLevel++;
 			}
-			
+
 		/* Function: CommitTransaction
-		 * 
+		 *
 		 * Commits an existing transaction to the database.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- You must have a read/write lock.  Read/possible write locks will be upgraded automatically.
 		 */
 		protected void CommitTransaction ()
@@ -3135,16 +3135,16 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			}
 
 		/* Function: RollbackTransactionForException
-		 * 
+		 *
 		 * Rolls back an existing transaction from the database because an exception occurred.  This is the ONLY reason
 		 * you can roll back a transaction because there are other state changes within Natural Docs that occur and would
 		 * not be reverted with the database.  This function only exists so that you can get out of the transaction if an
 		 * exception occurs, which prevents an additional exception from occurring if you try to dispose of the Accessor
 		 * while a transaction is still in effect.  You cannot start a new transaction after this occurs, you should be exiting
 		 * the program.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- You must have a read/write lock.  Read/possible write locks will be upgraded automatically.
 		 */
 		protected void RollbackTransactionForException ()
@@ -3162,18 +3162,18 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 		/* Function: ColumnIsInNumberSetExpression
-		 * 
+		 *
 		 * Generates a SQL expression for testing that a column's value is contained in a number set which can be used in WHERE
 		 * clauses.
-		 * 
+		 *
 		 * For example, calling this with "Column" and the NumberSet {2,5-8} would create:
-		 * 
+		 *
 		 *		> (Column=2 OR (Column >= 5 AND Column <= 8))
-		 *		
+		 *
 		 *	Large non-contiguous number sets may need to be broken into multiple queries though.  If that's the case it will return
 		 * the values unaccounted for by the expression in the "remaining" parameter.  Otherwise "remaining" will be null.  See
 		 * <NumberSetExpressionExpansionLimit> for more information on SQLite's limits.
-		 *	
+		 *
 		 */
 		static public string ColumnIsInNumberSetExpression (string columnName, IDObjects.NumberSet numberSet, out IDObjects.NumberSet remaining)
 			{

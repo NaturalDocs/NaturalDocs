@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Languages.Element
  * ____________________________________________________________________________
- * 
+ *
  * A class to hold an element found when parsing the code or comments.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -29,10 +29,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* enum: Flags
-		 * 
+		 *
 		 * InComments - The element comes from the comments.
 		 * InCode - The element comes from the code via full language support.
-		 * 
+		 *
 		 * It's possible for a element to have both <InComments> and <InCode> set after the results are merged.
 		 */
 		[Flags]
@@ -156,7 +156,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Property: InCode
-		 * Whether this element appears in the code via full language support parsing.  It is possible for both InCode and 
+		 * Whether this element appears in the code via full language support parsing.  It is possible for both InCode and
 		 * <InComments> to be set.
 		 */
 		public bool InCode
@@ -177,7 +177,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		// Group: Variables
 		// __________________________________________________________________________
 
-		
+
 		/* var: filePosition
 		 * The file position the element appears at.
 		 */

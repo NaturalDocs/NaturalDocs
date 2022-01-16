@@ -1,35 +1,35 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.CodeDB.ReferenceChangeCache
  * ____________________________________________________________________________
- * 
- * A class that stores changes to reference counts in memory so they don't have to hit the database on 
+ *
+ * A class that stores changes to reference counts in memory so they don't have to hit the database on
  * every operation.
- * 
+ *
  * This class ignores all operations on ID zero.
- * 
+ *
  * Usage:
- * 
+ *
  *		- Create the cache.
- *		
+ *
  *		- Every time a reference is added or deleted, call <AddReference()> or <RemoveReference()>.
- *		
- *		- If you know the reference count stored in the database for an object that's likely to change, add it to the 
- *		  cached information with <SetDatabaseReferenceCount()>.  This will lessen the database work when the cache 
- *		  is flushed, but don't do this for references that might not change or you'll just be filling up memory with 
+ *
+ *		- If you know the reference count stored in the database for an object that's likely to change, add it to the
+ *		  cached information with <SetDatabaseReferenceCount()>.  This will lessen the database work when the cache
+ *		  is flushed, but don't do this for references that might not change or you'll just be filling up memory with
  *		  unnecessary cache entries.
- *		  
+ *
  *		- When it's time to flush the cache...
- *		
+ *
  *			- Use foreach to iterate through the <ReferenceChangeEntries>.
- *		
+ *
  *			- Find the database reference count for any entries where it's unknown.
- *			
- *			- Update the database.  Delete any records where the total reference count is now zero, and update 
+ *
+ *			- Update the database.  Delete any records where the total reference count is now zero, and update
  *			  any other records where the count has changed.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -42,7 +42,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 	{
 	public class ReferenceChangeCache : List<ReferenceChangeEntry>
 		{
-		
+
 		/* Constructor: ReferenceChangeCache
 		 */
 		public ReferenceChangeCache() : base ()
@@ -93,11 +93,11 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 		/* Function: SetDatabaseReferenceCount
-		 * 
+		 *
 		 * Sets the number of references the passed object ID has according to the database.  This is before any changes
 		 * stored in this cache are applied.
-		 * 
-		 * This is primarily used to fill in the existing entries before flushing the cache.  However, you can also use this to fill 
+		 *
+		 * This is primarily used to fill in the existing entries before flushing the cache.  However, you can also use this to fill
 		 * in known data before that point to avoid a trip to the database later.  It's recommended that you only do this for
 		 * entries that are likely to change so you don't balloon the cache with unnecessary data.
 		 */
@@ -135,15 +135,15 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 		/* Function: BinarySearch
-		 * 
+		 *
 		 * Searches the list for the passed object ID.  If it finds it, the return value will be zero or positive representing the
 		 * index of the item.  If it doesn't, the return value will be the bitwise complement of the index the item should be
 		 * inserted at.  This is consistent with the system used by System.Collections.Generic.List.BinarySearch().
-		 * 
+		 *
 		 * Why not just use the system function with a custom comparer?  Because it only looks up items by object, which
 		 * means every time you would want to look up an item by its ID you would need to allocate a temporary object,
 		 * which is ridiculously inefficient.
-		 * 
+		 *
 		 * Why not just use System.Collections.Generic.SortedList?  Because then other code would have to iterate through
 		 * using Pairs to get the ID and other data.  That's a little more awkward and it exposes too much implementation.
 		 */
@@ -154,14 +154,14 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 			int firstIndex = 0;
 			int lastIndex = Count - 1;  // lastIndex is inclusive.
-			
+
 			for (;;)
 				{
 				int testIndex = (firstIndex + lastIndex) / 2;
-				
+
 				if (objectID == this[testIndex].ID)
-					{  
-					return testIndex;  
+					{
+					return testIndex;
 					}
 
 				else if (objectID < this[testIndex].ID)
@@ -169,12 +169,12 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 					if (testIndex == firstIndex)
 						{  return ~testIndex;  }
 					else
-						{  
+						{
 						// Not testIndex - 1 because even though ID is lower, this may be the position we would insert it at.
 						lastIndex = testIndex;
 						}
 					}
-					
+
 				else // (objectID > this[testIndex].ID)
 					{
 					if (testIndex == lastIndex)
@@ -190,7 +190,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 	/* ___________________________________________________________________________
-	 * 
+	 *
 	 *	 Class: CodeClear.NaturalDocs.Engine.CodeDB.ReferenceChangeEntry
 	 *	 __________________________________________________________________________
 	 */
@@ -204,7 +204,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			#if DEBUG
 			if (objectID == 0)
 				{  throw new Exception("Cannot create a reference change entry for ID zero.");  }
-			#endif 
+			#endif
 
 			id = objectID;
 			referenceChange = 0;
@@ -222,7 +222,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 		/* Property: ReferenceChange
 		 * The change to the reference count of this <ID>.  If it's positive, that many references were added.  If it's
-		 * negative, that many were removed.  If <DatabaseReferenceCount> is known, this value is added to it to 
+		 * negative, that many were removed.  If <DatabaseReferenceCount> is known, this value is added to it to
 		 * get the final reference count.
 		 */
 		public int ReferenceChange

@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Languages.Parsers.SQL
  * ____________________________________________________________________________
- * 
+ *
  * Additional language support for PL/SQL and T-SQL.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -24,7 +24,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		// Group: Functions
 		// __________________________________________________________________________
-		
+
 
 		/* Constructor: SQL
 		 * Static constructor.
@@ -56,7 +56,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			generalKeyphrases["WITHIN"] = new string[] { "WITHIN GROUP" };
 			}
 
-		
+
 		/* Constructor: SQL
 		 */
 		public SQL (Engine.Instance engineInstance, Language language) : base (engineInstance, language)
@@ -82,7 +82,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				if (TryToSkipFunction(ref iterator) &&
 					iterator <= endToken &&
 					iterator.Tokenizer.ContainsTextBetween(topic.Title, true, startToken, iterator))
-					{  
+					{
 					prototypeStart = startToken;
 					prototypeEnd = iterator;
 					return true;
@@ -91,7 +91,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					{
 					prototypeStart = iterator;
 					prototypeEnd = iterator;
-					return false;  
+					return false;
 					}
 				}
 
@@ -114,7 +114,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			if (iterator.FundamentalType == FundamentalType.Text)
 				{  return true;  }
 			else if (iterator.FundamentalType == FundamentalType.Symbol)
-				{  
+				{
 				return (iterator.Character == '@' ||
 						   iterator.Character == '$' ||
 						   iterator.Character == '#' ||
@@ -138,10 +138,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TokenIterator lookbehind = iterator;
 			lookbehind.Previous();
 
-			if (lookbehind.Character == '.' || 
+			if (lookbehind.Character == '.' ||
 				OnIdentifierToken(lookbehind))
 				{  return false;  }
-				
+
 			TokenIterator lookahead = iterator;
 			lookahead.Next();
 
@@ -167,7 +167,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: OnKeyphrase
-		 * Returns whether the iterator is on the passed keyphrase, meaning something like "EXECUTE AS" surrounded by 
+		 * Returns whether the iterator is on the passed keyphrase, meaning something like "EXECUTE AS" surrounded by
 		 * whitespace and not something like "@EXECUTE AS".
 		 */
 		protected bool OnKeyphrase (TokenIterator iterator, string phrase)
@@ -180,7 +180,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (OnIdentifierToken(lookbehind))
 				{  return false;  }
-				
+
 			TokenIterator lookahead = iterator;
 			lookahead.NextByCharacters(phrase.Length);
 
@@ -192,7 +192,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: OnAnyKeyword
-		 * Returns whether the iterator is on one of the passed keywords, meaning something like "FUNCTION" surrounded 
+		 * Returns whether the iterator is on one of the passed keywords, meaning something like "FUNCTION" surrounded
 		 * by whitespace and not something like "@FUNCTION" or "FUNCTION_NAME".  Use the other version of the function
 		 * if you need to know what the matching keyword was.
 		 */
@@ -204,7 +204,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: OnAnyKeyword
-		 * Returns whether the iterator is on one of the passed keywords, meaning something like "FUNCTION" surrounded 
+		 * Returns whether the iterator is on one of the passed keywords, meaning something like "FUNCTION" surrounded
 		 * by whitespace and not something like "@FUNCTION" or "FUNCTION_NAME".  This version of the function will also
 		 * return what the matching keyword was.
 		 */
@@ -214,7 +214,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (matchIndex == -1 ||
 				!OnKeyword(iterator))
-				{  
+				{
 				matchingWord = null;
 				return false;
 				}
@@ -246,27 +246,27 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			int matchIndex = iterator.MatchesAnyAcrossTokens(phrases, true);
 
 			if (matchIndex == -1)
-				{  
+				{
 				matchingPhrase = null;
-				return false;  
+				return false;
 				}
 
 			TokenIterator lookbehind = iterator;
 			lookbehind.Previous();
 
 			if (OnIdentifierToken(lookbehind))
-				{  
+				{
 				matchingPhrase = null;
-				return false;  
+				return false;
 				}
-				
+
 			TokenIterator lookahead = iterator;
 			lookahead.NextByCharacters(phrases[matchIndex].Length);
 
 			if (OnIdentifierToken(lookahead))
-				{  
+				{
 				matchingPhrase = null;
-				return false;  
+				return false;
 				}
 
 			matchingPhrase = phrases[matchIndex];
@@ -328,13 +328,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: ParseVariable
-		 * 
+		 *
 		 * Parses a variable declaration, function parameter, or column definition between the two iterators and sets the relevant
 		 * token types.  This isn't a TryToSkip function, it's assuming the code definitely is a variable declaration and will treat
 		 * unrecognized keywords accordingly.  Returns whether it was successful.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParsePrototype>
 		 *		- <ParseMode.SyntaxHighlight>
@@ -417,14 +417,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 			if (lookahead > end)
-				{  
+				{
 				ResetTokensBetween(start, lookahead, mode);
 				return false;
 				}
 
 
 			// Any words between the type and the end of the line or the default value are modifiers
-			
+
 			while (lookahead < end &&
 					  lookahead.Character != '=' &&
 					  !lookahead.MatchesAcrossTokens(":=") &&
@@ -440,7 +440,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					lookahead.Next();
 
 					TryToSkipWhitespace(ref lookahead, true, mode);
-					
+
 					if (lookahead < end)
 						{  TryToSkipTypeParetheses(ref lookahead, mode);  }
 					}
@@ -460,17 +460,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				  OnKeyword(lookahead, "DEFAULT")) )
 				{
 				if (lookahead.Character == ':')  // :=
-					{  
+					{
 					if (mode == ParseMode.ParsePrototype)
 						{  lookahead.SetPrototypeParsingTypeByCharacters(PrototypeParsingType.DefaultValueSeparator, 2);  }
-					
+
 					lookahead.NextByCharacters(2);
 					}
 				else if (lookahead.Character == '=')
 					{
 					if (mode == ParseMode.ParsePrototype)
 						{  lookahead.PrototypeParsingType = PrototypeParsingType.DefaultValueSeparator;  }
-					
+
 					lookahead.Next();
 					}
 				else // DEFAULT
@@ -517,7 +517,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					lookahead.Next();
 
 					TryToSkipWhitespace(ref lookahead, true, mode);
-					
+
 					if (lookahead < end)
 						{  TryToSkipTypeParetheses(ref lookahead, mode);  }
 					}
@@ -534,12 +534,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipFunction
-		 * 
+		 *
 		 * If the passed prototype is a function or procedure declaration, moves the iterator past it, sets the relevant token
 		 * types, and returns true.  Otherwise it leaves the iterator alone, does not set any token types, and returns false.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParsePrototype>
 		 *		- <ParseMode.SyntaxHighlight>
@@ -570,14 +570,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{  iterator.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.Keyword);  }
 
 			TryToSkipWhitespace(ref lookahead);
-			
+
 
 			// Name
 
 			if (!TryToSkipIdentifier(ref lookahead, mode))
 				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 
 			TryToSkipWhitespace(ref lookahead);
@@ -585,7 +585,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Parameters, if any
 
-			// Microsoft functions might not use parentheses to list the parameters.  The parameter names 
+			// Microsoft functions might not use parentheses to list the parameters.  The parameter names
 			// always start with @ though.
 			if (lookahead.Character == '@')
 				{
@@ -668,7 +668,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						}
 
 					else
-						{  
+						{
 						// This will skip entire parentheses in one step so it won't trip on the comma in "NUMBER(5,6)"
 						GenericSkip(ref lookahead, mode);
 
@@ -916,7 +916,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						{
 						if (mode == ParseMode.ParsePrototype)
 							{ lookahead.PrototypeParsingType = PrototypeParsingType.StartOfPrototypeSection; }
-						
+
 						lookahead.NextByCharacters(matchingPhrase.Length);
 						}
 					else
@@ -946,13 +946,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipParenthesizedParameters
-		 * 
+		 *
 		 * If the passed prototype is on the opening parenthesis of a list of parameters, such as function parameters or an inline
 		 * table declaration, moves the iterator past it, sets the relevant token types, and returns true.  Otherwise no tokens are
 		 * set, the iterator is left alone, and it returns false.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParsePrototype>
 		 *		- <ParseMode.SyntaxHighlight>
@@ -1015,22 +1015,22 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					}
 
 				else
-					{  
+					{
 					// This will skip entire parentheses in one step so it won't trip on the comma in "NUMBER(5,6)"
-					GenericSkip(ref lookahead, mode);  
+					GenericSkip(ref lookahead, mode);
 					}
 				}
 			}
 
 
 		/* Function: TryToSkipIdentifier
-		 * 
-		 * If the passed iterator is on an identifier, moves the iterator past it and returns true.  If the iterator isn't on an 
-		 * identifier, nothing is changed and it returns false.  This function accepts qualified identifiers but will still return 
+		 *
+		 * If the passed iterator is on an identifier, moves the iterator past it and returns true.  If the iterator isn't on an
+		 * identifier, nothing is changed and it returns false.  This function accepts qualified identifiers but will still return
 		 * true if it's on an unqualified one.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParsePrototype>
 		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.Name> or
@@ -1049,7 +1049,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			for (;;)
 				{
 				if (TryToSkipUnqualifiedIdentifier(ref lookahead, mode, prototypeParsingType) == false)
-					{  
+					{
 					ResetTokensBetween(iterator, lookahead, mode);
 					return false;
 					}
@@ -1064,9 +1064,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 			if (mode == ParseMode.ParsePrototype &&
-				prototypeParsingType == PrototypeParsingType.Type && 
+				prototypeParsingType == PrototypeParsingType.Type &&
 				endOfQualifier > iterator)
-				{  
+				{
 				iterator.SetPrototypeParsingTypeBetween(endOfQualifier, PrototypeParsingType.TypeQualifier);
 				}
 
@@ -1076,13 +1076,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipUnqualifiedIdentifier
-		 * 
-		 * If the passed iterator is on an identifier, moves the iterator past it and returns true.  If the iterator isn't on an identifier, 
+		 *
+		 * If the passed iterator is on an identifier, moves the iterator past it and returns true.  If the iterator isn't on an identifier,
 		 * nothing is changed and it returns false.  This only handles a single unqualified identifier, with the exception of bracketed
 		 * Microsoft identifiers like "[A.B]".
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParsePrototype>
 		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.Name> or
@@ -1145,7 +1145,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					iterator = lookahead;
 					}
 				else if (lookahead.MatchesAcrossTokens("%ROWTYPE", true))
-					{  
+					{
 					if (mode == ParseMode.ParsePrototype &&
 						prototypeParsingType == PrototypeParsingType.Type)
 						{  lookahead.SetPrototypeParsingTypeByCharacters(PrototypeParsingType.TypeModifier, 8);  }
@@ -1165,12 +1165,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipBuiltInType
-		 * 
-		 * If the passed iterator is on a built-in data type such as "INTEGER", moves the iterator past it and all its modifiers, marks 
+		 *
+		 * If the passed iterator is on a built-in data type such as "INTEGER", moves the iterator past it and all its modifiers, marks
 		 * the tokens if required, and returns true.  If the iterator isn't on a built-in type nothing is changed and it returns false.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParsePrototype>
 		 *			- Marks the tokens with <PrototypeParsingType.Type>, <PrototypeParsingType.TypeModifier>, etc.
@@ -1183,12 +1183,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipBuiltInType
-		 * 
-		 * If the passed iterator is on a built-in data type such as "INTEGER", moves the iterator past it and all its modifiers, marks 
+		 *
+		 * If the passed iterator is on a built-in data type such as "INTEGER", moves the iterator past it and all its modifiers, marks
 		 * the tokens if required, and returns true.  If the iterator isn't on a built-in type nothing is changed and it returns false.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParsePrototype>
 		 *			- Marks the tokens with <PrototypeParsingType.Type>, <PrototypeParsingType.TypeModifier>, etc.
@@ -1240,7 +1240,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				if (TryToSkipTypeParetheses(ref lookahead, mode) && lookahead < limit)
 					{  iterator = lookahead;  }
 
-				return true;  
+				return true;
 				}
 
 
@@ -1253,7 +1253,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{
 				TokenIterator lookahead = iterator;
 				lookahead.NextByCharacters(matchingPhrase.Length);
-				
+
 				if (lookahead < limit)
 					{
 					if (mode == ParseMode.ParsePrototype)
@@ -1262,7 +1262,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						{  iterator.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.Keyword);  }
 
 					iterator = lookahead;
-					return true;  
+					return true;
 					}
 				else
 					{  return false;  }
@@ -1305,7 +1305,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						{  break;  }
 					}
 
-				return true;  
+				return true;
 				}
 
 
@@ -1315,13 +1315,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipTypeParentheses
-		 * 
+		 *
 		 * If the passed iterator is on the opening parenthesis of a type parenthetical, such as "(12)" in "CHAR(12)", moves the
-		 * iterator past it, marks the tokens if required, and returns true.  If the iterator isn't on type parentheses nothing is 
+		 * iterator past it, marks the tokens if required, and returns true.  If the iterator isn't on type parentheses nothing is
 		 * changed and it returns false.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParsePrototype>
 		 *			- Marks the parentheses with <PrototypeParsingType.OpeningTypeModifier> and <PrototypeParsingType.ClosingTypeModifier>.
@@ -1360,13 +1360,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipString
-		 * 
-		 * If the passed iterator is on a string literal, moves the iterator past it and returns true.  If not, the iterator isn't changed and 
+		 *
+		 * If the passed iterator is on a string literal, moves the iterator past it and returns true.  If not, the iterator isn't changed and
 		 * it returns false.  This is different from <Language.TryToSkipString()> because SQL handles embedded quotes with double
 		 * characters instead of backslashes.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
@@ -1377,7 +1377,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (delimiter != '"' && delimiter != '\'')
 				{  return false;  }
-			
+
 			TokenIterator startOfString = iterator;
 			iterator.Next();
 
@@ -1406,17 +1406,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: GenericSkip
-		 * 
+		 *
 		 * Advances the iterator one place through general code.
-		 * 
+		 *
 		 * - If the position is on a string, it will skip it completely.
 		 * - If the position is on an opening brace, parenthesis, or bracket it will skip until the past the closing symbol.
 		 * - If the position is on whitespace, comments, or identifiers it will skip it completely.  Skipping identifiers in one step
 		 *   prevents things like @WITH from being mistaken as a keyword.
 		 * - Otherwise it skips one token.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
@@ -1424,19 +1424,19 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		protected void GenericSkip (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
 			if (iterator.Character == '(')
-				{  
+				{
 				iterator.Next();
-				GenericSkipUntilAfter(ref iterator, ')', mode);  
+				GenericSkipUntilAfter(ref iterator, ')', mode);
 				}
 			else if (iterator.Character == '[')
-				{  
+				{
 				iterator.Next();
-				GenericSkipUntilAfter(ref iterator, ']', mode);  
+				GenericSkipUntilAfter(ref iterator, ']', mode);
 				}
 			else if (iterator.Character == '{')
-				{  
+				{
 				iterator.Next();
-				GenericSkipUntilAfter(ref iterator, '}', mode);  
+				GenericSkipUntilAfter(ref iterator, '}', mode);
 				}
 
 			else if (TryToSkipString(ref iterator, mode) ||
@@ -1453,7 +1453,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					string matchingPhrase;
 					string[] matchingPhrases = generalKeyphrases[token];
 
-					if (matchingPhrases != null && 
+					if (matchingPhrases != null &&
 						OnAnyKeyphrase(iterator, out matchingPhrase, matchingPhrases))
 						{
 						iterator.SetSyntaxHighlightingTypeByCharacters(SyntaxHighlightingType.Keyword, matchingPhrase.Length);
@@ -1485,17 +1485,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			else
 				{
-				iterator.Next();  
+				iterator.Next();
 				}
 			}
 
 
 		/* Function: GenericSkipUntilAfter
-		 * 
+		 *
 		 * Advances the iterator via <GenericSkip()> until a specific symbol is reached and passed.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
@@ -1541,30 +1541,30 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			"GROUP", "HASH", "HAVING", "HEAP", "HIDDEN", "HOLDLOCK", "HOUR", "IDENTIFIED", "IDENTITY", "IDENTITYCOL", "IF",
 			"IMAGE", "IMMEDIATE", "IN", "INCLUDING", "INDEX", "INDEXES", "INDICATOR", "INDICES", "INFINITE", "INNER", "INSERT",
 			"INSTANTIABLE", "INT", "INTEGER", "INTERFACE", "INTERSECT", "INTERVAL", "INTO", "INVALIDATE", "IS", "ISOLATION", "JAVA",
-			"JOIN", "KEY", "KILL", "LANGUAGE", "LARGE", "LEADING", "LEFT", "LENGTH", "LEVEL", "LIBRARY", "LIKE", "LIKE2", "LIKE4", 
-			"LIKEC", "LIMIT", "LIMITED", "LINENO", "LOAD", "LOCAL", "LOCK", "LONG", "LOOP", "MAP", "MAX", "MAXLEN", "MEMBER", 
+			"JOIN", "KEY", "KILL", "LANGUAGE", "LARGE", "LEADING", "LEFT", "LENGTH", "LEVEL", "LIBRARY", "LIKE", "LIKE2", "LIKE4",
+			"LIKEC", "LIMIT", "LIMITED", "LINENO", "LOAD", "LOCAL", "LOCK", "LONG", "LOOP", "MAP", "MAX", "MAXLEN", "MEMBER",
 			"MERGE", "MIN", "MINUS", "MINUTE", "MOD", "MODE", "MODIFY", "MONEY", "MONTH", "MULTISET", "NAME", "NAN", "NATIONAL",
 			"NATIVE", "NCHAR", "NCLOB", "NEW", "NOCHECK", "NOCOMPRESS", "NOCOPY", "NONCLUSTERED", "NOT", "NOWAIT", "NTEXT",
 			"NULL", "NULLIF", "NUMBER", "NUMERIC", "NVARCHAR", "NVARCHAR2", "OBJECT", "OCICOLL", "OCIDATE", "OCIDATETIME",
 			"OCIDURATION", "OCIINTERVAL", "OCILOBLOCATOR", "OCINUMBER", "OCIRAW", "OCIREF", "OCIREFCURSOR", "OCIROWID",
 			"OCISTRING", "OCITYPE", "OF", "OFF", "OFFSETS", "OLD", "ON", "ONLY", "OPAQUE", "OPEN", "OPENDATASOURCE", "OPENQUERY",
-			"OPENROWSET", "OPENXML", "OPERATOR", "OPTION", "OR", "ORACLE", "ORADATA", "ORDER", "ORGANIZATION", "ORLANY", 
-			"ORLVARY", "OTHERS", "OUT", "OUTER", "OVER", "OVERLAPS", "OVERRIDING", "PACKAGE", "PARAMETER", "PARAMETERS", 
-			"PARENT", "PARTITION", "PASCAL", "PERCENT", "PERSISTABLE", "PIPE", "PIPELINED", "PIVOT", "PLAN", "PLUGGABLE", 
-			"POLYMORPHIC", "PRAGMA", "PRECISION", "PRIMARY", "PRINT", "PRIOR", "PRIVATE", "PROC", "PROCEDURE", "PUBLIC", "RAISE", 
-			"RAISERROR", "RANGE", "RAW", "READ", "READTEXT", "REAL", "RECONFIGURE", "RECORD", "REF", "REFERENCE", "REFERENCES", 
-			"REM", "REMAINDER", "RENAME", "REPLICATION", "RESOURCE", "RESTORE", "RESTRICT", "RESULT", "RETURN", "RETURNING", 
+			"OPENROWSET", "OPENXML", "OPERATOR", "OPTION", "OR", "ORACLE", "ORADATA", "ORDER", "ORGANIZATION", "ORLANY",
+			"ORLVARY", "OTHERS", "OUT", "OUTER", "OVER", "OVERLAPS", "OVERRIDING", "PACKAGE", "PARAMETER", "PARAMETERS",
+			"PARENT", "PARTITION", "PASCAL", "PERCENT", "PERSISTABLE", "PIPE", "PIPELINED", "PIVOT", "PLAN", "PLUGGABLE",
+			"POLYMORPHIC", "PRAGMA", "PRECISION", "PRIMARY", "PRINT", "PRIOR", "PRIVATE", "PROC", "PROCEDURE", "PUBLIC", "RAISE",
+			"RAISERROR", "RANGE", "RAW", "READ", "READTEXT", "REAL", "RECONFIGURE", "RECORD", "REF", "REFERENCE", "REFERENCES",
+			"REM", "REMAINDER", "RENAME", "REPLICATION", "RESOURCE", "RESTORE", "RESTRICT", "RESULT", "RETURN", "RETURNING",
 			"RETURNS", "REVERSE", "REVERT", "REVOKE", "RIGHT", "ROLLBACK", "ROW", "ROWCOUNT", "ROWGUIDCOL", "ROWID", "RULE",
-			"SAMPLE", "SAVE", "SAVEPOINT", "SB1", "SB2", "SB4", "SCHEMA", "SECOND", "SECURITYAUDIT", "SEGMENT", "SELECT", "SELECT", 
-			"SELF", "SEMANTICKEYPHRASETABLE", "SEMANTICSIMILARITYDETAILSTABLE", "SEMANTICSIMILARITYTABLE", "SEPARATE", 
-			"SEQUENCE", "SERIALIZABLE", "SET", "SETUSER", "SHARE", "SHORT", "SHUTDOWN", "SIZE", "SMALLDATETIME", "SMALLINT", 
-			"SMALLMONEY", "SOME", "SPARSE", "SQL", "SQLCODE", "SQLDATA", "SQLNAME", "SQLSTATE", "STANDARD", "START", "STATIC", 
-			"STATISTICS", "STDDEV", "STORED", "STRING", "STRUCT", "STYLE", "SUBMULTISET", "SUBPARTITION", "SUBSTITUTABLE", 
-			"SUBTYPE", "SUM", "SYNONYM", "TABAUTH", "TABLE", "TABLESAMPLE", "TDO", "TEXT", "TEXTSIZE", "THE", "THEN", "TIME", 
-			"TIMESTAMP", "TINYINT", "TO", "TOP", "TRAILING", "TRAN", "TRANSACTION", "TRANSACTIONAL", "TRIGGER", "TRUNCATE", 
-			"TRUSTED", "TSEQUAL", "TYPE", "UB1", "UB2", "UB4", "UNDER", "UNION", "UNIQUE", "UNPIVOT", "UNPLUG", "UNSIGNED", 
-			"UNTRUSTED", "UPDATE", "UPDATETEXT", "UROWID", "USE", "USER", "USING", "VALIST", "VALUE", "VALUES", "VARBINARY", 
-			"VARCHAR", "VARCHAR2", "VARIABLE", "VARIANCE", "VARRAY", "VARYING", "VIEW", "VIEWS", "VOID", "WAITFOR", "WHEN", 
+			"SAMPLE", "SAVE", "SAVEPOINT", "SB1", "SB2", "SB4", "SCHEMA", "SECOND", "SECURITYAUDIT", "SEGMENT", "SELECT", "SELECT",
+			"SELF", "SEMANTICKEYPHRASETABLE", "SEMANTICSIMILARITYDETAILSTABLE", "SEMANTICSIMILARITYTABLE", "SEPARATE",
+			"SEQUENCE", "SERIALIZABLE", "SET", "SETUSER", "SHARE", "SHORT", "SHUTDOWN", "SIZE", "SMALLDATETIME", "SMALLINT",
+			"SMALLMONEY", "SOME", "SPARSE", "SQL", "SQLCODE", "SQLDATA", "SQLNAME", "SQLSTATE", "STANDARD", "START", "STATIC",
+			"STATISTICS", "STDDEV", "STORED", "STRING", "STRUCT", "STYLE", "SUBMULTISET", "SUBPARTITION", "SUBSTITUTABLE",
+			"SUBTYPE", "SUM", "SYNONYM", "TABAUTH", "TABLE", "TABLESAMPLE", "TDO", "TEXT", "TEXTSIZE", "THE", "THEN", "TIME",
+			"TIMESTAMP", "TINYINT", "TO", "TOP", "TRAILING", "TRAN", "TRANSACTION", "TRANSACTIONAL", "TRIGGER", "TRUNCATE",
+			"TRUSTED", "TSEQUAL", "TYPE", "UB1", "UB2", "UB4", "UNDER", "UNION", "UNIQUE", "UNPIVOT", "UNPLUG", "UNSIGNED",
+			"UNTRUSTED", "UPDATE", "UPDATETEXT", "UROWID", "USE", "USER", "USING", "VALIST", "VALUE", "VALUES", "VARBINARY",
+			"VARCHAR", "VARCHAR2", "VARIABLE", "VARIANCE", "VARRAY", "VARYING", "VIEW", "VIEWS", "VOID", "WAITFOR", "WHEN",
 			"WHERE", "WHILE", "WITH", "WORK", "WRAPPED", "WRITE", "WRITETEXT", "YEAR", "ZONE"
 
 			});

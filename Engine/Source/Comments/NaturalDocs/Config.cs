@@ -1,19 +1,19 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.Config
  * ____________________________________________________________________________
- * 
+ *
  * A class representing a complete configuration for the Natural Docs parser stored in <Parser.txt>.
- * 
- * 
+ *
+ *
  * Multithreading: Not Thread Safe, Supports Multiple Readers
- * 
+ *
  *		This object doesn't have any locking built in, and so it is up to the class managing it to provide thread safety if needed.
  *		However, it does support multiple concurrent readers.  This means it can be used in read-only mode with no locking or
  *		in read/write mode with a ReaderWriterLock.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -27,11 +27,11 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 	{
 	public class Config
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: Config
 		 */
 		public Config ()
@@ -46,7 +46,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 			blockTypes = new StringTable<NaturalDocs.Parser.BlockType>(KeySettingsForTables);
 			specialHeadings = new StringTable<NaturalDocs.Parser.HeadingType>(KeySettingsForTables);
 			accessLevel = new StringTable<Languages.AccessLevel>(KeySettingsForTables);
-		
+
 			pluralConversions = new List<KeyValuePair<string, string>>();
 			possessiveConversions = new List<KeyValuePair<string, string>>();
 			}
@@ -98,8 +98,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 				return true;
 				}
 			}
-			
-		
+
+
 		/* Function: operator !=
 		 * Returns whether any of the settings of the two configurations are different.
 		 */
@@ -107,8 +107,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 			{
 			return !(config1 == config2);
 			}
-			
-		
+
+
 		public override bool Equals (object o)
 			{
 			if (o is Comments.NaturalDocs.Config)
@@ -191,7 +191,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 			get
 				{  return blockTypes;  }
 			}
-		
+
 		/* Property: SpecialHeadings
 		 * Headings that have special behavior associated with them.
 		 */
@@ -200,7 +200,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 			get
 				{  return specialHeadings;  }
 			}
-		
+
 		/* Property: AccessLevel
 		 * Modifiers that can be placed before a Natural Docs keyword to set the access level if it is not specified
 		 * in the code itself.
@@ -210,11 +210,11 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 			get
 				{  return accessLevel;  }
 			}
-		
+
 		/* Property: PluralConversions
 		 * A series of endings where the words ending with the key can have it replaced by the value to form
-		 * a possible singular form.  There may be multiple combinations that can be applied to a word, and 
-		 * not all of them will be valid.  "Leaves" converts to "Leave", "Leav", "Leaf", and "Leafe".  All that 
+		 * a possible singular form.  There may be multiple combinations that can be applied to a word, and
+		 * not all of them will be valid.  "Leaves" converts to "Leave", "Leav", "Leaf", and "Leafe".  All that
 		 * matters however is that the valid form be present in the possibilities.
 		 */
 		public List<KeyValuePair<string, string>> PluralConversions
@@ -273,22 +273,22 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 		 * The second word for lines like "(start code)" or the only word for lines like "(code)".
 		 */
 		protected StringTable<NaturalDocs.Parser.BlockType> blockTypes;
-		
+
 		/* var: specialHeadings
 		 * Headings that have special behavior associated with them.
 		 */
 		protected StringTable<NaturalDocs.Parser.HeadingType> specialHeadings;
-		
+
 		/* var: accessLevel
 		 * Modifiers that can be placed before a Natural Docs keyword to set the access level if it is not specified
 		 * in the code itself.
 		 */
 		protected StringTable<Languages.AccessLevel> accessLevel;
-		
+
 		/* var: pluralConversions
 		 * A series of endings where the words ending with the key can have it replaced by the value to form
-		 * a possible singular form.  There may be multiple combinations that can be applied to a word, and 
-		 * not all of them will be valid.  "Leaves" converts to "Leave", "Leav", "Leaf", and "Leafe".  All that 
+		 * a possible singular form.  There may be multiple combinations that can be applied to a word, and
+		 * not all of them will be valid.  "Leaves" converts to "Leave", "Leav", "Leaf", and "Leafe".  All that
 		 * matters however is that the valid form be present in the possibilities.
 		 */
 		protected List<KeyValuePair<string, string>> pluralConversions;
@@ -303,8 +303,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 
 		// Group: Constants
 		// __________________________________________________________________________
-		
-		
+
+
 		public const KeySettings KeySettingsForSets = KeySettings.IgnoreCase | KeySettings.NormalizeUnicode;
 		public const KeySettings KeySettingsForTables = KeySettings.IgnoreCase | KeySettings.NormalizeUnicode;
 

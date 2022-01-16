@@ -1,23 +1,23 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Target
  * ____________________________________________________________________________
- * 
+ *
  * A HTML output target.
- * 
- * 
+ *
+ *
  * Multithreading: Thread Safety Notes
- * 
+ *
  *		> Accessor's database Lock -> accessLock
- * 
+ *
  *		Externally, this class is thread safe as functions use <accessLock> to control access to internal variables.
- *		
- *		Interally, if code needs both a database lock and <accessLock> it must acquire the database lock first.  It also 
+ *
+ *		Interally, if code needs both a database lock and <accessLock> it must acquire the database lock first.  It also
  *		must not upgrade the database lock from read/possible write to read/write while holding <accessLock>, as there
  *		may be a thread with a read-only accessor waiting for <accessLock>.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -29,14 +29,14 @@ using CodeClear.NaturalDocs.Engine.Styles;
 
 namespace CodeClear.NaturalDocs.Engine.Output.HTML
 	{
-	public partial class Target : Output.Target, CodeDB.IChangeWatcher, Files.IChangeWatcher, SearchIndex.IChangeWatcher, 
+	public partial class Target : Output.Target, CodeDB.IChangeWatcher, Files.IChangeWatcher, SearchIndex.IChangeWatcher,
 											IStartupWatcher, IDisposable
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		public Target (Output.Manager manager, Config.Targets.HTMLOutputFolder config) : base (manager)
 			{
 			accessLock = new object();
@@ -68,7 +68,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 						buildStateParser.Save(WorkingDataFolder + "/BuildState.nd", buildState, unprocessedChanges);
 						}
 					}
-				catch 
+				catch
 					{  }
 				}
 			}
@@ -84,7 +84,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* Function: GetStatus
-		 * Returns a numeric value representing the total changes yet to be processed.  It is the sum of everything in 
+		 * Returns a numeric value representing the total changes yet to be processed.  It is the sum of everything in
 		 * this class weighted by the <TargetBuilder.Cost Constants> which estimate how hard they are to perform.  The value
 		 * of the total is meaningless other than to track progress as it works its way towards zero.
 		 */
@@ -108,7 +108,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		// Group: Purging Functions
 		// __________________________________________________________________________
 
-			
+
 		/* Function: PurgeFolder
 		 * Deletes an output folder and all its contents if it exists.  Pass a reference to a bool that tracks whether we've registered a
 		 * PossiblyLongOperation for purging with <Engine.Instance>.  If it's set to false and there's a folder to purge it will call
@@ -118,7 +118,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		protected void PurgeFolder (Path folder, ref bool inPurgingOperation)
 			{
 			if (System.IO.Directory.Exists(folder))
-				{  
+				{
 				if (!inPurgingOperation)
 					{
 					EngineInstance.StartPossiblyLongOperation("PurgingOutputFiles");
@@ -137,7 +137,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* Function: PurgeStyleFolder
-		 * Deletes an output folder for a style and all its contents if it exists.  Pass a reference to a bool that tracks whether we've 
+		 * Deletes an output folder for a style and all its contents if it exists.  Pass a reference to a bool that tracks whether we've
 		 * registered a PossiblyLongOperation for purging with <Engine.Instance>.  Call <FinishedPurging()> after all purging calls.
 		 */
 		protected void PurgeStyleFolder (string styleName, ref bool inPurgingOperation)
@@ -147,7 +147,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* Function: PurgeAllStyleFolders
-		 * Deletes all the style output folders and their contents.  Pass a reference to a bool that tracks whether we've registered a 
+		 * Deletes all the style output folders and their contents.  Pass a reference to a bool that tracks whether we've registered a
 		 * PossiblyLongOperation for purging with <Engine.Instance>.  Call <FinishedPurging()> after all purging calls.
 		 */
 		protected void PurgeAllStyleFolders (ref bool inPurgingOperation)
@@ -157,8 +157,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* Function: PurgeAllSourceAndImageFolders
-		 * Deletes all the source and image output folders and their contents.  Pass a reference to a bool that tracks whether 
-		 * we've registered a PossiblyLongOperation for purging with <Engine.Instance>.  Call <FinishedPurging()> after all 
+		 * Deletes all the source and image output folders and their contents.  Pass a reference to a bool that tracks whether
+		 * we've registered a PossiblyLongOperation for purging with <Engine.Instance>.  Call <FinishedPurging()> after all
 		 * purging calls.
 		 */
 		protected void PurgeAllSourceAndImageFolders (ref bool inPurgingOperation)
@@ -178,7 +178,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* Function: PurgeAllClassFolders
-		 * Deletes all the class output folders and their contents.  Pass a reference to a bool that tracks whether we've registered a 
+		 * Deletes all the class output folders and their contents.  Pass a reference to a bool that tracks whether we've registered a
 		 * PossiblyLongOperation for purging with <Engine.Instance>.  Call <FinishedPurging()> after all purging calls.
 		 */
 		protected void PurgeAllClassFolders (ref bool inPurgingOperation)
@@ -191,7 +191,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* Function: PurgeAllMenuFolders
-		 * Deletes all the menu output folders and their contents.  Pass a reference to a bool that tracks whether we've registered a 
+		 * Deletes all the menu output folders and their contents.  Pass a reference to a bool that tracks whether we've registered a
 		 * PossiblyLongOperation for purging with <Engine.Instance>.  Call <FinishedPurging()> after all purging calls.
 		 */
 		protected void PurgeAllMenuFolders (ref bool inPurgingOperation)
@@ -201,7 +201,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* Function: PurgeAllSearchIndexFolders
-		 * Deletes all the search index output folders and their contents.  Pass a reference to a bool that tracks whether we've registered 
+		 * Deletes all the search index output folders and their contents.  Pass a reference to a bool that tracks whether we've registered
 		 * a PossiblyLongOperation for purging with <Engine.Instance>.  Call <FinishedPurging()> after all purging calls.
 		 */
 		protected void PurgeAllSearchIndexFolders (ref bool inPurgingOperation)
@@ -211,7 +211,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* Function: FinishedPurging
-		 * Call this after you're done calling all the other purging functions.  Pass the reference to the bool that tracked whether 
+		 * Call this after you're done calling all the other purging functions.  Pass the reference to the bool that tracked whether
 		 * we've registered a PossiblyLongOperation for purging with <Engine.Instance>.  If it's set to true it will call
 		 * <Engine.Instance.EndPossiblyLongOperation()> and set it to false.
 		 */
@@ -228,7 +228,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 		// Group: Properties
 		// __________________________________________________________________________
-		
+
 
 		/* Property: BuildState
 		 */
@@ -310,13 +310,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 		// Group: Variables
 		// __________________________________________________________________________
-		
-		
+
+
 		/* var: accessLock
 		 * A monitor used for accessing any of the variables in this class.
 		 */
 		protected object accessLock;
-		
+
 		/* var: buildState
 		 * The current build state for the HTML target.
 		 */

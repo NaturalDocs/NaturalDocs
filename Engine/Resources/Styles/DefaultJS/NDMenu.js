@@ -1,7 +1,7 @@
 ﻿/*
 	Include in output:
 
-	This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+	This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 	Natural Docs is licensed under version 3 of the GNU Affero General Public
 	License (AGPL).  Refer to License.txt or www.naturaldocs.org for the
 	complete details.
@@ -10,7 +10,7 @@
 	Such documentation is not covered by Natural Docs' copyright and licensing,
 	and may have its own copyright and distribution terms as decided by its author.
 */
-	
+
 
 // Tab Members, from data file
 
@@ -48,18 +48,18 @@
 
 	Loading Process:
 
-		- When <OnLocationChange()> or <GoToOffsets()> need the menu to be updated, they call <Build()> with the path to 
+		- When <OnLocationChange()> or <GoToOffsets()> need the menu to be updated, they call <Build()> with the path to
 		  the current selection.
-		
+
 		- If all the data needed exists in <menuSections> a new menu is generated.
 
-		- If some of the data is missing <Build()> displays what it can, stores the selection path in <pathBeingBuilt>, requests to 
+		- If some of the data is missing <Build()> displays what it can, stores the selection path in <pathBeingBuilt>, requests to
 		  load additional menu sections, and returns.  When the data comes back via <OnSectionLoaded()> that function
 		  will call <Build()> again.  <Build()> will either finish the update, request more parts of the menu, or just wait for previously
 		  requested data to come in.
 
 		- This system allows the user to click a different file before everything finishes loading.  <Build()> will be called again and
-		  <pathBeingBuilt> will be replaced or set back to undefined.  If the previous click's data comes in after the new navigation 
+		  <pathBeingBuilt> will be replaced or set back to undefined.  If the previous click's data comes in after the new navigation
 		  has been completed, <Build()> won't do anything because it cleared <pathBeingBuilt> already.  If the previous click's data
 		  comes back but isn't relevant to the new click which is still loading, <Build()> will just rebuild the partial menu with the new
 		  click's path to no detrimental effect.
@@ -73,23 +73,23 @@
 		call to <MenuSection()> rearranges the array and advances it so that it serves as a dividing line.  If the path being built
 		is walked start to finish, everything in use will be in indexes below <firstUnusedMenuSection>.
 
-		The array is rearranged so that it gets put in MRU order.  When the array grows too large unused entries can be plucked off the 
+		The array is rearranged so that it gets put in MRU order.  When the array grows too large unused entries can be plucked off the
 		back end and the least recently used ones will go first.
 
 		There's another trick to it though.  When <MenuSection()> returns an entry that was past <firstUnusedMenuSection>,
 		it doesn't move it to the head of the array, it moves it to the back of the used list.  Why?  Because the paths are walked from
-		root to leaf, meaning if you had path A > B > C > D and you just moved entries to the head, they would end up in the cache in 
+		root to leaf, meaning if you had path A > B > C > D and you just moved entries to the head, they would end up in the cache in
 		this order:
 
 		> [ D, C, B, A ]
 
-		So then let's say you navigated from that to A > B > C2 > D2.  The cache now looks like this, with | representing the 
+		So then let's say you navigated from that to A > B > C2 > D2.  The cache now looks like this, with | representing the
 		used/unused divider:
 
 		> [ D2, C2, B, A | D, C ]
 
 		C would get ejected from the cache before D, but since D is below C in the hierarchy its presence in the cache is not especially
-		useful.  So instead we move entries to the end of the used list, which keeps them in their proper order.  Going to A > B > C > D 
+		useful.  So instead we move entries to the end of the used list, which keeps them in their proper order.  Going to A > B > C > D
 		results in this cache:
 
 		> [ A, B, C, D ]
@@ -103,7 +103,7 @@
 
 */
 var NDMenu = new function ()
-	{ 
+	{
 
 	// Group: Functions
 	// ________________________________________________________________________
@@ -157,8 +157,8 @@ var NDMenu = new function ()
 		{
 		// If we're on the Home tab and there's only one, automatically select it.
 		if (newLocation.type == "Home" && this.tabs != undefined && this.tabs.length == 1)
-			{  
-			this.GoToOffsets([0]);  
+			{
+			this.GoToOffsets([0]);
 			return;
 			}
 
@@ -182,12 +182,12 @@ var NDMenu = new function ()
 	this.GoToOffsets = function (offsets)
 		{
 		if (this.tabs != undefined)
-			{  
+			{
 			var newSelectedTab;
 
 			if (offsets.length >= 1)
-				{  
-				newSelectedTab = this.tabs[ offsets[0] ][$Tab_Type];  
+				{
+				newSelectedTab = this.tabs[ offsets[0] ][$Tab_Type];
 
 				if (newSelectedTab != this.selectedTabType)
 					{  this.UpdateTabs(newSelectedTab);  }
@@ -201,9 +201,9 @@ var NDMenu = new function ()
 	/* Function: Build
 
 		Generates the HTML for the menu.
-		
+
 		Parameters:
-		
+
 			path - The path to the selected file or folder.  Can be set to a <NDMenuOffsetPath> or <NDMenuHashPath>.
 					  If there's no selection, supply an empty path object.
 
@@ -228,14 +228,14 @@ var NDMenu = new function ()
 		newMenuContent.id = "MContent";
 
 		var result;
-		
+
 		if (this.tabs != undefined)
 			{  result = this.BuildEntries(newMenuContent, this.pathBeingBuilt);  }
 		else
-			{  
+			{
 			// Wait for the tabs to come in.  Loading tabs.js is handled by Start().  We still want to put up the loading notice
 			// though.
-			result = { completed: false };  
+			result = { completed: false };
 			}
 
 		if (!result.completed)
@@ -253,8 +253,8 @@ var NDMenu = new function ()
 		if (result.completed)
 			{
 			if (result.selectedFile)
-				{  
-				// Scroll the selected file into view.  Check if it's necessary first because scrollIntoView() may change the scroll 
+				{
+				// Scroll the selected file into view.  Check if it's necessary first because scrollIntoView() may change the scroll
 				// position even if the element is already visible and we don't want it to be jumpy.
 
 				// If the element's bottom is lower than the extent of the visible menu...
@@ -274,13 +274,13 @@ var NDMenu = new function ()
 			{  this.LoadMenuSection(result.needToLoad);  }
 		};
 
-	
+
 	/* Function: BuildEntries
 
 		Generates the HTML menu entries and appends them to the passed element.
-		
+
 		Returns:
-		
+
 			Returns an object with the following members:
 
 			completed - Bool.  Whether it was able to build the complete menu as opposed to just part.
@@ -290,8 +290,8 @@ var NDMenu = new function ()
 	*/
 	this.BuildEntries = function (htmlMenu, path)
 		{
-		var result = 
-			{ 
+		var result =
+			{
 			completed: false
 			// needToLoad: undefined
 			// selectedFile: undefined
@@ -307,12 +307,12 @@ var NDMenu = new function ()
 		// Generate the list of folders up to and including the selected one.
 
 		for (;;)
-			{	
+			{
 			navigationType = iterator.NavigationType();
 
 			if (navigationType == $Nav_NeedToLoad)
-				{  
-				result.needToLoad = iterator.needToLoad;  
+				{
+				result.needToLoad = iterator.needToLoad;
 				return result;
 				}
 
@@ -320,7 +320,7 @@ var NDMenu = new function ()
 				{  break;  }
 
 			else if (iterator.InTabs())
-				{  
+				{
 				pathSoFar.push(iterator.CurrentContainerIndex());
 				selectedTab = iterator.CurrentEntry();
 
@@ -473,7 +473,7 @@ var NDMenu = new function ()
 				else  // $EntryType_Container
 					{
 					var title = "<span class=\"MFolderIcon\"></span>";
-					
+
 					if (typeof(member[$Entry_HTMLTitle]) == "object")
 						{  title += member[$Entry_HTMLTitle][0];  }
 					else
@@ -505,7 +505,7 @@ var NDMenu = new function ()
 		return result;
 		};
 
-	
+
 
 	// Group: Support Functions
 	// ________________________________________________________________________
@@ -553,7 +553,7 @@ var NDMenu = new function ()
 		for (var i = 0; i < this.menuSections.length; i++)
 			{
 			if (this.menuSections[i].file == file)
-				{  
+				{
 				// If it has an entry, it's either already loaded or in the process of loading.
 				return;
 				}
@@ -606,11 +606,11 @@ var NDMenu = new function ()
 		{
 		if (this.menuSections.length > $MaxMenuSections)
 			{
-			for (var i = this.menuSections.length - 1; 
-				  i >= this.firstUnusedMenuSection && this.menuSections.length > $MaxMenuSections; 
+			for (var i = this.menuSections.length - 1;
+				  i >= this.firstUnusedMenuSection && this.menuSections.length > $MaxMenuSections;
 				  i--)
 				{
-				// We don't want to remove an entry if data's being loaded for it.  The event handler could reasonably expect it 
+				// We don't want to remove an entry if data's being loaded for it.  The event handler could reasonably expect it
 				// to exist.
 				if (this.menuSections[i].ready == false)
 					{  break;  }
@@ -658,7 +658,7 @@ var NDMenu = new function ()
 			if (tabs[i][$Tab_Type] == this.selectedTabType)
 				{  tab.className += " Selected";  }
 			}
-	
+
 		// Resize them while they're still hidden.  Being absolutely positioned won't affect it.
 		this.ResizeTabs();
 
@@ -695,8 +695,8 @@ var NDMenu = new function ()
 			if (this.selectedTabType != undefined)
 				{
 				var tab = this.GetTabElement(this.selectedTabType);
-				
-				// Have to check if tab is undefined because it could be migrating off a path that doesn't have a corresponding tab, 
+
+				// Have to check if tab is undefined because it could be migrating off a path that doesn't have a corresponding tab,
 				// like "Home".
 				if (tab != undefined)
 					{  NDCore.RemoveClass(tab, "Selected");  }
@@ -715,7 +715,7 @@ var NDMenu = new function ()
 		var wasShowing = this.ShouldTabsShow();
 		this.selectedTabType = newTabType;
 		var shouldShow = this.ShouldTabsShow();
- 
+
 		if (wasShowing != shouldShow)
 			{
 			var tabBar = document.getElementById("MTabBar");
@@ -730,7 +730,7 @@ var NDMenu = new function ()
 		this.ResizeTabs();
 		};
 
-	
+
 	/* Function: ResizeTabs
 		Changes whether the tabs are viewed in their wide or narrow forms based on available space.
 	*/
@@ -831,7 +831,7 @@ var NDMenu = new function ()
 		// to the Classes tab and then switched back, reload the current location.  This will include the file selection highlight which
 		// $Tab_LastOffset wouldn't have.
 		else if (newTabType == NDFramePage.currentLocation.type)
-			{  
+			{
 			this.UpdateTabs(newTabType);
 			this.Build( new NDMenuHashPath(NDFramePage.currentLocation.type, NDFramePage.currentLocation.path) );
 			}
@@ -846,7 +846,7 @@ var NDMenu = new function ()
 			{  this.GoToOffsets( [ tabIndex ] );  }
 		};
 
-	
+
 	/* Function: GetTabElement
 		Returns the DOM element for the tab of the passed type.
 	*/
@@ -862,7 +862,7 @@ var NDMenu = new function ()
 
 
 	/* var: pathBeingBuilt
-		If we're attempting to update the menu, this will be an object that represents the navigation path from the root folder 
+		If we're attempting to update the menu, this will be an object that represents the navigation path from the root folder
 		to the selected folder or file.  It can be either a <NDMenuOffsetPath> or <NDMenuHashPath>.  Once the menu
 		has been completely built this will return to undefined.
 	*/
@@ -902,7 +902,7 @@ var NDMenu = new function ()
 		The contents of the data file as an array of menu entries, or undefined if <ready> isn't set yet.
 
 		var: ready
-		True if the data has been loaded and is ready to use.  False if the data has been requested but is not ready 
+		True if the data has been loaded and is ready to use.  False if the data has been requested but is not ready
 		yet.  If the data has not been requested it simply would not have a NDMenuSection object for it.
 
 		var: domLoaderID
@@ -953,7 +953,7 @@ function NDMenuOffsetPath (offsets)
 
 	/* Property: path
 		An array of offsets.  An empty array means there is no selection.  A first entry would be the index into <NDMenu.tabs>,
-		and further entries would be indexes into menu folders.  If the last entry points to a folder, it means that folder is selected 
+		and further entries would be indexes into menu folders.  If the last entry points to a folder, it means that folder is selected
 		but not a file within it.  If it points to a file, it means that file is selected.
 	*/
 	if (offsets == undefined)
@@ -984,9 +984,9 @@ function NDMenuOffsetPathIterator (pathObject)
 	// Group: Private Functions
 	// ________________________________________________________________________
 
-	
+
 	/* Private Function: Constructor
-		You do not need to call this function.  Simply call "new NDMenuOffsetPathIterotar(pathObject)" and this will be called 
+		You do not need to call this function.  Simply call "new NDMenuOffsetPathIterotar(pathObject)" and this will be called
 		automatically.
 	 */
 	this.Constructor = function (pathObject)
@@ -1002,7 +1002,7 @@ function NDMenuOffsetPathIterator (pathObject)
 		};
 
 
-	
+
 	// Group: Functions
 	// ________________________________________________________________________
 
@@ -1030,9 +1030,9 @@ function NDMenuOffsetPathIterator (pathObject)
 			this.needToLoad = undefined;
 
 			if (this.pathIndex == 0)
-				{  
+				{
 				this.currentContainerHashPath = currentEntry[$Tab_HashPath];
-				this.needToLoad = currentEntry[$Tab_DataFile];  
+				this.needToLoad = currentEntry[$Tab_DataFile];
 				}
 			else if (currentEntry[$Entry_Type] == $EntryType_Container)
 				{
@@ -1044,7 +1044,7 @@ function NDMenuOffsetPathIterator (pathObject)
 					{  this.currentContainer = currentEntry[$Entry_Members];  }
 				}
 			// Do nothing for $EntryType_Target
-			
+
 			this.pathIndex++;
 
 			if (this.needToLoad != undefined)
@@ -1065,7 +1065,7 @@ function NDMenuOffsetPathIterator (pathObject)
 		$Nav_ParentFolder - The iterator is pointing to a parent folder or tab, though not the currently selected one.
 		$Nav_SelectedParentFolder - The iterator is pointing to the currently selected parent folder or tab.
 		$Nav_SelectedFile - The iterator is pointing to the currently selected file.
-		$Nav_NeedToLoad - The iterator is pointing to a part of the menu hasn't been loaded yet.  The file to load will be stored in 
+		$Nav_NeedToLoad - The iterator is pointing to a part of the menu hasn't been loaded yet.  The file to load will be stored in
 									  <NeedToLoad()>.
 		$Nav_EndOfPath - The iterator is past the end of the path.
 
@@ -1073,7 +1073,7 @@ function NDMenuOffsetPathIterator (pathObject)
 
 			- The iterator can start with $Nav_EndOfPath if there is no tab selected, or $Nav_NeedToLoad if the tab information
 			  isn't loaded.
-			- If there are folders or tabs in the path, all but the last will be $Nav_ParentFolder and the last will be 
+			- If there are folders or tabs in the path, all but the last will be $Nav_ParentFolder and the last will be
 			  $Nav_SelectedParentFolder.  This is regardless of whether there is also a file selected or not.
 			- If there is a file selected it will return $Nav_SelectedFile, but there does not need to be so it may go straight from
 			  $Nav_SelectedParentFolder to $Nav_EndOfPath.
@@ -1119,7 +1119,7 @@ function NDMenuOffsetPathIterator (pathObject)
 			{
 			this.needToLoad = lookahead.NeedToLoad();
 			return $Nav_NeedToLoad;
-			}		
+			}
 		else if (lookahead.CurrentEntry()[$Entry_Type] == $EntryType_Container)
 			{  return $Nav_ParentFolder;  }
 		else
@@ -1234,7 +1234,7 @@ function NDMenuOffsetPathIterator (pathObject)
 	*/
 
 	/* var: needToLoad
-		If <NavigationType> returns $Nav_NeedToLoad, this will hold the name of the data file that needs to be loaded.  The 
+		If <NavigationType> returns $Nav_NeedToLoad, this will hold the name of the data file that needs to be loaded.  The
 		value is not relevant otherwise and is not guaranteed to be undefined.
 
 		Remember that you need to create a new iterator after loading a section of the menu.  Existing ones are not
@@ -1254,7 +1254,7 @@ function NDMenuOffsetPathIterator (pathObject)
 	___________________________________________________________________________
 
 	A path through <NDMenu's> hierarchy using a hash path string such as "File2:folder/folder/source.cs".  All paths are
-	assumed to terminate on a file name instead of a folder.  	This has the same interface as <NDMenuOffsetPath> so 
+	assumed to terminate on a file name instead of a folder.  	This has the same interface as <NDMenuOffsetPath> so
 	they can be used interchangeably.
 
 */
@@ -1286,11 +1286,11 @@ function NDMenuHashPath (type, hashPath)
 
 	/* Function: MakeOffsetPath
 		Generates and returns a <NDMenuOffsetPath> from the hash path string.
-		
-		If there are not enough menu sections loaded to fully resolve it, it will generate what it can and put an extra -1 
-		offset on the end to indicate  that there's more.  The extra entry prevents things from rendering as selected 
-		when they may not be.  <NDMenuOffsetPathIterator> shouldn't have to worry about handling the -1 
-		because it would stop with $Nav_NeedToLoad before using it, and after the section is loaded new iterators will 
+
+		If there are not enough menu sections loaded to fully resolve it, it will generate what it can and put an extra -1
+		offset on the end to indicate  that there's more.  The extra entry prevents things from rendering as selected
+		when they may not be.  <NDMenuOffsetPathIterator> shouldn't have to worry about handling the -1
+		because it would stop with $Nav_NeedToLoad before using it, and after the section is loaded new iterators will
 		have to be created which will cause this function to generate an updated offset path.
 
 		If there are invalid sections of the hash path, such as a folder name that doesn't exist, this will generate as much
@@ -1380,7 +1380,7 @@ function NDMenuHashPath (type, hashPath)
 						containerHashPath = member[$Entry_HashPath];
 						continueSearch = true;
 
-						if (typeof member[$Entry_Members] == "string")	
+						if (typeof member[$Entry_Members] == "string")
 							{
 							container = NDMenu.MenuSection(member[$Entry_Members]);
 
@@ -1412,7 +1412,7 @@ function NDMenuHashPath (type, hashPath)
 		The type string of the hash path, such as "File" or "Class".
 	*/
 	this.type = type;
-	
+
 	/* Property: hashPathString
 		The hash path string such as "File2:folder/folder/source.cs".
 	*/

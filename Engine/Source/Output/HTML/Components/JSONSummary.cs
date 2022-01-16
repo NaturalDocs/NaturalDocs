@@ -1,24 +1,24 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.JSONSummary
  * ____________________________________________________________________________
- * 
+ *
  * A helper class to build JSON summary data for an output page.  It can also save it to a JavaScript file as documented in
  * <JavaScript Summary Data>.
- * 
+ *
  * Topic: Usage
- *		
+ *
  *		- Call <ConvertToJSON()> to convert a topic list to JSON.
  *		- If desired, call <BuildDataFile()> to create the output file.
  *		- The object may be reused to convert another topic list.
- * 
+ *
  * Threading: Not Thread Safe
- * 
- *		This class is only designed to be used by one thread at a time.  Each thread should create its own object to use 
+ *
+ *		This class is only designed to be used by one thread at a time.  Each thread should create its own object to use
  *		independently.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -58,12 +58,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: ConvertToJSON
-		 * 
-		 * Converts the topic list to JSON.  After calling this function the individual <properties> like <UsedLanguages> and 
+		 *
+		 * Converts the topic list to JSON.  After calling this function the individual <properties> like <UsedLanguages> and
 		 * <CommentTypesJSON> will be available.
-		 * 
+		 *
 		 * Parameters:
-		 * 
+		 *
 		 *		topics - The <Engine.Topics.Topics> that appear in this file.
 		 *		context - The <Context> of the file.  Must include the page.
 		 */
@@ -92,9 +92,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: BuildDataFile
-		 * 
+		 *
 		 * Takes the JSON created by <ConvertToJSON()> and saves it as a JavaScript file as documented in <JavaScript Summary Data>.
-		 * It will use the file name specified in <HTMLTopicsPage.SummaryFile>.  Note that you have to call <ConvertToJSON()> prior to 
+		 * It will use the file name specified in <HTMLTopicsPage.SummaryFile>.  Note that you have to call <ConvertToJSON()> prior to
 		 * calling this function.
 		 */
 		public void BuildDataFile (string pageTitle)
@@ -198,9 +198,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: BuildUsedLanguagesJSON
-		 * 
+		 *
 		 * Builds <usedLanguagesJSON> from <usedLanguages>.  <BuildUsedLanguages()> must be called before this.
-		 * 
+		 *
 		 * If <Config.Manager.ShrinkFiles> is false, every entry will be indented at least once and appear on its own line.  The final line
 		 * will not be followed by a line break.
 		 */
@@ -276,9 +276,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: BuildUsedCommentTypesJSON
-		 * 
+		 *
 		 * Builds <usedCommentTypesJSON> from <usedCommentTypes>.  <BuildUsedCommentTypes()> must be called before this.
-		 * 
+		 *
 		 * If <Config.Manager.ShrinkFiles> is false, every entry will be indented at least once and appear on its own line.  The final line
 		 * will not be followed by a line break.
 		 */
@@ -312,7 +312,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				if (i != usedCommentTypes.Count - 1)
 					{  json.Append(',');  }
-					
+
 				if (addWhitespace)
 					{  json.AppendLine();  }
 				}
@@ -327,10 +327,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: BuildTopicsSummaryJSON
-		 * 
-		 * Builds <topicsSummaryJSON> from <topics>.  <BuildUsedLanguages()> and <BuildUsedCommentTypes()> must be called 
+		 *
+		 * Builds <topicsSummaryJSON> from <topics>.  <BuildUsedLanguages()> and <BuildUsedCommentTypes()> must be called
 		 * before this.
-		 * 
+		 *
 		 * If <Config.Manager.ShrinkFiles> is false, every entry will be indented at least once and appear on its own line.  The final line
 		 * will not be followed by a line break.
 		 */
@@ -370,7 +370,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				for (int usedLanguageIndex = 0; usedLanguageIndex < usedLanguages.Count; usedLanguageIndex++)
 					{
 					if (usedLanguages[usedLanguageIndex].ID == topic.LanguageID)
-						{  
+						{
 						json.Append(usedLanguageIndex);
 						break;
 						}
@@ -381,7 +381,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				for (int usedCommentTypeIndex = 0; usedCommentTypeIndex < usedCommentTypes.Count; usedCommentTypeIndex++)
 					{
 					if (usedCommentTypes[usedCommentTypeIndex].ID == topic.CommentTypeID)
-						{  
+						{
 						json.Append(usedCommentTypeIndex);
 						break;
 						}
@@ -405,7 +405,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						{  mode = FormattedText.WrappedTitleMode.None;  }
 
 					json.Append('"');
-					json.StringEscapeAndAppend( formattedTextBuilder.BuildWrappedTitle(topic.Title, mode) );  
+					json.StringEscapeAndAppend( formattedTextBuilder.BuildWrappedTitle(topic.Title, mode) );
 					json.Append('"');
 					}
 				// Otherwise leave an empty space before the comma.  We don't have to write out "undefined".
@@ -421,7 +421,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					json.StringEscapeAndAppend(topicHashPath);
 					json.Append('"');
 					}
-					
+
 				json.Append(']');
 
 				if (topicIndex < topics.Count - 1)
@@ -446,7 +446,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Property: Topics
-		 * 
+		 *
 		 * The list of <Engine.Topics.Topics> the summary data was built for.
 		 */
 		public IList<Engine.Topics.Topic> Topics
@@ -457,9 +457,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Property: TopicsSummaryJSON
-		 * 
+		 *
 		 * The summary of <Topics> as a JSON array.  It will be in the format described in <JavaScript Summary Data>.
-		 * 
+		 *
 		 * If <Config.Manager.ShrinkFiles> is false, every entry will be indented at least once and appear on its own line.  The final line
 		 * will not be followed by a line break.
 		 */
@@ -471,22 +471,22 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Property: UsedLanguages
-		 * 
+		 *
 		 * A list of the languages used in <Topics>.
 		 */
 		public List<Language> UsedLanguages
 			{
 			get
-				{  
+				{
 				return (usedLanguages.Count > 0 ? usedLanguages : null);
 				}
 			}
 
 
 		/* Property: UsedLanguagesJSON
-		 * 
+		 *
 		 * A list of the languages used in <Topics> as a JSON array.  It will be in the format described in <JavaScript Summary Data>.
-		 * 
+		 *
 		 * If <Config.Manager.ShrinkFiles> is false, every entry will be indented at least once and appear on its own line.  The final line
 		 * will not be followed by a line break.
 		 */
@@ -498,7 +498,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Property: UsedCommentTypes
-		 * 
+		 *
 		 * A list of the comment types used in <Topics>.
 		 */
 		public List<CommentType> UsedCommentTypes
@@ -511,9 +511,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Property: UsedCommentTypesJSON
-		 * 
+		 *
 		 * A list of the comment types used in <Topics> as a JSON array.  It will be in the format described in <JavaScript Summary Data>.
-		 * 
+		 *
 		 * If <Config.Manager.ShrinkFiles> is false, every entry will be indented at least once and appear on its own line.  The final line
 		 * will not be followed by a line break.
 		 */
@@ -585,4 +585,3 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 		}
 	}
-

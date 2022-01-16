@@ -1,16 +1,16 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles.BinaryBuildStateParser
  * ____________________________________________________________________________
- * 
+ *
  * A class to handle loading and saving <BuildState.nd>.
- * 
- * 
+ *
+ *
  * Threading: Not Thread Safe
- * 
+ *
  *		The parser object may be reused, but multiple threads cannot use it at the same time.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -25,11 +25,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 	{
 	public class BinaryBuildStateParser
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: BinaryBuildStateParser
 		 */
 		public BinaryBuildStateParser ()
@@ -43,7 +43,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 		 */
 		public bool Load (Path filename, out BuildState buildState, out UnprocessedChanges unprocessedChanges)
 			{
-			// Since we're creating new objects only we have access to them right now and thus we don't need to use Lock() and 
+			// Since we're creating new objects only we have access to them right now and thus we don't need to use Lock() and
 			// Unlock().
 			buildState = new BuildState();
 			unprocessedChanges = new UnprocessedChanges();
@@ -54,12 +54,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 			try
 				{
 				if (binaryFile.OpenForReading(filename) == false)
-					{  
+					{
 					result = false;
 					}
 				else if (binaryFile.Version.IsAtLeastRelease("2.2") == false &&
 						   binaryFile.Version.IsSamePreRelease(Engine.Instance.Version) == false)
-					{  
+					{
 					binaryFile.Close();
 					result = false;
 					}
@@ -121,12 +121,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 					// Menu Data File Info
 
 					// [String: File Menu Data File Identifier] [NumberSet: File Menu Data File Numbers]
-					
+
 					string fileMenuDataFileIdentifier = binaryFile.ReadString();
 					NumberSet fileMenuDataFileNumbers = binaryFile.ReadNumberSet();
 
 					if (!fileMenuDataFileNumbers.IsEmpty)
-						{  
+						{
 						buildState.fileMenuInfo = new BuildState.MenuInfo(fileMenuDataFileIdentifier, fileMenuDataFileNumbers);
 						}
 
@@ -164,17 +164,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 					}
 				}
 			catch
-				{  
+				{
 				result = false;
 				}
 			finally
-				{  
+				{
 				if (binaryFile.IsOpen)
 					{  binaryFile.Close();  }
 				}
 
 			if (result == false)
-				{  
+				{
 				buildState = new BuildState();
 				unprocessedChanges = new UnprocessedChanges();
 				}

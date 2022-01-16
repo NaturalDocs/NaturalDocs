@@ -1,11 +1,11 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Topics.Topic
  * ____________________________________________________________________________
- * 
+ *
  * A class encapsulating all the information available about a topic.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -25,12 +25,12 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 
 
 		/* Enum: DatabaseCompareResult
-		 * 
+		 *
 		 * The result of two <Topics> being compared with <DatabaseCompare()>.
-		 * 
+		 *
 		 *		Same - The topics are exactly the same.
 		 *		Different - The topics are different in substantial ways.
-		 *		Similar_WontAffectLinking - The topics differ in some fields, but in such a way as to not affect 
+		 *		Similar_WontAffectLinking - The topics differ in some fields, but in such a way as to not affect
 		 *														  linking if one were substituted for another.
 		 */
 		public enum DatabaseCompareResult : byte
@@ -63,7 +63,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 			LanguageID = 0x00002000,
 			CommentLineNumber = 0x00004000,
 			CodeLineNumber = 0x00008000,
-			
+
 			FileID = 0x00010000,
 			FilePosition = 0x00020000,
 			PrototypeContext = 0x00040000,
@@ -77,7 +77,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 
 
 		/* Enum: IgnoreFields
-		 * 
+		 *
 		 * When querying topics from the database, not all fields may be needed in all circumstances.  This is a
 		 * bitfield that allows you to specify which fields can be ignored.  This is also stored in the object so that,
 		 * in debug builds, if you try to access any of these fields an exception will be thrown.
@@ -130,11 +130,11 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 			}
 
 
-			
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		public Topic (CommentTypes.Manager manager)
 			{
 			this.commentTypes = manager;
@@ -165,7 +165,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 			languageID = 0;
 			commentLineNumber = 0;
 			codeLineNumber = 0;
-			
+
 			fileID = 0;
 			filePosition = 0;
 			prototypeContext = new ContextString();
@@ -176,8 +176,8 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 			ignoredFields = IgnoreFields.None;
 			buildFlags = BuildFlags.None;
 			}
-			
-			
+
+
 		/* Function: Duplicate
 		 */
 		public Topic Duplicate ()
@@ -220,7 +220,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 			duplicate.languageID = languageID;
 			duplicate.commentLineNumber = commentLineNumber;
 			duplicate.codeLineNumber = codeLineNumber;
-			
+
 			duplicate.fileID = fileID;
 			duplicate.filePosition = filePosition;
 			duplicate.prototypeContext = prototypeContext;
@@ -236,18 +236,18 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 
 			return duplicate;
 			}
-			
-			
+
+
 		/* Function: DatabaseCompare
-		 * 
+		 *
 		 * Compares two topics, returning whether they are the same, different, or similar enough that one can be substituted
 		 * for the other without affecting linking.  Similar allows use of <CodeDB.Accessor.UpdateTopic()>.
-		 * 
+		 *
 		 * If it returns <DatabaseCompareResult.Similar_WontAffectLinking>, changeFlags will also be set noting which specific
 		 * fields have changed.  This isn't done with <DatabaseCompareResult.Different>, but all the flags will be set to true
 		 * anyway to prevent errors.
-		 * 
-		 * <TopicID>, <ClassID>, <PrototypeContextID>, and <BodyContextID> are not included in the comparison because it's 
+		 *
+		 * <TopicID>, <ClassID>, <PrototypeContextID>, and <BodyContextID> are not included in the comparison because it's
 		 * assumed that you would be comparing Topics from a parse, where they would not be set, to Topics from the database,
 		 * where they would.  <Temporary Properties> are also not compared because they do not correspond to database fields.
 		 */
@@ -280,8 +280,8 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 			// languageID - Important in linking.
 			// commentLineNumber - Not imporant in linking.  SymbolDefinitionNumber will take care of the first being favored.
 			// codeLineNumber - Not important in linking.  SymbolDefinitionNumber will take care of the first being favored.
-			
-			// fileID - Not important in linking, but return Different anyway because the same topic in two different files 
+
+			// fileID - Not important in linking, but return Different anyway because the same topic in two different files
 			//				  are considered two separate topics.
 			// filePosition - Not important in linking.  SymbolDefinitionNumber will take care of the first being favored.
 			// prototypeContext - Not important in linking.
@@ -294,12 +294,12 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 				{  throw new InvalidOperationException("Cannot compare topics that have ignored fields.");  }
 			#endif
 
-			if (	
+			if (
 				// Quick integer comparisons, only somewhat likely to be different but faster than a string comparison
 				commentTypeID != other.commentTypeID ||
 				effectiveAccessLevel != other.effectiveAccessLevel ||
 
-				// String comparisons, most likely to be different			
+				// String comparisons, most likely to be different
 				title != other.title ||
 				body != other.body ||
 				prototype != other.prototype ||
@@ -309,30 +309,30 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 				symbolDefinitionNumber != other.symbolDefinitionNumber ||
 				fileID != other.fileID ||
 				languageID != other.languageID)
-				{  
+				{
 				changeFlags = ChangeFlags.All;
-				return DatabaseCompareResult.Different;  
+				return DatabaseCompareResult.Different;
 				}
-				
+
 			if (tagIDs == null || tagIDs.IsEmpty)
 				{
 				if (other.tagIDs != null && other.tagIDs.IsEmpty == false)
-					{  
+					{
 					changeFlags = ChangeFlags.All;
-					return DatabaseCompareResult.Different;  
+					return DatabaseCompareResult.Different;
 					}
 				}
 			else if (other.tagIDs == null || other.tagIDs.IsEmpty || tagIDs != other.tagIDs)
 				{
-				changeFlags = ChangeFlags.All;  
-				return DatabaseCompareResult.Different;  
+				changeFlags = ChangeFlags.All;
+				return DatabaseCompareResult.Different;
 				}
 
 
 			// Now we're either Same or Similar.  We want to collect exactly what's different for Similar.
 			changeFlags = 0;
 
-			// DEPENDENCY: CodeDB.Accessor.UpdateTopic() must update all fields that are relevant here.  If this function changes 
+			// DEPENDENCY: CodeDB.Accessor.UpdateTopic() must update all fields that are relevant here.  If this function changes
 			// that one must change as well.
 
 			if (summary != other.summary)
@@ -376,7 +376,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 
 			if (tagIDs == null)
 				{  tagIDs = new IDObjects.NumberSet();  }
-				
+
 			tagIDs.Add(tagID);
 			}
 
@@ -409,7 +409,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 
 			if (tagIDs == null)
 				{  return false;  }
-				
+
 			return tagIDs.Contains(tagID);
 			}
 
@@ -432,50 +432,50 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		// Group: Database Properties
 		// These properties map directly to database fields with minimal processing.
 		// __________________________________________________________________________
-		
-			
+
+
 		/* Property: TopicID
 		 * The topic's ID number, or zero if it hasn't been set.
 		 */
 		public int TopicID
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.TopicID) != 0)
 					{  throw new InvalidOperationException("Tried to access TopicID when that field was ignored.");  }
 				#endif
 
-				return topicID;  
+				return topicID;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.TopicID) != 0)
 					{  throw new InvalidOperationException("Tried to access TopicID when that field was ignored.");  }
 				#endif
 
-				topicID = value;  
+				topicID = value;
 				}
 			}
-			
-			
+
+
 		/* Property: Title
 		 * The title of the topic, or null if it hasn't been set.
 		 */
 		public string Title
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.Title) != 0)
 					{  throw new InvalidOperationException("Tried to access Title when that field was ignored.");  }
 				#endif
 
-				return title;  
+				return title;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.Title) != 0)
 					{  throw new InvalidOperationException("Tried to access Title when that field was ignored.");  }
@@ -485,24 +485,24 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 				buildFlags &= ~BuildFlags.TitleParameters;
 				}
 			}
-			
-			
+
+
 		/* Property: Body
 		 * The body of the topic's comment in <NDMarkup>, or null if it hasn't been set.
 		 */
 		public string Body
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.Body) != 0)
 					{  throw new InvalidOperationException("Tried to access Body when that field was ignored.");  }
 				#endif
 
-				return body;  
+				return body;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.Body) != 0)
 					{  throw new InvalidOperationException("Tried to access Body when that field was ignored.");  }
@@ -525,7 +525,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		public int BodyLength
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.BodyLength) != 0)
 					{  throw new InvalidOperationException("Tried to access BodyLength when that field was ignored.");  }
@@ -534,7 +534,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 				return bodyLength;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.BodyLength) != 0)
 					{  throw new InvalidOperationException("Tried to access BodyLength when that field was ignored.");  }
@@ -553,22 +553,22 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		public string Summary
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.Summary) != 0)
 					{  throw new InvalidOperationException("Tried to access Summary when that field was ignored.");  }
 				#endif
 
-				return summary;  
+				return summary;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.Summary) != 0)
 					{  throw new InvalidOperationException("Tried to access Summary when that field was ignored.");  }
 				#endif
 
-				summary = value;  
+				summary = value;
 				}
 			}
 
@@ -579,51 +579,51 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		public string Prototype
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.Prototype) != 0)
 					{  throw new InvalidOperationException("Tried to access Prototype when that field was ignored.");  }
 				#endif
 
-				return prototype;  
+				return prototype;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.Prototype) != 0)
 					{  throw new InvalidOperationException("Tried to access Prototype when that field was ignored.");  }
 				#endif
 
-				prototype = value;  
+				prototype = value;
 				parsedPrototype = null;
 				parsedClassPrototype = null;
 				buildFlags &= ~(BuildFlags.PrototypeParameters | BuildFlags.ParsedPrototype | BuildFlags.ParsedClassPrototype);
 				}
 			}
-			
-			
+
+
 		/* Property: Symbol
 		 * The fully resolved symbol of the topic, or null if it hasn't been set.
 		 */
 		public SymbolString Symbol
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.Symbol) != 0)
 					{  throw new InvalidOperationException("Tried to access Symbol when that field was ignored.");  }
 				#endif
 
-				return symbol;  
+				return symbol;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.Symbol) != 0)
 					{  throw new InvalidOperationException("Tried to access Symbol when that field was ignored.");  }
 				#endif
 
-				symbol = value;  
+				symbol = value;
 				}
 			}
 
@@ -636,7 +636,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		public int SymbolDefinitionNumber
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.SymbolDefinitionNumber) != 0)
 					{  throw new InvalidOperationException("Tried to access SymbolDefinitionNumber when that field was ignored.");  }
@@ -645,13 +645,13 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 				return symbolDefinitionNumber;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.SymbolDefinitionNumber) != 0)
 					{  throw new InvalidOperationException("Tried to access SymbolDefinitionNumber when that field was ignored.");  }
 				#endif
 
-				symbolDefinitionNumber = value;  
+				symbolDefinitionNumber = value;
 				}
 			}
 
@@ -662,7 +662,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		public ClassString ClassString
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.ClassString) != 0)
 					{  throw new InvalidOperationException("Tried to access ClassString when that field was ignored.");  }
@@ -671,13 +671,13 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 				return classString;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.ClassString) != 0)
 					{  throw new InvalidOperationException("Tried to access ClassString when that field was ignored.");  }
 				#endif
 
-				classString = value;  
+				classString = value;
 				}
 			}
 
@@ -688,7 +688,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		public int ClassID
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.ClassID) != 0)
 					{  throw new InvalidOperationException("Tried to access ClassID when that field was ignored.");  }
@@ -697,13 +697,13 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 				return classID;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.ClassID) != 0)
 					{  throw new InvalidOperationException("Tried to access ClassID when that field was ignored.");  }
 				#endif
 
-				classID = value;  
+				classID = value;
 				}
 			}
 
@@ -719,14 +719,14 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 
 
 		/* Property: IsList
-		 * 
+		 *
 		 * Whether this is a list topic used to document multiple elements.  This will not be set for enums, though it would be set
 		 * for a list of enums.
 		 */
 		public bool IsList
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.IsList) != 0)
 					{  throw new InvalidOperationException("Tried to access IsList when that field was ignored.");  }
@@ -735,7 +735,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 				return isList;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.IsList) != 0)
 					{  throw new InvalidOperationException("Tried to access IsList when that field was ignored.");  }
@@ -747,15 +747,15 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 
 
 		/* Property: IsEmbedded
-		 * Whether this topic is embedded in a prior topic.  This is used for members of list and enum topics.  Entries that appear in 
-		 * definition lists within these topics will get their own <Topic> objects to allow for linking, but they will not appear in the 
+		 * Whether this topic is embedded in a prior topic.  This is used for members of list and enum topics.  Entries that appear in
+		 * definition lists within these topics will get their own <Topic> objects to allow for linking, but they will not appear in the
 		 * output because they are already covered by the parent.  Embedded topics will always come after their parent
 		 * in a list of topics, so the last non-embedded topic is the parent.
 		 */
 		public bool IsEmbedded
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.IsEmbedded) != 0)
 					{  throw new InvalidOperationException("Tried to access IsEmbedded when that field was ignored.");  }
@@ -764,7 +764,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 				return isEmbedded;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.IsEmbedded) != 0)
 					{  throw new InvalidOperationException("Tried to access IsEmbedded when that field was ignored.");  }
@@ -781,26 +781,26 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		public int CommentTypeID
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.CommentTypeID) != 0)
 					{  throw new InvalidOperationException("Tried to access CommentTypeID when that field was ignored.");  }
 				#endif
 
-				return commentTypeID;  
+				return commentTypeID;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.CommentTypeID) != 0)
 					{  throw new InvalidOperationException("Tried to access CommentTypeID when that field was ignored.");  }
 				#endif
 
-				commentTypeID = value;  
+				commentTypeID = value;
 				}
 			}
-			
-			
+
+
 		/* Property: DeclaredAccessLevel
 		 * The declared access level of the topic, or <Languages.AccessLevel.Unknown> if it isn't known or hasn't been set.
 		 * For a public member of an internal class, this would be public.
@@ -808,26 +808,26 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		public Languages.AccessLevel DeclaredAccessLevel
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.DeclaredAccessLevel) != 0)
 					{  throw new InvalidOperationException("Tried to access DeclaredAccessLevel when that field was ignored.");  }
 				#endif
 
-				return declaredAccessLevel;  
+				return declaredAccessLevel;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.DeclaredAccessLevel) != 0)
 					{  throw new InvalidOperationException("Tried to access DeclaredAccessLevel when that field was ignored.");  }
 				#endif
 
-				declaredAccessLevel = value;  
+				declaredAccessLevel = value;
 				}
 			}
-			
-			
+
+
 		/* Property: EffectiveAccessLevel
 		 * The effective access level of the topic, or <Languages.AccessLevel.Unknown> if it isn't known or hasn't been set.  For a
 		 * public member of an internal class, this would be internal.
@@ -835,39 +835,39 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		public Languages.AccessLevel EffectiveAccessLevel
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.EffectiveAccessLevel) != 0)
 					{  throw new InvalidOperationException("Tried to access EffectiveAccessLevel when that field was ignored.");  }
 				#endif
 
-				return effectiveAccessLevel;  
+				return effectiveAccessLevel;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.EffectiveAccessLevel) != 0)
 					{  throw new InvalidOperationException("Tried to access EffectiveAccessLevel when that field was ignored.");  }
 				#endif
 
-				effectiveAccessLevel = value;  
+				effectiveAccessLevel = value;
 				}
 			}
-			
-			
+
+
 		/* Property: TagIDs
 		 * An <IDObjects.NumberSet> containing all the tag IDs applied to this topic, or null if none.
 		 */
 		public IDObjects.NumberSet TagIDs
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.Tags) != 0)
 					{  throw new InvalidOperationException("Tried to access TagString when tags were ignored.");  }
 				#endif
 
-				return tagIDs;  
+				return tagIDs;
 				}
 			}
 
@@ -903,7 +903,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 					{  tagIDs.SetTo(value);  }
 				}
 			}
-			
+
 
 		/* Property: FileID
 		 * The ID number of the source file this topic appears in, or zero if it hasn't been set.
@@ -911,22 +911,22 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		public int FileID
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.FileID) != 0)
 					{  throw new InvalidOperationException("Tried to access FileID when that field was ignored.");  }
 				#endif
 
-				return fileID;  
+				return fileID;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.FileID) != 0)
 					{  throw new InvalidOperationException("Tried to access FileID when that field was ignored.");  }
 				#endif
 
-				fileID = value;  
+				fileID = value;
 				}
 			}
 
@@ -939,7 +939,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		public int FilePosition
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.FilePosition) != 0)
 					{  throw new InvalidOperationException("Tried to access FilePosition when that field was ignored.");  }
@@ -948,17 +948,17 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 				return filePosition;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.FilePosition) != 0)
 					{  throw new InvalidOperationException("Tried to access FilePosition when that field was ignored.");  }
 				#endif
 
-				filePosition = value;  
+				filePosition = value;
 				}
 			}
-						
-			
+
+
 		/* Property: CommentLineNumber
 		 * The line number the topic's comment begins on, or zero if it hasn't been set yet or the topic doesn't have a comment.
 		 */
@@ -974,19 +974,19 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 				return commentLineNumber;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.CommentLineNumber) != 0)
 					{  throw new InvalidOperationException("Tried to access CommentLineNumber when that field was ignored.");  }
 				#endif
 
-				commentLineNumber = value;  
+				commentLineNumber = value;
 				}
 			}
-			
-			
+
+
 		/* Property: CodeLineNumber
-		 * The line number the topic's code element begins on, or zero if it hasn't been set yet or the topic doesn't have a code 
+		 * The line number the topic's code element begins on, or zero if it hasn't been set yet or the topic doesn't have a code
 		 * element.
 		 */
 		public int CodeLineNumber
@@ -1001,39 +1001,39 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 				return codeLineNumber;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.CodeLineNumber) != 0)
 					{  throw new InvalidOperationException("Tried to access CodeLineNumber when that field was ignored.");  }
 				#endif
 
-				codeLineNumber = value;  
+				codeLineNumber = value;
 				}
 			}
-			
-			
+
+
 		/* Property: LanguageID
 		 * The ID number of the language of this topic, or zero if it hasn't been set.
 		 */
 		public int LanguageID
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.LanguageID) != 0)
 					{  throw new InvalidOperationException("Tried to access LanguageID when that field was ignored.");  }
 				#endif
 
-				return languageID;  
+				return languageID;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.LanguageID) != 0)
 					{  throw new InvalidOperationException("Tried to access LanguageID when that field was ignored.");  }
 				#endif
 
-				languageID = value;  
+				languageID = value;
 				}
 			}
 
@@ -1044,22 +1044,22 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		public ContextString PrototypeContext
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.PrototypeContext) != 0)
 					{  throw new InvalidOperationException("Tried to access PrototypeContext when that field was ignored.");  }
 				#endif
 
-				return prototypeContext;  
+				return prototypeContext;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.PrototypeContext) != 0)
 					{  throw new InvalidOperationException("Tried to access PrototypeContext when that field was ignored.");  }
 				#endif
 
-				prototypeContext = value;  
+				prototypeContext = value;
 				}
 			}
 
@@ -1070,22 +1070,22 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		public int PrototypeContextID
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.PrototypeContextID) != 0)
 					{  throw new InvalidOperationException("Tried to access PrototypeContextID when that field was ignored.");  }
 				#endif
 
-				return prototypeContextID;  
+				return prototypeContextID;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.PrototypeContextID) != 0)
 					{  throw new InvalidOperationException("Tried to access PrototypeContextID when that field was ignored.");  }
 				#endif
 
-				prototypeContextID = value;  
+				prototypeContextID = value;
 				}
 			}
 
@@ -1107,48 +1107,48 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		public ContextString BodyContext
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.BodyContext) != 0)
 					{  throw new InvalidOperationException("Tried to access BodyContext when that field was ignored.");  }
 				#endif
 
-				return bodyContext;  
+				return bodyContext;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.BodyContext) != 0)
 					{  throw new InvalidOperationException("Tried to access BodyContext when that field was ignored.");  }
 				#endif
 
-				bodyContext = value;  
+				bodyContext = value;
 				}
 			}
-			
-			
+
+
 		/* Property: BodyContextID
 		 * The ID of <BodyContext>, or zero if <BodyContext> is null or its ID is unknown.
 		 */
 		public int BodyContextID
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.BodyContextID) != 0)
 					{  throw new InvalidOperationException("Tried to access BodyContextID when that field was ignored.");  }
 				#endif
 
-				return bodyContextID;  
+				return bodyContextID;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.BodyContextID) != 0)
 					{  throw new InvalidOperationException("Tried to access BodyContextID when that field was ignored.");  }
 				#endif
 
-				bodyContextID = value;  
+				bodyContextID = value;
 				}
 			}
 
@@ -1164,11 +1164,11 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 			}
 
 
-			
+
 		// Group: Temporary Properties
 		// These properties aid in processing but are not stored in the database.
 		// __________________________________________________________________________
-		
+
 
 		/* Property: CommentTypes
 		 * The <CommentTypes.Manager> associated with this topic.
@@ -1191,14 +1191,14 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 
 
 		/* Property: IgnoredFields
-		 * 
+		 *
 		 * When querying topics from the database, not all fields may be needed in all situations.  The database
 		 * may accept <IgnoreFields> flags to skip retrieving parts of them.  If that's done, the flags should also
 		 * be set here so that in debug builds an exception will be thrown if you try to access those properties.
-		 * 
+		 *
 		 * IgnoredFields defaults to <IgnoreFields.None> so that topics created by parsing don't have to worry
 		 * about them.
-		 * 
+		 *
 		 */
 		public IgnoreFields IgnoredFields
 			{
@@ -1208,7 +1208,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 				{  ignoredFields = value;  }
 			}
 
-					
+
 		/* Property: ParsedPrototype
 		 * If <Prototype> is not null, this will be it in <ParsedPrototype> form.
 		 */
@@ -1222,7 +1222,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 				#endif
 
 				if ((buildFlags & BuildFlags.ParsedPrototype) == 0)
-					{  
+					{
 					if (prototype == null)
 						{  parsedPrototype = null;  }
 					else
@@ -1237,7 +1237,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 
 
 		/* Property: ParsedClassPrototype
-		 * If <Prototype> is not null and the comment type is part of the class hierarchy, this will be the prototype in <ParsedClassPrototype> 
+		 * If <Prototype> is not null and the comment type is part of the class hierarchy, this will be the prototype in <ParsedClassPrototype>
 		 * form.
 		 */
 		public ParsedClassPrototype ParsedClassPrototype
@@ -1250,7 +1250,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 				#endif
 
 				if ((buildFlags & BuildFlags.ParsedClassPrototype) == 0)
-					{  
+					{
 					if (prototype == null)
 						{  parsedClassPrototype = null;  }
 					else
@@ -1280,8 +1280,8 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 				return (ParameterString.GetParametersIndex(title) != -1);
 				}
 			}
-			
-			
+
+
 		/* Property: TitleParameters
 		 * The parameters found in the title, as opposed to the prototype, or null if none.
 		 */
@@ -1309,8 +1309,8 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 				return titleParameters;
 				}
 			}
-			
-			
+
+
 		/* Property: PrototypeParameters
 		 * The parameters found in the prototype, or null if none.
 		 */
@@ -1404,13 +1404,13 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 				return (commentType.InHierarchy && isList == false);
 				}
 			}
-			
-			
+
+
 
 		// Group: Variables
 		// __________________________________________________________________________
-		
-		
+
+
 		/* var: manager
 		 * The <CommentTypes.Manager> associated with this topic.
 		 */
@@ -1420,12 +1420,12 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		 * The topic's ID number, or zero if not specified.
 		 */
 		protected int topicID;
-		
+
 		/* var: title
 		 * The title of the comment, or null if not specified.
 		 */
 		protected string title;
-		
+
 		/* var: body
 		 * The body of the comment, or null if not specified.
 		 */
@@ -1457,7 +1457,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		 * or this isn't appropriate for the comment type.
 		 */
 		protected ParsedClassPrototype parsedClassPrototype;
-		
+
 		/* var: symbol
 		 * The topic's fully resolved symbol, or null if not specified.
 		 */
@@ -1487,8 +1487,8 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		protected bool isList;
 
 		/* var: isEmbedded
-		 * Whether this topic is embedded in a prior topic.  This is used for entries in lists and enums.  Entries that appear in 
-		 * definition lists within these topics will get their own <Topic> objects to allow for linking, but they will not appear in 
+		 * Whether this topic is embedded in a prior topic.  This is used for entries in lists and enums.  Entries that appear in
+		 * definition lists within these topics will get their own <Topic> objects to allow for linking, but they will not appear in
 		 * the output because they are already covered by the parent.  Embedded topics will always come after their parent
 		 * in a list of topics, so the last non-embedded topic is the parent.
 		 */
@@ -1508,7 +1508,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		 * The ID number of the comment's type, or zero if not specified.
 		 */
 		protected int commentTypeID;
-		
+
 		/* var: declaredAccessLevel
 		 * The declared access level of the topic.  For a public member of an internal class, this would be public.
 		 */
@@ -1518,12 +1518,12 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		 * The effective access level of the topic.  For a public member of an internal class, this would be internal.
 		 */
 		protected Languages.AccessLevel effectiveAccessLevel;
-		
+
 		/* var: tagIDs
 		 * A set of the tags applied to this topic.  May or may not be null if there are none.
 		 */
 		protected IDObjects.NumberSet tagIDs;
-				
+
 		/* var: fileID
 		 * The ID of the source file this topic appears in, or zero if not specified.
 		 */
@@ -1531,7 +1531,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 
 		/* var: filePosition
 		 * The relative position of the topic in the file, or zero if not specified.  One will be the first topic and subsequent
-		 * topics will have higher numbers.  This is done because the final position may not be determinable from 
+		 * topics will have higher numbers.  This is done because the final position may not be determinable from
 		 * <commentLineNumber> and <codeLineNumber>.
 		 */
 		protected int filePosition;
@@ -1545,7 +1545,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		 * The line number the actual code element appears on, or zero if not specified or the topic doesn't have one.
 		 */
 		protected int codeLineNumber;
-		
+
 		/* var: languageID
 		 * The ID of the topic's language, or zero if not specified.
 		 */
@@ -1565,7 +1565,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		 * The <ContextString> that all body links should use.
 		 */
 		protected ContextString bodyContext;
-		
+
 		/* var: bodyContextID
 		 * The ID of <bodyContext>, or zero if it's null or its ID is unknown.
 		 */

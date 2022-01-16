@@ -2,15 +2,15 @@
 # Natural Docs Default Language File, English (United States)
 #
 # To create a new language file, copy this one and rename it to replace
-# "default" with the locale code in all lowercase, such as 
+# "default" with the locale code in all lowercase, such as
 # "NaturalDocs.CLI.en-us.txt".  You can also omit the extension to have it apply
 # to all locales in that language, such as "NaturalDocs.CLI.en.txt".  They
 # inherit from each other, so anything not found in NaturalDocs.CLI.en-us.txt
-# will be taken from NaturalDocs.CLI.en.txt, and if it's not in there, from 
+# will be taken from NaturalDocs.CLI.en.txt, and if it's not in there, from
 # NaturalDocs.CLI.default.txt.
 #
 
-# This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+# This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 # Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 # Refer to License.txt for the complete details
 
@@ -112,7 +112,7 @@ Syntax:
 Examples:
 
     NaturalDocs C:\My Project\Natural Docs Config
-    
+
     NaturalDocs -i /project/src
                 -p /project/ndconfig
                 -o html /project/doc
@@ -261,4 +261,3 @@ Crash.ReportAt(file).multiline {{{
 A crash report has been generated at {0}.
 Please include this file when asking for help at naturaldocs.org.
 }}}
-

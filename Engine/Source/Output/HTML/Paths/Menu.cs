@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Paths.Menu
  * ____________________________________________________________________________
- * 
+ *
  * Path functions relating to menu data in HTML output.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -22,11 +22,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 		{
 
 		/* Function: FileMenuOutputFile
-		 * 
+		 *
 		 * Returns the file name of the JavaScript menu data file with the passed number.
-		 * 
+		 *
 		 * Examples:
-		 * 
+		 *
 		 *		targetOutputFolder - C:\Project\Documentation\menu\files.js
 		 *		targetOutputFolder + number - C:\Project\Documentation\menu\files3.js
 		 *		targetOutputFolder + number + fileNameOnly - files3.js
@@ -38,11 +38,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 
 
 		/* Function: HierarchyMenuOutputFile
-		 * 
+		 *
 		 * Returns the file name of the JavaScript menu data file for the passed hierarchy and number.
-		 * 
+		 *
 		 * Examples:
-		 * 
+		 *
 		 *		targetOutputFolder + hierarchy - C:\Project\Documentation\menu\classes.js
 		 *		targetOutputFolder + hierarchy + number - C:\Project\Documentation\menu\classes3.js
 		 *		targetOutputFolder + hierarchy + number + fileNameOnly - classes3.js
@@ -54,13 +54,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 
 
 		/* Function: MenuOutputFile
-		 * 
+		 *
 		 * Returns the file name of the JavaScript menu data file with the passed identifier and number.  Generally you should use
-		 * <FileMenuOutputFile()> and <HierarchyMenuOutputFile()> instead, but this works if you have the identifier (such as 
+		 * <FileMenuOutputFile()> and <HierarchyMenuOutputFile()> instead, but this works if you have the identifier (such as
 		 * "files" or "classes") instead.
-		 * 
+		 *
 		 * Examples:
-		 * 
+		 *
 		 *		targetOutputFolder + identifier - C:\Project\Documentation\menu\classes.js
 		 *		targetOutputFolder + identifier + number - C:\Project\Documentation\menu\classes3.js
 		 *		targetOutputFolder + identifier + number + fileNameOnly - classes3.js
@@ -87,11 +87,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 
 
 		/* Function: TabOutputFile
-		 * 
+		 *
 		 * Returns the file name of the JavaScript data file which stores the tab information.
-		 * 
+		 *
 		 * Examples:
-		 * 
+		 *
 		 *		targetOutputFolder - C:\Project\Documentation\menu\tabs.js
 		 *		targetOutputFolder + fileNameOnly - tabs.js
 		 */

@@ -1,15 +1,15 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.Manager
  * ____________________________________________________________________________
- * 
+ *
  * Multithreading: Thread Safety Notes
- * 
+ *
  *		Externally, this class is thread safe.  All locking is handled internally so you may access it from multiple threads.
  *		Internally all access is handled by <accessLock>.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -30,8 +30,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: Manager
 		 */
 		public Manager (HTML.Target target) : base (target.EngineInstance)
@@ -60,7 +60,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 					if (System.IO.File.Exists(EngineInstance.Config.WorkingDataFolder + "/SearchIndex.nd"))
 						{  System.IO.File.Delete(EngineInstance.Config.WorkingDataFolder + "/SearchIndex.nd");  }
 					}
-				catch 
+				catch
 					{  }
 				}
 			}
@@ -94,7 +94,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 			if (!hasBinaryFile)
 				{
 				// If we don't have the binary file we need to reparse all the source files to rebuild the index.  However, setting NeedToReparseAllFiles
-				// isn't enough because it will reparse those files, send them to CodeDB, and then CodeDB won't send topic updates if the underlying 
+				// isn't enough because it will reparse those files, send them to CodeDB, and then CodeDB won't send topic updates if the underlying
 				// content hasn't changed.  So fuck it, blow it all up and start over.
 				newStartupIssues |= StartupIssues.NeedToStartFresh;
 				}
@@ -137,7 +137,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 			List<string> usedPrefixes = new List<string>(prefixTopicIDs.Keys.Count);
 
 			accessLock.EnterReadLock();
-			
+
 			try
 				{
 				foreach (var prefixPair in prefixTopicIDs)
@@ -176,9 +176,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 			try
 				{
 				// Need to lookup class strings to be able to build hash paths
-				topics = accessor.GetTopicsByID(topicIDs, cancelDelegate, CodeDB.Accessor.GetTopicFlags.BodyLengthOnly | 
-																									 CodeDB.Accessor.GetTopicFlags.DontLookupContexts | 
-																									 CodeDB.Accessor.GetTopicFlags.DontIncludeSummary | 
+				topics = accessor.GetTopicsByID(topicIDs, cancelDelegate, CodeDB.Accessor.GetTopicFlags.BodyLengthOnly |
+																									 CodeDB.Accessor.GetTopicFlags.DontLookupContexts |
+																									 CodeDB.Accessor.GetTopicFlags.DontIncludeSummary |
 																									 CodeDB.Accessor.GetTopicFlags.DontIncludePrototype);
 				}
 			finally
@@ -233,8 +233,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 
 							if ( (keywordCase == 'm' && keywordEntryCase != 'm') ||
 								 (keywordCase == 'l' && keywordEntryCase == 'u') )
-								{  
-								keywordEntry.DisplayName = keyword;  
+								{
+								keywordEntry.DisplayName = keyword;
 								}
 							else if (keywordCase == 'm' && keywordEntryCase == 'm')
 								{
@@ -271,8 +271,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 
 			// If it's a code topic and it ends with a duplicate it's most likely a constructor.  Don't index it since the user almost
 			// certainly want the class and this just pollutes the results by forcing them under a keyword heading.
-			else if (commentType.IsCode && 
-					   EngineInstance.CommentTypes.InClassHierarchy(commentType) == false && 
+			else if (commentType.IsCode &&
+					   EngineInstance.CommentTypes.InClassHierarchy(commentType) == false &&
 					   topic.Symbol.EndsWithDuplicate())
 			    {  return false;  }
 
@@ -321,8 +321,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 			finally
 				{  accessLock.ExitWriteLock();  }
 			}
-			
-			
+
+
 		/* Function: AddPriorityChangeWatcher
 		 * Adds an object to be notified about changes to the index.  Ones added with this function will receive change
 		 * notifications before ones that aren't.  This can be called both before and after <Start()>.
@@ -336,8 +336,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 			finally
 				{  accessLock.ExitWriteLock();  }
 			}
-			
-			
+
+
 		/* Function: RemoveChangeWatcher
 		 * Removes a watcher so that they're no longer notified of changes to the index.  It doesn't matter which function
 		 * you used to add it with.  This can be called both before and after <Start()>.
@@ -385,7 +385,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 
 		public void OnStartPossiblyLongOperation (string operationName)
 			{  }
-		
+
 		public void OnEndPossiblyLongOperation ()
 			{  }
 
@@ -434,7 +434,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 			}
 
 
-		public void OnUpdateTopic (Engine.Topics.Topic oldTopic, Engine.Topics.Topic newTopic, Engine.Topics.Topic.ChangeFlags changeFlags, 
+		public void OnUpdateTopic (Engine.Topics.Topic oldTopic, Engine.Topics.Topic newTopic, Engine.Topics.Topic.ChangeFlags changeFlags,
 											   CodeDB.EventAccessor eventAccessor)
 			{
 			#if DEBUG
@@ -446,17 +446,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 				{  return;  }
 
 			if ((changeFlags & (Engine.Topics.Topic.ChangeFlags.Title |
-										Engine.Topics.Topic.ChangeFlags.CommentTypeID | 
+										Engine.Topics.Topic.ChangeFlags.CommentTypeID |
 										Engine.Topics.Topic.ChangeFlags.SymbolDefinitonNumber |
-										Engine.Topics.Topic.ChangeFlags.Symbol | 
-										Engine.Topics.Topic.ChangeFlags.LanguageID | 
-										Engine.Topics.Topic.ChangeFlags.FileID | 
-										Engine.Topics.Topic.ChangeFlags.EffectiveAccessLevel | 
+										Engine.Topics.Topic.ChangeFlags.Symbol |
+										Engine.Topics.Topic.ChangeFlags.LanguageID |
+										Engine.Topics.Topic.ChangeFlags.FileID |
+										Engine.Topics.Topic.ChangeFlags.EffectiveAccessLevel |
 										Engine.Topics.Topic.ChangeFlags.Class)) == 0)
 				{  return;  }
 
 
-			// We assume that if the topics are similar enough to use OnUpdateTopic() instead of OnAdd/RemoveTopic() then they'll generate the exact 
+			// We assume that if the topics are similar enough to use OnUpdateTopic() instead of OnAdd/RemoveTopic() then they'll generate the exact
 			// same keyword list, and they'll even be in the same order.  This allows for a nice optimization here, but test it in debug builds in case these
 			// assumptions are wrong in the future.
 
@@ -578,7 +578,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 		// Group: Properties
 		// __________________________________________________________________________
 
-		
+
 		/* Property: Target
 		 * The <HTML.Target> this seach index is associated with.
 		 */

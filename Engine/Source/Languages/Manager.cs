@@ -1,17 +1,17 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Languages.Manager
  * ____________________________________________________________________________
- * 
+ *
  * A module to handle <Languages.txt> and all the language parsers within Natural Docs.
- * 
- * 
+ *
+ *
  * Topic: Usage
- * 
+ *
  *		- Call <Engine.Instance.Start()> which will start this module.
- *			
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -23,11 +23,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 	{
 	public partial class Manager : Module
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: Manager
 		 */
 		public Manager (Engine.Instance engineInstance) : base (engineInstance)
@@ -66,7 +66,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			Language python = new Language("Python");
 				python.Parser = new Parsers.Python(engineInstance, python);
-			
+
 			Language ruby = new Language("Ruby");
 				ruby.Parser = new Parsers.Ruby(engineInstance, ruby);
 
@@ -90,14 +90,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			{
 			}
 
-			
+
 		/* Function: FromFileName
-		 * 
+		 *
 		 * Returns the <Language> associated with the passed file name, or null if none.
-		 * 
-		 * Note that this will *not* open files to search for things like shebang strings.  If the file name indicates a container 
+		 *
+		 * Note that this will *not* open files to search for things like shebang strings.  If the file name indicates a container
 		 * language like Shebang Script, it will return that container's language information.
-		 * 
+		 *
 		 * If the file name has no extension, it will return the language information for Shebang Script if it is defined, or null
 		 * if it is not.
 		 */
@@ -105,11 +105,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			{
 			return config.LanguageFromFileExtension(filename.Extension);
 			}
-		 
+
 		/* Function: FromFileExtension
-		 * 
+		 *
 		 * Returns the <Language> associated with the passed extension, or null if none.
-		 * 
+		 *
 		 * If you pass null or an empty string, it will return the language information for Shebang Script if it is defined, or null
 		 * if it is not.
 		 */
@@ -117,7 +117,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			{
 			return config.LanguageFromFileExtension(fileExtension);
 			}
-			
+
 		/* Function: FromShebangLine
 		 * Returns the <Language> associated with the passed shebang line, or null if none.  Pass the entire line, this function
 		 * will handle picking out the substrings.
@@ -134,7 +134,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			{
 			return config.LanguageFromName(languageName);
 			}
-			
+
 		/* Function: FromID
 		 * Returns the <Language> associated with the passed ID, or null if none.
 		 */
@@ -142,13 +142,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			{
 			return config.LanguageFromID(languageID);
 			}
-			
-			
-						
+
+
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
-	
+
+
 		/* var: config
 		 * The final configuration to use.
 		 */
@@ -161,7 +161,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		protected Language[] predefinedLanguages;
 
 
-		
+
 		// Group: Temporary Initialization Variables
 		// __________________________________________________________________________
 		//
@@ -171,29 +171,29 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* var: systemTextConfig
-		 * The <ConfigFiles.TextFile> representing the system <Languages.txt>.  This is only stored between <Start_Stage1()> 
+		 * The <ConfigFiles.TextFile> representing the system <Languages.txt>.  This is only stored between <Start_Stage1()>
 		 * and <Start_Stage2()>.  It will be null afterwards.
 		 */
 		protected ConfigFiles.TextFile systemTextConfig;
-		
+
 		/* var: projectTextConfig
 		 * The <ConfigFiles.TextFile> representing the project <Languages.txt>.  This is only stored between <Start_Stage1()>
 		 * and <Start_Stage2()>.  It will be null afterwards.
 		 */
 		protected ConfigFiles.TextFile projectTextConfig;
-		
+
 		/* var: mergedTextConfig
 		 * A <ConfigFiles.TextFile> representing the merger of <systemTextConfig> and <projectTextConfig>, sans file extensions,
-		 * aliases, and shebang strings.  This is only stored between <Start_Stage1()> and <Start_Stage2()>.  It will be null 
+		 * aliases, and shebang strings.  This is only stored between <Start_Stage1()> and <Start_Stage2()>.  It will be null
 		 * afterwards.
 		 */
 		protected ConfigFiles.TextFile mergedTextConfig;
-		
+
 		/* var: lastRunConfig
 		 * The <Config> representing the contents of <Languages.nd>.  This is only stored between <Start_Stage1()> and
 		 * <Start_Stage2()>.  It will be null afterwards.
 		 */
 		protected Config lastRunConfig;
-		
+
 		}
 	}

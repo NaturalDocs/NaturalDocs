@@ -1,20 +1,20 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles.TextFileKeywordGroup
  * ____________________________________________________________________________
- * 
+ *
  * A class encapsulating information about a group of keywords parsed from a <ConfigFiles.TextFile>.  They can represent
  * the general keywords, a group of language-specific keywords, or the ignored keywords list.
- * 
- * 
+ *
+ *
  * Multithreading: Not Thread Safe, Supports Multiple Readers
- * 
+ *
  *		This object doesn't have any locking built in, and so it is up to the class managing it to provide thread safety if needed.
  *		However, it does support multiple concurrent readers.  This means it can be used in read-only mode with no locking or
  *		in read/write mode with a ReaderWriterLock.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -31,8 +31,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: TextFileKeywordGroup
 		 */
 		public TextFileKeywordGroup (PropertyLocation propertyLocation, string languageName = null)
@@ -69,8 +69,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 
 		// Group: Properties
 		// __________________________________________________________________________
-			
-			
+
+
 		/* Property: PropertyLocation
 		 * The <PropertyLocation> where the keywords are defined.
 		 */
@@ -108,7 +108,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 			set
 				{  languageName = value;  }
 			}
-			
+
 		/* Property: KeywordDefinitions
 		 * All the keywords defined by the group, including their optional plural forms.
 		 */
@@ -118,21 +118,21 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 				{  return keywordDefinitions;  }
 			}
 
-				
-		
+
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
+
 		/* var: propertyLocation
 		 * The <PropertyLocation> where the keywords are defined.
 		 */
 		protected PropertyLocation propertyLocation;
-		
+
 		/* var: languageName
 		 * The name of the language if this is for language-specific keywords, or null if not.
 		 */
 		protected string languageName;
-		
+
 		/* var: keywordDefinitions
 		 * All the keywords defined by the group, including their optional plural forms.
 		 */

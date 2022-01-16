@@ -1,15 +1,15 @@
-﻿/* 
+﻿/*
  * Struct: CodeClear.NaturalDocs.Engine.Symbols.ContextString
  * ____________________________________________________________________________
- * 
+ *
  * A struct encapsulating a context string, which is a normalized way of representing what scope and "using"
  * statements are active at a given point.
- * 
- * The encoding uses <SeparatorChars.Level3> since it encapsulates <UsingStrings> which use 
+ *
+ * The encoding uses <SeparatorChars.Level3> since it encapsulates <UsingStrings> which use
  * <SeparatorChars.Level2>.
  */
- 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -34,8 +34,8 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Function: ContextString
 		 */
 		private ContextString (string newContextString)
@@ -43,10 +43,10 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			contextString = newContextString;
 			}
 
-			
+
 		/* Function: FromExportedString
 		 * Creates a ContextString from the passed string which originally came from another ContextString object.  This assumes
-		 * the string is already be in the proper format.  Only use this when retrieving ContextStrings that were stored as plain text 
+		 * the string is already be in the proper format.  Only use this when retrieving ContextStrings that were stored as plain text
 		 * in a database or other data file.
 		 */
 		static public ContextString FromExportedString (string exportedContextString)
@@ -56,8 +56,8 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 
 			return new ContextString(exportedContextString);
 			}
-			
-		
+
+
 		/* Function: GetUsingStatements
 		 * Returns the "using" statements as a list, or null if there are none.
 		 */
@@ -84,7 +84,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 					}
 				else
 					{
-					usingStatements.Add( UsingString.FromExportedString( 
+					usingStatements.Add( UsingString.FromExportedString(
 						contextString.Substring(separatorIndex + 1, nextSeparatorIndex - (separatorIndex + 1))
 						) );
 					separatorIndex = nextSeparatorIndex;
@@ -93,8 +93,8 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 
 			return usingStatements;
 			}
-						
-			
+
+
  		/* Function: AddUsingStatement
 		 * Adds a "using" statement to the context.  It does not remove or replace any of the existing ones.
 		 */
@@ -108,7 +108,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 
 
 		/* Function: InheritUsingStatementsFrom
-		 * Adds all the "using" statements from the passed context to this one _before_ the existing ones.  It will not check for 
+		 * Adds all the "using" statements from the passed context to this one _before_ the existing ones.  It will not check for
 		 * or remove duplicates.
 		 */
 		public void InheritUsingStatementsFrom (ContextString other)
@@ -221,11 +221,11 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			return true;
 			}
 
-		
+
 		// Group: Properties
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Property: Scope
 		 * The scope as a <SymbolString>, or null if global.
 		 */
@@ -249,7 +249,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			set
 				{
 				if (contextString == null)
-					{  
+					{
 					contextString = value;
 					return;
 					}
@@ -327,11 +327,11 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			}
 
 
-			
+
 		// Group: Operators
 		// __________________________________________________________________________
-		
-		
+
+
 		/* operator: operator string
 		 * A cast operator to covert the context to a string.
 		 */
@@ -339,7 +339,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			{
 			return context.contextString;
 			}
-						
+
 		/* Operator: operator ==
 		 */
 		public static bool operator== (ContextString a, object b)
@@ -363,7 +363,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			{
 			return contextString;
 			}
-			
+
 		/* Function: GetHashCode
 		 */
 		public override int GetHashCode ()
@@ -387,26 +387,26 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			else
 				{  return false;  }
 			}
-			
+
 		/* Function: CompareTo
 		 */
 		public int CompareTo (object other)
 			{
 			return contextString.CompareTo(other);
 			}
-		
-			
-		
+
+
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
-		
+
+
 		/* string: contextString
 		 * The context string in normalized form.  The first segment separated by <SeparatorChar> is the scope, and
 		 * each following segment is a "using" statement.
-		 * 
+		 *
 		 * - If the scope is global and there are no "using" statements, the string will be null.
-		 * - If there is a scope but no "using" statements, the string will be the the scope.  It will not be followed by a 
+		 * - If there is a scope but no "using" statements, the string will be the the scope.  It will not be followed by a
 		 *   <SeparatorChar>.
 		 * - If the scope is global and there are "using" statements, the string will be <SeparatorChar> followed by the
 		 *   "using" statements.
@@ -414,6 +414,6 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 		 *   "using" statements.
 		 */
 		private string contextString;
-	
+
 		}
 	}

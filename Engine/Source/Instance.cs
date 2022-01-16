@@ -1,71 +1,71 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Instance
  * ____________________________________________________________________________
- * 
+ *
  * A class for managing the overall Natural Docs engine.
- * 
- * 
+ *
+ *
  * Usage:
- * 
+ *
  *		- Create an instance object.
- *		
+ *
  *		- Create a <Config.ProjectConfig> object for the command line parameters.  At minimum you must set the project
  *		  config folder.
- *		
+ *
  *		- Call <Start()>.  If it succeeds you can use the engine instance.  If it fails and you want to try again instead of
  *		  exiting the program, you must call <Dispose()> and create a new object.  You cannot reuse it.
- *		  
+ *
  *		- Use the engine.
- *		
+ *
  *		- Call <Dispose()> passing to it whether you're closing because of the normal event or because of an error.
- *		
- * 
+ *
+ *
  * Topic: Module Start Order
- * 
+ *
  *		It's critical for module code to understand its place in the initialization order so it doesn't call anything later than itself in
  *		its Start() function.  This also serves to document exactly why the order is the way it is.
- *		
- *		- <Config.Manager.Start_Stage1()> is first because almost everything depends on it, such as for its config and working 
+ *
+ *		- <Config.Manager.Start_Stage1()> is first because almost everything depends on it, such as for its config and working
  *		  data folder properties or for its flag to rebuild everything.
- *		  
+ *
  *		- <Languages.Manager.Start_Stage1()> is next.
- *		  
+ *
  *		- <Hierarchies.Manager> is next because it may copy some case-sensitivity settings from <Languages.Manager>.
- *		  
+ *
  *		- <CommentTypes.Manager.Start_Stage1()> is next because it depends on <Hierarchies.Manager> to interpret settings
  *		  like "Flags: Class Hierarchy".
- *		
+ *
  *		- <Languages.Manager.Start_Stage2()> and <CommentTypes.Manager.Start_Stage2()> follow because they depend on
  *		  each other's Stage1 functions for things like "[Language Name] Keywords" and "[Comment Type Name] Prototype Enders".
- *		  
+ *
  *		- <Config.Manager.Start_Stage2()> is next because it depends on <Languages.Manager> to check file extensions if a
  *		  source file is used as a custom home page.
- *		  
+ *
  *		- <Comments.Manager> is next though it only needs <Config.Manager> and <CommentTypes.Manager>.
- *		
+ *
  *		- <Links.Manager> is next because it needs to be added as a <CodeDB.Manager> and <Files.Manager> watcher.
- *		
+ *
  *		- <Styles.Manager> is next because it adds a FileSource to <Files.Manager> for dealing with style files.
- *		
+ *
  *		- <Output.Manager> is next because <Output.Targets> may need to be added as <Files.Manager> and <CodeDB.Manager>
- *		  watchers.  They also need to load their styles from <Styles.Manager>.  They can also set the rebuild/reparse flags that 
+ *		  watchers.  They also need to load their styles from <Styles.Manager>.  They can also set the rebuild/reparse flags that
  *		  <CodeDB.Manager> and <Styles.Manager> need to interpret.
- *		   
+ *
  *		- <CodeDB.Manager> needs to be almost last so it can handle anything that can set <Config.Manager.ReparseEverything>
  *		   to true, though it only needs <Config.Manager>.
- *		   
+ *
  *		- <Files.Manager> is last because it must be after anything that can set <Config.Manager.ReparseEverything> to true.
  *		   It also depends on <Languages.Manager> to know whether a file's extension is for a supported language or not.
- *		
- * 
+ *
+ *
  * File: GracefulExit.nd
- * 
- *		This is a file with no particular content.  It is created when the engine instance starts and deleted if it exits gracefully.  
- *		Therefore the existence of this file on startup means the engine did not exit gracefully last time, possibly because of a 
+ *
+ *		This is a file with no particular content.  It is created when the engine instance starts and deleted if it exits gracefully.
+ *		Therefore the existence of this file on startup means the engine did not exit gracefully last time, possibly because of a
  *		crash or exception.  This automatically causes <Config.Manager.RebuildEverything> to be set the next time it starts.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -79,28 +79,28 @@ namespace CodeClear.NaturalDocs.Engine
 	{
 	public class Instance : IDisposable
 		{
-		
+
 		// Group: Functions
 		// ________________________________________________________________________
-		
-		
+
+
 		/* Constructor: Instance
-		 * 
+		 *
 		 * Creates the instance so you can access modules like <Config>.  The modules will not be started by this
 		 * function.
-		 * 
+		 *
 		 * You can optionally pass your own module objects in which allows you to populate the engine with derived classes.
 		 * Any left as null will have the default classes created instead.
 		 */
-		public Instance (Config.Manager configManager = null, 
+		public Instance (Config.Manager configManager = null,
 								Hierarchies.Manager hierarchiesManager = null,
-								CommentTypes.Manager commentTypesManager = null, 
-								Languages.Manager languagesManager = null, 
-								Comments.Manager commentsManager = null, 
-								Links.Manager linksManager = null, 
+								CommentTypes.Manager commentTypesManager = null,
+								Languages.Manager languagesManager = null,
+								Comments.Manager commentsManager = null,
+								Links.Manager linksManager = null,
 								CodeDB.Manager codeDBManager = null,
-								Styles.Manager stylesManager = null, 
-								Output.Manager outputManager = null, 
+								Styles.Manager stylesManager = null,
+								Output.Manager outputManager = null,
 								Files.Manager filesManager = null)
 			{
 			startupIssues = StartupIssues.None;
@@ -117,7 +117,7 @@ namespace CodeClear.NaturalDocs.Engine
 			this.output = outputManager ?? new Output.Manager(this);
 			this.files = filesManager ?? new Files.Manager(this);
 			}
-			
+
 
 		~Instance ()
 			{
@@ -140,7 +140,7 @@ namespace CodeClear.NaturalDocs.Engine
 			Dispose(false, false);
 			}
 
-			
+
 		/* Function: Dispose
 		 * Shuts down the engine instance.  Pass to it whether it was a graceful shutdown, as opposed to closing because
 		 * of an error or exception.
@@ -150,7 +150,7 @@ namespace CodeClear.NaturalDocs.Engine
 			if (graceful && !strictRulesApply)
 				{
 				Path gracefulExitFilePath = config.WorkingDataFolder + "/GracefulExit.nd";
-				
+
 				if (System.IO.File.Exists(gracefulExitFilePath))
 					{  System.IO.File.Delete(gracefulExitFilePath);  }
 				}
@@ -174,48 +174,48 @@ namespace CodeClear.NaturalDocs.Engine
 				}
 
 			if (files != null && !strictRulesApply)
-				{  
-				files.Dispose();  
+				{
+				files.Dispose();
 				files = null;
 				}
-			
+
 			if (links != null && !strictRulesApply)
 				{
-				links.Dispose();					
+				links.Dispose();
 				links = null;
 				}
 
 			if (comments != null && !strictRulesApply)
 				{
-				comments.Dispose();					
+				comments.Dispose();
 				comments = null;
 				}
 
 			if (languages != null && !strictRulesApply)
 				{
-				languages.Dispose();					
+				languages.Dispose();
 				languages = null;
 				}
 
 			if (commentTypes != null && !strictRulesApply)
 				{
-				commentTypes.Dispose();					
+				commentTypes.Dispose();
 				commentTypes = null;
 				}
 
 			if (hierarchies != null && !strictRulesApply)
 				{
-				hierarchies.Dispose();					
+				hierarchies.Dispose();
 				hierarchies = null;
 				}
 
 			if (config != null && !strictRulesApply)
 				{
-				config.Dispose();					
+				config.Dispose();
 				config = null;
 				}
 			}
-			
+
 
 		/* Function: Start
 		 * Attempts to start the engine instance.  Returns whether it was successful, and if it wasn't, puts any errors that prevented
@@ -225,23 +225,23 @@ namespace CodeClear.NaturalDocs.Engine
 			{
 			if (config.Start_Stage1(errors, commandLineConfig) == false)
 				{  return false;  }
-				
-				
+
+
 			Path gracefulExitFilePath = config.WorkingDataFolder + "/GracefulExit.nd";
-			
+
 			if (System.IO.File.Exists(gracefulExitFilePath))
-				{  
+				{
 				startupIssues |= StartupIssues.NeedToStartFresh;
 				}
 			else
-				{			
+				{
 				BinaryFile gracefulExitFile = new BinaryFile();
 				gracefulExitFile.OpenForWriting(gracefulExitFilePath);
 				gracefulExitFile.WriteByte(0);
 				gracefulExitFile.Close();
 				}
-				
-				
+
+
 			return (
 				languages.Start_Stage1(errors) &&
 				hierarchies.Start(errors) &&
@@ -257,33 +257,33 @@ namespace CodeClear.NaturalDocs.Engine
 				files.Start(errors)
 				);
 			}
-			
-			
+
+
 		/* Function: Cleanup
-		 * 
+		 *
 		 * Assuming everything is up to date, has the engine modules clean up their internal data.  A delegate can be passed
 		 * to cancel the process early.
-		 * 
+		 *
 		 * It is important to run this process, but it is also important that it only be run when all other operations are complete.
-		 * For example, one of the things it does is remove entries and IDs of deleted files.  This can't be done immediately 
-		 * because output targets may not have handled the deletions yet and rely on that entry.  Once everything is up to date 
+		 * For example, one of the things it does is remove entries and IDs of deleted files.  This can't be done immediately
+		 * because output targets may not have handled the deletions yet and rely on that entry.  Once everything is up to date
 		 * however you can assume nothing else needs them.
 		 */
 		public void Cleanup (CancelDelegate cancelDelegate)
 			{
 			if (cancelDelegate())
 				{  return;  }
-				
+
 			files.Cleanup(cancelDelegate);
-			
+
 			if (cancelDelegate())
 				{  return;  }
-				
+
 			output.Cleanup(cancelDelegate);
-			
+
 			if (cancelDelegate())
 				{  return;  }
-				
+
 			codeDB.Cleanup(cancelDelegate);
 			}
 
@@ -291,8 +291,8 @@ namespace CodeClear.NaturalDocs.Engine
 
 		// Group: Crash Handling
 		// __________________________________________________________________________
-			
-			
+
+
 		/* Function: GetCrashInformation
 		 * Builds crash information for the passed exception.  It is safe to use even though the program is in an unstable state.
 		 */
@@ -344,7 +344,7 @@ namespace CodeClear.NaturalDocs.Engine
 				if (SystemInfo.MonoVersionTooOld)
 					{
 					output.AppendLine();
-					output.AppendLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.OutdatedMono(currentVersion, minimumVersion)", 
+					output.AppendLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.OutdatedMono(currentVersion, minimumVersion)",
 													"You appear to be using Mono {0}, which is very outdated.  This has been known to cause Natural Docs to crash.  Please update it to version {1} or higher.",
 													monoVersion, SystemInfo.MinimumMonoVersion) );
 					}
@@ -363,7 +363,7 @@ namespace CodeClear.NaturalDocs.Engine
 					foreach (var task in tasks)
 						{  output.AppendLine( "   " + task );  }
 					}
-				
+
 
 				// Natural Docs query
 
@@ -383,7 +383,7 @@ namespace CodeClear.NaturalDocs.Engine
 					if (queryValues != null && queryValues.Count > 0)
 						{
 						output.AppendLine();
-						output.AppendLine( "   " + Locale.SafeGet("NaturalDocs.Engine", "CrashReport.Values", "Values") + ' ' + 
+						output.AppendLine( "   " + Locale.SafeGet("NaturalDocs.Engine", "CrashReport.Values", "Values") + ' ' +
 													 string.Join(", ", queryValues.ToArray()) );
 						}
 					}
@@ -398,7 +398,7 @@ namespace CodeClear.NaturalDocs.Engine
 					output.AppendLine();
 					output.AppendLine( "   " + inner.Message );
 					output.AppendLine( "   (" + inner.GetType() + ")" );
-					
+
 					if (inner.HasNaturalDocsTask())
 						{
 						output.AppendLine();
@@ -427,7 +427,7 @@ namespace CodeClear.NaturalDocs.Engine
 						if (queryValues != null && queryValues.Count > 0)
 							{
 							output.AppendLine();
-							output.AppendLine( "   " + Locale.SafeGet("NaturalDocs.Engine", "CrashReport.Values", "Values") + ' ' + 
+							output.AppendLine( "   " + Locale.SafeGet("NaturalDocs.Engine", "CrashReport.Values", "Values") + ' ' +
 														 string.Join(", ", queryValues.ToArray()) );
 							}
 						}
@@ -437,7 +437,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 
 				// Stack trace
-					
+
 				output.AppendLine();
 				output.AppendLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.StackTrace", "Stack Trace") + ':' );
 				output.AppendLine();
@@ -473,7 +473,7 @@ namespace CodeClear.NaturalDocs.Engine
 						{  output.AppendLine( "   Couldn't get Mono version");  }
 					}
 				else
-					{  
+					{
 					if (dotNETVersion != null)
 						{  output.AppendLine("   .NET " + dotNETVersion);  }
 					else
@@ -485,19 +485,19 @@ namespace CodeClear.NaturalDocs.Engine
 				else
 					{  output.AppendLine ( "   Couldn't get SQLite version" );  }
 				}
-				
+
 			// If the information building crashes out at any time, that's fine.  We'll just return what we managed to build before that happened.
 			catch
 				{  }
-				
+
 			return output.ToString();
 			}
-			
+
 
 		/* Function: BuildCrashReport
-		 * 
+		 *
 		 * Attempts to build a crash report for the passed exception.  If it succeeds it will return the path to the file,
-		 * otherwise it will return null.  It is safe to use even though the program is in an unstable state.  It will 
+		 * otherwise it will return null.  It is safe to use even though the program is in an unstable state.  It will
 		 * simply eat any exceptions it generates trying to create the report and return null instead.  If it's not able
 		 * to generate the report you should display <GetCrashInformation()> instead.
 		 */
@@ -505,33 +505,33 @@ namespace CodeClear.NaturalDocs.Engine
 			{
 			System.IO.StreamWriter crashReport = null;
 			Path filePath = null;
-			
+
 			try
 				{
 				if (config == null || String.IsNullOrEmpty(config.ProjectConfigFolder))
 					{  return null;  }
-					
+
 				filePath = config.WorkingDataFolder + "/LastCrash.txt";
 				crashReport = System.IO.File.CreateText(filePath);
 
 				crashReport.WriteLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.GeneratedOn(date)", "Generated on {0}",
 																		 DateTime.Now ) );
-				crashReport.WriteLine();				
+				crashReport.WriteLine();
 				crashReport.Write( GetCrashInformation(e) );
 				}
-				
+
 			catch
 				{  return null;  }
-				
+
 			finally
 				{
 				if (crashReport != null)
 					{  crashReport.Close();  }
 				}
-				
+
 			return filePath;
 			}
-			
+
 
 
 		// Group: Startup Tracking Functions
@@ -548,9 +548,9 @@ namespace CodeClear.NaturalDocs.Engine
 
 
 		/* Function: StartPossiblyLongOperation
-		 * Called *by module code only* to signify that a possibly long operation is about to begin.  The operation name is arbitrary but 
+		 * Called *by module code only* to signify that a possibly long operation is about to begin.  The operation name is arbitrary but
 		 * should be documented in <IStartupWatcher.OnStartPossiblyLongOperation>.  Every call should be matched with a
-		 * <EndPossiblyLongOperation()> call, and it is up to the module code to make sure the calls are properly paired and 
+		 * <EndPossiblyLongOperation()> call, and it is up to the module code to make sure the calls are properly paired and
 		 * non-overlapping.
 		 */
 		public void StartPossiblyLongOperation (string operationName)
@@ -572,12 +572,12 @@ namespace CodeClear.NaturalDocs.Engine
 
 
 		/* Function: AddStartupIssues
-		 * 
+		 *
 		 * Called *during engine startup only* to set one or more <StartupIssueFlags>.  These are combined with the existing
 		 * <StartupIssues> rather than replacing them, which means flags can be set but they cannot be cleared.  More than one can
-		 * be set in a single call so you can pass a combination of flags.  If any of them weren't previously set it will notify the 
+		 * be set in a single call so you can pass a combination of flags.  If any of them weren't previously set it will notify the
 		 * <IStartupWatchers> of the changes.
-		 * 
+		 *
 		 * You can pass one startup watcher to not be notified, which can be used to prevent a module from receiving its own notification.
 		 * If that notification leads to other startup issues being added it will still receive those later notifications.
 		 */
@@ -593,7 +593,7 @@ namespace CodeClear.NaturalDocs.Engine
 				this.startupIssues = combinedIssues;
 
 				foreach (var watcher in startupWatchers)
-					{  
+					{
 					if (watcher != dontNotify)
 						{  watcher.OnStartupIssues(changedIssues, combinedIssues);  }
 					}
@@ -614,19 +614,19 @@ namespace CodeClear.NaturalDocs.Engine
 
 		// Group: Constants
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constant: VersionString
 		 * The current version of the Natural Docs engine as a string.
 		 */
 		public const string VersionString = "2.2 (Release Candidate 1)";
 
-				
+
 
 		// Group: Properties
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Property: Version
 		 * The current version of the Natural Docs engine.
 		 */
@@ -655,7 +655,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 		// Group: Modules
 		// __________________________________________________________________________
-		
+
 
 		/* Property: Config
 		 * Returns the <Config.Manager> associated with this instance.
@@ -665,7 +665,7 @@ namespace CodeClear.NaturalDocs.Engine
 			get
 				{  return config;  }
 			}
-			
+
 		/* Property: Hierarchies
 		 * Returns the <Hierarchies.Manager> associated with this instance.
 		 */
@@ -674,7 +674,7 @@ namespace CodeClear.NaturalDocs.Engine
 			get
 				{  return hierarchies;  }
 			}
-			
+
 		/* Property: CommentTypes
 		 * Returns the <CommentTypes.Manager> associated with this instance.
 		 */
@@ -683,7 +683,7 @@ namespace CodeClear.NaturalDocs.Engine
 			get
 				{  return commentTypes;  }
 			}
-			
+
 		/* Property: Languages
 		 * Returns the <Languages.Manager> associated with this instance.
 		 */
@@ -692,7 +692,7 @@ namespace CodeClear.NaturalDocs.Engine
 			get
 				{  return languages;  }
 			}
-			
+
 		/* Property: Comments
 		 * Returns the <Comments.Manager> associated with this instance.
 		 */
@@ -701,7 +701,7 @@ namespace CodeClear.NaturalDocs.Engine
 			get
 				{  return comments;  }
 			}
-			
+
 		/* Property: Links
 		 * Returns the <Links.Manager> associated with this instance.
 		 */
@@ -710,7 +710,7 @@ namespace CodeClear.NaturalDocs.Engine
 			get
 				{  return links;  }
 			}
-			
+
 		/* Property: CodeDB
 		 * Returns the <CodeDB.Manager> associated with this instance.
 		 */
@@ -719,7 +719,7 @@ namespace CodeClear.NaturalDocs.Engine
 			get
 				{  return codeDB;  }
 			}
-			
+
 		/* Property: Styles
 		 * Returns the <Styles.Manager> associated with this instance.
 		 */
@@ -746,19 +746,19 @@ namespace CodeClear.NaturalDocs.Engine
 			get
 				{  return files;  }
 			}
-			
-			
-			
+
+
+
 		// Group: Variables
 		// __________________________________________________________________________
-	
+
 
 		/* var: startupIssues
-		 * 
+		 *
 		 * A set of flags that track issues that can occur during engine startup.
-		 * 
+		 *
 		 * Thread Safety:
-		 * 
+		 *
 		 *		This variable is not thread safe.  However, it should only be modified during engine initialization which is a single
 		 *		threaded process.  Afterwards it becomes read only.
 		 */
@@ -766,11 +766,11 @@ namespace CodeClear.NaturalDocs.Engine
 
 
 		/* var: startupWatchers
-		 * 
+		 *
 		 * A list of all the objects that want to observe the engine's initialization.
-		 * 
+		 *
 		 * Thread Safety:
-		 * 
+		 *
 		 *		This variable is not thread safe.  However, it should only be modified during engine initialization which is a single
 		 *		threaded process.  Afterwards it becomes read only.
 		 */

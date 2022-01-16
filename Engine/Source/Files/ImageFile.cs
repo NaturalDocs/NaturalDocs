@@ -1,11 +1,11 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Files.ImageFile
  * ____________________________________________________________________________
- * 
+ *
  * A class containing information about an image file.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -17,7 +17,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 	{
 	public class ImageFile : File
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
 
@@ -37,10 +37,10 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			{
 			SetDimensions(width, height);
 			}
-			
+
 		/* Function: CreateSnapshotOfProperties
 		 * Creates a duplicate File object that contains all the file's properties at the time this function was called.
-		 * The duplicate will not change so it can be used to compare to the original File object later to see if any 
+		 * The duplicate will not change so it can be used to compare to the original File object later to see if any
 		 * of the properties have changed.
 		 */
 		override public File CreateSnapshotOfProperties ()
@@ -93,7 +93,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			}
 
 		/* Property: Width
-		 * The image's width.  Check <DimensionsKnown> before reading.  Attempting to read while <DimensionsKnown> is 
+		 * The image's width.  Check <DimensionsKnown> before reading.  Attempting to read while <DimensionsKnown> is
 		 * false will throw an exception.
 		 */
 		public uint Width
@@ -121,16 +121,16 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				return height;
 				}
 			}
-		
-			
+
+
 		// Group: Variables
 		// __________________________________________________________________________
-			
+
 		/* var: width
 		 * The width of the image, or zero if unknown.
 		 */
 		protected uint width;
-		
+
 		/* var: height
 		 * The height of the image, or zero if unknown.
 		 */

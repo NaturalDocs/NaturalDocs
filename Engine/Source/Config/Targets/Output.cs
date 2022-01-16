@@ -1,11 +1,11 @@
-/* 
+/*
  * Class: CodeClear.NaturalDocs.Engine.Config.Targets.Output
  * ____________________________________________________________________________
- * 
+ *
  * A base class for the configuration of all output targets.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -18,11 +18,11 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 	{
 	abstract public class Output : OverridableOutputSettings
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		public Output (PropertyLocation propertyLocation) : base ()
 			{
 			this.number = 0;
@@ -58,8 +58,8 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		 * properties like those in <OverridableSettings> are ignored.
 		 */
 		public abstract bool IsSameTarget (Output other);
-			
-	
+
+
 
 		// Group: Properties
 		// __________________________________________________________________________
@@ -78,7 +78,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 			}
 
 
-					
+
 		// Group: Property Locations
 		// __________________________________________________________________________
 
@@ -108,12 +108,12 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 
 		// Group: Variables
 		// __________________________________________________________________________
-		
+
 
 		protected int number;
 
 		protected PropertyLocation propertyLocation;
 		protected PropertyLocation numberPropertyLocation;
-				
+
 		}
 	}

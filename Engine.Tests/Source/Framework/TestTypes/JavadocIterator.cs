@@ -1,23 +1,23 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes.JavadocIterator
  * ____________________________________________________________________________
- * 
+ *
  * A class to test <Engine.Comments.Components.JavadocIterator's> ability to parse Javadoc content.
- * 
+ *
  * Commands:
- * 
+ *
  *		> // text
  *		Comment.  Ignored.
- *		
+ *
  *		> Property [name] in <tag>
  *		Attempts to retrieve the named property in the HTML tag.
- *		
+ *
  *		> content
  *		Parses the content.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -46,7 +46,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 				{
 				output.AppendLine(command);
 				Match findPropertyMatch = FindPropertyRegex.Match(command);
-				
+
 				try
 					{
 					if (command == "" || command.StartsWith("//"))
@@ -63,7 +63,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 						if (iterator.Type != JavadocElementType.HTMLTag)
 							{  output.AppendLine("- Not a HTML tag");  }
 						else
-							{  
+							{
 							string value = iterator.HTMLTagProperty(propertyName);
 
 							if (value != null)

@@ -7,12 +7,12 @@ _______________________________________________________________________________
 
 	Topic: Direct Substitutions
 
-		You can perform simple substitutions in both types of files by using a syntax similar to SCSS and Less.  Declare a variable 
+		You can perform simple substitutions in both types of files by using a syntax similar to SCSS and Less.  Declare a variable
 		starting with $ or @ and set it's value with = or :.  Both assignment types work in both types of files.
 
 		> $Name1 = value1;
 		> @Name2 = value2;
-		> 
+		>
 		> $Name3: value3;
 		> @Name4: value4;
 
@@ -38,6 +38,5 @@ _______________________________________________________________________________
 		> var title = $Locale{Identifier}
 
 		This lets you include text that will be in the native language of each Natural Docs user.  The substitution will be a JavaScript
-		string that includes the quotes and any escaping necessary.  If it isn't found in the translation file, it will be replaced with a 
+		string that includes the quotes and any escaping necessary.  If it isn't found in the translation file, it will be replaced with a
 		JavaScript string representation of the identifier.  You cannot pass parameters to the identifiers with parentheses.
-	

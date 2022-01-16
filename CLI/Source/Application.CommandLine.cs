@@ -1,8 +1,8 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.CLI.Application
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -18,11 +18,11 @@ namespace CodeClear.NaturalDocs.CLI
 	{
 	public static partial class Application
 		{
-		
+
 		/* enum: ParseCommandLineResult
-		 * 
+		 *
 		 * The result returned from <ParseCommandLine()>.
-		 * 
+		 *
 		 * Run - The command line was OK and Natural Docs should run normally.
 		 * Error - There was an error on the command line.
 		 * ShowCommandLineReference - The user asked for the command line reference to be displayed.
@@ -32,15 +32,15 @@ namespace CodeClear.NaturalDocs.CLI
 		 */
 		public enum ParseCommandLineResult : byte
 			{  Run, Error, ShowCommandLineReference, ShowVersion, ShowAllVersions, ShowEncodings  };
-			
+
 
 		/* Function: ParseCommandLine
-		 * 
-		 * Parses the command line and applies the relevant settings in in <NaturalDocs.Engine.Instance's> modules.  If there were 
+		 *
+		 * Parses the command line and applies the relevant settings in in <NaturalDocs.Engine.Instance's> modules.  If there were
 		 * errors they will be placed on errorList and it will return <ParseCommandLineResult.Error>.
-		 * 
+		 *
 		 * Supported:
-		 * 
+		 *
 		 *		- -i, --input, --source
 		 *		- -o, --output
 		 *		- -p, --project, --project-config --project-configuration
@@ -65,9 +65,9 @@ namespace CodeClear.NaturalDocs.CLI
 		 *		- --dont-shrink-files
 		 *		- -h, --help
 		 *		- -?
-		 *		
+		 *
 		 * No Longer Supported:
-		 * 
+		 *
 		 *		- -cs, --char-set, --charset, --character-set, --characterset
 		 *		- -ho, --headers-only, --headersonly
 		 *		- -ag, --auto-group, --autogroup
@@ -95,7 +95,7 @@ namespace CodeClear.NaturalDocs.CLI
 			commandLine.AddAliases("--quiet", "-q");
 			commandLine.AddAliases("--version", "-v");
 			commandLine.AddAliases("--all-versions", "-vs", "--versions", "--allversions");
-			commandLine.AddAliases("--encodings", "--show-encodings", "--showencodings", 
+			commandLine.AddAliases("--encodings", "--show-encodings", "--showencodings",
 																		"--list-encodings", "--listencodings",
 																		"--show-char-set", "--show-charset", "--showcharset",
 																		"--show-char-sets", "--show-charsets", "--showcharsets",
@@ -113,17 +113,17 @@ namespace CodeClear.NaturalDocs.CLI
 			commandLine.AddAliases("--charset", "-cs", "--char-set", "--character-set", "--characterset");
 			commandLine.AddAliases("--headers-only", "-ho", "--headersonly");
 			commandLine.AddAliases("--auto-group", "-ag", "--autogroup");
-			
+
 			commandLineConfig = new ProjectConfig(PropertySource.CommandLine);
-			
+
 			string parameter, parameterAsEntered;
 			bool isFirst = true;
-				
+
 			while (commandLine.IsInBounds)
 				{
 				// If the first segment isn't a parameter, assume it's the project folder specified without -p.
 				if (isFirst && !commandLine.IsOnParameter)
-					{  
+					{
 					parameter = "--project";
 					parameterAsEntered = parameter;
 					}
@@ -141,13 +141,13 @@ namespace CodeClear.NaturalDocs.CLI
 					}
 
 
-					
+
 				// Source folders
-					
+
 				if (parameter == "--input")
 					{
 					Path folder;
-					
+
 					if (!commandLine.GetPathValue(out folder))
 						{
 						errorList.Add(
@@ -169,16 +169,16 @@ namespace CodeClear.NaturalDocs.CLI
 						commandLineConfig.InputTargets.Add(target);
 						}
 					}
-					
 
-					
+
+
 				// Output folders
-				
+
 				else if (parameter == "--output")
 					{
 					string format;
 					Path folder;
-					
+
 					if (!commandLine.GetBareWordAndPathValue(out format, out folder))
 						{
 						errorList.Add(
@@ -193,9 +193,9 @@ namespace CodeClear.NaturalDocs.CLI
 
 						if (folder.IsRelative)
 							{  folder = System.Environment.CurrentDirectory + "/" + folder;  }
-					
+
 						if (format == "html" || format == "framedhtml")
-							{  
+							{
 							var target = new Engine.Config.Targets.HTMLOutputFolder(PropertySource.CommandLine);
 
 							target.Folder = (AbsolutePath)folder;
@@ -205,7 +205,7 @@ namespace CodeClear.NaturalDocs.CLI
 							}
 						else
 							{
-							errorList.Add( 
+							errorList.Add(
 								Locale.Get("NaturalDocs.CLI", "CommandLine.UnrecognizedOutputFormat(format)", format)
 								);
 
@@ -217,11 +217,11 @@ namespace CodeClear.NaturalDocs.CLI
 
 
 				// Project configuration folder
-					
+
 				else if (parameter == "--project")
 					{
 					Path folder;
-					
+
 					if (!commandLine.GetPathValue(out folder))
 						{
 						errorList.Add(
@@ -238,29 +238,29 @@ namespace CodeClear.NaturalDocs.CLI
 						// Accept the parameter being set to Project.txt instead of the folder.
 						if (folder.NameWithoutPath.ToLower() == "project.txt")
 							{  folder = folder.ParentFolder;  }
-						
+
 						if (commandLineConfig.ProjectConfigFolderPropertyLocation.IsDefined)
 							{
-							errorList.Add( 
+							errorList.Add(
 								Locale.Get("NaturalDocs.CLI", "CommandLine.OnlyOneProjectConfigFolder")
 								);
 							}
 						else
-							{  
+							{
 							commandLineConfig.ProjectConfigFolder = (AbsolutePath)folder;
 							commandLineConfig.ProjectConfigFolderPropertyLocation = PropertySource.CommandLine;
 							}
 						}
 					}
-					
-					
+
+
 
 				// Working data folder
-					
+
 				else if (parameter == "--working-data")
 					{
 					Path folder;
-					
+
 					if (!commandLine.GetPathValue(out folder))
 						{
 						errorList.Add(
@@ -276,7 +276,7 @@ namespace CodeClear.NaturalDocs.CLI
 
 						if (commandLineConfig.WorkingDataFolderPropertyLocation.IsDefined)
 							{
-							errorList.Add( 
+							errorList.Add(
 								Locale.Get("NaturalDocs.CLI", "CommandLine.OnlyOneWorkingDataFolder")
 								);
 							}
@@ -287,15 +287,15 @@ namespace CodeClear.NaturalDocs.CLI
 							}
 						}
 					}
-					
-					
-				
+
+
+
 				// Ignored input folders
-					
+
 				else if (parameter == "--exclude-input")
 					{
 					Path folder;
-					
+
 					if (!commandLine.GetPathValue(out folder))
 						{
 						errorList.Add(
@@ -310,18 +310,18 @@ namespace CodeClear.NaturalDocs.CLI
 
 						if (folder.IsRelative)
 							{  folder = System.Environment.CurrentDirectory + "/" + folder;  }
-					
+
 						target.Folder = (AbsolutePath)folder;
 						target.FolderPropertyLocation = PropertySource.CommandLine;
 
 						commandLineConfig.FilterTargets.Add(target);
 						}
 					}
-					
-					
-					
+
+
+
 				// Ignored input folder patterns
-					
+
 				else if (parameter == "--exclude-input-pattern")
 					{
 					string pattern;
@@ -344,15 +344,15 @@ namespace CodeClear.NaturalDocs.CLI
 						commandLineConfig.FilterTargets.Add(target);
 						}
 					}
-					
-					
-					
+
+
+
 				// Image folders
-					
+
 				else if (parameter == "--images")
 					{
 					Path folder;
-					
+
 					if (!commandLine.GetPathValue(out folder))
 						{
 						errorList.Add(
@@ -367,22 +367,22 @@ namespace CodeClear.NaturalDocs.CLI
 
 						if (folder.IsRelative)
 							{  folder = System.Environment.CurrentDirectory + "/" + folder;  }
-					
+
 						target.Folder = (AbsolutePath)folder;
 						target.FolderPropertyLocation = PropertySource.CommandLine;
 
 						commandLineConfig.InputTargets.Add(target);
 						}
 					}
-					
-					
-					
+
+
+
 				// Tab Width
-				
+
 				else if (parameter == "--tab-width")
 					{
 					int tabWidth;
-					
+
 					if (!commandLine.GetIntegerValue(out tabWidth))
 						{
 						errorList.Add(
@@ -393,24 +393,24 @@ namespace CodeClear.NaturalDocs.CLI
 						}
 					else if (tabWidth < 1)
 						{
-						errorList.Add( 
+						errorList.Add(
 							Locale.Get("NaturalDocs.CLI", "CommandLine.InvalidTabWidth")
 							);
 
 						commandLine.SkipToNextParameter();
 						}
 					else
-						{  
+						{
 						commandLineConfig.TabWidth = tabWidth;
 						commandLineConfig.TabWidthPropertyLocation = PropertySource.CommandLine;
-						}	
+						}
 					}
-					
+
 				// Support the -t4 form ini addition to -t 4.  Doesn't support --tablength4.
 				else if (parameter.StartsWith("-t") && parameter.Length > 2 && parameter[2] >= '0' && parameter[2] <= '9')
 					{
 					string tabWidthString = parameter.Substring(2);
-						
+
 					int tabWidth;
 
 					if (!Int32.TryParse(tabWidthString, out tabWidth))
@@ -423,7 +423,7 @@ namespace CodeClear.NaturalDocs.CLI
 						}
 					else if (tabWidth < 1)
 						{
-						errorList.Add( 
+						errorList.Add(
 							Locale.Get("NaturalDocs.CLI", "CommandLine.InvalidTabWidth")
 							);
 
@@ -438,16 +438,16 @@ namespace CodeClear.NaturalDocs.CLI
 						commandLine.SkipToNextParameter();
 						}
 					else
-						{  
+						{
 						commandLineConfig.TabWidth = tabWidth;
 						commandLineConfig.TabWidthPropertyLocation = PropertySource.CommandLine;
 						}
 					}
-					
-					
-					
+
+
+
 				// Documented Only
-					
+
 				else if (parameter == "--documented-only")
 					{
 					if (!commandLine.NoValue())
@@ -464,11 +464,11 @@ namespace CodeClear.NaturalDocs.CLI
 						commandLineConfig.DocumentedOnlyPropertyLocation = PropertySource.CommandLine;
 						}
 					}
-					
-					
+
+
 
 				// No Auto-Group
-					
+
 				else if (parameter == "--no-auto-group")
 					{
 					if (!commandLine.NoValue())
@@ -485,11 +485,11 @@ namespace CodeClear.NaturalDocs.CLI
 						commandLineConfig.AutoGroupPropertyLocation = PropertySource.CommandLine;
 						}
 					}
-					
-					
+
+
 
 				// Don't Shrink Files
-					
+
 				else if (parameter == "--dont-shrink-files")
 					{
 					if (!commandLine.NoValue())
@@ -506,15 +506,15 @@ namespace CodeClear.NaturalDocs.CLI
 						commandLineConfig.ShrinkFilesPropertyLocation = PropertySource.CommandLine;
 						}
 					}
-					
-					
+
+
 
 				// Style
-					
+
 				else if (parameter == "--style")
 					{
 					string styleName;
-					
+
 					if (!commandLine.GetBareOrQuotedWordsValue(out styleName))
 						{
 						errorList.Add(
@@ -529,11 +529,11 @@ namespace CodeClear.NaturalDocs.CLI
 						commandLineConfig.OutputSettings.StyleNamePropertyLocation = PropertySource.CommandLine;
 						}
 					}
-					
-					
+
+
 
 				// Rebuild
-				
+
 				else if (parameter == "--rebuild")
 					{
 					if (!commandLine.NoValue())
@@ -553,7 +553,7 @@ namespace CodeClear.NaturalDocs.CLI
 
 
 				// Rebuild Output
-					
+
 				else if (parameter == "--rebuild-output")
 					{
 					if (!commandLine.NoValue())
@@ -569,9 +569,9 @@ namespace CodeClear.NaturalDocs.CLI
 						EngineInstance.Config.UserWantsOutputRebuilt = true;
 						}
 					}
-					
-					
-					
+
+
+
 				// Quiet
 
 				else if (parameter == "--quiet")
@@ -593,11 +593,11 @@ namespace CodeClear.NaturalDocs.CLI
 
 
 				// Worker Threads
-				
+
 				else if (parameter == "--worker-threads")
 					{
 					int value;
-					
+
 					if (!commandLine.GetIntegerValue(out value))
 						{
 						errorList.Add(
@@ -608,7 +608,7 @@ namespace CodeClear.NaturalDocs.CLI
 						}
 					else if (value < 1)
 						{
-						errorList.Add( 
+						errorList.Add(
 							Locale.Get("NaturalDocs.CLI", "CommandLine.InvalidWorkerThreadCount")
 							);
 
@@ -617,11 +617,11 @@ namespace CodeClear.NaturalDocs.CLI
 					else
 						{
 						workerThreadCount = value;
-						}	
+						}
 					}
-					
-					
-					
+
+
+
 				// Benchmark
 
 				else if (parameter == "--benchmark")
@@ -683,7 +683,7 @@ namespace CodeClear.NaturalDocs.CLI
 
 
 				// Help
-				
+
 				else if (parameter == "--help")
 					{
 					result = ParseCommandLineResult.ShowCommandLineReference;
@@ -692,7 +692,7 @@ namespace CodeClear.NaturalDocs.CLI
 
 
 				// Version
-				
+
 				else if (parameter == "--version")
 					{
 					result = ParseCommandLineResult.ShowVersion;
@@ -701,7 +701,7 @@ namespace CodeClear.NaturalDocs.CLI
 
 
 				// All Versions
-				
+
 				else if (parameter == "--all-versions")
 					{
 					result = ParseCommandLineResult.ShowAllVersions;
@@ -710,7 +710,7 @@ namespace CodeClear.NaturalDocs.CLI
 
 
 				// Encodings
-				
+
 				else if (parameter == "--encodings")
 					{
 					result = ParseCommandLineResult.ShowEncodings;
@@ -730,14 +730,14 @@ namespace CodeClear.NaturalDocs.CLI
 
 					commandLine.SkipToNextParameter();
 					}
-					
-					
-					
+
+
+
 				// Everything else
 
 				else
 					{
-					errorList.Add( 
+					errorList.Add(
 						Locale.Get("NaturalDocs.CLI", "CommandLine.UnrecognizedParameter(param)", parameterAsEntered)
 						);
 
@@ -748,21 +748,21 @@ namespace CodeClear.NaturalDocs.CLI
 
 				isFirst = false;
 				}
-				
-				
+
+
 			// Validation
-			
+
 			if (result == ParseCommandLineResult.Run &&
 				!commandLineConfig.ProjectConfigFolderPropertyLocation.IsDefined)
 				{
-				errorList.Add( 
+				errorList.Add(
 					Locale.Get("NaturalDocs.CLI", "CommandLine.NoProjectConfigFolder")
 					);
-				}				
-				
-				
+				}
+
+
 			// Done.
-				
+
 			if (errorList.Count != originalErrorCount)
 				{  result = ParseCommandLineResult.Error;  }
 

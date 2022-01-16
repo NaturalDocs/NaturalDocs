@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.TestList
  * ____________________________________________________________________________
- * 
+ *
  * A class storing information about a list of file-based tests.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -39,7 +39,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 			foreach (var test in this)
 				{
 				if (test.Passed == false)
-					{  
+					{
 					failedTests.Append(" - " + test.Name);
 
 					if (test.TestResult != Test.TestResults.DoesNotMatchExpectedOutput)
@@ -55,7 +55,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 				{  return null;  }
 			else
 				{
-				return failureCount.ToString() + " out of " + Count + " test" + (Count == 1 ? "" : "s") + 
+				return failureCount.ToString() + " out of " + Count + " test" + (Count == 1 ? "" : "s") +
 							" failed for " + failedTestFolder + ":\n" + failedTests.ToString();
 				}
 			}

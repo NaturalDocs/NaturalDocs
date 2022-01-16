@@ -1,5 +1,5 @@
 ﻿
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -11,7 +11,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 	{
 
 	/* enum: JavadocElementType
-	 * 
+	 *
 	 * OutOfBounds - The iterator has moved past the end of the string.
 	 * Text - The iterator is on a text segment.
 	 * HTMLTag - The iterator is on a HTML tag.

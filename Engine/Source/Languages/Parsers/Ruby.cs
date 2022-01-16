@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Languages.Parsers.Ruby
  * ____________________________________________________________________________
- * 
+ *
  * Additional language support for Ruby.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -22,8 +22,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: Ruby
 		 */
 		public Ruby (Engine.Instance engineInstance, Language language) : base (engineInstance, language)
@@ -59,11 +59,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipClassDeclarationLine
-		 * 
+		 *
 		 * If the iterator is on a class's declaration line, moves it past it and returns true.  It does not handle the class body.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParseClassPrototype>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
@@ -90,9 +90,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TokenIterator startOfIdentifier = lookahead;
 
 			if (TryToSkipUnqualifiedIdentifier(ref lookahead) == false)
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 
 			if (mode == ParseMode.ParseClassPrototype)

@@ -11,12 +11,12 @@ _______________________________________________________________________________
 
 
 Database Column: ImageLinkID
-	
+
 	--- Prototype ---
 		ImageLinkID INTEGER PRIMARY KEY NOT NULL
 	-----------------
-	
-	
+
+
 Database Column: OriginalText
 
 	--- Prototype ---

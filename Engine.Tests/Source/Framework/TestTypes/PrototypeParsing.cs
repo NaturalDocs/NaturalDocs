@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes.PrototypeParsing
  * ____________________________________________________________________________
- * 
+ *
  * File-based tests to make sure Natural Docs can parse prototypes correctly.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -33,20 +33,20 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 			for (int topicIndex = 0; topicIndex < topics.Count; topicIndex++)
 				{
 				if (topicIndex != 0)
-					{  
-					output.AppendLine();  
+					{
+					output.AppendLine();
 					output.AppendLine("------------------------------");
-					output.AppendLine();  
+					output.AppendLine();
 					}
 
 				if (topics[topicIndex].Prototype == null)
-					{  
-					output.AppendLine("(No prototype detected)");  
+					{
+					output.AppendLine("(No prototype detected)");
 					continue;
 					}
 
 				var parsedPrototype = topics[topicIndex].ParsedPrototype;
-					
+
 				for (int sectionIndex = 0; sectionIndex < parsedPrototype.Sections.Count; sectionIndex++)
 					{
 					if (sectionIndex != 0)
@@ -145,7 +145,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 
 			for (;;)
 				{
-				while (iterator < end && 
+				while (iterator < end &&
 							iterator.PrototypeParsingType != PrototypeParsingType.TypeQualifier &&
 							iterator.PrototypeParsingType != PrototypeParsingType.Type)
 					{  iterator.Next();  }

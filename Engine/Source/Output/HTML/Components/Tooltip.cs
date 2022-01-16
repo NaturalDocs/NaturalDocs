@@ -1,17 +1,17 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.Tooltip
  * ____________________________________________________________________________
- * 
+ *
  * A reusable class for building HTML tooltips.
- * 
- * 
+ *
+ *
  * Threading: Not Thread Safe
- * 
+ *
  *		This class is only designed to be used by one thread at a time.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -46,11 +46,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: BuildToolTip
-		 * 
+		 *
 		 * Builds the HTML for the topic's tooltip and returns it as a string.  If the topic shoudn't have a tooltip it will return null.
-		 * 
+		 *
 		 * Parameters:
-		 * 
+		 *
 		 *		topic - The topic to build the tooltip for.
 		 *		context - The context of the page the tooltip is being built for.  The topic will automatically replace the context's topic
 		 *					  so you can just pass the context of the page, if any.
@@ -61,7 +61,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			{
 			if (topic.Prototype == null && topic.Summary == null)
 				{  return null;  }
-	
+
 			StringBuilder output = new StringBuilder();
 			AppendToolTip(topic, context, links, imageLinks, output);
 			return output.ToString();
@@ -69,12 +69,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: AppendToolTip
-		 * 
+		 *
 		 * Builds the HTML for the topic's tooltip and appends it to the passed StringBuilder.  If the topic shoudn't have a tooltip it will
 		 * return false.
-		 * 
+		 *
 		 * Parameters:
-		 * 
+		 *
 		 *		topic - The topic to build the tooltip for.
 		 *		context - The context of the page the tooltip is being built for.  The topic will automatically replace the context's topic
 		 *					  so you can just pass the context of the page, if any.
@@ -451,4 +451,3 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 		}
 	}
-

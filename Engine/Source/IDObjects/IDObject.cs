@@ -1,17 +1,17 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.IDObjects.IDObject
  * ____________________________________________________________________________
- * 
+ *
  * The base class for all objects to be managed with <IDObjects.Manager>.
- * 
- * 
+ *
+ *
  * Topic: Usage
- * 
- *		- The deriving class needs to define <Name> to give each object a unique textual name.   *<Name> must never 
+ *
+ *		- The deriving class needs to define <Name> to give each object a unique textual name.   *<Name> must never
  *		  change.*
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -23,15 +23,15 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 	{
 	abstract public class IDObject
 		{
-		
+
 		/* Function: IDObject
 		 */
 		public IDObject ()
 			{
 			id = 0;
 			}
-			
-		
+
+
 		/* Property: Name
 		 * The textual name of the object.
 		 */
@@ -39,10 +39,10 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 			{
 			get;
 			}
-			
-			
+
+
 		/* Property: ID
-		 * The numeric ID of the object.  This cannot be changed once it is set the first time.  It will be zero if it's read 
+		 * The numeric ID of the object.  This cannot be changed once it is set the first time.  It will be zero if it's read
 		 * before that happens.
 		 */
 		public int ID
@@ -55,12 +55,12 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 					{  throw new InvalidOperationException("Tried to change an object ID after it has been assigned.");  }
 				if (value < 1)
 					{  throw new ArgumentException("Tried to set an object ID to zero or a negative number.");  }
-					
+
 				id = value;
 				}
 			}
 
-		
+
 		/* Var: id
 		 * The numberic ID of the object.
 		 */

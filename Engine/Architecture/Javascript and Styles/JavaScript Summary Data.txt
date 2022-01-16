@@ -2,20 +2,20 @@
 Title: JavaScript Summary Data
 _______________________________________________________________________________
 
-	Each content file will also have a JavaScript summary file.  It's in the same folder and has the same file name, only ending 
+	Each content file will also have a JavaScript summary file.  It's in the same folder and has the same file name, only ending
 	with -Summary.js instead of .html.  So for SourceFile-cs.html the summary file would be SourceFile-cs-Summary.js.
-		
+
 
 	Topic: Page Title
-		
+
 		When executed, it will pass the source file's title to <NDFramePage.OnPageTitleLoaded()> along with the hash path it's
 		for.
 
 		> NDFramePage.OnPageTitleLoaded("File:Folder/Folder/SourceFile.cs","Page Title");
-			
+
 
 	Topic: Summary
-		
+
 		When executed, it will also pass the source file's summary to <NDSummary.OnSummaryLoaded()> along with the hash
 		path it's for.
 
@@ -29,27 +29,27 @@ _______________________________________________________________________________
 		>     [1235,0,1,"Topic 2 HTML Name","Topic2HashSymbol"],
 		>     [1236,0,1,,"Topic3HashSymbol"]]
 		>    );
-		
+
 		Languages:
 
 			The first parameter is is an array of the languages used in the summary.  They appear in the order in which they should
 			appear in the output.  Each language is an array with these members:
-			
+
 			nameHTML - The name of the language in HTML.
 			simpleIdentifier - A simplified version of the name which can be used in CSS classes.
-		
+
 		Comment Types:
 
 			The second parameter is an array of the comment types used in the summary.  They appear in the order in which they should
 			appear in the output.  Each comment type is an array with these members:
-			
+
 			pluralNameHTML - The plural name of the comment type in HTML.
 			simpleIdentifier - A simplified version of the name which can be used in CSS classes.
-		
+
 		Summary Entries:
 
 			The third parameter is an array of summary entries, each of which is an array with these members:
-			
+
 			topicID - A numeric ID for the topic, unique across the whole project.
 			languageIndex - The topic's language as an index into the languages array.
 			commentTypeIndex - The comment type as an index into the comment types array.

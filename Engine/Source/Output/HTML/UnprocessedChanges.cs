@@ -1,19 +1,19 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.UnprocessedChanges
  * ____________________________________________________________________________
- * 
+ *
  * An object which stores all the unprocessed changes that need to be applied for a HTML build target.
- * 
- * 
+ *
+ *
  * Multithreading: Thread Safety Notes
- * 
+ *
  *		Externally, this class is thread safe.
- *		
+ *
  *		Internally, all variable accesses must use a monitor on <accessLock>.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -31,8 +31,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: UnprocessedChanges
 		 */
 		public UnprocessedChanges ()
@@ -60,7 +60,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* Function: GetStatus
-		 * Returns a numeric value representing the total changes yet to be processed.  It is the sum of everything in 
+		 * Returns a numeric value representing the total changes yet to be processed.  It is the sum of everything in
 		 * this class weighted by the <TargetBuilder.Cost Constants> which estimate how hard they are to perform.  The value
 		 * of the total is meaningless other than to track progress as it works its way towards zero.
 		 */
@@ -101,10 +101,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* Function: Lock
-		 * 
+		 *
 		 * Locks the object to apply multiple changes efficiently or to directly access the variables.  This prevents other threads
 		 * from accessing the object until you call <Unlock()>.
-		 * 
+		 *
 		 * Use of the other functions will lock and unlock this object automatically, so it is not necessary for most use cases.
 		 */
 		public void Lock ()
@@ -169,7 +169,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		public void AddImageFile (int imageFileID)
 			{
 			lock (accessLock)
-				{  
+				{
 				imageFiles.Add(imageFileID);
 				unchangedImageFileUseChecks.Remove(imageFileID);
 				}
@@ -212,7 +212,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 * Adds the main style files, main.css and main.js, to the list of things that need to be rebuilt.
 		 */
 		public void AddMainStyleFiles ()
-			{  
+			{
 			lock (accessLock)
 				{  mainStyleFiles = true;  }
 			}
@@ -302,9 +302,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 
 		/* Function: PickImageFile
-		 * Picks an image file ID that needs its output file rebuilt to work on, if there are any.  This will include new, changed, 
-		 * and deleted files so you should check the file's status to see if it's deleted before processing it.  You also need to 
-		 * check that it's actually used in the output.  It will be removed from the list of unprocessed changes.  If there aren't 
+		 * Picks an image file ID that needs its output file rebuilt to work on, if there are any.  This will include new, changed,
+		 * and deleted files so you should check the file's status to see if it's deleted before processing it.  You also need to
+		 * check that it's actually used in the output.  It will be removed from the list of unprocessed changes.  If there aren't
 		 * any it will return zero.
 		 */
 		 public int PickImageFile ()
@@ -317,7 +317,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 		/* Function: PickUnchangedImageFileUseCheck
 		 * Picks an image file ID where whether it's used in the output may have changed.  This will only return IDs where the
-		 * file itself hasn't changed and thus the ID wouldn't also be returned by <PickImageFile()>.  It will be removed from 
+		 * file itself hasn't changed and thus the ID wouldn't also be returned by <PickImageFile()>.  It will be removed from
 		 * the list of unprocessed changes.  If there aren't any it will return zero.
 		 */
 		 public int PickUnchangedImageFileUseCheck ()
@@ -425,7 +425,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 
 		/* Function: PickMenu
-		 * Picks the menu to work on, returning whether it's necessary.  If it returns true it will be removed from the list of 
+		 * Picks the menu to work on, returning whether it's necessary.  If it returns true it will be removed from the list of
 		 * unprocessed changes.
 		 */
 		 public bool PickMenu ()
@@ -443,13 +443,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 
 		/* Function: PickPossiblyEmptyFolders
-		 * 
-		 * Picks the possibly empty folders to work on, if there are any.  You have to process all of them at once, so it is returned 
+		 *
+		 * Picks the possibly empty folders to work on, if there are any.  You have to process all of them at once, so it is returned
 		 * as a list and they will all be removed from the unprocessed changes.  If there aren't any it will return null.
-		 * 
+		 *
 		 * The reason is because task of deleting empty folders is not parallelizable.  Theoretically it should be, but in practice when
-		 * two or more threads try to delete the same folder at the same time they both fail.  This could happen if both the folder 
-		 * and it's parent folder are on the list, so one thread gets it from the list while the other thread gets it by walking up the 
+		 * two or more threads try to delete the same folder at the same time they both fail.  This could happen if both the folder
+		 * and it's parent folder are on the list, so one thread gets it from the list while the other thread gets it by walking up the
 		 * child's tree.
 		 */
 		 public List<Path> PickPossiblyEmptyFolders ()
@@ -481,12 +481,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		// access functions instead of doing this whenever possible.  All direct access to the variables must be surrounded by
 		// calls to <Lock()> and <Unlock()>.
 		//
-				
+
 
 		/* var: sourceFiles
-		 * 
+		 *
 		 * A set of the source file IDs that need their output file rebuilt.
-		 * 
+		 *
 		 * This variable is protected internal because some code may need to access it directly.  You should use the access
 		 * functions instead of doing this whenever possible.  All direct access to the variable must be surrounded by calls to
 		 * <Lock()> and <Unlock()>.
@@ -495,9 +495,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* var: classes
-		 * 
+		 *
 		 * A set of the class IDs that need their output file rebuilt.
-		 * 
+		 *
 		 * This variable is protected internal because some code may need to access it directly.  You should use the access
 		 * functions instead of doing this whenever possible.  All direct access to the variable must be surrounded by calls to
 		 * <Lock()> and <Unlock()>.
@@ -506,11 +506,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* var: imageFiles
-		 * 
+		 *
 		 * A set of IDs for the image files that need their output updated.  This includes new, changed, and deleted files so
 		 * you should check the file's status to see if it's deleted before processing it.  You also need to check that it's actually
 		 * used in the output.
-		 * 
+		 *
 		 * This variable is protected internal because some code may need to access it directly.  You should use the access
 		 * functions instead of doing this whenever possible.  All direct access to the variable must be surrounded by calls to
 		 * <Lock()> and <Unlock()>.
@@ -519,10 +519,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* var: unchangedImageFileUseChecks
-		 * 
+		 *
 		 * A set of IDs for image files where the file itself didn't change, but whether it's used or not might have.  No IDs will
 		 * appear both in here and in <imageFiles>.
-		 * 
+		 *
 		 * This variable is protected internal because some code may need to access it directly.  You should use the access
 		 * functions instead of doing this whenever possible.  All direct access to the variable must be surrounded by calls to
 		 * <Lock()> and <Unlock()>.
@@ -531,10 +531,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* var: styleFiles
-		 * 
+		 *
 		 * A set of IDs for the style files that need their output updated.  This includes new, changed, and deleted files so
 		 * you should check the file's status to see if it's deleted before processing it.
-		 * 
+		 *
 		 * This variable is protected internal because some code may need to access it directly.  You should use the access
 		 * functions instead of doing this whenever possible.  All direct access to the variable must be surrounded by calls to
 		 * <Lock()> and <Unlock()>.
@@ -543,9 +543,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* var: mainStyleFiles
-		 * 
+		 *
 		 * Whether the main style files, main.css and main.js, need to be rebuilt.
-		 * 
+		 *
 		 * This variable is protected internal because some code may need to access it directly.  You should use the access
 		 * functions instead of doing this whenever possible.  All direct access to the variable must be surrounded by calls to
 		 * <Lock()> and <Unlock()>.
@@ -554,10 +554,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* var: searchPrefixes
-		 * 
-		 * A set of all the search index prefixes which need to be rebuilt.  This set combines changed and deleted IDs, so when 
+		 *
+		 * A set of all the search index prefixes which need to be rebuilt.  This set combines changed and deleted IDs, so when
 		 * using <SearchIndex.Manager.GetKeywordEntries()> make sure to test each result for null.
-		 * 
+		 *
 		 * This variable is protected internal because some code may need to access it directly.  You should use the access
 		 * functions instead of doing this whenever possible.  All direct access to the variable must be surrounded by calls to
 		 * <Lock()> and <Unlock()>.
@@ -566,9 +566,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* var: mainSearchFiles
-		 * 
+		 *
 		 * Whether the main search file, index.js, needs to be rebuilt.
-		 * 
+		 *
 		 * This variable is protected internal because some code may need to access it directly.  You should use the access
 		 * functions instead of doing this whenever possible.  All direct access to the variable must be surrounded by calls to
 		 * <Lock()> and <Unlock()>.
@@ -577,9 +577,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* var: framePage
-		 * 
+		 *
 		 * Whether the frame page, index.html, needs to be rebuilt.
-		 * 
+		 *
 		 * This variable is protected internal because some code may need to access it directly.  You should use the access
 		 * functions instead of doing this whenever possible.  All direct access to the variable must be surrounded by calls to
 		 * <Lock()> and <Unlock()>.
@@ -588,9 +588,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* var: homePage
-		 * 
+		 *
 		 * Whether the home page, home.html, needs to be rebuilt.
-		 * 
+		 *
 		 * This variable is protected internal because some code may need to access it directly.  You should use the access
 		 * functions instead of doing this whenever possible.  All direct access to the variable must be surrounded by calls to
 		 * <Lock()> and <Unlock()>.
@@ -599,9 +599,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* var: menu
-		 * 
+		 *
 		 * Whether the menu data files need to be rebuilt.
-		 * 
+		 *
 		 * This variable is protected internal because some code may need to access it directly.  You should use the access
 		 * functions instead of doing this whenever possible.  All direct access to the variable must be surrounded by calls to
 		 * <Lock()> and <Unlock()>.
@@ -610,9 +610,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* var: possiblyEmptyFolders
-		 * 
+		 *
 		 * A set of folders that have had files removed, and thus should be deleted if empty.
-		 * 
+		 *
 		 * This variable is protected internal because some code may need to access it directly.  You should use the access
 		 * functions instead of doing this whenever possible.  All direct access to the variable must be surrounded by calls to
 		 * <Lock()> and <Unlock()>.
@@ -627,4 +627,3 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 		}
 	}
-

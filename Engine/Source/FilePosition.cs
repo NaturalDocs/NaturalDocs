@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Struct: CodeClear.NaturalDocs.Engine.FilePosition
  * ____________________________________________________________________________
- * 
+ *
  * A position within a source file, which encapsulates both a line number and character number.
- *	
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -18,23 +18,23 @@ namespace CodeClear.NaturalDocs.Engine
 	{
 	public struct FilePosition
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		public FilePosition (int lineNumber, int charNumber)
 			{
 			this.lineNumber = lineNumber;
 			this.charNumber = charNumber;
 			}
-			
-			
-			
+
+
+
 		// Group: Operators
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Operator: operator ==
 		 */
 		public static bool operator== (FilePosition a, FilePosition b)
@@ -81,7 +81,7 @@ namespace CodeClear.NaturalDocs.Engine
 			{
 			return !(a > b);
 			}
-			
+
 		/* Function: GetHashCode
 		 */
 		public override int GetHashCode ()
@@ -100,7 +100,7 @@ namespace CodeClear.NaturalDocs.Engine
 			}
 
 
-			
+
 		// Group: Properties
 		// __________________________________________________________________________
 
@@ -128,12 +128,12 @@ namespace CodeClear.NaturalDocs.Engine
 				{  charNumber = value;  }
 			}
 
-			
-		
+
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
-		
+
+
 		/* var: lineNumber
 		 * The line number in the file.  Line numbers start at one.
 		 */

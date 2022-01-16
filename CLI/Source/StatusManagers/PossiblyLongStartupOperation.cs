@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.CLI.StatusManagers.PossiblyLongStartupOperation
  * ____________________________________________________________________________
- * 
+ *
  * A class to monitor engine initialization, posting messages only if an event that might take a long time actually does.
  * One object can be used for multiple operations, just not at the same time obviously.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -18,7 +18,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 	{
 	public class PossiblyLongStartupOperation : StatusManager
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
 
@@ -51,12 +51,12 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 				{  System.Console.WriteLine(message);  }
 			}
 
-		
+
 		// Group: Variables
 		// __________________________________________________________________________
 
 		protected string operationName;
 		protected string lastOperationName;
-		
+
 		}
 	}

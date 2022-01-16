@@ -1,13 +1,13 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Languages.ParentElement
  * ____________________________________________________________________________
- * 
+ *
  * A <Element> that also may contain child elements.  This is used not only for classes but for groups (so that settings
  * may be inherited) and list topics and enums (to store embedded topics.)
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -31,7 +31,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		/* Constructor: ParentElement
 		 */
 		public ParentElement (TokenIterator iterator, Flags flags) : base (iterator, flags)
-			{  
+			{
 			CommonInit();
 			}
 
@@ -39,7 +39,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		/* Constructor: ParentElement
 		 */
 		public ParentElement (LineIterator lineIterator, Flags flags) : base (lineIterator, flags)
-			{  
+			{
 			CommonInit();
 			}
 
@@ -47,7 +47,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		/* Constructor: ParentElement
 		 */
 		public ParentElement (int lineNumber, int charNumber, Flags flags) : base (lineNumber, charNumber, flags)
-			{  
+			{
 			CommonInit();
 			}
 
@@ -139,7 +139,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			}
 
 		/* Property: DefaultChildClassString
-		 * The default <ClassString> all children should use, if set.  Use <DefaultChildClassStringSet> to see if this value is 
+		 * The default <ClassString> all children should use, if set.  Use <DefaultChildClassStringSet> to see if this value is
 		 * relevant, as null can be a valid value.  Setting this value will automatically set <DefaultChildClassStringSet> to true.
 		 */
 		public ClassString DefaultChildClassString
@@ -147,8 +147,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			get
 				{  return defaultChildClassString;  }
 			set
-				{  
-				defaultChildClassString = value;  
+				{
+				defaultChildClassString = value;
 				defaultChildClassStringSet = true;
 				}
 			}
@@ -173,8 +173,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			get
 				{  return childContextString;  }
 			set
-				{  
-				childContextString = value;  
+				{
+				childContextString = value;
 				childContextStringSet = true;
 				}
 			}
@@ -191,7 +191,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			}
 
 		/* Property: EndingLineNumber
-		 * The line number where the parent's influence ends, or -1 if it hasn't been set yet.  The first line number is one, 
+		 * The line number where the parent's influence ends, or -1 if it hasn't been set yet.  The first line number is one,
 		 * not zero.
 		 */
 		public int EndingLineNumber
@@ -203,7 +203,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			}
 
 		/* Property: EndingCharNumber
-		 * The character number where the parent's influence ends, or -1 if it hasn't been set yet.  The first character number 
+		 * The character number where the parent's influence ends, or -1 if it hasn't been set yet.  The first character number
 		 * is one, not zero, and is relative to the line, not the file.
 		 */
 		public int EndingCharNumber
@@ -238,8 +238,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		protected bool isRootElement;
 
 		/* var: maximumEffectiveChildAccessLevel
-		 * The maximum effective access level children can attain, which is usually the effective access level of the parent.  For 
-		 * example, a private class's children would have a maximum effective access level of private, even if they were declared 
+		 * The maximum effective access level children can attain, which is usually the effective access level of the parent.  For
+		 * example, a private class's children would have a maximum effective access level of private, even if they were declared
 		 * public.  Will be <AccessLevel.Unknown> if it's not set.
 		 */
 		protected AccessLevel maximumEffectiveChildAccessLevel;

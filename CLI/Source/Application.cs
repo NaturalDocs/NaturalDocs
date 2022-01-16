@@ -1,11 +1,11 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.CLI.Application
  * ____________________________________________________________________________
- * 
+ *
  * The main application class for the command line interface to Natural Docs.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -22,22 +22,22 @@ namespace CodeClear.NaturalDocs.CLI
 	{
 	public static partial class Application
 		{
-			
+
 		// Group: Constants
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constant: StatusInterval
 		 * The amount of time in milliseconds that must go by before a status update.
 		 */
 		public const int StatusInterval = 5000;
-			
+
 		/* Constant: DelayedMessageThreshold
 		 * The amount of time in milliseconds that certain operations must take before they warrant a status update.
 		 */
 		public const int DelayedMessageThreshold = 1500;
-			
-						
+
+
 
 		// Group: Primary Execution Paths
 		// __________________________________________________________________________
@@ -60,7 +60,7 @@ namespace CodeClear.NaturalDocs.CLI
 			benchmark = false;
 			pauseOnError = false;
 			pauseBeforeExit = false;
-			
+
 			ErrorList startupErrors = new ErrorList();
 			bool gracefulExit = false;
 
@@ -69,10 +69,10 @@ namespace CodeClear.NaturalDocs.CLI
 			try
 				{
 				engineInstance = new NaturalDocs.Engine.Instance();
-				
+
 				ParseCommandLineResult parseCommandLineResult = ParseCommandLine(commandLine, out commandLineConfig, startupErrors);
 
-				
+
 				if (parseCommandLineResult == ParseCommandLineResult.Error)
 					{
 					HandleErrorList(startupErrors);
@@ -101,7 +101,7 @@ namespace CodeClear.NaturalDocs.CLI
 				else // (parseCommandLineResult == ParseCommandLineResult.Run)
 					{
 					if (quiet)
-						{  
+						{
 						// This is easier and less error prone than putting conditional statements around all the non-error console
 						// output, even if it's less efficient.
 						System.Console.SetOut(System.IO.TextWriter.Null);
@@ -133,10 +133,10 @@ namespace CodeClear.NaturalDocs.CLI
 				}
 
 			catch (Exception e)
-				{  
-				HandleException(e);  
+				{
+				HandleException(e);
 				}
-				
+
 			finally
 				{
 				Engine.Path projectFolder = engineInstance.Config.ProjectConfigFolder;
@@ -147,14 +147,14 @@ namespace CodeClear.NaturalDocs.CLI
 				executionTimer.End("Total Execution");
 
 				if (benchmark)
-					{  ShowBenchmarksAndBuildCSV(projectFolder + "/Benchmarks.csv");  } 
+					{  ShowBenchmarksAndBuildCSV(projectFolder + "/Benchmarks.csv");  }
 
 				// Restore the standard output.  We do this before "Press any key to continue" because we never want that to
 				// be hidden.
 				if (quiet)
 					{  System.Console.SetOut(standardOutput);  }
 				}
-				
+
 			if (pauseBeforeExit || (pauseOnError && (!gracefulExit || startupErrors.Count > 0)))
 				{
 				System.Console.WriteLine();
@@ -174,14 +174,14 @@ namespace CodeClear.NaturalDocs.CLI
 
 
 			executionTimer.Start("Engine Startup");
-			
+
 			if (EngineInstance.Start(errorList, commandLineConfig) == true)
 				{
 				executionTimer.End("Engine Startup");
 
 
 				// File Search
-						
+
 				executionTimer.Start("Finding Source Files");
 
 				var adderProcess = EngineInstance.Files.CreateAdderProcess();
@@ -189,22 +189,22 @@ namespace CodeClear.NaturalDocs.CLI
 				using ( StatusManagers.FileSearch statusManager = new StatusManagers.FileSearch(adderProcess) )
 					{
 					statusManager.Start();
-							
+
 					Multithread("File Adder", adderProcess.WorkOnAddingAllFiles);
-							
+
 					statusManager.End();
 					}
-							
+
 				EngineInstance.Files.DeleteFilesNotReAdded( Engine.Delegates.NeverCancel );
 				adderProcess.Dispose();
-							
+
 				executionTimer.End("Finding Source Files");
 
-						
+
 				// Rebuild notice
 
 				string alternativeStartMessage = null;
-						
+
 				if (EngineInstance.Config.UserWantsEverythingRebuilt ||
 					EngineInstance.Config.UserWantsOutputRebuilt)
 					{
@@ -216,10 +216,10 @@ namespace CodeClear.NaturalDocs.CLI
 					{
 					alternativeStartMessage = "Status.RebuildEverythingAutomatically";
 					}
-							
-							
+
+
 				// Parsing
-						
+
 				executionTimer.Start("Parsing Source Files");
 
 				var changeProcessor = EngineInstance.Files.CreateChangeProcessor();
@@ -229,18 +229,18 @@ namespace CodeClear.NaturalDocs.CLI
 					statusManager.Start();
 					totalFileChanges = statusManager.TotalFilesToProcess;
 
-					Multithread("Parser", changeProcessor.WorkOnProcessingChanges);							
-							
+					Multithread("Parser", changeProcessor.WorkOnProcessingChanges);
+
 					statusManager.End();
 					}
 
 				changeProcessor.Dispose();
-							
+
 				executionTimer.End("Parsing Source Files");
 
-							
+
 				// Resolving
-						
+
 				executionTimer.Start("Resolving Links");
 
 				var resolverProcess = EngineInstance.Links.CreateResolverProcess();
@@ -250,17 +250,17 @@ namespace CodeClear.NaturalDocs.CLI
 					statusManager.Start();
 
 					Multithread("Resolver", resolverProcess.WorkOnResolvingLinks);
-							
+
 					statusManager.End();
 					}
 
 				resolverProcess.Dispose();
-							
+
 				executionTimer.End("Resolving Links");
 
-							
+
 				// Building
-						
+
 				executionTimer.Start("Building Output");
 
 				var builderProcess = EngineInstance.Output.CreateBuilderProcess();
@@ -270,26 +270,26 @@ namespace CodeClear.NaturalDocs.CLI
 					statusManager.Start();
 
 					Multithread("Builder", builderProcess.WorkOnUpdatingOutput);
-					Multithread("Finalizer", builderProcess.WorkOnFinalizingOutput);							
-							
+					Multithread("Finalizer", builderProcess.WorkOnFinalizingOutput);
+
 					statusManager.End();
 					}
 
 				builderProcess.Dispose();
-							
+
 				executionTimer.End("Building Output");
 
-							
+
 				// End
-						
+
 				EngineInstance.Cleanup(Delegates.NeverCancel);
-						
+
 				ShowConsoleFooter(true);
 				return true;
 				}
 
 			else // engine did not start correctly
-				{  
+				{
 				executionTimer.End("Engine Startup");
 
 				ShowConsoleFooter(false);
@@ -333,7 +333,7 @@ namespace CodeClear.NaturalDocs.CLI
 				}
 
 			if (errorList.Count > priorErrorCount)
-				{  
+				{
 				ShowConsoleFooter(false);
 				return false;
 				}
@@ -346,8 +346,8 @@ namespace CodeClear.NaturalDocs.CLI
 
 		private static void ShowCommandLineReference ()
 			{
-			Console.WriteLine( 
-				Locale.Get("NaturalDocs.CLI", "CommandLine.SyntaxReference(version).multiline", NaturalDocs.Engine.Instance.VersionString) 
+			Console.WriteLine(
+				Locale.Get("NaturalDocs.CLI", "CommandLine.SyntaxReference(version).multiline", NaturalDocs.Engine.Instance.VersionString)
 				);
 			}
 
@@ -392,7 +392,7 @@ namespace CodeClear.NaturalDocs.CLI
 					{  Console.WriteLine("Couldn't get Mono version");  }
 				}
 			else
-				{  
+				{
 				if (dotNETVersion != null)
 					{  Console.WriteLine(".NET " + dotNETVersion);  }
 				else
@@ -403,14 +403,14 @@ namespace CodeClear.NaturalDocs.CLI
 				{  Console.WriteLine("SQLite " + sqliteVersion);  }
 			else
 				{  Console.WriteLine("Couldn't get SQLite version");  }
-				
+
 
 			// Include a notice for outdated Mono versions
 
 			if (Engine.SystemInfo.MonoVersionTooOld)
 				{
 				Console.WriteLine();
-				Console.WriteLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.OutdatedMono(currentVersion, minimumVersion)", 
+				Console.WriteLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.OutdatedMono(currentVersion, minimumVersion)",
 											"You appear to be using Mono {0}, which is very outdated.  This has been known to cause Natural Docs to crash.  Please update it to version {1} or higher.",
 											Engine.SystemInfo.MonoVersion, Engine.SystemInfo.MinimumMonoVersion) );
 				}
@@ -564,7 +564,7 @@ namespace CodeClear.NaturalDocs.CLI
 
 		// Group: Support Functions
 		// __________________________________________________________________________
-			
+
 
 		private static void ShowConsoleHeader ()
 			{
@@ -583,7 +583,7 @@ namespace CodeClear.NaturalDocs.CLI
 				System.Console.WriteLine(subversion);
 				dashLength = Math.Max(dashLength, subversion.Length);
 				}
-			
+
 			StringBuilder dashedLine = new StringBuilder(dashLength);
 			dashedLine.Append('-', dashLength);
 
@@ -614,7 +614,7 @@ namespace CodeClear.NaturalDocs.CLI
 
 			bool csvFileExisted = System.IO.File.Exists(csvPath);
 			System.IO.StreamWriter csvFile = null;
-			
+
 			try
 				{
 				csvFile = new System.IO.StreamWriter(csvPath, true, System.Text.Encoding.UTF8);
@@ -663,16 +663,16 @@ namespace CodeClear.NaturalDocs.CLI
 				}
 			}
 
-			
+
 		/* Function: Multithread
-		 * 
+		 *
 		 * Executes the task across multiple threads.  The function passed must be suitably thread safe.  This
 		 * function will not return until the task is complete.
-		 * 
+		 *
 		 * Parameters:
-		 * 
-		 *		threadName - What the execution threads should be named.  "Thread #" will be appended so "Builder" will lead to 
-		 *								 names like "Builder Thread 3".  This is important to specify because thread names are reported in 
+		 *
+		 *		threadName - What the execution threads should be named.  "Thread #" will be appended so "Builder" will lead to
+		 *								 names like "Builder Thread 3".  This is important to specify because thread names are reported in
 		 *								 exceptions and crash reports.
 		 *		task - The task to execute.  This must be thread safe.
 		 */
@@ -689,7 +689,7 @@ namespace CodeClear.NaturalDocs.CLI
 				Engine.Thread[] threads = new Engine.Thread[workerThreadCount];
 
 				for (int i = 0; i < threads.Length; i++)
-					{  
+					{
 					Engine.Thread thread = new Engine.Thread();
 
 					thread.Name = threadName + " Thread " + (i + 1);
@@ -745,14 +745,14 @@ namespace CodeClear.NaturalDocs.CLI
 					errorOutput.WriteLine(e.Message);
 					errorOutput.WriteLine("(" + e.GetType() + ")");
 					errorOutput.WriteLine();
-					errorOutput.Write (Locale.SafeGet("NaturalDocs.CLI", "Crash.ReportAt(file).multiline", 
+					errorOutput.Write (Locale.SafeGet("NaturalDocs.CLI", "Crash.ReportAt(file).multiline",
 																	  "A crash report has been generated at {0}.\n" +
 																	  "Please include this file when asking for help at naturaldocs.org.\n", crashFile));
 					}
 
 
 				// If we couldn't build the crash report, display the information on the screen.
-					
+
 				else
 					{
 					errorOutput.Write( EngineInstance.GetCrashInformation(e) );
@@ -767,7 +767,7 @@ namespace CodeClear.NaturalDocs.CLI
 				if (Engine.SystemInfo.MonoVersionTooOld)
 					{
 					errorOutput.WriteLine();
-					errorOutput.WriteLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.OutdatedMono(currentVersion, minimumVersion)", 
+					errorOutput.WriteLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.OutdatedMono(currentVersion, minimumVersion)",
 													  "You appear to be using Mono {0}, which is very outdated.  This has been known to cause Natural Docs to crash.  Please update it to version {1} or higher.",
 													  Engine.SystemInfo.MonoVersion, Engine.SystemInfo.MinimumMonoVersion) );
 					}
@@ -776,27 +776,27 @@ namespace CodeClear.NaturalDocs.CLI
 
 			errorOutput.Write ("------------------------------------------------------------\n\n");
 			}
-			
-			
+
+
 		/* Function: HandleErrorList
 		 */
 		static private void HandleErrorList (ErrorList errorList)
 			{
 			// Annotate any config files before printing them to the console, since the line numbers may change.
-			
+
 			Engine.ConfigFile.TryToAnnotateWithErrors(errorList);
-			
-			
+
+
 			// Write them to the console.
-			
+
 			var errorOutput = Console.Error;
 			errorOutput.WriteLine();
-			
+
 			Path lastErrorFile = null;
 			bool hasNonFileErrors = false;
-				
+
 			foreach (var error in errorList)
-				{  
+				{
 				if (error.File != lastErrorFile)
 					{
 					if (error.File != null)
@@ -804,23 +804,23 @@ namespace CodeClear.NaturalDocs.CLI
 
 					lastErrorFile = error.File;
 					}
-					
+
 				if (error.File != null)
 					{
 					errorOutput.Write("   - ");
-					
+
 					if (error.LineNumber > 0)
 						{  errorOutput.Write( Locale.Get("NaturalDocs.CLI", "CommandLine.Line") + " " + error.LineNumber + ": " );  }
 					}
 				else
 					{  hasNonFileErrors = true;  }
-					
-				errorOutput.WriteLine(error.Message);  
+
+				errorOutput.WriteLine(error.Message);
 				}
-				
+
 			if (hasNonFileErrors == true)
 				{  errorOutput.WriteLine( Locale.Get("NaturalDocs.CLI", "CommandLine.HowToGetCommandLineRef") );  }
-				
+
 			errorOutput.WriteLine();
 			}
 
@@ -850,7 +850,7 @@ namespace CodeClear.NaturalDocs.CLI
 			get
 				{
 				int processorCount = System.Environment.ProcessorCount;
-			
+
 				if (processorCount < 1)  // Sanity check
 					{  return 1;  }
 				else if (processorCount <= 4)  // Use everything on dual and quad core processors
@@ -896,7 +896,7 @@ namespace CodeClear.NaturalDocs.CLI
 
 
 		/* __________________________________________________________________________
-		 * 
+		 *
 		 * Struct: EncodingTableEntry
 		 * __________________________________________________________________________
 		 */
@@ -913,6 +913,6 @@ namespace CodeClear.NaturalDocs.CLI
 			public string Description;
 			public int CodePage;
 			}
-		
+
 		}
 	}

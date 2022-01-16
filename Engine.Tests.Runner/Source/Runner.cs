@@ -1,14 +1,14 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Tests.Runner
  * ____________________________________________________________________________
- * 
+ *
  * A simple class to run NUnit tests from a Visual Studio console project which allows you to set breakpoints
  * in the tests and debug them.  You can pass a test or group of tests to run as a command line option,
  * such as "LinkScoring", or not pass anything to run all tests.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -36,7 +36,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests
 				string headerLine2 = "Version " + Engine.Instance.VersionString;
 
 				int dashedLineLength = Math.Max(headerLine1.Length, headerLine2.Length);
-				
+
 				StringBuilder dashedLineBuilder = new StringBuilder(dashedLineLength);
 				dashedLineBuilder.Append('-', dashedLineLength);
 
@@ -129,10 +129,10 @@ namespace CodeClear.NaturalDocs.Engine.Tests
 						}
 					}
 
-				//<test-run 
-				//		id="0" runstate="Runnable" testcasecount="48" 
-				//		result="Failed" total="14" passed="13" failed="1" inconclusive="0" skipped="0" asserts="0" 
-				//		engine-version="3.11.1.0" clr-version="4.0.30319.42000" 
+				//<test-run
+				//		id="0" runstate="Runnable" testcasecount="48"
+				//		result="Failed" total="14" passed="13" failed="1" inconclusive="0" skipped="0" asserts="0"
+				//		engine-version="3.11.1.0" clr-version="4.0.30319.42000"
 				//		start-time="2020-03-15 18:24:36Z" end-time="2020-03-15 18:24:44Z" duration="8.456703">
 				Match failureCountMatch = System.Text.RegularExpressions.Regex.Match(xmlContent, @"<test-run.+failed=\""([0-9]+)\"".*>");
 				int failureCount = -1;
@@ -146,7 +146,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests
 				// Display the output, falling back to the captured console output if our XML extraction didn't work.
 
 				if (failureCount == -1 || failureCount != foundFailures)
-					{  
+					{
 					if (!showNUnitOutput)
 						{
 						System.Console.WriteLine();
@@ -203,10 +203,10 @@ namespace CodeClear.NaturalDocs.Engine.Tests
 			commandLine.AddAliases("--pause-before-exit", "--pausebeforexit", "--pause");
 			commandLine.AddAliases("--pause-on-error", "--pauseonerror");
 			commandLine.AddAliases("--help", "-h", "-?");
-			
+
 			string parameter, parameterAsEntered;
 			bool isFirst = true;
-				
+
 			while (commandLine.IsInBounds)
 				{
 				// If the first segment isn't a parameter, it's the test group
@@ -216,7 +216,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests
 					parameterAsEntered = parameter;
 					}
 				else
-					{  
+					{
 					if (!commandLine.GetParameter(out parameter, out parameterAsEntered))
 						{
 						System.Console.Error.WriteLine("Unrecognized parameter \"" + parameterAsEntered + "\"");
@@ -226,7 +226,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests
 
 				isFirst = false;
 
-					
+
 				// Test Group
 
 				if (parameter == "--test-group")
@@ -288,7 +288,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests
 
 
 				// Help
-				
+
 				else if (parameter == "--help")
 					{
 					System.Console.WriteLine("TestRunner [group].  If no group is specified all tests will be run.");
@@ -304,11 +304,11 @@ namespace CodeClear.NaturalDocs.Engine.Tests
 					return false;
 					}
 				}
-				
-				
+
+
 			// Done.
 
-			return true;				
+			return true;
 			}
 
 

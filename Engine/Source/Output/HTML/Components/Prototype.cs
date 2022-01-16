@@ -1,17 +1,17 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.Prototype
  * ____________________________________________________________________________
- * 
+ *
  * A reusable class for building HTML prototypes.
- * 
- * 
+ *
+ *
  * Threading: Not Thread Safe
- * 
+ *
  *		This class is only designed to be used by one thread at a time.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -35,16 +35,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Enum: ColumnType
-		 * 
-		 * A prototype's parameter column type.  Note that the prototype CSS classes are directly mapped to these 
+		 *
+		 * A prototype's parameter column type.  Note that the prototype CSS classes are directly mapped to these
 		 * names.
-		 * 
+		 *
 		 * ModifierQualifier - For C-style prototypes, a separate column for modifiers and qualifiers.  For Pascal-style
 		 *							  prototypes, any modifiers that appear before the name.
 		 * Type - The parameter type.  For C-style prototypes this will only be the last word.  For Pascal-style
 		 *			  prototypes this will be the entire symbol.
 		 * TypeNameSeparator - For Pascal-style prototypes, the symbol separating the name from the type.
-		 * Symbols - Symbols between names and types that should be formatted in a separate column, such as * 
+		 * Symbols - Symbols between names and types that should be formatted in a separate column, such as *
 		 *				   and &.
 		 * Name - The parameter name.
 		 * DefaultValueSeparator - If present, the symbol for assigning a default value like = or :=.
@@ -53,9 +53,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * PropertyValue - The property value, such as could appear in Java annotations.
 		 */
 		public enum ColumnType : byte
-			{  
-			ModifierQualifier, Type, TypeNameSeparator, 
-			Symbols, Name, 
+			{
+			ModifierQualifier, Type, TypeNameSeparator,
+			Symbols, Name,
 			DefaultValueSeparator, DefaultValue,
 			PropertyValueSeparator, PropertyValue
 			}
@@ -84,19 +84,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: BuildPrototype
-		 * 
+		 *
 		 * Builds the HTML for the passed prototype.
-		 * 
+		 *
 		 * In order to have type links, links must be specified and contain any links that appear in the prototype.
 		 * linkTargets must also be specified and contain the target topics of all links.  If you do not need type
 		 * links, set both to null.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- The <Context>'s topic must be set.
 		 *		- If type links are being generated, the <Context>'s page must also be set.
 		 */
-		public string BuildPrototype (ParsedPrototype parsedPrototype, Context context, IList<Link> links = null, 
+		public string BuildPrototype (ParsedPrototype parsedPrototype, Context context, IList<Link> links = null,
 												  IList<Topics.Topic> linkTargets = null)
 			{
 			StringBuilder output = new StringBuilder();
@@ -106,19 +106,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: AppendPrototype
-		 * 
+		 *
 		 * Builds the HTML for the passed prototype and appends it to the passed StringBuilder.
-		 * 
+		 *
 		 * In order to have type links, links must be specified and contain any links that appear in the prototype.
 		 * linkTargets must also be specified and contain the target topics of all links.  If you do not need type
 		 * links, set both to null.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- The <Context>'s topic must be set.
 		 *		- If type links are being generated, the <Context>'s page must also be set.
 		 */
-		public void AppendPrototype (ParsedPrototype parsedPrototype, Context context, StringBuilder output, 
+		public void AppendPrototype (ParsedPrototype parsedPrototype, Context context, StringBuilder output,
 												   IList<Link> links = null, IList<Topics.Topic> linkTargets = null)
 			{
 			this.parsedPrototype = parsedPrototype;
@@ -139,19 +139,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			#endif
 
 			if (parsedPrototype.Tokenizer.HasSyntaxHighlighting == false)
-				{  
+				{
 				var language = EngineInstance.Languages.FromID(Context.Topic.LanguageID);
-				language.Parser.SyntaxHighlight(parsedPrototype);  
+				language.Parser.SyntaxHighlight(parsedPrototype);
 				}
 
-			// Determine if there's parameters anywhere.  It's possible for parsedPrototype.NumberOfParameters to be zero and 
+			// Determine if there's parameters anywhere.  It's possible for parsedPrototype.NumberOfParameters to be zero and
 			// there still be a parameters section present somewhere such as for SQL's return table definitions.
 			bool hasParameters = false;
 
 			foreach (var section in parsedPrototype.Sections)
 				{
 				if (section is Prototypes.ParameterSection && (section as Prototypes.ParameterSection).NumberOfParameters > 0)
-					{  
+					{
 					hasParameters = true;
 					break;
 					}
@@ -185,7 +185,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 */
 		protected void CalculateParameterTable (Prototypes.ParameterSection section)
 			{
-			
+
 			//
 			// Check if this is a raw section with nothing other than parameter separators, meaning no name, type, etc. tokens
 			//
@@ -232,14 +232,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				if (section.ParameterStyle == ParsedPrototype.ParameterStyle.C)
 					{
-					while (iterator < endOfParam && 
+					while (iterator < endOfParam &&
 							  iterator.PrototypeParsingType == PrototypeParsingType.Null &&
 							  iterator.FundamentalType == FundamentalType.Whitespace)
 						{  iterator.Next();  }
 
 
 					// ModifierQualifier
-				
+
 					int currentColumn = 0;
 					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
 
@@ -261,7 +261,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 									   type == PrototypeParsingType.OpeningParamModifier)
 								{  SkipModifierBlock(ref iterator, endOfParam);  }
 							else
-								{  break;  }						
+								{  break;  }
 							}
 						}
 
@@ -274,7 +274,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					// Allow this column to claim the contents of a raw prototype.  They should all be null tokens.
 					// We use the type column instead of the name column because the name column isn't fully syntax highlighted.
 					while (iterator < endOfParam)
-						{  
+						{
 						PrototypeParsingType type = iterator.PrototypeParsingType;
 
 						// The previous loop already got any modifiers before the type, so this will only cover the type
@@ -291,7 +291,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						else if (type == PrototypeParsingType.StartOfTuple)
 							{  SkipTuple(ref iterator, endOfParam);  }
 						else
-							{  break;  }						
+							{  break;  }
 						}
 
 
@@ -302,7 +302,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 					if (!isRaw)
 						{
-						// All symbols are part of the type column right now because they're marked as type or param 
+						// All symbols are part of the type column right now because they're marked as type or param
 						// modifiers.  Walk backwards to claim the symbols from the type column.
 
 						if (iterator > startOfType)
@@ -310,7 +310,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 							TokenIterator lookbehind = iterator;
 							lookbehind.Previous();
 
-							if (lookbehind.FundamentalType == FundamentalType.Symbol && 
+							if (lookbehind.FundamentalType == FundamentalType.Symbol &&
 								lookbehind.Character != '_' &&
 								lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingTypeModifier &&
 								lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingParamModifier)
@@ -351,7 +351,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					if (!isRaw)
 						{
 						while (iterator < endOfParam)
-							{  
+							{
 							PrototypeParsingType type = iterator.PrototypeParsingType;
 
 							// Include the parameter separator because there may not be a default value.
@@ -366,7 +366,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 										type == PrototypeParsingType.OpeningParamModifier)
 								{  SkipModifierBlock(ref iterator, endOfParam);  }
 							else
-								{  break;  }						
+								{  break;  }
 							}
 						}
 
@@ -379,14 +379,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					if (!isRaw)
 						{
 						while (iterator < endOfParam)
-							{  
+							{
 							PrototypeParsingType type = iterator.PrototypeParsingType;
 
 							if (type == PrototypeParsingType.PropertyValueSeparator ||
 								type == PrototypeParsingType.Null)
 								{  iterator.Next();   }
 							else
-								{  break;  }						
+								{  break;  }
 							}
 						}
 
@@ -399,7 +399,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					if (!isRaw)
 						{
 						while (iterator < endOfParam)
-							{  
+							{
 							PrototypeParsingType type = iterator.PrototypeParsingType;
 
 							if (type == PrototypeParsingType.PropertyValue ||
@@ -407,7 +407,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 								type == PrototypeParsingType.Null)
 								{  iterator.Next();   }
 							else
-								{  break;  }						
+								{  break;  }
 							}
 						}
 
@@ -420,14 +420,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					if (!isRaw)
 						{
 						while (iterator < endOfParam)
-							{  
+							{
 							PrototypeParsingType type = iterator.PrototypeParsingType;
 
 							if (type == PrototypeParsingType.DefaultValueSeparator ||
 								type == PrototypeParsingType.Null)
 								{  iterator.Next();   }
 							else
-								{  break;  }						
+								{  break;  }
 							}
 						}
 
@@ -449,21 +449,21 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				else if (section.ParameterStyle == ParsedPrototype.ParameterStyle.Pascal)
 					{
-					while (iterator < endOfParam && 
+					while (iterator < endOfParam &&
 							  iterator.PrototypeParsingType == PrototypeParsingType.Null &&
 							  iterator.FundamentalType == FundamentalType.Whitespace)
 						{  iterator.Next();  }
 
 
 					// ModifierQualifier
-				
+
 					int currentColumn = 0;
 					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
 
 					if (!isRaw)
 						{
 						while (iterator < endOfParam)
-							{  
+							{
 							PrototypeParsingType type = iterator.PrototypeParsingType;
 
 							if (type == PrototypeParsingType.TypeModifier ||
@@ -475,7 +475,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 									   type == PrototypeParsingType.OpeningParamModifier)
 								{  SkipModifierBlock(ref iterator, endOfParam);  }
 							else
-								{  break;  }						
+								{  break;  }
 							}
 						}
 
@@ -508,7 +508,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					if (!isRaw)
 						{
 						while (iterator < endOfParam)
-							{  
+							{
 							PrototypeParsingType type = iterator.PrototypeParsingType;
 
 							// Include the parameter separator because there may not be a type.
@@ -517,7 +517,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 								type == PrototypeParsingType.Null)
 								{  iterator.Next();   }
 							// Include modifiers because there still may be some after the name, but only if there's a name-type separator.
-							else if (hasNameTypeSeparator && 
+							else if (hasNameTypeSeparator &&
 									   (type == PrototypeParsingType.TypeModifier ||
 										type == PrototypeParsingType.ParamModifier))
 								{  iterator.Next();   }
@@ -525,7 +525,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 									   type == PrototypeParsingType.OpeningParamModifier)
 								{  SkipModifierBlock(ref iterator, endOfParam);  }
 							else
-								{  break;  }						
+								{  break;  }
 							}
 						}
 
@@ -538,14 +538,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					if (!isRaw)
 						{
 						while (iterator < endOfParam)
-							{  
+							{
 							PrototypeParsingType type = iterator.PrototypeParsingType;
 
 							if (type == PrototypeParsingType.NameTypeSeparator ||
 								type == PrototypeParsingType.Null)
 								{  iterator.Next();   }
 							else
-								{  break;  }						
+								{  break;  }
 							}
 						}
 
@@ -588,7 +588,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					// Allow this column to claim the contents of a raw prototype.  They should all be null tokens.
 					// We use the type column instead of the name column because the name column isn't syntax highlighted.
 					while (iterator < endOfParam)
-						{  
+						{
 						PrototypeParsingType type = iterator.PrototypeParsingType;
 
 						// Include the parameter separator because there may not be a default value.
@@ -605,7 +605,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						else if (type == PrototypeParsingType.StartOfTuple)
 							{  SkipTuple(ref iterator, endOfParam);  }
 						else
-							{  break;  }						
+							{  break;  }
 						}
 
 
@@ -617,14 +617,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					if (!isRaw)
 						{
 						while (iterator < endOfParam)
-							{  
+							{
 							PrototypeParsingType type = iterator.PrototypeParsingType;
 
 							if (type == PrototypeParsingType.PropertyValueSeparator ||
 								type == PrototypeParsingType.Null)
 								{  iterator.Next();   }
 							else
-								{  break;  }						
+								{  break;  }
 							}
 						}
 
@@ -637,7 +637,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					if (!isRaw)
 						{
 						while (iterator < endOfParam)
-							{  
+							{
 							PrototypeParsingType type = iterator.PrototypeParsingType;
 
 							if (type == PrototypeParsingType.PropertyValue ||
@@ -645,7 +645,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 								type == PrototypeParsingType.Null)
 								{  iterator.Next();   }
 							else
-								{  break;  }						
+								{  break;  }
 							}
 						}
 
@@ -658,14 +658,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					if (!isRaw)
 						{
 						while (iterator < endOfParam)
-							{  
+							{
 							PrototypeParsingType type = iterator.PrototypeParsingType;
 
 							if (type == PrototypeParsingType.DefaultValueSeparator ||
 								type == PrototypeParsingType.Null)
 								{  iterator.Next();   }
 							else
-								{  break;  }						
+								{  break;  }
 							}
 						}
 
@@ -771,7 +771,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: SkipTuple
-		 * If the iterator is on a <PrototypeParsingType.StartOfTuple> token, moves the token iterator past the entire tuple, 
+		 * If the iterator is on a <PrototypeParsingType.StartOfTuple> token, moves the token iterator past the entire tuple,
 		 * including any nested tuples.
 		 */
 		protected void SkipTuple (ref TokenIterator iterator, TokenIterator limit)
@@ -956,7 +956,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 							{  extraClass = "last";  }
 
 						if (parameterTableTokenIndexes[parameterIndex, cellIndex] == parameterTableTokenIndexes[parameterIndex, cellIndex + 1])
-							{  
+							{
 							if (extraClass == null)
 								{  output.Append("<td></td>");  }
 							else
@@ -1004,7 +1004,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					break;
 					}
 				}
-			
+
 			// Default value separators always get spaces before.
 			// Property value separators get them unless they're ":", but watch out for ":=".
 			// Type-name separators get them if they're text (SQL's "AS") instead of symbols (Pascal's ":").
@@ -1022,15 +1022,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			else
 				{  AppendSyntaxHighlightedText(start, end, output);  }
 
-			// Default value separators, property value separators, and type/name separators always get spaces after.  Make sure 
+			// Default value separators, property value separators, and type/name separators always get spaces after.  Make sure
 			// the spaces aren't duplicated by the preceding cells.
 			if (type == ColumnType.DefaultValueSeparator ||
 				type == ColumnType.PropertyValueSeparator ||
 				type == ColumnType.TypeNameSeparator ||
-				(hadTrailingWhitespace && 
+				(hadTrailingWhitespace &&
 					type != ColumnType.DefaultValue &&
-					nextType != ColumnType.DefaultValueSeparator && 
-					nextType != ColumnType.PropertyValueSeparator && 
+					nextType != ColumnType.DefaultValueSeparator &&
+					nextType != ColumnType.PropertyValueSeparator &&
 					nextType != ColumnType.TypeNameSeparator) )
 				{  output.Append("&nbsp;");  }
 			}
@@ -1108,7 +1108,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 		/* var: parameterTableTokenIndexes
 		 * A table representing the <parameterTableSection> as rows and the columns determined by <ColumnOrder>.
-		 * Each value represents the starting token index of that cell.  Each row will also contain one extra value 
+		 * Each value represents the starting token index of that cell.  Each row will also contain one extra value
 		 * representing the token index of the end of the final cell.
 		 */
 		protected int[,] parameterTableTokenIndexes;
@@ -1180,4 +1180,3 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 		}
 	}
-

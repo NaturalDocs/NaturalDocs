@@ -1,14 +1,14 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Prototypes.TypeBuilder
  * ____________________________________________________________________________
- * 
+ *
  * A class that helps build a new <Tokenizer> from individual tokens extracted from another one.  It is used to
  * build complete types from prototypes where the original tokens may not be continuous or are spread across
  * multiple parameters.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -26,8 +26,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: TypeBuilder
 		 */
 		public TypeBuilder (int initialTextLength = -1, int initialTokenCount = -1)
@@ -82,9 +82,9 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					{
 					// Do we need to add a space?
 					if ( (thisTokenType == FundamentalType.Text && lastTokenType == FundamentalType.Text &&
-						  (iterator.Tokenizer != lastTokenIterator.Tokenizer || iterator.TokenIndex != lastTokenIterator.TokenIndex + 1)) 
+						  (iterator.Tokenizer != lastTokenIterator.Tokenizer || iterator.TokenIndex != lastTokenIterator.TokenIndex + 1))
 						 ||
-						 (thisTokenType == FundamentalType.Text && lastTokenType == FundamentalType.Symbol && 
+						 (thisTokenType == FundamentalType.Text && lastTokenType == FundamentalType.Symbol &&
 						  !dontAddSpaceAfterSymbol && (pastFirstText || lastSymbolWasBlock))
 						 ||
 						 (!lastTokenIterator.IsNull && lastTokenIterator.PrototypeParsingType == PrototypeParsingType.TupleMemberSeparator))
@@ -97,7 +97,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					// Special handling for package separators and a few other things
 					if (iterator.FundamentalType == FundamentalType.Symbol)
 						{
-						if (iterator.Character == '.'  || iterator.MatchesAcrossTokens("::") || 
+						if (iterator.Character == '.'  || iterator.MatchesAcrossTokens("::") ||
 							(iterator.Character == ':' && dontAddSpaceAfterSymbol) ||  // second colon of ::
 							iterator.Character == '%' ||  // used for MyVar%TYPE or MyTable%ROWTYPE in Oracle's PL/SQL
 							iterator.Character == '"' || iterator.Character == '\'' ||  // strings in Java annotations like @copyright("me")
@@ -145,9 +145,9 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 				// Do we need to add a space?
 				if ( (thisTokenType == FundamentalType.Text && lastTokenType == FundamentalType.Text &&
-					  (iterator.Tokenizer != lastTokenIterator.Tokenizer || iterator.TokenIndex != lastTokenIterator.TokenIndex + 1)) 
+					  (iterator.Tokenizer != lastTokenIterator.Tokenizer || iterator.TokenIndex != lastTokenIterator.TokenIndex + 1))
 					||
-					(thisTokenType == FundamentalType.Text && lastTokenType == FundamentalType.Symbol && 
+					(thisTokenType == FundamentalType.Text && lastTokenType == FundamentalType.Symbol &&
 					 !dontAddSpaceAfterSymbol && (pastFirstText || lastSymbolWasBlock)) )
 					{
 					rawText.Append(' ');
@@ -250,7 +250,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 							dontAddSpaceAfterSymbol = true;
 							iterator.NextByCharacters(2);
 							}
-						else if (iterator.Character == '.' || iterator.Character == '%' || 
+						else if (iterator.Character == '.' || iterator.Character == '%' ||
 								   iterator.Character == '"' || iterator.Character == '\'' || iterator.Character == '@' ||
 								   iterator.Character == '(')
 							{
@@ -268,7 +268,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 							{
 							lastSymbolWasBlock = false;
 							dontAddSpaceAfterSymbol = false;
-							iterator.Next();  
+							iterator.Next();
 							}
 						}
 					else
@@ -313,25 +313,25 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			lookahead.Next();
 			int level = 1;
 
-			// We're going to cheat and assume all blocks are balanced and nested in a way that makes sense. This lets us handle 
+			// We're going to cheat and assume all blocks are balanced and nested in a way that makes sense. This lets us handle
 			// both in a simple loop.
 			while (lookahead.IsInBounds)
 				{
 				if (lookahead.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier ||
 					lookahead.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier)
 					{
-					level++;  
+					level++;
 					}
 				else if (lookahead.PrototypeParsingType == PrototypeParsingType.ClosingTypeModifier ||
 						  lookahead.PrototypeParsingType == PrototypeParsingType.ClosingParamModifier)
-					{  
+					{
 					level--;
 
 					if (level == 0)
 						{
 						lookahead.Next();
 						iterator = lookahead;
-						return true; 
+						return true;
 						}
 					}
 
@@ -367,7 +367,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		// Group: State Variables
 		// __________________________________________________________________________
 
-		
+
 		/* var: lastTokenIterator
 		 * A copy of the <TokenIterator> at the position of the last added token.
 		 */

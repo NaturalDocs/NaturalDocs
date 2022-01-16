@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Files.FileSources.Folder
  * ____________________________________________________________________________
- * 
+ *
  * A base class for folder-based file sources.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -18,11 +18,11 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 	{
 	abstract public class Folder : FileSource
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Function: Folder
 		 */
 		public Folder (Files.Manager manager) : base (manager)
@@ -42,12 +42,12 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 				errors.Add(
 					Locale.Get("NaturalDocs.Engine", "Error.FolderDoesntExist(type, name)", Type.ToString().ToLower(), Path)
 					);
-				
+
 				return false;
 				}
 			}
 
-			
+
 		/* Function: Contains
 		 * Returns whether this folder contains the passed file.
 		 */
@@ -55,8 +55,8 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 			{
 			return Path.Contains(file);
 			}
-			
-			
+
+
 		/* Function: MakeRelative
 		 * Converts the passed absolute path to one relative to this source.  If this source doesn't contain the path, it will
 		 * return null.

@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Links.ImageLinkSet
  * ____________________________________________________________________________
- * 
- * A sorted list of <ImageLinks> that prevents duplicates from being added as determined by 
+ *
+ * A sorted list of <ImageLinks> that prevents duplicates from being added as determined by
  * <ImageLink.CompareIdentifyingPropertiesTo()>.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -32,7 +32,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			}
 
 		static protected ImageLinkSetComparer comparer = new ImageLinkSetComparer();
-				
+
 		}
 
 	public class ImageLinkSetComparer : System.Collections.Generic.IComparer<ImageLink>

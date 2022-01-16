@@ -1,11 +1,11 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries.Container
  * ____________________________________________________________________________
- * 
+ *
  * A base class for <Entries> which can contain other entries, such as folders.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -108,10 +108,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries
 
 
 		/* Function: Condense
-		 * 
+		 *
 		 * An overridable function to handle condensing unnecessary levels into this one.  By default this will not alter the
 		 * menu itself, but it will call Condense() on any subcontainers in case they implement it.
-		 * 
+		 *
 		 * A simple way to implement this function is to call <CondenseContainersInMembers()> first, check to see if you
 		 * have only one container as a member, and then implement the logic to combine them if so.
 		 */
@@ -143,7 +143,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries
 		 * useful when merging containers.
 		 */
 		public List<Entry> Members
-			{  
+			{
 			get
 				{  return members;  }
 			set

@@ -2,30 +2,30 @@
 Title: JavaScript Search Data
 _______________________________________________________________________________
 
-	Because Natural Docs' output needs to be able to function as just static HTML files on a local hard drive, it can't rely on a 
-	database to generate search results live.  Instead it pregenerates results and saves them as JavaScript files located in the 
-	search subfolder of the output folder.  These files are not linked to the HTML by default so any Javascript that needs them 
+	Because Natural Docs' output needs to be able to function as just static HTML files on a local hard drive, it can't rely on a
+	database to generate search results live.  Instead it pregenerates results and saves them as JavaScript files located in the
+	search subfolder of the output folder.  These files are not linked to the HTML by default so any Javascript that needs them
 	is responsible for loading them.  If you include the DefaultJS style this will be handled by <NDSearch>.
 
 
 	Topic: Prefix Segmenting
 
-		Results are grouped by keyword, and then grouped into data files by the keywords' first three lowercase characters.  The 
+		Results are grouped by keyword, and then grouped into data files by the keywords' first three lowercase characters.  The
 		file names use UTF-16 characters encoded in lowercase hex:
-		
+
 		> [Output Folder]\search\keywords\[hex char 1][hex char 2][hex char 3].js
-		
+
 		So the output file for "and" would be:
 
 		> [Output Folder]\search\keywords\0061006e0064.js
-		
+
 		Keywords that are only one or two characters long have their own file.  So the file for "app" will store both Apple and
 		Application, but the file for "a" will only store keywords that are exactly "a" and not include keywords that start with A.
 
 
 	Topic: Index Data File
 
-		Information about which prefixes have data files are stored in [Output Folder]\search\index.js.  The file contains a call to 
+		Information about which prefixes have data files are stored in [Output Folder]\search\index.js.  The file contains a call to
 		<NDSearch.OnPrefixIndexLoaded()> that looks like this:
 
 		> NDSearch.OnPrefixIndexLoaded([ "a", "acc", "add", "ade", ... ]);
@@ -44,22 +44,22 @@ _______________________________________________________________________________
 
 		Keywords:
 
-			> keyword: [ 
-			>    htmlName, 
-			>    searchText (optional), 
+			> keyword: [
+			>    htmlName,
+			>    searchText (optional),
 			>    topics[] ]
-		
+
 			searchText is undefined if it's the same as htmlName in lowercase
 
 		Topics:
 
-			> topic: [ 
+			> topic: [
 			>    htmlQualifier (optional),
 			>    htmlName (optional),
-			>    htmlLanguageName (optional), 
-			>    searchText (optional), 
-			>    commentTypeIndex, 
-			>    fileHashPath, 
+			>    htmlLanguageName (optional),
+			>    searchText (optional),
+			>    commentTypeIndex,
+			>    fileHashPath,
 			>    classHashPath (optional) ]
 
 			- htmlQualifier is undefined if there isn't one

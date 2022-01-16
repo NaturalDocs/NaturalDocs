@@ -1,11 +1,11 @@
-/* 
+/*
  * Class: CodeClear.NaturalDocs.Engine.Config.CharacterEncodingRule
  * ____________________________________________________________________________
- * 
+ *
  * A class representing a single rule to determine a file's character encoding.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -18,10 +18,10 @@ namespace CodeClear.NaturalDocs.Engine.Config
 	{
 	public class CharacterEncodingRule
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
+
 		public CharacterEncodingRule (int characterEncodingID, string characterEncodingName, AbsolutePath folder, string fileExtension,
 													 PropertyLocation propertyLocation)
 			{
@@ -47,7 +47,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 			// Folder
 
-			if (folder != null && 
+			if (folder != null &&
 				System.IO.Directory.Exists(folder) == false)
 				{
 				errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.EncodingFolderDoesNotExist(folder)", folder),
@@ -98,7 +98,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				try
 					{
 					var encoding = System.Text.Encoding.GetEncoding(characterEncodingName);
-					
+
 					// GetEncoding should throw an exception on failure instead of returning null, but test it anyway for defensive programming.
 					if (encoding == null)
 						{  validEncodingName = false;  }
@@ -160,11 +160,11 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			}
 
 
-			
+
 		// Group: Properties
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Property: CharacterEncodingID
 		 * The numeric ID of the character encoding used for this rule.  Zero means use Unicode auto-detect, which covers
 		 * all forms of UTF-8, UTF-16, and UTF-32.  Other values correspond to the code page number used by .NET and can
@@ -184,7 +184,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			get
 				{  return characterEncodingName;  }
 			}
-			
+
 		/* Property: Folder
 		 *	The source folder the rule applies to, or null if it applies to all folders.
 		 */
@@ -193,7 +193,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			get
 				{  return folder;  }
 			}
-			
+
 		/* Property: FileExtension
 		 * The file extension this rule applies to, or null if it applies to all extensions.
 		 */
@@ -212,12 +212,12 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			get
 				{  return propertyLocation;  }
 			}
-			
-	
-		
+
+
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
+
 		protected int characterEncodingID;
 		protected string characterEncodingName;
 
@@ -225,6 +225,6 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		protected string fileExtension;
 
 		protected PropertyLocation propertyLocation;
-		
+
 		}
 	}

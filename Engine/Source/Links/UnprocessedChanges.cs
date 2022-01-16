@@ -1,20 +1,20 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Links.UnprocessedChanges
  * ____________________________________________________________________________
- * 
+ *
  * An object which stores all the unprocessed link changes that have been detected and allows them to be retrieved
  * for processing.
- * 
- * 
+ *
+ *
  * Multithreading: Thread Safety Notes
- * 
+ *
  *		Externally, this class is thread safe.
- *		
+ *
  *		Internally, all variable accesses must use a monitor on <accessLock>.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -30,10 +30,10 @@ namespace CodeClear.NaturalDocs.Engine.Links
 	{
 	public class UnprocessedChanges
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
+
 
 		/* Function: UnprocessedChanges
 		 */
@@ -110,7 +110,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				var newTopicIDs = newTopicIDsByEndingSymbol[endingSymbol];
 
 				if (newTopicIDs != null)
-					{  
+					{
 					newTopicIDs.Remove(topic.TopicID);
 
 					if (newTopicIDs.IsEmpty)
@@ -118,7 +118,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 					}
 				}
 			}
-			
+
 
 		/* Function: AddImageLink
 		 */
@@ -178,7 +178,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				var newImageFileIDs = newImageFileIDsByLCFileName[lcFileName];
 
 				if (newImageFileIDs != null)
-					{  
+					{
 					newImageFileIDs.Remove(imageFile.ID);
 
 					if (newImageFileIDs.IsEmpty)
@@ -186,7 +186,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 					}
 				}
 			}
-			
+
 
 
 		// Group: Pick Functions
@@ -203,8 +203,8 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				// Once we pick a link to resolve we can't allow this optimization anymore.  See the variable's documentation for
 				// the explanation.
 				allLinksAreNew = false;
-				
-				return linksToResolve.Pop();  
+
+				return linksToResolve.Pop();
 				}
 			}
 
@@ -253,14 +253,14 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				// Once we pick a link to resolve we can't allow this optimization anymore.  See the variable's documentation for
 				// the explanation.
 				allLinksAreNew = false;
-				
-				return imageLinksToResolve.Pop();  
+
+				return imageLinksToResolve.Pop();
 				}
 			}
 
 
 		/* Function: PickNewImageFiles
-		 * Returns the IDs for a batch of new image files and their shared lowercase file name, or false if there aren't any.  This allows you to 
+		 * Returns the IDs for a batch of new image files and their shared lowercase file name, or false if there aren't any.  This allows you to
 		 * process new image files that could potentially serve as better definitions to existing links.
 		 */
 		public bool PickNewImageFiles (out IDObjects.NumberSet imageFileIDs, out string lcFileName)
@@ -331,87 +331,87 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 
 		/* var: linksToResolve
-		 * 
+		 *
 		 * The IDs of all the links that need to be resolved, either because they're new or their previous target was deleted.
-		 * 
+		 *
 		 * Thread Safety:
-		 * 
+		 *
 		 *		You must hold <accessLock> in order to use this variable.
 		 */
 		protected IDObjects.NumberSet linksToResolve;
 
 
 		/* var: newTopicIDsByEndingSymbol
-		 * 
+		 *
 		 * Keeps track of all newly created <Topics>.  The keys are the <EndingSymbols> the topics use, and the values are
 		 * <IDObjects.NumberSets> of all the topic IDs associated with that ending symbol.
-		 * 
+		 *
 		 * Rationale:
-		 * 
+		 *
 		 *		When a new <Topic> is created, it might serve as a better definition for existing links.  We don't want to reresolve
-		 *		the links as soon as the topic is created because there may be multiple topics that affect the same links and we'd 
+		 *		the links as soon as the topic is created because there may be multiple topics that affect the same links and we'd
 		 *		be wasting effort.  Instead we store which topics are new and resolve the links after parsing is complete.
-		 *		
+		 *
 		 *		We can't store the <Topic> objects themselves because we could potentially end up storing a large portion of the
 		 *		documentation in memory.  Instead we store the topic IDs and look up the <Topics> again when it's time to resolve links.
-		 *		
+		 *
 		 *		We group them by ending symbol instead of having a single NumberSet so that we can reresolve links in batches.  Topics
 		 *		that have the same ending symbol will be candidates for the same group of links, so we can query those topics and links
 		 *		into memory, reresolve them all at once, and then move on to the next ending symbol.  If we stored a single NumberSet
 		 *		of topic IDs we'd have to handle the topics one by one and query for each topic's links separately.
-		 *		
+		 *
 		 * Thread Safety:
-		 * 
+		 *
 		 *		You must hold <accessLock> in order to use this variable.
 		 */
 		protected SafeDictionary<Symbols.EndingSymbol, IDObjects.NumberSet> newTopicIDsByEndingSymbol;
 
 
 		/* var: imageLinksToResolve
-		 * 
+		 *
 		 * The IDs of all the image links that need to be resolved, either because they're new or their previous target was deleted.
-		 * 
+		 *
 		 * Thread Safety:
-		 * 
+		 *
 		 *		You must hold <accessLock> in order to use this variable.
 		 */
 		protected IDObjects.NumberSet imageLinksToResolve;
 
 
 		/* var: newImageFileIDsByLCFileName
-		 * 
+		 *
 		 * Keeps track of all newly created image file IDs.  The keys are their all-lowercase file names, and the values are
 		 * <IDObjects.NumberSets> of all the file IDs associated with that file name.
-		 * 
+		 *
 		 * Rationale:
-		 * 
-		 *		When a new image file is detected, it might serve as a better definition for existing image links.  We don't want to 
-		 *		reresolve the links as soon as the file is detected because there may be multiple files that affect the same links and we'd 
+		 *
+		 *		When a new image file is detected, it might serve as a better definition for existing image links.  We don't want to
+		 *		reresolve the links as soon as the file is detected because there may be multiple files that affect the same links and we'd
 		 *		be wasting effort.  Instead we store which files are new and resolve the links after parsing is complete.
-		 *		
+		 *
 		 *		We group them by file name instead of having a single NumberSet so that we can reresolve links in batches.  Image files
-		 *		that have the same file name will be candidates for the same group of links, so we can query those links into memory, 
-		 *		reresolve them all at once, and then move on to the next file name.  If we stored a single NumberSet of image file IDs 
+		 *		that have the same file name will be candidates for the same group of links, so we can query those links into memory,
+		 *		reresolve them all at once, and then move on to the next file name.  If we stored a single NumberSet of image file IDs
 		 *		we'd have to handle the files one by one and query for each file's links separately.
-		 *		
+		 *
 		 * Thread Safety:
-		 * 
+		 *
 		 *		You must hold <accessLock> in order to use this variable.
 		 */
 		protected SafeDictionary<string, IDObjects.NumberSet> newImageFileIDsByLCFileName;
 
 
 		/* var: allLinksAreNew
-		 * 
+		 *
 		 * Wheher we can optimize the change list by not tracking new topics in <newTopicIDsByEndingSymbol> or new files to
 		 * <newImageFileIDsByLCFileName>.
-		 * 
+		 *
 		 * This occurs when we're reparsing everything.  All links will be treated as new and added to <linksToResolve>, therefore we
 		 * don't need to track new <Topics> to see if they serve as better definitions for any unchanged links, because there aren't any.
 		 * However, once one link is resolved this is no longer the case, so it gets set to false as soon as one is picked.
-		 * 
+		 *
 		 * Thread Safety:
-		 * 
+		 *
 		 *		You must hold <accessLock> in order to use this variable.
 		 */
 		protected bool allLinksAreNew;

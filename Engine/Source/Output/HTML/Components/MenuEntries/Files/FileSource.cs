@@ -1,11 +1,11 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries.Files.FileSource
  * ____________________________________________________________________________
- * 
+ *
  * A container that represents a <Files.FileSource> in <Menu>.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -66,7 +66,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries.Files
 			}
 
 		/* Property: CondensedPathFromFileSource
-		 * If this file source had a folder condensed into it, this will be the relative path from the file source to that 
+		 * If this file source had a folder condensed into it, this will be the relative path from the file source to that
 		 * folder.
 		 */
 		public Path CondensedPathFromFileSource

@@ -1,57 +1,57 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.CodeDB.Manager
  * ____________________________________________________________________________
- * 
+ *
  * A class to manage information about various aspects of the code and its documentation.
- * 
- * 
+ *
+ *
  * Topic: Usage
- * 
+ *
  *		- Register any change watching objects you desire with <AddChangeWatcher()>.
- * 
+ *
  *		- Call <Engine.Instance.Start()> which will start this module.
- *		
+ *
  *		- Call <GetAccessor()> or <GetPriorityAccessor()> to create objects which will be used to manipulate the database.
  *		  Each thread must have their own.
- *		  
+ *
  *		- The change watchers will receive notifications of any modifications the accessors perform.  They can be added and
  *		  removed while the module is running.
- *		  
+ *
  *		- Each <Accessor> must be disposed before disposing of the database manager.
- *		
- *		- Disposing of the manager will automatically call <Cleanup()>, though if you have some idle time in which the 
+ *
+ *		- Disposing of the manager will automatically call <Cleanup()>, though if you have some idle time in which the
  *		  documentation is completely updated you may call it ahead of time.
- *		  
- * 
+ *
+ *
  * Multithreading: Thread Safety Notes
- * 
+ *
  *		> DatabaseLock -> ChangeWatchers
- * 
+ *
  *		Externally, this class is thread safe so long as each thread uses its own <Accessor>.
- *		
- *		For the <Accessor> implementation, all uses of the database connection must be managed by <DatabaseLock>.  
- *		<UsedTopicIDs> and <UsedContextIDs> are only relevant when making changes to the database, so they are 
+ *
+ *		For the <Accessor> implementation, all uses of the database connection must be managed by <DatabaseLock>.
+ *		<UsedTopicIDs> and <UsedContextIDs> are only relevant when making changes to the database, so they are
  *		managed by <DatabaseLock> as well.
- *		
- *		The change watchers, on the other hand, have their own lock since they may be accessed independently.  You may 
+ *
+ *		The change watchers, on the other hand, have their own lock since they may be accessed independently.  You may
  *		attempt to acquire the list with <LockChangeWatchers()> while holding <DatabaseLock>, but not vice versa.
- *		
- * 
+ *
+ *
  * Topic: Used IDs and Transactions
- * 
+ *
  *		At the moment, ID tracking number sets such as <UsedTopicIDs> don't support transactions correctly.  If you were to
  *		add a topic to the database as part of a transaction and then roll it back instead of committing it, the IDs would still
- *		be marked as used.  This has the potential to eat up all the available IDs if a database is used over a long period of time 
+ *		be marked as used.  This has the potential to eat up all the available IDs if a database is used over a long period of time
  *		without a full rebuild ever being performed.
- *		
- *		This is not being fixed, however, because it's assumed that rolling back transactions never happens in Natural Docs as 
+ *
+ *		This is not being fixed, however, because it's assumed that rolling back transactions never happens in Natural Docs as
  *		part of a normal path of execution.  Transactions are used mostly for performance and just as good practice in case
  *		this assumption should change in the future.  The only time it should occur is if the program crashes and it's triggered
- *		automatically.  However, in this case the database will be completely rebuilt on the next execution anyway so we don't 
+ *		automatically.  However, in this case the database will be completely rebuilt on the next execution anyway so we don't
  *		need to worry about it.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -64,11 +64,11 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 	{
 	public partial class Manager : Module, IStartupWatcher
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Function: Manager
 		 */
 		public Manager (Engine.Instance engineInstance) : base (engineInstance)
@@ -84,11 +84,11 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 			classIDReferenceChangeCache = new ReferenceChangeCache();
 			contextIDReferenceChangeCache = new ReferenceChangeCache();
-			
+
 			changeWatchers = new List<IChangeWatcher>();
 			}
-			
-			
+
+
 		/* Function: AddChangeWatcher
 		 * Adds an object to be notified about changes to the database.  This can be called both before and after
 		 * <Start()>.
@@ -100,8 +100,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				changeWatchers.Add(watcher);
 				}
 			}
-			
-			
+
+
 		/* Function: AddPriorityChangeWatcher
 		 * Adds an object to be notified about changes to the database.  Ones added with this function will receive
 		 * change notifications before ones that aren't.  This can be called both before and after <Start()>.
@@ -113,8 +113,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				changeWatchers.Insert(0, watcher);
 				}
 			}
-			
-			
+
+
 		/* Function: RemoveChangeWatcher
 		 * Removes a watcher so that they're no longer notified of changes to the database.  It doesn't matter which
 		 * function you used to add it with.  This can be called both before and after <Start()>.
@@ -133,12 +133,12 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 					}
 				}
 			}
-			
-			
+
+
 		/* Function: Start
-		 * 
+		 *
 		 * Dependencies:
-		 * 
+		 *
 		 *		- <Config.Manager> must be started before using the rest of the class.
 		 */
 		public bool Start (Errors.ErrorList errors)
@@ -146,14 +146,14 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			EngineInstance.AddStartupWatcher(this);
 
 			SQLite.API.Result sqliteResult = SQLite.API.Initialize();
-			
+
 			if (sqliteResult != SQLite.API.Result.OK)
 			    {  throw new SQLite.Exceptions.UnexpectedResult("Could not initialize SQLite.", sqliteResult);  }
 
 			Path databaseFile = EngineInstance.Config.WorkingDataFolder + "/CodeDB.nd";
 			connection = new SQLite.Connection();
 			bool success = false;
-			
+
 			if (!EngineInstance.HasIssues( StartupIssues.NeedToStartFresh |
 														 StartupIssues.FileIDsInvalidated |
 														 StartupIssues.CodeIDsInvalidated |
@@ -162,28 +162,28 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				try
 					{
 					connection.Open(databaseFile, false);
-					
+
 					Version databaseVersion = GetVersion();
-					
+
 					// In 2.2 the internal format of ClassStrings changed so the database needs to be regenerated.  Also,
 					// "AlternateLinkEndingSymbols" became "AlternativeLinkEndingSymbols".
 					if (databaseVersion.IsAtLeastRelease("2.2") ||
 						databaseVersion.IsSamePreRelease(Engine.Instance.Version))
-						{  
+						{
 						LoadSystemVariables();
 						success = true;
 						}
 					}
 				catch { }
 				}
-			
+
 			if (!success)
 				{
 				connection.Dispose();
-				
+
 				if (System.IO.File.Exists(databaseFile))
 					{  System.IO.File.Delete(databaseFile);  }
-					
+
 				connection.Open(databaseFile, true);
 				CreateDatabase();
 
@@ -192,12 +192,12 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 																   StartupIssues.NeedToReparseAllFiles,
 																   dontNotify: this);
 				}
-				
+
 			started = true;
 			return true;
 			}
-			
-			
+
+
 		/* Function: GetAccessor
 		 * Creates an <Accessor> for manipulating the database.  Each thread must have its own.
 		 */
@@ -205,8 +205,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			{
 			return new Accessor(this, connection.CreateAnotherConnection(), false);
 			}
-			
-			
+
+
 		/* Function: GetPriorityAccessor
 		 * Creates an <Accessor> for manipulating the database which takes priority over other Accessors whenever possible.  This
 		 * is useful for interface related threads that should have greater priority than background workers.
@@ -226,13 +226,13 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				{
 				if (databaseLock.IsLocked)
 					{  throw new Exception("Attempted to dispose of database when there were still locks held.");  }
-			
+
 				if (started)
 					{
 					Cleanup(Delegates.NeverCancel);
 					SaveSystemVariablesAndVersion();
 					}
-					
+
 				connection.Dispose();
 				connection = null;
 
@@ -244,20 +244,20 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 				classIDReferenceChangeCache.Clear();
 				contextIDReferenceChangeCache.Clear();
-				
+
 				SQLite.API.Result shutdownResult = SQLite.API.ShutDown();
 
 				if (shutdownResult != SQLite.API.Result.OK)
 					{  throw new SQLite.Exceptions.UnexpectedResult("Could not shut down SQLite.", shutdownResult);  }
 				}
 			}
-			
-			
+
+
 		/* Function: Cleanup
-		 * 
+		 *
 		 * Cleans up any stray data associated with the database, assuming all documentation is up to date.  You can pass a
 		 * <CancelDelegate> if you'd like to interrupt this process early.
-		 * 
+		 *
 		 * <Dispose()> will call this function automatically so it's not strictly necessary to call it manually, though it's good
 		 * practice to.  If you have idle time in which the documentation is completely up to date, calling this then instead of
 		 * leaving it for <Dispose()> will allow the engine to shut down faster.
@@ -286,24 +286,24 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 										StartupIssues.FileIDsInvalidated )) != 0)
 				{
 				ResetDatabase();
-				EngineInstance.AddStartupIssues( StartupIssues.NeedToReparseAllFiles, 
+				EngineInstance.AddStartupIssues( StartupIssues.NeedToReparseAllFiles,
 																   dontNotify: this );
 				}
 			}
 
 		public void OnStartPossiblyLongOperation (string operationName)
 			{  }
-		
+
 		public void OnEndPossiblyLongOperation ()
 			{  }
 
 
-			
+
 		// Group: Accessor Properties
 		// These properties are internal and are only meant for use by <Accessor>.
 		// __________________________________________________________________________
-	
-		
+
+
 		/* Property: DatabaseLock
 		 * The <CodeDB.Lock> used to manage access to this database.  It covers properties like <UsedTopicIDs> in addition
 		 * to the SQLite database itself.
@@ -313,7 +313,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			get
 				{  return databaseLock;  }
 			}
-			
+
 		/* Property: UsedTopicIDs
 		 * An <IDObjects.NumberSet> of all the used topic IDs in <CodeDB.Topics>.  Its use is governed by <DatabaseLock>.
 		 */
@@ -322,7 +322,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			get
 				{  return usedTopicIDs;  }
 			}
-			
+
 		/* Property: UsedLinkIDs
 		 * An <IDObjects.NumberSet> of all the used link IDs in <CodeDB.Links>.  Its use is governed by <DatabaseLock>.
 		 */
@@ -331,7 +331,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			get
 				{  return usedLinkIDs;  }
 			}
-			
+
 		/* Property: UsedImageLinkIDs
 		 * An <IDObjects.NumberSet> of all the used image link IDs in <CodeDB.ImageLinks>.  Its use is governed by <DatabaseLock>.
 		 */
@@ -340,7 +340,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			get
 				{  return usedImageLinkIDs;  }
 			}
-			
+
 		/* Property: UsedClassIDs
 		 * An <IDObjects.NumberSet> of all the used class IDs in <CodeDB.Classes>.  Its use is governed by <DatabaseLock>.
 		 */
@@ -376,28 +376,28 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			get
 				{  return contextIDReferenceChangeCache;  }
 			}
-			
-			
-			
+
+
+
 		// Group: Accessor Functions
 		// These functions are internal and are only meant for use by <Accessor>.
 		// __________________________________________________________________________
-			
-			
+
+
 		/* Function: LockChangeWatchers
-		 * Gets the list of objects watching the database for changes, which requires a lock.  The list will never be null.  You can 
+		 * Gets the list of objects watching the database for changes, which requires a lock.  The list will never be null.  You can
 		 * attempt to get this lock while holding <DatabaseLock>, but never the other way around.  Release it with
 		 * <ReleaseChangeWatchers()>, after which the object can no longer be used in a thread safe manner.
 		 */
 		internal IList<IChangeWatcher> LockChangeWatchers ()
 			{
 			System.Threading.Monitor.Enter(changeWatchers);
-			
+
 			// The list can only be changed by the functions directly in the module.
 			return changeWatchers.AsReadOnly();
 			}
-			
-			
+
+
 		/* Function: ReleaseChangeWatchers
 		 * Releases the lock on the list obtained with <LockChangeWatchers()>.
 		 */
@@ -405,21 +405,21 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			{
 			System.Threading.Monitor.Exit(changeWatchers);
 			}
-			
-			
-						
+
+
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
-		
+
+
 		/* var: connection
 		 */
 		protected SQLite.Connection connection;
-		
+
 		/* var: databaseLock
 		 */
 		protected Lock databaseLock;
-		
+
 		/* var: usedTopicIDs
 		 */
 		protected IDObjects.NumberSet usedTopicIDs;
@@ -444,17 +444,17 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		 * A cache of all the reference count changes to be applied to <CodeDB.Classes>.
 		 */
 		protected ReferenceChangeCache classIDReferenceChangeCache;
-		
+
 		/* var: contextIDReferenceChangeCache
 		 * A cache of all the reference count changes to be applied to <CodeDB.Contexts>.
 		 */
 		protected ReferenceChangeCache contextIDReferenceChangeCache;
-		
+
 		/* var: changeWatchers
 		 * A list of objects that are watching the database for changes.  If there are none, the list will be empty
 		 * rather than null.
 		 */
 		protected List<IChangeWatcher> changeWatchers;
-		
+
 		}
 	}

@@ -1,7 +1,7 @@
 ﻿/*
 	Include in output:
 
-	This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+	This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 	Natural Docs is licensed under version 3 of the GNU Affero General Public
 	License (AGPL).  Refer to License.txt or www.naturaldocs.org for the
 	complete details.
@@ -117,7 +117,7 @@ var NDContentPage = new function ()
 		return -1;
 		};
 
-	
+
 	/* Function: CalculateWideFormPrototypeWidths
 		Goes through all the wide form prototypes and records their widths into <wideFormPrototypeWidths>.
 	*/
@@ -132,13 +132,13 @@ var NDContentPage = new function ()
 				var id = this.GetPrototypeIDNumber(prototypes[i]);
 
 				if (id != -1)
-					{  
+					{
 					var tables = prototypes[i].getElementsByTagName("table");
 					var maxWidth = 0;
 
 					for (var t = 0; t < tables.length; t++)
 						{
-						var tableWidth = tables[t].offsetWidth;  
+						var tableWidth = tables[t].offsetWidth;
 
 						if (tableWidth > maxWidth)
 							{  maxWidth = tableWidth;  }
@@ -296,8 +296,8 @@ var NDContentPage = new function ()
 
 		// If the tooltip goes off the edge of the page, shift it left.
 		if (x + this.toolTipHolder.offsetWidth + $ToolTipHorizontalMargin > document.body.offsetWidth)
-			{  
-			x = document.body.offsetWidth - this.toolTipHolder.offsetWidth - $ToolTipHorizontalMargin;  
+			{
+			x = document.body.offsetWidth - this.toolTipHolder.offsetWidth - $ToolTipHorizontalMargin;
 
 			// If x is now too large for the page, force it to the page width.
 			if (x < $ToolTipHorizontalMargin)
@@ -362,8 +362,8 @@ var NDContentPage = new function ()
 			}
 		};
 
-	
-	
+
+
 	// Group: Variables
 	// ________________________________________________________________________
 
@@ -380,7 +380,7 @@ var NDContentPage = new function ()
 	/* var: toolTips
 		A hash mapping topic IDs to the complete HTML of the tooltip.  Will be undefined if they haven't
 		been loaded yet.
-	*/		
+	*/
 
 	/* var: showingToolTip
 		The topic ID of the tooltip being displayed, or undefined if none.

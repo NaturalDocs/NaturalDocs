@@ -1,17 +1,17 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.ClassPrototype
  * ____________________________________________________________________________
- * 
+ *
  * A reusable class for building HTML class prototypes.
- * 
- * 
+ *
+ *
  * Threading: Not Thread Safe
- * 
+ *
  *		This class is only designed to be used by one thread at a time.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -51,14 +51,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: BuildClassPrototype
-		 * 
+		 *
 		 * Builds the HTML for the passed prototype.
-		 * 
+		 *
 		 * In order to have an inheritance diagram, links must contain the all the ClassParent links from the prototype's class
 		 * to its parents, and all the ClassParent links from child classes to the prototype's class.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- The <Context>'s topic and page must be set.
 		 */
 		public string BuildClassPrototype (ParsedClassPrototype parsedPrototype, Context context, bool isToolTip, IList<Link> links = null,
@@ -71,14 +71,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: AppendClassPrototype
-		 * 
+		 *
 		 * Builds the HTML for the passed prototype and appends it to the passed StringBuilder.
-		 * 
+		 *
 		 * In order to have an inheritance diagram, links must contain the all the ClassParent links from the prototype's class
 		 * to its parents, and all the ClassParent links from child classes to the prototype's class.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- The <Context>'s topic and page must be set.
 		 */
 		public void AppendClassPrototype (ParsedClassPrototype parsedPrototype, Context context, bool isToolTip, StringBuilder output,
@@ -96,7 +96,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				{  language.Parser.SyntaxHighlight(parsedPrototype);  }
 
 			if (isToolTip)
-			    {  
+			    {
 			    output.Append("<div class=\"NDClassPrototype\" id=\"NDClassPrototype" + context.Topic.TopicID + "\">");
 			        AppendCurrentClassPrototype(output);
 			    output.Append("</div>");
@@ -117,7 +117,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					{  output.Append(" HasChildren");  }
 
 				output.Append("\" id=\"NDClassPrototype" + context.Topic.TopicID + "\">");
-				
+
 
 				// Parents
 
@@ -242,7 +242,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 						foundMatch = true;
 
-						// Keep going, don't break on the first match.  It's possible for multiple prototype parents to share 
+						// Keep going, don't break on the first match.  It's possible for multiple prototype parents to share
 						// the same link, such as IList and IList<T>.
 						}
 					}
@@ -340,8 +340,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			foreach (var linkTarget in linkTargets)
 				{
 				if (linkTarget.DefinesClass && childClassIDs.Contains(linkTarget.ClassID))
-					{  
-					childTopics.Add(linkTarget);  
+					{
+					childTopics.Add(linkTarget);
 					childClassIDs.Remove(linkTarget.ClassID);
 					}
 				}
@@ -352,7 +352,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			// Now sort the child topics by symbol.
 
-			childTopics.Sort( 
+			childTopics.Sort(
 				delegate(Topics.Topic a, Topics.Topic b)
 					{
 					return a.Symbol.CompareTo(b.Symbol, !language.CaseSensitive);
@@ -371,12 +371,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			string memberOperator;
 
 			if (parent.targetTopic != null)
-				{  
-				parentCommentType = EngineInstance.CommentTypes.FromID(parent.targetTopic.CommentTypeID);  
+				{
+				parentCommentType = EngineInstance.CommentTypes.FromID(parent.targetTopic.CommentTypeID);
 				memberOperator = language.MemberOperator;
 				}
 			else
-				{  
+				{
 				parentCommentType = EngineInstance.CommentTypes.FromKeyword("class", language.ID);
 				memberOperator = ".";
 				}
@@ -398,7 +398,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			TokenIterator start, end;
 
-			if (parent.prototypeIndex != -1 && 
+			if (parent.prototypeIndex != -1 &&
 				parsedClassPrototype.GetParentModifiers(parent.prototypeIndex, out start, out end) == true)
 				{
 				output.Append("<div class=\"CPModifiers\">");
@@ -496,7 +496,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				{
 				StringBuilder modifiersOutput = new StringBuilder();
 				TokenIterator partial;
-				
+
 				bool hasPartial = startModifiers.Tokenizer.FindTokenBetween("partial", language.CaseSensitive, startModifiers, endModifiers,
 																										out partial);
 
@@ -533,11 +533,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				// Add the keyword if it isn't "class"
 				if (keyword != "class")
-					{  
+					{
 					if (modifiersOutput.Length > 0)
 						{  modifiersOutput.Append(' ');  }
 
-					AppendSyntaxHighlightedText(startKeyword, endKeyword, modifiersOutput);  
+					AppendSyntaxHighlightedText(startKeyword, endKeyword, modifiersOutput);
 					}
 
 				if (modifiersOutput.Length > 0)
@@ -591,7 +591,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 */
 		protected void AppendChildClassPrototype (Topics.Topic childTopic, StringBuilder output)
 			{
-			CommentType childCommentType = EngineInstance.CommentTypes.FromID(childTopic.CommentTypeID);  
+			CommentType childCommentType = EngineInstance.CommentTypes.FromID(childTopic.CommentTypeID);
 			string memberOperator = language.MemberOperator;
 
 			AppendOpeningLinkTag(childTopic, output, "CPEntry Child T" + childCommentType.SimpleIdentifier);
@@ -647,7 +647,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* __________________________________________________________________________
-		 * 
+		 *
 		 * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.ClassPrototype.Parent
 		 * __________________________________________________________________________
 		 */
@@ -683,4 +683,3 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			}
 		}
 	}
-

@@ -1,11 +1,11 @@
-/* 
+/*
  * Class: CodeClear.NaturalDocs.Engine.Config.Targets.SourceFolder
  * ____________________________________________________________________________
- * 
+ *
  * The configuration of a source folder input target.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -19,11 +19,11 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 	{
 	public class SourceFolder : Targets.Input
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		public SourceFolder (PropertyLocation propertyLocation) : base (Files.InputType.Source, propertyLocation)
 			{
 			folder = null;
@@ -54,7 +54,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 
 			return (folder == (other as SourceFolder).folder);
 			}
-			
+
 		public override bool Validate (ErrorList errorList, int targetIndex)
 			{
 			bool valid = true;
@@ -78,7 +78,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 						encodingRule.Folder != folder &&
 						folder.Contains(encodingRule.Folder) == false)
 						{
-						errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.EncodingFolderNotPartOfSourceFolder(ruleFolder, sourceFolder)", 
+						errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.EncodingFolderNotPartOfSourceFolder(ruleFolder, sourceFolder)",
 															 encodingRule.Folder, folder),
 											 encodingRule.PropertyLocation );
 						valid = false;
@@ -93,21 +93,21 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 			{
 			string prefix;
 			List<string> segments;
-			
+
 			folder.Split(out prefix, out segments);
-			
+
 			if (segments.Count > 0)
-				{  
+				{
 				// The name gets set to the last segment by default.  However, we also walk down the list to see if there are any
 				// that don't match the ignored segment regex.  If there is, we use that instead.
 				int nameIndex = segments.Count - 1;
 				name = segments[nameIndex];
 
 				Regex.Config.DefaultNameIgnoredSegment ignoredSegmentRegex = new Regex.Config.DefaultNameIgnoredSegment();
-				
+
 				while (nameIndex >= 0 && ignoredSegmentRegex.IsMatch(segments[nameIndex]))
 					{  nameIndex--;  }
-					
+
 				if (nameIndex >= 0)
 					{  name = segments[nameIndex];  }
 				else
@@ -179,10 +179,10 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		    }
 
 
-		
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
+
 
 		protected AbsolutePath folder;
 		protected string name;

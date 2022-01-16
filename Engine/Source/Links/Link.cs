@@ -1,11 +1,11 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Links.Link
  * ____________________________________________________________________________
- * 
+ *
  * A class encapsulating all the information available about a link.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -21,9 +21,9 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 		// Group: Types
 		// __________________________________________________________________________
-		
+
 		/* Enum: IgnoreFields
-		 * 
+		 *
 		 * When querying links from the database, not all fields may be needed in all circumstances.  This is a
 		 * bitfield that allows you to specify which fields can be ignored.  This is also stored in the object so that,
 		 * in debug builds, if you try to access any of these fields an exception will be thrown.
@@ -52,8 +52,8 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		public Link ()
 			{
 			linkID = 0;
@@ -72,8 +72,8 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 			ignoredFields = IgnoreFields.None;
 			}
-			
-			
+
+
 		/* Function: SameIdentifyingPropertiesAs
 		 * Returns whether the identifying properties of the link (<Type>, <TextOrSymbol>, <Context>, <ClassString>, <FileID>,
 		 * <LanguageID>) are the same as the passed one.
@@ -85,9 +85,9 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 
 		/* Function: CompareIdentifyingPropertiesTo
-		 * 
-		 * Compares the identifying properties of the link (<Type>, <TextOrSymbol>, <Context>, <ClassString>, <FileID>, 
-		 * <LanguageID>) and returns a value similar to a string comparison result which is suitable for sorting a list of Links.  It 
+		 *
+		 * Compares the identifying properties of the link (<Type>, <TextOrSymbol>, <Context>, <ClassString>, <FileID>,
+		 * <LanguageID>) and returns a value similar to a string comparison result which is suitable for sorting a list of Links.  It
 		 * will return zero if all the properties are equal.
 		 */
 		public int CompareIdentifyingPropertiesTo (Link other)
@@ -111,7 +111,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				else
 					{  result = -1;  }
 				}
-			else 
+			else
 				{
 				if (other.context == null)
 					{  result = 1;  }
@@ -129,7 +129,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				else
 					{  result = -1;  }
 				}
-			else 
+			else
 				{
 				if (other.classString == null)
 					{  result = 1;  }
@@ -151,7 +151,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 
 		/* Function: CopyNonIdentifyingPropertiesFrom
-		 * Makes this link copy all the properties not tested by <CompareIdentifyingPropertiesTo()> and 
+		 * Makes this link copy all the properties not tested by <CompareIdentifyingPropertiesTo()> and
 		 * <SameIdentifyingPropertiesAs()> from the passed link.
 		 */
 		public void CopyNonIdentifyingPropertiesFrom (Link other)
@@ -171,60 +171,60 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 		// Group: Properties
 		// __________________________________________________________________________
-		
-			
+
+
 		/* Property: LinkID
 		 * The link's ID number, or zero if it hasn't been set.
 		 */
 		public int LinkID
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.LinkID) != 0)
 					{  throw new InvalidOperationException("Tried to access LinkID when that field was ignored.");  }
 				#endif
 
-				return linkID;  
+				return linkID;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.LinkID) != 0)
 					{  throw new InvalidOperationException("Tried to access LinkID when that field was ignored.");  }
 				#endif
 
-				linkID = value;  
+				linkID = value;
 				}
 			}
-			
-			
+
+
 		/* Property: Type
 		 * The links' type.
 		 */
 		public LinkType Type
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.Type) != 0)
 					{  throw new InvalidOperationException("Tried to access Type when that field was ignored.");  }
 				#endif
 
-				return type;  
+				return type;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.Type) != 0)
 					{  throw new InvalidOperationException("Tried to access Type when that field was ignored.");  }
 				#endif
 
-				type = value;  
+				type = value;
 				}
 			}
-			
-			
+
+
 		/* Property: TextOrSymbol
 		 * If <Type> is <LinkType.NaturalDocs>, this will be the plain text of the link.  If it's any other <LinkType>, this will
 		 * be the exported <Symbols.SymbolString> of the link text.  If the calling code knows exactly which type of link it
@@ -233,22 +233,22 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		public string TextOrSymbol
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.TextOrSymbol) != 0)
 					{  throw new InvalidOperationException("Tried to access TextOrSymbol when that field was ignored.");  }
 				#endif
 
-				return textOrSymbol;  
+				return textOrSymbol;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.TextOrSymbol) != 0)
 					{  throw new InvalidOperationException("Tried to access TextOrSymbol when that field was ignored.");  }
 				#endif
 
-				textOrSymbol = value;  
+				textOrSymbol = value;
 				}
 			}
 
@@ -317,30 +317,30 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				textOrSymbol = value.ToString();
 				}
 			}
-			
-			
+
+
 		/* Property: Context
 		 * The context the link appears in.
 		 */
 		public Symbols.ContextString Context
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.Context) != 0)
 					{  throw new InvalidOperationException("Tried to access Context when that field was ignored.");  }
 				#endif
 
-				return context;  
+				return context;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.Context) != 0)
 					{  throw new InvalidOperationException("Tried to access Context when that field was ignored.");  }
 				#endif
 
-				context = value;  
+				context = value;
 				}
 			}
 
@@ -351,22 +351,22 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		public int ContextID
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.ContextID) != 0)
 					{  throw new InvalidOperationException("Tried to access ContextID when that field was ignored.");  }
 				#endif
 
-				return contextID;  
+				return contextID;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.ContextID) != 0)
 					{  throw new InvalidOperationException("Tried to access ContextID when that field was ignored.");  }
 				#endif
 
-				contextID = value;  
+				contextID = value;
 				}
 			}
 
@@ -379,56 +379,56 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			get
 				{  return (contextID != 0 || context == null);  }
 			}
-			
-			
+
+
 		/* Property: FileID
 		 * The ID number of the file that defines this link
 		 */
 		public int FileID
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.FileID) != 0)
 					{  throw new InvalidOperationException("Tried to access FileID when that field was ignored.");  }
 				#endif
 
-				return fileID;  
+				return fileID;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.FileID) != 0)
 					{  throw new InvalidOperationException("Tried to access FileID when that field was ignored.");  }
 				#endif
 
-				fileID = value;  
+				fileID = value;
 				}
 			}
-			
-			
+
+
 		/* Property: ClassString
 		 * The class the link appears in.
 		 */
 		public Symbols.ClassString ClassString
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.ClassString) != 0)
 					{  throw new InvalidOperationException("Tried to access ClassString when that field was ignored.");  }
 				#endif
 
-				return classString;  
+				return classString;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.ClassString) != 0)
 					{  throw new InvalidOperationException("Tried to access ClassString when that field was ignored.");  }
 				#endif
 
-				classString = value;  
+				classString = value;
 				}
 			}
 
@@ -439,22 +439,22 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		public int ClassID
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.ClassID) != 0)
 					{  throw new InvalidOperationException("Tried to access ClassID when that field was ignored.");  }
 				#endif
 
-				return classID;  
+				return classID;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.ClassID) != 0)
 					{  throw new InvalidOperationException("Tried to access ClassID when that field was ignored.");  }
 				#endif
 
-				classID = value;  
+				classID = value;
 				}
 			}
 
@@ -467,30 +467,30 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			get
 				{  return (classID != 0 || classString == null);  }
 			}
-			
-			
+
+
 		/* Property: LanguageID
 		 * The ID number of the language of the topic that defines this link.
 		 */
 		public int LanguageID
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.LanguageID) != 0)
 					{  throw new InvalidOperationException("Tried to access LanguageID when that field was ignored.");  }
 				#endif
 
-				return languageID;  
+				return languageID;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.LanguageID) != 0)
 					{  throw new InvalidOperationException("Tried to access LanguageID when that field was ignored.");  }
 				#endif
 
-				languageID = value;  
+				languageID = value;
 				}
 			}
 
@@ -502,22 +502,22 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		public Symbols.EndingSymbol EndingSymbol
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.EndingSymbol) != 0)
 					{  throw new InvalidOperationException("Tried to access EndingSymbol when that field was ignored.");  }
 				#endif
 
-				return endingSymbol;  
+				return endingSymbol;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.EndingSymbol) != 0)
 					{  throw new InvalidOperationException("Tried to access EndingSymbol when that field was ignored.");  }
 				#endif
 
-				endingSymbol = value;  
+				endingSymbol = value;
 				}
 			}
 
@@ -538,22 +538,22 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		public int TargetTopicID
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.TargetTopicID) != 0)
 					{  throw new InvalidOperationException("Tried to access TargetTopicID when that field was ignored.");  }
 				#endif
 
-				return targetTopicID;  
+				return targetTopicID;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.TargetTopicID) != 0)
 					{  throw new InvalidOperationException("Tried to access TargetTopicID when that field was ignored.");  }
 				#endif
 
-				targetTopicID = value;  
+				targetTopicID = value;
 				}
 			}
 
@@ -564,22 +564,22 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		public int TargetClassID
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.TargetClassID) != 0)
 					{  throw new InvalidOperationException("Tried to access TargetClassID when that field was ignored.");  }
 				#endif
 
-				return targetClassID;  
+				return targetClassID;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.TargetClassID) != 0)
 					{  throw new InvalidOperationException("Tried to access TargetClassID when that field was ignored.");  }
 				#endif
 
-				targetClassID = value;  
+				targetClassID = value;
 				}
 			}
 
@@ -590,25 +590,25 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		public long TargetScore
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.TargetScore) != 0)
 					{  throw new InvalidOperationException("Tried to access TargetScore when that field was ignored.");  }
 				#endif
 
-				return targetScore;  
+				return targetScore;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.TargetScore) != 0)
 					{  throw new InvalidOperationException("Tried to access TargetScore when that field was ignored.");  }
 				#endif
 
-				targetScore = value;  
+				targetScore = value;
 				}
-			}			
-			
+			}
+
 
 		/* Property: TargetInterpretationIndex
 		 * If this link is resolved and it's a Natural Docs link, the index into its <LinkInterpretations> that was used.
@@ -616,7 +616,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		public int TargetInterpretationIndex
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.TargetScore) != 0)
 					{  throw new InvalidOperationException("Tried to access TargetInterpretationIndex when TargetScore was ignored.");  }
@@ -630,18 +630,18 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 				return 63 - (int)( (targetScore & 0x000000001F800000) >> 23 );
 				}
-			}			
-			
+			}
+
 
 		/* Property: IgnoredFields
-		 * 
+		 *
 		 * When querying links from the database, not all fields may be needed in all situations.  The database
 		 * may accept <IgnoreFields> flags to skip retrieving parts of them.  If that's done, the flags should also
 		 * be set here so that in debug builds an exception will be thrown if you try to access those properties.
-		 * 
+		 *
 		 * IgnoredFields defaults to <IgnoreFields.None> so that links created by parsing don't have to worry
 		 * about them.
-		 * 
+		 *
 		 */
 		public IgnoreFields IgnoredFields
 			{
@@ -652,16 +652,16 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			}
 
 
-		
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
-		
+
+
 		/* var: linkID
 		 * The links's ID number, or zero if not specified.
 		 */
 		protected int linkID;
-		
+
 		/* var: type
 		 * The <LinkType>.
 		 */
@@ -672,7 +672,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		 * it will be the exported <Symbols.SymbolString> of the link text.
 		 */
 		protected string textOrSymbol;
-		
+
 		/* var: context
 		 * The context the link appears in.
 		 */
@@ -682,7 +682,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		 * The ID of <context> if known, or zero if not.
 		 */
 		protected int contextID;
-		
+
 		/* var: fileID
 		 * The ID number of the file that defines this link.
 		 */
@@ -697,7 +697,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		 * The ID of <classString> if known, or zero if not.
 		 */
 		protected int classID;
-		
+
 		/* var: languageID
 		 * The ID number of the language of the topic that defines this link.
 		 */
@@ -723,7 +723,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		 * If <targetTopicID> is set, the numeric score of the match.
 		 */
 		protected long targetScore;
-				
+
 		/* var: ignoredFields
 		 * The <IgnoreFields> applied to this object.
 		 */

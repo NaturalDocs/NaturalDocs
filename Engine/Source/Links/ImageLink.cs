@@ -1,11 +1,11 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Links.ImageLink
  * ____________________________________________________________________________
- * 
+ *
  * A class encapsulating all the information available about an image link, like "(see image.jpg)".
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -21,9 +21,9 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 		// Group: Types
 		// __________________________________________________________________________
-		
+
 		/* Enum: IgnoreFields
-		 * 
+		 *
 		 * When querying links from the database, not all fields may be needed in all circumstances.  This is a
 		 * bitfield that allows you to specify which fields can be ignored.  This is also stored in the object so that,
 		 * in debug builds, if you try to access any of these fields an exception will be thrown.
@@ -47,8 +47,8 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		public ImageLink ()
 			{
 			imageLinkID = 0;
@@ -61,8 +61,8 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			targetScore = 0;
 			ignoredFields = IgnoreFields.None;
 			}
-			
-			
+
+
 		/* Function: SameIdentifyingPropertiesAs
 		 * Returns whether the identifying properties of the link (<OriginalText>, <FileID>, <ClassString>) are the same as
 		 * the passed one.
@@ -74,9 +74,9 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 
 		/* Function: CompareIdentifyingPropertiesTo
-		 * 
+		 *
 		 * Compares the identifying properties of the link (<OriginalText>, <FileID>, <ClassString>) and returns a value similar
-		 * to a string  comparison result which is suitable for sorting a list of ImageLinks.  It will return zero if all the properties 
+		 * to a string  comparison result which is suitable for sorting a list of ImageLinks.  It will return zero if all the properties
 		 * are equal.
 		 */
 		public int CompareIdentifyingPropertiesTo (ImageLink other)
@@ -98,7 +98,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				else
 					{  return -1;  }
 				}
-			else 
+			else
 				{
 				if (other.classString == null)
 					{  return 1;  }
@@ -109,7 +109,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 
 		/* Function: CopyNonIdentifyingPropertiesFrom
-		 * Makes this link copy all the properties not tested by <CompareIdentifyingPropertiesTo()> and 
+		 * Makes this link copy all the properties not tested by <CompareIdentifyingPropertiesTo()> and
 		 * <SameIdentifyingPropertiesAs()> from the passed link.
 		 */
 		public void CopyNonIdentifyingPropertiesFrom (ImageLink other)
@@ -127,56 +127,56 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 		// Group: Properties
 		// __________________________________________________________________________
-		
-			
+
+
 		/* Property: ImageLinkID
 		 * The link's ID number, or zero if it hasn't been set.
 		 */
 		public int ImageLinkID
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.ImageLinkID) != 0)
 					{  throw new InvalidOperationException("Tried to access ImageLinkID when that field was ignored.");  }
 				#endif
 
-				return imageLinkID;  
+				return imageLinkID;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.ImageLinkID) != 0)
 					{  throw new InvalidOperationException("Tried to access ImageLinkID when that field was ignored.");  }
 				#endif
 
-				imageLinkID = value;  
+				imageLinkID = value;
 				}
 			}
-			
-			
+
+
 		/* Property: OriginalText
 		 * The plain text of the link, such as "(see image.jpg)".
 		 */
 		public string OriginalText
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.OriginalText) != 0)
 					{  throw new InvalidOperationException("Tried to access OriginalText when that field was ignored.");  }
 				#endif
 
-				return originalText;  
+				return originalText;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.OriginalText) != 0)
 					{  throw new InvalidOperationException("Tried to access OriginalText when that field was ignored.");  }
 				#endif
 
-				originalText = value;  
+				originalText = value;
 				}
 			}
 
@@ -187,22 +187,22 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		public Path Path
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.Path) != 0)
 					{  throw new InvalidOperationException("Tried to access Path when that field was ignored.");  }
 				#endif
 
-				return path;  
+				return path;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.Path) != 0)
 					{  throw new InvalidOperationException("Tried to access Path when that field was ignored.");  }
 				#endif
 
-				path = value;  
+				path = value;
 				}
 			}
 
@@ -213,65 +213,65 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		public Path FileName
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.Path) != 0)
 					{  throw new InvalidOperationException("Tried to access FileName when Path was ignored.");  }
 				#endif
 
-				return path.NameWithoutPath;  
+				return path.NameWithoutPath;
 				}
 			}
-			
-			
+
+
 		/* Property: FileID
 		 * The ID number of the file that defines this link
 		 */
 		public int FileID
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.FileID) != 0)
 					{  throw new InvalidOperationException("Tried to access FileID when that field was ignored.");  }
 				#endif
 
-				return fileID;  
+				return fileID;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.FileID) != 0)
 					{  throw new InvalidOperationException("Tried to access FileID when that field was ignored.");  }
 				#endif
 
-				fileID = value;  
+				fileID = value;
 				}
 			}
-			
-			
+
+
 		/* Property: ClassString
 		 * The class the link appears in.
 		 */
 		public Symbols.ClassString ClassString
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.ClassString) != 0)
 					{  throw new InvalidOperationException("Tried to access ClassString when that field was ignored.");  }
 				#endif
 
-				return classString;  
+				return classString;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.ClassString) != 0)
 					{  throw new InvalidOperationException("Tried to access ClassString when that field was ignored.");  }
 				#endif
 
-				classString = value;  
+				classString = value;
 				}
 			}
 
@@ -284,30 +284,30 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			get
 				{  return (classID != 0 || classString == null);  }
 			}
-			
-			
+
+
 		/* Property: ClassID
 		 * The ID of the class that defines this link.
 		 */
 		public int ClassID
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.ClassID) != 0)
 					{  throw new InvalidOperationException("Tried to access ClassID when that field was ignored.");  }
 				#endif
 
-				return classID;  
+				return classID;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.ClassID) != 0)
 					{  throw new InvalidOperationException("Tried to access ClassID when that field was ignored.");  }
 				#endif
 
-				classID = value;  
+				classID = value;
 				}
 			}
 
@@ -328,22 +328,22 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		public int TargetFileID
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.TargetFileID) != 0)
 					{  throw new InvalidOperationException("Tried to access TargetFileID when that field was ignored.");  }
 				#endif
 
-				return targetFileID;  
+				return targetFileID;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.TargetFileID) != 0)
 					{  throw new InvalidOperationException("Tried to access TargetFileID when that field was ignored.");  }
 				#endif
 
-				targetFileID = value;  
+				targetFileID = value;
 				}
 			}
 
@@ -354,35 +354,35 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		public int TargetScore
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.TargetScore) != 0)
 					{  throw new InvalidOperationException("Tried to access TargetScore when that field was ignored.");  }
 				#endif
 
-				return targetScore;  
+				return targetScore;
 				}
 			set
-				{  
+				{
 				#if DEBUG
 				if ((ignoredFields & IgnoreFields.TargetScore) != 0)
 					{  throw new InvalidOperationException("Tried to access TargetScore when that field was ignored.");  }
 				#endif
 
-				targetScore = value;  
+				targetScore = value;
 				}
-			}			
-			
+			}
+
 
 		/* Property: IgnoredFields
-		 * 
+		 *
 		 * When querying links from the database, not all fields may be needed in all situations.  The database
 		 * may accept <IgnoreFields> flags to skip retrieving parts of them.  If that's done, the flags should also
 		 * be set here so that in debug builds an exception will be thrown if you try to access those properties.
-		 * 
+		 *
 		 * IgnoredFields defaults to <IgnoreFields.None> so that links created by parsing don't have to worry
 		 * about them.
-		 * 
+		 *
 		 */
 		public IgnoreFields IgnoredFields
 			{
@@ -393,21 +393,21 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			}
 
 
-		
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
-		
+
+
 		/* var: imageLinkID
 		 * The links's ID number, or zero if not specified.
 		 */
 		protected int imageLinkID;
-		
+
 		/* var: originalText
 		 * The plain text of the link, such as "(see image.jpg)"
 		 */
 		protected string originalText;
-		
+
 		/* var: path
 		 * The path of the link.  In "(see folder\image.jpg)" this would be "folder\image.jpg".
 		 */
@@ -427,7 +427,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		 * The ID of <classString> if known, or zero if not.
 		 */
 		protected int classID;
-		
+
 		/* var: targetFileID
 		 * The ID number of the file the link resolves to, or zero if none.
 		 */
@@ -437,7 +437,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		 * If <targetFileID> is set, the numeric score of the match.
 		 */
 		protected int targetScore;
-				
+
 		/* var: ignoredFields
 		 * The <IgnoreFields> applied to this object.
 		 */

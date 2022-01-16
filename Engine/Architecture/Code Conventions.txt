@@ -4,8 +4,8 @@ _______________________________________________________________________________
 
 
 Topic: WorkOn Functions
-	
-	Functions prefixed with "WorkOn" are meant for worker thread processing, such as WorkOnAddingAllFiles().  They have 
+
+	Functions prefixed with "WorkOn" are meant for worker thread processing, such as WorkOnAddingAllFiles().  They have
 	<CancelDelegate> parameters so they can be interrupted, and are designed so that more than one thread can call the
 	function and they will split the workload between them.  However, if the multithreading model is not desired, they can
 	be called from a single thread with <Delegates.NeverCancel> and it will behave as a normal function.
@@ -13,8 +13,8 @@ Topic: WorkOn Functions
 
 Topic: Dependency Comments
 
-	Sometimes functions depend on assumed behaviors in other functions or implementation details that may not be obvious 
-	from 	the outside.  Normally you would want to avoid this but sometimes it may be important for efficiency.  When this 
+	Sometimes functions depend on assumed behaviors in other functions or implementation details that may not be obvious
+	from 	the outside.  Normally you would want to avoid this but sometimes it may be important for efficiency.  When this
 	happens, *both* functions *must* contain a dependency comment:
 
 	> void FunctionA ()
@@ -29,8 +29,8 @@ Topic: Dependency Comments
 	>    ...
 	>    }
 
-	Each comment *must* explicitly name the other functions involved and explain the behavior.  This is so when someone 
+	Each comment *must* explicitly name the other functions involved and explain the behavior.  This is so when someone
 	changes one of the functions, it's obvious which other functions depend on the behavior, what that behavior is, and why.
-	Then the programmer won't inadvertantly change that behavior without being aware of the side effects, and if it needs to 
-	be changed anyway they can update the dependent functions.  These comments also start with "DEPENDENCY:" by convention 
+	Then the programmer won't inadvertantly change that behavior without being aware of the side effects, and if it needs to
+	be changed anyway they can update the dependent functions.  These comments also start with "DEPENDENCY:" by convention
 	to make them stand out more and and be easier to search for.

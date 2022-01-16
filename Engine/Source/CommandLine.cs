@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.CommandLine
  * ____________________________________________________________________________
- * 
+ *
  * A class to handle command line parsing.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -23,8 +23,8 @@ namespace CodeClear.NaturalDocs.Engine
 
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: CommandLine
 		 */
 		public CommandLine (string[] commandLineSegments)
@@ -33,8 +33,8 @@ namespace CodeClear.NaturalDocs.Engine
 			index = 0;
 			aliases = new StringToStringTable();
 			}
-			
-		
+
+
 		/* Function: AddAliases
 		 * Registers command line aliases, such as "-i" and "--input".  The first one is the one that will be returned by <GetParameter()>.
 		 */
@@ -53,12 +53,12 @@ namespace CodeClear.NaturalDocs.Engine
 
 
 		/* Function: GetParameter
-		 * 
+		 *
 		 * Attempts to return a command line parameter, like "-i".  Will return false if the current position is not on a parameter.
-		 * 
-		 * parameter will include the dashes and always be in all lowercase.  Aliases added with <AddAliases()> will be replaced 
+		 *
+		 * parameter will include the dashes and always be in all lowercase.  Aliases added with <AddAliases()> will be replaced
 		 * automatically.
-		 * 
+		 *
 		 * parameterAsEntered will return the parameter exactly as it was entered on the command line.
 		 */
 		public bool GetParameter (out string parameter, out string parameterAsEntered)
@@ -146,7 +146,7 @@ namespace CodeClear.NaturalDocs.Engine
 				index++;
 
 				while (index < segments.Length)
-					{  
+					{
 					contents.Append(segments[index]);
 					index++;
 					}
@@ -169,7 +169,7 @@ namespace CodeClear.NaturalDocs.Engine
 				index++;
 
 				while (index < closingIndex - 1)
-					{  
+					{
 					contents.Append(segments[index]);
 					index++;
 					}
@@ -184,10 +184,10 @@ namespace CodeClear.NaturalDocs.Engine
 
 
 		/* Function: GetPath
-		 * 
+		 *
 		 * Attempts to retrieve a path from the command line.  Returns false if the current position is not on a path.
-		 * 
-		 * Paths can be quoted or unquoted.  Quotes will not be included in the returned path.  If unquoted, the path continues 
+		 *
+		 * Paths can be quoted or unquoted.  Quotes will not be included in the returned path.  If unquoted, the path continues
 		 * until the next parameter or the end of the command line.
 		 */
 		public bool GetPath (out Path path)
@@ -220,7 +220,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 
 		/* Function: SkipToNextParameter
-		 * Moves the position to the next parameter, skipping any values along the way.  Note that if the position is already on 
+		 * Moves the position to the next parameter, skipping any values along the way.  Note that if the position is already on
 		 * a parameter it will NOT move.
 		 */
 		public void SkipToNextParameter ()
@@ -284,7 +284,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 
 		/* Function: GetPathValue
-		 * Call this after <GetParameter()> if it must be followed by a path.  If it is it will return true and the path.  If there's any 
+		 * Call this after <GetParameter()> if it must be followed by a path.  If it is it will return true and the path.  If there's any
 		 * other value or no value following the parameter it will return false.
 		 */
 		public bool GetPathValue (out Path path)
@@ -309,7 +309,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 
 		/* Function: GetBareWordAndPathValue
-		 * Call this after <GetParameter()> if it must be followed by a bare word and then a path, such as "-o [format] [folder]".  If it 
+		 * Call this after <GetParameter()> if it must be followed by a bare word and then a path, such as "-o [format] [folder]".  If it
 		 * is it will return true and the values.  If it's not in the correct format it will return false.
 		 */
 		public bool GetBareWordAndPathValue (out string bareWord, out Path path)
@@ -345,7 +345,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 		/* Function: GetBareOrQuotedWordsValue
 		 * Call this after <GetParameter()> if it must be followed by bare words or a quoted string.  If it is it will return true and the values.
-		 * Quotes will not be included in the result, and unquoted words will be retrieved until the next parameter.  If it's not in the correct 
+		 * Quotes will not be included in the result, and unquoted words will be retrieved until the next parameter.  If it's not in the correct
 		 * format it will return false.
 		 */
 		public bool GetBareOrQuotedWordsValue (out string words)
@@ -428,9 +428,9 @@ namespace CodeClear.NaturalDocs.Engine
 			else
 				{  index = closingIndex + 1;  }
 			}
-			
-			
-		
+
+
+
 		// Group: Properties
 		// __________________________________________________________________________
 
@@ -489,13 +489,13 @@ namespace CodeClear.NaturalDocs.Engine
 
 		// Group: Variables
 		// __________________________________________________________________________
-		
-		
+
+
 		/* var: segments
 		 * The original command line as an array of strings
 		 */
 		protected string[] segments;
-		
+
 		/* var: index
 		 * The current position as an index into <segments>.
 		 */
@@ -505,6 +505,6 @@ namespace CodeClear.NaturalDocs.Engine
 		 * A list of command line aliases, such as "-i" and "--input".
 		 */
 		protected StringToStringTable aliases;
-										
+
 		}
 	}

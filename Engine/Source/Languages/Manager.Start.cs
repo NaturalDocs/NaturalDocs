@@ -1,9 +1,9 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Languages.Manager
  * ____________________________________________________________________________
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -18,28 +18,28 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 	{
 	public partial class Manager : Module
 		{
-		
+
 		// Group: Initialization Functions
 		// __________________________________________________________________________
-		
+
 
 		/* Function: Start_Stage1
-		 * 
-		 * Loads and combines the two versions of <Languages.txt>, returning whether it was successful.  If there were any 
+		 *
+		 * Loads and combines the two versions of <Languages.txt>, returning whether it was successful.  If there were any
 		 * errors they will be added to errorList.
-		 * 
+		 *
 		 * Only the settings which don't depend on <Comments.txt> will be loaded.  Call <Start_Stage2()> after
 		 * <CommentTypes.Manager.Start_Stage1()> has been called to complete the process.
-		 * 
+		 *
 		 * Dependencies:
-		 * 
+		 *
 		 *		- <Config.Manager.Start_Stage1()> must be started before this class can start.
 		 */
 		public bool Start_Stage1 (Errors.ErrorList errorList)
 			{
 			StartupIssues newStartupIssues = StartupIssues.None;
 			bool success = true;
-			
+
 
 			//
 			// Languages.txt
@@ -53,7 +53,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			// Load the system Languages.txt.
 			if (!textConfigFileParser.Load(systemTextConfigPath, PropertySource.SystemLanguagesFile, errorList, out systemTextConfig))
 				{  success = false;  }
-			
+
 			// Load the project Languages.txt.  We want to do this even if the system Languages.txt failed so we get the error messages
 			// from both.
 			if (System.IO.File.Exists(projectTextConfigPath))
@@ -64,10 +64,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			// If it doesn't exist it's not an error.  Just create a blank config.
 			else
 				{  projectTextConfig = new ConfigFiles.TextFile();  }
-				
+
 			if (!success)
 				{  return false;  }
-				
+
 			if (!ValidateLanguages(systemTextConfig, errorList))
 				{  success = false;  }
 			if (!ValidateLanguages(projectTextConfig, errorList))
@@ -76,7 +76,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			if (!success)
 				{  return false;  }
 
-			// Merge them into one combined config.  Note that this doesn't do file extensions, aliases, or shebang strings.  Only the 
+			// Merge them into one combined config.  Note that this doesn't do file extensions, aliases, or shebang strings.  Only the
 			// languages and their other properties will exist in the merged config.
 			if (!MergeLanguages(systemTextConfig, projectTextConfig, out mergedTextConfig, errorList))
 				{  return false;  }
@@ -113,7 +113,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			config = new Config();
 
 
-			// We go through the languages present in the merged text config files and convert them into the final config.  We 
+			// We go through the languages present in the merged text config files and convert them into the final config.  We
 			// need the contents of Comments.nd so we can keep the language IDs consistent from one run to the next if possible.
 
 			IDObjects.NumberSet usedLanguageIDs = new IDObjects.NumberSet();
@@ -138,12 +138,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					// We still need to set the ID.  See if a language of the same name existed in the previous run.
 					var lastRunLanguage = lastRunConfig.LanguageFromName(textLanguage.Name);
 
-					// If there wasn't one we can assign a new ID, but pick one that isn't used in this run or the last run so there's no 
+					// If there wasn't one we can assign a new ID, but pick one that isn't used in this run or the last run so there's no
 					// conflicts.
 					if (lastRunLanguage == null)
 						{
 						int id = lastRunUsedLanguageIDs.LowestAvailable;
-						
+
 						if (usedLanguageIDs.Contains(id))
 							{  id = Math.Max(usedLanguageIDs.Highest + 1, lastRunUsedLanguageIDs.Highest + 1);  }
 
@@ -197,21 +197,21 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			if (newStartupIssues != StartupIssues.None)
 				{  EngineInstance.AddStartupIssues(newStartupIssues);  }
-				
+
 			return true;
 			}
 
 
 		/* Function: Start_Stage2
-		 * 
+		 *
 		 * Finishes loading and and combing the two versions of <Languages.txt>, returning whether it was successful.  If there
 		 * were any errors they will be added to errorList.
-		 * 
-		 * This must be called after <Start_Stage1()> has been called, and also <CommentTypes.Manager.Start_Stage1()>.  This 
+		 *
+		 * This must be called after <Start_Stage1()> has been called, and also <CommentTypes.Manager.Start_Stage1()>.  This
 		 * finalizes any settings which also depend on <Comments.txt>.
-		 * 
+		 *
 		 * Dependencies:
-		 * 
+		 *
 		 *		- <Config.Manager> must be started before this class can start.
 		 *		- <Start_Stage1()> must be called and return true before this function can be called.
 		 *		- <CommentTypes.Manager.Start_Stage1()> must be called and return true before this function can be called.
@@ -220,7 +220,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			{
 			bool success = true;
 
-		
+
 			// Go through the lists and apply prototype enders, since CommentTypes.Manager should have all their names now.
 
 			if (!MergePrototypeEndersInto_Stage2(ref config, systemTextConfig, errorList))
@@ -233,7 +233,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 			// Now we have our final configuration and everything is okay.  Save the text files again to reformat them.
-			
+
 			TouchUp_Stage2(ref systemTextConfig, config);
 			TouchUp_Stage2(ref projectTextConfig, config);
 
@@ -245,13 +245,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			// If the project Languages.txt didn't exist, saving the blank structure that was created will create a default one.
 			if (!textConfigFileParser.Save(projectTextConfigPath, PropertySource.ProjectLanguagesFile, projectTextConfig, errorList))
 				{  return false;  };
-				
+
 			// We don't care if we're not able to resave the system Languages.txt since it may be in a protected location.
 			textConfigFileParser.Save(systemTextConfigPath, PropertySource.SystemLanguagesFile, systemTextConfig, errorList: null);
 
 
-			// Save Languages.nd as well.			
-			
+			// Save Languages.nd as well.
+
 			Path lastRunConfigPath = EngineInstance.Config.WorkingDataFolder + "/Languages.nd";
 			ConfigFiles.BinaryFileParser binaryConfigFileParser = new ConfigFiles.BinaryFileParser();
 
@@ -276,8 +276,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			return true;
 			}
 
-			
-			
+
+
 		// Group: Initialization Support Functions
 		// __________________________________________________________________________
 		//
@@ -286,7 +286,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: ValidateLanguages
-		 * Validates all the language settings in a <ConfigFiles.TextFile>.  Returns whether it is valid, and adds any errors it 
+		 * Validates all the language settings in a <ConfigFiles.TextFile>.  Returns whether it is valid, and adds any errors it
 		 * finds to errorList.
 		 */
 		protected bool ValidateLanguages (ConfigFiles.TextFile configFile, Errors.ErrorList errorList)
@@ -298,8 +298,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				foreach (var language in configFile.Languages)
 					{
 					if (!ValidateLanguage(language, errorList))
-						{  
-						success = false;  
+						{
+						success = false;
 						// Continue anyway so we can report the errors in all of them.
 						}
 					}
@@ -330,16 +330,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: MergeLanguages
-		 * 
+		 *
 		 * Merges two <ConfigFiles.TextFiles> into a new one, putting all the languages into one list and applying any alter entries.
 		 * This does NOT cover file extensions, aliases, or shebang strings; those will be blank in the result.  Returns the new
 		 * list and whether it was successful.
-		 * 
-		 * Any errors will be added to errorList, such as defining a duplicate entry that doesn't use alter, or an alter entry for a 
+		 *
+		 * Any errors will be added to errorList, such as defining a duplicate entry that doesn't use alter, or an alter entry for a
 		 * non-existent language.  All alter entries will be applied, including any appearing in the base config, so there will only be
 		 * non-alter entries in the returned list.
 		 */
-		protected bool MergeLanguages (ConfigFiles.TextFile baseConfig, ConfigFiles.TextFile overridingConfig, 
+		protected bool MergeLanguages (ConfigFiles.TextFile baseConfig, ConfigFiles.TextFile overridingConfig,
 														out ConfigFiles.TextFile combinedConfig, Errors.ErrorList errorList)
 			{
 			combinedConfig = new ConfigFiles.TextFile();
@@ -361,7 +361,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * This does NOT merge file extensions, aliases, or shebang strings.  The base config will be changed, even if there are errors.
 		 * Returns false if there were any errors and adds them to errorList.
 		 */
-		protected bool MergeLanguagesInto (ref ConfigFiles.TextFile baseConfig, ConfigFiles.TextFile overridingConfig, 
+		protected bool MergeLanguagesInto (ref ConfigFiles.TextFile baseConfig, ConfigFiles.TextFile overridingConfig,
 															 Errors.ErrorList errorList)
 			{
 			bool success = true;
@@ -411,7 +411,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * Merges the settings of a <ConfigFiles.TextFileLanguage> into another one, overriding the settings of the first.  This does
 		 * NOT cover file extensions, aliases, or shebang strings.  The base object will be altered.
 		 */
-		protected void MergeLanguageInto (ref ConfigFiles.TextFileLanguage baseLanguage, 
+		protected void MergeLanguageInto (ref ConfigFiles.TextFileLanguage baseLanguage,
 															ConfigFiles.TextFileLanguage overridingLanguage)
 			{
 			// Leave Name and PropertyLocation alone.  We'll keep the base's.
@@ -421,7 +421,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			if (overridingLanguage.HasSimpleIdentifier)
 				{
-				baseLanguage.SetSimpleIdentifier(overridingLanguage.SimpleIdentifier, 
+				baseLanguage.SetSimpleIdentifier(overridingLanguage.SimpleIdentifier,
 																  overridingLanguage.SimpleIdentifierPropertyLocation);
 				}
 
@@ -452,7 +452,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			if (overridingLanguage.HasPrototypeEnders)
 				{
 				foreach (var prototypeEnders in overridingLanguage.PrototypeEnders)
-					{ 
+					{
 					// This will automatically overwrite any ender with the same comment type.
 					baseLanguage.AddPrototypeEnders(prototypeEnders);
 					}
@@ -499,20 +499,20 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: FinalizeLanguage
-		 * 
+		 *
 		 * Merges the settings of a <ConfigFiles.TextFileLanguage> into a <Language>, returning whether it was successful.  If there
 		 * are any errors it will add them to the error list.
-		 * 
+		 *
 		 * - This does not handle file extensions, aliases, or shebang strings as <Language> does not store them.
-		 * 
+		 *
 		 * - This does not handle prototype enders as comment type names aren't available in <CommentTypes.Manager> until
 		 *   stage 2.
-		 * 
+		 *
 		 * - This will check for errors such as defining comment symbols on text files, shebang strings, or languages with full support.
-		 * 
+		 *
 		 * - This will generate Javadoc and XML comment symbols from the line and block comment symbols for languages with
 		 *   basic support, assuming they were not already set as part of a predefined language object.
-		 *   
+		 *
 		 * - This will generate <Language.SimpleIdentifier> if one is not defined, though it may still be null if there are no acceptable
 		 *   characters in the name, such as if the language name only used Japanese characters.
 		 */
@@ -546,15 +546,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: ApplyProperties
-		 * 
+		 *
 		 * Merges the settings of a <ConfigFiles.TextFileLanguage> into a <Language>, returning whether it was successful.  If there
 		 * are any errors it will add them to the error list.
-		 * 
+		 *
 		 * - This does not handle file extensions, aliases, or shebang strings as <Language> does not store them.
-		 * 
+		 *
 		 * - This does not handle prototype enders as comment type names aren't available in <CommentTypes.Manager> until
 		 *   stage 2.
-		 * 
+		 *
 		 * - This will check for errors such as defining comment symbols on text files, shebang strings, or languages with full support.
 		 */
 		protected bool ApplyProperties (ref Language baseLanguage, ConfigFiles.TextFileLanguage overridingLanguage,
@@ -566,14 +566,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{  baseLanguage.SimpleIdentifier = overridingLanguage.SimpleIdentifier;  }
 
 			if (overridingLanguage.HasLineCommentSymbols &&
-				CheckForBasicLanguageSupport(baseLanguage, "Line Comments", 
+				CheckForBasicLanguageSupport(baseLanguage, "Line Comments",
 															   overridingLanguage.LineCommentSymbolsPropertyLocation, errorList))
 				{
 				baseLanguage.LineCommentSymbols = overridingLanguage.LineCommentSymbols;
 				}
 
 			if (overridingLanguage.HasBlockCommentSymbols &&
-				CheckForBasicLanguageSupport(baseLanguage, "Block Comments", 
+				CheckForBasicLanguageSupport(baseLanguage, "Block Comments",
 															   overridingLanguage.BlockCommentSymbolsPropertyLocation, errorList))
 				{
 				baseLanguage.BlockCommentSymbols = overridingLanguage.BlockCommentSymbols;
@@ -581,7 +581,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			if (overridingLanguage.HasMemberOperator &&
 				( baseLanguage.Type == Language.LanguageType.TextFile ||
-				  CheckForBasicLanguageSupport(baseLanguage, "Member Operator", 
+				  CheckForBasicLanguageSupport(baseLanguage, "Member Operator",
 																 overridingLanguage.MemberOperatorPropertyLocation, errorList) ))
 				{
 				baseLanguage.MemberOperator = overridingLanguage.MemberOperator;
@@ -590,7 +590,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			// Skip prototype enders in stage 1
 
 			if (overridingLanguage.HasLineExtender &&
-				CheckForBasicLanguageSupport(baseLanguage, "LineExtender", 
+				CheckForBasicLanguageSupport(baseLanguage, "LineExtender",
 															   overridingLanguage.LineExtenderPropertyLocation, errorList))
 				{
 				baseLanguage.LineExtender = overridingLanguage.LineExtender;
@@ -598,7 +598,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			if (overridingLanguage.HasEnumValues &&
 				( baseLanguage.Type == Language.LanguageType.TextFile ||
-				  CheckForBasicLanguageSupport(baseLanguage, "Enum Values", 
+				  CheckForBasicLanguageSupport(baseLanguage, "Enum Values",
 																 overridingLanguage.EnumValuesPropertyLocation, errorList) ))
 				{
 				baseLanguage.EnumValue = (Language.EnumValues)overridingLanguage.EnumValues;
@@ -606,7 +606,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			if (overridingLanguage.HasCaseSensitive &&
 				( baseLanguage.Type == Language.LanguageType.TextFile ||
-				  CheckForBasicLanguageSupport(baseLanguage, "Case Sensitive", 
+				  CheckForBasicLanguageSupport(baseLanguage, "Case Sensitive",
 																 overridingLanguage.CaseSensitivePropertyLocation, errorList) ))
 				{
 				baseLanguage.CaseSensitive = (bool)overridingLanguage.CaseSensitive;
@@ -620,12 +620,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * States that the passed property only applies to languages with basic support.  If the language is set to
 		 * <Language.LanguageType.BasicSupport> then this returns true.  If not, it returns false and adds an error to the error list.
 		 */
-		protected bool CheckForBasicLanguageSupport (Language language, string propertyName, PropertyLocation propertyLocation, 
+		protected bool CheckForBasicLanguageSupport (Language language, string propertyName, PropertyLocation propertyLocation,
 																			  Errors.ErrorList errorList)
 			{
 			if (language.Type == Language.LanguageType.BasicSupport)
-				{  
-				return true;  
+				{
+				return true;
 				}
 			else if (language.Type == Language.LanguageType.FullSupport)
 				{
@@ -651,8 +651,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: GenerateJavadocCommentSymbols
-		 * If they're not already defined, generate <Language.JavadocLineCommentSymbols> and 
-		 * <Language.JavadocBlockCommentSymbols> from <Language.LineCommentSymbols> and 
+		 * If they're not already defined, generate <Language.JavadocLineCommentSymbols> and
+		 * <Language.JavadocBlockCommentSymbols> from <Language.LineCommentSymbols> and
 		 * <Language.BlockCommentSymbols>.
 		 */
 		protected void GenerateJavadocCommentSymbols (Language language)
@@ -664,11 +664,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				foreach (var blockCommentSymbols in language.BlockCommentSymbols)
 					{
 					// We only accept strings like /* */ and (* *).  Anything else doesn't get it.
-					if (blockCommentSymbols.OpeningSymbol.Length == 2 && 
+					if (blockCommentSymbols.OpeningSymbol.Length == 2 &&
 						blockCommentSymbols.ClosingSymbol.Length == 2 &&
 						blockCommentSymbols.OpeningSymbol[1] == '*' &&
 						blockCommentSymbols.ClosingSymbol[0] == '*')
-						{  
+						{
 						if (javadocBlockCommentSymbols == null)
 							{  javadocBlockCommentSymbols = new List<BlockCommentSymbols>();  }
 
@@ -688,7 +688,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			if (!language.HasJavadocLineCommentSymbols && language.HasLineCommentSymbols)
 				{
-				List<LineCommentSymbols> javadocLineCommentSymbols = 
+				List<LineCommentSymbols> javadocLineCommentSymbols =
 					new List<LineCommentSymbols>(language.LineCommentSymbols.Count);
 
 				foreach (var lineCommentSymbol in language.LineCommentSymbols)
@@ -802,15 +802,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 					if (languages[j].Name.NormalizeKey(Config.KeySettingsForLanguageName) == normalizedLanguageName)
 						{
-						if (languages[j].HasFileExtensions && 
+						if (languages[j].HasFileExtensions &&
 							languages[j].FileExtensionsPropertyChange == ConfigFiles.TextFileLanguage.PropertyChange.Replace)
 							{  applyFileExtensions = false;  }
 
-						if (languages[j].HasAliases && 
+						if (languages[j].HasAliases &&
 							languages[j].AliasesPropertyChange == ConfigFiles.TextFileLanguage.PropertyChange.Replace)
 							{  applyAliases = false;  }
 
-						if (languages[j].HasShebangStrings && 
+						if (languages[j].HasShebangStrings &&
 							languages[j].ShebangStringsPropertyChange == ConfigFiles.TextFileLanguage.PropertyChange.Replace)
 							{  applyShebangStrings = false;  }
 						}
@@ -853,7 +853,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * it was successful.  If not it will add any errors into the error list.  This must be done in <Start_Stage2()> because we need
 		 * <CommentTypes.Manager> to have loaded all the comment type names.
 		 */
-		protected bool MergePrototypeEndersInto_Stage2 (ref Config config, ConfigFiles.TextFile textFileConfig, 
+		protected bool MergePrototypeEndersInto_Stage2 (ref Config config, ConfigFiles.TextFile textFileConfig,
 																				 Errors.ErrorList errorList)
 			{
 			bool success = true;
@@ -873,7 +873,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 						foreach (var textFilePrototypeEnders in textFileLanguage.PrototypeEnders)
 							{
-							var matchingCommentType = 
+							var matchingCommentType =
 								EngineInstance.CommentTypes.FromName(textFilePrototypeEnders.CommentType);
 
 							if (matchingCommentType == null)
@@ -895,12 +895,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			return success;
 			}
-		
+
 
 		/* Function: TouchUp_Stage2
 		 * Applies some minor improvements to the <ConfigFiles.TextFile>, such as making sure the capitalization of Alter Language
-		 * and [Comment Type] Prototype Enders match the original definition.  Assumes everything is valid, meaning all Alter 
-		 * Language entries have corresponding entries in finalConfig and all [Comment Type] Prototype Enders entries have 
+		 * and [Comment Type] Prototype Enders match the original definition.  Assumes everything is valid, meaning all Alter
+		 * Language entries have corresponding entries in finalConfig and all [Comment Type] Prototype Enders entries have
 		 * corresponding languages in <CommentTypes.Manager>.
 		 */
 		 protected void TouchUp_Stage2 (ref ConfigFiles.TextFile textConfig, Config finalConfig)

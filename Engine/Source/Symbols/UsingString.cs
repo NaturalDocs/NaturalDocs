@@ -1,14 +1,14 @@
-﻿/* 
+﻿/*
  * Struct: CodeClear.NaturalDocs.Engine.Symbols.UsingString
  * ____________________________________________________________________________
- * 
+ *
  * A struct encapsulating a using string, which is a normalized way of representing a single "using" statement.
- * 
- * The encoding uses <SeparatorChars.Level2> since it encapsulates a <SymbolString> which uses 
+ *
+ * The encoding uses <SeparatorChars.Level2> since it encapsulates a <SymbolString> which uses
  * <SeparatorChars.Level1>.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -27,22 +27,22 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 
 
 		/* Enum: UsingType
-		 * 
+		 *
 		 * Which effectthe using statement has.
-		 * 
+		 *
 		 * AddPrefix - The statement adds a prefix to symbols.  An AddPrefix statement for "PackageA.PackageB" means
 		 *							"Symbol" can be interpreted as "PackageA.PackageB.Symbol".
 		 * ReplacePrefix - The statement can replace a prefix on symbols.  A ReplacePrefix statement for "PackageA"
 		 *									to "PackageB" means "PackageA.Symbol" can be interpreted as "PackageB.Symbol".
 		 */
 		public enum UsingType : byte
-			{  
+			{
 			AddPrefix = 1,
 			ReplacePrefix = 2
 			}
 
 
-		
+
 		// Group: Constants
 		// __________________________________________________________________________
 
@@ -55,8 +55,8 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Function: UsingString
 		 */
 		private UsingString (string newUsingString)
@@ -64,7 +64,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			usingString = newUsingString;
 			}
 
-			
+
 		/* Function: FromParameters
 		 * Creates a UsingString from the passed parameters.
 		 */
@@ -73,7 +73,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			StringBuilder stringBuilder = new System.Text.StringBuilder(prefixToAdd.ToString().Length + 1);
 
 			if (type == UsingType.AddPrefix)
-				{  
+				{
 				stringBuilder.Append('A');
 
 				if (prefixToAdd == null)
@@ -83,7 +83,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 				}
 
 			else if (type == UsingType.ReplacePrefix)
-				{  
+				{
 				stringBuilder.Append('R');
 
 				if (prefixToAdd == null || prefixToRemove == null)
@@ -103,7 +103,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 
 		/* Function: FromExportedString
 		 * Creates a UsingString from the passed string which originally came from another UsingString object.  This assumes the
-		 * string is already be in the proper format.  Only use this when retrieving UsingStrings that were stored as plain text 
+		 * string is already be in the proper format.  Only use this when retrieving UsingStrings that were stored as plain text
 		 * in a database or other data file.
 		 */
 		static public UsingString FromExportedString (string exportedUsingString)
@@ -115,11 +115,11 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			}
 
 
-		
+
 		// Group: Operators
 		// __________________________________________________________________________
-		
-		
+
+
 		/* operator: operator string
 		 * A cast operator to covert the using string to a string.
 		 */
@@ -132,8 +132,8 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 
 		// Group: Properties
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Property: PrefixToAdd
 		 * The <SymbolString> to add to the beginning of the symbol.  This is applicable to both <UsingType.AddPrefix>
 		 * and <UsingType.ReplacePrefix>.
@@ -143,8 +143,8 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			get
 				{
 				if (Type == UsingType.AddPrefix)
-					{  
-					return SymbolString.FromExportedString(usingString.Substring(1));  
+					{
+					return SymbolString.FromExportedString(usingString.Substring(1));
 					}
 				else if (Type == UsingType.ReplacePrefix)
 					{
@@ -158,7 +158,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 
 
 		/* Property: PrefixToRemove
-		 * The <SymbolString> to remove from the beginning of the symbol.  This is only applicable with 
+		 * The <SymbolString> to remove from the beginning of the symbol.  This is only applicable with
 		 * <UsingType.ReplacePrefix>.
 		 */
 		public SymbolString PrefixToRemove
@@ -191,23 +191,23 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 					{  throw new InvalidOperationException();  }
 				}
 			}
-					
-			
-		
+
+
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
-		
+
+
 		/* string: usingString
-		 * 
+		 *
 		 * The combined using string.
-		 * 
+		 *
 		 * - The first character will be 'A' or 'R' for <UsingType.AddPrefix> or <UsingType.ReplacePrefix>.
 		 * - For <UsingType.AddPrefix>, the rest of the string will be a <SymbolString> of the prefix to add.
 		 * - For <UsingType.ReplacePrefix>, the first character will be followed by the <SymbolString> of the
 		 *   prefix to remove, then a <SeparatorChar>, then the <SymbolString> of the prefix to replace it.
 		 */
 		private string usingString;
-	
+
 		}
 	}

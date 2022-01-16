@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Files.FileSources.SourceFolder
  * ____________________________________________________________________________
- * 
+ *
  * A file source representing a specific source folder on disk.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -18,19 +18,19 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 	{
 	public class SourceFolder : FileSources.Folder
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Function: SourceFolder
 		 */
 		public SourceFolder (Files.Manager manager, Config.Targets.SourceFolder config) : base (manager)
 			{
 			this.config = config;
 			}
-			
-			
+
+
 		/* Function: CharacterEncodingID
 		 * Returns the character encoding ID of the passed file.  Zero means it's not a text file or use Unicode auto-detection,
 		 * which will handle all forms of UTF-8, UTF-16, and UTF-32.  It's assumed that the file belongs to this file source.
@@ -81,7 +81,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 			}
 
 
-		
+
 		// Group: Properties
 		// __________________________________________________________________________
 
@@ -91,8 +91,8 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 		 */
 		override public string UniqueIDString
 			{
-			get 
-				{  
+			get
+				{
 				if (SystemInfo.IgnoreCaseInPaths)
 					{  return "Folder:" + config.Folder.ToString().ToLower();  }
 				else
@@ -105,7 +105,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 		 */
 		override public Path Path
 			{
-			get 
+			get
 				{  return config.Folder;  }
 			}
 
@@ -114,10 +114,10 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 		 */
 		override public InputType Type
 			{
-			get 
+			get
 				{  return InputType.Source;  }
 			}
-			
+
 		/* Property: Number
 		 * The number assigned to this FileSource.
 		 */
@@ -126,7 +126,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 			get
 				{  return config.Number;  }
 			}
-						
+
 		/* Property: Name
 		 * The name assigned to this FileSource, or null if one hasn't been set.
 		 */
@@ -140,7 +140,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 
 		// Group: Variables
 		// __________________________________________________________________________
-			
+
 		protected Config.Targets.SourceFolder config;
 
 		}

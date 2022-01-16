@@ -6,10 +6,10 @@ _______________________________________________________________________________
 Topic: POD Documentation
 
 	Natural Docs will read POD comments in "=begin nd" sections and treat them the same as any other documentation comments.
-	You can also substitute "naturaldocs" or "natural docs" for "nd" and it's not case-sensitive.  Like regular comments they must 
+	You can also substitute "naturaldocs" or "natural docs" for "nd" and it's not case-sensitive.  Like regular comments they must
 	also include topic lines, or if Perl has full language support appear directly above a code element.
 
-	Natural Docs will also read POD comment sections which uses just the shorthand "=nd" or any of the substitutions, though this 
+	Natural Docs will also read POD comment sections which uses just the shorthand "=nd" or any of the substitutions, though this
 	is not valid POD.  It's valid Perl so the scripts will execute just fine, but using this method may cause POD parsers to become
 	confused and include some of the unformatted text in their output.
 
@@ -21,5 +21,5 @@ Topic: POD Documentation
 	comments.  It also supports the "=jd" and "=javadoc" shorthand.
 
 	All other POD sections are ignored.  Recognized sections do not have to appear alone, so a POD comment can start with
-	"=pod", go to "=begin nd", and then go back to "=pod" without a "=cut" in between.  Multiple consecutive recognized sections 
+	"=pod", go to "=begin nd", and then go back to "=pod" without a "=cut" in between.  Multiple consecutive recognized sections
 	are treated as separate comments.

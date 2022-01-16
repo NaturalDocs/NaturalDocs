@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Thread
  * ____________________________________________________________________________
- * 
+ *
  * A base class for all engine threads.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -19,11 +19,11 @@ namespace CodeClear.NaturalDocs.Engine
 	{
 	public class Thread
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: Thread
 		 */
 		public Thread ()
@@ -57,7 +57,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 
 		/* Function: ThrowExceptions
-		 * If the thread terminated with an exception, throw it.  Otherwise it does nothing.  This should only be 
+		 * If the thread terminated with an exception, throw it.  Otherwise it does nothing.  This should only be
 		 * called by the parent thread.
 		 */
 		public void ThrowExceptions ()
@@ -71,7 +71,7 @@ namespace CodeClear.NaturalDocs.Engine
 		// Group: Properties
 		// __________________________________________________________________________
 
-			
+
 		/* Property: Task
 		 */
 		public CancellableTask Task
@@ -95,8 +95,8 @@ namespace CodeClear.NaturalDocs.Engine
 			set
 				{  cancelDelegate = value;  }
 			}
-			
-			
+
+
 		/* Property: Name
 		 * The thread name.  Can only be set by the constructor.
 		 */
@@ -128,14 +128,14 @@ namespace CodeClear.NaturalDocs.Engine
 			get
 				{  return exception;  }
 			}
-			
-			
-			
+
+
+
 
 		// Group: Private Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Function: InternalStart
 		 * The function that's mapped as the starting function for <thread>.  This executes <task> and traps exceptions.
 		 */
@@ -157,13 +157,13 @@ namespace CodeClear.NaturalDocs.Engine
 					{  exception = new Engine.Exceptions.Thread (e, this);  }
 				}
 			}
-			
-			
+
+
 
 		// Group: Variables
 		// __________________________________________________________________________
-		
-		
+
+
 		/* var: thread
 		 * The thread this class is wrapping.
 		 */
@@ -178,7 +178,7 @@ namespace CodeClear.NaturalDocs.Engine
 		 * The delegate that determines whether the task should be cancelled.
 		 */
 		protected CancelDelegate cancelDelegate;
-	
+
 		/* var: exception
 		 * If the thread terminated because of an exception it will be stored here.
 		 */

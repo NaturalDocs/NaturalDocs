@@ -6,15 +6,15 @@ A simple, one-row table that stores various information about the database.
 
 
 Database Column: Version
-	
+
 	--- Prototype ---
 		Version TEXT NOT NULL
 	-----------------
-	
+
 	The version string of the database.  This will always be present no matter what version of Natural Docs is being used,
 	so you can safely do "SELECT Version from System" on any past or future version of Natural Docs based on SQLite.
-	
-	
+
+
 Database Column: UsedTopicIDs
 
 	--- Prototype ---
@@ -23,8 +23,8 @@ Database Column: UsedTopicIDs
 
 	A string containing the <CodeClear.NaturalDocs.Engine.IDObjects.NumberSet> for all the used topic IDs in <CodeDB.Topics>.
 	This is only used for storage between Natural Docs executions.  It is not continually updated during execution.
-	
-	
+
+
 Database Column: UsedLinkIDs
 
 	--- Prototype ---
@@ -33,8 +33,8 @@ Database Column: UsedLinkIDs
 
 	A string containing the <CodeClear.NaturalDocs.Engine.IDObjects.NumberSet> for all the used link IDs in <CodeDB.Topics>.
 	This is only used for storage between Natural Docs executions.  It is not continually updated during execution.
-	
-	
+
+
 Database Column: UsedImageLinkIDs
 
 	--- Prototype ---
@@ -43,8 +43,8 @@ Database Column: UsedImageLinkIDs
 
 	A string containing the <CodeClear.NaturalDocs.Engine.IDObjects.NumberSet> for all the used link IDs in <CodeDB.ImageLinks>.
 	This is only used for storage between Natural Docs executions.  It is not continually updated during execution.
-	
-	
+
+
 Database Column: UsedClassIDs
 
 	--- Prototype ---
@@ -53,8 +53,8 @@ Database Column: UsedClassIDs
 
 	A string containing the <CodeClear.NaturalDocs.Engine.IDObjects.NumberSet> for all the used class IDs in <CodeDB.Classes>.
 	This is only used for storage between Natural Docs executions.  It is not continually updated during execution.
-	
-	
+
+
 Database Column: UsedContextIDs
 
 	--- Prototype ---

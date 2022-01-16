@@ -1,9 +1,9 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.CommentTypes.Manager
  * ____________________________________________________________________________
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -18,28 +18,28 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 	{
 	public partial class Manager : Module
 		{
-		
+
 		// Group: Initialization Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Function: Start_Stage1
-		 * 
-		 * Loads and combines the two versions of <Comments.txt>, returning whether it was successful.  If there were any 
+		 *
+		 * Loads and combines the two versions of <Comments.txt>, returning whether it was successful.  If there were any
 		 * errors they will be added to errorList.
-		 * 
+		 *
 		 * Only the settings which don't depend on <Languages.txt> will be loaded.  Call <Start_Stage2()> after
 		 * <Languages.Manager.Start_Stage1()> has been called to complete the process.
-		 * 
+		 *
 		 * Dependencies:
-		 * 
+		 *
 		 *		- <Config.Manager> must be started before this class can start.
 		 */
 		public bool Start_Stage1 (Errors.ErrorList errorList)
 			{
 			StartupIssues newStartupIssues = StartupIssues.None;
 			bool success = true;
-			
+
 
 			//
 			// Comments.txt
@@ -54,7 +54,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			// Load the system Comments.txt.
 			if (!textConfigFileParser.Load(systemTextConfigPath, PropertySource.SystemCommentsFile, errorList, out systemTextConfig))
 				{  success = false;  }
-			
+
 			// Load the project Comments.txt.  We want to do this even if the system Comments.txt failed so we get the error messages
 			// from both.
 			if (System.IO.File.Exists(projectTextConfigPath))
@@ -71,10 +71,10 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			// If neither file exists just create a blank config.  The project Comments.txt not existing is not an error.
 			else
 				{  projectTextConfig = new ConfigFiles.TextFile();  }
-				
+
 			if (!success)
 				{  return false;  }
-				
+
 			if (!ValidateCommentTypes(systemTextConfig, errorList))
 				{  success = false;  }
 			if (!ValidateCommentTypes(projectTextConfig, errorList))
@@ -120,7 +120,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			config = new Config();
 
 
-			// We go through the comment types present in the merged text config files and convert them into the final config.  We 
+			// We go through the comment types present in the merged text config files and convert them into the final config.  We
 			// need the contents of Comments.nd so we can keep the comment type IDs consistent from one run to the next if possible.
 
 			IDObjects.NumberSet usedCommentTypeIDs = new IDObjects.NumberSet();
@@ -135,12 +135,12 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 					// We still need to set the ID.  See if a comment type of the same name existed in the previous run.
 					var lastRunCommentType = lastRunConfig.CommentTypeFromName(textCommentType.Name);
 
-					// If there wasn't one we can assign a new ID, but pick one that isn't used in this run or the last run so there's no 
+					// If there wasn't one we can assign a new ID, but pick one that isn't used in this run or the last run so there's no
 					// conflicts.
 					if (lastRunCommentType == null)
 						{
 						int id = lastRunUsedCommentTypeIDs.LowestAvailable;
-						
+
 						if (usedCommentTypeIDs.Contains(id))
 							{  id = Math.Max(usedCommentTypeIDs.Highest + 1, lastRunUsedCommentTypeIDs.Highest + 1);  }
 
@@ -211,12 +211,12 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 					// We still need to set the ID.  See if a tag of the same name existed in the previous run.
 					var lastRunTag = lastRunConfig.TagFromName(tagString);
 
-					// If there wasn't one we can assign a new ID, but pick one that isn't used in this run or the last run so there's no 
+					// If there wasn't one we can assign a new ID, but pick one that isn't used in this run or the last run so there's no
 					// conflicts.
 					if (lastRunTag == null)
 						{
 						int id = lastRunUsedTagIDs.LowestAvailable;
-						
+
 						if (usedTagIDs.Contains(id))
 							{  id = Math.Max(usedTagIDs.Highest + 1, lastRunUsedTagIDs.Highest + 1);  }
 
@@ -253,28 +253,28 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 			if (newStartupIssues != StartupIssues.None)
 				{  EngineInstance.AddStartupIssues(newStartupIssues);  }
-				
+
 			return true;
 			}
 
 
 		/* Function: Start_Stage2
-		 * 
+		 *
 		 * Finishes loading and and combing the two versions of <Comments.txt>, returning whether it was successful.  If there
 		 * were any errors they will be added to errorList.
-		 * 
-		 * This must be called after <Start_Stage1()> has been called, and also <Languages.Manager.Start_Stage1()>.  This 
+		 *
+		 * This must be called after <Start_Stage1()> has been called, and also <Languages.Manager.Start_Stage1()>.  This
 		 * finalizes any settings which also depend on <Languages.txt>.
-		 * 
+		 *
 		 * Dependencies:
-		 * 
+		 *
 		 *		- <Config.Manager.Start_Stage1()> must be started before this class can start.
 		 *		- <Start_Stage1()> must be called and return true before this function can be called.
 		 *		- <Languages.Manager.Start_Stage1()> must be called and return true before this function can be called.
 		 */
 		public bool Start_Stage2 (Errors.ErrorList errorList)
 			{
-		
+
 			// First we collect all the ignored keywords.
 
 			StringSet ignoredKeywords = new StringSet(Config.KeySettingsForKeywords);
@@ -291,9 +291,9 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				!MergeKeywordsInto_Stage2(ref config, projectTextConfig, ignoredKeywords, errorList))
 				{  return false;  }
 
-				
+
 			// Now we have our final configuration and everything is okay.  Save the text files again to reformat them.
-			
+
 			TouchUp_Stage2(ref systemTextConfig, config);
 			TouchUp_Stage2(ref projectTextConfig, config);
 
@@ -305,13 +305,13 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			// If the project Comments.txt didn't exist, saving the blank structure that was created will create a default one.
 			if (!textConfigFileParser.Save(projectTextConfigPath, PropertySource.ProjectCommentsFile, projectTextConfig, errorList))
 				{  return false;  };
-				
+
 			// We don't care if we're not able to resave the system Comments.txt since it may be in a protected location.
 			textConfigFileParser.Save(systemTextConfigPath, PropertySource.SystemCommentsFile, systemTextConfig, errorList: null);
 
 
-			// Save Comments.nd as well.			
-			
+			// Save Comments.nd as well.
+
 			Path lastRunConfigPath = EngineInstance.Config.WorkingDataFolder + "/Comments.nd";
 			ConfigFiles.BinaryFileParser binaryConfigFileParser = new ConfigFiles.BinaryFileParser();
 
@@ -351,7 +351,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 
 		/* Function: ValidateCommentTypes
-		 * Validates all the comment type settings in a <ConfigFiles.TextFile>.  Returns whether it is valid, and adds any errors it 
+		 * Validates all the comment type settings in a <ConfigFiles.TextFile>.  Returns whether it is valid, and adds any errors it
 		 * finds to errorList.
 		 */
 		protected bool ValidateCommentTypes (ConfigFiles.TextFile configFile, Errors.ErrorList errorList)
@@ -363,8 +363,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				foreach (var commentType in configFile.CommentTypes)
 					{
 					if (!ValidateCommentType(commentType, errorList))
-						{  
-						success = false;  
+						{
+						success = false;
 						// Continue anyway so we can report the errors in all of them.
 						}
 					}
@@ -392,7 +392,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				string first, second;
 				PropertyLocation secondPropertyLocation;
 
-				if (commentType.DisplayNamePropertyLocation.LineNumber < 
+				if (commentType.DisplayNamePropertyLocation.LineNumber <
 					commentType.DisplayNameFromLocalePropertyLocation.LineNumber)
 					{
 					first = "Display Name";
@@ -416,7 +416,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				string first, second;
 				PropertyLocation secondPropertyLocation;
 
-				if (commentType.PluralDisplayNamePropertyLocation.LineNumber < 
+				if (commentType.PluralDisplayNamePropertyLocation.LineNumber <
 					commentType.PluralDisplayNameFromLocalePropertyLocation.LineNumber)
 					{
 					first = "Plural Display Name";
@@ -453,17 +453,17 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				if (codeFlag)
 					{
 					if (fileFlag && documentationFlag)
-						{  
+						{
 						errorList.Add(Locale.Get("NaturalDocs.Engine", "CommentTypeFlags.CantCombine(a,b,c)", "Code", "File", "Documentation"),
 											commentType.FlagsPropertyLocation);
 						}
 					else if (fileFlag)
-						{  
+						{
 						errorList.Add(Locale.Get("NaturalDocs.Engine", "CommentTypeFlags.CantCombine(a,b)", "Code", "File"),
 											commentType.FlagsPropertyLocation);
 						}
 					else if (documentationFlag)
-						{  
+						{
 						errorList.Add(Locale.Get("NaturalDocs.Engine", "CommentTypeFlags.CantCombine(a,b)", "Code", "Documentation"),
 											commentType.FlagsPropertyLocation);
 						}
@@ -471,7 +471,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				else if (fileFlag)
 					{
 					if (documentationFlag)
-						{  
+						{
 						errorList.Add(Locale.Get("NaturalDocs.Engine", "CommentTypeFlags.CantCombine(a,b)", "File", "Documentation"),
 											commentType.FlagsPropertyLocation);
 						}
@@ -483,17 +483,17 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				if (fileFlag)
 					{
 					if (variableTypeFlag)
-						{  
+						{
 						errorList.Add(Locale.Get("NaturalDocs.Engine", "CommentTypeFlags.CantCombine(a,b)", "File", "Variable Type"),
 											commentType.FlagsPropertyLocation);
 						}
 					if (commentType.HasHierarchyName)
-						{  
+						{
 						errorList.Add(Locale.Get("NaturalDocs.Engine", "CommentTypeFlags.CantCombine(a,b)", "File", commentType.HierarchyName + " Hierarchy"),
 											commentType.FlagsPropertyLocation);
 						}
 					if (enumFlag)
-						{  
+						{
 						errorList.Add(Locale.Get("NaturalDocs.Engine", "CommentTypeFlags.CantCombine(a,b)", "File", "Enum"),
 											commentType.FlagsPropertyLocation);
 						}
@@ -502,17 +502,17 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				if (documentationFlag)
 					{
 					if (variableTypeFlag)
-						{  
+						{
 						errorList.Add(Locale.Get("NaturalDocs.Engine", "CommentTypeFlags.CantCombine(a,b)", "Documentation", "Variable Type"),
 											commentType.FlagsPropertyLocation);
 						}
 					if (commentType.HasHierarchyName)
-						{  
+						{
 						errorList.Add(Locale.Get("NaturalDocs.Engine", "CommentTypeFlags.CantCombine(a,b)", "Documentation", commentType.HierarchyName + " Hierarchy"),
 											commentType.FlagsPropertyLocation);
 						}
 					if (enumFlag)
-						{  
+						{
 						errorList.Add(Locale.Get("NaturalDocs.Engine", "CommentTypeFlags.CantCombine(a,b)", "Documentation", "Enum"),
 											commentType.FlagsPropertyLocation);
 						}
@@ -550,16 +550,16 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 
 		/* Function: MergeCommentTypes
-		 * 
-		 * Merges two <ConfigFiles.TextFiles> into a new one, putting all the comment types into one list and applying any alter 
+		 *
+		 * Merges two <ConfigFiles.TextFiles> into a new one, putting all the comment types into one list and applying any alter
 		 * entries.  This does NOT cover keywords, ignored keywords, or tags; those will be blank in the result.  Returns the new
 		 * list and whether it was successful.
-		 * 
-		 * Any errors will be added to errorList, such as defining a duplicate entry that doesn't use alter, or an alter entry for a 
+		 *
+		 * Any errors will be added to errorList, such as defining a duplicate entry that doesn't use alter, or an alter entry for a
 		 * non-existent comment type.  All alter entries will be applied, including any appearing in the base config, so there will
 		 * only be non-alter entries in the returned list.
 		 */
-		protected bool MergeCommentTypes (ConfigFiles.TextFile baseConfig, ConfigFiles.TextFile overridingConfig, 
+		protected bool MergeCommentTypes (ConfigFiles.TextFile baseConfig, ConfigFiles.TextFile overridingConfig,
 															  out ConfigFiles.TextFile combinedConfig, Errors.ErrorList errorList)
 			{
 			combinedConfig = new ConfigFiles.TextFile();
@@ -577,11 +577,11 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 
 		/* Function: MergeCommentTypesInto
-		 * Merges the comment types of the second <ConfigFiles.TextFile> into the first, adding new types and applying any 
+		 * Merges the comment types of the second <ConfigFiles.TextFile> into the first, adding new types and applying any
 		 * alter entries.  This does NOT merge keywords, ignored keywords, or tags.  The base config will be changed, even if
 		 * there are errors.  Returns false if there were any errors and adds them to errorList.
 		 */
-		protected bool MergeCommentTypesInto (ref ConfigFiles.TextFile baseConfig, ConfigFiles.TextFile overridingConfig, 
+		protected bool MergeCommentTypesInto (ref ConfigFiles.TextFile baseConfig, ConfigFiles.TextFile overridingConfig,
 																	Errors.ErrorList errorList)
 			{
 			bool success = true;
@@ -628,27 +628,27 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 
 		/* Function: MergeCommentTypeInto
-		 * Merges the settings of a <ConfigFiles.TextFileCommentType> into another one, overriding the settings of the first.  This 
+		 * Merges the settings of a <ConfigFiles.TextFileCommentType> into another one, overriding the settings of the first.  This
 		 * does NOT cover keywords.  The base object will be altered.
 		 */
-		protected void MergeCommentTypeInto (ref ConfigFiles.TextFileCommentType baseCommentType, 
+		protected void MergeCommentTypeInto (ref ConfigFiles.TextFileCommentType baseCommentType,
 																   ConfigFiles.TextFileCommentType overridingCommentType)
 			{
 			if (overridingCommentType.HasDisplayName)
-				{  
-				baseCommentType.SetDisplayName(overridingCommentType.DisplayName, 
-																	 overridingCommentType.DisplayNamePropertyLocation);  
+				{
+				baseCommentType.SetDisplayName(overridingCommentType.DisplayName,
+																	 overridingCommentType.DisplayNamePropertyLocation);
 				baseCommentType.SetDisplayNameFromLocale(null, default);
 				}
 			if (overridingCommentType.HasDisplayNameFromLocale)
-				{  
-				baseCommentType.SetDisplayNameFromLocale(overridingCommentType.DisplayNameFromLocale, 
-																					 overridingCommentType.DisplayNameFromLocalePropertyLocation);  
+				{
+				baseCommentType.SetDisplayNameFromLocale(overridingCommentType.DisplayNameFromLocale,
+																					 overridingCommentType.DisplayNameFromLocalePropertyLocation);
 				baseCommentType.SetDisplayName(null, default);
 				}
 			if (overridingCommentType.HasPluralDisplayName)
 				{
-				baseCommentType.SetPluralDisplayName(overridingCommentType.PluralDisplayName, 
+				baseCommentType.SetPluralDisplayName(overridingCommentType.PluralDisplayName,
 																			 overridingCommentType.PluralDisplayNamePropertyLocation);
 				baseCommentType.SetPluralDisplayNameFromLocale(null, default);
 				}
@@ -661,12 +661,12 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 			if (overridingCommentType.HasSimpleIdentifier)
 				{
-				baseCommentType.SetSimpleIdentifier(overridingCommentType.SimpleIdentifier, 
+				baseCommentType.SetSimpleIdentifier(overridingCommentType.SimpleIdentifier,
 																		 overridingCommentType.SimpleIdentifierPropertyLocation);
 				}
 			if (overridingCommentType.HasScope)
 				{
-				baseCommentType.SetScope(overridingCommentType.Scope, 
+				baseCommentType.SetScope(overridingCommentType.Scope,
 														  overridingCommentType.ScopePropertyLocation);
 				}
 			if (overridingCommentType.HasHierarchyName)
@@ -679,21 +679,21 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 			if (overridingCommentType.HasFlags)
 				{
-				baseCommentType.SetFlags(overridingCommentType.Flags, 
+				baseCommentType.SetFlags(overridingCommentType.Flags,
 														 overridingCommentType.FlagsPropertyLocation);
 				}
 			}
 
 
 		/* Function: AddImpliedFlags
-		 * Updates the passed <CommentType.FlagValue> with any that are implied, such as how Class Hierarchy implies Variable 
+		 * Updates the passed <CommentType.FlagValue> with any that are implied, such as how Class Hierarchy implies Variable
 		 * Type and if none of Code, File, Documentation are defined it defaults to Code.  Assumes the flags are valid.
 		 */
 		protected CommentType.FlagValue AddImpliedFlags (CommentType.FlagValue flags)
 			{
 			// Default to Code if neither Code, File, nor Documentation are defined.
-			if ( (flags & (CommentType.FlagValue.Code | 
-							   CommentType.FlagValue.File | 
+			if ( (flags & (CommentType.FlagValue.Code |
+							   CommentType.FlagValue.File |
 							   CommentType.FlagValue.Documentation)) == 0)
 				{  flags |= CommentType.FlagValue.Code;  }
 
@@ -730,7 +730,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			if (textCommentType.HasSimpleIdentifier)
 				{  final.SimpleIdentifier = textCommentType.SimpleIdentifier;  }
 			else
-				{  
+				{
 				// This may end up as an empty string if there's no A-Z characters, such as if the name is in Japanese.  In this case
 				// we want it to be "CommentTypeID[number]" but the number isn't determind yet, so leave it as null for now.
 				string simpleIdentifier = final.Name.OnlyAToZ();
@@ -778,12 +778,12 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 
 		/* Function: MergeKeywordsInto_Stage2
-		 * Merges the keywords from the <ConfigFiles.TextFile> into the <Config>, returning whether it was successful.  It 
-		 * assumes all <ConfigFiles.TextCommentTypes> in textConfig have corresponding <CommentTypes> in outputConfig.  
+		 * Merges the keywords from the <ConfigFiles.TextFile> into the <Config>, returning whether it was successful.  It
+		 * assumes all <ConfigFiles.TextCommentTypes> in textConfig have corresponding <CommentTypes> in outputConfig.
 		 * Any errors will be added to errorList, such as having a language-specific keyword that doesn't match a name in
 		 * <Languages.Manager>.
 		 */
-		protected bool MergeKeywordsInto_Stage2 (ref Config outputConfig, ConfigFiles.TextFile textConfig, 
+		protected bool MergeKeywordsInto_Stage2 (ref Config outputConfig, ConfigFiles.TextFile textConfig,
 																		StringSet ignoredKeywords, Errors.ErrorList errorList)
 			{
 			bool success = true;
@@ -811,9 +811,9 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 								if (language == null)
 									{
-									errorList.Add( 
+									errorList.Add(
 										Locale.Get("NaturalDocs.Engine", "Comments.txt.UnrecognizedKeywordLanguage(name)", keywordGroup.LanguageName),
-										keywordGroup.PropertyLocation										
+										keywordGroup.PropertyLocation
 										);
 
 									success = false;
@@ -877,7 +877,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 						var originalType = finalConfig.CommentTypeFromName(commentType.Name);
 						commentType.FixNameCapitalization(originalType.Name);
 
-						// We don't also check to see if the comment type we're altering exists in the same file and merge their 
+						// We don't also check to see if the comment type we're altering exists in the same file and merge their
 						// definitions into one.  Why?  Consider this:
 						//
 						// Comment Type: Comment Type A

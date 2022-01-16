@@ -1,10 +1,10 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Links.Manager
  * ____________________________________________________________________________
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -28,31 +28,31 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			{
 			unprocessedChanges.AddTopic(topic);
 			}
-		
+
 
 		public void OnUpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags, EventAccessor eventAccessor)
 			{
 			}
-		
+
 
 		public void OnDeleteTopic (Topic topic, IDObjects.NumberSet linksAffected, EventAccessor eventAccessor)
 			{
 			unprocessedChanges.DeleteTopic(topic, linksAffected);
 			}
 
-		
+
 		public void OnAddLink (Link link, EventAccessor eventAccessor)
 			{
 			unprocessedChanges.AddLink(link);
 			}
 
-		
+
 		public void OnChangeLinkTarget (Link link, int oldTargetTopicID, int oldTargetClassID, EventAccessor eventAccessor)
 			{
 			// We're going to be the one causing this event, not responding to it.  No other code should be changing link definitions.
 			}
 
-		
+
 		public void OnDeleteLink (Link link, EventAccessor eventAccessor)
 			{
 			unprocessedChanges.DeleteLink(link);
@@ -112,7 +112,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 					unprocessedChanges.DeleteImageFile((ImageFile)file, linksAffected);
 					}
 				finally
-					{  
+					{
 					if (accessor.HasLock)
 						{  accessor.ReleaseLock();  }
 

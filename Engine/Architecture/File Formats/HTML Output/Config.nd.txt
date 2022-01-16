@@ -3,7 +3,7 @@ File: Config.nd
 _______________________________________________________________________________
 
 A file used to store information about the configuration as of last time a HTML output target was built.
-		
+
 
 Group: Format
 _______________________________________________________________________________
@@ -11,7 +11,7 @@ _______________________________________________________________________________
 	Topic: Header
 
 		> [[Binary Header]]
-		
+
 		The file starts with the standard binary file header as managed by <CodeClear.NaturalDocs.Engine.BinaryFile>.
 
 
@@ -22,12 +22,12 @@ _______________________________________________________________________________
 		> [String: Project Copyright or null]
 		> [String: Project Timestamp Code or null]
 		> [String: Project Home Page Path (absolute) or null]
-		
+
 		The project info as of the last run.  If any of the properties were not set they will be null.
 
 		Project Home Page is the setting applied by <Project.txt>, if any.  It is not the final computed home page that
 		includes any specified by styles.
-		
+
 
 	Topic: Style Info
 
@@ -40,11 +40,11 @@ _______________________________________________________________________________
 		> [String: Style Path]
 		> ...
 		> [String: null]
-		
+
 		Stores the list of styles that apply to this target in the order in which they must be loaded.  Each one starts as
 		a path, which is either to the style's CSS file or <Style.txt>.  These are stored instead of the names so that if a
 		name is interpreted differently from one run to the next it will be detected.
-		
+
 		The properties are a null-terminated list of inherit statements, then a null-terminated list of OnLoad statements
 		each followed by a page type byte, then a null terminated list of Link statements each followed by a page type
 		byte, then the path to the custom home page file or rull if it's not defined.  There will not be a page type byte
@@ -52,7 +52,7 @@ _______________________________________________________________________________
 
 
 	Topic: File Source Info
-		
+
 		> [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
 		> [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
 		> ...
@@ -62,11 +62,11 @@ _______________________________________________________________________________
 		> [Int32: Image FileSource Number] [String: Image FileSource UniqueIDString]
 		> ...
 		> [Int32: 0]
-		
+
 		Stores all the <FileSource> IDs and what their numbers are.  This allows us to purge the related output folders if
 		one is deleted or changes.
 
- 			
+
 
 Group: Revisions
 _______________________________________________________________________________

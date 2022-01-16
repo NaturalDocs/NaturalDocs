@@ -2,7 +2,7 @@ Format: 2.1
 
 # Natural Docs Parser Configuration File
 
-# This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+# This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 # Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 # Refer to License.txt for the complete details
 
@@ -18,16 +18,16 @@ Set: Start Block Keywords
 
 	start
 	begin
-	
-	
+
+
 Set: End Block Keywords
 # The first word for lines like "(end code)".
 
 	end
 	finish
 	done
-	
-	
+
+
 Table: Block Types
 # The second word for lines like "(start code)" which have no special attributes.
 # Can be either Generic, Code, or Prototype
@@ -38,8 +38,8 @@ Table: Block Types
 	table -> generic
 	code -> code
 	prototype -> prototype
-	
-	
+
+
 
 #
 # Inline Keywords
@@ -50,14 +50,14 @@ Set: See Image Keywords
 # The first word for lines like "(see image.jpg)".
 
 	see
-	
+
 
 Set: At Link Keywords
 # The middle word for lines like "<reference at http://www.somesite.com>".
 
 	at
-	
-	
+
+
 Set: URL Protocols
 # Strings that denote the beginning of an external URL, excluding mailto:.
 
@@ -67,9 +67,9 @@ Set: URL Protocols
 	sftp
 	news
 	file
-	
-	
-	
+
+
+
 
 #
 # Headings and Access Levels
@@ -108,8 +108,8 @@ Table: Access Level
 	protected-private -> privateprotected
 	privateprotected -> privateprotected
 	protectedprivate -> privateprotected
-	
-	
+
+
 
 
 #
@@ -120,62 +120,62 @@ Table: Access Level
 Conversion List: Plural Conversions
 
 	# boys -> boy
-	s -> 
-	
+	s ->
+
 	# alumni -> alumnus
 	i -> us
-	
+
 	# errata -> erratum
 	a -> um
-	
+
 	# phenomena -> phenomenon
 	a -> on
-    
+
 	# foxes -> fox
 	es ->
-	
+
 	# amoebae -> amoeba
 	ae -> a
-    
+
 	# pennies -> penny
 	ies -> y
-	
+
 	# calves -> calf
 	ves -> f
-    
+
 	# knives -> knife
 	ves -> fe
-    
+
 	# parentheses -> parenthesis
 	ses -> sis
 
 	# women -> woman
 	en -> an
-    
+
 	# mice -> mouse
 	ice -> ouse
-    
+
 	# vetoes -> veto
 	# covered by foxes -> fox
-    
+
 	# matrices -> matrix
 	ces -> x
-    
+
 	# oxen -> ox
 	xen -> x
-    
+
 	# indices -> index
 	ices -> ex
-	
+
 	# feet -> foot
 	eet -> oot
-    
+
 	# geese -> goose
 	eese -> oose
-    
+
 	# teeth -> tooth
 	eeth -> ooth
-    
+
 	# children -> child
 	dren -> d
 
@@ -185,12 +185,12 @@ Conversion List: Possessive Conversions
 	# Standard apostrophe
 	' ->
 	's ->
-	
+
 	# Unicode 2019: Right single quotation mark.  Equivalent to &rsquo; in HTML.
 	’ ->
 	’s ->
-	
-	
+
+
 Set: Acceptable Link Suffixes
 # Such as the "s" in <link>s.
 

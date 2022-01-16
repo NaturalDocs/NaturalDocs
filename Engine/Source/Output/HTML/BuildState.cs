@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.BuildState
  * ____________________________________________________________________________
- * 
+ *
  * A class tracking information about a HTML output target.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -24,8 +24,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: BuildState
 		 */
 		public BuildState ()
@@ -50,10 +50,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* Function: Lock
-		 * 
+		 *
 		 * Locks the object to apply multiple changes efficiently or to directly access the variables.  This prevents other threads
 		 * from accessing the object until you call <Unlock()>.
-		 * 
+		 *
 		 * Use of the other functions will lock and unlock this object automatically, so it is not necessary for most use cases.
 		 */
 		public void Lock ()
@@ -86,7 +86,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 
 		/* Function: AddSourceFileWithContent
-		 * Tells the class that the passed file ID has content this build target can use.  Returns true if the number didn't 
+		 * Tells the class that the passed file ID has content this build target can use.  Returns true if the number didn't
 		 * already exist in the set and was added, false if it was already in the set.
 		 */
 		public bool AddSourceFileWithContent (int fileID)
@@ -131,7 +131,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 
 		/* Function: RemoveClassWithContent
-		 * Tells the class that the passed class ID does not have content this build target can use.  Returns true if the 
+		 * Tells the class that the passed class ID does not have content this build target can use.  Returns true if the
 		 * number existed in the set and was removed, false if it wasn't part of the set.
 		 */
 		public bool RemoveClassWithContent (int classID)
@@ -156,7 +156,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 
 		/* Function: AddUsedImageFile
-		 * Tells the class that the passed image file ID is used in the output.  Returns true if the number didn't already exist in the set 
+		 * Tells the class that the passed image file ID is used in the output.  Returns true if the number didn't already exist in the set
 		 * and was added, false if it was already in the set.
 		 */
 		public bool AddUsedImageFile (int imageFileID)
@@ -166,7 +166,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 
 		/* Function: RemoveUsedImageFile
-		 * Tells the class that the passed image file ID is not used in the output.  Returns true if the number existed in the set and was 
+		 * Tells the class that the passed image file ID is not used in the output.  Returns true if the number existed in the set and was
 		 * removed, false if it wasn't part of the set.
 		 */
 		public bool RemoveUsedImageFile (int imageFileID)
@@ -194,7 +194,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 
 		/* Property: HierarchyMenuInfo
-		 * Information about the hierarchy menus the last time they were built, or null if there weren't any.  All access to this 
+		 * Information about the hierarchy menus the last time they were built, or null if there weren't any.  All access to this
 		 * property MUST be surrounded by calls to <Lock()> and <Unlock()>.
 		 */
 		public List<MenuInfo> HierarchyMenuInfo
@@ -240,7 +240,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				// DEPENDENCY: This logic has to match Config.OverridableOutputSettings.HomePageIsHTML
 
 				lock (accessLock)
-					{  
+					{
 					if (calculatedHomePage == null)
 						{  return false;  }
 
@@ -262,7 +262,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				// DEPENDENCY: This logic has to match Config.OverridableOutputSettings.HomePageIsSourceFile
 
 				lock (accessLock)
-					{  
+					{
 					if (calculatedHomePage == null)
 						{  return false;  }
 
@@ -292,7 +292,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 		/* Property: GeneratedTimestamp
 		 * The generated timestamp being used, or null if one isn't defined.  This is the final result, like "Updated January
-		 * 1, 2021", and not the code, like "Updated month d, yyyy".
+		 * 1, 2022", and not the code, like "Updated month d, yyyy".
 		 */
 		public string GeneratedTimestamp
 			{
@@ -338,12 +338,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		// calls to <Lock()> and <Unlock()>.
 		//
 
-				
+
 		/* var: sourceFilesWithContent
-		 * 
+		 *
 		 * A set of the source file IDs that contain content this output target can use.  This is different from all the files with
 		 * content in <CodeDB.Manager> because it is after all filters have been applied.
-		 * 
+		 *
 		 * This variable is protected internal because some code may need to access it directly.  You should use the access
 		 * functions instead of doing this whenever possible.  All direct access to the variable must be surrounded by calls to
 		 * <Lock()> and <Unlock()>.
@@ -352,10 +352,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* var: classesWithContent
-		 * 
-		 * A set of the class IDs that contain content this output target can use.  This is different from all the classes with 
+		 *
+		 * A set of the class IDs that contain content this output target can use.  This is different from all the classes with
 		 * content in <CodeDB.Manager> because it is after all filters have been applied.
-		 * 
+		 *
 		 * This variable is protected internal because some code may need to access it directly.  You should use the access
 		 * functions instead of doing this whenever possible.  All direct access to the variable must be surrounded by calls to
 		 * <Lock()> and <Unlock()>.
@@ -364,9 +364,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* var: usedImageFiles
-		 * 
+		 *
 		 * A set of the image file IDs that are used in the output.
-		 * 
+		 *
 		 * This variable is protected internal because some code may need to access it directly.  You should use the access
 		 * functions instead of doing this whenever possible.  All direct access to the variable must be surrounded by calls to
 		 * <Lock()> and <Unlock()>.
@@ -375,9 +375,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* var: fileMenuInfo
-		 * 
+		 *
 		 * Information about the file menu the last time it was built, or null if there wasn't one.
-		 * 
+		 *
 		 * This variable is protected internal because some code may need to access it directly.  You should use the access
 		 * functions instead of doing this whenever possible.  All direct access to the variable must be surrounded by calls to
 		 * <Lock()> and <Unlock()>.
@@ -386,9 +386,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* var: hierarchyMenuInfo
-		 * 
+		 *
 		 * Information about the hierarchy menus the last time they were built, or null if there weren't any.
-		 * 
+		 *
 		 * This variable is protected internal because some code may need to access it directly.  You should use the access
 		 * functions instead of doing this whenever possible.  All direct access to the variable must be surrounded by calls to
 		 * <Lock()> and <Unlock()>.
@@ -411,7 +411,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 		/* var: generatedTimestamp
 		 * The generated timestamp being used, or null if one isn't defined.  This is the final result, like "Updated January
-		 * 1, 2021", and not the code, like "Updated month d, yyyy".
+		 * 1, 2022", and not the code, like "Updated month d, yyyy".
 		 */
 		protected string generatedTimestamp;
 
@@ -432,7 +432,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* __________________________________________________________________________
-		 * 
+		 *
 		 * Class: MenuInfo
 		 * __________________________________________________________________________
 		 */
@@ -458,4 +458,3 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 		}
 	}
-

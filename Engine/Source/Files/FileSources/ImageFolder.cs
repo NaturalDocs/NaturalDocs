@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Files.FileSources.ImageFolder
  * ____________________________________________________________________________
- * 
+ *
  * A file source representing a specific image folder on disk.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -18,19 +18,19 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 	{
 	public class ImageFolder : FileSources.Folder
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Function: ImageFolder
 		 */
 		public ImageFolder (Files.Manager manager, Config.Targets.ImageFolder config) : base (manager)
 			{
 			this.config = config;
 			}
-			
-			
+
+
 
 		// Group: Processes
 		// __________________________________________________________________________
@@ -45,7 +45,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 			}
 
 
-		
+
 		// Group: Properties
 		// __________________________________________________________________________
 
@@ -69,7 +69,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 		 */
 		override public Path Path
 			{
-			get 
+			get
 				{  return config.Folder;  }
 			}
 
@@ -78,10 +78,10 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 		 */
 		override public InputType Type
 			{
-			get 
+			get
 				{  return InputType.Image;  }
 			}
-			
+
 		/* Property: Number
 		 * The number assigned to this FileSource.
 		 */
@@ -95,7 +95,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 
 		// Group: Variables
 		// __________________________________________________________________________
-			
+
 		protected Config.Targets.ImageFolder config;
 
 		}

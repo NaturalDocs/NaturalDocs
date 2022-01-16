@@ -1,11 +1,11 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.CLI.StatusManagers.Parsing
  * ____________________________________________________________________________
- * 
+ *
  * A class to monitor the file parsing stage.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -21,7 +21,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 		// Group: Functions
 		// __________________________________________________________________________
 
-		
+
 		public Parsing (Engine.Files.ChangeProcessor process, string alternativeStartMessage = null) : base (Application.StatusInterval)
 			{
 			this.process = process;
@@ -36,7 +36,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 			{
 			process.GetStatus(ref status);
 			totalFilesToProcess = status.ChangedFilesRemaining + status.DeletedFilesRemaining;
-			
+
 			if (alternativeStartMessage != null)
 				{
 				System.Console.WriteLine(
@@ -64,7 +64,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 			else
 				{
 				System.Console.WriteLine(
-					Engine.Locale.Get("NaturalDocs.CLI", "Status.StartFileParsing(changed, deleted)", 
+					Engine.Locale.Get("NaturalDocs.CLI", "Status.StartFileParsing(changed, deleted)",
 											 status.ChangedFilesRemaining, status.DeletedFilesRemaining)
 					);
 				}
@@ -74,18 +74,18 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 			{
 			if (totalFilesToProcess == 0)
 				{  return;  }
-				
+
 			process.GetStatus(ref status);
-			
+
 			int completed = totalFilesToProcess - status.ChangedFilesRemaining - status.DeletedFilesRemaining - status.FilesBeingProcessed;
 			int newPercentage = (completed * 100) / totalFilesToProcess;
-			
+
 			if (newPercentage != lastPercentage)
 				{
 				System.Console.WriteLine(
 					Engine.Locale.Get("NaturalDocs.CLI", "Status.FileParsingUpdate(percent)", newPercentage)
 					);
-					
+
 				lastPercentage = newPercentage;
 				}
 			}
@@ -99,17 +99,17 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 			get
 				{  return totalFilesToProcess;  }
 			}
-			
-			
+
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
+
 		protected Engine.Files.ChangeProcessor process;
 		protected Engine.Files.ChangeProcessorStatus status;
 
 		protected int totalFilesToProcess;
 		protected int lastPercentage;
 		protected string alternativeStartMessage;
-		
+
 		}
 	}

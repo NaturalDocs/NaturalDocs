@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Languages.Parsers.PHP
  * ____________________________________________________________________________
- * 
+ *
  * Additional language support for PHP.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -22,7 +22,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		// Group: Functions
 		// __________________________________________________________________________
-		
+
 
 		/* Constructor: PHP
 		 */
@@ -80,7 +80,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					// Unlike prototype detection, here we treat < as an opening bracket.  Since we're already in the parameter list
 					// we shouldn't run into it as part of an operator overload, and we need it to not treat the comma in "template<a,b>"
 					// as a parameter divider.
-					else if (TryToSkipComment(ref iterator) || 
+					else if (TryToSkipComment(ref iterator) ||
 							   TryToSkipString(ref iterator) ||
 							   TryToSkipBlock(ref iterator, true))
 						{  }
@@ -121,7 +121,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					}
 				}
 
-			
+
 			// If there's no brackets, it's a variable, property, or class.
 
 			else
@@ -199,7 +199,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					// just so it doesn't lose its mind if one occurs.
 
 					// If we come across a block that doesn't immediately follow an identifier, it may be something like a C# property so
-					// treat it as a modifier.  
+					// treat it as a modifier.
 
 					words++;
 					}
@@ -268,7 +268,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					else if (words == 2)
 						{  MarkType(wordStart, wordEnd);  }
 					else if (words == 1)
-						{  
+						{
 						MarkName(wordStart, wordEnd);
 
 						// Change the $ at the beginning of the name from a param modifier to part of the name

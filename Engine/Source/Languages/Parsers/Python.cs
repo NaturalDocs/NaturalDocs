@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Languages.Parsers.Python
  * ____________________________________________________________________________
- * 
+ *
  * Additional language support for Python.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -24,8 +24,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: Python
 		 */
 		public Python (Engine.Instance engineInstance, Language language) : base (engineInstance, language)
@@ -38,7 +38,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		override public void SyntaxHighlight (Tokenizer source)
 			{
 			TokenIterator iterator = source.FirstToken;
-			
+
 			while (iterator.IsInBounds)
 				{
 				if (TryToSkipComment(ref iterator, ParseMode.SyntaxHighlight) ||
@@ -125,7 +125,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 
-			// If we found brackets, it's either a function prototype or a class prototype that includes members.  
+			// If we found brackets, it's either a function prototype or a class prototype that includes members.
 			// Mark the delimiters.
 
 			if (closingBracket != '\0')
@@ -150,7 +150,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					// Unlike prototype detection, here we treat < as an opening bracket.  Since we're already in the parameter list
 					// we shouldn't run into it as part of an operator overload, and we need it to not treat the comma in "template<a,b>"
 					// as a parameter divider.
-					else if (TryToSkipComment(ref iterator) || 
+					else if (TryToSkipComment(ref iterator) ||
 							   TryToSkipString(ref iterator) ||
 							   TryToSkipBlock(ref iterator, true))
 						{  }
@@ -197,7 +197,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					}
 				}
 
-			
+
 			// If there's no brackets, it's a variable, property, or class.
 
 			else
@@ -241,11 +241,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipClassDeclarationLine
-		 * 
+		 *
 		 * If the iterator is on a class's declaration line, moves it past it and returns true.  It does not handle the class body.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParseClassPrototype>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
@@ -264,9 +264,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// Keyword
 
 			if (lookahead.MatchesToken("class") == false)
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 
 			if (mode == ParseMode.ParseClassPrototype)
@@ -281,9 +281,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TokenIterator startOfIdentifier = lookahead;
 
 			if (TryToSkipIdentifier(ref lookahead) == false)
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 
 			if (mode == ParseMode.ParseClassPrototype)
@@ -305,11 +305,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				for (;;)
 					{
 					if (lookahead.Character == ')')
-						{  
+						{
 						if (mode == ParseMode.ParseClassPrototype)
 							{  lookahead.ClassPrototypeParsingType = ClassPrototypeParsingType.EndOfParents;  }
 
-						break;  
+						break;
 						}
 
 					if (TryToSkipClassParent(ref lookahead, mode) == false)
@@ -338,11 +338,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipDecorators
-		 * 
+		 *
 		 * Tries to move the iterator past a group of decorators.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParseClassPrototype>
 		 *			- Will mark each decorator with <ClassPrototypeParsingType.StartOfPrePrototypeLine> and <ClassPrototypeParsingType.PrePrototypeLine>.
@@ -369,12 +369,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipDecorator
-		 * 
+		 *
 		 * Tries to move the iterator past a single decorator.  Note that there may be more than one decorator in a row, so use <TryToSkipDecorators()>
 		 * if you need to move past all of them.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParsePrototype>
 		 *			- Each decorator will create a new prototype section.
@@ -421,11 +421,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipDecoratorParameters
-		 * 
+		 *
 		 * Tries to move the iterator past a decorator parameter section, such as "("String")" in "@Copynight("String")".
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- <ParseMode.ParsePrototype>
@@ -476,7 +476,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						startOfParam = lookahead;
 						}
 
-					else if (TryToSkipComment(ref lookahead) || 
+					else if (TryToSkipComment(ref lookahead) ||
 							   TryToSkipString(ref lookahead) ||
 							   TryToSkipBlock(ref lookahead, true))
 						{  }
@@ -494,12 +494,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: MarkDecoratorParameter
-		 * 
-		 * Applies types to an decorator parameter, such as ""String"" in "@Copynight("String")" or "id = 12" in 
+		 *
+		 * Applies types to an decorator parameter, such as ""String"" in "@Copynight("String")" or "id = 12" in
 		 * "@RequestForEnhancement(id = 12, engineer = "String")".
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.ParsePrototype>
 		 *			- The contents will be marked with parameter tokens.
 		 *		- Everything else has no effect.
@@ -527,7 +527,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					equals.PrototypeParsingType = PrototypeParsingType.PropertyValueSeparator;
 					break;
 					}
-				else if (TryToSkipComment(ref equals) || 
+				else if (TryToSkipComment(ref equals) ||
 							TryToSkipString(ref equals) ||
 							TryToSkipBlock(ref equals, true))
 					{  }
@@ -561,11 +561,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipClassParent
-		 * 
+		 *
 		 * Tries to move the iterator past a single class parent declaration.
-		 * 
+		 *
 		 * Supported Modes:
-		 * 
+		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParseClassPrototype>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
@@ -588,9 +588,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					TryToSkipWhitespace(ref lookahead);
 					}
 				else
-					{  
+					{
 					// Nevermind, reset
-					lookahead = iterator;  
+					lookahead = iterator;
 					}
 				}
 
@@ -598,9 +598,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TokenIterator startOfIdentifier = lookahead;
 
 			if (TryToSkipIdentifier(ref lookahead) == false)
-				{  
+				{
 				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				return false;
 				}
 
 			if (mode == ParseMode.ParseClassPrototype)

@@ -9,15 +9,15 @@
 
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-	
-	
+
+
 	<!--
 		Group: Properties
 		_____________________________________________________________________________
 	-->
 	<PropertyGroup>
 
-		<!-- 
+		<!--
 			Build Property: OperatingSystemTarget
 
 			The operating system that you are building for, which must be one of the following values:
@@ -30,11 +30,11 @@
 		-->
 		<OperatingSystemTarget Condition="'$(OperatingSystemTarget)'==''">Universal</OperatingSystemTarget>
 
-		<!-- 
+		<!--
 			Build Property: NaturalDocsSourceDir
 
 			The folder containing Natural Docs' source.  It should be the root of this file tree:
-			
+
 			> [NaturalDocsSourceDir]\CLI
 			> [NaturalDocsSourceDir]\Engine
 			> [NaturalDocsSourceDir]\Engine.Tests
@@ -47,16 +47,16 @@
 		<NaturalDocsSourceDir Condition="'$(NaturalDocsSourceDir)'==''">$(ProjectDir)..\</NaturalDocsSourceDir>
 
 	</PropertyGroup>
-	
-	
-	
+
+
+
 	<!--
 		Group: General Targets
 		_____________________________________________________________________________
-		
+
 		These targets are used when building this project.  They just forward to the <Engine General Targets> which can be called
 		when building any project.
-		
+
 	-->
 
 		<!-- Build Target: BeforeClean -->
@@ -80,11 +80,11 @@
 		</Target>
 
 
-	
+
 	<!--
 		Group: Engine General Targets
 		_____________________________________________________________________________
-		
+
 		These targets are used when building this project.  All projects that depend on this one should also call these functions from their own
 		<General Targets> so that resources are properly copied over.
 	-->
@@ -124,15 +124,15 @@
 		<!--
 			Group: Engine Action Targets
 			_____________________________________________________________________________
-		
+
 			These targets are used by the <Engine General Targets>.  You shouldn't need to call these individually, just call the <Engine General Targets> and
 			they will be called automatically.
 		-->
 
-	
+
 		<!--
 			Build Target: Engine_ValidateProperties
-			Makes sure all the <Properties> are set to valid values.	
+			Makes sure all the <Properties> are set to valid values.
 		-->
 		<Target Name="Engine_ValidateProperties">
 			<Error
@@ -146,7 +146,7 @@
 				Text="Cannot find the Natural Docs Engine source in $(NaturalDocsSourceDir)Engine.  If you are not building Natural Docs itself but instead something which depends on it, please set the NaturalDocsSourceDir build property." />
 		</Target>
 
-	
+
 		<!--
 			Build Target: Engine_CopySQLiteResources
 		-->
@@ -184,8 +184,8 @@
 				/>
 
 		</Target>
-	
-	
+
+
 		<!--
 			Build Target: Engine_CleanSQLiteResources
 		-->
@@ -217,8 +217,8 @@
 				/>
 
 		</Target>
-	
-	
+
+
 		<!--
 			Build Target: Engine_CopyRegexResources
 		-->
@@ -230,8 +230,8 @@
 				/>
 
 		</Target>
-	
-	
+
+
 		<!--
 			Build Target: Engine_CleanRegexResources
 		-->
@@ -242,26 +242,26 @@
 				/>
 
 		</Target>
-	
-	
+
+
 		<!--
 			Build Target: Engine_CopyConfigResources
 		-->
 		<Target Name="Engine_CopyConfigResources">
 
 			<MakeDir Directories="$(TargetDir)Config" />
-			<Exec 
+			<Exec
 				Condition="'$(OS)'=='Windows_NT'"
 				Command='xcopy "$(NaturalDocsSourceDir)Engine\Resources\Config" "$(TargetDir)Config" /Y'
 				/>
-			<Exec 
+			<Exec
 				Condition="'$(OS)'!='Windows_NT'"
 				Command='cp -f -r "$(NaturalDocsSourceDir)Engine/Resources/Config" "$(TargetDir)"'
 				/>
 
 		</Target>
-	
-	
+
+
 		<!--
 			Build Target: Engine_CleanConfigResources
 		-->
@@ -270,26 +270,26 @@
 			<RemoveDir Directories="$(TargetDir)Config" />
 
 		</Target>
-	
-	
+
+
 		<!--
 			Build Target: Engine_CopyStyleResources
 		-->
 		<Target Name="Engine_CopyStyleResources">
 
 			<MakeDir Directories="$(TargetDir)Styles" />
-			<Exec 
+			<Exec
 				Condition="'$(OS)'=='Windows_NT'"
 				Command='xcopy "$(NaturalDocsSourceDir)Engine\Resources\Styles" "$(TargetDir)Styles" /S /Y'
 				/>
-			<Exec 
+			<Exec
 				Condition="'$(OS)'!='Windows_NT'"
 				Command='cp -f -r "$(NaturalDocsSourceDir)Engine/Resources/Styles" "$(TargetDir)"'
 				/>
 
 		</Target>
-	
-	
+
+
 		<!--
 			Build Target: Engine_CleanStyleResources
 		-->
@@ -298,26 +298,26 @@
 			<RemoveDir Directories="$(TargetDir)Styles" />
 
 		</Target>
-	
-	
+
+
 		<!--
 			Build Target: Engine_CopyTranslationResources
 		-->
 		<Target Name="Engine_CopyTranslationResources">
 
 			<MakeDir Directories="$(TargetDir)Translations" />
-			<Exec 
+			<Exec
 				Condition="'$(OS)'=='Windows_NT'"
 				Command='xcopy "$(NaturalDocsSourceDir)Engine\Resources\Translations" "$(TargetDir)Translations" /Y'
 				/>
-			<Exec 
+			<Exec
 				Condition="'$(OS)'!='Windows_NT'"
 				Command='cp -f -r "$(NaturalDocsSourceDir)Engine/Resources/Translations" "$(TargetDir)"'
 				/>
 
 		</Target>
-	
-	
+
+
 		<!--
 			Build Target: Engine_CleanTranslationResources
 		-->
@@ -326,8 +326,8 @@
 			<RemoveDir Directories="$(TargetDir)Translations" />
 
 		</Target>
-	
-	
+
+
 		<!--
 			Build Target: Engine_CopyLicenseResources
 		-->
@@ -339,8 +339,8 @@
 				/>
 
 		</Target>
-	
-	
+
+
 		<!--
 			Build Target: Engine_CleanLicenseResources
 		-->
@@ -351,6 +351,6 @@
 				/>
 
 		</Target>
-	
-	
+
+
 </Project>

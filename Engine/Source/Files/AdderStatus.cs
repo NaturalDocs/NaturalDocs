@@ -1,19 +1,19 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Files.AdderStatus
  * ____________________________________________________________________________
- * 
+ *
  * Statistics on the progress of <Adder.WorkOnAddingAllFiles()>.
- * 
- * 
+ *
+ *
  * Multithreading: Thread Safety Notes
- * 
+ *
  *		Externally, this class is thread safe.
- *		
+ *
  *		Internally, all variable accesses must use a monitor on <accessLock>.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -25,11 +25,11 @@ namespace CodeClear.NaturalDocs.Engine.Files
 	{
 	public class AdderStatus
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Function: AdderStatus
 		 */
 		public AdderStatus ()
@@ -37,7 +37,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			accessLock = new object();
 			Reset();
 			}
-			
+
 		/* Function: Reset
 		 * Reset all values back to their initial state.
 		 */
@@ -91,8 +91,8 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				styleFoldersFound += otherStyleFoldersFound;
 				}
 			}
-			
-			
+
+
 		/* Function: Copy
 		 * Copies the passed status to this one.
 		 */
@@ -177,8 +177,8 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				}
 			}
 
-			
-			
+
+
 		// Group: Properties
 		// __________________________________________________________________________
 
@@ -243,8 +243,8 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		// __________________________________________________________________________
 
 
-		protected object accessLock;		
-		
+		protected object accessLock;
+
 		protected int sourceFilesFound;
 		protected int sourceFoldersFound;
 

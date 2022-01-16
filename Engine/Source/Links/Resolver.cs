@@ -1,19 +1,19 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Links.Resolver
  * ____________________________________________________________________________
- * 
+ *
  * A process which handles resolving links due to topics changing or new links being added.
- * 
- * 
+ *
+ *
  * Multithreading: Thread Safety Notes
- * 
+ *
  *		Externally, this class is thread safe.
- *		
+ *
  *		Internally, all variable accesses must use a monitor on <accessLock>.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -31,10 +31,10 @@ namespace CodeClear.NaturalDocs.Engine.Links
 	{
 	public class Resolver : Process
 		{
-		
+
 		// Group: Initialization Functions
 		// __________________________________________________________________________
-		
+
 
 		/* Function: Resolver
 		 */
@@ -43,7 +43,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			changesBeingProcessed = 0;
 			accessLock = new object();
 			}
-			
+
 		override protected void Dispose (bool strictRulesApply)
 			{
 			if (!strictRulesApply)
@@ -60,13 +60,13 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 
 		/* Function: WorkOnResolvingLinks
-		 * 
-		 * Works on resolving links due to topics changing or new links being added.  This is a parallelizable task so multiple 
+		 *
+		 * Works on resolving links due to topics changing or new links being added.  This is a parallelizable task so multiple
 		 * threads can call this function and the work will be divided up between them.
-		 * 
-		 * This function returns if it's cancelled or there is no more work to be done.  If there is only one thread working 
-		 * on this then the task is complete, but if there are multiple threads the task isn't complete until they all have 
-		 * returned.  This one may have returned because there was no more work for this thread to do, but other threads 
+		 *
+		 * This function returns if it's cancelled or there is no more work to be done.  If there is only one thread working
+		 * on this then the task is complete, but if there are multiple threads the task isn't complete until they all have
+		 * returned.  This one may have returned because there was no more work for this thread to do, but other threads
 		 * are still working.
 		 */
 		public void WorkOnResolvingLinks (CancelDelegate cancelled)
@@ -150,7 +150,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 					}
 				}
 			finally
-				{  
+				{
 				if (accessor.HasLock)
 					{  accessor.ReleaseLock();  }
 
@@ -160,14 +160,14 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 
 		/* Function: ResolveLink
-		 * 
+		 *
 		 * Calculates a new target for the passed link ID.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- Requires the accessor to have at least a read/possible write lock.  If the link target changes it will be upgraded to
 		 *		  read/write automatically.
-		 *		
+		 *
 		 */
 		protected void ResolveLink (int linkID, Accessor accessor)
 			{
@@ -180,7 +180,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			endingSymbols.Add(link.EndingSymbol);
 
 			// We only need the body's length, not its contents.
-			List<Topic> topics = accessor.GetTopicsByEndingSymbol(endingSymbols, Delegates.NeverCancel, 
+			List<Topic> topics = accessor.GetTopicsByEndingSymbol(endingSymbols, Delegates.NeverCancel,
 																							 Accessor.GetTopicFlags.BodyLengthOnly |
 																							 Accessor.GetTopicFlags.DontLookupClasses |
 																							 Accessor.GetTopicFlags.DontLookupContexts);
@@ -190,14 +190,14 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			if (link.Type == LinkType.NaturalDocs)
 				{
 				string ignore;
-				alternativeInterpretations = EngineInstance.Comments.NaturalDocsParser.LinkInterpretations(link.Text, 
+				alternativeInterpretations = EngineInstance.Comments.NaturalDocsParser.LinkInterpretations(link.Text,
 																							Comments.NaturalDocs.Parser.LinkInterpretationFlags.FromOriginalText |
 																							Comments.NaturalDocs.Parser.LinkInterpretationFlags.AllowNamedLinks |
 																							Comments.NaturalDocs.Parser.LinkInterpretationFlags.AllowPluralsAndPossessives,
 																							out ignore);
 
 				}
-	
+
 			int bestMatchTopicID = 0;
 			int bestMatchClassID = 0;
 			long bestMatchScore = 0;
@@ -214,7 +214,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 					}
 				}
 
-			if (bestMatchTopicID != link.TargetTopicID || 
+			if (bestMatchTopicID != link.TargetTopicID ||
 				bestMatchClassID != link.TargetClassID ||
 				bestMatchScore != link.TargetScore)
 				{
@@ -231,32 +231,32 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 
 		/* Function: ResolveNewTopics
-		 * 
+		 *
 		 * Goes through the IDs of newly created <Topics> and sees if they serve as better targets for any existing links.
-		 * 
+		 *
 		 * Parameters:
-		 * 
+		 *
 		 *		topicIDs - The set of IDs to check.  Every <Topic> represented here must have the same <EndingSymbol>.
 		 *		endingSymbol - The <EndingSymbol> shared by all of the topic IDs.
 		 *		accessor - The <Accessor> used for the database.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- Requires the accessor to have at least a read/possible write lock.  If the link changes it will be upgraded to
 		 *		  read/write automatically.
-		 *		
+		 *
 		 */
 		protected void ResolveNewTopics (NumberSet topicIDs, EndingSymbol endingSymbol, Accessor accessor)
 			{
 			// We only need the body's length, not its contents.
-			List<Topic> topics = accessor.GetTopicsByID(topicIDs, Delegates.NeverCancel, 
+			List<Topic> topics = accessor.GetTopicsByID(topicIDs, Delegates.NeverCancel,
 																			Accessor.GetTopicFlags.BodyLengthOnly |
 																			Accessor.GetTopicFlags.DontLookupClasses |
 																			Accessor.GetTopicFlags.DontLookupContexts);
 			List<Link> links = accessor.GetLinksByEndingSymbol(endingSymbol, Delegates.NeverCancel,
 																						Accessor.GetLinkFlags.DontLookupClasses);
 
-			// Go through each link and see if any of the topics serve as a better target.  It's better for the links to be the outer loop 
+			// Go through each link and see if any of the topics serve as a better target.  It's better for the links to be the outer loop
 			// because we can generate alternative interpretations only once per link.
 
 			foreach (Link link in links)
@@ -266,14 +266,14 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				if (link.Type == LinkType.NaturalDocs)
 					{
 					string ignore;
-					alternativeInterpretations = EngineInstance.Comments.NaturalDocsParser.LinkInterpretations(link.Text, 
+					alternativeInterpretations = EngineInstance.Comments.NaturalDocsParser.LinkInterpretations(link.Text,
 																						Comments.NaturalDocs.Parser.LinkInterpretationFlags.FromOriginalText |
 																						Comments.NaturalDocs.Parser.LinkInterpretationFlags.AllowNamedLinks |
 																						Comments.NaturalDocs.Parser.LinkInterpretationFlags.AllowPluralsAndPossessives,
 																						out ignore);
 
 					}
-	
+
 				int bestMatchTopicID = link.TargetTopicID;
 				int bestMatchClassID = link.TargetClassID;
 				long bestMatchScore = link.TargetScore;
@@ -294,7 +294,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 						}
 					}
 
-				if (bestMatchTopicID != link.TargetTopicID || 
+				if (bestMatchTopicID != link.TargetTopicID ||
 					bestMatchClassID != link.TargetClassID ||
 					bestMatchScore != link.TargetScore)
 					{
@@ -312,14 +312,14 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 
 		/* Function: ResolveImageLink
-		 * 
+		 *
 		 * Calculates a new target for the passed image link ID.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- Requires the accessor to have at least a read/possible write lock.  If the link target changes it will be upgraded to
 		 *		  read/write automatically.
-		 *		
+		 *
 		 */
 		protected void ResolveImageLink (int imageLinkID, Accessor accessor)
 			{
@@ -385,20 +385,20 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 
 		/* Function: ResolveNewImageFiles
-		 * 
+		 *
 		 * Goes through the IDs of newly created image files and sees if they serve as better targets for any existing links.
-		 * 
+		 *
 		 * Parameters:
-		 * 
+		 *
 		 *		imageFileIDs - The set of IDs to check.  Every file represented here must have the same lowercase file name.
 		 *		lcFileName - The all lowercase file name shared by all of the file IDs.  It does not include any part of the path.
 		 *		accessor - The <Accessor> used for the database.
-		 * 
+		 *
 		 * Requirements:
-		 * 
+		 *
 		 *		- Requires the accessor to have at least a read/possible write lock.  If the link changes it will be upgraded to
 		 *		  read/write automatically.
-		 *		
+		 *
 		 */
 		protected void ResolveNewImageFiles (NumberSet imageFileIDs, string lcFileName, Accessor accessor)
 			{
@@ -457,7 +457,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 
 		/* Function: PickLinkID
-		 * Returns a link ID that needs to be processed, or zero if there aren't any.  All link IDs should be passed to 
+		 * Returns a link ID that needs to be processed, or zero if there aren't any.  All link IDs should be passed to
 		 * <FinalizeLinkID()> after being resolved.
 		 */
 		protected int PickLinkID ()
@@ -478,7 +478,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 
 		/* Function: PickNewTopics
-		 * Returns the IDs for a batch of new topics and their shared ending symbol, or false if there aren't any.  This allows 
+		 * Returns the IDs for a batch of new topics and their shared ending symbol, or false if there aren't any.  This allows
 		 * you to process new topics that could potentially serve as better definitions to existing links.  You must pass the values
 		 * to <FinalizeNewTopics()> after resolving them.
 		 */
@@ -496,10 +496,10 @@ namespace CodeClear.NaturalDocs.Engine.Links
 					{  return false;  }
 				}
 			}
-			
+
 
 		/* Function: PickImageLinkID
-		 * Returns an image link ID that needs to be processed, or zero if there aren't any.  All image link IDs should be passed to 
+		 * Returns an image link ID that needs to be processed, or zero if there aren't any.  All image link IDs should be passed to
 		 * <FinalizeImageLinkID()> after being resolved.
 		 */
 		protected int PickImageLinkID ()
@@ -520,7 +520,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 
 		/* Function: PickNewImageFiles
-		 * Returns the IDs for a batch of new image files and their shared lowercase file name, or false if there aren't any.  This allows 
+		 * Returns the IDs for a batch of new image files and their shared lowercase file name, or false if there aren't any.  This allows
 		 * you to process new images that could potentially serve as better definitions to existing links.  You must pass the values
 		 * to <FinalizeNewImageFiles()> after resolving them.
 		 */
@@ -538,7 +538,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 					{  return false;  }
 				}
 			}
-			
+
 
 		/* Function: FinalizeLinkID
 		 * Finalizes processing of a link ID that was resolved.
@@ -567,7 +567,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				changesBeingProcessed -= topicIDs.Count;
 				}
 			}
-			
+
 
 		/* Function: FinalizeImageLinkID
 		 * Finalizes processing of an image link ID that was resolved.
@@ -596,7 +596,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				changesBeingProcessed -= imageFileIDs.Count;
 				}
 			}
-			
+
 
 
 		// Group: Properties
@@ -609,31 +609,31 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				{  return EngineInstance.Links;  }
 			}
 
-		
+
 
 		// Group: Variables
 		// __________________________________________________________________________
-		
+
 
 		/* var: changesBeingProcessed
-		 * 
-		 * The number of changes currently being worked on across all threads.  Make sure all changes to this value match the 
+		 *
+		 * The number of changes currently being worked on across all threads.  Make sure all changes to this value match the
 		 * system used in <UnprocessedChanges.Count>.
-		 * 
+		 *
 		 * Thread Safety:
-		 * 
+		 *
 		 *		You must hold <accessLock> to use this variable.
 		 */
 		protected int changesBeingProcessed;
 
 
 		/* var: accessLock
-		 * 
+		 *
 		 * An object used for a monitor that prevents more than one thread from accessing any of the variables at a time.
-		 * 
+		 *
 		 * Rationale:
-		 * 
-		 *		Since the only variable is <changesBeingProcessed>, why not just use atomic operations in 
+		 *
+		 *		Since the only variable is <changesBeingProcessed>, why not just use atomic operations in
 		 *		System.Threading.Interlocked instead?  Well, it could cause a race condition where <GetStatus()> catches a moment
 		 *		between when a thread has picked something out of <Links.UnprocessedChanges> and before it increments
 		 *		<changesBeingProcessed>.  That means the value could not reflect some work being done.  This could cause the total

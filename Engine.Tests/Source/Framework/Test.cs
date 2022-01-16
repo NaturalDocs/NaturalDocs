@@ -1,17 +1,17 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.Test
  * ____________________________________________________________________________
- * 
+ *
  * A class storing information about a single file-based test.
- * 
+ *
  * Usage:
- * 
+ *
  *		- Iterate through the test data folder to create Test objects from files.
  *			- In most cases there will be a 1:1 ratio between tests and input files.  In this case you can test each
  *				file with <IsInputFile()> and create the object with <FromInputFile()>.
  *			- If a test requires multiple input files, you can test each file with <IsExpectedOutputFile()> and create
  *				objects with <FromExpectedOutputFile()>.  However, you may also want to use <IsActualOutputFile()>
- *				and <FromActualOutputFile()> if you want to detect actual output files that don't have corresponding 
+ *				and <FromActualOutputFile()> if you want to detect actual output files that don't have corresponding
  *				expected output files and count them as failures.
  *		- Generate the output for the test.
  *			- One option is to generate the output and call <SetActualOutput()>.  When the test runs it will store
@@ -23,10 +23,10 @@
  *				captured and added to the output instead.
  *		- Call <Run()> to execute the test.
  *		- Use <Passed> to see the status.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -151,7 +151,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 		/* Function: Run
 		 * Executes the test.  If <SetActualOutput()> was called, this will compare it to <ExpectedOutputFile> and be saved
-		 * to <ActualOutputFile>.  If <SetActualOutput()> was not called, <ActualOutputFile> will be loaded and compared to 
+		 * to <ActualOutputFile>.  If <SetActualOutput()> was not called, <ActualOutputFile> will be loaded and compared to
 		 * <ExpectedOutputFile>.
 		 */
 		public void Run ()
@@ -162,7 +162,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 			// Load actual output
 
-			// DEPENDENCY: This requires actualOutput to never be null if SetActualOutput() was called, even if it was passed 
+			// DEPENDENCY: This requires actualOutput to never be null if SetActualOutput() was called, even if it was passed
 			// a null string.
 
 			// Checking testException for null isn't just for efficiency.  If there was an exception thrown and the actual output file
@@ -175,8 +175,8 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 				catch (Exception e)
 					{
 					if (e is System.IO.FileNotFoundException || e is System.IO.DirectoryNotFoundException)
-						{  
-						testResult = TestResults.ActualOutputFileDoesNotExist;  
+						{
+						testResult = TestResults.ActualOutputFileDoesNotExist;
 						return;
 						}
 					else
@@ -186,7 +186,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 
 			// Fill in replacement values for exceptions and null
-			
+
 			if (testException != null)
 				{
 				actualOutput =
@@ -220,17 +220,17 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 				}
 
 
-			// Save actual output.  We do this before loading the expected output file because we want to save the 
+			// Save actual output.  We do this before loading the expected output file because we want to save the
 			// generated output even if the expected output file doesn't exist.
 
 			string oldOutput = null;
 
 			try
-				{  
-				// The actual output file may not previously exist, so don't throw exceptions if we can't read it.  If it was 
+				{
+				// The actual output file may not previously exist, so don't throw exceptions if we can't read it.  If it was
 				// required to exist because SetActualOutput() was never called, that would have been handled earlier in
 				// the function.
-				oldOutput = System.IO.File.ReadAllText(actualOutputFile);  
+				oldOutput = System.IO.File.ReadAllText(actualOutputFile);
 				}
 			catch
 				{  oldOutput = null;  }
@@ -254,7 +254,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 			catch (Exception e)
 				{
 				if (e is System.IO.FileNotFoundException || e is System.IO.DirectoryNotFoundException)
-					{  
+					{
 					testResult = TestResults.ExpectedOutputFileDoesNotExist;
 					return;
 					}
@@ -285,7 +285,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 			// Input files can have any extension
 			return file.NameWithoutPathOrExtension.EndsWith(" - Input");
 			}
-		
+
 		/* Function: IsExpectedOutputFile
 		 *	 Returns whether the passed file is an expected output file for a test.
 		 */
@@ -313,7 +313,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 				{  throw new InvalidOperationException();  }
 			else
 				{  return name.Substring(0, name.Length - 8);  }
-			}		
+			}
 
 		/* Function: TestNameFromExpectedOutputFile
 		 * Extracts the name of the test from an expected output file path.
@@ -327,7 +327,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 			else
 				{  return name.Substring(0, name.Length - 22);  }
 			}
-		
+
 		/* Function: TestNameFromActualOutputFile
 		 * Extracts the name of the test from an actual output file path.
 		 */
@@ -348,7 +348,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 			{
 			return testFolder + '/' + testName + " - Expected Output.txt";
 			}
-		
+
 		/* Function: ActualOutputFileOf
 		 * Returns the actual output file of the passed test name and folder.
 		 */
@@ -364,7 +364,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 
 		/* Property: Passed
-		 * Whether the test succeeded, which means the actual output matches the expected output and no exceptions were 
+		 * Whether the test succeeded, which means the actual output matches the expected output and no exceptions were
 		 * thrown.  You cannot access this property before calling <Run()>.
 		 */
 		public bool Passed
@@ -386,7 +386,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 			get
 				{  return testResult;  }
 			}
-			
+
 		/* Property: TestResultExplanation
 		 * Returns a plain text explanation of <TestResult>.
 		 */
@@ -470,7 +470,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 		protected Path actualOutputFile;
 
 		/* var: actualOutput
-		 * The actual output generated from the test if it is set directly from the property instead of being 
+		 * The actual output generated from the test if it is set directly from the property instead of being
 		 * loaded from <actualOutputFile>.  Use <actualOutputWasSet> to determine its status.
 		 */
 		protected string actualOutput;
@@ -490,7 +490,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 		// Group: Static Variables
 		// __________________________________________________________________________
 
-		static protected string[] TestResultStrings = 
+		static protected string[] TestResultStrings =
 			{
 			"Passed",
 

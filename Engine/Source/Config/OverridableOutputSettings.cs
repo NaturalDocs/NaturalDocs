@@ -1,11 +1,11 @@
-/* 
+/*
  * Class: CodeClear.NaturalDocs.Engine.Config.OverridableOutputSettings
  * ____________________________________________________________________________
- * 
+ *
  * A set of properties that apply to the output and can be set either globally or to a single output target.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -17,10 +17,10 @@ namespace CodeClear.NaturalDocs.Engine.Config
 	{
 	public class OverridableOutputSettings
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
+
 		public OverridableOutputSettings ()
 			{
 			title = null;
@@ -54,7 +54,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			styleNamePropertyLocation = toCopy.styleNamePropertyLocation;
 			homePagePropertyLocation = toCopy.homePagePropertyLocation;
 			}
-			
+
 
 		/* Function: MakeTimestamp
 		 * Generates a time stamp from <TimestampCode> and the current date.  If <TimestampCode> is null this will also
@@ -150,11 +150,11 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			}
 
 
-			
+
 		// Group: Properties
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Property: Title
 		 * The title of the project, or null if it's not set.
 		 */
@@ -176,7 +176,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			set
 				{  subtitle = value;  }
 			}
-			
+
 		/* Property: Copyright
 		 *	The copyright line, or null if it's not set.
 		 */
@@ -187,7 +187,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			set
 				{  copyright = value;  }
 			}
-			
+
 		/* Property: TimestampCode
 		 * The time stamp code, or null if it's not set.
 		 */
@@ -220,7 +220,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			set
 				{  homePage = value;  }
 			}
-			
+
 		/* Property: HomePageIsHTML
 		 * Whether <HomePage> is a HTML file.
 		 */
@@ -271,7 +271,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			set
 				{  titlePropertyLocation = value;  }
 			}
-			
+
 		/* Property: SubtitlePropertyLocation
 		 * Where the <Subtitle> property is defined, or <PropertySource.NotDefined> if it isn't.
 		 */
@@ -282,7 +282,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			set
 				{  subtitlePropertyLocation = value;  }
 			}
-			
+
 		/* Property: CopyrightPropertyLocation
 		 * Where the <Copyright> property is defined, or <PropertySource.NotDefined> if it isn't.
 		 */
@@ -293,7 +293,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			set
 				{  copyrightPropertyLocation = value;  }
 			}
-			
+
 		/* Property: TimestampCodePropertyLocation
 		 * Where the <TimestampCode> property is defined, or <PropertySource.NotDefined> if it isn't.
 		 */
@@ -315,7 +315,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			set
 				{  styleNamePropertyLocation = value;  }
 			}
-			
+
 		/* Property: HomePagePropertyLocation
 		 * Where the <HomePage> property is defined, or <PropertySource.NotDefined> if it isn't.
 		 */
@@ -326,12 +326,12 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			set
 				{  homePagePropertyLocation = value;  }
 			}
-			
-	
-		
+
+
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
+
 		protected string title;
 		protected string subtitle;
 		protected string copyright;
@@ -345,6 +345,6 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		protected PropertyLocation timestampCodePropertyLocation;
 		protected PropertyLocation styleNamePropertyLocation;
 		protected PropertyLocation homePagePropertyLocation;
-		
+
 		}
 	}

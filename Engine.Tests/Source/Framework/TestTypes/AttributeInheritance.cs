@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes.AttributeInheritance
  * ____________________________________________________________________________
- * 
+ *
  * File-based tests to make sure Natural Docs topics inherit certain attributes correctly.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -45,7 +45,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 				output.AppendLine("- Effective Access Level: " + topics[i].EffectiveAccessLevel);
 
 				if (topics[i].TagIDs != null && topics[i].TagIDs.IsEmpty == false)
-					{  
+					{
 					output.Append("- Tags: ");
 					bool isFirst = true;
 
@@ -80,12 +80,12 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 					output.Append("- " + contextName + " Using Statement: ");
 
 					if (usingStatement.Type == UsingString.UsingType.AddPrefix)
-						{  
+						{
 						output.AppendLine("Add " + usingStatement.PrefixToAdd.FormatWithSeparator('.'));
 						}
 					else if (usingStatement.Type == UsingString.UsingType.ReplacePrefix)
-						{  
-						output.AppendLine("Replace " + usingStatement.PrefixToRemove.FormatWithSeparator('.') + 
+						{
+						output.AppendLine("Replace " + usingStatement.PrefixToRemove.FormatWithSeparator('.') +
 												  " with " + usingStatement.PrefixToAdd.FormatWithSeparator('.'));
 						}
 					else

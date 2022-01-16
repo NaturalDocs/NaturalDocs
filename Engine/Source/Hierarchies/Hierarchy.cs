@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Hierarchies.Hierarchy
  * ____________________________________________________________________________
- * 
+ *
  * Information about a single hierarchy within Natural Docs.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -18,11 +18,11 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 	{
 	public class Hierarchy
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: Hierarchy
 		 */
 		public Hierarchy (int id, string name, string pluralName, string simpleIdentifier, string pluralSimpleIdentifier,
@@ -80,7 +80,7 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 			set
 				{  simpleIdentifier = value;  }
 			}
-			
+
 		/* Property: PluralSimpleIdentifier
 		 * The hierarchy's plural name using only the letters A to Z.
 		 */
@@ -91,7 +91,7 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 			set
 				{  pluralSimpleIdentifier = value;  }
 			}
-			
+
 		/* Property: IsLanguageSpecific
 		 * Whether members of the hierarchy should be separated by language.
 		 */
@@ -118,13 +118,13 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 		public bool IsCaseSensitive
 			{
 			get
-				{  
+				{
 				#if DEBUG
 				if (IsLanguageSpecific)
 					{  throw new InvalidOperationException("Shouldn't read Hierarchy.IsCaseSensitive for language-specific hierarchies.");  }
 				#endif
 
-				return isCaseSensitive;  
+				return isCaseSensitive;
 				}
 			}
 

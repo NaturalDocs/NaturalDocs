@@ -1,11 +1,11 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Links.LinkSet
  * ____________________________________________________________________________
- * 
+ *
  * A sorted list of <Links> that prevents duplicates from being added as determined by <Link.CompareIdentifyingPropertiesTo()>.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -31,7 +31,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			}
 
 		static protected LinkSetComparer comparer = new LinkSetComparer();
-				
+
 		}
 
 	public class LinkSetComparer : System.Collections.Generic.IComparer<Link>

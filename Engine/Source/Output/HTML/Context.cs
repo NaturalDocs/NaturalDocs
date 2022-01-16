@@ -1,18 +1,18 @@
-﻿/* 
+﻿/*
  * Struct: CodeClear.NaturalDocs.Engine.Output.HTML.Context
  * ____________________________________________________________________________
- * 
+ *
  * A struct that contains the context in which a HTML component is being built, such as which <Topic> it's for and which
  * <PageLocation> it appears in.
- * 
- * 
+ *
+ *
  * Multithreading: Not Thread Safe
- * 
+ *
  *		This class is only designed to be used by one thread at a time.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -150,7 +150,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 * The path of the <Page's> tool tips data file.
 		 */
 		public Path ToolTipsFile
-		   {  
+		   {
 			get
 				{
 				string outputFileString = this.OutputFile.ToString();
@@ -169,9 +169,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 * The path of the <Page's> summary data file.
 		 */
 		public Path SummaryFile
-		   {  
+		   {
 			get
-				{  
+				{
 				string outputFileString = this.OutputFile.ToString();
 
 				#if DEBUG
@@ -188,9 +188,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 * The path of the <Page's> summary tool tips data file.
 		 */
 		public Path SummaryToolTipsFile
-		   {  
+		   {
 			get
-				{  
+				{
 				string outputFileString = this.OutputFile.ToString();
 
 				#if DEBUG
@@ -244,7 +244,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				// Get the topic hash path if the topic is set
 
 				string topicHashPath = null;
-				
+
 				if (topic != null)
 					{  topicHashPath = TopicOnlyHashPath;  }
 

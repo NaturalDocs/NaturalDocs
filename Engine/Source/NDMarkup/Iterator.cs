@@ -1,13 +1,13 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.NDMarkup.Iterator
  * ____________________________________________________________________________
- * 
+ *
  * A class to handle walking through a <NDMarkup>-formatted string.  It moves by element, treating things like tags
  * and stretches of unformatted text as one step.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -56,8 +56,8 @@ namespace CodeClear.NaturalDocs.Engine.NDMarkup
 
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: Iterator
 		 * Static constructor.
 		 */
@@ -209,9 +209,9 @@ namespace CodeClear.NaturalDocs.Engine.NDMarkup
 
 
 		/* Function: GoToRawTextIndex
-		 * Moves the iterator to the passed character offset in the string.  If the offset is not zero, it *must* land on the 
-		 * opening angle bracket of a tag.  The only reason you should be using this function is to move to a tag you found 
-		 * by searching the string, and enforcing this restriction prevents weird behavior that could result from starting in the 
+		 * Moves the iterator to the passed character offset in the string.  If the offset is not zero, it *must* land on the
+		 * opening angle bracket of a tag.  The only reason you should be using this function is to move to a tag you found
+		 * by searching the string, and enforcing this restriction prevents weird behavior that could result from starting in the
 		 * middle of an element or tag.  It will throw an exception otherwise.
 		 */
 		public void GoToRawTextIndex (int charOffset)
@@ -225,10 +225,10 @@ namespace CodeClear.NaturalDocs.Engine.NDMarkup
 
 
 		/* Function: GoToFirstTag
-		 * 
+		 *
 		 * Moves the iterator to the first instance of the passed tag, returning whether it was successful.  If it wasn't, the
 		 * iterator will be placed out of bounds.
-		 * 
+		 *
 		 * You may pass an entire tag, such as "<b>", or you may pass a fragment to allow for arbitrary properties, such as
 		 * "<link" or "<link type="naturaldocs"".  The first character must be an opening bracket.
 		 */
@@ -245,7 +245,7 @@ namespace CodeClear.NaturalDocs.Engine.NDMarkup
 				return false;
 				}
 			else
-				{  
+				{
 				GoToRawTextIndex(tagIndex);
 				return true;
 				}
@@ -253,11 +253,11 @@ namespace CodeClear.NaturalDocs.Engine.NDMarkup
 
 
 		/* Function: GoToNextTag
-		 * 
+		 *
 		 * Moves the iterator to the next instance of the passed tag, returning whether it was successful.  If it wasn't, the
-		 * iterator will be placed out of bounds.  It starts the search after the current position so you can call this repeatedly 
+		 * iterator will be placed out of bounds.  It starts the search after the current position so you can call this repeatedly
 		 * until it returns false.
-		 * 
+		 *
 		 * You may pass an entire tag, such as "<b>", or you may pass a fragment to allow for arbitrary properties, such as
 		 * "<link" or "<link type="naturaldocs"".  The first character must be an opening bracket.
 		 */
@@ -277,7 +277,7 @@ namespace CodeClear.NaturalDocs.Engine.NDMarkup
 				return false;
 				}
 			else
-				{  
+				{
 				GoToRawTextIndex(tagIndex);
 				return true;
 				}
@@ -316,8 +316,8 @@ namespace CodeClear.NaturalDocs.Engine.NDMarkup
 
 
 		/* Function: Property
-		 * If the iterator is on a tag and it contains the passed property, returns it sans quotes.  The value is 
-		 * automatically passed through <TextConverter.DecodeEntityChars()>.  If the property isn't defined it 
+		 * If the iterator is on a tag and it contains the passed property, returns it sans quotes.  The value is
+		 * automatically passed through <TextConverter.DecodeEntityChars()>.  If the property isn't defined it
 		 * will return null.
 		 */
 		public string Property (string propertyName)
@@ -327,7 +327,7 @@ namespace CodeClear.NaturalDocs.Engine.NDMarkup
 
 			int searchIndex = index + 1;
 			int closingBracketIndex = index + length - 1;
-			
+
 			int spaceIndex = content.IndexOf(' ', searchIndex, closingBracketIndex - searchIndex);
 			if (spaceIndex == -1)
 				{  return null;  }
@@ -354,13 +354,13 @@ namespace CodeClear.NaturalDocs.Engine.NDMarkup
 
 			return null;
 			}
-			
-			
-			
+
+
+
 		// Group: Properties
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Property: Type
 		 * The type of content the iterator is currently on.
 		 */
@@ -449,12 +449,12 @@ namespace CodeClear.NaturalDocs.Engine.NDMarkup
 			get
 				{  return index;  }
 			}
-			
 
-		
+
+
 		// Group: Variables
 		// __________________________________________________________________________
-		
+
 
 		/* var: content
 		 * The <NDMarkup>-formatted string being iterated over.
@@ -465,7 +465,7 @@ namespace CodeClear.NaturalDocs.Engine.NDMarkup
 		 * The current position into <content>.
 		 */
 		private int index;
-								
+
 		/* var: type
 		 * The current element.
 		 */
@@ -477,7 +477,7 @@ namespace CodeClear.NaturalDocs.Engine.NDMarkup
 		private int length;
 
 		/* var: isOpeningTag
-		 * If the <Type> is a tag, whether it is an opening or closing tag.  The value is undefined if the iterator is on a non-tag 
+		 * If the <Type> is a tag, whether it is an opening or closing tag.  The value is undefined if the iterator is on a non-tag
 		 * element or a standalone tag element.
 		 */
 		private bool isOpeningTag;
@@ -495,8 +495,8 @@ namespace CodeClear.NaturalDocs.Engine.NDMarkup
 
 		#if DEBUG
 			private static System.Text.RegularExpressions.Regex TagValidationRegex
-				= new System.Text.RegularExpressions.Regex("^</?[a-z]+(?: [a-z]+=\"[^<>\"]*\")*>$", 
-																								  System.Text.RegularExpressions.RegexOptions.Compiled | 
+				= new System.Text.RegularExpressions.Regex("^</?[a-z]+(?: [a-z]+=\"[^<>\"]*\")*>$",
+																								  System.Text.RegularExpressions.RegexOptions.Compiled |
 																								  System.Text.RegularExpressions.RegexOptions.Singleline);
 		#endif
 

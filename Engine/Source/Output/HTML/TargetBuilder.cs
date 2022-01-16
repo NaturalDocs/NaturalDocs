@@ -1,19 +1,19 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.TargetBuilder
  * ____________________________________________________________________________
- * 
+ *
  * A process which handles building output files for a single <HTML.Target>.
- * 
- * 
+ *
+ *
  * Multithreading: Thread Safety Notes
- * 
+ *
  *		Externally, this class is thread safe.
- *		
+ *
  *		Internally, all variable accesses must use a monitor on <accessLock>.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -31,10 +31,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 	{
 	public class TargetBuilder : Output.TargetBuilder
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
+
 
 		/* Function: TargetBuilder
 		 */
@@ -43,7 +43,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			this.workInProgress = 0;
 			this.accessLock = new object();
 			}
-			
+
 		override protected void Dispose (bool strictRulesApply)
 			{
 			if (!strictRulesApply)
@@ -55,15 +55,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* Function: WorkOnUpdatingOutput
-		 * 
+		 *
 		 * Works on the task of going through all the detected changes and updating the generated HTML and supporting files.
 		 * This is a parallelizable task, so multiple threads can call this function and they will divide up the work until it's done.
 		 * Pass a <CancelDelegate> if you'd like to be able to interrupt this task, or <Delegates.NeverCancel> if not.
-		 * 
-		 * Note that building the output is a two-stage process, so after this task is fully complete you must also call 
+		 *
+		 * Note that building the output is a two-stage process, so after this task is fully complete you must also call
 		 * <WorkOnFinalizingOutput()> to finish it.
-		 * 
-		 * This function returns if it's cancelled or there is no more work to be done.  If there is only one thread working on this 
+		 *
+		 * This function returns if it's cancelled or there is no more work to be done.  If there is only one thread working on this
 		 * then the task is complete, but if there are multiple threads the task isn't complete until they all have returned.  This
 		 * one may have returned because there was no more work for it to do but other threads could still be working.
 		 */
@@ -73,7 +73,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				{  return;  }
 
 			CodeDB.Accessor accessor = null;
-			
+
 			try
 				{
 				for (;;)
@@ -124,7 +124,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 					// Build main style files
-						
+
 					if (Target.UnprocessedChanges.PickMainStyleFiles())
 						{
 						lock (accessLock)
@@ -146,16 +146,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 					// Build style files
-						
+
 					int styleFileToRebuild = Target.UnprocessedChanges.PickStyleFile();
 
 					if (styleFileToRebuild != 0)
 						{
 						lock (accessLock)
 							{  workInProgress += StyleFileCost;  }
-						
+
 						BuildStyleFile(styleFileToRebuild, cancelDelegate);
-						
+
 						lock (accessLock)
 							{  workInProgress -= StyleFileCost;  }
 
@@ -163,26 +163,26 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 							{
 							Target.UnprocessedChanges.AddStyleFile(styleFileToRebuild);
 							break;
-							}		
+							}
 						else
 							{  continue;  }
 						}
-						
+
 
 					// Build source files
-					
+
 					int sourceFileToRebuild = Target.UnprocessedChanges.PickSourceFile();
 
 					if (sourceFileToRebuild != 0)
 						{
 						lock (accessLock)
 							{  workInProgress += SourceFileCost;  }
-						
+
 						if (accessor == null)
 							{  accessor = EngineInstance.CodeDB.GetAccessor();  }
-							
+
 						BuildSourceFile(sourceFileToRebuild, accessor, cancelDelegate);
-						
+
 						lock (accessLock)
 							{  workInProgress -= SourceFileCost;  }
 
@@ -194,22 +194,22 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 						else
 							{  continue;  }
 						}
-						
+
 
 					// Build class files
-						
+
 					int classToRebuild = Target.UnprocessedChanges.PickClass();
 
 					if (classToRebuild != 0)
 						{
 						lock (accessLock)
 							{  workInProgress += ClassCost;  }
-						
+
 						if (accessor == null)
 							{  accessor = EngineInstance.CodeDB.GetAccessor();  }
-							
+
 						BuildClassFile(classToRebuild, accessor, cancelDelegate);
-						
+
 						lock (accessLock)
 							{  workInProgress -= ClassCost;  }
 
@@ -217,26 +217,26 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 							{
 							Target.UnprocessedChanges.AddClass(classToRebuild);
 							break;
-							}		
+							}
 						else
 							{  continue;  }
 						}
 
-						
+
 					// Build image files
-						
+
 					int imageToRebuild = Target.UnprocessedChanges.PickImageFile();
 
 					if (imageToRebuild != 0)
 						{
 						lock (accessLock)
 							{  workInProgress += ImageFileCost;  }
-						
+
 						if (accessor == null)
 							{  accessor = EngineInstance.CodeDB.GetAccessor();  }
-							
+
 						BuildImageFile(imageToRebuild, accessor, cancelDelegate);
-						
+
 						lock (accessLock)
 							{  workInProgress -= ImageFileCost;  }
 
@@ -244,28 +244,28 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 							{
 							Target.UnprocessedChanges.AddImageFile(imageToRebuild);
 							break;
-							}		
+							}
 						else
 							{  continue;  }
 						}
-						
+
 
 					// Build image files that haven't changed but may or may not be used anymore
-						
+
 					int imageToCheck = Target.UnprocessedChanges.PickUnchangedImageFileUseCheck();
 
 					if (imageToCheck != 0)
 						{
 						lock (accessLock)
 							{  workInProgress += UnchangedImageFileUseCheckCost;  }
-						
+
 						if (accessor == null)
 							{  accessor = EngineInstance.CodeDB.GetAccessor();  }
-							
+
 						// Same as building a regular image, only we don't have to do anything if the output file already exists.  It didn't change
 						// so the existing output file should be fine.
 						BuildImageFile(imageToCheck, accessor, cancelDelegate, overwrite: false);
-						
+
 						lock (accessLock)
 							{  workInProgress -= UnchangedImageFileUseCheckCost;  }
 
@@ -273,11 +273,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 							{
 							Target.UnprocessedChanges.AddImageFileUseCheck(imageToCheck);
 							break;
-							}		
+							}
 						else
 							{  continue;  }
 						}
-						
+
 					else
 						{  break;  }
 					}
@@ -285,25 +285,25 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			finally
 				{
 				if (accessor != null)
-					{  
+					{
 					if (accessor.HasLock)
 						{  accessor.ReleaseLock();  }
 
-					accessor.Dispose();  
+					accessor.Dispose();
 					}
 				}
 			}
-			
+
 
 		/* Function: WorkOnFinalizingOutput
-		 * 
+		 *
 		 * Works on the task of finalizing the output, which is any task that requires all files to be successfully processed by
 		 * <WorkOnUpdatingOutput()> before it can run.  You must wait for all threads to return from <WorkOnUpdatingOutput()>
 		 * before calling this function.  This is a parallelizable task, so multiple threads can call this function and the work will be
-		 * divided up between them.  Pass a <CancelDelegate> if you'd like to be able to interrupt this task, or 
+		 * divided up between them.  Pass a <CancelDelegate> if you'd like to be able to interrupt this task, or
 		 * <Delegates.NeverCancel> if not.
-		 * 
-		 * This function returns if it's cancelled or there is no more work to be done.  If there is only one thread working on this 
+		 *
+		 * This function returns if it's cancelled or there is no more work to be done.  If there is only one thread working on this
 		 * then the task is complete, but if there are multiple threads the task isn't complete until they all have returned.  This
 		 * one may have returned because there was no more work for it to do but other threads could still be working.
 		 */
@@ -313,12 +313,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				{  return;  }
 
 			CodeDB.Accessor accessor = null;
-			
+
 			try
 				{
 				for (;;)
 					{
-					
+
 					// Delete empty folders
 
 					List<Path> possiblyEmptyFolders = Target.UnprocessedChanges.PickPossiblyEmptyFolders();
@@ -327,7 +327,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 						{
 						// This task is not parallelizable so the entire list gets claimed by one thread.  Theoretically it should be, but
 						// in practice when two or more threads try to delete the same folder at the same time they both fail.  This
-						// could happen if both the folder and it's parent folder are on the deletion list, so one thread gets it from the 
+						// could happen if both the folder and it's parent folder are on the deletion list, so one thread gets it from the
 						// list while the other thread gets it by walking up the child's tree.
 
 						lock (accessLock)
@@ -451,33 +451,33 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			finally
 				{
 				if (accessor != null)
-					{  
+					{
 					if (accessor.HasLock)
 						{  accessor.ReleaseLock();  }
 
-					accessor.Dispose();  
+					accessor.Dispose();
 					}
 				}
 			}
-		 
-		
+
+
 		/* Function: GetStatus
-		 * Returns numeric values representing the total changes being processed and those yet to be processed in 
-		 * <Target.UnprocessedChanges>.  It is the sum of the respective tasks weighted by the <Cost Constants> which 
-		 * estimate how hard each one is to perform.  It also encompasses the tasks performed by both 
-		 * <WorkOnUpdatingOutput()> and <WorkOnFinalizingOutput()> so it will not reach zero until both stages are 
+		 * Returns numeric values representing the total changes being processed and those yet to be processed in
+		 * <Target.UnprocessedChanges>.  It is the sum of the respective tasks weighted by the <Cost Constants> which
+		 * estimate how hard each one is to perform.  It also encompasses the tasks performed by both
+		 * <WorkOnUpdatingOutput()> and <WorkOnFinalizingOutput()> so it will not reach zero until both stages are
 		 * completed.  The numbers are meaningless other than to track progress as they work their way towards zero.
 		 */
 		override public void GetStatus (out long workInProgress, out long workRemaining)
 			{
 			lock (accessLock)
-				{  
+				{
 				workInProgress = this.workInProgress;
 				Target.UnprocessedChanges.GetStatus(out workRemaining);
 				}
 			}
-			
-		
+
+
 
 		// Group: Support Functions
 		// __________________________________________________________________________
@@ -547,13 +547,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					"</div>");
 
 					if (headerSubtitleHTML != null)
-						{  
+						{
 						content.Append(
 							"<div id=\"HSubtitle\">" +
 								"<a href=\"#\">" +
 									headerSubtitleHTML +
 								"</a>" +
-							"</div>");  
+							"</div>");
 						}
 
 					content.Append(
@@ -586,7 +586,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 					"<div id=\"FGeneratedBy\">" +
 						// Deliberately hard coded (as opposed to using Locale) so it stays consistent and we can find users of any
-						// language by putting it into a search engine.  If they don't want it in their docs they can set #FGeneratedBy 
+						// language by putting it into a search engine.  If they don't want it in their docs they can set #FGeneratedBy
 						// to display: none.
 						"<a href=\"http://www.naturaldocs.org\" target=\"_blank\">Generated by Natural Docs</a>" +
 					"</div>");
@@ -620,11 +620,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		protected void BuildHomePage (CancelDelegate cancelDelegate)
 			{
 			if (Target.BuildState.CalculatedHomePage == null)
-				{  
+				{
 				BuildDefaultHomePage(cancelDelegate);
 				}
 			else if (Target.BuildState.CalculatedHomePageIsHTML)
-				{  
+				{
 				BuildCustomHTMLHomePage(Target.BuildState.CalculatedHomePage, cancelDelegate);
 				}
 			else if (Target.BuildState.CalculatedHomePageIsSourceFile)
@@ -717,16 +717,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			content.Append(
 				"\r\n\r\n" +
 				"<div class=\"HFrame\">" +
-					"<div class=\"HContent\">" + 
+					"<div class=\"HContent\">" +
 						"<div class=\"HTitle\">" +
-							titleHTML + 
+							titleHTML +
 						"</div>");
 
 						if (subtitleHTML != null)
 							{
 							content.Append(
 								"<div class=\"HSubtitle\">" +
-									subtitleHTML + 
+									subtitleHTML +
 								"</div>");
 							}
 
@@ -756,8 +756,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 							}
 
 					content.Append(
-					"</div>" + 
-				"</div>" + 
+					"</div>" +
+				"</div>" +
 			"</div>");
 
 			Context context = new Context(Target);
@@ -773,7 +773,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		protected void BuildCustomHTMLHomePage (Path template, CancelDelegate cancelDelegate)
 			{
 			string output;
-			
+
 			try
 				{  output = System.IO.File.ReadAllText(template);  }
 			catch
@@ -811,7 +811,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			if (Target.BuildState.GeneratedTimestamp != null)
 				{  timestampHTML = Target.BuildState.GeneratedTimestamp.ToHTML();  }
-			
+
 			if (Target.Config.Copyright != null)
 				{  copyrightHTML = Target.Config.Copyright.ToHTML();  }
 
@@ -858,7 +858,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			// Quit early if the file source was deleted since that will cause a lot of problems like not being able to build paths.
 			// The output files associated with it will have been purged already so we don't need to worry about them.
 			if (file.Deleted && EngineInstance.Files.FileSourceOf(file) == null)
-				{  
+				{
 				if (Target.BuildState.RemoveSourceFileWithContent(fileID) == true)
 					{  Target.UnprocessedChanges.AddMenu();  }
 
@@ -908,7 +908,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			accessor.GetReadOnlyLock();
 
 			try
-				{  
+				{
 				ClassString classString = accessor.GetClassByID(classID);
 
 				context = new Context(Target, classID, classString);
@@ -917,7 +917,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				hasTopics = topicPage.BuildDataFiles(context, accessor, cancelDelegate, releaseExistingLocks: true);
 				}
 			finally
-				{  
+				{
 				if (accessor.LockHeld != CodeDB.Accessor.LockType.None)
 					{  accessor.ReleaseLock();  }
 				}
@@ -945,10 +945,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* Function: BuildImageFile
-		 * 
-		 * Copies an image to the output folder if it is used, or deletes it if it is not.  The accessor should NOT hold a lock on the 
+		 *
+		 * Copies an image to the output folder if it is used, or deletes it if it is not.  The accessor should NOT hold a lock on the
 		 * database.
-		 * 
+		 *
 		 * Overwrite is set to true by default, which means the file will always be copied.  If set to false the image file will only be
 		 * copied if the output file doesn't already exist.  This does NOT check if the files are different, just whether a file already
 		 * exists.
@@ -966,7 +966,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			// Quit early if the file source was deleted since that will cause a lot of problems like not being able to build paths.
 			// The output files associated with it will have been purged already so we don't need to worry about them.
 			if (imageFile.Deleted && fileSource == null)
-				{  
+				{
 				Target.BuildState.RemoveUsedImageFile(imageFile.ID);
 				return;
 				}
@@ -996,7 +996,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					}
 
 				if (!imageFileIsUsed)
-					{  
+					{
 					DeleteOutputFileIfExists(outputPath);
 					Target.BuildState.RemoveUsedImageFile(imageFile.ID);
 					}
@@ -1063,7 +1063,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			// Condense, sort, and build
 
 			menu.Condense();
-			
+
 			if (cancelDelegate())
 				{  return;  }
 
@@ -1116,7 +1116,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 							foreach (var newHierarchyMenu in jsonMenu.HierarchyRoots)
 								{
 								if (newHierarchyMenu.DataFileIdentifier == oldHierarchyMenu.DataFileIdentifier)
-									{  
+									{
 									DeleteUnusedMenuDataFiles(newHierarchyMenu, oldHierarchyMenu);
 									foundMatch = true;
 									}
@@ -1152,7 +1152,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 						{  buildState.HierarchyMenuInfo = new List<BuildState.MenuInfo>(jsonMenu.HierarchyRoots.Count);  }
 					else
 						{  buildState.HierarchyMenuInfo.Clear();  }
-						
+
 					foreach (var hierarchyRoot in jsonMenu.HierarchyRoots)
 						{
 						buildState.HierarchyMenuInfo.Add(
@@ -1260,9 +1260,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 						StringBuilder onLoadStatementsForType = jsOnLoads[(int)onLoadStatement.Type];
 
 						if (onLoadStatementsForType == null)
-							{  
+							{
 							onLoadStatementsForType = new StringBuilder();
-							jsOnLoads[(int)onLoadStatement.Type] = onLoadStatementsForType;  
+							jsOnLoads[(int)onLoadStatement.Type] = onLoadStatementsForType;
 							}
 
 						onLoadStatementsForType.Append("      ");
@@ -1281,7 +1281,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				"\n" +
 				"var NDLoader = new function ()\n" +
 				"   {\n");
-				
+
 			for (int i = 0; i < PageTypes.Count; i++)
 				{
 				jsOutput.Append("   this.JSLinks_" + PageTypes.AllNames[i] + " = [ ");
@@ -1372,7 +1372,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			{
 			File file = EngineInstance.Files.FromID(fileID);
 			Path outputFile = null;
-			
+
 			foreach (var style in Target.StylesWithInheritance)
 				{
 				if (style.Contains(file.FileName))
@@ -1410,7 +1410,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					// Creates all subdirectories needed.  Does nothing if it already exists.
 					System.IO.Directory.CreateDirectory(outputFile.ParentFolder);
 
-					System.IO.File.Copy(file.FileName, outputFile, true);  
+					System.IO.File.Copy(file.FileName, outputFile, true);
 					}
 				}
 			}
@@ -1462,7 +1462,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		protected void DeleteOutputFileIfExists (Path outputFile)
 			{
 			if (outputFile != null && System.IO.File.Exists(outputFile))
-				{  
+				{
 				System.IO.File.Delete(outputFile);
 				Target.UnprocessedChanges.AddPossiblyEmptyFolder(outputFile.ParentFolder);
 				}
@@ -1522,25 +1522,25 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				{  return (HTML.Target)target;  }
 			}
 
-		
+
 
 		// Group: Variables
 		// __________________________________________________________________________
-		
+
 
 		/* var: workInProgress
-		 * 
+		 *
 		 * A numeric score of work currently in progress generated from the <UnprocessedChanges.Cost Constants>.
-		 * 
+		 *
 		 * Thread Safety:
-		 * 
+		 *
 		 *		You must hold <accessLock> in order to use this variable.
 		 */
 		protected long workInProgress;
 
 
 		/* var: accessLock
-		 * 
+		 *
 		 * An object used for a monitor that prevents more than one thread from accessing any of the variables at a
 		 * time.
 		 */
@@ -1553,14 +1553,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* Constants: Cost Constants
-		 * 
-		 * The values to use for each element when calculating a number for <GetStatus()> to return.  These are very rough 
+		 *
+		 * The values to use for each element when calculating a number for <GetStatus()> to return.  These are very rough
 		 * estimates, but they allow the more difficult to build files to weigh on the status more than the easier ones.
-		 * 
+		 *
 		 *		SourceFileCost - How much building a single source file costs.
 		 *		ClassCost - How much building a single class file costs.
 		 *		ImageFileCost - How much building a single image file costs.
-		 *		UnchangedImageFileUseCheckCost - How much checking if an image file is used and rebuilding it if that's 
+		 *		UnchangedImageFileUseCheckCost - How much checking if an image file is used and rebuilding it if that's
 		 *															  changed costs.
 		 *		StyleFileCost - How much building a single style file costs.
 		 *		MainStyleFilesCost - How much building the main style files costs.

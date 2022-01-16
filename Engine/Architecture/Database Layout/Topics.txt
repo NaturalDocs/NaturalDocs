@@ -15,54 +15,54 @@ Database Column: TopicID
 	--- Prototype ---
 		TopicID INTEGER PRIMARY KEY NOT NULL
 	-----------------
-	
+
 	The topic identifier.
-	
-	
+
+
 Database Column: Title
 
 	--- Prototype ---
 		Title TEXT NOT NULL
 	-----------------
-	
+
 	The topic's title as it should appear in the output.
-	
-	
+
+
 Database Column: Body
 
 	--- Prototype ---
 		Body TEXT
 	-----------------
-	
+
 	The body of the topic, if any.
-	
-	
+
+
 Database Column: Summary
 
 	--- Prototype ---
 		Summary TEXT
 	-----------------
-	
+
 	The summary of the topic, if any.
-	
-	
+
+
 Database Column: Prototype
 
 	--- Prototype ---
 		Prototype TEXT
 	-----------------
-	
+
 	The plain-text prototype of the topic, if any.
-	
-	
+
+
 Database Column: Symbol
 
 	--- Prototype ---
 		Symbol TEXT NOT NULL
 	-----------------
-	
+
 	The fully resolved, normalized <Symbols.SymbolString> of the topic.
-	
+
 
 Database Column: SymbolDefinitionNumber
 
@@ -109,7 +109,7 @@ Database Column: IsEmbedded
 	-----------------
 
 	Whether this topic is embedded in a prior topic, stored as 1 or 0.  This is used for members of list topics or enums.
-	Entries that appear in definition lists within these topics will get their own record to allow for linking, but they will not 
+	Entries that appear in definition lists within these topics will get their own record to allow for linking, but they will not
 	appear in the output because they are already covered by the parent.
 
 
@@ -118,45 +118,45 @@ Database Column: EndingSymbol
 	--- Prototype ---
 		EndingSymbol TEXT NOT NULL
 	-----------------
-	
+
 	The <Symbols.EndingSymbol> that's derived from <Symbol>.
-	
-	
+
+
 Database Column: CommentTypeID
 
 	--- Prototype ---
 		CommentTypeID INTEGER NOT NULL
 	-----------------
-	
+
 	The ID of the topic's type, as managed by <CodeClear.NaturalDocs.Engine.CommentTypes.Manager>.
-	
-	
+
+
 Database Column: DeclaredAccessLevel
 
 	--- Prototype ---
 		DeclaredAccessLevel INTEGER NOT NULL
 	-----------------
-	
-	The declared access level of the topic, such as public or protected.  The value is managed by 
+
+	The declared access level of the topic, such as public or protected.  The value is managed by
 	<CodeClear.NaturalDocs.Engine.Languages.AccessLevel>.
-	
-	
+
+
 Database Column: EffectiveAccessLevel
 
 	--- Prototype ---
 		EffectiveAccessLevel INTEGER NOT NULL
 	-----------------
-	
-	The effective access level of the topic, such as public or protected.  The value is managed by 
+
+	The effective access level of the topic, such as public or protected.  The value is managed by
 	<CodeClear.NaturalDocs.Engine.Languages.AccessLevel>.
-	
-	
+
+
 Database Column: Tags
 
 	--- Prototype ---
 		Tags TEXT
 	-----------------
-	
+
 	A number set of all the tags applied to this topic, as managed by <CodeClear.NaturalDocs.Engine.CommentTypes.Manager>.
 	Is a string encoding of a <CodeClear.NaturalDocs.Engine.IDObjects.NumberSet>.
 
@@ -166,7 +166,7 @@ Database Column: FileID
 	--- Prototype ---
 		FileID INTEGER NOT NULL
 	-----------------
-	
+
 	The ID of the file it appears in, as managed by <CodeClear.NaturalDocs.Engine.Files.Manager>.
 
 
@@ -179,55 +179,55 @@ Database Column: FilePosition
 	The relative position of the topic within the file.  The first one will be one and all following topics will have
 	higher numbers.  This is necessary to keep the order consistent because it may not be able to be determined
 	from <CommentLineNumber> and <CodeLineNumber>.
-	
+
 
 Database Column: CommentLineNumber
 
 	--- Prototype ---
 		CommentLineNumber INTEGER NOT NULL
 	-----------------
-	
+
 	The line number the topic's comment appears on, or zero if it doesn't have one.
-	
-	
+
+
 Database Column: CodeLineNumber
-	
+
 	--- Prototype ---
 		CodeLineNumber INTEGER NOT NULL
 	-----------------
-	
+
 	The line number the topic's code element appears on, or zero if it doesn't have one.
-	
-	
+
+
 Database Column: LanguageID
 
 	--- Prototype ---
 		LanguageID INTEGER NOT NULL
 	-----------------
-	
+
 	The ID of the topic's language, as managed by <CodeClear.NaturalDocs.Engine.Languages.Manager>.  If the
 	file it appears in is a container file (such as .cgi or .asp) the ID will be for the embedded language, not the
 	container.
-	
-	
+
+
 Database Column: PrototypeContextID
 
 	--- Prototype ---
 		PrototypeContextID INTEGER NOT NULL
 	-----------------
-	
+
 	The ID of the context any prototype links should appear in, or zero for the global context.
-	
-	
+
+
 Database Column: BodyContextID
 
 	--- Prototype ---
 		BodyContextID INTEGER NOT NULL
 	-----------------
-	
+
 	The ID of the context any body links should appear in, or zero for the global context.
-	
-	
+
+
 
 Group: Indexes
 _______________________________________________________________________________

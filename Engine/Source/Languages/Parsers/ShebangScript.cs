@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Languages.Parsers.ShebangScript
  * ____________________________________________________________________________
- * 
+ *
  * A container that parses the first line of a file for shebang (#!) strings and then uses that to determinewhich parser to send the rest of the file to.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -23,12 +23,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 	{
 	public class ShebangScript : Parser
 		{
-	
+
 		public ShebangScript (Engine.Instance engineInstance, Language language) : base (engineInstance, language)
 			{
 			}
 
-		override public ParseResult Parse (Path filePath, int fileID, CancelDelegate cancelDelegate, 
+		override public ParseResult Parse (Path filePath, int fileID, CancelDelegate cancelDelegate,
 													  out IList<Topic> topics, out LinkSet classParentLinks)
 			{
 			topics = null;
@@ -37,7 +37,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			StreamReader file = null;
 			Language language = null;
 			string content = null;
-				
+
 			try
 				{
 				// This function supports determining the character encoding from just the path, which is important because unit test
@@ -79,8 +79,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			finally
 				{
 				if (file != null)
-					{  
-					file.Dispose();  
+					{
+					file.Dispose();
 					file = null;
 					}
 				}

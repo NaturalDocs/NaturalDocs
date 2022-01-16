@@ -1,24 +1,24 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.JSONToolTips
  * ____________________________________________________________________________
- * 
+ *
  * A helper class to build JSON tooltip data for an output page.  It can also save it to a JavaScript file as documented in
  * <JavaScript ToolTip Data>.
- * 
+ *
  * Topic: Usage
- *		
+ *
  *		- Call <ConvertToJSON()> to convert a topic list to JSON.
  *		- If desired, call <BuildDataFileForSummary()> or <BuildDataFileForContent()> to create the output file.
  *		- The object may be reused to convert another topic list.
- * 
+ *
  * Threading: Not Thread Safe
- * 
- *		This class is only designed to be used by one thread at a time.  Each thread should create its own object to use 
+ *
+ *		This class is only designed to be used by one thread at a time.  Each thread should create its own object to use
  *		independently.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -52,11 +52,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: ConvertToJSON
-		 * 
+		 *
 		 * Converts the topic list to JSON.  After calling this function <ToolTipsJSON> will be available.
-		 * 
+		 *
 		 * Parameters:
-		 * 
+		 *
 		 *		topics - The <Engine.Topics.Topics> that appear in this file.
 		 *		context - The <Context> of the file.  Must include the page.
 		 *		links - A list of <Engine.Links.Links> that contain any which will be found in the tooltip.
@@ -83,9 +83,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: BuildDataFileForContent
-		 * 
-		 * Takes the JSON created by <ConvertToJSON()> and saves it as a JavaScript file for content files as documented in 
-		 * <JavaScript ToolTip Data>.  It will use the file name specified in <HTMLTopicsPage.ToolTipsFile>.  Note that you 
+		 *
+		 * Takes the JSON created by <ConvertToJSON()> and saves it as a JavaScript file for content files as documented in
+		 * <JavaScript ToolTip Data>.  It will use the file name specified in <HTMLTopicsPage.ToolTipsFile>.  Note that you
 		 * have to call <ConvertToJSON()> prior to calling this function.
 		 */
 		public void BuildDataFileForContent ()
@@ -105,9 +105,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: BuildDataFileForSummary
-		 * 
-		 * Takes the JSON created by <ConvertToJSON()> and saves it as a JavaScript file for summaries as documented in 
-		 * <JavaScript ToolTip Data>.  It will use the file name specified in <HTMLTopicsPage.SummaryToolTipsFile>.  Note that you 
+		 *
+		 * Takes the JSON created by <ConvertToJSON()> and saves it as a JavaScript file for summaries as documented in
+		 * <JavaScript ToolTip Data>.  It will use the file name specified in <HTMLTopicsPage.SummaryToolTipsFile>.  Note that you
 		 * have to call <ConvertToJSON()> prior to calling this function.
 		 */
 		public void BuildDataFileForSummary ()
@@ -132,9 +132,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: BuildToolTipsJSON
-		 * 
+		 *
 		 * Builds <tooltipsJSON> from <topics>.
-		 * 
+		 *
 		 * If <Config.Manager.ShrinkFiles> is false, every entry will be indented at least once and appear on its own line.  The final line
 		 * will not be followed by a line break.
 		 */
@@ -150,10 +150,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			if (addWhitespace)
 				{  json.AppendLine();  }
 
-			// Keep track of the first tooltip with this bool because not all topics get tooltips, and thus being at index zero doesn't 
+			// Keep track of the first tooltip with this bool because not all topics get tooltips, and thus being at index zero doesn't
 			// necessarily mean we're at the first actual entry.
 			bool firstOutputEntry = true;
-			
+
 			for (int topicIndex = 0; topicIndex < topics.Count; topicIndex++)
 				{
 				var topic = topics[topicIndex];
@@ -207,7 +207,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Property: Topics
-		 * 
+		 *
 		 * The list of <Engine.Topics.Topics> the summary data was built for.
 		 */
 		public IList<Engine.Topics.Topic> Topics
@@ -218,9 +218,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Property: ToolTipsJSON
-		 * 
+		 *
 		 * The tooltips for <Topics> as a JSON array.  It will be in the format described in <JavaScript ToolTip Data>.
-		 * 
+		 *
 		 * If <Config.Manager.ShrinkFiles> is false, every entry will be indented at least once and appear on its own line.  The final line
 		 * will not be followed by a line break.
 		 */
@@ -280,4 +280,3 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 		}
 	}
-

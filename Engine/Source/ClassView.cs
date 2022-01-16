@@ -1,17 +1,17 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.ClassView
  * ____________________________________________________________________________
- * 
+ *
  * A static class that merges all the <Topics> from a class into one coherent list, even if they come from multiple files.
- * 
- * 
+ *
+ *
  * Threading: Thread Safe
- * 
+ *
  *		This class can be used by more than one thread at a time.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -34,13 +34,13 @@ namespace CodeClear.NaturalDocs.Engine
 
 
 		/* Function: Merge
-		 * 
+		 *
 		 * Takes a list of <Topics> that come from the same class but multiple source files and rearranges them into a
 		 * single coherent list.  Some topics may be removed or merged with others.  The original topic list will be changed.
-		 * 
+		 *
 		 * Each file's topics should appear consecutively in the list and ideally in source order.  The order of the files is not
 		 * important but should ideally be consistent from one run to the next.
-		 * 
+		 *
 		 * It's possible for this function to reduce the number of topics to zero.  For example, if defining classes with a list
 		 * topic, the list topic itself will be removed.  You should be able to handle this and treat it as if the topic list had
 		 * no content.
@@ -134,8 +134,8 @@ namespace CodeClear.NaturalDocs.Engine
 								var file = files.FromID(topics[i].FileID);
 
 								if (Path.Compare(file.FileName, lowestFile.FileName) < 0)
-									{  
-									lowestFile = file;  
+									{
+									lowestFile = file;
 									lowestFileIndex = i;
 									}
 
@@ -159,7 +159,7 @@ namespace CodeClear.NaturalDocs.Engine
 					remainingTopics = sortedTopics;
 					sortedTopics = null;  // for safety
 
-		
+
 					// Find the best topic to serve as the class definition.
 
 					Topic bestDefinition = remainingTopics[0];
@@ -221,12 +221,12 @@ namespace CodeClear.NaturalDocs.Engine
 
 
 					// Now merge the remaining topics into the main list.
-			
+
 					// We loop through this process one file at a time in case some topics have to be merged that aren't present in the
 					// base we chose.  For example, File A has FunctionA but not FunctionZ.  File B and File C both have FunctionZ and
 					// they need to be merged with each other.  If we only did one pass comparing all the remaining topics to the base
 					// we wouldn't see that.
-			
+
 					while (remainingTopics.Count > 0)
 						{
 						int fileID = remainingTopics[0].FileID;
@@ -234,7 +234,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 						// First pick out and merge duplicates.  This is used for things like combining header and source definitions in C++.
 
-						for (int remainingTopicIndex = 0; 
+						for (int remainingTopicIndex = 0;
 							  remainingTopicIndex < remainingTopics.Count && remainingTopics[remainingTopicIndex].FileID == fileID;
 							  /* no auto-increment */)
 							{
@@ -242,8 +242,8 @@ namespace CodeClear.NaturalDocs.Engine
 
 							// We're ignoring group topics for now.  They stay in remainingTopics.
 							if (remainingTopic.IsGroup)
-								{  
-								remainingTopicIndex++;  
+								{
+								remainingTopicIndex++;
 								continue;
 								}
 
@@ -285,15 +285,15 @@ namespace CodeClear.NaturalDocs.Engine
 								if (duplicateIndex == -1)
 									{  remainingTopicIndex++;  }
 								else if (engineInstance.Links.IsBetterTopicDefinition(remainingTopic, topics[duplicateIndex]) == false)
-									{  
+									{
 									if (topics[duplicateIndex].IsEmbedded)
-										{  
+										{
 										// Just leave them both in
-										remainingTopicIndex++;  
+										remainingTopicIndex++;
 										}
 									else
 										{
-										topics[duplicateIndex] = remainingTopic;  
+										topics[duplicateIndex] = remainingTopic;
 										remainingTopics.RemoveAt(remainingTopicIndex);
 										}
 									}
@@ -302,7 +302,7 @@ namespace CodeClear.NaturalDocs.Engine
 								}
 
 
-							// If it's not an enum and we're at a list topic, leave it for now.  We only want to remove it if EVERY member has 
+							// If it's not an enum and we're at a list topic, leave it for now.  We only want to remove it if EVERY member has
 							// a better definition, and those definitions can be in different files, so wait until the list is fully combined.
 
 							else
@@ -329,7 +329,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 							// If the group is empty because all its members were merged as duplicates, just delete it.
 							if (remainingGroup.IsEmpty)
-								{  
+								{
 								remainingTopicGroups.RemoveGroupAndTopics(remainingGroupIndex);
 								merged = true;
 								}
@@ -347,7 +347,7 @@ namespace CodeClear.NaturalDocs.Engine
 										}
 									}
 
-								// If the group had a title but didn't match one on the other list, insert it after the last group of the same 
+								// If the group had a title but didn't match one on the other list, insert it after the last group of the same
 								// dominant type so function groups stay with other function groups, variable groups stay with other variable
 								// groups, etc.
 								if (merged == false)
@@ -365,9 +365,9 @@ namespace CodeClear.NaturalDocs.Engine
 										}
 
 									if (bestMatchIndex == -1)
-										{  
+										{
 										// Just add the group to the end if nothing matches.
-										remainingTopicGroups.MoveGroupTo(remainingGroupIndex, topicGroups);  
+										remainingTopicGroups.MoveGroupTo(remainingGroupIndex, topicGroups);
 										}
 									else
 										{
@@ -428,9 +428,9 @@ namespace CodeClear.NaturalDocs.Engine
 
 								for (int i = topicGroups.Groups.Count - 1; i >= 0; i--)
 									{
-									if (topicGroups.Groups[i].DominantTypeID == type && 
+									if (topicGroups.Groups[i].DominantTypeID == type &&
 										 topicGroups.Groups[i].TitleMatchesType)
-										{  
+										{
 										matchingGroupIndex = i;
 										break;
 										}
@@ -484,8 +484,8 @@ namespace CodeClear.NaturalDocs.Engine
 
 						// Ignore group topics
 						if (topic.IsGroup)
-							{  
-							topicIndex++;  
+							{
+							topicIndex++;
 							continue;
 							}
 
@@ -493,8 +493,8 @@ namespace CodeClear.NaturalDocs.Engine
 
 						// Ignore single topics and enums.  Enums have embedded topics but we already handled them earlier.
 						if (embeddedTopicCount == 0 || topic.IsEnum)
-							{  
-							topicIndex += 1 + embeddedTopicCount;  
+							{
+							topicIndex += 1 + embeddedTopicCount;
 							continue;
 							}
 
@@ -507,7 +507,7 @@ namespace CodeClear.NaturalDocs.Engine
 						bool embeddedContainsBetterDefinitions = false;
 						bool embeddedContainsNonDuplicates = false;
 
-						for (int embeddedTopicIndex = topicIndex + 1; 
+						for (int embeddedTopicIndex = topicIndex + 1;
 							  embeddedTopicIndex < topicIndex + 1 + embeddedTopicCount;
 							  embeddedTopicIndex++)
 							{
@@ -534,7 +534,7 @@ namespace CodeClear.NaturalDocs.Engine
 									if (engineInstance.Links.IsBetterTopicDefinition(potentialDuplicateTopic, embeddedTopic))
 										{
 										embeddedContainsBetterDefinitions = true;
-							
+
 										// If the duplicate is also embedded, leave it alone.  Either the duplicate is going to be allowed to exist
 										// because neither list can be completely removed, or it will be removed later when its own list is checked
 										// for duplicates.
@@ -549,14 +549,14 @@ namespace CodeClear.NaturalDocs.Engine
 											topics.RemoveAt(potentialDuplicateTopicIndex);
 
 											if (potentialDuplicateTopicIndex < topicIndex)
-												{  
+												{
 												topicIndex--;
 												embeddedTopicIndex--;
 												}
 											}
 										}
 
-									// If the potential duplicate is the better definition.  We don't need to do anything here because we're just 
+									// If the potential duplicate is the better definition.  We don't need to do anything here because we're just
 									// looking to see if all of them have better definitions elsewhere, which can be determined by whether this
 									// group contains any better definitions or non-duplicates.
 									else
@@ -596,7 +596,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 				// Start at 1 to skip the class topic.
 				var groupedTopics = GetTopicGroups(topics, startingIndex: 1);
-			
+
 				for (int i = 0; i < groupedTopics.Groups.Count; /* don't auto increment */)
 					{
 					if (groupedTopics.Groups[i].IsEmpty)
@@ -612,7 +612,7 @@ namespace CodeClear.NaturalDocs.Engine
 				if (topics != null && topics.Count >= 1 && topics[0].ClassString != null)
 					{
 					var topic = topics[0];
-					
+
 					int hierarchyID = topic.ClassString.HierarchyID;
 					var hierarchy = (hierarchyID == 0 ? null : engineInstance.Hierarchies.FromID(hierarchyID));
 					string hierarchyName = (hierarchy == null ? "hierarchy " +  hierarchyID : hierarchy.Name.ToLower());
@@ -635,7 +635,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 					// Class name
 					task.Append(topic.ClassString.Symbol.FormatWithSeparator('.'));
-					
+
 					e.AddNaturalDocsTask(task.ToString());
 					}
 
@@ -703,8 +703,8 @@ namespace CodeClear.NaturalDocs.Engine
 
 				i++;
 
-				while (i < topics.Count && 
-						  (limitToFileID == 0 || topics[i].FileID == limitToFileID) && 
+				while (i < topics.Count &&
+						  (limitToFileID == 0 || topics[i].FileID == limitToFileID) &&
 						  topics[i].IsGroup == false)
 					{
 					groupCount++;
@@ -719,4 +719,3 @@ namespace CodeClear.NaturalDocs.Engine
 
 		}
 	}
-

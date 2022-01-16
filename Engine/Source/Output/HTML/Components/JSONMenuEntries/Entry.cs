@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.JSONMenuEntries.Entry
  * ____________________________________________________________________________
- * 
+ *
  * A base class for all entries in <JSONMenu>.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -34,7 +34,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.JSONMenuEntries
 
 		// Group: Properties
 		// __________________________________________________________________________
-			
+
 
 		/* Property: MenuEntry
 		 * The <MenuEntries.Entry> associated with this one.
@@ -50,7 +50,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.JSONMenuEntries
 		// Group: Variables
 		// __________________________________________________________________________
 
-		
+
 		/* var: menuEntry
 		 * The <MenuEntries.Entry> associated with this one.
 		 */
@@ -58,4 +58,3 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.JSONMenuEntries
 
 		}
 	}
-

@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.JSONMenuEntries.Target
  * ____________________________________________________________________________
- * 
+ *
  * A base class for non-container entries in <JSONMenu>.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -39,7 +39,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.JSONMenuEntries
 
 		// Group: Properties
 		// __________________________________________________________________________
-			
+
 
 		/* Property: JSON
 		 * The generated JSON associated with this entry, or null if it hasn't been generated yet.
@@ -57,11 +57,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.JSONMenuEntries
 		// Group: Variables
 		// __________________________________________________________________________
 
-		
+
 		/* var: json
 		 */
 		protected string json;
 
 		}
 	}
-

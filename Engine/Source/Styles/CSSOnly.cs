@@ -1,12 +1,12 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Styles.CSSOnly
  * ____________________________________________________________________________
- * 
+ *
  * A class representing a style that is only a single CSS file.
- *			
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -36,8 +36,8 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		 * Returns whether this style contains the passed file.
 		 */
 		override public bool Contains (Path file)
-			{  
-			return (file == cssFile);  
+			{
+			return (file == cssFile);
 			}
 
 

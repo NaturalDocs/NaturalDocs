@@ -1,7 +1,7 @@
 ﻿/*
 	Include in output:
 
-	This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+	This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 	Natural Docs is licensed under version 3 of the GNU Affero General Public
 	License (AGPL).  Refer to License.txt or www.naturaldocs.org for the
 	complete details.
@@ -162,7 +162,7 @@ var NDSearch = new function ()
 		var forceExpansion = (this.TotalMatchesGreaterThan(searchInterpretations, searchInterpretationPrefixes, $MaxAutoExpand) === false);
 
 		var buildResults = this.BuildResults(searchInterpretations, searchInterpretationPrefixes, favorClasses, forceExpansion);
-		
+
 		var oldScrollTop = this.domResults.scrollTop;
 
 		this.domResultsContent.innerHTML = buildResults.html;
@@ -184,7 +184,7 @@ var NDSearch = new function ()
 
 
 	/* Function: ClearResults
-		Clears the search results and all internal data related to it.  If internalOnly is set, it will not hide the results in the 
+		Clears the search results and all internal data related to it.  If internalOnly is set, it will not hide the results in the
 		DOM.
 	*/
 	this.ClearResults = function (internalOnly)
@@ -241,14 +241,14 @@ var NDSearch = new function ()
 			{  this.openParents.splice(openParentsIndex, 1);  }
 
 		if (!fromKeyboard)
-			{  
+			{
 			this.keyboardSelectionIndex = -1;
 			this.domSearchField.focus();
 			}
 
 		this.Update();
 
-		// Update() will scroll the selected entry into view, but if the parent was opened we want to make sure all the children are 
+		// Update() will scroll the selected entry into view, but if the parent was opened we want to make sure all the children are
 		// in view as well.
 		if (opening)
 			{
@@ -258,13 +258,13 @@ var NDSearch = new function ()
 			var children = this.domResultsContent.children;
 			var topLevelCount = 0;
 			var domToggledElement = undefined;
-			
+
 			for (var i = 0; i < children.length; i++)
 				{
 				if (NDCore.HasClass(children[i], "SeEntry"))
 					{
 					if (topLevelCount == topLevelIndex)
-						{  
+						{
 						domToggledElement = children[i];
 						break;
 						}
@@ -306,7 +306,7 @@ var NDSearch = new function ()
 		var address = domLink.getAttribute("href");
 
 		if (address.substr(0, 11) == "javascript:")
-			{  
+			{
 			address = address.substr(11);
 
 			// Change false to true to let ToggleParent() know we're doing it from the keyboard.
@@ -331,8 +331,8 @@ var NDSearch = new function ()
 		{
 		// Check if it's already active because it might be receiving focus back from the search results
 		if (!this.SearchFieldIsActive())
-			{  
-			this.ActivateSearchField();  
+			{
+			this.ActivateSearchField();
 
 			// Start loading the prefix index as soon as the search field is first activated.  We don't want to wait
 			// until they start typing.
@@ -353,7 +353,7 @@ var NDSearch = new function ()
 			{  event = window.event;  }
 
 		if (event.keyCode == $KeyCode_Escape)
-			{  
+			{
 			this.ClearResults();
 			this.DeactivateSearchField();
 
@@ -397,7 +397,7 @@ var NDSearch = new function ()
 			{
 			// Close parents if there's a keyboard selection
 			if (this.keyboardSelectionIndex != -1)
-				{  
+				{
 				var domSelectedEntry = document.getElementById("SeSelectedEntry");
 
 				if (NDCore.HasClass(domSelectedEntry, "SeParent") && NDCore.HasClass(domSelectedEntry, "open"))
@@ -409,7 +409,7 @@ var NDSearch = new function ()
 			{
 			// Open parents if there's a keyboard selection
 			if (this.keyboardSelectionIndex != -1)
-				{  
+				{
 				var domSelectedEntry = document.getElementById("SeSelectedEntry");
 
 				if (NDCore.HasClass(domSelectedEntry, "SeParent") && NDCore.HasClass(domSelectedEntry, "closed"))
@@ -441,8 +441,8 @@ var NDSearch = new function ()
 
 			// If we found something we can activate it.
 			if (domSelectedEntry != undefined)
-				{  
-				this.ActivateLinkFromKeyboard(domSelectedEntry);  
+				{
+				this.ActivateLinkFromKeyboard(domSelectedEntry);
 				}
 			// If there was nothing to activate, create a keyboard selection
 			else if (this.keyboardSelectionIndex == -1 && this.visibleEntryCount > 0)
@@ -486,13 +486,13 @@ var NDSearch = new function ()
 			{
 			// If the search results in only one prefix, skip the initial timeout and update immediately.  The point of having
 			// the longer initial timeout is so we don't end up loading a ton of prefix files to service a one or two letter search
-			// while they're in the middle of typing out a longer one.  Once they hit that third letter we can ignore the rest of 
+			// while they're in the middle of typing out a longer one.  Once they hit that third letter we can ignore the rest of
 			// the delay.
 
 			var searchInterpretations = this.GetSearchInterpretations();
 
 			if (searchInterpretations.length != 0 &&
-				this.allPrefixesStatus == $AllPrefixesStatus_Ready && 
+				this.allPrefixesStatus == $AllPrefixesStatus_Ready &&
 				this.GetMatchingPrefixes(searchInterpretations).length <= 1)
 				{
 				if (this.initialTimeoutStatus == $InitialTimeoutStatus_Waiting)
@@ -546,11 +546,11 @@ var NDSearch = new function ()
 		{
 		// Check for undefined because this may be called before Start().
 		if (this.domResults != undefined)
-			{  
+			{
 			this.PositionResults();
 
 			if (this.keyboardSelectionIndex != -1)
-				{  
+				{
 				var domSelectedEntry = document.getElementById("SeSelectedEntry");
 
 				if (domSelectedEntry != undefined)
@@ -559,15 +559,15 @@ var NDSearch = new function ()
 			}
 		};
 
-	
-	
+
+
 	// Group: Search Functions
 	// ________________________________________________________________________
 
 
 	/* Function: GetSearchInterpretations
 		Reads the contents of <domSearchField> and returns it as an array of normalized interpretations compatible with
-		the search text Natural Docs generates for the data files .  Usually there will only be one, but there may be more 
+		the search text Natural Docs generates for the data files .  Usually there will only be one, but there may be more
 		if the search text is ambiguous.  There may also be none, in which case it will return an empty array.
 	*/
 	this.GetSearchInterpretations = function ()
@@ -638,8 +638,8 @@ var NDSearch = new function ()
 					{
 					if (this.allPrefixes[prefixIndex].length >= searchPrefix.length &&
 						this.allPrefixes[prefixIndex].substr(0, searchPrefix.length) == searchPrefix)
-						{  
-						matchingPrefixes.push(this.allPrefixes[prefixIndex]);  
+						{
+						matchingPrefixes.push(this.allPrefixes[prefixIndex]);
 						prefixIndex++;
 						}
 					else
@@ -668,9 +668,9 @@ var NDSearch = new function ()
 		return matchingPrefixes;
 		};
 
-	
+
 	/* Function: GetAllPrefixesIndex
-		Returns the index at which the passed prefix appears or should appear in <allPrefixes>.  If it's not found 
+		Returns the index at which the passed prefix appears or should appear in <allPrefixes>.  If it's not found
 		it will return the index it would be inserted at if it were to be added.
 	*/
 	this.GetAllPrefixesIndex = function (prefix)
@@ -691,12 +691,12 @@ var NDSearch = new function ()
 				{  return testIndex;  }
 
 			else if (prefix < this.allPrefixes[testIndex])
-				{  
+				{
 				if (testIndex == firstIndex)
 					{  return testIndex;  }
 				else
-					{  
-					// Not testIndex - 1 because even though prefix is lower, that may be the position it would be 
+					{
+					// Not testIndex - 1 because even though prefix is lower, that may be the position it would be
 					// inserted at.
 					lastIndex = testIndex;
 					}
@@ -757,7 +757,7 @@ var NDSearch = new function ()
 		return false;
 		};
 
-	
+
 	/* Function: TotalMatchesGreaterThan
 
 		Returns whether the total number of entries that match the search interpretations is greater than the
@@ -793,7 +793,7 @@ var NDSearch = new function ()
 						var memberObject = memberObjects[m];
 
 						if (this.MemberMatchesInterpretations(memberObject, searchInterpretations))
-							{  
+							{
 							totalMatches++;
 
 							if (totalMatches > maximum)
@@ -804,7 +804,7 @@ var NDSearch = new function ()
 
 				}  // keywordObjects
 			}  // searchInterpretationPrefixes
-		
+
 		return false;
 		};
 
@@ -816,7 +816,7 @@ var NDSearch = new function ()
 
 	/* Function: BuildResults
 
-		Builds the search results in HTML.  If a prefix data it needs is not loaded yet it will build what it can and return 
+		Builds the search results in HTML.  If a prefix data it needs is not loaded yet it will build what it can and return
 		the next one that needs in the results.  This will also set <topLevelEntryCount> and <visibleEntryCount>.
 
 		Flags:
@@ -834,7 +834,7 @@ var NDSearch = new function ()
 			// prefixDataToLoad: undefined,
 			html: ""
 			};
-		
+
 		this.topLevelEntryCount = 0;
 		this.visibleEntryCount = 0;
 
@@ -869,7 +869,7 @@ var NDSearch = new function ()
 			for (var k = 0; k < keywordObjects.length; k++)
 				{  results.html += this.BuildKeyword(keywordObjects[k], searchInterpretations, favorClasses, forceExpansion);  }
 			}
-		
+
 		if (addSearchingStatus)
 			{  results.html += this.BuildSearchingStatus();  }
 		else if (results.html == "")
@@ -882,7 +882,7 @@ var NDSearch = new function ()
 	/* Function: BuildKeyword
 
 		Builds the results for a keyword and returns the HTML.  The results will be filtered based on <searchText>.
-		
+
 		Flags:
 
 			favorClasses - If set, links will use the class/database view whenever possible.
@@ -903,7 +903,7 @@ var NDSearch = new function ()
 			if (this.MemberMatchesInterpretations(memberObject, searchInterpretations))
 				{
 				lastMatchingMemberObject = memberObject;
-				memberMatches++;  
+				memberMatches++;
 				}
 			}
 
@@ -929,17 +929,17 @@ var NDSearch = new function ()
 
 			if (lastMatchingMemberObject[$MemberObject_HTMLQualifier] != undefined ||
 				lastMatchingMemberObject[$MemberObject_HTMLLanguageName] != undefined)
-				{  
+				{
 				html += "<span class=\"SeQualifier\">";
 
 				if (lastMatchingMemberObject[$MemberObject_HTMLQualifier] != undefined)
 					{  html += ", " + lastMatchingMemberObject[$MemberObject_HTMLQualifier];  }
 				if (lastMatchingMemberObject[$MemberObject_HTMLLanguageName] != undefined)
 					{  html += ", " + lastMatchingMemberObject[$MemberObject_HTMLLanguageName];  }
-				
-				html += "</span>";  
+
+				html += "</span>";
 				}
-			
+
 			html += "</a>";
 
 			this.topLevelEntryCount++;
@@ -957,12 +957,12 @@ var NDSearch = new function ()
 				{  openClosed = "open";  }
 			else
 				{  openClosed = "closed";  }
-			
+
 			// DEPENDENCY: ActivateLinkFromKeyboard depends on the exact ToggleParent JavaScript generated.
 			var html = "<a class=\"SeEntry SeParent " + openClosed + "\" " + (selected ? "id=\"SeSelectedEntry\" " : "") +
-								"href=\"javascript:NDSearch.ToggleParent(" + this.topLevelEntryCount + ",false)\">" + 
+								"href=\"javascript:NDSearch.ToggleParent(" + this.topLevelEntryCount + ",false)\">" +
 								"<div class=\"SeEntryIcon\"></div>" +
-								keywordObject[$KeywordObject_HTMLName] + 
+								keywordObject[$KeywordObject_HTMLName] +
 								" <span class=\"SeChildCount\">(" + memberMatches + ")</span>" +
 							"</a>";
 
@@ -989,13 +989,13 @@ var NDSearch = new function ()
 							{  target = memberObject[$MemberObject_FileHashPath];  }
 
 						html += "<a class=\"SeEntry T" + commentType + "\" " + (selected ? "id=\"SeSelectedEntry\" " : "") +
-										"href=\"#" + target + "\">" + 
+										"href=\"#" + target + "\">" +
 										"<div class=\"SeEntryIcon\"></div>" +
 										memberObject[$MemberObject_HTMLName];
 
 						if (memberObject[$MemberObject_HTMLQualifier] != undefined ||
 							memberObject[$MemberObject_HTMLLanguageName] != undefined)
-							{  
+							{
 							html += "<span class=\"SeQualifier\">";
 
 							if (memberObject[$MemberObject_HTMLQualifier] != undefined)
@@ -1003,7 +1003,7 @@ var NDSearch = new function ()
 							if (memberObject[$MemberObject_HTMLLanguageName] != undefined)
 								{  html += ", " + memberObject[$MemberObject_HTMLLanguageName];  }
 
-							html += "</span>";  
+							html += "</span>";
 							}
 
 						html += "</a>";
@@ -1019,7 +1019,7 @@ var NDSearch = new function ()
 			}
 		};
 
-	
+
 	/* Function: BuildSearchingStatus
 	*/
 	this.BuildSearchingStatus = function ()
@@ -1035,7 +1035,7 @@ var NDSearch = new function ()
 		return "<div class=\"SeStatus NoResults\">" + $Locale{HTML.NoMatchesStatus} + "</div>";
 		};
 
-	
+
 	/* Function: BuildMoreResultsEntry
 	*/
 	this.BuildMoreResultsEntry = function ()
@@ -1043,9 +1043,9 @@ var NDSearch = new function ()
 		var selected = (this.keyboardSelectionIndex == this.visibleEntryCount);
 
 		var html = "<a class=\"SeEntry MoreResults\" " + (selected ? "id=\"SeSelectedEntry\" " : "") +
-							"href=\"javascript:NDSearch.LoadMoreResults();\">" + 
+							"href=\"javascript:NDSearch.LoadMoreResults();\">" +
 							"<div class=\"SeEntryIcon\"></div>" +
-							$Locale{HTML.MoreResults} + 
+							$Locale{HTML.MoreResults} +
 						 "</a>";
 
 		this.visibleEntryCount++;
@@ -1110,12 +1110,12 @@ var NDSearch = new function ()
 		return "search/keywords/" + this.PrefixToHex(prefix) + ".js";
 		};
 
-	
-	
+
+
 	// Group: UI Functions
 	// ________________________________________________________________________
 
-	
+
 	/* Function: ActivateSearchField
 	*/
 	this.ActivateSearchField = function ()
@@ -1124,7 +1124,7 @@ var NDSearch = new function ()
 		NDCore.RemoveClass(this.domSearchField, "DefaultText");
 		};
 
-	
+
 	/* Function: DeactivateSearchField
 	*/
 	this.DeactivateSearchField = function ()
@@ -1157,7 +1157,7 @@ var NDSearch = new function ()
 		{
 		this.domResults.style.display = "none";
 		};
-	
+
 
 	/* Function: PositionResults
 	*/
@@ -1174,7 +1174,7 @@ var NDSearch = new function ()
 		this.domResults.style.width = "auto";
 		this.domResults.style.height = "auto";
 
-		
+
 		// Figure out our desired upper right coordinates
 
 		var urX = this.domSearchField.offsetLeft + this.domSearchField.offsetWidth;
@@ -1200,10 +1200,10 @@ var NDSearch = new function ()
 			{  this.domResults.style.width = this.domSearchField.offsetWidth + "px";  }
 
 		else
-			{  
+			{
 			// Seems like a no-op, but Chrome needs it for some reason.  Firefox, Safari, and EdgeHTML work fine without it.
 			// Chrome also needs +1 to avoid wrapping results sometimes.  This is as of Chrome 86 in Nov 2020.
-			this.domResults.style.width = (this.domResults.offsetWidth + 1) + "px";  
+			this.domResults.style.width = (this.domResults.offsetWidth + 1) + "px";
 			}
 
 
@@ -1277,7 +1277,7 @@ var NDSearch = new function ()
 	// Group: Search Data Functions
 	// ________________________________________________________________________
 
-	
+
 	/* Function: OnPrefixIndexLoaded
 	*/
 	this.OnPrefixIndexLoaded = function (prefixes)
@@ -1289,7 +1289,7 @@ var NDSearch = new function ()
 			{  this.Update();  }
 		};
 
-	
+
 	/* Function: LoadPrefixData
 		Starts loading the prefix data file associated with the passed prefix if it isn't already loaded or in the process of loading.
 	*/
@@ -1363,7 +1363,7 @@ var NDSearch = new function ()
 	this.RemoveUnusedPrefixObjects = function (usedPrefixes)
 		{
 		if (usedPrefixes.length == 0)
-			{  
+			{
 			this.prefixObjects = { };
 			return;
 			}
@@ -1379,7 +1379,7 @@ var NDSearch = new function ()
 		};
 
 
-	
+
 	// Group: DOM Elements
 	// ________________________________________________________________________
 
@@ -1418,7 +1418,7 @@ var NDSearch = new function ()
 
 		Values:
 
-			$InitialTimeoutStatus_NotStarted - <initialTimeout> has never been used since the search field was last 
+			$InitialTimeoutStatus_NotStarted - <initialTimeout> has never been used since the search field was last
 														   cleared.
 			$InitialTimeoutStatus_Waiting - <initialTimeout> has started and we're waiting for it to complete.
 			$InitialTimeoutStatus_Finished - <initialTimeout> has finished and you can used <updateTimeout> going
@@ -1435,7 +1435,7 @@ var NDSearch = new function ()
 
 
 	/* var: visibleEntryCount
-		The total number of visible entries in the search results.  This includes <topLevelEntryCount> plus any expanded 
+		The total number of visible entries in the search results.  This includes <topLevelEntryCount> plus any expanded
 		children.  It does not include children from parents that aren't expanded.
 	*/
 

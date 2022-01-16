@@ -1,17 +1,17 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Config.ConfigFiles.BinaryFileParser
  * ____________________________________________________________________________
- * 
+ *
  * A class to handle loading and saving <Project.nd>.
- * 
- * 
+ *
+ *
  * Threading: Not Thread Safe
- * 
+ *
  *		The parser object may be reused, but multiple threads cannot use it at the same time.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -23,11 +23,11 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 	{
 	public class BinaryFileParser
 		{
-		
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Constructor: BinaryFileParser
 		 */
 		public BinaryFileParser ()
@@ -52,7 +52,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			binaryFile = new BinaryFile();
 			bool result = true;
-			
+
 			try
 				{
 				if (binaryFile.OpenForReading(filename) == false)
@@ -69,7 +69,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 					}
 				else
 					{
-					
+
 					// [Int32: Tab Width]
 					// [Byte: Documented Only (0 or 1)]
 					// [Byte: Auto Group (0 or 1)]
@@ -86,7 +86,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 					projectConfig.ShrinkFiles = (binaryFile.ReadByte() == 1);
 					projectConfig.ShrinkFilesPropertyLocation = PropertySource.PreviousRun;
-					
+
 					// [String: Identifier]
 					// [[Properties]]
 					// ...
@@ -115,7 +115,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 				binaryFile = null;
 				}
-				
+
 			return result;
 			}
 
@@ -213,12 +213,12 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 		        binaryFile.WriteByte( (byte)((bool)projectConfig.DocumentedOnly == false ? 0 : 1) );
 		        binaryFile.WriteByte( (byte)((bool)projectConfig.AutoGroup == false ? 0 : 1) );
 		        binaryFile.WriteByte( (byte)((bool)projectConfig.ShrinkFiles == false ? 0 : 1) );
-				
+
 		        // [String: Identifier]
 		        // [[Properties]]
 		        // ...
 		        // [String: null]
-				
+
 		        foreach (var target in projectConfig.InputTargets)
 		            {
 		            if (target is Targets.SourceFolder)
@@ -238,10 +238,10 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 					else
 						{  throw new NotImplementedException();  }
 					}
-					
+
 		        binaryFile.WriteString(null);
 		        }
-				
+
 		    finally
 		        {
 		        binaryFile.Close();
@@ -255,7 +255,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 		    // [String: Identifier="Source Folder"]
 		    // [String: Absolute Path]
 		    // [Int32: Number]
-				
+
 		    binaryFile.WriteString("Source Folder");
 		    binaryFile.WriteString(target.Folder);
 		    binaryFile.WriteInt32(target.Number);
@@ -267,7 +267,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 		    // [String: Identifier="Image Folder"]
 		    // [String: Absolute Path]
 		    // [String: Number]
-				
+
 		    binaryFile.WriteString("Image Folder");
 		    binaryFile.WriteString(target.Folder);
 		    binaryFile.WriteInt32(target.Number);

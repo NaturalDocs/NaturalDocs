@@ -1,15 +1,15 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Collections.NumberSetTable
  * ____________________________________________________________________________
- * 
+ *
  * A generic lookup table for mapping something to NumberSets.  This is preferable to a Dictionary<object, NumberSet>
  * class because:
- * 
+ *
  * - Adding and removing individual numbers automatically creates and deletes NumberSets.
- * 
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -25,15 +25,15 @@ namespace CodeClear.NaturalDocs.Engine.Collections
 		// Group: Functions
 		// __________________________________________________________________________
 
-		
+
 		/* Function: NumberSetTable
 		 * Creates an empty table.
 		 */
 		public NumberSetTable () : base()
 			{
 			}
-			
-			
+
+
 		/* Function: Add
 		 * Adds a new value to the table.
 		 */
@@ -49,8 +49,8 @@ namespace CodeClear.NaturalDocs.Engine.Collections
 
 			numberSet.Add(value);
 			}
-			
-			
+
+
 		/* Function: Remove
 		 * Removes a value from the table.  Returns whether it was present in the table or not.  It does not throw an
 		 * exception if it did not exist.
@@ -95,8 +95,8 @@ namespace CodeClear.NaturalDocs.Engine.Collections
 				return true;
 				}
 			}
-		
-			
+
+
 		/* Function: LowestAvailable
 		 * The lowest unused number available for the passed key, starting at one.
 		 */

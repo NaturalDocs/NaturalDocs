@@ -1,19 +1,19 @@
-﻿/* 
+﻿/*
  * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.SourceToHTML
  * ____________________________________________________________________________
- * 
- * A base class for automated tests where sample source files are run through Natural Docs normally, generating 
+ *
+ * A base class for automated tests where sample source files are run through Natural Docs normally, generating
  * HTML output, and then portions of the HTML are extracted, saved to files, and compared to other files containing
  * the expected output.
- * 
+ *
  *	 The benefit of this approach is that you never have to hand code the output.  You can run the tests without
  *	 an expected output file, look over the actual output file, and if it's acceptable rename it to become the
  *	 expected output file.
- * 
+ *
  * Usage:
- * 
+ *
  *		- Derive a class that has the [TestFixture] attribute.
- *		- Create a function with the [Test] attribute that calls <TestFolder()>, pointing it to the input files and 
+ *		- Create a function with the [Test] attribute that calls <TestFolder()>, pointing it to the input files and
  *		   specifying which parts of the generated HTML should be extracted.
  *		- All files in the test folder in the format "[Test Name] - Input.[extension]" will have portions of its HTML
  *		  extracted when NUnit runs.
@@ -21,10 +21,10 @@
  *		- If it matches the contents of the file "[Test Name] - Expected Output.txt", the test will pass.  If it doesn't or
  *		  that file doesn't exist, the test will fail.
  *		- The full generated output will remain in a folder called "HTML Output" if you want to look at it.
- *		
+ *
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -69,7 +69,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 				// Filter out Topic# tags.
 				if (tag.StartsWith("<a name=\"Topic"))
-					{  
+					{
 					// Ignore
 					}
 				else
@@ -88,13 +88,13 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 
 		/* Function: TestFolder
-		 * 
+		 *
 		 * Tests all the input files contained in this folder.  See <EngineInstanceManager.Start()> for how relative paths are handled.
-		 * 
+		 *
 		 * Unless you override <ExtractHTML()>, the output will be all the tags that match the passed tag name and, if specified, the
 		 * passed class name.
 		 */
-		public void TestFolder (Path testDataFolder, Path projectConfigFolder, string tagName, string className = null, 
+		public void TestFolder (Path testDataFolder, Path projectConfigFolder, string tagName, string className = null,
 									   bool reformatHTML = false, string outputTitle = null, string outputSubtitle = null,
 									   string outputStyle = null)
 			{
@@ -148,8 +148,8 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 				}
 
 			finally
-				{  
-				engineInstanceManager.Dispose();  
+				{
+				engineInstanceManager.Dispose();
 				engineInstanceManager = null;
 				}
 
@@ -189,7 +189,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 		/* Function: FindEndOfClosingTag
 		 * Returns the index to the end of the tag and all its contents.  This will always return a value; if there's no closing tag then
-		 * the end of the string will be returned.  The passed index should be at the opening bracket of the opening tag, and the returned 
+		 * the end of the string will be returned.  The passed index should be at the opening bracket of the opening tag, and the returned
 		 * index will be one past the closing bracket of the closing tag.
 		 */
 		protected int FindEndOfClosingTag (string content, int tagIndex, string tagName)
@@ -204,7 +204,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 			int nextClosingIndex = content.IndexOf(closingTagString, tagIndex);
 
 			for (;;)
-				{			
+				{
 				// If the tags aren't matched correctly, just return the end of the string.
 				if (nextClosingIndex == -1)
 					{  return content.Length;  }
@@ -358,6 +358,6 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 		static protected Regex TableTagsRegex = new Regex("</?(?:table|tr|td)[^>]*>", RegexOptions.Compiled | RegexOptions.Singleline);
 		static protected Regex IDNumbersRegex = new Regex(" id=\"ND(?:Class)?Prototype[0-9]+\"", RegexOptions.Compiled | RegexOptions.Singleline);
-			
+
 		}
 	}
