@@ -214,7 +214,7 @@ _______________________________________________________________________________
 					</tr>
 				</table CDescriptionList>
 
-				<pre>
+				<pre CText/CCode>
 					Code<br>
 					Code<br>
 					Code

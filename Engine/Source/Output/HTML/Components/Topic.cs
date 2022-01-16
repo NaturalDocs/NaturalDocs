@@ -313,10 +313,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						string ndMarkupCode = body.Substring(startOfCode.RawTextIndex, iterator.RawTextIndex - startOfCode.RawTextIndex);
 						string textCode = NDMarkupCodeToText(ndMarkupCode);
 
-						output.Append("<pre>");
-
 						if (preType == "code")
 							{
+							output.Append("<pre class=\"CCode\">");
+
 							Languages.Language preLanguage = null;
 
 							if (preLanguageName != null)
@@ -334,6 +334,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 							}
 						else
 							{  
+							output.Append("<pre class=\"CText\">");
+
 							string htmlCode = textCode.EntityEncode();
 							htmlCode = StringExtensions.LineBreakRegex.Replace(htmlCode, "<br />");
 							output.Append(htmlCode);
