@@ -987,7 +987,7 @@ body.NDContentPage {
 	.CPName {
 		font-size: 11pt;
 		font-weight: bold;
-		line-height: 110%;
+		line-height: 140%;
 		}
 	.CPName .Qualifier,
 	.CPName .TemplateSignature {
@@ -1007,15 +1007,8 @@ body.NDContentPage {
 	.CPEntry .CPPrePrototypeLine,
 	.CPEntry .CPModifiers,
 	.CPEntry .CPPostPrototypeLine {
-		font: 8pt $CodeFontFamily;
+		font-size: 8pt;
 		opacity: .5;
-		}
-	.CPEntry.Parent .CPModifiers,
-	.CPEntry.Child .CPModifiers {
-		opacity: .75;
-		}
-	.CPEntry .CPPostPrototypeLine {
-		margin-top: .2em;
 		}
 
 	a.CPAdditionalChildrenNotice:link,
@@ -1184,35 +1177,43 @@ body.NDContentPage {
 
 .NDClassPrototype .CPEntry {
 	background-color: #EAEAEA;
-	border-color: #686868;
-	scrollbar-color: #C0C0C0 #EAEAEA;
+	border-color: #606060;
+	scrollbar-color: #BCBCBC #EAEAEA; /* 1/3 foreground, 2/3 background */
 	}
 	.NDClassPrototype .CPEntry::-webkit-scrollbar-thumb {
-		background-color: #C0C0C0;
+		background-color: #BCBCBC;
 		}
 	.NDClassPrototype .CPEntry::-webkit-scrollbar-track {
 		background-color: #EAEAEA;
 		}
 	.NDClassPrototype .CPEntry.Parent,
 	.NDClassPrototype .CPEntry.Child {
-		scrollbar-color: #A8A8A8 #EAEAEA;
+		scrollbar-color: #A5A5A5 #EAEAEA;  /* 1/2 foreground, 1/2 background, since it gets too light combined with the transparency */
 		}
 		.NDClassPrototype .CPEntry.Parent::-webkit-scrollbar-thumb,
 		.NDClassPrototype .CPEntry.Child::-webkit-scrollbar-thumb {
-			background-color: #A8A8A8;
+			background-color: #A5A5A5;
 			}
 
 .NDClassPrototype .CPEntry.TInterface {
 	background-color: #EAEAFF;
-	border-color: #686879;
-	scrollbar-color: #BCBCE0 #EAEAFF;
+	border-color: #747493;
+	scrollbar-color: #C2C2DB #EAEAFF; /* 1/3 foreground, 2/3 background */
 	}
 	.NDClassPrototype .CPEntry.TInterface::-webkit-scrollbar-thumb {
-		background-color: #BCBCE0;
+		background-color: #C2C2DB;
 		}
 	.NDClassPrototype .CPEntry.TInterface::-webkit-scrollbar-track {
 		background-color: #EAEAFF;
 		}
+	.NDClassPrototype .CPEntry.TInterface.Parent,
+	.NDClassPrototype .CPEntry.TInterface.Child {
+		scrollbar-color: #AFAFC9 #EAEAEA;  /* 1/2 foreground, 1/2 background, since it gets too light combined with the transparency */
+		}
+		.NDClassPrototype .CPEntry.TInterface.Parent::-webkit-scrollbar-thumb,
+		.NDClassPrototype .CPEntry.TInterface.Child::-webkit-scrollbar-thumb {
+			background-color: #AFAFC9;
+			}
 
 
 
@@ -1239,7 +1240,7 @@ body.NDContentPage {
 	}
 	.CPPrePrototypeLine .SHMetadata {
 		/*  Normal color is too light to easily read at .5 opacity  */
-		color: #484800;
+		color: #505000;
 		}
 
 
