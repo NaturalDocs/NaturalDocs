@@ -1,9 +1,12 @@
 
-#ignore thumbnails created by windows
+# Ignore thumbnails created by windows
 Thumbs.db
-#Ignore files build by Visual Studio
+
+# Ignore files built by Visual Studio
 *.csproj.user
 bin/
 obj/
+
+# Ignore projects for packaging
 CLI.Package.MSI/
 CLI.Package.ZIP/
