@@ -1075,23 +1075,23 @@ body.NDContentPage {
 		background-color: #F1F1FF;
 		}
 	.TProperty .SuEntryIcon {
-		background-color: #E8E8FF;
-		border: 1px solid #BFBFEB;
+		background-color: #E2E2FF;
+		border: 1px solid #B9B9EA;
 		}
 	.TProperty .SeEntryIcon {
-		background-color: #E8E8FF;
-		border: 1px solid #B9B9EA;
+		background-color: #DDDDFF;
+		border: 1px solid #AAAAE8;
 		}
 
 .TVariable .NDPrototype,
 .TDatabaseField .NDPrototype {
 	background-color: #FCFCE8;
-	border-color: #D3D3A1;
-	scrollbar-color: #D3D3A1 #FCFCE8;
+	border-color: #D5D590;
+	scrollbar-color: #D5D590 #FCFCE8;
 	}
 	.TVariable .NDPrototype::-webkit-scrollbar-thumb,
 	.TDatabaseField .NDPrototype::-webkit-scrollbar-thumb {
-		background-color: #D3D3A1;
+		background-color: #D5D590;
 		}
 	.TVariable .NDPrototype::-webkit-scrollbar-track,
 	.TDatabaseField .NDPrototype::-webkit-scrollbar-track {
@@ -1099,13 +1099,13 @@ body.NDContentPage {
 		}
 	.TVariable .SuEntryIcon,
 	.TDatabaseField .SuEntryIcon {
-		background-color: #FAFAD9;
-		border: 1px solid #CFCF99;
+		background-color: #FBFBE2;
+		border: 1px solid #CECE8B;
 		}
 	.TVariable .SeEntryIcon,
 	.TDatabaseField .SeEntryIcon {
-		background-color: #FCFCDB;
-		border: 1px solid #CDCD94;
+		background-color: #FCFCDA;
+		border: 1px solid #CFCF80;
 		}
 
 .TConstant .NDPrototype {
@@ -1148,34 +1148,34 @@ body.NDContentPage {
 	.TType .SuEntryIcon,
 	.TEnumeration .SuEntryIcon,
 	.TDelegate .SuEntryIcon {
-		background-color: #FAECDC;
+		background-color: #FEE7CD;
 		border: 1px solid #D6BCAA;
 		}
 	.TType .SeEntryIcon,
 	.TEnumeration .SeEntryIcon,
 	.TDelegate .SeEntryIcon {
-		background-color: #FBEFE0;
-		border: 1px solid #D3B9A7;
+		background-color: #FEECD4;
+		border: 1px solid #E2B29A;
 		}
 
 .TEvent .NDPrototype {
 	background-color: #E6FAE6;
-	border-color: #AFCBAF;
-	scrollbar-color: #AFCBAF #E6FAE6;
+	border-color: #B6D1B6;
+	scrollbar-color: #B6D1B6 #E6FAE6;
 	}
 	.TEvent .NDPrototype::-webkit-scrollbar-thumb {
-		background-color: #AFCBAF;
+		background-color: #B6D1B6;
 		}
 	.TEvent .NDPrototype::-webkit-scrollbar-track {
 		background-color: #E6FAE6;
 		}
 	.TEvent .SuEntryIcon {
 		background-color: #DCF7DC;
-		border: 1px solid #ADC8AD;
+		border: 1px solid #B3CEB3;
 		}
 	.TEvent .SeEntryIcon {
 		background-color: #D9F9D9;
-		border: 1px solid #A2C1A2;
+		border: 1px solid #A9C8A9;
 		}
 
 
