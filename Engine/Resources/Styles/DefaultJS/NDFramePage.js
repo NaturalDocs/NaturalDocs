@@ -550,6 +550,17 @@ var NDFramePage = new function ()
 
 			return false;
 			}
+
+		// If we click a link in the summary, then scroll away, then click the same link, the view won't move back to the
+		// topic that was clicked on because the URL didn't change and therefore there's no onhashchange event.  Since 
+		// we already have an onmousedown handler we can check for this and manually call it.
+		else if (target.tagName == "A" && 
+				  target.href == window.location)
+			{  
+			this.OnHashChange();
+			return false;
+			}
+
 		else
 			{  return true;  }
 		};
