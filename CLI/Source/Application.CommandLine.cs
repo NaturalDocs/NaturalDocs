@@ -48,6 +48,8 @@ namespace CodeClear.NaturalDocs.CLI
 		 *		- -xi, --exclude-input, --exclude-source
 		 *		- -xip, --exclude-input-pattern, --exclude-source-pattern
 		 *		- -img, --images
+		 *		- -e, --encoding, --default-encoding
+		 *			- -cs, --char-set, --charset, --character-set, --characterset
 		 *		- -t, --tab, --tab-width, --tab-length
 		 *		- -do, --documented-only
 		 *		- -nag, --no-auto-group
@@ -68,7 +70,6 @@ namespace CodeClear.NaturalDocs.CLI
 		 *
 		 * No Longer Supported:
 		 *
-		 *		- -cs, --char-set, --charset, --character-set, --characterset
 		 *		- -ho, --headers-only, --headersonly
 		 *		- -ag, --auto-group, --autogroup
 		 */
@@ -95,6 +96,7 @@ namespace CodeClear.NaturalDocs.CLI
 			commandLine.AddAliases("--quiet", "-q");
 			commandLine.AddAliases("--version", "-v");
 			commandLine.AddAliases("--all-versions", "-vs", "--versions", "--allversions");
+			commandLine.AddAliases("--encoding", "-e", "-cs", "--char-set", "--charset", "--character-set", "--characterset");
 			commandLine.AddAliases("--encodings", "--show-encodings", "--showencodings",
 																		"--list-encodings", "--listencodings",
 																		"--show-char-set", "--show-charset", "--showcharset",
@@ -110,7 +112,6 @@ namespace CodeClear.NaturalDocs.CLI
 			commandLine.AddAliases("--help", "-h", "-?");
 
 			// No longer supported
-			commandLine.AddAliases("--charset", "-cs", "--char-set", "--character-set", "--characterset");
 			commandLine.AddAliases("--headers-only", "-ho", "--headersonly");
 			commandLine.AddAliases("--auto-group", "-ag", "--autogroup");
 
@@ -372,6 +373,46 @@ namespace CodeClear.NaturalDocs.CLI
 						target.FolderPropertyLocation = PropertySource.CommandLine;
 
 						commandLineConfig.InputTargets.Add(target);
+						}
+					}
+
+
+
+				// Encoding
+
+				else if (parameter == "--encoding")
+					{
+					string encoding;
+
+					if (!commandLine.GetBareOrQuotedWordsValue(out encoding))
+						{
+						errorList.Add(
+							Locale.Get("NaturalDocs.CLI", "CommandLine.ExpectedEncodingName(param)", parameterAsEntered)
+							);
+
+						commandLine.SkipToNextParameter();
+						}
+					else
+						{
+						string encodingName;
+						int codePage;
+
+						// None of the valid encoding names start with a number, but use TryParse just in case
+						if (encoding[0] >= '0' && encoding[0] <= '9' &&
+							Int32.TryParse(encoding, out codePage))
+							{
+							// codePage set by TryParse
+							encodingName = null;
+							}
+						else
+							{
+							codePage = 0;
+							encodingName = encoding;
+							}
+
+						commandLineConfig.InputSettings.AddCharacterEncodingRule(
+							new CharacterEncodingRule(codePage, encodingName, null, null, PropertySource.CommandLine)
+							);
 						}
 					}
 
@@ -720,8 +761,7 @@ namespace CodeClear.NaturalDocs.CLI
 
 				// No longer supported parameters
 
-				else if (parameter == "--charset" ||
-						  parameter == "--headers-only" ||
+				else if (parameter == "--headers-only" ||
 						  parameter == "--auto-group")
 					{
 					errorList.Add(

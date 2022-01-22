@@ -81,6 +81,7 @@ CommandLine.ExpectedFolder(param): {0} must be in the form "{0} [folder]".
 CommandLine.ExpectedFormatAndFolder(param): {0} must be in the form "{0} [format] [folder]".
 CommandLine.ExpectedPattern(param): {0} must be in the form "{0} [pattern]".
 CommandLine.ExpectedStyleName(param): {0} must be in the form "{0} [style name]".
+CommandLine.ExpectedEncodingName(param): {0} must be in the form "{0} [name or code page number]".
 CommandLine.UnrecognizedParameter(param): {0} is not a valid parameter.
 CommandLine.UnrecognizedOutputFormat(format): {0} is not a valid output format.
 CommandLine.OnlyOneProjectConfigFolder: You may only specify one project configuration folder.
@@ -173,6 +174,17 @@ Common Parameters:
     Specifies the output style to use.  See
     https://naturaldocs.org/reference/styles for more information.
 
+ -e [name or code page number]
+--encoding [name or code page number]
+    Sets the default character encoding for all input folders.  Will be
+    Unicode if not set.  Run Natural Docs with --list-encodings to see all
+    the character encodings installed on your system.
+
+--encodings
+--list-encodings
+    Displays all the character encodings that are available on the current
+    system.
+
  -t [width]
 --tab-width [width]
     Specifies how many spaces a tab should be expanded to.
@@ -219,11 +231,6 @@ Common Parameters:
 --all-versions
     Displays the current version of Natural Docs and all supporting systems
     like .NET or Mono.
-
---encodings
---list-encodings
-    Displays all the character encodings that are available on the current
-    system.
 
  -?
  -h
