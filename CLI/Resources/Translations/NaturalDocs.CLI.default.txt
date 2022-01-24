@@ -119,8 +119,8 @@ Examples:
                 -o html /project/doc
 
 
-Folder Parameters:
-------------------
+Folder Parameters
+-----------------
 
  -p [folder]
 --project-config [folder]
@@ -166,8 +166,8 @@ Folder Parameters:
     subfolder of the project configuration folder.
 
 
-Common Parameters:
-------------------
+Configuration Parameters
+------------------------
 
  -s [style]
 --style [style]
@@ -179,11 +179,6 @@ Common Parameters:
     Sets the default character encoding for all input folders.  Will be
     Unicode if not set.  Run Natural Docs with --list-encodings to see all
     the character encodings installed on your system.
-
---encodings
---list-encodings
-    Displays all the character encodings that are available on the current
-    system.
 
  -t [width]
 --tab-width [width]
@@ -197,6 +192,14 @@ Common Parameters:
 --no-auto-group
     Turns off automatic grouping.  Topics will only be grouped in the output
     when you manually add Group comments.
+
+--dont-shrink-files
+    Leave whitespace and comments in CSS and JavaScript output files.  Makes
+    it easier to debug JavaScript in the browser.
+
+
+Execution Parameters
+--------------------
 
  -r
 --rebuild
@@ -222,6 +225,14 @@ Common Parameters:
     that closes automatically and you would like it to stay open if there are
     error messages.
 
+--worker-threads
+    Sets the number of worker threads Natural Docs should use for processing.
+    By default it is calculated based on the number of cores present.
+
+
+Information Parameters
+----------------------
+
  -v
 --version
     Displays the current version of Natural Docs.
@@ -237,21 +248,14 @@ Common Parameters:
 --help
     Displays this command line reference.
 
-
-Technical Parameters:
----------------------
-
---worker-threads
-    Sets the number of worker threads Natural Docs should use for processing.
-    By default it is calculated based on the number of cores present.
+--encodings
+--list-encodings
+    Displays all the character encodings that are available on the current
+    system.
 
 --benchmark
     Collects and displays statistics on how long it takes Natural Docs to
     execute.
-
---dont-shrink-files
-    Leave whitespace and comments in CSS and JavaScript output files.  Makes
-    it easier to debug JavaScript in the browser.
 }}}
 
 
