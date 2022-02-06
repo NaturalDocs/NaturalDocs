@@ -61,9 +61,9 @@ namespace CodeClear.NaturalDocs.Engine.Files.ConfigFiles
 					}
 				else
 					{
-					bool forceReparse = (binaryFile.Version < "2.1");
+					bool forceReparse = (binaryFile.Version < "2.2");
 					bool didntStoreImageDimensions = (binaryFile.Version < "2.0.2");
-					bool didntStoreEncodingID = (binaryFile.Version != Engine.Instance.VersionString); // xxx change to < "2.2" on release
+					bool didntStoreEncodingID = (binaryFile.Version < "2.2");
 
 					int id;
 					AbsolutePath path;
