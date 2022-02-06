@@ -59,9 +59,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 					{
 					result = false;
 					}
-				// There were no file format changes between 2.0 and 2.0.2 but there were parsing changes and
-				// bug fixes that require a full rebuild.
-				else if (binaryFile.Version.IsAtLeastRelease("2.0.2") == false &&
+				else if (binaryFile.Version.IsAtLeastRelease("2.0") == false &&
 						   binaryFile.Version.IsSamePreRelease(Engine.Instance.Version) == false)
 					{
 					binaryFile.Close();
