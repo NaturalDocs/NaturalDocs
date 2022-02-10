@@ -980,7 +980,7 @@ Style.txt.HomePageReference.multiline {{{
 # they're needed.
 #
 # The HTML file may contain these strings which will be replaced by your
-# project information.  They will have entity substitutions made for <, >,
+# project information.  They will have entity substitutions made for <, >, &,
 # and " characters so they're safe to place directly in the HTML or inside
 # double-quoted JavaScript strings.
 #
