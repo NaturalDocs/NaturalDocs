@@ -1,4 +1,4 @@
-﻿Format: 2.1
+﻿Format: 2.2
 
 # This is the main Natural Docs comments file.  If you change anything here,
 # it will apply to EVERY PROJECT you use Natural Docs on.  It's recommended
@@ -467,3 +467,11 @@ Comment Type: Database Trigger
 #    ...
 #    A list of the comment type's keywords.  Each line after the heading is
 #    the keyword and optionally its plural form for list comments.
+#
+# [Language] Keywords:
+#    [keyword]
+#    [keyword], [plural keyword]
+#    ...
+#    A list of keywords that only apply to the comment type when using a
+#    specific programming language.  Each line after the heading is the
+#    keyword and optionally its plural form for list comments.

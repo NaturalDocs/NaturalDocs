@@ -1,4 +1,4 @@
-Format: 2.1
+Format: 2.2
 
 # Natural Docs Parser Configuration File
 

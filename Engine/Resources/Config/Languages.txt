@@ -1,4 +1,4 @@
-﻿Format: 2.1
+﻿Format: 2.2
 
 # This is the main Natural Docs languages file.  If you change anything here,
 # it will apply to EVERY PROJECT you use Natural Docs on.  It's recommended
