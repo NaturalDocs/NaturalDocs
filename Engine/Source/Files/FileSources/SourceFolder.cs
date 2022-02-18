@@ -137,6 +137,15 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 			}
 
 
+		/* Property: Url
+		 * The url of the FileSource's folder.
+		 */
+		public string Url
+			{
+			get
+				{  return config.Url;  }
+			}
+
 
 		// Group: Variables
 		// __________________________________________________________________________
