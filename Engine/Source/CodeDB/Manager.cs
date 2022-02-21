@@ -167,6 +167,11 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 					// In 2.2 the internal format of ClassStrings changed so the database needs to be regenerated.  Also,
 					// "AlternateLinkEndingSymbols" became "AlternativeLinkEndingSymbols".
+
+					// In 2.3 STRICT was added to the database table definitions.  It's not a property that can be added after a
+					// table is created, so we would need a rebuild to apply it to existing databases.  However, the CodeDB APIs
+					// should force everything into the correct types anyway so it's not critical.  We should be able to live with
+					// STRICT being on new databases going forward and existing ones being non-STRICT without a problem.
 					if (databaseVersion.IsAtLeastRelease("2.2") ||
 						databaseVersion.IsSamePreRelease(Engine.Instance.Version))
 						{
