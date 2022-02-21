@@ -27,7 +27,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 																			"UsedLinkIDs TEXT NOT NULL, " +
 																			"UsedImageLinkIDs TEXT NOT NULL, " +
 																			"UsedClassIDs TEXT NOT NULL, " +
-																			"UsedContextIDs TEXT NOT NULL )");
+																			"UsedContextIDs TEXT NOT NULL ) " +
+																			"STRICT ");
 
 			connection.Execute("INSERT INTO System (Version, UsedTopicIDs, UsedLinkIDs, UsedImageLinkIDs, UsedClassIDs, UsedContextIDs) " +
 										"VALUES (?,?,?,?,?,?)",
@@ -61,7 +62,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 																		  "CodeLineNumber INTEGER NOT NULL, " +
 																		  "LanguageID INTEGER NOT NULL, " +
 																		  "PrototypeContextID INTEGER NOT NULL, " +
-																		  "BodyContextID INTEGER NOT NULL )");
+																		  "BodyContextID INTEGER NOT NULL ) " +
+																		  "STRICT ");
 
 			connection.Execute("CREATE INDEX TopicsByFile ON Topics (FileID, FilePosition)");
 			connection.Execute("CREATE INDEX TopicsByClass ON Topics (ClassID, FileID, FilePosition)");
@@ -79,7 +81,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 																		"EndingSymbol TEXT NOT NULL, " +
 																		"TargetTopicID INTEGER NOT NULL, " +
 																		"TargetClassID INTEGER NOT NULL, " +
-																		"TargetScore INTEGER NOT NULL )");
+																		"TargetScore INTEGER NOT NULL ) " +
+																		"STRICT ");
 
 			connection.Execute("CREATE INDEX LinksByFileAndType ON Links (FileID, Type)");
 			connection.Execute("CREATE INDEX LinksByClass ON Links (ClassID, Type)");
@@ -90,7 +93,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 			connection.Execute("CREATE TABLE AlternativeLinkEndingSymbols (LinkID INTEGER NOT NULL, " +
 																											 "EndingSymbol TEXT NOT NULL, " +
-																											 "PRIMARY KEY (LinkID, EndingSymbol) )");
+																											 "PRIMARY KEY (LinkID, EndingSymbol) ) " +
+																											 "STRICT ");
 
 			connection.Execute("CREATE INDEX AlternativeLinkEndingSymbolsBySymbol ON AlternativeLinkEndingSymbols (EndingSymbol)");
 
@@ -102,7 +106,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 																				"FileID INTEGER NOT NULL, " +
 																				"ClassID INTEGER NOT NULL, " +
 																				"TargetFileID INTEGER NOT NULL, " +
-																				"TargetScore INTEGER NOT NULL )");
+																				"TargetScore INTEGER NOT NULL ) " +
+																				"STRICT ");
 
 			connection.Execute("CREATE INDEX ImageLinksByFileID ON ImageLinks (FileID)");
 			connection.Execute("CREATE INDEX ImageLinksByClassID ON ImageLinks (ClassID)");
@@ -113,14 +118,16 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			connection.Execute("CREATE TABLE Classes (ClassID INTEGER PRIMARY KEY NOT NULL, " +
 																			"ClassString TEXT, " +
 																			"LookupKey TEXT NOT NULL, " +
-																			"ReferenceCount INTEGER NOT NULL )");
+																			"ReferenceCount INTEGER NOT NULL ) " +
+																			"STRICT ");
 
 			connection.Execute("CREATE INDEX ClassesByLookupKey ON Classes (LookupKey)");
 
 
 			connection.Execute("CREATE TABLE Contexts (ContextID INTEGER PRIMARY KEY NOT NULL, " +
 																			  "ContextString TEXT NOT NULL, " +
-																			  "ReferenceCount INTEGER NOT NULL )");
+																			  "ReferenceCount INTEGER NOT NULL ) " +
+																			  "STRICT ");
 
 			connection.Execute("CREATE INDEX ContextsByContextString ON Contexts (ContextString)");
 			}
