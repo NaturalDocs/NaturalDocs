@@ -138,16 +138,26 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 * Fills the passed object with the status of <WorkOnProcessingChanges()>.  This will be a snapshot of its
 		 * progress rather than a live object, so the values won't change out from under you.
 		 */
-		public void GetStatus (ref ChangeProcessorStatus statusTarget)
+		public void GetStatus (ref ChangeProcessorStatus status)
 			{
 			lock (accessLock)
 				{
-				int addedOrChangedFileIDs, deletedFileIDs;
-				Manager.UnprocessedChanges.GetStatus(out addedOrChangedFileIDs, out deletedFileIDs);
+				filesBeingProcessed.GetStatus(ref status);
+				Manager.UnprocessedChanges.GetStatus(ref status);
+				}
+			}
 
-				statusTarget.FilesBeingProcessed = filesBeingProcessed.Count;
-				statusTarget.ChangedFilesRemaining = addedOrChangedFileIDs;
-				statusTarget.DeletedFilesRemaining = deletedFileIDs;
+
+		/* Function: GetStatus
+		 * Fills the passed object with the status of <WorkOnProcessingChanges()>.  This will be a snapshot of its
+		 * progress rather than a live object, so the values won't change out from under you.
+		 */
+		public void GetStatus (ref ChangeProcessorDetailedStatus status)
+			{
+			lock (accessLock)
+				{
+				filesBeingProcessed.GetStatus(ref status);
+				Manager.UnprocessedChanges.GetStatus(ref status);
 				}
 			}
 

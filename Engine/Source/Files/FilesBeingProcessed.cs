@@ -105,6 +105,21 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			}
 
 
+		public void GetStatus (ref ChangeProcessorStatus status)
+			{
+			status.FilesBeingProcessed = Count;
+			}
+
+
+		public void GetStatus (ref ChangeProcessorDetailedStatus status)
+			{
+			status.FileIDsBeingProcessed = new IDObjects.NumberSet();
+
+			foreach (var fileBeingProcessed in filesBeingProcessed)
+				{  status.FileIDsBeingProcessed.Add(fileBeingProcessed.ID);  }
+			}
+
+
 
 		// Group: Properties
 		// __________________________________________________________________________

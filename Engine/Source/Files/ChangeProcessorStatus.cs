@@ -28,7 +28,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		public ChangeProcessorStatus ()
 			{
 			FilesBeingProcessed = 0;
-			ChangedFilesRemaining = 0;
+			NewOrChangedFilesRemaining = 0;
 			DeletedFilesRemaining = 0;
 			}
 
@@ -44,10 +44,11 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		public int FilesBeingProcessed;
 
-		/* Variable: ChangedFilesRemaining
-		 * The number of changed files left to be processed.  This does not include any counted in <FilesBeingProcessed>.
+		/* Variable: NewOrChangedFilesRemaining
+		 * The number of new or changed files left to be processed.  This does not include any counted in
+		 * <FilesBeingProcessed>.
 		 */
-		public int ChangedFilesRemaining;
+		public int NewOrChangedFilesRemaining;
 
 		/* Variable: DeletedFilesRemaining
 		 * The number of deleted files left to be processed.  This does not include any counted in <FilesBeingProcessed>.

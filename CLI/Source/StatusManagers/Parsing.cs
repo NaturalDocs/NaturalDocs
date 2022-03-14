@@ -35,7 +35,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 		protected override void ShowStartMessage ()
 			{
 			process.GetStatus(ref status);
-			totalFilesToProcess = status.ChangedFilesRemaining + status.DeletedFilesRemaining;
+			totalFilesToProcess = status.NewOrChangedFilesRemaining + status.DeletedFilesRemaining;
 
 			if (alternativeStartMessage != null)
 				{
@@ -43,13 +43,13 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 					Engine.Locale.Get("NaturalDocs.CLI", alternativeStartMessage)
 					);
 				}
-			else if (status.ChangedFilesRemaining == 0 && status.DeletedFilesRemaining == 0)
+			else if (status.NewOrChangedFilesRemaining == 0 && status.DeletedFilesRemaining == 0)
 				{
 				System.Console.WriteLine(
 					Engine.Locale.Get("NaturalDocs.CLI", "Status.NoChanges")
 					);
 				}
-			else if (status.ChangedFilesRemaining == 0)
+			else if (status.NewOrChangedFilesRemaining == 0)
 				{
 				System.Console.WriteLine(
 					Engine.Locale.Get("NaturalDocs.CLI", "Status.StartFileParsing(deleted)", status.DeletedFilesRemaining)
@@ -58,14 +58,14 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 			else if (status.DeletedFilesRemaining == 0)
 				{
 				System.Console.WriteLine(
-					Engine.Locale.Get("NaturalDocs.CLI", "Status.StartFileParsing(changed)", status.ChangedFilesRemaining)
+					Engine.Locale.Get("NaturalDocs.CLI", "Status.StartFileParsing(changed)", status.NewOrChangedFilesRemaining)
 					);
 				}
 			else
 				{
 				System.Console.WriteLine(
 					Engine.Locale.Get("NaturalDocs.CLI", "Status.StartFileParsing(changed, deleted)",
-											 status.ChangedFilesRemaining, status.DeletedFilesRemaining)
+											 status.NewOrChangedFilesRemaining, status.DeletedFilesRemaining)
 					);
 				}
 			}
@@ -77,7 +77,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 			process.GetStatus(ref status);
 
-			int completed = totalFilesToProcess - status.ChangedFilesRemaining - status.DeletedFilesRemaining - status.FilesBeingProcessed;
+			int completed = totalFilesToProcess - status.NewOrChangedFilesRemaining - status.DeletedFilesRemaining - status.FilesBeingProcessed;
 			int newPercentage = (completed * 100) / totalFilesToProcess;
 
 			if (newPercentage != lastPercentage)

@@ -98,12 +98,25 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		/* Function: GetStatus
 		 * Returns a snapshot of the changes yet to be processed.
 		 */
-		public void GetStatus (out int addedOrChangedFileIDCount, out int deletedFileIDCount)
+		public void GetStatus (ref ChangeProcessorStatus status)
 			{
 			lock (accessLock)
 				{
-				addedOrChangedFileIDCount = newOrChangedFileIDs.Count;
-				deletedFileIDCount = deletedFileIDs.Count;
+				status.NewOrChangedFilesRemaining = newOrChangedFileIDs.Count;
+				status.DeletedFilesRemaining = deletedFileIDs.Count;
+				}
+			}
+
+
+		/* Function: GetStatus
+		 * Returns a detailed snapshot of the changes yet to be processed.
+		 */
+		public void GetStatus (ref ChangeProcessorDetailedStatus status)
+			{
+			lock (accessLock)
+				{
+				status.NewOrChangedFileIDsRemaining = newOrChangedFileIDs.Duplicate();
+				status.DeletedFileIDsRemaining = deletedFileIDs.Duplicate();
 				}
 			}
 
