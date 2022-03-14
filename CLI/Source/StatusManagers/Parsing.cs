@@ -22,7 +22,8 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 		// __________________________________________________________________________
 
 
-		public Parsing (Engine.Files.ChangeProcessor process, string alternativeStartMessage = null) : base (Application.StatusInterval)
+		public Parsing (Engine.Files.ChangeProcessor process, string alternativeStartMessage = null)
+			: base (Application.StatusInterval, acceptsInput: true)
 			{
 			this.process = process;
 			status = new Engine.Files.ChangeProcessorStatus();
@@ -88,6 +89,107 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 				lastPercentage = newPercentage;
 				}
+			}
+
+		protected override void ShowDetailedStatus()
+			{
+			Engine.Files.ChangeProcessorDetailedStatus status = new Engine.Files.ChangeProcessorDetailedStatus();
+			process.GetStatus(ref status);
+
+			System.Console.WriteLine();
+
+
+			//
+			// Currently processing
+			//
+
+			if (status.FileIDsBeingProcessed.Count == 0)
+				{
+				System.Console.WriteLine(
+					Engine.Locale.Get("NaturalDocs.CLI", "DetailedStatus.NotProcessingAnyFiles")
+					);
+				}
+			else
+				{
+				System.Console.WriteLine(
+					Engine.Locale.Get("NaturalDocs.CLI", "DetailedStatus.ProcessingFiles(count)", status.FileIDsBeingProcessed.Count)
+					);
+
+				foreach (var fileIDBeingProcessed in status.FileIDsBeingProcessed)
+					{
+					string fileName = null;
+
+					try
+						{  fileName = process.EngineInstance.Files.FromID(fileIDBeingProcessed).FileName;  }
+					catch
+						{  fileName = "File ID " + fileIDBeingProcessed;  }
+
+					System.Console.WriteLine("- " + fileName);
+					}
+
+				System.Console.WriteLine();
+				}
+
+
+			//
+			// New or changed files waiting
+			//
+
+			if (status.NewOrChangedFileIDsRemaining.Count == 0)
+				{
+				System.Console.WriteLine(
+					Engine.Locale.Get("NaturalDocs.CLI", "DetailedStatus.NoNewOrChangedFiles")
+					);
+				}
+			else
+				{
+				int maxCount = 8;
+
+				string messageID = (status.NewOrChangedFileIDsRemaining.Count <= maxCount ?
+											  "DetailedStatus.NewOrChangedFilesWaiting.ShowingAll(count)" :
+											  "DetailedStatus.NewOrChangedFilesWaiting.ShowingSome(count)");
+
+				System.Console.WriteLine(
+					Engine.Locale.Get("NaturalDocs.CLI", messageID, status.NewOrChangedFileIDsRemaining.Count)
+					);
+
+				int count = maxCount;
+				foreach (var newOrChangedFileID in status.NewOrChangedFileIDsRemaining)
+					{
+					string fileName = null;
+
+					try
+						{  fileName = process.EngineInstance.Files.FromID(newOrChangedFileID).FileName;  }
+					catch
+						{  fileName = "File ID " + newOrChangedFileID;  }
+
+					System.Console.WriteLine("- " + fileName);
+
+					count--;
+					if (count == 0)
+						{  break;  }
+					}
+
+				System.Console.WriteLine();
+				}
+
+
+			// Deleted files waiting
+
+			if (status.DeletedFileIDsRemaining.Count == 0)
+				{
+				System.Console.WriteLine(
+					Engine.Locale.Get("NaturalDocs.CLI", "DetailedStatus.NoDeletedFiles")
+					);
+				}
+			else
+				{
+				System.Console.WriteLine(
+					Engine.Locale.Get("NaturalDocs.CLI", "DetailedStatus.DeletedFilesWaiting(count)", status.FileIDsBeingProcessed.Count)
+					);
+				}
+
+			System.Console.WriteLine();
 			}
 
 

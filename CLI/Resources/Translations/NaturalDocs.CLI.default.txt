@@ -51,6 +51,16 @@ Status.CouldNotSaveBenchmarksIn(file): Could not save benchmarks in {0}.
 
 Status.PressAnyKeyToContinue: Press any key to continue...
 
+DetailedStatus.NotProcessingAnyFiles: Not currently processing any files.
+DetailedStatus.ProcessingFiles(count): Currently processing {0} files:
+
+DetailedStatus.NoNewOrChangedFiles: No new or changed files waiting to be processed.
+DetailedStatus.NewOrChangedFilesWaiting.ShowingAll(count): {0} new or changed {0s?files:file} waiting to be processed:
+DetailedStatus.NewOrChangedFilesWaiting.ShowingSome(count): {0} new or changed {0s?files:file} waiting to be processed, including:
+
+DetailedStatus.NoDeletedFiles: No deleted files waiting to be processed.
+DetailedStatus.DeletedFilesWaiting(count): {0} deleted {0s?files:file} waiting to be processed:
+
 Encodings.CodePage: Code Page
 Encodings.Name: Name
 Encodings.Description: Description
