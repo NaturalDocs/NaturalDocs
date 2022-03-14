@@ -59,41 +59,56 @@ namespace CodeClear.NaturalDocs.CLI
 		 * Parameters:
 		 *
 		 *		updateInterval - The number of milliseconds between status updates if the task takes a long time.  If this
-		 *									  is zero, only start and end messages will be displayed.
+		 *								 is zero, only start and end messages will be displayed.
 		 *		hideIfShorterThan - The number of milliseconds where if the task starts and finishes within this time, no
-		 *											status is displayed at all.  Zero means always show a status.
+		 *									 status is displayed at all.  Zero means always show a status.
+		 *		acceptsInput - Whether this StatusManager accepts keyboard input, such as pressing S or D to
+		 *							  <ShowDetailedStatus()>.
 		 */
-		public StatusManager (int updateInterval, int hideIfShorterThan = 0)
+		public StatusManager (int updateInterval, int hideIfShorterThan = 0, bool acceptsInput = false)
 			{
 			this.updateInterval = updateInterval;
 			this.hideIfShorterThan = hideIfShorterThan;
 
 			if (updateInterval > 0 || hideIfShorterThan > 0)
 				{
-				timer = new System.Timers.Timer();
-				timer.Elapsed += new System.Timers.ElapsedEventHandler(Update);
-				timer.AutoReset = false;
+				updateTimer = new System.Timers.Timer();
+				updateTimer.Elapsed += new System.Timers.ElapsedEventHandler(Update);
+				updateTimer.AutoReset = false;
 
 				if (hideIfShorterThan > 0)
-					{  timer.Interval = hideIfShorterThan;  }
+					{  updateTimer.Interval = hideIfShorterThan;  }
 				else // updateInterval > 0
-					{  timer.Interval = updateInterval;  }
+					{  updateTimer.Interval = updateInterval;  }
 				}
 			else
-				{  timer = null;  }
+				{  updateTimer = null;  }
+
+			if (acceptsInput)
+				{
+				inputTimer = new System.Timers.Timer();
+				inputTimer.Elapsed += new System.Timers.ElapsedEventHandler(CheckInput);
+				inputTimer.AutoReset = false;
+				inputTimer.Interval = 200;  // 200ms, or 1/5 of a second
+				}
+			else
+				{  inputTimer = null;  }
 			}
 
 
 		/* Function: Start
 		 * Starts monitoring the task.  If you override this function make sure to call the base class's version.
 		 */
-		virtual public void Start()
+		virtual public void Start ()
 			{
 			if (hideIfShorterThan == 0)
 				{  ShowStartMessage();  }
 
-			if (timer != null)
-				{  timer.Start();  }
+			if (updateTimer != null)
+				{  updateTimer.Start();  }
+
+			if (inputTimer != null)
+				{  inputTimer.Start();  }
 			}
 
 
@@ -101,7 +116,7 @@ namespace CodeClear.NaturalDocs.CLI
 		 * Called periodically to update the status message.  This is handled automatically, you don't need to manually
 		 * call it.
 		 */
-		protected void Update(Object sender, System.Timers.ElapsedEventArgs args)
+		protected void Update (Object sender, System.Timers.ElapsedEventArgs args)
 			{
 			if (hideIfShorterThan > 0)
 				{
@@ -110,14 +125,14 @@ namespace CodeClear.NaturalDocs.CLI
 
 				if (updateInterval > 0)
 					{
-					timer.Interval = updateInterval;
-					timer.Start();
+					updateTimer.Interval = updateInterval;
+					updateTimer.Start();
 					}
 				}
 			else
 				{
 				ShowUpdateMessage();
-				timer.Start();
+				updateTimer.Start();
 				}
 			}
 
@@ -125,10 +140,13 @@ namespace CodeClear.NaturalDocs.CLI
 		/* Function: End
 		 * Ends monitoring.
 		 */
-		public void End()
+		public void End ()
 			{
-			if (timer != null)
-				{  timer.Stop();  }
+			if (inputTimer != null)
+				{  inputTimer.Stop();  }
+
+			if (updateTimer != null)
+				{  updateTimer.Stop();  }
 
 			if (hideIfShorterThan == 0)
 				{  ShowEndMessage();  }
@@ -139,12 +157,40 @@ namespace CodeClear.NaturalDocs.CLI
 		 */
 		public void Dispose ()
 			{
-			if (timer != null)
+			if (updateTimer != null)
 				{
-				timer.Stop();
-				timer.Dispose();
-				timer = null;
+				updateTimer.Stop();
+				updateTimer.Dispose();
+				updateTimer = null;
 				}
+
+			if (inputTimer != null)
+				{
+				inputTimer.Stop();
+				inputTimer.Dispose();
+				inputTimer = null;
+				}
+			}
+
+
+		/* Function: CheckInput
+		 * Called periodically to check for keyboard input.  This is handled automatically, you don't need to manually
+		 * call it.
+		 */
+		protected void CheckInput (Object sender, System.Timers.ElapsedEventArgs args)
+			{
+			if (System.Console.KeyAvailable)
+				{
+				var keyPress = System.Console.ReadKey(intercept: true);
+
+				if (keyPress.Key == ConsoleKey.S ||
+					keyPress.Key == ConsoleKey.D)
+					{
+					ShowDetailedStatus();
+					}
+				}
+
+			inputTimer.Start();
 			}
 
 
@@ -175,15 +221,24 @@ namespace CodeClear.NaturalDocs.CLI
 			}
 
 
+		/* Function: ShowDetailedStatus
+		 * Override this function to display a detailed message when the user presses S or D in the middle of a process.  This
+		 * requires thet StatusManager to be created with the acceptsInput flag in the constructor.
+		 */
+		protected virtual void ShowDetailedStatus ()
+			{
+			}
+
+
 
 		// Group: Variables
 		// __________________________________________________________________________
 
 
-		/* var: timer
+		/* var: updateTimer
 		 * The timer used to call <Update()>.
 		 */
-		protected System.Timers.Timer timer;
+		protected System.Timers.Timer updateTimer;
 
 		/* var: updateInterval
 		 * The number of milliseconds between status updates if the task takes a long time.  If this is zero, only
@@ -196,6 +251,11 @@ namespace CodeClear.NaturalDocs.CLI
 		 * displayed at all.  This will also be set to zero if it was specified and the task ran long.
 		 */
 		protected int hideIfShorterThan;
+
+		/* var: inputTimer
+		 * The timer used to check for keyboard input, or null if one isn't needed.
+		 */
+		protected System.Timers.Timer inputTimer;
 
 		}
 	}
