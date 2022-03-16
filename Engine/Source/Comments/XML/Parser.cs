@@ -1001,11 +1001,16 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 				// The index is on plain text
 				else
 					{
+					// Set endOfText to the end of the plain text stretch, which is either the end of the text altogether or
+					// the index of the next e-mail address or URL.
+
 					int endOfText = text.Length;
 
-					if (emailMatch.Success)
+					// We have to check that the next index is greater than the current one to avoid an infinite loop when we
+					// have a regex match but it was rejected as a link, such as if the URL protocol wasn't valid.
+					if (emailMatch.Success && emailMatch.Index > index && emailMatch.Index < endOfText)
 						{  endOfText = emailMatch.Index;  }
-					if (urlMatch.Success && urlMatch.Index < endOfText)
+					if (urlMatch.Success && urlMatch.Index > index && urlMatch.Index < endOfText)
 						{  endOfText = urlMatch.Index;  }
 
 					output.EntityEncodeAndAppend(text, index, endOfText - index);
