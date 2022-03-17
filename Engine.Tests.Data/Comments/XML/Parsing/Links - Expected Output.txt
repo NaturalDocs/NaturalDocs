@@ -41,3 +41,9 @@
 <p><link type="url" target="http://www.example.com&amp;var=y"> Raw URL link &amp; entity chars</p>
 -----
 <p><link type="email" target="a@example.com" text="Named e-mail link &amp; entity chars"></p>
+-----
+<p>invalid://www.example.com Raw URL with invalid protocol</p>
+-----
+<p>invalid:www.example.com Raw URL with invalid protocol</p>
+-----
+<p>invalid:example Raw URL with invalid protocol</p>

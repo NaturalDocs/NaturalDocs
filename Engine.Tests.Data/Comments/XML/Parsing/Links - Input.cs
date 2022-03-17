@@ -16,6 +16,7 @@ void URLTest5 () { }
 
 
 
+
 /// <summary><a href="mailto:a@example.com">Named mailto link</a></summary>
 void EMailTest1 () { }
 
@@ -75,3 +76,15 @@ void EntityTest3 () { }
 
 /// <summary><a href="mailto:a@example.com">Named e-mail link & entity chars</a></summary>
 void EntityTest4 () { }
+
+
+
+
+/// <summary>invalid://www.example.com Raw URL with invalid protocol</summary>
+void InvalidProtocolTest1 () { }
+
+/// <summary>invalid:www.example.com Raw URL with invalid protocol</summary>
+void InvalidProtocolTest2 () { }
+
+/// <summary>invalid:example Raw URL with invalid protocol</summary>
+void InvalidProtocolTest3 () { }
