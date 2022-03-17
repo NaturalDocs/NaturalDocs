@@ -99,3 +99,10 @@ Topic: Bare Text Traps
 	Ending with question mark http://www.naturaldocs.org?  And email@address.com?
 
 	Ending with a combo ("http://www.naturaldocs.org.")  And (email@address.com.)
+
+
+Topic: Invalid Protocols
+
+	Blah invalid://www.example.com blah blah invalid:www.example.com blah blah invalid:example blah
+
+	Blah <invalid://www.example.com> blah blah <invalid:www.example.com> blah blah <invalid:example> blah
