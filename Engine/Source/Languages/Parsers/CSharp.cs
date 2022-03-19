@@ -2482,6 +2482,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TryToSkipWhitespace(ref lookahead);
 
 
+			// Template Signature
+
+			if (TryToSkipTemplateSignature(ref lookahead, mode, true))
+				{
+				iterator = lookahead;
+				TryToSkipWhitespace(ref lookahead);
+				}
+
+
 			// Nullable
 
 			if (lookahead.Character == '?')
@@ -2490,15 +2499,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
 
 				lookahead.Next();
-				iterator = lookahead;
-				TryToSkipWhitespace(ref lookahead);
-				}
-
-
-			// Template Signature
-
-			if (TryToSkipTemplateSignature(ref lookahead, mode, true))
-				{
 				iterator = lookahead;
 				TryToSkipWhitespace(ref lookahead);
 				}
