@@ -71,3 +71,21 @@
 - Plain Section: protected internal System.Text.StringBuilder varH
   - Access Level: ProtectedInternal
   - Link Candidates: System.Text.StringBuilder
+
+------------------------------
+
+- Plain Section: int? varI
+  - Access Level: Unknown
+  - Link Candidates: int
+
+------------------------------
+
+- Plain Section: List<int>? varJ
+  - Access Level: Unknown
+  - Link Candidates: List, int
+
+------------------------------
+
+- Plain Section: List<int?>? varK
+  - Access Level: Unknown
+  - Link Candidates: List, int

@@ -12,3 +12,9 @@ int* varE;
 
 [AttributeA][AttributeB(12)]
 protected internal System.Text.StringBuilder varF, varG = null, varH;
+
+int? varI;
+
+List<int>? varJ;
+
+List<int?>? varK;
