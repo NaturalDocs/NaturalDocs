@@ -32,4 +32,7 @@ class TestClass
 
 	public static ref readonly ReturnStruct FunctionJ ()
 		{  }
+
+	static ref int FunctionK<T>(this ref int x, T y) where T:unmanaged, Enum
+		{  }
 	}

@@ -55,3 +55,8 @@ public static RgbColor ExpressionBodyB (RgbColor color) =>
 public void FunctionPointer (delegate* unmanaged[Cdecl] <int, float> x)
 	{
 	}
+
+static ref int MultipleParameterModifiers<T>(this ref int x, T y) where T:unmanaged, Enum
+	{
+	}
+

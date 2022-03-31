@@ -260,3 +260,31 @@
 
   - After Parameters: )
     - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: static ref int MultipleParameterModifiers<T>(
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: this ref int x,
+    - Name: x
+    - Full Type: this ref int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: T y
+    - Name: y
+    - Full Type: T
+    - Base Type: T
+    - Link Candidates: T
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Plain Section: where T:unmanaged, Enum
+  - Access Level: Unknown
+  - Link Candidates: (none)

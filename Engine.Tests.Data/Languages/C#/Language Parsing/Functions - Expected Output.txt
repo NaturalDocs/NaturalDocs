@@ -61,3 +61,8 @@
     TestClass.FunctionJ
     public static ref readonly ReturnStruct FunctionJ ()
     (line 33, char 2, child of TestClass)
+    ---------------
+    Function: FunctionK
+    TestClass.FunctionK
+    static ref int FunctionK<T>(this ref int x, T y) where T:unmanaged, Enum
+    (line 36, char 2, child of TestClass)
