@@ -2199,11 +2199,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode, PrototypeParsingType.TypeModifier) == true)
 				{  TryToSkipWhitespace(ref lookahead);  }
 
-			if (lookahead.MatchesToken("ref") ||
-				lookahead.MatchesToken("in") ||
-				lookahead.MatchesToken("out") ||
-				lookahead.MatchesToken("params") ||
-				lookahead.MatchesToken("this"))
+			while (lookahead.MatchesToken("ref") ||
+					  lookahead.MatchesToken("in") ||
+					  lookahead.MatchesToken("out") ||
+					  lookahead.MatchesToken("params") ||
+					  lookahead.MatchesToken("this"))
 				{
 				if (mode == ParseMode.ParsePrototype)
 					{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
