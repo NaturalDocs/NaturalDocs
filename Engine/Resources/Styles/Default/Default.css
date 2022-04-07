@@ -84,8 +84,11 @@
 
 /* Z-Indexes */
 
-	$NDSearchFieldZIndex: 201;
-	$NDSearchResultsZIndex: 200;
+	$NDSearchFieldZIndex: 301;
+	$NDSearchResultsZIndex: 300;
+
+	$NDThemeSwitcherZIndex: 201;
+	$NDThemeSwitcherMenuZIndex: 200;
 
 	$NDSizerZIndex: 101;
 	$NDContentCoverZIndex: 100;
@@ -225,6 +228,34 @@ td {
 
 
 
+/* Group: Theme Switcher
+	___________________________________________________________________________
+*/
+
+#NDThemeSwitcher {
+	z-index: $NDThemeSwitcherZIndex;
+	border: 1px solid #C8C8C8;  /* 1.5px so it stays at 1px for 100-125% zoom and becomes 2px on 150% zoom */
+	border-radius: 50%;
+	box-sizing: border-box;
+	background: url("images/theme-dark-outline.svg") center center no-repeat;
+
+	/* Default to not displaying so it doesn't show up on the loading page.  NDFramePage will make it visible when it starts. */
+	display: none;
+	}
+	#NDThemeSwitcher:hover {
+		background: url("images/theme-dark-fill.svg") center center no-repeat;
+		}
+
+	#NDThemeSwitcher a {
+		display: block;
+		width: 100%;
+		height: 100%;
+		border-radius: 50%;
+		}
+
+
+
+
 /* Group: Search
 	___________________________________________________________________________
 */
@@ -236,6 +267,9 @@ td {
 	padding: .4em .85rem .3em 1.9rem;
 	border: 0 none;
 	border-radius: 1em;
+
+	/* Make Firefox and Chrome consistent.  The theme switcher icon assumes 25px at 100% zoom. */
+	min-height: 25px;
 
 	/* Default to not displaying so it doesn't show up on the loading page.  NDFramePage will make it visible when it starts. */
 	display: none;

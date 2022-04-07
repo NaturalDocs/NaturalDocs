@@ -557,6 +557,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 						}
 
 					content.Append(
+					"<div id=\"NDThemeSwitcher\"></div>" +
 					"<input id=\"NDSearchField\" type=\"text\" autocomplete=\"off\" />"+
 
 				"</div>" +

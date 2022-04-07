@@ -15,6 +15,11 @@
 "use strict";
 
 
+// Theme Members
+
+	$Theme_Name = 0;
+	$Theme_ID = 1;
+
 // Location Info Members
 
 	$LocationInfo_SimpleIdentifier = 0;
@@ -60,6 +65,7 @@ var NDFramePage = new function ()
 		// True or false determines whether it will be made visible.
 		var pageElements = {
 			NDHeader: true,
+			NDThemeSwitcher: false, // Will be handled by NDThemeSwitcher.UpdateVisibility()
 			NDSearchField: true,
 			NDFooter: true,
 			NDMenu: true,
@@ -82,6 +88,9 @@ var NDFramePage = new function ()
 		// this.desiredSearchWidth = undefined;
 		// this.desiredMenuWidth = undefined;
 		// this.desiredSummaryWidth = undefined;
+
+		// Better to do this here because it affects the layout
+		NDThemeSwitcher.UpdateVisibility();
 
 		this.UpdateLayout();
 
@@ -332,6 +341,7 @@ var NDFramePage = new function ()
 		var fullHeight = window.innerHeight;
 
 		var header = document.getElementById("NDHeader");
+		var themeSwitcher = document.getElementById("NDThemeSwitcher");
 		var searchField = document.getElementById("NDSearchField");
 		var footer = document.getElementById("NDFooter");
 		var menu = document.getElementById("NDMenu");
@@ -371,7 +381,7 @@ var NDFramePage = new function ()
 		var headerRightEdge = Math.max(headerTitleRightEdge, headerSubTitleRightEdge);
 
 
-		// Search field
+		// Search field and theme switcher
 
 		if (this.desiredSearchWidth == undefined)
 			{  this.desiredSearchWidth = searchField.offsetWidth;  }
@@ -380,13 +390,34 @@ var NDFramePage = new function ()
 
 		var searchWidth = this.desiredSearchWidth;
 		var maxSearchWidth = fullWidth - headerRightEdge - (searchMargin * 4);  // 3x left margin + right margin
+		var minSearchWidth = searchMargin * 5;
+
+		var themeSwitcherSize;
+
+		if (NDThemeSwitcher.IsNeeded())
+			{
+			themeSwitcherSize = searchField.offsetHeight;
+			maxSearchWidth -= themeSwitcherSize + searchMargin;
+			}
 
 		if (searchWidth > maxSearchWidth)
 			{  searchWidth = maxSearchWidth;  }
+		if (searchWidth < minSearchWidth)
+			{  searchWidth = minSearchWidth;  }
 
 		searchField.style.left = (fullWidth - searchWidth - searchMargin) + "px";
 		searchField.style.top = searchMargin + "px";
 		searchField.style.width = searchWidth + "px";
+
+		if (NDThemeSwitcher.IsNeeded())
+			{
+			// Have to use searchField.offsetWidth instead of searchWidth to include the padding
+			themeSwitcher.style.left = (fullWidth - searchField.offsetWidth - searchMargin - 
+												   themeSwitcherSize - Math.floor(searchMargin / 2)) + "px";
+			themeSwitcher.style.top = searchMargin + "px";
+			themeSwitcher.style.width = themeSwitcherSize + "px";
+			themeSwitcher.style.height = themeSwitcherSize + "px";
+			}
 
 
 		// Menu and footer
@@ -714,6 +745,73 @@ var NDFramePage = new function ()
 
 		if (resized)
 			{  this.UpdateLayout();  }
+		};
+
+
+	
+	// Group: Theme Functions
+	// ________________________________________________________________________
+
+
+	/* Function: SetThemes
+
+		Pass this function an array of all the themes the documentation supports.  It will apply the first one as the default 
+		theme, and if there is more than one the theme switcher will become available.  If you pass it undefined it will
+		disable theming.
+		
+		Each theme is represented by an array, with the first value being its display name and the second value its ID.
+		The ID should only contain characters that are valid for CSS class names.  When a theme is selected the ID will
+		be added to the document body as a CSS class with "Theme" appended, so "Light" will add "LightTheme".
+
+		Example:
+
+			--- Code ---
+			NDFramePage.SetThemes ([
+			   [ "Light Theme", "Light" ],
+			   [ "Dark Theme", "Dark" ],
+			   [ "Black Theme", "Black" ]
+			   ]);
+			-------------
+		*/
+	this.SetThemes = function (themes)
+		{
+		NDThemes.SetThemes(themes);
+
+		if (themes == undefined ||
+			themes.length == 0)
+			{  NDThemes.Apply(undefined);  }
+		else
+			{  NDThemes.Apply(themes[0][$Theme_ID]);  }
+
+		if (NDThemeSwitcher.UpdateVisibility())
+			{  this.UpdateLayout();  }
+		};
+
+	
+	/* Function: ForceTheme
+
+		Sets the theme to a particular one and makes it not changeable by the user.  You only need to pass the ID, not 
+		the name, since there will be no theme switcher.
+
+		Example:
+
+			--- Code ---
+			NDFramePage.ForceTheme("Dark");
+			--------------
+	*/
+	this.ForceTheme = function (forcedThemeID)
+		{
+		this.SetThemes([ [ "", forcedThemeID ] ]);
+		};
+
+
+	/* Function: DisableThemes
+
+		Disables all theming.
+	*/
+	this.DisableThemes = function ()
+		{
+		this.SetThemes(undefined);
 		};
 
 

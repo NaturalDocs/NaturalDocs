@@ -24,6 +24,7 @@
 
 Link: NDCore.js
 Frame Link: NDFramePage.js
+Frame Link: NDThemes.js
 Frame Link: NDMenu.js
 Frame Link: NDSummary.js
 Frame Link: NDSearch.js
@@ -52,7 +53,7 @@ Content Link: NDContentPage.js
 # OnLoad
 # ------------------------------------------------------------------------
 
-Frame OnLoad: NDFramePage.Start();
+Frame OnLoad: NDFramePage.Start(); NDFramePage.SetThemes([ ["Light Theme", "Light"], ["Dark Theme", "Dark"], ["Black Theme", "Black"] ]);
 
 Content OnLoad: NDContentPage.Start();
 
