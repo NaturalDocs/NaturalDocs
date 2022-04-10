@@ -608,6 +608,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 							"</div>");
 						}
 
+				content.Append(
+				"</div>");
+
 			Context context = new Context(Target);
 			Components.Page pageBuilder = new Components.Page(context);
 
