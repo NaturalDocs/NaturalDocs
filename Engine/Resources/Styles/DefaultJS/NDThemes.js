@@ -72,6 +72,8 @@ var NDThemes = new function ()
 			if (currentEffectiveThemeID != undefined)
 				{  NDCore.RemoveClass(document.body, currentEffectiveThemeID + "Theme");  }
 
+			// Note that the embedded script in each page may have already set the CSS class early.  That should be fine 
+			// and this line will have no effect if that's the case.
 			if (newEffectiveThemeID != undefined)
 				{  NDCore.AddClass(document.body, newEffectiveThemeID + "Theme");  }
 			}

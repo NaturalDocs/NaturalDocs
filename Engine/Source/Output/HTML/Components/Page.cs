@@ -83,7 +83,36 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						"\r\n\r\n" +
 
 					"<body onload=\"NDLoader.OnLoad('" + pageTypeName + "');\" " +
-									"class=\"NDPage ND" + pageTypeName + "Page\">" +
+							  "class=\"NDPage ND" + pageTypeName + "Page\">" +
+					"\r\n\r\n" +
+
+					// Add a small embedded script to apply the theme right away if it's the first parameter in the URL query string.
+					// This prevents the page from displaying in the default light theme while it loads since the OnLoad handler
+					// won't set it to the proper one until it's done.
+					//
+					// Themes.js needs to be able to handle this happening.
+					//
+					"<script type=\"text/javascript\">" +
+
+						// q = query
+						"var q = window.location.search;" +
+
+						"if (q.indexOf(\"?Theme=\") == 0)" +
+							"{" +
+							// t = theme ID
+							"var t = q.slice(7);" +
+
+							// e = end index
+							"var e = t.indexOf(\";\");" +
+							"if (e != -1)" +
+								"{  t = t.slice(0, e);  }" +
+
+							"if (document.body.className == undefined)" +
+								"{ document.body.className = t + \"Theme\"; }" +
+							"else" +
+								"{ document.body.className += \" \" + t + \"Theme\"; }" +
+							"}" +
+						"</script>" +
 
 						pageContentHTML +
 
