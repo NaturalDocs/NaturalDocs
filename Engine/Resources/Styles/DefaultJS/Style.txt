@@ -29,6 +29,7 @@ Frame Link: NDMenu.js
 Frame Link: NDSummary.js
 Frame Link: NDSearch.js
 Content Link: NDContentPage.js
+Home Link: NDHomePage.js
 
 
 # You can link .css, .js, and .json files to the output like this:
@@ -57,6 +58,7 @@ Frame OnLoad: NDFramePage.Start(); NDFramePage.SetThemes([ ["Light Theme", "Ligh
 
 Content OnLoad: NDContentPage.Start();
 
+Home OnLoad: NDHomePage.Start();
 
 # You can add code to the page's OnLoad handler like this:
 #
