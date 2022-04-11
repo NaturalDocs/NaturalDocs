@@ -185,7 +185,7 @@ _______________________________________________________________________________
 
 --- text ---
 
-	<body NDPage NDContentPage>
+	<body NDPage NDContentPage [ThemeName]?>
 
 		<CTopic T[Type] L[Language] first/last?>
 
@@ -245,9 +245,20 @@ _______________________________________________________________________________
 
 		</CTopic>
 
-	</body NDPage NDContentPage>
+	</body NDPage NDContentPage [ThemeName]?>
 
 ----------
+
+	[ThemeName]:
+
+		If there are one or more themes defined in <NDThemes>, the ID of the selected theme will be applied to the body
+		as a CSS class with "Theme" appended, such as ID "Light" becoming "LightTheme".  The CSS classes for the themes
+		in the default style are "LightTheme", "DarkTheme", and "BlackTheme".
+
+		You can override which themes available by calling <NDFramePage.SetThemes()> from a Frame OnLoad statement
+		in <Style.txt>.  You can also force it to be a particular one by calling <NDFramePage.ForceTheme(ID)>, or call
+		<NDFramePage.DisableThemes()> to turn them off altogether.  When disabled there will be no theme CSS class
+		added to the body, but when forced it will be the one for the theme you forced.
 
 
 

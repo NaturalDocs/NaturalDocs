@@ -90,6 +90,7 @@ var NDFramePage = new function ()
 		// this.desiredSummaryWidth = undefined;
 
 		// Better to do this here because it affects the layout
+		NDThemeSwitcher.Start(this.OnThemeChange);
 		NDThemeSwitcher.UpdateVisibility();
 
 		this.UpdateLayout();
@@ -201,10 +202,16 @@ var NDFramePage = new function ()
 			// Do nothing.  We can't even go to the base page here and let the summary replace it with the anchor because they don't
 			// always occur in the right order.
 			}
+
+		// Everything else is case sensitive and can go right to the target without waiting for the summary to load.
 		else
 			{
-			// Everything else is case sensitive and can go right to the target without waiting for the summary to load.
-			frame.contentWindow.location.replace(this.currentLocation.contentPage);
+			var newLocation = this.currentLocation.contentPage;
+
+			if (NDThemes.effectiveThemeID != undefined)
+				{  newLocation = NDCore.AddQueryParams(newLocation, "Theme=" + NDThemes.effectiveThemeID);  }
+
+			frame.contentWindow.location.replace(newLocation);
 			}
 
 
@@ -413,7 +420,7 @@ var NDFramePage = new function ()
 			{
 			// Have to use searchField.offsetWidth instead of searchWidth to include the padding
 			themeSwitcher.style.left = (fullWidth - searchField.offsetWidth - searchMargin - 
-												   themeSwitcherSize - Math.floor(searchMargin / 2)) + "px";
+															  themeSwitcherSize - Math.floor(searchMargin / 2)) + "px";
 			themeSwitcher.style.top = searchMargin + "px";
 			themeSwitcher.style.width = themeSwitcherSize + "px";
 			themeSwitcher.style.height = themeSwitcherSize + "px";
@@ -806,12 +813,25 @@ var NDFramePage = new function ()
 
 
 	/* Function: DisableThemes
-
 		Disables all theming.
 	*/
 	this.DisableThemes = function ()
 		{
 		this.SetThemes(undefined);
+		};
+
+
+	/* Function: OnThemeChange
+		Called whenever the theme changes.
+	*/
+	this.OnThemeChange = function ()
+		{
+		var frame = document.getElementById("CFrame");
+
+		if (NDThemes.effectiveThemeID != undefined)
+			{  frame.contentWindow.postMessage("Theme=" + NDThemes.effectiveThemeID, "*");  }
+		else
+			{  frame.contentWindow.postMessage("NoTheme", "*");  }
 		};
 
 
@@ -824,8 +844,8 @@ var NDFramePage = new function ()
 	*/
 
 	/* var: locationInfo
-		An array of location information objects as documented in <Location Information>, or undefined if <OnLocationsLoaded()> hasn't
-		been called yet.
+		An array of location information objects as documented in <Location Information>, or undefined if 
+		<OnLocationsLoaded()> hasn't been called yet.
 	*/
 
 	/* var: projectTitle
@@ -833,8 +853,8 @@ var NDFramePage = new function ()
 	*/
 
 	/* var: sourceFileHomePageHashPath
-		The hash path of the source file serving as a custom home page, or undefined if none.  This will be undefined if there is no custom
-		home page or if there is a custom home page but it is a HTML file.
+		The hash path of the source file serving as a custom home page, or undefined if none.  This will be 
+		undefined if there is no custom home page or if there is a custom home page but it is a HTML file.
 	*/
 
 	/* var: hashChangePoller

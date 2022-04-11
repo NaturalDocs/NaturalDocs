@@ -215,6 +215,60 @@ var NDCore = new function ()
 		};
 
 
+	/* Function: AddQueryParams
+
+		Adds query parameters to the passed URL, inserting them in between the file and the hash anchor.
+
+		Example:
+
+			URL - "file:///myfile.html#Anchor"
+			OueryParams - "Var=Value"
+			Result - "file:///myfile.html?Var=Value#Anchor"
+	*/
+	this.AddQueryParams = function (url, queryParams)
+		{
+		var hashIndex = url.indexOf("#");
+
+		if (hashIndex == -1)
+			{  return (url + "?" + queryParams);  }
+		else
+			{  return (url.slice(0, hashIndex) + "?" + queryParams + url.slice(hashIndex));  }
+		};
+
+
+	/* Function: GetQueryParam
+		
+		Returns the value of a query parameter if it appears in the current URL, or undefined if not.
+
+		This function works similarly to URLSearchParams, but is our own implementation because IE11 and some
+		other browsers don't support it.
+	*/
+	this.GetQueryParam = function (param)
+		{
+		var queryString = window.location.search;
+
+		if (queryString == undefined)
+			{  return undefined;  }
+
+		var paramIndex = queryString.indexOf("?" + param + "=");
+
+		if (paramIndex == -1)
+			{  paramIndex = queryString.indexOf(";" + param + "=");  }
+
+		if (paramIndex == -1)
+			{  return undefined;  }
+
+		var valueIndex = paramIndex + param.length + 2;
+
+		var endValueIndex = queryString.indexOf(";", valueIndex);
+
+		if (endValueIndex == -1)
+			{  return queryString.slice(valueIndex);  }
+		else
+			{  return queryString.slice(valueIndex, endValueIndex);  }
+		};
+
+
 
 	// Group: Browser Functions
 	// ________________________________________________________________________

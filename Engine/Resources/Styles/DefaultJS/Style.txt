@@ -23,8 +23,8 @@
 # ------------------------------------------------------------------------
 
 Link: NDCore.js
+Link: NDThemes.js
 Frame Link: NDFramePage.js
-Frame Link: NDThemes.js
 Frame Link: NDMenu.js
 Frame Link: NDSummary.js
 Frame Link: NDSearch.js

@@ -280,6 +280,9 @@ var NDSummary = new function ()
 			if (topicID != -1)
 				{  targetLocation += "#Topic" + topicID;  }
 
+			if (NDThemes.effectiveThemeID != undefined)
+				{  targetLocation = NDCore.AddQueryParams(targetLocation, "Theme=" + NDThemes.effectiveThemeID);  }
+
 			frame.contentWindow.location = targetLocation;
 
 			// Set focus to the content page iframe so that keyboard scrolling works without clicking over to it.

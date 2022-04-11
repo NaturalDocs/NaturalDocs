@@ -205,6 +205,26 @@ var NDThemeSwitcher = new function ()
 	// ________________________________________________________________________
 
 
+	/* Function: Start
+
+		Sets up the theme switcher.  It expects there to be an empty HTML element with ID NDThemeSwitcher
+		in the document.  You can pass a function to it to be called whenever the theme changes.
+	 */
+	this.Start = function (onThemeChange)
+		{
+		// Add the event handler
+		this.onThemeChange = onThemeChange;
+
+		// Prepare the HTML elements
+		var baseElement = document.getElementById("NDThemeSwitcher");
+
+		var linkElement = document.createElement("a");
+		linkElement.onclick = function () {  NDThemeSwitcher.Cycle();  };
+
+		baseElement.appendChild(linkElement);
+		};
+
+
 	/* Function: IsNeeded
 		Returns whether the theme switcher is necessary.  This will only return true if there are multiple themes
 		defined in <NDThemes>.
@@ -233,15 +253,6 @@ var NDThemeSwitcher = new function ()
 
 		if (!wasVisible && shouldBeVisible)
 			{
-			// Create link element if it wasn't already there
-			if (themeSwitcher.childElementCount == 0)
-				{
-				var linkElement = document.createElement("a");
-				linkElement.setAttribute("href", "javascript:NDThemeSwitcher.Cycle();");
-
-				themeSwitcher.appendChild(linkElement);
-				}
-
 			themeSwitcher.style.display = "block";
 			return true;
 			}
@@ -285,6 +296,20 @@ var NDThemeSwitcher = new function ()
 			{  newThemeIndex = oldThemeIndex + 1;  }
 
 		NDThemes.Apply(NDThemes.allThemes[newThemeIndex][$Theme_ID]);
+
+		if (this.onThemeChange != undefined)
+			{  this.onThemeChange();  }
 		};
+
+
+
+	// Group: Variables
+	// ________________________________________________________________________
+
+
+	/* var: onThemeChange
+		An event handler that will be called whenever the theme changes.
+	*/
+	// var onThemeChange = undefined;
 
 	};

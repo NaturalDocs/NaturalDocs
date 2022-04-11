@@ -38,6 +38,19 @@ var NDContentPage = new function ()
 	this.Start = function ()
 		{
 
+		// Apply the theme
+
+		var themeID = NDCore.GetQueryParam('Theme');
+
+		if (themeID != undefined)
+			{  NDThemes.Apply(themeID);  }
+
+
+		// Set up event listener
+
+		window.addEventListener("message", this.OnMessage);
+
+
 		// Resize prototypes to better fit the window.
 
 		this.CalculateWideFormPrototypeWidths();
@@ -91,6 +104,29 @@ var NDContentPage = new function ()
 		if (this.reformatPrototypesTimeout == undefined)
 			{
 			this.reformatPrototypesTimeout = setTimeout("NDContentPage.ReformatPrototypes()", 200);
+			}
+		};
+
+
+	/* Function: OnMessage
+
+		Event handler for messages sent to this page by the frame page via postMessage().
+
+		Supported Commands:
+
+			NoTheme - Remove any theme classes.
+			Theme=[id] - Apply the passed theme ID.
+	*/
+	this.OnMessage = function (event)
+		{
+		var message = event.data;
+
+		if (message == "NoTheme")
+			{  NDThemes.Apply(undefined);  }
+		else if (message.StartsWith("Theme="))
+			{
+			var theme = message.slice(6);
+			NDThemes.Apply(theme);
 			}
 		};
 
