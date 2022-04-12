@@ -44,7 +44,7 @@
 
 	$semibold: 600;
 
-	$ContentFontFamily: -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, sans-serif;
+	$ContentFontFamily: "-apple-system", BlinkMacSystemFont, "Segoe UI", Tahoma, sans-serif;
 	$ContentFontSize: 10pt;
 
 	$HeadingFontFamily: $ContentFontFamily;
@@ -234,7 +234,7 @@ td {
 
 #NDThemeSwitcher {
 	z-index: $NDThemeSwitcherZIndex;
-	border: 1px solid #C8C8C8;  /* 1.5px so it stays at 1px for 100-125% zoom and becomes 2px on 150% zoom */
+	border: 1px solid #C8C8C8;
 	border-radius: 50%;
 	box-sizing: border-box;
 	background: url("images/theme-dark-outline.svg") center center no-repeat;
