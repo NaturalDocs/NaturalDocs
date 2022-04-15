@@ -21,7 +21,13 @@
 	$HeaderBackgroundColor: #7070C0;
 	$MenuBackgroundColor: #E0E0E0;
 	$SummaryBackgroundColor: #F8F8F8;
+
+	$ContentTextColor: #000000;
+		$ContentTextColor_Dark: #DCDCDC;  /* 220, same as Visual Studio */
+		$ContentTextColor_Black: #F4F4F4;
 	$ContentBackgroundColor: #FFFFFF;
+		$ContentBackgroundColor_Dark: #1E1E1E;  /* 30, same as Visual Studio */
+		$ContentBackgroundColor_Black: #000000;
 
 	$MenuTextColor: #606060;
 	$MenuFadedTextColor: #808080;
@@ -37,7 +43,11 @@
 	$ContentScrollbarColors: #CCCCCC #F0F0F0;
 
 	$TextLinkColor: #880000;
+		$TextLinkColor_Dark: #F0B0B0;
+		$TextLinkColor_Black: #F8B8B8;
 	$TextLinkActiveColor: #F04040;
+		$TextLinkActiveColor_Dark: #FFE0E0;
+		$TextLinkActiveColor_Black: #FFE8E8;
 
 
 /* Fonts */
@@ -713,10 +723,19 @@ td {
 
 
 body.NDContentPage {
+	color: $ContentTextColor;
 	background-color: $ContentBackgroundColor;
 	padding: .6rem 1.25rem;
 	margin: 0;
 	}
+	body.NDContentPage.DarkTheme {
+		color: $ContentTextColor_Dark;
+		background-color: $ContentBackgroundColor_Dark;
+		}
+	body.NDContentPage.BlackTheme {
+		color: $ContentTextColor_Black;
+		background-color: $ContentBackgroundColor_Black;
+		}
 
 	.CTopic {
 		margin-bottom: 2.5rem;
@@ -736,10 +755,15 @@ body.NDContentPage {
 		border-bottom: 1px solid #C0C0C0;
 		margin-bottom: .5rem;
 		}
+		.DarkTheme .CTitle { border-color: #707070; }
+		.BlackTheme .CTitle { border-color: #686868; }
+
 	.CTitle .Qualifier {
-		color: #404040;
+		color: #444444;
 		font-weight: normal;
 		}
+		.DarkTheme .CTitle .Qualifier { color: #C4C4C4; }
+		.BlackTheme .CTitle .Qualifier { color: #D6D6D6; }
 
 	.TClass .CTitle,
 	.TInterface .CTitle,
@@ -752,12 +776,32 @@ body.NDContentPage {
 		border-color: #A8A8A8;
 		margin-bottom: .75rem;
 		}
+		.DarkTheme .TClass .CTitle,
+		.DarkTheme .TInterface .CTitle,
+		.DarkTheme .TStruct .CTitle,
+		.DarkTheme .TSection .CTitle,
+		.DarkTheme .TDatabase .CTitle,
+		.DarkTheme .TDatabaseTable .CTitle,
+		.DarkTheme .TFile.first .CTitle {
+			border-color: #909090;
+			}
+		.BlackTheme .TClass .CTitle,
+		.BlackTheme .TInterface .CTitle,
+		.BlackTheme .TStruct .CTitle,
+		.BlackTheme .TSection .CTitle,
+		.BlackTheme .TDatabase .CTitle,
+		.BlackTheme .TDatabaseTable .CTitle,
+		.BlackTheme .TFile.first .CTitle {
+			border-color: #949494;
+			}
 
 	.TGroup .CTitle {
 		text-transform: uppercase;
 		font-size: 1.6rem;
-		border-bottom: 2px solid #000000;
+		border-bottom: 2px solid $ContentTextColor;
 		}
+		.DarkTheme .TGroup .CTitle { border-color: $ContentTextColor_Dark; }
+		.BlackTheme .TGroup .CTitle { border-color: $ContentTextColor_Black; }
 
 	.CTopic .NDPrototype,
 	.CTopic .NDClassPrototype {
@@ -782,9 +826,25 @@ body.NDContentPage {
 	.CTopic a:hover {
 		color: $TextLinkColor;
 		}
+		.DarkTheme .CTopic a:link,
+		.DarkTheme .CTopic a:visited,
+		.DarkTheme .CTopic a:hover {
+			color: $TextLinkColor_Dark;
+			}
+		.BlackTheme .CTopic a:link,
+		.BlackTheme .CTopic a:visited,
+		.BlackTheme .CTopic a:hover {
+			color: $TextLinkColor_Black;
+			}
 	.CTopic a:active {
 		color: $TextLinkActiveColor;
 		}
+		.DarkTheme .CTopic a:active {
+			color: $TextLinkActiveColor_Dark;
+			}
+		.BlackTheme .CTopic a:active {
+			color: $TextLinkActiveColor_Black;
+			}
 
 	.CTopic ul {
 		margin: 0 0 0 $Indent150pct;
@@ -826,12 +886,21 @@ body.NDContentPage {
 		border: 1px solid #7C7C7C;
 		padding: $CodePadding;
 		}
+		.DarkTheme .CTopic pre { border-color: #808080; }
+		.BlackTheme .CTopic pre { border-color: #7E7E7E; }
+
 		.CTopic pre.CCode {
-			color: #000000;
+			color: $ContentTextColor;
 			}
+			.DarkTheme .CTopic pre.CCode { color: $ContentTextColor_Dark; }
+			.BlackTheme .CTopic pre.CCode { color: $ContentTextColor_Black; }
+
 		.CTopic pre.CText {
 			color: #484848;
 			}
+			.DarkTheme .CTopic pre.CText { color: #A6A6A6; }
+			.BlackTheme .CTopic pre.CText { color: #AFAFAF; }
+
 
 	.CImage {
 		text-align: center;
@@ -854,17 +923,37 @@ body.NDContentPage {
 		.CICaption {
 			color: #808080;
 			}
+			.DarkTheme .CICaption { color: #7D7D7D; }
+			.BlackTheme .CICaption { color: #7A7A7A; }
+
 		.CTopic a.SeeImageLink {
 			font-style: italic;
 			}
 		.CTopic a.SeeImageLink:link,
 		.CTopic a.SeeImageLink:hover,
 		.CTopic a.SeeImageLink:visited {
-			color: #000000;
+			color: $ContentTextColor;
 			}
+			.DarkTheme .CTopic a.SeeImageLink:link,
+			.DarkTheme .CTopic a.SeeImageLink:hover,
+			.DarkTheme .CTopic a.SeeImageLink:visited {
+				color: $ContentTextColor_Dark;
+				}
+			.BlackTheme .CTopic a.SeeImageLink:link,
+			.BlackTheme .CTopic a.SeeImageLink:hover,
+			.BlackTheme .CTopic a.SeeImageLink:visited {
+				color: $ContentTextColor_Black;
+				}
 		.CTopic a.SeeImageLink:active {
 			color: $TextLinkColor;
 			}
+			.DarkTheme .CTopic a.SeeImageLink:active {
+				color: $TextLinkColor_Dark;
+				}
+			.BlackTheme .CTopic a.SeeImageLink:active {
+				color: $TextLinkColor_Black;
+				}
+
 
 	.CBodyNDMarkup {
 		font: 8pt Verdana, sans-serif;
