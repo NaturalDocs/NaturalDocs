@@ -140,6 +140,9 @@ var NDFramePage = new function ()
 			NDSearch.ClearResults();
 			NDSearch.DeactivateSearchField();
 			}
+
+		if (NDThemeSwitcher.MenuIsOpen())
+			{  NDThemeSwitcher.CloseMenu();  }
 		};
 
 
@@ -509,6 +512,7 @@ var NDFramePage = new function ()
 		content.style.height = remainingHeight + "px";
 
 		NDSearch.OnUpdateLayout();
+		NDThemeSwitcher.OnUpdateLayout();
 		};
 
 
@@ -547,6 +551,26 @@ var NDFramePage = new function ()
 				{
 				NDSearch.ClearResults();
 				NDSearch.DeactivateSearchField();
+				}
+			}
+
+		if (NDThemeSwitcher.MenuIsOpen())
+			{
+			var targetIsPartOfThemeSwitcher = false;
+
+			for (var element = target; element != undefined; element = element.parentNode)
+				{
+				if (element.id == "NDThemeSwitcher" ||
+					element.id == "NDThemeSwitcherMenu")
+					{
+					targetIsPartOfThemeSwitcher = true;
+					break;
+					}
+				}
+
+			if (!targetIsPartOfThemeSwitcher)
+				{
+				NDThemeSwitcher.CloseMenu();
 				}
 			}
 
@@ -789,6 +813,9 @@ var NDFramePage = new function ()
 			{  NDThemes.Apply(undefined);  }
 		else
 			{  NDThemes.Apply(themes[0][$Theme_ID]);  }
+
+		if (NDThemeSwitcher.MenuIsOpen())
+			{  NDThemeSwitcher.CloseMenu();  }
 
 		if (NDThemeSwitcher.UpdateVisibility())
 			{  this.UpdateLayout();  }

@@ -247,13 +247,14 @@ td {
 	border: 1px solid #C8C8C8;
 	border-radius: 50%;
 	box-sizing: border-box;
-	background: url("images/theme-dark-outline.svg") center center no-repeat;
+	background: url("images/theme-switcher.svg") center center no-repeat;
 
 	/* Default to not displaying so it doesn't show up on the loading page.  NDFramePage will make it visible when it starts. */
 	display: none;
 	}
-	#NDThemeSwitcher:hover {
-		background: url("images/theme-dark-fill.svg") center center no-repeat;
+	#NDThemeSwitcher:hover,
+	#NDThemeSwitcher.active {
+		background: url("images/theme-switcher-hover.svg") center center no-repeat;
 		}
 
 	#NDThemeSwitcher a {
@@ -263,6 +264,79 @@ td {
 		border-radius: 50%;
 		}
 
+
+#NDThemeSwitcherMenu {
+	z-index: $NDThemeSwitcherMenuZIndex;
+
+	border-style: solid;
+	border-width: 1px;
+	border-color: #BCBCBC #747474 #747474 #BCBCBC;
+	box-shadow: $PopupShadow;
+	}
+
+	.TSEntry {
+		display: block;
+		padding: 6px 12px 6px 10px;
+		min-height: 25px;
+		}
+
+	.TSEntryName {
+		margin: 3px 0 0 33px;
+		white-space: nowrap;
+		vertical-align: bottom;
+		}
+		.TSEntry:hover {
+			text-decoration: none !important;
+			}
+
+	.TSEntryIcon {
+		box-sizing: border-box;
+		border-width: 1px;
+		border-style: solid;
+		border-radius: 50%;
+
+		position: absolute;
+		width: 25px;
+		height: 25px;
+		}
+
+	
+	/* If you change the colors, make sure you update the SVG files to match */
+	.TSEntry_LightTheme {
+		color: $ContentTextColor;
+		background-color: $ContentBackgroundColor;
+		}
+		.TSEntry_LightTheme:hover {
+			background-color: #E8E8E8;
+			}
+		.TSEntry_LightTheme .TSEntryIcon {
+			background: url("images/theme-menu-light.svg") center center no-repeat;
+			border-color: #A0A0A0;
+			}
+
+	.TSEntry_DarkTheme {
+		color: $ContentTextColor_Dark;
+		background-color: $ContentBackgroundColor_Dark;
+		}
+		.TSEntry_DarkTheme:hover {
+			background-color: #4E4E4E;
+			}
+		.TSEntry_DarkTheme .TSEntryIcon {
+			background: url("images/theme-menu-dark.svg") center center no-repeat;
+			border-color: $ContentTextColor_Dark;
+			}
+
+	.TSEntry_BlackTheme {
+		color: $ContentTextColor_Black;
+		background-color: $ContentBackgroundColor_Black;
+		}
+		.TSEntry_BlackTheme:hover {
+			background-color: #3E3E3E;
+			}
+		.TSEntry_BlackTheme .TSEntryIcon {
+			background: url("images/theme-menu-black.svg") center center no-repeat;
+			border-color: $ContentTextColor_Black;
+			}
 
 
 

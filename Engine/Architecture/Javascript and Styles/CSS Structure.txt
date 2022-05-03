@@ -41,6 +41,7 @@ _______________________________________________________________________________
 			<#HTitle>...</#HTitle>
 			<#HSubtitle>...</#HSubtitle>
 			<#NDThemeSwitcher>...</#NDThemeSwitcher>
+			<#NDThemeSwitcherMenu>...</#NDThemeSwitcherMenu>
 			<input #NDSearchField />
 			<#NDSearchResults>...</#NDSearchResults>
 		</#NDHeader>
@@ -476,6 +477,29 @@ _______________________________________________________________________________
 ----------
 
 SeChildren and its members will only appear if the SeParent is open.
+
+
+
+Topic: Theme Switcher
+_______________________________________________________________________________
+
+--- text ---
+
+	<#NDThemeSwitcher active? />
+
+	<#NDThemeSwitcherMenu>
+
+		<TSEntry #TSSelectedEntry? TSEntry_[ThemeName]>
+			<TSEntryIcon />
+			<TSEntryName>Name</TSEntryName>
+		</TSEntry>
+
+	</#NDThemeSwitcherMenu>
+
+----------
+
+[ThemeName] is the ID of the theme with the string "Theme" appended, such as "DarkTheme" for "Dark".  So since it's
+TSEntry_[ThemeName], the menu entry for "Dark" will have the CSS class "TSEntry_DarkTheme" applied.
 
 
 

@@ -20,6 +20,11 @@
 	$Theme_Name = 0;
 	$Theme_ID = 1;
 
+// Keycodes
+
+	$KeyCode_Escape = 27;
+
+
 
 
 /* Class: NDThemes
@@ -214,16 +219,35 @@ var NDThemeSwitcher = new function ()
 	 */
 	this.Start = function (onThemeChange)
 		{
+
 		// Add the event handler
+
 		this.onThemeChange = onThemeChange;
 
-		// Prepare the HTML elements
-		var baseElement = document.getElementById("NDThemeSwitcher");
 
-		var linkElement = document.createElement("a");
-		linkElement.onclick = function () {  NDThemeSwitcher.Cycle();  };
+		// Prepare the switcher HTML
 
-		baseElement.appendChild(linkElement);
+		this.domSwitcher = document.getElementById("NDThemeSwitcher");
+
+		var domSwitcherLink = document.createElement("a");
+		domSwitcherLink.onclick = function () {  NDThemeSwitcher.OnSwitcherClick();  };
+
+		this.domSwitcher.appendChild(domSwitcherLink);
+
+
+		// Prepare the pop-up menu holder HTML
+
+		this.domMenu = document.createElement("div");
+		this.domMenu.id = "NDThemeSwitcherMenu";
+		this.domMenu.style.display = "none";
+		this.domMenu.style.position = "fixed";
+
+		document.body.appendChild(this.domMenu);
+
+
+		// Register our own event handlers
+
+		window.addEventListener("keydown", function (event) { NDThemeSwitcher.OnKeyDown(event); });
 		};
 
 
@@ -268,39 +292,173 @@ var NDThemeSwitcher = new function ()
 		};
 
 
-	/* Function: Cycle
-		Switches to the next available theme in the list, restarting at the first if we're on the last one.
+
+	// Group: Menu Functions
+	// ________________________________________________________________________
+
+
+	/* Function: OpenMenu
+		Creates the pop-up menu, positions it, and makes it visible.
 	*/
-	this.Cycle = function ()
+	this.OpenMenu = function ()
 		{
-		if (NDThemes.allThemes == undefined ||
-			NDThemes.allThemes.length <= 1)
-			{  return;  }
-
-		var oldThemeID = NDThemes.selectedThemeID;
-		var oldThemeIndex;
-
-		for (var i = 0; i < NDThemes.allThemes.length; i++)
+		if (!this.MenuIsOpen())
 			{
-			if (NDThemes.allThemes[i][$Theme_ID] == oldThemeID)
+			this.BuildMenu();
+
+			this.domMenu.style.visibility = "hidden";
+			this.domMenu.style.display = "block";
+			this.PositionMenu();
+			this.domMenu.style.visibility = "visible";
+
+			NDCore.AddClass(this.domSwitcher, "active");
+			}
+		};
+
+
+	/* Function: CloseMenu
+		Closes the pop-up menu if it was visible.
+	*/
+	this.CloseMenu = function ()
+		{
+		if (this.MenuIsOpen())
+			{  
+			this.domMenu.style.display = "none";
+			NDCore.RemoveClass(this.domSwitcher, "active");
+			}
+		};
+
+
+	/* Function: MenuIsOpen
+	*/
+	this.MenuIsOpen = function ()
+		{
+		return (this.domMenu != undefined && this.domMenu.style.display == "block");
+		};
+
+
+
+	// Group: Menu Support Functions
+	// ________________________________________________________________________
+
+
+	/* Function: BuildMenu
+		Creates the HTML pop-up menu from <NDThemes.allThemes> and applies it to <domMenu>.  It does not
+		affect its visibility or position.
+	*/
+	this.BuildMenu = function ()
+		{
+		var html = "";
+
+		if (NDThemes.allThemes != undefined)
+			{
+			for (var i = 0; i < NDThemes.allThemes.length; i++)
 				{
-				oldThemeIndex = i;
-				break;
+				var theme = NDThemes.allThemes[i];
+
+				html += "<a class=\"TSEntry TSEntry_" + theme[$Theme_ID] + "Theme\"";
+
+				if (theme[$Theme_ID] == NDThemes.selectedThemeID)
+					{  html += " id=\"TSSelectedEntry\"";  }
+
+				html += " href=\"javascript:NDThemeSwitcher.OnMenuEntryClick('" + theme[$Theme_ID] + "');\">" +
+					"<div class=\"TSEntryIcon\"></div>" +
+					"<div class=\"TSEntryName\">" + theme[$Theme_Name] + "</div>" +
+				"</a>";
 				}
 			}
 
-		var newThemeIndex;
+		this.domMenu.innerHTML = html;
+		};
 
-		if (oldThemeIndex == undefined ||
-			oldThemeIndex == NDThemes.allThemes.length - 1)
-			{  newThemeIndex = 0;  }
+	
+	/* Function: PositionMenu
+		Moves the pop-up menu into position relative to the button.
+	*/
+	this.PositionMenu = function ()
+		{
+		// First position it under the switcher
+
+		var x = this.domSwitcher.offsetLeft;
+		var y = this.domSwitcher.offsetTop + this.domSwitcher.offsetHeight + 5;
+
+
+		// Now shift it over left enough so that the icons line up
+
+		var entryIcons = this.domMenu.getElementsByClassName("TSEntryIcon");
+
+		if (entryIcons != undefined && entryIcons.length >= 1)
+			{
+			var entryIcon = entryIcons[0];
+
+			// offsetLeft is the icon offset relative to the parent menu, clientLeft is the menu's border width
+			x -= entryIcon.offsetLeft + this.domMenu.clientLeft;
+			}
+
+		
+		// Apply the position
+
+		this.domMenu.style.left = x + "px";
+		this.domMenu.style.top = y + "px";
+		};
+
+
+
+	// Group: Event Handlers
+	// ________________________________________________________________________
+
+
+	/* Function: OnSwitcherClick
+	*/
+	this.OnSwitcherClick = function ()
+		{
+		if (this.MenuIsOpen())
+			{  this.CloseMenu();  }
 		else
-			{  newThemeIndex = oldThemeIndex + 1;  }
+			{  this.OpenMenu();  }
+		};
 
-		NDThemes.Apply(NDThemes.allThemes[newThemeIndex][$Theme_ID]);
 
-		if (this.onThemeChange != undefined)
-			{  this.onThemeChange();  }
+	/* Function: OnMenuEntryClick
+	*/
+	this.OnMenuEntryClick = function (themeID)
+		{
+		if (themeID != NDThemes.selectedThemeID)
+			{
+			NDThemes.Apply(themeID);
+
+			if (this.onThemeChange != undefined)
+				{  this.onThemeChange();  }
+			}
+
+		this.CloseMenu();
+		};
+
+
+	/* Function: OnKeyDown
+	*/
+	this.OnKeyDown = function (event)
+		{
+		if (event === undefined)
+			{  event = window.event;  }
+
+		if (event.keyCode == $KeyCode_Escape)
+			{
+			if (this.MenuIsOpen())
+				{  this.CloseMenu();  }
+			}
+		};
+
+
+	/* Function: OnUpdateLayout
+	*/
+	this.OnUpdateLayout = function ()
+		{
+		// Check for undefined because this may be called before Start().
+		if (this.domMenu != undefined)
+			{
+			this.PositionMenu();
+			}
 		};
 
 
@@ -308,6 +466,16 @@ var NDThemeSwitcher = new function ()
 	// Group: Variables
 	// ________________________________________________________________________
 
+
+	/* var: domSwitcher
+		The DOM element of the theme switcher.
+	*/
+	// var domSwitcher = undefined;
+
+	/* var: domMenu
+		The DOM element of the pop-up theme menu.
+	*/
+	// var domMenu = undefined;
 
 	/* var: onThemeChange
 		An event handler that will be called whenever the theme changes.
