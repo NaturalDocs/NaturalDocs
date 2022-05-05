@@ -1,0 +1,94 @@
+﻿Format: 2.2
+
+# This is a configuration file for a Natural Docs HTML output style.
+
+
+# Inheritance
+# ------------------------------------------------------------------------
+
+Inherit: Default
+
+
+# You can inherit the settings of another style like this:
+#
+# Inherit: [style]
+#
+# All of its settings will be applied before yours.  You can add this line
+# multiple times to inherit more than one style.
+#
+# If you just want to make some changes to the default style, inherit Default.
+# If you're building your own page design from scratch but want to keep the
+# default JavaScript functions, inherit DefaultJS.  This will include the code
+# but not the CSS or images.
+
+
+# Linked Files
+# ------------------------------------------------------------------------
+
+# You can link .css, .js, and .json files to the output like this:
+#
+# Link: [file]
+# Frame Link: [file]
+# Content Link: [file]
+# Home Link: [file]
+#
+# These files will be added to the generated output via link or script tags.
+#
+# You can limit JavaScript files to just to the frame page, which handles the
+# header, footer, menu, summary, and search, or to content pages, which is the
+# documentation in the rightmost panel, or to the home page.  If you do not
+# specify a page type they will be linked to every page.  CSS files can only
+# be linked to every page.
+#
+# All files will be copied to the output folder even if you don't link them,
+# but they will not be added to the pages automatically.
+
+
+# OnLoad
+# ------------------------------------------------------------------------
+
+Frame OnLoad: NDFramePage.ForceTheme("Dark");
+
+# You can add code to the page's OnLoad handler like this:
+#
+# OnLoad: [statement]
+# Frame OnLoad: [statement]
+# Content OnLoad: [statement]
+# Home OnLoad: [statement]
+#
+# You can limit it to just to the frame page, which handles the header,
+# footer, menu, summary, and search, or to content pages, which is the
+# documentation in the rightmost panel, or to the home page.  If you do not
+# specify a page type it will be added to every page.
+#
+# The OnLoad statement is limited to a single line.  If you have a lot of code
+# it's recommended that you make it a function in a separate .js file, link
+# that file, and then call the function from this statement rather than trying
+# to cram it all on this line.
+
+
+# Home Page
+# ------------------------------------------------------------------------
+
+# You can choose a custom HTML file to serve as the home page for the output
+# like this:
+#
+# Home Page: [file]
+#
+# It will appear in the content area of the documentation's home page,
+# separate from the header and side menu which will both still be visible.
+# The file you choose must have a .html extension.
+#
+# If this is defined, none of the OnLoad or Link properties will have any
+# effect on it.  You must add those things directly to the HTML file if
+# they're needed.
+#
+# The HTML file may contain these strings which will be replaced by your
+# project information.  They will have entity substitutions made for <, >, &,
+# and " characters so they're safe to place directly in the HTML or inside
+# double-quoted JavaScript strings.
+#
+#    %NaturalDocs_Title%
+#    %NaturalDocs_Subtitle%
+#    %NaturalDocs_Copyright%
+#    %NaturalDocs_Timestamp%
