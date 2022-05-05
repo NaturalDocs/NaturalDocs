@@ -54,7 +54,7 @@ Home Link: NDHomePage.js
 # OnLoad
 # ------------------------------------------------------------------------
 
-Frame OnLoad: NDFramePage.Start(); NDFramePage.SetThemes([ ["Light Theme", "Light"], ["Dark Theme", "Dark"], ["Black Theme", "Black"] ]);
+Frame OnLoad: NDFramePage.Start();
 
 Content OnLoad: NDContentPage.Start();
 

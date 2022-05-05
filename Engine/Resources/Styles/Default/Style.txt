@@ -50,6 +50,9 @@ Link: Default.css
 # OnLoad
 # ------------------------------------------------------------------------
 
+Frame OnLoad: NDFramePage.SetThemes([ ["Light Theme", "Light"], ["Dark Theme", "Dark"], ["Black Theme", "Black"] ]);
+
+
 # You can add code to the page's OnLoad handler like this:
 #
 # OnLoad: [statement]
