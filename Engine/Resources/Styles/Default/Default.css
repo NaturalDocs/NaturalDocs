@@ -28,13 +28,23 @@
 		$ContentTextColor_Black: #F4F4F4;
 
 	$SummaryContentBorderColor: #E8E8E8;
+		$SummaryContentBorderColor_Dark: #363636;
+		$SummaryContentBorderColor_Black: #484848;
 
 	$SummaryBackgroundColor: #F8F8F8;
+		$SummaryBackgroundColor_Dark: #161616;
+		$SummaryBackgroundColor_Black: #000000;
 	$SummaryTextColor: #707070;
+		$SummaryTextColor_Dark: #B8B8B8;
+		$SummaryTextColor_Black: #C0C0C0;
 	$SummaryBigTextColor: #6B6B6B;
+		$SummaryBigTextColor_Dark: #C8C8C8;
+		$SummaryBigTextColor_Black: #D8D8D8;
 
 	$SummaryScrollbarColors: #D0D0D0 #F0F0F0;
 	$ContentScrollbarColors: #CCCCCC #F0F0F0;
+		$SummaryScrollbarColors_Dark: $SummaryContentBorderColor_Dark #1C1C1C;
+		$SummaryScrollbarColors_Black: $SummaryContentBorderColor_Black #0A0A0A;
 
 	$MenuSummaryBorderColor: #D8D8D8;
 
@@ -675,6 +685,21 @@ td {
 	width: 15rem;
 	display: none;  /* Default for loading page, will be changed by JavaScript once the scripts are loaded */
 	}
+	.DarkTheme #NDSummary { 
+		background-color: $SummaryBackgroundColor_Dark; 
+		border-right-color: $SummaryContentBorderColor_Dark;
+		scrollbar-color: $SummaryScrollbarColors_Dark;
+
+		/* Dark scrollbars on Chrome.  Isn't as good as custom colors, but you can't manually set colors without losing the arrow buttons. */
+		/* Firefox will still choose scrollbar-color over this. */
+		color-scheme: dark;
+		}
+	.BlackTheme #NDSummary { 
+		background-color: $SummaryBackgroundColor_Black; 
+		border-right-color: $SummaryContentBorderColor_Black;
+		scrollbar-color: $SummaryScrollbarColors_Black;
+		color-scheme: dark;
+		}
 
 	#NDSummary a:hover,
 	#NDSummary a:active {
@@ -691,8 +716,11 @@ td {
 		color: $SummaryTextColor;
 		padding: .05em .75rem .15em 1.85rem;
 		}
-	.SuEntry.first { margin-top: .75rem; }
-	.SuEntry.last { margin-bottom: 2rem; }  /* leave space for link address pop-up */
+		.DarkTheme .SuEntry { color: $SummaryTextColor_Dark; }
+		.BlackTheme .SuEntry { color: $SummaryTextColor_Black; }
+
+		.SuEntry.first { margin-top: .75rem; }
+		.SuEntry.last { margin-bottom: 2rem; }  /* leave space for link address pop-up */
 
 	/* Top is relative to .SuEntry's top, inheriting its padding. */
 	.SuEntryIcon {
@@ -718,6 +746,27 @@ td {
 		line-height: 120%;
 		border-bottom: 1px solid #D0D0D0;
 		}
+		.DarkTheme .SuEntry.TClass,
+		.DarkTheme .SuEntry.TInterface,
+		.DarkTheme .SuEntry.TStruct,
+		.DarkTheme .SuEntry.TSection,
+		.DarkTheme .SuEntry.TDatabase,
+		.DarkTheme .SuEntry.TDatabaseTable,
+		.DarkTheme .SuEntry.TFile.first {
+			color: $SummaryBigTextColor_Dark;
+			border-bottom-color: #5A5A5A;
+			}
+		.BlackTheme .SuEntry.TClass,
+		.BlackTheme .SuEntry.TInterface,
+		.BlackTheme .SuEntry.TStruct,
+		.BlackTheme .SuEntry.TSection,
+		.BlackTheme .SuEntry.TDatabase,
+		.BlackTheme .SuEntry.TDatabaseTable,
+		.BlackTheme .SuEntry.TFile.first {
+			color: $SummaryBigTextColor_Black;
+			border-bottom-color: #585858;
+			}
+
 		.SuEntry.TClass.first,
 		.SuEntry.TInterface.first,
 		.SuEntry.TStruct.first,
@@ -746,6 +795,15 @@ td {
 	a.SuEntry:active {
 		background-color: #E6E6E6;
 		}
+		.DarkTheme a.SuEntry:hover,
+		.DarkTheme a.SuEntry:active {
+			background-color: #2C2C2C;
+			}
+		.BlackTheme a.SuEntry:hover,
+		.BlackTheme a.SuEntry:active {
+			color: $ContentTextColor_Black; /* restore some contrast */
+			background-color: #1A1A1A;
+			}
 
 
 
