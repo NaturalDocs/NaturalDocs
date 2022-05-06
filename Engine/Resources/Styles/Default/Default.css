@@ -19,28 +19,33 @@
 /* Colors */
 
 	$HeaderBackgroundColor: #7070C0;
-	$MenuBackgroundColor: #E0E0E0;
-	$SummaryBackgroundColor: #F8F8F8;
 
-	$ContentTextColor: #000000;
-		$ContentTextColor_Dark: #DCDCDC;  /* 220, same as Visual Studio */
-		$ContentTextColor_Black: #F4F4F4;
 	$ContentBackgroundColor: #FFFFFF;
 		$ContentBackgroundColor_Dark: #1E1E1E;  /* 30, same as Visual Studio */
 		$ContentBackgroundColor_Black: #000000;
+	$ContentTextColor: #000000;
+		$ContentTextColor_Dark: #DCDCDC;  /* 220, same as Visual Studio */
+		$ContentTextColor_Black: #F4F4F4;
 
-	$MenuTextColor: #606060;
-	$MenuFadedTextColor: #808080;
-	$MenuFadedOpacity: .75;
-	$MenuLineColor: #BCBCBC;
-	$MenuHoverColor: #EEEEEE;
-
-	$MenuSummaryBorderColor: #D8D8D8;
 	$SummaryContentBorderColor: #E8E8E8;
 
-	$MenuScrollbarColors: #C8C8C8 #E8E8E8;
+	$SummaryBackgroundColor: #F8F8F8;
+	$SummaryTextColor: #707070;
+	$SummaryBigTextColor: #6B6B6B;
+
 	$SummaryScrollbarColors: #D0D0D0 #F0F0F0;
 	$ContentScrollbarColors: #CCCCCC #F0F0F0;
+
+	$MenuSummaryBorderColor: #D8D8D8;
+
+	$MenuBackgroundColor: #E0E0E0;
+	$MenuTextColor: #606060;
+		$MenuFadedTextColor: #808080;
+		$MenuFadedOpacity: .75;
+		$MenuLineColor: #BCBCBC;
+		$MenuHoverColor: #EEEEEE;
+
+	$MenuScrollbarColors: #C8C8C8 #E8E8E8;
 
 	$TextLinkColor: #880000;
 		$TextLinkColor_Dark: #F0B0B0;
@@ -683,7 +688,7 @@ td {
 
 	.SuEntry {
 		display: block;
-		color: #707070;
+		color: $SummaryTextColor;
 		padding: .05em .75rem .15em 1.85rem;
 		}
 	.SuEntry.first { margin-top: .75rem; }
@@ -707,7 +712,7 @@ td {
 	.SuEntry.TDatabaseTable,
 	.SuEntry.TFile.first {
 		font: bold 11pt $HeadingFontFamily;
-		color: #6B6B6B;
+		color: $SummaryBigTextColor;
 		padding: .5em .65rem .25em .65rem;
 		margin: 1.25rem 0 .25rem 0;
 		line-height: 120%;
