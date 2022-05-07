@@ -140,7 +140,7 @@ html {
 	font: $ContentFontSize $ContentFontFamily;
 	}
 
-body.NDFramePage {
+.NDFramePage body {
 	background-color: $MenuBackgroundColor;
 	margin: 0; padding: 0;
 	}
@@ -859,17 +859,17 @@ td {
 		}
 
 
-body.NDContentPage {
+.NDContentPage body {
 	color: $ContentTextColor;
 	background-color: $ContentBackgroundColor;
 	padding: .6rem 1.25rem;
 	margin: 0;
 	}
-	body.NDContentPage.DarkTheme {
+	.NDContentPage.DarkTheme body {
 		color: $ContentTextColor_Dark;
 		background-color: $ContentBackgroundColor_Dark;
 		}
-	body.NDContentPage.BlackTheme {
+	.NDContentPage.BlackTheme body {
 		color: $ContentTextColor_Black;
 		background-color: $ContentBackgroundColor_Black;
 		}
@@ -1599,7 +1599,7 @@ $FooterHoverColor: #606060;
 	___________________________________________________________________________
 */
 
-body.NDHomePage {
+.NDHomePage body {
 	padding: 0; margin: 0;
 	background-color: $MenuBackgroundColor;
 	background-image: linear-gradient(to bottom, $HeaderBackgroundColor, $MenuBackgroundColor);

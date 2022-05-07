@@ -41,7 +41,7 @@ var NDThemes = new function ()
 
 
 	/* Function: Apply
-		Applies the passed theme ID, which includes changing the CSS class of the document body.
+		Applies the passed theme ID, which includes changing the CSS class of the root html element.
 	*/
 	this.Apply = function (themeID)
 		{
@@ -70,17 +70,17 @@ var NDThemes = new function ()
 //			}
 
 		
-		// Replace the body's CSS class
+		// Replace the CSS class
 
 		if (newEffectiveThemeID != currentEffectiveThemeID)
 			{
 			if (currentEffectiveThemeID != undefined)
-				{  NDCore.RemoveClass(document.body, currentEffectiveThemeID + "Theme");  }
+				{  NDCore.RemoveClass(document.documentElement, currentEffectiveThemeID + "Theme");  }
 
 			// Note that the embedded script in each page may have already set the CSS class early.  That should be fine 
 			// and this line will have no effect if that's the case.
 			if (newEffectiveThemeID != undefined)
-				{  NDCore.AddClass(document.body, newEffectiveThemeID + "Theme");  }
+				{  NDCore.AddClass(document.documentElement, newEffectiveThemeID + "Theme");  }
 			}
 
 
@@ -97,7 +97,7 @@ var NDThemes = new function ()
 		is itself an array, the first value being its display name and the second value its ID.
 		
 		The ID should only contain characters that are valid for CSS class names.  When applied, it will be added to the
-		document body as a CSS class with "Theme" appended, so "Light" would be added as "LightTheme".
+		root html element as a CSS class with "Theme" appended, so "Light" would be added as "LightTheme".
 
 		Example:
 
@@ -165,7 +165,7 @@ var NDThemes = new function ()
 		value being its display name and the second value its ID.  The array will be undefined if none have been set.
 		
 		The ID should only contain characters that are valid for CSS class names.  When applied, it will be added to the
-		document body as a CSS class with "Theme" appended, so "Light" would be added as "LightTheme".
+		root html element as a CSS class with "Theme" appended, so "Light" would be added as "LightTheme".
 
 		Example:
 

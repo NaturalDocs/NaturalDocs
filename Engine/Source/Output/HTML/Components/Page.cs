@@ -49,7 +49,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				"<!DOCTYPE html>" +
 				"\r\n\r\n" +
 
-				"<html>" +
+				"<html class=\"NDPage ND" + pageTypeName + "Page\">" +
 					"<head>" +
 
 						"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />" +
@@ -82,8 +82,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						"<!-- saved from url=(0016)http://localhost -->" +
 						"\r\n\r\n" +
 
-					"<body onload=\"NDLoader.OnLoad('" + pageTypeName + "');\" " +
-							  "class=\"NDPage ND" + pageTypeName + "Page\">" +
+					"<body onload=\"NDLoader.OnLoad('" + pageTypeName + "');\">" +
 					"\r\n\r\n" +
 
 					// Add a small embedded script to apply the theme right away if it's the first parameter in the URL query string.
@@ -107,10 +106,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 							"if (e != -1)" +
 								"{  t = t.slice(0, e);  }" +
 
-							"if (document.body.className == undefined)" +
-								"{ document.body.className = t + \"Theme\"; }" +
+							"if (document.documentElement.className == undefined)" +
+								"{ document.documentElement.className = t + \"Theme\"; }" +
 							"else" +
-								"{ document.body.className += \" \" + t + \"Theme\"; }" +
+								"{ document.documentElement.className += \" \" + t + \"Theme\"; }" +
 							"}" +
 						"</script>" +
 

@@ -8,14 +8,14 @@ Title: CSS Structure
 	- Uppercase tags represent CSS classes, so <CBody> is a HTML element with CBody applied.
 	  Style with ".CBody".
 
-	- Lowercase tags represent HTML elements, so <body NDPage> is the body element with NDPage
-	  applied.  Style with "body.NDPage" or just ".NDPage".
+	- Lowercase tags represent HTML elements, so <html NDPage> is the root html element with NDPage
+	  applied.  Style with "html.NDPage" or just ".NDPage".
 
 		- Most tags will not specify a element type so you should not rely on them being a particular
 		  type.
 
-	- Multiple tags are multiple CSS classes applied to the same element, so <body NDPage NDContentPage>
-	  is a body element with both NDPage and NDContentPage applied.  Style with "body.NDPage.NDContentPage",
+	- Multiple tags are multiple CSS classes applied to the same element, so <html NDPage NDContentPage>
+	  is the html element with both NDPage and NDContentPage applied.  Style with "html.NDPage.NDContentPage",
 	  ".NDPage.NDContentPage", or just ".NDContentPage".
 
 	- Hash symbols on tags represent HTML IDs, so <#NDHeader> is a HTML element with NDHeader as
@@ -35,7 +35,7 @@ _______________________________________________________________________________
 
 --- text ---
 
-	<body NDPage NDFramePage [ThemeName]?>
+	<html NDPage NDFramePage [ThemeName]?>
 
 		<#NDHeader>
 			<#HTitle>...</#HTitle>
@@ -72,20 +72,20 @@ _______________________________________________________________________________
 			<#FTimestamp>...</#FTimestamp>
 		</#NDFooter>
 
-	</body NDPage NDFramePage [ThemeName]?>
+	</html NDPage NDFramePage [ThemeName]?>
 
 ----------
 
 	[ThemeName]:
 
-		If there are one or more themes defined in <NDThemes>, the ID of the selected theme will be applied to the body
-		as a CSS class with "Theme" appended, such as ID "Light" becoming "LightTheme".  The CSS classes for the themes
-		in the default style are "LightTheme", "DarkTheme", and "BlackTheme".
+		If there are one or more themes defined in <NDThemes>, the ID of the selected theme will be applied to the root
+		html element as a CSS class with "Theme" appended, such as ID "Light" becoming "LightTheme".  The CSS classes
+		for the themes in the default style are "LightTheme", "DarkTheme", and "BlackTheme".
 
 		You can override which themes available by calling <NDFramePage.SetThemes()> from a Frame OnLoad statement
 		in <Style.txt>.  You can also force it to be a particular one by calling <NDFramePage.ForceTheme(ID)>, or call
 		<NDFramePage.DisableThemes()> to turn them off altogether.  When disabled there will be no theme CSS class
-		added to the body, but when forced it will be the one for the theme you forced.
+		added, but when forced it will be the one for the theme you forced.
 
 
 
@@ -186,7 +186,7 @@ _______________________________________________________________________________
 
 --- text ---
 
-	<body NDPage NDContentPage [ThemeName]?>
+	<html NDPage NDContentPage [ThemeName]?>
 
 		<CTopic T[Type] L[Language] first/last?>
 
@@ -246,20 +246,20 @@ _______________________________________________________________________________
 
 		</CTopic>
 
-	</body NDPage NDContentPage [ThemeName]?>
+	</html NDPage NDContentPage [ThemeName]?>
 
 ----------
 
 	[ThemeName]:
 
-		If there are one or more themes defined in <NDThemes>, the ID of the selected theme will be applied to the body
-		as a CSS class with "Theme" appended, such as ID "Light" becoming "LightTheme".  The CSS classes for the themes
-		in the default style are "LightTheme", "DarkTheme", and "BlackTheme".
+		If there are one or more themes defined in <NDThemes>, the ID of the selected theme will be applied to the root
+		html element as a CSS class with "Theme" appended, such as ID "Light" becoming "LightTheme".  The CSS classes
+		for the themes in the default style are "LightTheme", "DarkTheme", and "BlackTheme".
 
 		You can override which themes available by calling <NDFramePage.SetThemes()> from a Frame OnLoad statement
 		in <Style.txt>.  You can also force it to be a particular one by calling <NDFramePage.ForceTheme(ID)>, or call
 		<NDFramePage.DisableThemes()> to turn them off altogether.  When disabled there will be no theme CSS class
-		added to the body, but when forced it will be the one for the theme you forced.
+		added, but when forced it will be the one for the theme you forced.
 
 
 
@@ -508,7 +508,7 @@ _______________________________________________________________________________
 
 --- text ---
 
-	<body NDPage NDHomePage>
+	<html NDPage NDHomePage>
 
 		<HFrame>
 
@@ -531,6 +531,6 @@ _______________________________________________________________________________
 			</HContent>
 		</HFrame>
 
-	</body NDPage NDHomePage>
+	</html NDPage NDHomePage>
 
 ----------

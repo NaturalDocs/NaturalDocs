@@ -792,7 +792,7 @@ var NDFramePage = new function ()
 		
 		Each theme is represented by an array, with the first value being its display name and the second value its ID.
 		The ID should only contain characters that are valid for CSS class names.  When a theme is selected the ID will
-		be added to the document body as a CSS class with "Theme" appended, so "Light" will add "LightTheme".
+		be added to the root html element as a CSS class with "Theme" appended, so "Light" will add "LightTheme".
 
 		Example:
 
