@@ -850,7 +850,13 @@ td {
 	z-index: $NDContentZIndex;
 	overflow: hidden;
 	display: none;  /* Default for loading page, will be changed by JavaScript once the scripts are loaded */
+
+	/* Set the color behind the iframe to the same as the content page's.  This will make flashing between page changes less
+		noticeable in Chrome, especially when in dark mode. */
+	background-color: $ContentBackgroundColor;
 	}
+	.DarkTheme #NDContent { background-color: $ContentBackgroundColor_Dark; }
+	.BlackTheme #NDContent { background-color: $ContentBackgroundColor_Black; }
 
 	#CFrame {
 		width: 100%;
