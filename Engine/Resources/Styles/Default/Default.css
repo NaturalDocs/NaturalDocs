@@ -82,6 +82,13 @@
 		$MenuScrollbarColors_Dark: $MenuSummaryBorderColor_Dark #131313;
 		$MenuScrollbarColors_Black: $ContentScrollbarColors_Black;
 
+	$FooterTextColor: #909090;
+		$FooterTextColor_Dark: #686868;
+		$FooterTextColor_Black: #646464;
+	$FooterHoverColor: $MenuTextColor;
+		$FooterHoverColor_Dark: $MenuTextColor_Dark;
+		$FooterHoverColor_Black: $MenuTextColor_Black;
+
 	$TextLinkColor: #880000;
 		$TextLinkColor_Dark: #F0B0B0;
 		$TextLinkColor_Black: #F8B8B8;
@@ -1769,10 +1776,6 @@ td {
 	___________________________________________________________________________
 */
 
-$FooterTextColor: #909090;
-$FooterHoverColor: #606060;
-
-
 #NDFooter {
 	font-size: .8rem;
 	color: $FooterTextColor;
@@ -1784,18 +1787,35 @@ $FooterHoverColor: #606060;
 
 	z-index: $NDFooterZIndex;
 	}
-	#NDFooter:hover {
-		color: $FooterHoverColor;
-		border-color: $FooterHoverColor;
+	.DarkTheme #NDFooter {
+		color: $FooterTextColor_Dark;
+		background-color: $MenuBackgroundColor_Dark;
+		border-top-color: $MenuSummaryBorderColor_Dark;
+		}
+	.BlackTheme #NDFooter {
+		color: $FooterTextColor_Black;
+		background-color: $MenuBackgroundColor_Black;
+		border-top-color: $MenuSummaryBorderColor_Black;
 		}
 
 	#NDFooter a {
 		color: $FooterTextColor;
 		}
-		#NDFooter:hover a {
-			color: $FooterHoverColor;
-			text-decoration: underline;
-			}
+		.DarkTheme #NDFooter a { color: $FooterTextColor_Dark; }
+		.BlackTheme #NDFooter a { color: $FooterTextColor_Black; }
+
+	#NDFooter:hover,
+	#NDFooter:hover a {
+		color: $FooterHoverColor;
+		}
+		.DarkTheme #NDFooter:hover,
+		.DarkTheme #NDFooter:hover a { color: $FooterHoverColor_Dark; }
+		.BlackTheme #NDFooter:hover,
+		.BlackTheme #NDFooter:hover a { color: $FooterHoverColor_Black; }
+
+	#NDFooter:hover a {
+		text-decoration: underline;
+		}
 
 	#FCopyright,
 	#FTimestamp {
