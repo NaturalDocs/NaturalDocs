@@ -21,44 +21,66 @@
 	$HeaderBackgroundColor: #7070C0;
 
 	$ContentBackgroundColor: #FFFFFF;
-		$ContentBackgroundColor_Dark: #1E1E1E;  /* 30, same as Visual Studio */
+		$ContentBackgroundColor_Dark: #1E1E1E;  /* same as Visual Studio */
 		$ContentBackgroundColor_Black: #000000;
 	$ContentTextColor: #000000;
-		$ContentTextColor_Dark: #DCDCDC;  /* 220, same as Visual Studio */
+		$ContentTextColor_Dark: #DCDCDC;  /* same as Visual Studio */
 		$ContentTextColor_Black: #F4F4F4;
 
 	$ContentScrollbarColors: #CCCCCC #F0F0F0;
 		$ContentScrollbarColors_Dark: #3D3D3D #262626;
-		$ContentScrollbarColors_Black: $SummaryContentBorderColor_Black #0A0A0A;
+		$ContentScrollbarColors_Black: $MenuHoverBackgroundColor_Black #040404;
 
 	$SummaryContentBorderColor: #E8E8E8;
 		$SummaryContentBorderColor_Dark: #363636;
-		$SummaryContentBorderColor_Black: #484848;
+		$SummaryContentBorderColor_Black: $MenuLineColor_Black;
 
 	$SummaryBackgroundColor: #F8F8F8;
 		$SummaryBackgroundColor_Dark: #161616;
 		$SummaryBackgroundColor_Black: #000000;
 	$SummaryTextColor: #707070;
-		$SummaryTextColor_Dark: #B8B8B8;
-		$SummaryTextColor_Black: #C0C0C0;
+		$SummaryTextColor_Dark: $MenuTextColor_Dark;
+		$SummaryTextColor_Black: $MenuTextColor_Black;
 	$SummaryBigTextColor: #6B6B6B;
 		$SummaryBigTextColor_Dark: #C8C8C8;
 		$SummaryBigTextColor_Black: #D8D8D8;
+	$SummaryHoverBackgroundColor: #E6E6E6;
+		$SummaryHoverBackgroundColor_Dark: #2C2C2C;
+		$SummaryHoverBackgroundColor_Black: $MenuHoverBackgroundColor_Black;
 
 	$SummaryScrollbarColors: #D0D0D0 #F0F0F0;
 		$SummaryScrollbarColors_Dark: $SummaryContentBorderColor_Dark #1C1C1C;
-		$SummaryScrollbarColors_Black: $SummaryContentBorderColor_Black #0A0A0A;
+		$SummaryScrollbarColors_Black: $ContentScrollbarColors_Black;
 
 	$MenuSummaryBorderColor: #D8D8D8;
+		$MenuSummaryBorderColor_Dark: $MenuLineColor_Dark;
+		$MenuSummaryBorderColor_Black: $MenuLineColor_Black;
 
 	$MenuBackgroundColor: #E0E0E0;
+		$MenuBackgroundColor_Dark: #0D0D0D;
+		$MenuBackgroundColor_Black: #000000;
 	$MenuTextColor: #606060;
-		$MenuFadedTextColor: #808080;
-		$MenuFadedOpacity: .75;
-		$MenuLineColor: #BCBCBC;
-		$MenuHoverColor: #EEEEEE;
+		$MenuTextColor_Dark: #B8B8B8;
+		$MenuTextColor_Black: #C0C0C0;
+	$MenuFadedTextColor: #808080;
+		$MenuFadedTextColor_Dark: #808080;
+		$MenuFadedTextColor_Black: #808080;
+	$MenuFadedOpacity: .75;
+	$MenuLineColor: #BCBCBC;
+		$MenuLineColor_Dark: #2C2C2C;
+		$MenuLineColor_Black: #484848;
+	$MenuSelectedColor: #FFFFFF;
+		$MenuSelectedColor_Dark: $ContentBackgroundColor_Dark;
+		$MenuSelectedColor_Black: #1A1A1A;
+	$MenuHoverBackgroundColor: #EEEEEE;
+		$MenuHoverBackgroundColor_Dark: $MenuSelectedColor_Dark;
+		$MenuHoverBackgroundColor_Black: $MenuSelectedColor_Black;
+	$MenuHoverTextColor_Dark: $ContentTextColor_Dark;
+	$MenuHoverTextColor_Black: $ContentTextColor_Black;
 
 	$MenuScrollbarColors: #C8C8C8 #E8E8E8;
+		$MenuScrollbarColors_Dark: $MenuSummaryBorderColor_Dark #131313;
+		$MenuScrollbarColors_Black: $ContentScrollbarColors_Black;
 
 	$TextLinkColor: #880000;
 		$TextLinkColor_Dark: #F0B0B0;
@@ -541,11 +563,28 @@ td {
 	width: 15rem;
 	display: none;  /* Default for loading page, will be changed by JavaScript once the scripts are loaded */
 	}
+	.DarkTheme #NDMenu { 
+		background-color: $MenuBackgroundColor_Dark; 
+		scrollbar-color: $MenuScrollbarColors_Dark;
+
+		/* Dark scrollbars on Chrome.  Isn't as good as custom colors, but you can't manually set colors without losing the arrow buttons. */
+		/* Firefox will still choose scrollbar-color over this. */
+		color-scheme: dark;
+		}
+	.BlackTheme #NDMenu { 
+		background-color: $MenuBackgroundColor_Black; 
+		scrollbar-color: $MenuScrollbarColors_Black;
+		color-scheme: dark;
+		}
 
 	#NDMenu a:hover,
 	#NDMenu a:active {
 		text-decoration: none;
 		}
+		.DarkTheme #NDMenu a:hover,
+		.DarkTheme #NDMenu a:active { color: $MenuHoverTextColor_Dark; }
+		.BlackTheme #NDMenu a:hover,
+		.BlackkTheme #NDMenu a:active { color: $MenuHoverTextColor_Black; }
 
 	.MLoadingNotice {
 		height: 20px;
@@ -555,6 +594,17 @@ td {
 	#MTabBar {
 		background-color: $MenuLineColor;
 		}
+		.DarkTheme #MTabBar { 
+			background-color: $MenuBackgroundColor_Dark;
+
+			/* Use an inset box shadow to add a horizontal line behind the tabs.
+				Not needed for light theme because it uses the line color as the background. */
+			box-shadow: 0 -1px 0 0 $MenuLineColor_Dark inset;
+			}
+		.BlackTheme #MTabBar { 
+			background-color: $MenuBackgroundColor_Black; 
+			box-shadow: 0 -1px 0 0 $MenuLineColor_Black inset;
+			}
 
 	.MTab {
 		background-color: $MenuBackgroundColor;
@@ -564,21 +614,45 @@ td {
 		padding: 2px 5px;
 		opacity: .55;
 		}
-		.MTab:hover {
-			background-color: $MenuHoverColor;
+		.DarkTheme .MTab {
+			background-color: $MenuBackgroundColor_Dark;
+			border-right-color: $MenuLineColor_Dark;
+			border-bottom-color: $MenuLineColor_Dark;
+
+			/* It's already pretty dark so don't fade out the unselected tabs */
 			opacity: 1;
 			}
-	.MTab.Selected {
-		border-bottom: 1px solid $MenuBackgroundColor;
-		opacity: 1;
-		}
-		.MTab.Selected:hover {
-			border-bottom-color: $MenuHoverColor;
+		.BlackTheme .MTab {
+			background-color: $MenuBackgroundColor_Black;
+			border-right-color: $MenuLineColor_Black;
+			border-bottom-color: $MenuLineColor_Black;
+			opacity: 1;
 			}
-	a.MTab:active,
-	a.MTab:focus {
-		outline: 0;
-		}
+
+		.MTab:hover {
+			background-color: $MenuHoverBackgroundColor;
+			opacity: 1;
+			}
+			.DarkTheme .MTab:hover { background-color: $MenuHoverBackgroundColor_Dark; }
+			.BlackTheme .MTab:hover { background-color: $MenuHoverBackgroundColor_Black; }
+
+		.MTab.Selected {
+			border-bottom: 1px solid $MenuBackgroundColor;
+			opacity: 1;
+			}
+			.DarkTheme .MTab.Selected { border-bottom-color: $MenuBackgroundColor_Dark; }
+			.BlackTheme .MTab.Selected { border-bottom-color: $MenuBackgroundColor_Black; }
+
+			.MTab.Selected:hover {
+				border-bottom-color: $MenuHoverBackgroundColor;
+				}
+				.DarkTheme .MTab.Selected:hover { border-bottom-color: $MenuHoverBackgroundColor_Dark; }
+				.BlackTheme .MTab.Selected:hover { border-bottom-color: $MenuHoverBackgroundColor_Black; }
+
+		a.MTab:active,
+		a.MTab:focus {
+			outline: 0;
+			}
 
 	.MTabIcon {
 		display: inline-block;
@@ -589,18 +663,72 @@ td {
 		opacity: $MenuFadedOpacity;
 		}
 	#MFileTab .MTabIcon {  background: url("images/menu-tab-files.svg") center center no-repeat;  }
+		.DarkTheme #MFileTab .MTabIcon,
+		.BlackTheme #MFileTab .MTabIcon {  background-image: url("images/menu-tab-files-dark.svg");  }
+		.DarkTheme #MFileTab.Selected .MTabIcon,
+		.BlackTheme #MFileTab.Selected .MTabIcon,
+		.DarkTheme #MFileTab:hover .MTabIcon,
+		.BlackTheme #MFileTab:hover .MTabIcon {  background-image: url("images/menu-tab-files-dark-selected.svg");  }
 	#MClassTab .MTabIcon {  background: url("images/menu-tab-classes.svg") center center no-repeat;  }
+		.DarkTheme #MClassTab .MTabIcon,
+		.BlackTheme #MClassTab .MTabIcon {  background-image: url("images/menu-tab-classes-dark.svg");  }
+		.DarkTheme #MClassTab.Selected .MTabIcon,
+		.BlackTheme #MClassTab.Selected .MTabIcon,
+		.DarkTheme #MClassTab:hover .MTabIcon,
+		.BlackTheme #MClassTab:hover .MTabIcon {  background-image: url("images/menu-tab-classes-dark-selected.svg");  }
 	#MDatabaseTab .MTabIcon {  background: url("images/menu-tab-database.svg") center center no-repeat;  }
+		.DarkTheme #MDatabaseTab .MTabIcon,
+		.BlackTheme #MDatabaseTab .MTabIcon {  background-image: url("images/menu-tab-database-dark.svg");  }
+		.DarkTheme #MDatabaseTab.Selected .MTabIcon,
+		.BlackTheme #MDatabaseTab.Selected .MTabIcon,
+		.DarkTheme #MDatabaseTab:hover .MTabIcon,
+		.BlackTheme #MDatabaseTab:hover .MTabIcon {  background-image: url("images/menu-tab-database-dark-selected.svg");  }
 
 	@media (resolution: 120dpi) {  /* 125% scale */
 		#MFileTab .MTabIcon {  background-image: url("images/menu-tab-files-125.svg");  }
+			.DarkTheme #MFileTab .MTabIcon,
+			.BlackTheme #MFileTab .MTabIcon {  background-image: url("images/menu-tab-files-dark-125.svg");  }
+			.DarkTheme #MFileTab.Selected .MTabIcon,
+			.BlackTheme #MFileTab.Selected .MTabIcon,
+			.DarkTheme #MFileTab:hover .MTabIcon,
+			.BlackTheme #MFileTab:hover .MTabIcon {  background-image: url("images/menu-tab-files-dark-selected-125.svg");  }
 		#MClassTab .MTabIcon {  background-image: url("images/menu-tab-classes-125.svg");  }
+			.DarkTheme #MClassTab .MTabIcon,
+			.BlackTheme #MClassTab .MTabIcon {  background-image: url("images/menu-tab-classes-dark-125.svg");  }
+			.DarkTheme #MClassTab.Selected .MTabIcon,
+			.BlackTheme #MClassTab.Selected .MTabIcon,
+			.DarkTheme #MClassTab:hover .MTabIcon,
+			.BlackTheme #MClassTab:hover .MTabIcon {  background-image: url("images/menu-tab-classes-dark-selected-125.svg");  }
 		#MDatabaseTab .MTabIcon {  background-image: url("images/menu-tab-database-125.svg");  }
+			.DarkTheme #MDatabaseTab .MTabIcon,
+			.BlackTheme #MDatabaseTab .MTabIcon {  background-image: url("images/menu-tab-database-dark-125.svg");  }
+			.DarkTheme #MDatabaseTab.Selected .MTabIcon,
+			.BlackTheme #MDatabaseTab.Selected .MTabIcon,
+			.DarkTheme #MDatabaseTab:hover .MTabIcon,
+			.BlackTheme #MDatabaseTab:hover .MTabIcon {  background-image: url("images/menu-tab-database-dark-selected-125.svg");  }
 		}
 	@media (resolution: 144dpi) {  /* 150% scale */
 		#MFileTab .MTabIcon {  background-image: url("images/menu-tab-files-150.svg");  }
+			.DarkTheme #MFileTab .MTabIcon,
+			.BlackTheme #MFileTab .MTabIcon {  background-image: url("images/menu-tab-files-dark-150.svg");  }
+			.DarkTheme #MFileTab.Selected .MTabIcon,
+			.BlackTheme #MFileTab.Selected .MTabIcon,
+			.DarkTheme #MFileTab:hover .MTabIcon,
+			.BlackTheme #MFileTab:hover .MTabIcon {  background-image: url("images/menu-tab-files-dark-selected-150.svg");  }
 		#MClassTab .MTabIcon {  background-image: url("images/menu-tab-classes-150.svg");  }
+			.DarkTheme #MClassTab .MTabIcon,
+			.BlackTheme #MClassTab .MTabIcon {  background-image: url("images/menu-tab-classes-dark-150.svg");  }
+			.DarkTheme #MClassTab.Selected .MTabIcon,
+			.BlackTheme #MClassTab.Selected .MTabIcon,
+			.DarkTheme #MClassTab:hover .MTabIcon,
+			.BlackTheme #MClassTab:hover .MTabIcon {  background-image: url("images/menu-tab-classes-dark-selected-150.svg");  }
 		#MDatabaseTab .MTabIcon {  background-image: url("images/menu-tab-database-150.svg");  }
+			.DarkTheme #MDatabaseTab .MTabIcon,
+			.BlackTheme #MDatabaseTab .MTabIcon {  background-image: url("images/menu-tab-database-dark-150.svg");  }
+			.DarkTheme #MDatabaseTab.Selected .MTabIcon,
+			.BlackTheme #MDatabaseTab.Selected .MTabIcon,
+			.DarkTheme #MDatabaseTab:hover .MTabIcon,
+			.BlackTheme #MDatabaseTab:hover .MTabIcon {  background-image: url("images/menu-tab-database-dark-selected-150.svg");  }
 		}
 	/* Everything else can stay with the regular icon */
 
@@ -610,6 +738,13 @@ td {
 		font-style: italic;
 		margin: 0 4px;
 		}
+		.DarkTheme .MTabTitle { color: $MenuFadedTextColor_Dark; }
+		.DarkTheme .MTab.Selected .MTabTitle,
+		.DarkTheme .MTab:hover .MTabTitle { color: $MenuTextColor_Dark; }
+		.BlackTheme .MTabTitle { color: $MenuFadedTextColor_Black; }
+		.BlackTheme .MTab.Selected .MTabTitle,
+		.BlackTheme .MTab:hover .MTabTitle { color: $MenuTextColor_Black; }
+
 		.MTab.Narrow .MTabTitle {
 			display: none;
 			}
@@ -623,10 +758,19 @@ td {
 	a.MEntry {
 		color: $MenuTextColor;
 		}
+		.DarkTheme .MEntry,
+		.DarkTheme a.MEntry { color: $MenuTextColor_Dark; }
+		.BlackTheme .MEntry,
+		.BlackTheme a.MEntry { color: $MenuTextColor_Black; }
+
 	a.MEntry:hover,
 	a.MEntry:active {
-		background-color: $MenuHoverColor;
+		background-color: $MenuHoverBackgroundColor;
 		}
+		.DarkTheme a.MEntry:hover,
+		.DarkTheme a.MEntry:active { background-color: $MenuHoverBackgroundColor_Dark; }
+		.BlackTheme a.MEntry:hover,
+		.BlackTheme a.MEntry:active { background-color: $MenuHoverBackgroundColor_Black; }
 
 	.MTabAsFolder {
 		/* Match the tab settings.  We want them to match so perfectly that when we switch from MTabAsFolder
@@ -636,6 +780,11 @@ td {
 		.MTabAsFolder .MTabTitle {
 			color: $MenuTextColor;
 			}
+			.DarkTheme .MTabAsFolder .MTabTitle { color: $MenuTextColor_Dark; }
+			.BlackTheme .MTabAsFolder .MTabTitle { color: $MenuTextColor_Black; }
+			.DarkTheme .MTabAsFolder:hover .MTabTitle { color: $MenuHoverTextColor_Dark; }
+			.BlackTheme .MTabAsFolder:hover .MTabTitle { color: $MenuHoverTextColor_Black; }
+
 		.MTabAsFolder .MTabIcon {
 			opacity: 1;
 			}
@@ -649,6 +798,9 @@ td {
 	.MFolder.Parent {
 		border-bottom: 1px solid $MenuLineColor;
 		}
+		.DarkTheme .MFolder.Parent { border-bottom-color: $MenuLineColor_Dark; }
+		.BlackTheme .MFolder.Parent { border-bottom-color: $MenuLineColor_Black; }
+
 	.MFolder.Parent,
 	.MFolder.Selected,
 	.MEntry.TopLevel {
@@ -658,8 +810,12 @@ td {
 	a.MFolder.Parent {
 		color: $MenuFadedTextColor;
 		}
+		.DarkTheme .MFolder.Parent,
+		.DarkTheme a.MFolder.Parent { color: $MenuTextColor_Dark; }
+		.BlackTheme .MFolder.Parent,
+		.BlackTheme a.MFolder.Parent { color: $MenuTextColor_Black; }
 	.MFolder.Parent.Empty {
-		color: #B0B0B0;
+		opacity: .6;
 		}
 	.MFolder.Child {
 		padding-right: 1.75rem;
@@ -673,20 +829,48 @@ td {
 		width: 6px; height: 7px;
 		padding: .95rem 1.2rem 0 0;
 		}
+		.DarkTheme .MFolderIcon { background-color: $MenuBackgroundColor_Dark; }
+		.BlackTheme .MFolderIcon { background-color: $MenuBackgroundColor_Black; }
+		.DarkTheme .MFolderIcon,
+		.BlackTheme .MFolderIcon { background-image: url("images/menu-folder-arrow-dark.svg"); }
+		.DarkTheme .MEntry:hover .MFolderIcon,
+		.BlackTheme .MEntry:hover .MFolderIcon { background-image: url("images/menu-folder-arrow-dark-hover.svg"); }
+
 		a.MEntry:hover .MFolderIcon,
 		a.MEntry:active .MFolderIcon {
-			background-color: $MenuHoverColor;
+			background-color: $MenuHoverBackgroundColor;
 			}
+			.DarkTheme a.MEntry:hover .MFolderIcon,
+			.DarkTheme a.MEntry:active .MFolderIcon { background-color: $MenuHoverBackgroundColor_Dark; }
+			.BlackTheme a.MEntry:hover .MFolderIcon,
+			.BlackTheme a.MEntry:active .MFolderIcon { background-color: $MenuHoverBackgroundColor_Black; }
 
 	.MFolder.Selected {
 		font-weight: $MenuSelectedFontWeight;
-		background-color: #FFFFFF;
+		background-color: $MenuSelectedColor;
 		border-bottom: 2px solid $MenuFadedTextColor;
 		}
+		.DarkTheme .MFolder.Selected { 
+			background-color: $MenuSelectedColor_Dark; 
+			border-bottom-color: #707070;
+			}
+		.BlackTheme .MFolder.Selected { 
+			background-color: $MenuSelectedColor_Black; 
+			border-bottom-color: #626262;
+			}
+
 	.MFile.Selected {
 		font-weight: $MenuSelectedFontWeight;
-		background-color: #FFFFFF;
+		background-color: $MenuSelectedColor;
 		}
+		.DarkTheme .MFile.Selected {
+			font-weight: $MenuSelectedFontWeight_Dark;
+			background-color: $MenuSelectedColor_Dark;
+			}
+		.BlackTheme .MFile.Selected {
+			font-weight: $MenuSelectedFontWeight_Black;
+			background-color: $MenuSelectedColor_Black;
+			}
 
 
 
@@ -708,6 +892,7 @@ td {
 	.DarkTheme #NDSummary { 
 		background-color: $SummaryBackgroundColor_Dark; 
 		border-right-color: $SummaryContentBorderColor_Dark;
+		border-left-color: $MenuSummaryBorderColor_Dark;
 		scrollbar-color: $SummaryScrollbarColors_Dark;
 
 		/* Dark scrollbars on Chrome.  Isn't as good as custom colors, but you can't manually set colors without losing the arrow buttons. */
@@ -717,6 +902,7 @@ td {
 	.BlackTheme #NDSummary { 
 		background-color: $SummaryBackgroundColor_Black; 
 		border-right-color: $SummaryContentBorderColor_Black;
+		border-left-color: $MenuSummaryBorderColor_Black;
 		scrollbar-color: $SummaryScrollbarColors_Black;
 		color-scheme: dark;
 		}
@@ -813,16 +999,17 @@ td {
 
 	a.SuEntry:hover,
 	a.SuEntry:active {
-		background-color: #E6E6E6;
+		background-color: $SummaryHoverBackgroundColor;
 		}
 		.DarkTheme a.SuEntry:hover,
 		.DarkTheme a.SuEntry:active {
-			background-color: #2C2C2C;
+			color: $ContentTextColor_Dark; /* restore some contrast */
+			background-color: $SummaryHoverBackgroundColor_Dark;
 			}
 		.BlackTheme a.SuEntry:hover,
 		.BlackTheme a.SuEntry:active {
-			color: $ContentTextColor_Black; /* restore some contrast */
-			background-color: #1A1A1A;
+			color: $ContentTextColor_Black;
+			background-color: $SummaryHoverBackgroundColor_Black;
 			}
 
 
