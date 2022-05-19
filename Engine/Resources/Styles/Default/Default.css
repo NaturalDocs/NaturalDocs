@@ -268,12 +268,25 @@ td {
 
 	z-index: $NDHeaderZIndex;
 	}
+	.DarkTheme #NDHeader {
+		background-color: #393961;
+
+		/* Use an inset box shadow to add a horizontal line */
+		box-shadow: 0 -1px 0 0 $HeaderBackgroundColor inset;
+		}
+	.BlackTheme #NDHeader {
+		background-image: linear-gradient(to top, $MenuHoverBackgroundColor_Black 0%, #000000 60%);
+		box-shadow: 0 -1px 0 0 $MenuLineColor_Black inset;
+		}
 
 	#HTitle {
 		font: 22pt $ProjectTitleFontFamily;
 		text-shadow: 0 1px 3px #202020;
 		line-height: 90%;
 		}
+		/* .DarkTheme #HTitle - keep shadow */
+		.BlackTheme #HTitle { text-shadow: none; }
+
 		#HTitle,
 		#HTitle a:link,
 		#HTitle a:hover,
@@ -282,6 +295,12 @@ td {
 			color: #FFFFFF;
 			text-decoration: none;
 			}
+			.DarkTheme #HTitle,
+			.DarkTheme #HTitle a:link,
+			.DarkTheme #HTitle a:hover,
+			.DarkTheme #HTitle a:active,
+			.DarkTheme #HTitle a:visited { color: #E6E6E6; }
+			/* .BlackTheme #HTitle - leave at #FFFFFF */
 
 	#HSubtitle {
 		font: 10pt $ProjectSubtitleFontFamily;
@@ -290,6 +309,9 @@ td {
 		margin-top: .25rem;
 		text-shadow: 0 1px 3px #202020;
 		}
+		/* .DarkTheme #HSubtitle - keep shadow */
+		.BlackTheme #HSubtitle { text-shadow: none; }
+
 		#HSubtitle,
 		#HSubtitle a:link,
 		#HSubtitle a:hover,
@@ -298,6 +320,16 @@ td {
 			color: #C8C8C8;
 			text-decoration: none;
 			}
+		.DarkTheme #HSubtitle,
+		.DarkTheme #HSubtitle a:link,
+		.DarkTheme #HSubtitle a:hover,
+		.DarkTheme #HSubtitle a:active,
+		.DarkTheme #HSubtitle a:visited { color: #ACACAC; }
+		.BlackTheme #HSubtitle,
+		.BlackTheme #HSubtitle a:link,
+		.BlackTheme #HSubtitle a:hover,
+		.BlackTheme #HSubtitle a:active,
+		.BlackTheme #HSubtitle a:visited { color: #B8B8B8; }
 
 
 
