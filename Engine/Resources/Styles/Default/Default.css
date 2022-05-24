@@ -1547,19 +1547,25 @@ td {
 	___________________________________________________________________________
 */
 
+
+/* Functions */
+
+$FunctionPrototypeBackground: #F4F4F4;
+$FunctionPrototypeBorder: #C9C9C9;
+ 
 .TFunction .NDPrototype,
 .TOperator .NDPrototype {
-	background-color: #F4F4F4;
-	border-color: #C9C9C9;
-	scrollbar-color: #C9C9C9 #F4F4F4;
+	background-color: $FunctionPrototypeBackground;
+	border-color: $FunctionPrototypeBorder;
+	scrollbar-color: $FunctionPrototypeBorder $FunctionPrototypeBackground;
 	}
 	.TFunction .NDPrototype::-webkit-scrollbar-thumb,
 	.TOperator .NDPrototype::-webkit-scrollbar-thumb {
-		background-color: #C9C9C9;
+		background-color: $FunctionPrototypeBorder;
 		}
 	.TFunction .NDPrototype::-webkit-scrollbar-track,
 	.TOperator .NDPrototype::-webkit-scrollbar-track {
-		background-color: #F4F4F4;
+		background-color: $FunctionPrototypeBackground;
 		}
 	.TFunction .SuEntryIcon,
 	.TOperator .SuEntryIcon {
@@ -1572,16 +1578,22 @@ td {
 		border: 1px solid #BDBDBD;
 		}
 
+
+/* Properties */
+
+$PropertyPrototypeBackground: #F1F1FF;
+$PropertyPrototypeBorder: #C4C4EC;
+
 .TProperty .NDPrototype {
-	background-color: #F1F1FF;
-	border-color: #C4C4EC;
-	scrollbar-color: #C4C4EC #F1F1FF;
+	background-color: $PropertyPrototypeBackground;
+	border-color: $PropertyPrototypeBorder;
+	scrollbar-color: $PropertyPrototypeBorder $PropertyPrototypeBackground;
 	}
 	.TProperty .NDPrototype::-webkit-scrollbar-thumb {
-		background-color: #C4C4EC;
+		background-color: $PropertyPrototypeBorder;
 		}
 	.TProperty .NDPrototype::-webkit-scrollbar-track {
-		background-color: #F1F1FF;
+		background-color: $PropertyPrototypeBackground;
 		}
 	.TProperty .SuEntryIcon {
 		background-color: #E2E2FF;
@@ -1592,19 +1604,25 @@ td {
 		border: 1px solid #AAAAE8;
 		}
 
+
+/* Variables */
+
+$VariablePrototypeBackground: #FCFCE8;
+$VariablePrototypeBorder: #D5D590;
+
 .TVariable .NDPrototype,
 .TDatabaseField .NDPrototype {
-	background-color: #FCFCE8;
-	border-color: #D5D590;
-	scrollbar-color: #D5D590 #FCFCE8;
+	background-color: $VariablePrototypeBackground;
+	border-color: $VariablePrototypeBorder;
+	scrollbar-color: $VariablePrototypeBorder $VariablePrototypeBackground;
 	}
 	.TVariable .NDPrototype::-webkit-scrollbar-thumb,
 	.TDatabaseField .NDPrototype::-webkit-scrollbar-thumb {
-		background-color: #D5D590;
+		background-color: $VariablePrototypeBorder;
 		}
 	.TVariable .NDPrototype::-webkit-scrollbar-track,
 	.TDatabaseField .NDPrototype::-webkit-scrollbar-track {
-		background-color: #FCFCE8;
+		background-color: $VariablePrototypeBackground;
 		}
 	.TVariable .SuEntryIcon,
 	.TDatabaseField .SuEntryIcon {
@@ -1617,16 +1635,22 @@ td {
 		border: 1px solid #CFCF80;
 		}
 
+
+/* Contants */
+
+$ConstantPrototypeBackground: #CCCCCC;
+$ConstantPrototypeBorder: #BABABA;
+
 .TConstant .NDPrototype {
-	background-color: #CCCCCC;
-	border-color: #8A8A8A;
-	scrollbar-color: #8A8A8A #CCCCCC;
+	background-color: $ConstantPrototypeBackground;
+	border-color: $ConstantPrototypeBorder;
+	scrollbar-color: $ConstantPrototypeBorder $ConstantPrototypeBackground;
 	}
 	.TConstant .NDPrototype::-webkit-scrollbar-thumb {
-		background-color: #8A8A8A;
+		background-color: $ConstantPrototypeBorder;
 		}
 	.TConstant .NDPrototype::-webkit-scrollbar-track {
-		background-color: #CCCCCC;
+		background-color: $ConstantPrototypeBackground;
 		}
 	.TConstant .SuEntryIcon {
 		background-color: #BBBBBB;
@@ -1637,22 +1661,28 @@ td {
 		border: 1px solid #818181;
 		}
 
+
+/* Types */
+
+$TypePrototypeBackground: #FCF3E6;
+$TypePrototypeBorder: #D9C0AD;
+
 .TType .NDPrototype,
 .TEnumeration .NDPrototype,
 .TDelegate .NDPrototype {
-	background-color: #FCF3E6;
-	border-color: #D9C0AD;
-	scrollbar-color: #D9C0AD #FCF3E6;
+	background-color: $TypePrototypeBackground;
+	border-color: $TypePrototypeBorder;
+	scrollbar-color: $TypePrototypeBorder $TypePrototypeBackground;
 	}
 	.TType .NDPrototype::-webkit-scrollbar-thumb,
 	.TEnumeration .NDPrototype::-webkit-scrollbar-thumb,
 	.TDelegate .NDPrototype::-webkit-scrollbar-thumb {
-		background-color: #D9C0AD;
+		background-color: $TypePrototypeBorder;
 		}
 	.TType .NDPrototype::-webkit-scrollbar-track,
 	.TEnumeration .NDPrototype::-webkit-scrollbar-track,
 	.TDelegate .NDPrototype::-webkit-scrollbar-track {
-		background-color: #FCF3E6;
+		background-color: $TypePrototypeBackground;
 		}
 	.TType .SuEntryIcon,
 	.TEnumeration .SuEntryIcon,
@@ -1667,16 +1697,22 @@ td {
 		border: 1px solid #E2B29A;
 		}
 
+
+/* Events */
+
+$EventPrototypeBackground: #E6FAE6;
+$EventPrototypeBorder: #B6D1B6;
+
 .TEvent .NDPrototype {
-	background-color: #E6FAE6;
-	border-color: #B6D1B6;
-	scrollbar-color: #B6D1B6 #E6FAE6;
+	background-color: $EventPrototypeBackground;
+	border-color: $EventPrototypeBorder;
+	scrollbar-color: $EventPrototypeBorder $EventPrototypeBackground;
 	}
 	.TEvent .NDPrototype::-webkit-scrollbar-thumb {
-		background-color: #B6D1B6;
+		background-color: $EventPrototypeBorder;
 		}
 	.TEvent .NDPrototype::-webkit-scrollbar-track {
-		background-color: #E6FAE6;
+		background-color: $EventPrototypeBackground;
 		}
 	.TEvent .SuEntryIcon {
 		background-color: #DCF7DC;
@@ -1688,45 +1724,67 @@ td {
 		}
 
 
+/* Classes */
+
+$ClassPrototypeBackground: #EAEAEA;
+$ClassPrototypeBorder: #606060;
+
+/* 1/3 foreground, 2/3 background */
+$ClassPrototypeScrollbar: #BCBCBC;
+
+/* 1/2 foreground, 1/2 background, since it gets too light combined with the transparency */
+$ClassPrototypeSecondaryScrollbar: #A5A5A5;
 
 .NDClassPrototype .CPEntry {
-	background-color: #EAEAEA;
-	border-color: #606060;
-	scrollbar-color: #BCBCBC #EAEAEA; /* 1/3 foreground, 2/3 background */
+	background-color: $ClassPrototypeBackground;
+	border-color: $ClassPrototypeBorder;
+	scrollbar-color: $ClassPrototypeScrollbar $ClassPrototypeBackground;
 	}
 	.NDClassPrototype .CPEntry::-webkit-scrollbar-thumb {
-		background-color: #BCBCBC;
+		background-color: $ClassPrototypeScrollbar;
 		}
 	.NDClassPrototype .CPEntry::-webkit-scrollbar-track {
-		background-color: #EAEAEA;
+		background-color: $ClassPrototypeBackground;
 		}
 	.NDClassPrototype .CPEntry.Parent,
 	.NDClassPrototype .CPEntry.Child {
-		scrollbar-color: #A5A5A5 #EAEAEA;  /* 1/2 foreground, 1/2 background, since it gets too light combined with the transparency */
+		scrollbar-color: $ClassPrototypeSecondaryScrollbar $ClassPrototypeBackground;
 		}
 		.NDClassPrototype .CPEntry.Parent::-webkit-scrollbar-thumb,
 		.NDClassPrototype .CPEntry.Child::-webkit-scrollbar-thumb {
-			background-color: #A5A5A5;
+			background-color: $ClassPrototypeSecondaryScrollbar;
 			}
 
+
+/* Interfaces */
+
+$InterfacePrototypeBackground: #EAEAFF;
+$InterfacePrototypeBorder: #747493;
+
+/* 1/3 foreground, 2/3 background */
+$InterfacePrototypeScrollbar: #C2C2DB;
+
+/* 1/2 foreground, 1/2 background, since it gets too light combined with the transparency */
+$InterfacePrototypeSecondaryScrollbar: #AFAFC9;
+
 .NDClassPrototype .CPEntry.TInterface {
-	background-color: #EAEAFF;
-	border-color: #747493;
-	scrollbar-color: #C2C2DB #EAEAFF; /* 1/3 foreground, 2/3 background */
+	background-color: $InterfacePrototypeBackground;
+	border-color: $InterfacePrototypeBorder;
+	scrollbar-color: $InterfacePrototypeScrollbar $InterfacePrototypeBackground;
 	}
 	.NDClassPrototype .CPEntry.TInterface::-webkit-scrollbar-thumb {
-		background-color: #C2C2DB;
+		background-color: $InterfacePrototypeScrollbar;
 		}
 	.NDClassPrototype .CPEntry.TInterface::-webkit-scrollbar-track {
-		background-color: #EAEAFF;
+		background-color: $InterfacePrototypeBackground;
 		}
 	.NDClassPrototype .CPEntry.TInterface.Parent,
 	.NDClassPrototype .CPEntry.TInterface.Child {
-		scrollbar-color: #AFAFC9 #EAEAEA;  /* 1/2 foreground, 1/2 background, since it gets too light combined with the transparency */
+		scrollbar-color: $InterfacePrototypeSecondaryScrollbar $InterfacePrototypeBackground;
 		}
 		.NDClassPrototype .CPEntry.TInterface.Parent::-webkit-scrollbar-thumb,
 		.NDClassPrototype .CPEntry.TInterface.Child::-webkit-scrollbar-thumb {
-			background-color: #AFAFC9;
+			background-color: $InterfacePrototypeSecondaryScrollbar;
 			}
 
 
