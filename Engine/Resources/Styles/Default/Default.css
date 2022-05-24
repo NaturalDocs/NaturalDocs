@@ -71,7 +71,7 @@
 		$MenuLineColor_Black: #484848;
 	$MenuSelectedColor: #FFFFFF;
 		$MenuSelectedColor_Dark: $ContentBackgroundColor_Dark;
-		$MenuSelectedColor_Black: #1A1A1A;
+		$MenuSelectedColor_Black: #222222;
 	$MenuHoverBackgroundColor: #EEEEEE;
 		$MenuHoverBackgroundColor_Dark: $MenuSelectedColor_Dark;
 		$MenuHoverBackgroundColor_Black: $MenuSelectedColor_Black;
@@ -83,8 +83,8 @@
 		$MenuScrollbarColors_Black: $ContentScrollbarColors_Black;
 
 	$FooterTextColor: #909090;
-		$FooterTextColor_Dark: #686868;
-		$FooterTextColor_Black: #646464;
+		$FooterTextColor_Dark: #909090;  /* going darker makes it difficult to read */
+		$FooterTextColor_Black: #909090;
 	$FooterHoverColor: $MenuTextColor;
 		$FooterHoverColor_Dark: $MenuTextColor_Dark;
 		$FooterHoverColor_Black: $MenuTextColor_Black;
@@ -269,13 +269,13 @@ td {
 	z-index: $NDHeaderZIndex;
 	}
 	.DarkTheme #NDHeader {
-		background-color: #393961;
+		background-image: linear-gradient(to top, #2C2C4C 0%, #1F1F36 100%);
 
 		/* Use an inset box shadow to add a horizontal line */
-		box-shadow: 0 -1px 0 0 $HeaderBackgroundColor inset;
+		box-shadow: 0 -1px 0 0 #585894 inset;
 		}
 	.BlackTheme #NDHeader {
-		background-image: linear-gradient(to top, $MenuHoverBackgroundColor_Black 0%, #000000 60%);
+		background-image: linear-gradient(to top, $MenuHoverBackgroundColor_Black 0%, #000000 66%);
 		box-shadow: 0 -1px 0 0 $MenuLineColor_Black inset;
 		}
 
