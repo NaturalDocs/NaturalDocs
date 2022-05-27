@@ -71,7 +71,7 @@
 		$MenuLineColor_Black: #484848;
 	$MenuSelectedColor: #FFFFFF;
 		$MenuSelectedColor_Dark: $ContentBackgroundColor_Dark;
-		$MenuSelectedColor_Black: #222222;
+		$MenuSelectedColor_Black: #282828;
 	$MenuHoverBackgroundColor: #EEEEEE;
 		$MenuHoverBackgroundColor_Dark: $MenuSelectedColor_Dark;
 		$MenuHoverBackgroundColor_Black: $MenuSelectedColor_Black;
@@ -895,7 +895,7 @@ td {
 			}
 		.BlackTheme .MFolder.Selected { 
 			background-color: $MenuSelectedColor_Black; 
-			border-bottom-color: #626262;
+			border-bottom-color: #909090;
 			}
 
 	.MFile.Selected {
