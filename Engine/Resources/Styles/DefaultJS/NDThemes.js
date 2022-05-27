@@ -311,7 +311,7 @@ var NDThemeSwitcher = new function ()
 			this.PositionMenu();
 			this.domMenu.style.visibility = "visible";
 
-			NDCore.AddClass(this.domSwitcher, "active");
+			NDCore.AddClass(this.domSwitcher, "Active");
 			}
 		};
 
@@ -324,7 +324,7 @@ var NDThemeSwitcher = new function ()
 		if (this.MenuIsOpen())
 			{  
 			this.domMenu.style.display = "none";
-			NDCore.RemoveClass(this.domSwitcher, "active");
+			NDCore.RemoveClass(this.domSwitcher, "Active");
 			}
 		};
 

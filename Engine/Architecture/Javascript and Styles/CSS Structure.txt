@@ -485,7 +485,7 @@ _______________________________________________________________________________
 
 --- text ---
 
-	<#NDThemeSwitcher active? />
+	<#NDThemeSwitcher Active? />
 
 	<#NDThemeSwitcherMenu>
 

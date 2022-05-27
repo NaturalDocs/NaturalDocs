@@ -349,7 +349,7 @@ td {
 	display: none;
 	}
 	#NDThemeSwitcher:hover,
-	#NDThemeSwitcher.active {
+	#NDThemeSwitcher.Active {
 		background: url("images/theme-switcher-hover.svg") center center no-repeat;
 		}
 
