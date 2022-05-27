@@ -96,6 +96,10 @@
 		$TextLinkActiveColor_Dark: #FFE0E0;
 		$TextLinkActiveColor_Black: #FFE8E8;
 
+	/* Make sure to change icons to match */
+	$SearchOutlineColor_Dark: #6E6E6E;
+	$SearchOutlineColor_Black: #747474;
+
 
 /* Fonts */
 
@@ -121,6 +125,7 @@
 	$SearchFontFamily: $ContentFontFamily;
 
 	$PopupShadow: .125rem .125rem .5rem #505050;
+		$PopupShadow_Dark: .125rem .125rem .5rem #000000;
 
 
 /* Layout */
@@ -348,10 +353,27 @@ td {
 	/* Default to not displaying so it doesn't show up on the loading page.  NDFramePage will make it visible when it starts. */
 	display: none;
 	}
+	.DarkTheme #NDThemeSwitcher {
+		border-color: $SearchOutlineColor_Dark;
+		background-image: url("images/theme-switcher-dark.svg");
+		}
+	.BlackTheme #NDThemeSwitcher {
+		border-color: $SearchOutlineColor_Black;
+		background-image: url("images/theme-switcher-black.svg");
+		}
+
 	#NDThemeSwitcher:hover,
 	#NDThemeSwitcher.Active {
 		background: url("images/theme-switcher-hover.svg") center center no-repeat;
 		}
+		.DarkTheme #NDThemeSwitcher:hover,
+		.DarkTheme #NDThemeSwitcher.Active {
+			background-image: url("images/theme-switcher-hover-dark.svg");
+			}
+		.BlackTheme #NDThemeSwitcher:hover,
+		.BlackTheme #NDThemeSwitcher.Active {
+			background-image: url("images/theme-switcher-hover-black.svg");
+			}
 
 	#NDThemeSwitcher a {
 		display: block;
@@ -444,9 +466,10 @@ td {
 #NDSearchField {
 	z-index: $NDSearchFieldZIndex;
 	width: 18rem;
-	background: #FFFFFF URL("images/search.svg") no-repeat .55rem center;
+	color: $ContentTextColor;
+	background: $ContentBackgroundColor URL("images/search.svg") no-repeat .55rem center;
 	padding: .4em .85rem .3em 1.9rem;
-	border: 0 none;
+	border: 1px solid #FFFFFF;
 	border-radius: 1em;
 
 	/* Make Firefox and Chrome consistent.  The theme switcher icon assumes 25px at 100% zoom. */
@@ -455,15 +478,33 @@ td {
 	/* Default to not displaying so it doesn't show up on the loading page.  NDFramePage will make it visible when it starts. */
 	display: none;
 	}
+	.DarkTheme #NDSearchField {
+		color: $ContentTextColor_Dark;
+		border-color: $SearchOutlineColor_Dark;
+		background-color: transparent;
+		background-image: URL("images/search-dark.svg");
+		}
+	.BlackTheme #NDSearchField {
+		color: $ContentTextColor_Black;
+		border-color: $SearchOutlineColor_Black;
+		background-color: $ContentBackgroundColor_Black;
+		background-image: URL("images/search-black.svg");
+		}
 
 	#NDSearchField.DefaultText {
 		color: #909090;
 		font-style: italic;
 		}
+		.DarkTheme #NDSearchField.DefaultText { color: $SearchOutlineColor_Dark; }
+		.BlackTheme #NDSearchField.DefaultText { color: $SearchOutlineColor_Black; }
 
 	#NDSearchField:focus {
 		outline: none;  /* Get rid of Chrome's orange highlight */
 		}
+		/* We only have to do this for the dark theme because it's the only one with a transparent background. */
+		.DarkTheme #NDSearchField:focus {
+			background-color: $ContentBackgroundColor_Dark;
+			}
 
 #NDSearchResults {
 	z-index: $NDSearchResultsZIndex;
@@ -474,8 +515,28 @@ td {
 	border-style: solid;
 	border-width: 1px;
 	border-color: #BCBCBC #747474 #747474 #BCBCBC;
+	scrollbar-color: $ContentScrollbarColors;
 	box-shadow: $PopupShadow;
 	}
+	.DarkTheme #NDSearchResults {
+		/* Better visual separation than using $ContentBackgroundColor_Dark. */
+		background-color: $SummaryBackgroundColor_Dark;
+
+		border-color: $SearchOutlineColor_Dark;
+		scrollbar-color: $SummaryScrollbarColors_Dark;
+
+		/* Dark scrollbars on Chrome.  Isn't as good as custom colors, but you can't manually set colors without losing the arrow buttons. */
+		/* Firefox will still choose scrollbar-color over this. */
+		color-scheme: dark;
+
+		box-shadow: $PopupShadow_Dark;
+		}
+	.BlackTheme #NDSearchResults {
+		background-color: $ContentBackgroundColor_Black;
+		border-color: $MenuLineColor_Black;
+		scrollbar-color: $ContentScrollbarColors_Black;
+		color-scheme: dark;
+		}
 
 	.SeEntry {
 		padding: .05em .75rem .15em 1.65rem;
@@ -484,10 +545,18 @@ td {
 		border-style: solid;
 		border-color: #FFFFFF;
 		}
+		.DarkTheme .SeEntry	{ border-color: $SummaryBackgroundColor_Dark; }
+		.BlackTheme .SeEntry { border-color: $ContentBackgroundColor_Black; }
+
 	.SeEntry:hover,
 	#SeSelectedEntry {
-		background-color: #e4e4e4;
+		background-color: #E4E4E4;
 		}
+		.DarkTheme .SeEntry:hover,
+		.DarkTheme #SeSelectedEntry { background-color: $SummaryHoverBackgroundColor_Dark; }
+		.BlackTheme .SeEntry:hover,
+		.BlackTheme #SeSelectedEntry { background-color: $MenuSelectedColor_Black; }
+
 	a.SeEntry {
 		display: block;
 		}
@@ -498,12 +567,41 @@ td {
 		color: #000000;
 		text-decoration: none;
 		}
+		.DarkTheme a.SeEntry:link,
+		.DarkTheme a.SeEntry:visited { color: $ContentTextColor_Dark; }
+		.BlackTheme a.SeEntry:link,
+		.BlackTheme a.SeEntry:visited { color: $ContentTextColor_Black; }
+		.DarkTheme a.SeEntry:hover,
+		.DarkTheme a.SeEntry:active,
+		.BlackTheme a.SeEntry:hover,
+		.BlackTheme a.SeEntry:active { color: #FFFFFF; }
 
 	.SeQualifier,
 	.SeChildCount {
 		font-weight: normal;
 		color: #7C7C7C;
 		}
+		.DarkTheme .SeQualifier,
+		.DarkTheme .SeChildCount {
+			color: #949494;
+			}
+		.DarkTheme a.SeEntry:hover .SeQualifier,
+		.DarkTheme a.SeEntry:active .SeQualifier,
+		.DarkTheme a.SeEntry:hover .SeChildCount,
+		.DarkTheme a.SeEntry:active .SeChildCount {
+			color: #ADADAD;
+			}
+		.BlackTheme .SeQualifier,
+		.BlackTheme .SeChildCount {
+			color: #A0A0A0;
+			}
+		.BlackTheme a.SeEntry:hover .SeQualifier,
+		.BlackTheme a.SeEntry:active .SeQualifier,
+		.BlackTheme a.SeEntry:hover .SeChildCount,
+		.BlackTheme a.SeEntry:active .SeChildCount {
+			color: #A8A8A8;
+			}
+
 	.SeParent.open .SeChildCount {
 		display: none;
 		}
@@ -532,6 +630,13 @@ td {
 		width: 6px; height: 7px;
 		background: url("images/search-group-arrow.svg") center center no-repeat;
 		}
+		.DarkTheme .SeParent .SeEntryIcon {
+			background-image: url("images/search-group-arrow-dark.svg");
+			}
+		.BlackTheme .SeParent .SeEntryIcon {
+			background-image: url("images/search-group-arrow-black.svg");
+			}
+
 	.TClass .SeEntryIcon,
 	.TInterface .SeEntryIcon,
 	.TStruct .SeEntryIcon {
@@ -540,6 +645,17 @@ td {
 		margin-top: .225rem;
 		background: url("images/search-class.svg") center center no-repeat;
 		}
+		.DarkTheme .TClass .SeEntryIcon,
+		.DarkTheme .TInterface .SeEntryIcon,
+		.DarkTheme .TStruct .SeEntryIcon {
+			background-image: url("images/search-class-dark.svg");
+			}
+		.BlackTheme .TClass .SeEntryIcon,
+		.BlackTheme .TInterface .SeEntryIcon,
+		.BlackTheme .TStruct .SeEntryIcon {
+			background-image: url("images/search-class-black.svg");
+			}
+
 		.SeChildren .TClass .SeEntryIcon,
 		.SeChildren .TInterface .SeEntryIcon,
 		.SeChildren .TStruct .SeEntryIcon {
@@ -552,6 +668,16 @@ td {
 		.TStruct .SeEntryIcon {
 			background-image: url("images/search-class-125.svg");
 			}
+			.DarkTheme .TClass .SeEntryIcon,
+			.DarkTheme .TInterface .SeEntryIcon,
+			.DarkTheme .TStruct .SeEntryIcon {
+				background-image: url("images/search-class-dark-125.svg");
+				}
+			.BlackTheme .TClass .SeEntryIcon,
+			.BlackTheme .TInterface .SeEntryIcon,
+			.BlackTheme .TStruct .SeEntryIcon {
+				background-image: url("images/search-class-black-125.svg");
+				}
 		}
 	@media (resolution: 144dpi) {  /* 150% scale */
 		.TClass .SeEntryIcon,
@@ -559,6 +685,16 @@ td {
 		.TStruct .SeEntryIcon {
 			background-image: url("images/search-class-150.svg");
 			}
+			.DarkTheme .TClass .SeEntryIcon,
+			.DarkTheme .TInterface .SeEntryIcon,
+			.DarkTheme .TStruct .SeEntryIcon {
+				background-image: url("images/search-class-dark-150.svg");
+				}
+			.BlackTheme .TClass .SeEntryIcon,
+			.BlackTheme .TInterface .SeEntryIcon,
+			.BlackTheme .TStruct .SeEntryIcon {
+				background-image: url("images/search-class-black-150.svg");
+				}
 		}
 
 	.SeEntry.TClass,
@@ -576,6 +712,7 @@ td {
 		color: #A0A0A0;
 		text-align: center;
 		}
+
 	.SeEntry + .SeStatus,
 	.SeChildren + .SeStatus{
 		margin-top: .375rem;
