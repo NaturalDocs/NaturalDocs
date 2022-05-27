@@ -126,6 +126,7 @@
 
 	$PopupShadow: .125rem .125rem .5rem #505050;
 		$PopupShadow_Dark: .125rem .125rem .5rem #000000;
+		$PopupShadow_Black: .125rem .125rem .5rem #343434;
 
 
 /* Layout */
@@ -391,6 +392,14 @@ td {
 	border-color: #BCBCBC #747474 #747474 #BCBCBC;
 	box-shadow: $PopupShadow;
 	}
+	.DarkTheme #NDThemeSwitcherMenu {
+		border-color: #343434;
+		box-shadow: $PopupShadow_Dark;
+		}
+	.BlackTheme #NDThemeSwitcherMenu {
+		border-color: $MenuLineColor_Black;
+		box-shadow: $PopupShadow_Black;
+		}
 
 	.TSEntry {
 		display: block;
@@ -536,6 +545,7 @@ td {
 		border-color: $MenuLineColor_Black;
 		scrollbar-color: $ContentScrollbarColors_Black;
 		color-scheme: dark;
+		box-shadow: $PopupShadow_Black;
 		}
 
 	.SeEntry {
