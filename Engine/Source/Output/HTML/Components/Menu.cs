@@ -362,7 +362,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			if (rootContainer == null)
 				{
 				rootContainer = new MenuEntries.Container(hierarchy.ID);
-				rootContainer.Title = Engine.Locale.SafeGet("NaturalDocs.Engine", "Menu." + hierarchy.PluralName, hierarchy.PluralName);
+				rootContainer.Title = Engine.Locale.SafeGet("NaturalDocs.Engine", "Menu." + hierarchy.PluralSimpleIdentifier, hierarchy.PluralName);
 
 				if (hierarchyRoots == null)
 					{
