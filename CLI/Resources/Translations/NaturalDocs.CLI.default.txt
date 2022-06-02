@@ -120,13 +120,16 @@ Syntax:
                 -o [output format] [output (documentation) folder]
                 [additional options]
 
+    Linux and macOS users should substitute "mono NaturalDocs.exe" for
+    "NaturalDocs".
+
 Examples:
 
     NaturalDocs C:\My Project\Natural Docs Config
 
-    NaturalDocs -i /project/src
-                -p /project/ndconfig
-                -o html /project/doc
+    mono NaturalDocs.exe -i /project/src
+                         -p /project/ndconfig
+                         -o html /project/doc
 
 
 Folder Parameters
@@ -186,9 +189,9 @@ Configuration Parameters
 
  -e [name or code page number]
 --encoding [name or code page number]
-    Sets the default character encoding for all input folders.  Will be
-    Unicode if not set.  Run Natural Docs with --list-encodings to see all
-    the character encodings installed on your system.
+    Sets the default character encoding for all input files.  Will be Unicode
+    if not set.  Run Natural Docs with --list-encodings to see all the
+    character encodings installed on your system.
 
  -t [width]
 --tab-width [width]
