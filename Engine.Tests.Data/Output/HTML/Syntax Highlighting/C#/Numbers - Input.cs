@@ -73,7 +73,7 @@
 
 			ulong x = 0xabc1_2345UL;
 
-			ulong x = 0x_abc1_2345UL;
+			ulong x = 0x_ab12_cd45UL;
 
 			ulong x = 0B0110_1001_1001_1100ul;
 
