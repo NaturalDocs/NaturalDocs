@@ -412,6 +412,30 @@ Comment Type: Database Trigger
       trigger, triggers
 
 
+Comment Type: Module
+
+   Display Name from Locale: Comments.txt.Module.DisplayName
+   Plural Display Name from Locale: Comments.txt.Module.PluralDisplayName
+
+   Scope: Start
+   Flags: Code, Module Hierarchy
+
+   SystemVerilog Keywords:
+      module, modules
+
+
+Comment Type: Package
+
+   Display Name from Locale: Comments.txt.Package.DisplayName
+   Plural Display Name from Locale: Comments.txt.Package.PluralDisplayName
+
+   Scope: Start
+   Flags: Code, Package Hierarchy
+
+   SystemVerilog Keywords:
+      package, packages
+
+
 # Each Natural Docs comment has a corresponding type which determine its
 # behavior.  This is how you define them.
 #

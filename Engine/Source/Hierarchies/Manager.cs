@@ -51,8 +51,24 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 		 */
 		public bool Start (Errors.ErrorList errorList)
 			{
-			var classHierarchy = new Hierarchy(
+			var moduleHierarchy = new Hierarchy(
 				id: 1,
+				name: "Module",
+				pluralName: "Modules",
+				simpleIdentifier: "Module",
+				pluralSimpleIdentifier: "Modules",
+				isLanguageSpecific: true);
+
+			var packageHierarchy = new Hierarchy(
+				id: 2,
+				name: "Package",
+				pluralName: "Packages",
+				simpleIdentifier: "Package",
+				pluralSimpleIdentifier: "Packages",
+				isLanguageSpecific: true);
+
+			var classHierarchy = new Hierarchy(
+				id: 3,
 				name: "Class",
 				pluralName: "Classes",
 				simpleIdentifier: "Class",
@@ -62,7 +78,7 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 			var sqlLanguage = EngineInstance.Languages.FromName("SQL");
 
 			var databaseHierarchy = new Hierarchy(
-				id: 2,
+				id: 4,
 				name: "Database",
 				pluralName: "Database", // we don't want "Databases"
 				simpleIdentifier: "Database",
@@ -70,7 +86,7 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 				isLanguageSpecific: false,
 				isCaseSensitive: (sqlLanguage != null ? sqlLanguage.CaseSensitive : false) );
 
-			hierarchies = new Hierarchy[] { classHierarchy, databaseHierarchy };
+			hierarchies = new Hierarchy[] { moduleHierarchy, packageHierarchy, classHierarchy, databaseHierarchy };
 
 			classHierarchyID = classHierarchy.ID;
 

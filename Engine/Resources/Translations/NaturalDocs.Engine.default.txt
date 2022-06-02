@@ -43,6 +43,8 @@ HTML.Close: Close
 Menu.Files: Files
 Menu.Classes: Classes
 Menu.Database: Database
+Menu.Modules: Modules
+Menu.Packages: Packages
 
 Timestamp.Month1: January
 Timestamp.ShortMonth1: Jan
@@ -467,6 +469,10 @@ Comments.txt.DatabaseCursor.DisplayName: Cursor
 Comments.txt.DatabaseCursor.PluralDisplayName: Cursors
 Comments.txt.DatabaseTrigger.DisplayName: Trigger
 Comments.txt.DatabaseTrigger.PluralDisplayName: Triggers
+Comments.txt.Module.DisplayName: Module
+Comments.txt.Module.PluralDisplayName: Modules
+Comments.txt.Package.DisplayName: Package
+Comments.txt.Package.PluralDisplayName: Packages
 
 Comments.txt.KeywordsCannotContain(char): Keywords cannot contain the {0} character.
 Comments.txt.TagsCannotContain(char): Tags cannot contain the {0} character.

@@ -869,6 +869,20 @@ td {
 		.BlackTheme #MDatabaseTab.Selected .MTabIcon,
 		.DarkTheme #MDatabaseTab:hover .MTabIcon,
 		.BlackTheme #MDatabaseTab:hover .MTabIcon {  background-image: url("images/menu-tab-database-dark-selected.svg");  }
+	#MModuleTab .MTabIcon {  background: url("images/menu-tab-modules.svg") center center no-repeat;  }
+		.DarkTheme #MModuleTab .MTabIcon,
+		.BlackTheme #MModuleTab .MTabIcon {  background-image: url("images/menu-tab-modules-dark.svg");  }
+		.DarkTheme #MModuleTab.Selected .MTabIcon,
+		.BlackTheme #MModuleTab.Selected .MTabIcon,
+		.DarkTheme #MModuleTab:hover .MTabIcon,
+		.BlackTheme #MModuleTab:hover .MTabIcon {  background-image: url("images/menu-tab-modules-dark-selected.svg");  }
+	#MPackageTab .MTabIcon {  background: url("images/menu-tab-packages.svg") center center no-repeat;  }
+		.DarkTheme #MPackageTab .MTabIcon,
+		.BlackTheme #MPackageTab .MTabIcon {  background-image: url("images/menu-tab-packages-dark.svg");  }
+		.DarkTheme #MPackageTab.Selected .MTabIcon,
+		.BlackTheme #MPackageTab.Selected .MTabIcon,
+		.DarkTheme #MPackageTab:hover .MTabIcon,
+		.BlackTheme #MPackageTab:hover .MTabIcon {  background-image: url("images/menu-tab-packages-dark-selected.svg");  }
 
 	@media (resolution: 120dpi) {  /* 125% scale */
 		#MFileTab .MTabIcon {  background-image: url("images/menu-tab-files-125.svg");  }
@@ -892,6 +906,20 @@ td {
 			.BlackTheme #MDatabaseTab.Selected .MTabIcon,
 			.DarkTheme #MDatabaseTab:hover .MTabIcon,
 			.BlackTheme #MDatabaseTab:hover .MTabIcon {  background-image: url("images/menu-tab-database-dark-selected-125.svg");  }
+		#MModuleTab .MTabIcon {  background-image: url("images/menu-tab-modules-125.svg");  }
+			.DarkTheme #MModuleTab .MTabIcon,
+			.BlackTheme #MModuleTab .MTabIcon {  background-image: url("images/menu-tab-modules-dark-125.svg");  }
+			.DarkTheme #MModuleTab.Selected .MTabIcon,
+			.BlackTheme #MModuleTab.Selected .MTabIcon,
+			.DarkTheme #MModuleTab:hover .MTabIcon,
+			.BlackTheme #MModuleTab:hover .MTabIcon {  background-image: url("images/menu-tab-modules-dark-selected-125.svg");  }
+		#MPackageTab .MTabIcon {  background-image: url("images/menu-tab-packages-125.svg");  }
+			.DarkTheme #MPackageTab .MTabIcon,
+			.BlackTheme #MPackageTab .MTabIcon {  background-image: url("images/menu-tab-packages-dark-125.svg");  }
+			.DarkTheme #MPackageTab.Selected .MTabIcon,
+			.BlackTheme #MPackageTab.Selected .MTabIcon,
+			.DarkTheme #MPackageTab:hover .MTabIcon,
+			.BlackTheme #MPackageTab:hover .MTabIcon {  background-image: url("images/menu-tab-packages-dark-selected-125.svg");  }
 		}
 	@media (resolution: 144dpi) {  /* 150% scale */
 		#MFileTab .MTabIcon {  background-image: url("images/menu-tab-files-150.svg");  }
@@ -915,6 +943,20 @@ td {
 			.BlackTheme #MDatabaseTab.Selected .MTabIcon,
 			.DarkTheme #MDatabaseTab:hover .MTabIcon,
 			.BlackTheme #MDatabaseTab:hover .MTabIcon {  background-image: url("images/menu-tab-database-dark-selected-150.svg");  }
+		#MModuleTab .MTabIcon {  background-image: url("images/menu-tab-modules-150.svg");  }
+			.DarkTheme #MModuleTab .MTabIcon,
+			.BlackTheme #MModuleTab .MTabIcon {  background-image: url("images/menu-tab-modules-dark-150.svg");  }
+			.DarkTheme #MModuleTab.Selected .MTabIcon,
+			.BlackTheme #MModuleTab.Selected .MTabIcon,
+			.DarkTheme #MModuleTab:hover .MTabIcon,
+			.BlackTheme #MModuleTab:hover .MTabIcon {  background-image: url("images/menu-tab-modules-dark-selected-150.svg");  }
+		#MPackageTab .MTabIcon {  background-image: url("images/menu-tab-packages-150.svg");  }
+			.DarkTheme #MPackageTab .MTabIcon,
+			.BlackTheme #MPackageTab .MTabIcon {  background-image: url("images/menu-tab-packages-dark-150.svg");  }
+			.DarkTheme #MPackageTab.Selected .MTabIcon,
+			.BlackTheme #MPackageTab.Selected .MTabIcon,
+			.DarkTheme #MPackageTab:hover .MTabIcon,
+			.BlackTheme #MPackageTab:hover .MTabIcon {  background-image: url("images/menu-tab-packages-dark-selected-150.svg");  }
 		}
 	/* Everything else can stay with the regular icon */
 
