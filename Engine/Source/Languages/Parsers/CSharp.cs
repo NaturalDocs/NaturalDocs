@@ -251,7 +251,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					{
 					}
 				else if (TryToSkipString(ref iterator, ParseMode.SyntaxHighlight) ||
-						  TryToSkipNumber(ref iterator, ParseMode.SyntaxHighlight))  // The default implementation is fine.
+						  TryToSkipNumber(ref iterator, ParseMode.SyntaxHighlight))
 					{
 					lastCodeToken = iterator;
 					lastCodeToken.Previous();
