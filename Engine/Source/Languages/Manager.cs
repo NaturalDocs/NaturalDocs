@@ -61,6 +61,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				cSharp.EnumValue = Language.EnumValues.UnderType;
 				cSharp.CaseSensitive = true;
 
+			Language systemVerilog = new Language("SystemVerilog");
+				systemVerilog.Type = Language.LanguageType.FullSupport;
+				systemVerilog.Parser = new Parsers.SystemVerilog(engineInstance, systemVerilog);
+
+				systemVerilog.LineCommentSymbols = new string[] { "//" };
+				systemVerilog.BlockCommentSymbols = new BlockCommentSymbols[] { new BlockCommentSymbols("/*", "*/") };
+				systemVerilog.JavadocBlockCommentSymbols = new BlockCommentSymbols[] { new BlockCommentSymbols("/**", "*/") };
+				systemVerilog.XMLLineCommentSymbols = new string[] { "///" };
+				systemVerilog.MemberOperator = ".";
+				systemVerilog.EnumValue = Language.EnumValues.Global;
+				systemVerilog.CaseSensitive = true;
+
 			Language perl = new Language("Perl");
 				perl.Parser = new Parsers.Perl(engineInstance, perl);
 
@@ -82,7 +94,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			Language php = new Language("PHP");
 				php.Parser = new Parsers.PHP(engineInstance, php);
 
-			predefinedLanguages = new Language[] { textFile, shebangScript, cSharp, perl, python, ruby, sql, java, lua, php };
+			predefinedLanguages = new Language[] { textFile, shebangScript, cSharp, systemVerilog, perl, python, ruby, sql, java, lua, php };
 			}
 
 

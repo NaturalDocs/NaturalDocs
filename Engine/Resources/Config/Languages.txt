@@ -49,6 +49,13 @@ Language: C#
    Simple Identifier: CSharp
 
 
+Language: SystemVerilog
+
+   Extensions: sv svh
+
+   Aliases: SV Verilog
+
+
 Language: Java
 
    Extension: java
