@@ -244,8 +244,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			while (iterator.IsInBounds)
 				{
-				TokenIterator originalPosition = iterator;
-
 				if (TryToSkipPreprocessingDirective(ref iterator, ParseMode.SyntaxHighlight) ||
 					TryToSkipComment(ref iterator, ParseMode.SyntaxHighlight))
 					{
