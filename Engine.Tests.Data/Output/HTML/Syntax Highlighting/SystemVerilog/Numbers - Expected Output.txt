@@ -1,0 +1,21 @@
+<pre class="CCode">x = <span class="SHNumber">12</span>;<br /><br />x = <span class="SHNumber">-12</span>;<br /><br />x = <span class="SHNumber">+12</span>;</pre>
+-----
+<pre class="CCode">x = <span class="SHNumber">1.2</span>;<br /><br />x = <span class="SHNumber">-1.2</span>;<br /><br />x = <span class="SHNumber">+1.2</span>;<br /><br />x = <span class="SHNumber">1.2e3</span>;<br /><br />x = <span class="SHNumber">1.2e-3</span>;<br /><br />x = <span class="SHNumber">+1.2e3</span>;<br /><br />x = <span class="SHNumber">-1.2e+3</span>;<br /><br />x = <span class="SHNumber">12E3</span>;<br /><br />x = <span class="SHNumber">-12E3</span>;</pre>
+-----
+<pre class="CCode">x = <span class="SHNumber">'d 12345</span>;<br /><br />x = <span class="SHNumber">'D 12345</span>;<br /><br />x = <span class="SHNumber">'sd 12345</span>;<br /><br />x = <span class="SHNumber">'SD 12345</span>;<br /><br />x = <span class="SHNumber">+'d12345</span>;<br /><br />x = <span class="SHNumber">-'SD12345</span>;<br /><br />x = <span class="SHNumber">'h 123ABC</span>;<br /><br />x = <span class="SHNumber">'H ABC123</span>;<br /><br />x = <span class="SHNumber">'sH 123abc</span>;<br /><br />x = <span class="SHNumber">'Sh abc123</span>;<br /><br />x = <span class="SHNumber">+'h123ABC</span>;<br /><br />x = <span class="SHNumber">-'SHABC123</span>;<br /><br />x = <span class="SHNumber">'o 12345</span>;<br /><br />x = <span class="SHNumber">'O 01234</span>;<br /><br />x = <span class="SHNumber">+'so12345</span>;<br /><br />x = <span class="SHNumber">-'SO01234</span>;<br /><br />x = <span class="SHNumber">+'b 10101</span>;<br /><br />x = <span class="SHNumber">-'B01010</span>;<br /><br />x = <span class="SHNumber">'sb10101</span>;<br /><br />x = <span class="SHNumber">'SB 01010</span>;</pre>
+-----
+<pre class="CCode">x = <span class="SHNumber">'h 012xxx</span>;<br /><br />x = <span class="SHNumber">'HZ00Z?</span>;<br /><br />x = <span class="SHNumber">'so 1x2X3z4Z5?6</span>;<br /><br />x = <span class="SHNumber">'BZZZZ0001</span>;<br /><br />x = <span class="SHNumber">'d?</span>;<br /><br />x = <span class="SHNumber">'D X</span>;</pre>
+-----
+<pre class="CCode">x = <span class="SHNumber">'0</span>;<br /><br />x = <span class="SHNumber">'1</span>;<br /><br />x = <span class="SHNumber">'x</span>;<br /><br />x = <span class="SHNumber">'X</span>;<br /><br />x = <span class="SHNumber">'z</span>;<br /><br />x = <span class="SHNumber">'Z</span>;</pre>
+-----
+<pre class="CCode">x = <span class="SHNumber">123_456</span>;<br /><br />x = <span class="SHNumber">'h 0_1_2___a_b_c___</span>;<br /><br />x = <span class="SHNumber">12_3.4_56e7_89</span>;<br /><br />x = <span class="SHNumber">'SB 1001_00xx_ZZZZ</span>;<br /><br />x = <span class="SHNumber">'D X_____</span>;</pre>
+-----
+<pre class="CCode">x = <span class="SHNumber">12 'd 12345</span>;<br /><br />x = <span class="SHNumber">4'SB0101</span>;<br /><br />x = <span class="SHNumber">+16'HZZAA</span>;<br /><br />x = <span class="SHNumber">-9 'O 03?</span>;<br /><br />x = <span class="SHNumber">1_2'DZ______</span>;</pre>
+-----
+<pre class="CCode">x = <span class="SHNumber">10s</span>;<br /><br />x = <span class="SHNumber">1.2ms</span>;<br /><br />x = <span class="SHNumber">100_000 ns</span>;<br /><br />x = <span class="SHNumber">2_3_4_ps</span>;<br /><br />x = <span class="SHNumber">1_2.3_4 fs</span>;</pre>
+-----
+<pre class="CCode">x = <span class="SHNumber">'h 000E</span>+a;<br /><br />x = <span class="SHNumber">'H000e</span>-<span class="SHNumber">1</span>;</pre>
+-----
+<pre class="CCode">x = <span class="SHNumber">-1</span>;<br /><br />x = y-<span class="SHNumber">1</span>;<br /><br />x = y -<span class="SHNumber">1</span>;<br /><br />x = <span class="SHNumber">1</span>-<span class="SHNumber">1</span>;<br /><br />x = <span class="SHNumber">1</span> -<span class="SHNumber">1</span>;<br /><br />x = (<span class="SHNumber">-1</span>);<br /><br />x = <span class="SHNumber">1</span> + <span class="SHNumber">-1</span>;</pre>
+-----
+<pre class="CCode">x = _12;</pre>

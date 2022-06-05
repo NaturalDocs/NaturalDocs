@@ -138,6 +138,7 @@
     <Compile Include="Source\Output\HTML\Prototypes\SQL.cs" />
     <Compile Include="Source\Output\HTML\Prototypes\CSharp.cs" />
     <Compile Include="Source\Output\HTML\SyntaxHighlighting\BasicSupport.cs" />
+    <Compile Include="Source\Output\HTML\SyntaxHighlighting\SystemVerilog.cs" />
     <Compile Include="Source\Output\HTML\SyntaxHighlighting\CSharp.cs" />
     <Compile Include="Source\Output\HTML\TopicTitles.cs" />
     <Compile Include="Source\SearchIndex\Keywords.cs" />
