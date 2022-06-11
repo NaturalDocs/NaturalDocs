@@ -89,6 +89,10 @@
 		$FooterHoverColor_Dark: $MenuTextColor_Dark;
 		$FooterHoverColor_Black: $MenuTextColor_Black;
 
+	$HomePageBottomTextColor: #A0A0A0;
+		$HomePageBottomTextColor_Dark: #828282;
+		$HomePageBottomTextColor_Black: #7E7E7E;
+
 	$TextLinkColor: #880000;
 		$TextLinkColor_Dark: #F0B0B0;
 		$TextLinkColor_Black: #F8B8B8;
@@ -2116,6 +2120,16 @@ $InterfacePrototypeSecondaryScrollbar: #AFAFC9;
 	background-attachment: fixed;
 	height: 100%;
 	}
+	.DarkTheme.NDHomePage body {
+		background: $SummaryBackgroundColor_Dark;
+
+		/* Use an inset box shadow to add a left vertical line */
+		box-shadow: 1px 0 0 0 $MenuSummaryBorderColor_Dark inset;
+		}
+	.BlackTheme.NDHomePage body {
+		background: #000000;
+		box-shadow: 1px 0 0 0 $MenuLineColor_Black inset;
+		}
 
 	.HFrame {
 		/* Firefox puts extra vertical space on the page if you do this with .HContent margin-top instead */
@@ -2127,6 +2141,7 @@ $InterfacePrototypeSecondaryScrollbar: #AFAFC9;
 		margin: 0 auto;
 		padding: 1.75rem 2rem 1.85rem 2rem;
 		overflow: hidden;
+		color: $ContentTextColor;
 		background-color: #FFFFFF;
 		border-width: .25rem;
 		border-style: solid;
@@ -2134,6 +2149,18 @@ $InterfacePrototypeSecondaryScrollbar: #AFAFC9;
 		box-shadow: 0 .225rem .375rem #383838;
 		text-align: center;
 		}
+		.DarkTheme .HContent {
+			color: $ContentTextColor_Dark;
+			background-image: linear-gradient(to bottom, #303030, #222222);
+			border-color: #505050 #1C1C1C #141414 #383838;
+			box-shadow: 0 .225rem .375rem #0C0C0C;
+			}
+		.BlackTheme .HContent {
+			color: $ContentTextColor_Black;
+			background-image: linear-gradient(to bottom, #202020, #141414);
+			border-color: #404040 #141414 #0A0A0A #2C2C2C;
+			box-shadow: none;
+			}
 
 		.HTitle {
 			font: 34pt $ProjectTitleFontFamily;
@@ -2146,11 +2173,20 @@ $InterfacePrototypeSecondaryScrollbar: #AFAFC9;
 
 	.HFooter {
 		margin-top: 1.75rem;
-		border-top: 1px solid #A0A0A0;
+		border-top: 1px solid $HomePageBottomTextColor;
 		padding-top: 1.5rem;
 		font: .9rem $ContentFontFamily;
-		color: #A0A0A0;
+		color: $HomePageBottomTextColor;
 		}
+		.DarkTheme .HFooter {
+			border-top-color: $HomePageBottomTextColor_Dark;
+			color: $HomePageBottomTextColor_Dark;
+			}
+		.BlackTheme .HFooter {
+			border-top-color: $HomePageBottomTextColor_Black;
+			color: $HomePageBottomTextColor_Black;
+			}
+
 		.HCopyright,
 		.HTimestamp{
 			margin-top: .25rem;
@@ -2159,8 +2195,21 @@ $InterfacePrototypeSecondaryScrollbar: #AFAFC9;
 		.HFooter a:visited,
 		.HFooter a:hover,
 		.HFooter a:active {
-			color: #A0A0A0;
+			color: $HomePageBottomTextColor;
 			}
+			.DarkTheme .HFooter a:link,
+			.DarkTheme .HFooter a:visited,
+			.DarkTheme .HFooter a:hover,
+			.DarkTheme .HFooter a:active {
+				color: $HomePageBottomTextColor_Dark;
+				}
+			.BlackTheme .HFooter a:link,
+			.BlackTheme .HFooter a:visited,
+			.BlackTheme .HFooter a:hover,
+			.BlackTheme .HFooter a:active {
+				color: $HomePageBottomTextColor_Black;
+				}
+
 		.HContent:hover .HFooter a {
 			text-decoration: underline;
 			}
