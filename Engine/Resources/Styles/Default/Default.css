@@ -1555,22 +1555,33 @@ td {
 
 	.NDPrototype {
 		font: $CodeFontSize $CodeFontFamily;
-		background-color: #FFFFFF;
-		border: 1px solid #808080;
+		background-color: $ContentBackgroundColor;
+		border: 1px solid #C0C0C0;
 		padding: $CodePadding;
 		overflow: auto;
 		scrollbar-width: thin;
-		scrollbar-color: #C8C8C8 #FFFFFF;
+		scrollbar-color: #C0C0C0 $ContentBackgroundColor;
 		}
-		.NDPrototype::-webkit-scrollbar {
-			height: 7px;
+		.NDPrototype::-webkit-scrollbar {  height: 7px;  }
+		.NDPrototype::-webkit-scrollbar-track {  background-color: $ContentBackgroundColor;  }
+		.NDPrototype::-webkit-scrollbar-thumb {  background-color: #C0C0C0;  }
+
+		.DarkTheme .NDPrototype {
+			background-color: $ContentBackgroundColor_Dark;
+			border-color: #707070;
+			scrollbar-color: #707070 $ContentBackgroundColor_Dark;
 			}
-		.NDPrototype::-webkit-scrollbar-track {
-			background-color: #FFFFFF;
+			.DarkTheme .NDPrototype::-webkit-scrollbar-track {  background-color: $ContentBackgroundColor_Dark;  }
+			.DarkTheme .NDPrototype::-webkit-scrollbar-thumb {  background-color: #707070;  }
+
+		.BlackTheme .NDPrototype {
+			background-color: $ContentBackgroundColor_Black;
+			border-color: #686868;
+			scrollbar-color: #686868 $ContentBackgroundColor_Black;
 			}
-		.NDPrototype::-webkit-scrollbar-thumb {
-			background-color: #C8C8C8;
-			}
+			.BlackTheme .NDPrototype::-webkit-scrollbar-track {  background-color: $ContentBackgroundColor_Black;  }
+			.BlackTheme .NDPrototype::-webkit-scrollbar-thumb {  background-color: #686868;  }
+
 
 	.PParameterSection td {
 		white-space: nowrap;
@@ -1741,7 +1752,7 @@ td {
 */
 
 
-/* Functions */
+/* --- Functions --- */
 
 $FunctionPrototypeBackground: #F4F4F4;
 $FunctionPrototypeBorder: #C9C9C9;
@@ -1771,8 +1782,55 @@ $FunctionPrototypeBorder: #C9C9C9;
 		border: 1px solid #BDBDBD;
 		}
 
+$FunctionPrototypeBackground_Dark: #282828;
+$FunctionPrototypeBackground_Black: #171717;
+$FunctionPrototypeBorder_Dark: #424242;
+$FunctionPrototypeBorder_Black: $FunctionPrototypeBorder_Dark;
 
-/* Properties */
+	.DarkTheme .TFunction .NDPrototype,
+	.DarkTheme .TOperator .NDPrototype {
+		background-color: $FunctionPrototypeBackground_Dark;
+		border-color: $FunctionPrototypeBorder_Dark;
+		scrollbar-color: $FunctionPrototypeBorder_Dark $FunctionPrototypeBackground_Dark;
+		}
+		.DarkTheme .TFunction .NDPrototype::-webkit-scrollbar-thumb,
+		.DarkTheme .TOperator .NDPrototype::-webkit-scrollbar-thumb {
+			background-color: $FunctionPrototypeBorder_Dark;
+			}
+		.DarkTheme .TFunction .NDPrototype::-webkit-scrollbar-track,
+		.DarkTheme .TOperator .NDPrototype::-webkit-scrollbar-track {
+			background-color: $FunctionPrototypeBackground_Dark;
+			}
+
+	.BlackTheme .TFunction .NDPrototype,
+	.BlackTheme .TOperator .NDPrototype {
+		background-color: $FunctionPrototypeBackground_Black;
+		border-color: $FunctionPrototypeBorder_Black;
+		scrollbar-color: $FunctionPrototypeBorder_Black $FunctionPrototypeBackground_Black;
+		}
+		.BlackTheme .TFunction .NDPrototype::-webkit-scrollbar-thumb,
+		.BlackTheme .TOperator .NDPrototype::-webkit-scrollbar-thumb {
+			background-color: $FunctionPrototypeBorder_Black;
+			}
+		.BlackTheme .TFunction .NDPrototype::-webkit-scrollbar-track,
+		.BlackTheme .TOperator .NDPrototype::-webkit-scrollbar-track {
+			background-color: $FunctionPrototypeBackground_Black;
+			}
+
+	.DarkTheme .TFunction .SuEntryIcon,
+	.DarkTheme .TOperator .SuEntryIcon,
+	.DarkTheme .TFunction .SeEntryIcon,
+	.DarkTheme .TOperator .SeEntryIcon,
+	.BlackTheme .TFunction .SuEntryIcon,
+	.BlackTheme .TOperator .SuEntryIcon,
+	.BlackTheme .TFunction .SeEntryIcon,
+	.BlackTheme .TOperator .SeEntryIcon {
+		background-color: #232323;
+		border-color: #424242;
+		}
+
+
+/* --- Properties --- */
 
 $PropertyPrototypeBackground: #F1F1FF;
 $PropertyPrototypeBorder: #C4C4EC;
@@ -1797,8 +1855,45 @@ $PropertyPrototypeBorder: #C4C4EC;
 		border: 1px solid #AAAAE8;
 		}
 
+$PropertyPrototypeBackground_Dark: #26263A;
+$PropertyPrototypeBackground_Black: #161622;
+$PropertyPrototypeBorder_Dark: #404061;
+$PropertyPrototypeBorder_Black: $PropertyPrototypeBorder_Dark;
 
-/* Variables */
+	.DarkTheme .TProperty .NDPrototype {
+		background-color: $PropertyPrototypeBackground_Dark;
+		border-color: $PropertyPrototypeBorder_Dark;
+		scrollbar-color: $PropertyPrototypeBorder_Dark $PropertyPrototypeBackground_Dark;
+		}
+		.DarkTheme .TProperty .NDPrototype::-webkit-scrollbar-thumb {
+			background-color: $PropertyPrototypeBorder_Dark;
+			}
+		.DarkTheme .TProperty .NDPrototype::-webkit-scrollbar-track {
+			background-color: $PropertyPrototypeBackground_Dark;
+			}
+
+	.BlackTheme .TProperty .NDPrototype {
+		background-color: $PropertyPrototypeBackground_Black;
+		border-color: $PropertyPrototypeBorder_Black;
+		scrollbar-color: $PropertyPrototypeBorder_Black $PropertyPrototypeBackground_Black;
+		}
+		.BlackTheme .TProperty .NDPrototype::-webkit-scrollbar-thumb {
+			background-color: $PropertyPrototypeBorder_Black;
+			}
+		.BlackTheme .TProperty .NDPrototype::-webkit-scrollbar-track {
+			background-color: $PropertyPrototypeBackground_Black;
+			}
+
+	.DarkTheme .TProperty .SuEntryIcon,
+	.DarkTheme .TProperty .SeEntryIcon,
+	.BlackTheme .TProperty .SuEntryIcon,
+	.BlackTheme .TProperty .SeEntryIcon {
+		background-color: #232335;
+		border: 1px solid #3C3C5B;
+		}
+
+
+/* --- Variables --- */
 
 $VariablePrototypeBackground: #FCFCE8;
 $VariablePrototypeBorder: #D5D590;
@@ -1828,8 +1923,55 @@ $VariablePrototypeBorder: #D5D590;
 		border: 1px solid #CFCF80;
 		}
 
+$VariablePrototypeBackground_Dark: #29291D;
+$VariablePrototypeBackground_Black: #171710;
+$VariablePrototypeBorder_Dark: #43432F;
+$VariablePrototypeBorder_Black: $VariablePrototypeBorder_Dark;
 
-/* Contants */
+	.DarkTheme .TVariable .NDPrototype,
+	.DarkTheme .TDatabaseField .NDPrototype {
+		background-color: $VariablePrototypeBackground_Dark;
+		border-color: $VariablePrototypeBorder_Dark;
+		scrollbar-color: $VariablePrototypeBorder_Dark $VariablePrototypeBackground_Dark;
+		}
+		.DarkTheme .TVariable .NDPrototype::-webkit-scrollbar-thumb,
+		.DarkTheme .TDatabaseField .NDPrototype::-webkit-scrollbar-thumb {
+			background-color: $VariablePrototypeBorder_Dark;
+			}
+		.DarkTheme .TVariable .NDPrototype::-webkit-scrollbar-track,
+		.DarkTheme .TDatabaseField .NDPrototype::-webkit-scrollbar-track {
+			background-color: $VariablePrototypeBackground_Dark;
+			}
+
+	.BlackTheme .TVariable .NDPrototype,
+	.BlackTheme .TDatabaseField .NDPrototype {
+		background-color: $VariablePrototypeBackground_Black;
+		border-color: $VariablePrototypeBorder_Black;
+		scrollbar-color: $VariablePrototypeBorder_Black $VariablePrototypeBackground_Black;
+		}
+		.BlackTheme .TVariable .NDPrototype::-webkit-scrollbar-thumb,
+		.BlackTheme .TDatabaseField .NDPrototype::-webkit-scrollbar-thumb {
+			background-color: $VariablePrototypeBorder_Black;
+			}
+		.BlackTheme .TVariable .NDPrototype::-webkit-scrollbar-track,
+		.BlackTheme .TDatabaseField .NDPrototype::-webkit-scrollbar-track {
+			background-color: $VariablePrototypeBackground_Black;
+			}
+
+	.DarkTheme .TVariable .SuEntryIcon,
+	.DarkTheme .TDatabaseField .SuEntryIcon,
+	.DarkTheme .TVariable .SeEntryIcon,
+	.DarkTheme .TDatabaseField .SeEntryIcon,
+	.BlackTheme .TVariable .SuEntryIcon,
+	.BlackTheme .TDatabaseField .SuEntryIcon,
+	.BlackTheme .TVariable .SeEntryIcon,
+	.BlackTheme .TDatabaseField .SeEntryIcon {
+		background-color: #27271C;
+		border: 1px solid #43432F;
+		}
+
+
+/* --- Constants --- */
 
 $ConstantPrototypeBackground: #CCCCCC;
 $ConstantPrototypeBorder: #BABABA;
@@ -1854,8 +1996,49 @@ $ConstantPrototypeBorder: #BABABA;
 		border: 1px solid #818181;
 		}
 
+$ConstantPrototypeBackground_Dark: #161616;
+$ConstantPrototypeBackground_Black: #000000;
+$ConstantPrototypeBorder_Dark: #3B3B3B;
+$ConstantPrototypeBorder_Black: $ConstantPrototypeBorder_Dark;
 
-/* Types */
+	.DarkTheme .TConstant .NDPrototype {
+		background-color: $ConstantPrototypeBackground_Dark;
+		border-color: $ConstantPrototypeBorder_Dark;
+		scrollbar-color: $ConstantPrototypeBorder_Dark $ConstantPrototypeBackground_Dark;
+		}
+		.DarkTheme .TConstant .NDPrototype::-webkit-scrollbar-thumb {
+			background-color: $ConstantPrototypeBorder_Dark;
+			}
+		.DarkTheme .TConstant .NDPrototype::-webkit-scrollbar-track {
+			background-color: $ConstantPrototypeBackground_Dark;
+			}
+
+		.DarkTheme .TConstant .SuEntryIcon,
+		.DarkTheme .TConstant .SeEntryIcon {
+			background-color: #0F0F0F;
+			border: 1px solid #383838;
+			}
+
+	.BlackTheme .TConstant .NDPrototype {
+		background-color: $ConstantPrototypeBackground_Black;
+		border-color: $ConstantPrototypeBorder_Black;
+		scrollbar-color: $ConstantPrototypeBorder_Black $ConstantPrototypeBackground_Black;
+		}
+		.BlackTheme .TConstant .NDPrototype::-webkit-scrollbar-thumb {
+			background-color: $ConstantPrototypeBorder_Black;
+			}
+		.BlackTheme .TConstant .NDPrototype::-webkit-scrollbar-track {
+			background-color: $ConstantPrototypeBackground_Black;
+			}
+
+		.BlackTheme .TConstant .SuEntryIcon,
+		.BlackTheme .TConstant .SeEntryIcon {
+			background-color: #000000;
+			border: 1px solid #383838;
+			}
+
+
+/* --- Types --- */
 
 $TypePrototypeBackground: #FCF3E6;
 $TypePrototypeBorder: #D9C0AD;
@@ -1890,8 +2073,65 @@ $TypePrototypeBorder: #D9C0AD;
 		border: 1px solid #E2B29A;
 		}
 
+$TypePrototypeBackground_Dark: #2A1E1C;
+$TypePrototypeBackground_Black: #1E1514;
+$TypePrototypeBorder_Dark: #4B3632;
+$TypePrototypeBorder_Black: $TypePrototypeBorder_Dark;
 
-/* Events */
+	.DarkTheme .TType .NDPrototype,
+	.DarkTheme .TEnumeration .NDPrototype,
+	.DarkTheme .TDelegate .NDPrototype {
+		background-color: $TypePrototypeBackground_Dark;
+		border-color: $TypePrototypeBorder_Dark;
+		scrollbar-color: $TypePrototypeBorder_Dark $TypePrototypeBackground_Dark;
+		}
+		.DarkTheme .TType .NDPrototype::-webkit-scrollbar-thumb,
+		.DarkTheme .TEnumeration .NDPrototype::-webkit-scrollbar-thumb,
+		.DarkTheme .TDelegate .NDPrototype::-webkit-scrollbar-thumb {
+			background-color: $TypePrototypeBorder_Dark;
+			}
+		.DarkTheme .TType .NDPrototype::-webkit-scrollbar-track,
+		.DarkTheme .TEnumeration .NDPrototype::-webkit-scrollbar-track,
+		.DarkTheme .TDelegate .NDPrototype::-webkit-scrollbar-track {
+			background-color: $TypePrototypeBackground_Dark;
+			}
+
+	.BlackTheme .TType .NDPrototype,
+	.BlackTheme .TEnumeration .NDPrototype,
+	.BlackTheme .TDelegate .NDPrototype {
+		background-color: $TypePrototypeBackground_Black;
+		border-color: $TypePrototypeBorder_Black;
+		scrollbar-color: $TypePrototypeBorder_Black $TypePrototypeBackground_Black;
+		}
+		.BlackTheme .TType .NDPrototype::-webkit-scrollbar-thumb,
+		.BlackTheme .TEnumeration .NDPrototype::-webkit-scrollbar-thumb,
+		.BlackTheme .TDelegate .NDPrototype::-webkit-scrollbar-thumb {
+			background-color: $TypePrototypeBorder_Black;
+			}
+		.BlackTheme .TType .NDPrototype::-webkit-scrollbar-track,
+		.BlackTheme .TEnumeration .NDPrototype::-webkit-scrollbar-track,
+		.BlackTheme .TDelegate .NDPrototype::-webkit-scrollbar-track {
+			background-color: $TypePrototypeBackground_Black;
+			}
+
+		.DarkTheme .TType .SuEntryIcon,
+		.DarkTheme .TEnumeration .SuEntryIcon,
+		.DarkTheme .TDelegate .SuEntryIcon,
+		.DarkTheme .TType .SeEntryIcon,
+		.DarkTheme .TEnumeration .SeEntryIcon,
+		.DarkTheme .TDelegate .SeEntryIcon,
+		.BlackTheme .TType .SuEntryIcon,
+		.BlackTheme .TEnumeration .SuEntryIcon,
+		.BlackTheme .TDelegate .SuEntryIcon,
+		.BlackTheme .TType .SeEntryIcon,
+		.BlackTheme .TEnumeration .SeEntryIcon,
+		.BlackTheme .TDelegate .SeEntryIcon {
+			background-color: #291D1B;
+			border: 1px solid #4B3632;
+			}
+
+
+/* --- Events --- */
 
 $EventPrototypeBackground: #E6FAE6;
 $EventPrototypeBorder: #B6D1B6;
@@ -1916,8 +2156,45 @@ $EventPrototypeBorder: #B6D1B6;
 		border: 1px solid #A9C8A9;
 		}
 
+$EventPrototypeBackground_Dark: #1B271B;
+$EventPrototypeBackground_Black: #151E15;
+$EventPrototypeBorder_Dark: #2F442F;
+$EventPrototypeBorder_Black: $EventPrototypeBorder_Dark;
 
-/* Classes */
+	.DarkTheme .TEvent .NDPrototype {
+		background-color: $EventPrototypeBackground_Dark;
+		border-color: $EventPrototypeBorder_Dark;
+		scrollbar-color: $EventPrototypeBorder_Dark $EventPrototypeBackground_Dark;
+		}
+		.DarkTheme .TEvent .NDPrototype::-webkit-scrollbar-thumb {
+			background-color: $EventPrototypeBorder_Dark;
+			}
+		.DarkTheme .TEvent .NDPrototype::-webkit-scrollbar-track {
+			background-color: $EventPrototypeBackground_Dark;
+			}
+
+	.BlackTheme .TEvent .NDPrototype {
+		background-color: $EventPrototypeBackground_Black;
+		border-color: $EventPrototypeBorder_Black;
+		scrollbar-color: $EventPrototypeBorder_Black $EventPrototypeBackground_Black;
+		}
+		.BlackTheme .TEvent .NDPrototype::-webkit-scrollbar-thumb {
+			background-color: $EventPrototypeBorder_Black;
+			}
+		.BlackTheme .TEvent .NDPrototype::-webkit-scrollbar-track {
+			background-color: $EventPrototypeBackground_Black;
+			}
+
+		.DarkTheme .TEvent .SuEntryIcon,
+		.DarkTheme .TEvent .SeEntryIcon,
+		.BlackTheme .TEvent .SuEntryIcon,
+		.BlackTheme .TEvent .SeEntryIcon {
+			background-color: #1A261A;
+			border: 1px solid #2D412D;
+			}
+
+
+/* --- Classes --- */
 
 $ClassPrototypeBackground: #EAEAEA;
 $ClassPrototypeBorder: #606060;
@@ -1949,7 +2226,7 @@ $ClassPrototypeSecondaryScrollbar: #A5A5A5;
 			}
 
 
-/* Interfaces */
+/* --- Interfaces --- */
 
 $InterfacePrototypeBackground: #EAEAFF;
 $InterfacePrototypeBorder: #747493;
@@ -2151,7 +2428,7 @@ $InterfacePrototypeSecondaryScrollbar: #AFAFC9;
 		}
 		.DarkTheme .HContent {
 			color: $ContentTextColor_Dark;
-			background-image: linear-gradient(to bottom, #303030, #222222);
+			background-image: linear-gradient(to bottom, #303030, #232323);
 			border-color: #505050 #1C1C1C #141414 #383838;
 			box-shadow: 0 .225rem .375rem #0C0C0C;
 			}
