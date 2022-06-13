@@ -1788,9 +1788,9 @@ $FunctionPrototypeBorder: #C9C9C9;
 		border: 1px solid #BDBDBD;
 		}
 
-$FunctionPrototypeBackground_Dark: #282828;
-$FunctionPrototypeBackground_Black: #171717;
-$FunctionPrototypeBorder_Dark: #424242;
+$FunctionPrototypeBackground_Dark: #292929;
+$FunctionPrototypeBackground_Black: #181818;
+$FunctionPrototypeBorder_Dark: #444444;
 $FunctionPrototypeBorder_Black: $FunctionPrototypeBorder_Dark;
 
 	.DarkTheme .TFunction .NDPrototype,
@@ -1826,13 +1826,16 @@ $FunctionPrototypeBorder_Black: $FunctionPrototypeBorder_Dark;
 	.DarkTheme .TFunction .SuEntryIcon,
 	.DarkTheme .TOperator .SuEntryIcon,
 	.DarkTheme .TFunction .SeEntryIcon,
-	.DarkTheme .TOperator .SeEntryIcon,
+	.DarkTheme .TOperator .SeEntryIcon {
+		background-color: #232323;
+		border-color: #3B3B3B;
+		}
 	.BlackTheme .TFunction .SuEntryIcon,
 	.BlackTheme .TOperator .SuEntryIcon,
 	.BlackTheme .TFunction .SeEntryIcon,
 	.BlackTheme .TOperator .SeEntryIcon {
-		background-color: #232323;
-		border-color: #424242;
+		background-color: #1C1C1C;
+		border-color: #363636;
 		}
 
 
@@ -1861,9 +1864,9 @@ $PropertyPrototypeBorder: #C4C4EC;
 		border: 1px solid #AAAAE8;
 		}
 
-$PropertyPrototypeBackground_Dark: #26263A;
-$PropertyPrototypeBackground_Black: #161622;
-$PropertyPrototypeBorder_Dark: #404061;
+$PropertyPrototypeBackground_Dark: #28283D;
+$PropertyPrototypeBackground_Black: #171723;
+$PropertyPrototypeBorder_Dark: #404062;
 $PropertyPrototypeBorder_Black: $PropertyPrototypeBorder_Dark;
 
 	.DarkTheme .TProperty .NDPrototype {
@@ -1891,11 +1894,14 @@ $PropertyPrototypeBorder_Black: $PropertyPrototypeBorder_Dark;
 			}
 
 	.DarkTheme .TProperty .SuEntryIcon,
+	.BlackTheme .TProperty .SuEntryIcon {
+		background-color: $PropertyPrototypeBackground_Dark;
+		border: 1px solid $PropertyPrototypeBorder_Dark;
+		}
 	.DarkTheme .TProperty .SeEntryIcon,
-	.BlackTheme .TProperty .SuEntryIcon,
 	.BlackTheme .TProperty .SeEntryIcon {
-		background-color: #232335;
-		border: 1px solid #3C3C5B;
+		background-color: #2B2B47;
+		border: 1px solid #41416D;
 		}
 
 
@@ -1929,9 +1935,9 @@ $VariablePrototypeBorder: #D5D590;
 		border: 1px solid #CFCF80;
 		}
 
-$VariablePrototypeBackground_Dark: #29291D;
-$VariablePrototypeBackground_Black: #171710;
-$VariablePrototypeBorder_Dark: #43432F;
+$VariablePrototypeBackground_Dark: #2C2C20;
+$VariablePrototypeBackground_Black: #191912;
+$VariablePrototypeBorder_Dark: #474734;
 $VariablePrototypeBorder_Black: $VariablePrototypeBorder_Dark;
 
 	.DarkTheme .TVariable .NDPrototype,
@@ -1966,14 +1972,17 @@ $VariablePrototypeBorder_Black: $VariablePrototypeBorder_Dark;
 
 	.DarkTheme .TVariable .SuEntryIcon,
 	.DarkTheme .TDatabaseField .SuEntryIcon,
+	.BlackTheme .TVariable .SuEntryIcon,
+	.BlackTheme .TDatabaseField .SuEntryIcon {
+		background-color: $VariablePrototypeBackground_Dark;
+		border: 1px solid $VariablePrototypeBorder_Dark;
+		}
 	.DarkTheme .TVariable .SeEntryIcon,
 	.DarkTheme .TDatabaseField .SeEntryIcon,
-	.BlackTheme .TVariable .SuEntryIcon,
-	.BlackTheme .TDatabaseField .SuEntryIcon,
 	.BlackTheme .TVariable .SeEntryIcon,
 	.BlackTheme .TDatabaseField .SeEntryIcon {
-		background-color: #27271C;
-		border: 1px solid #43432F;
+		background-color: #303020;
+		border: 1px solid #4F4F33;
 		}
 
 
@@ -2002,7 +2011,7 @@ $ConstantPrototypeBorder: #BABABA;
 		border: 1px solid #818181;
 		}
 
-$ConstantPrototypeBackground_Dark: #161616;
+$ConstantPrototypeBackground_Dark: #0E0E0E;
 $ConstantPrototypeBackground_Black: #000000;
 $ConstantPrototypeBorder_Dark: #3B3B3B;
 $ConstantPrototypeBorder_Black: $ConstantPrototypeBorder_Dark;
@@ -2019,10 +2028,13 @@ $ConstantPrototypeBorder_Black: $ConstantPrototypeBorder_Dark;
 			background-color: $ConstantPrototypeBackground_Dark;
 			}
 
-		.DarkTheme .TConstant .SuEntryIcon,
-		.DarkTheme .TConstant .SeEntryIcon {
+		.DarkTheme .TConstant .SuEntryIcon {
 			background-color: #0F0F0F;
-			border: 1px solid #383838;
+			border: 1px solid $ConstantPrototypeBorder_Dark;
+			}
+		.DarkTheme .TConstant .SeEntryIcon {
+			background-color: #000000;
+			border: 1px solid $ConstantPrototypeBorder_Dark;
 			}
 
 	.BlackTheme .TConstant .NDPrototype {
@@ -2039,8 +2051,8 @@ $ConstantPrototypeBorder_Black: $ConstantPrototypeBorder_Dark;
 
 		.BlackTheme .TConstant .SuEntryIcon,
 		.BlackTheme .TConstant .SeEntryIcon {
-			background-color: #000000;
-			border: 1px solid #383838;
+			background-color: $ConstantPrototypeBackground_Black;
+			border: 1px solid $ConstantPrototypeBorder_Black;
 			}
 
 
@@ -2079,9 +2091,9 @@ $TypePrototypeBorder: #D9C0AD;
 		border: 1px solid #E2B29A;
 		}
 
-$TypePrototypeBackground_Dark: #2A1E1C;
-$TypePrototypeBackground_Black: #1E1514;
-$TypePrototypeBorder_Dark: #4B3632;
+$TypePrototypeBackground_Dark: #2F201E;
+$TypePrototypeBackground_Black: #221715;
+$TypePrototypeBorder_Dark: #4E3532;
 $TypePrototypeBorder_Black: $TypePrototypeBorder_Dark;
 
 	.DarkTheme .TType .NDPrototype,
@@ -2123,17 +2135,20 @@ $TypePrototypeBorder_Black: $TypePrototypeBorder_Dark;
 		.DarkTheme .TType .SuEntryIcon,
 		.DarkTheme .TEnumeration .SuEntryIcon,
 		.DarkTheme .TDelegate .SuEntryIcon,
+		.BlackTheme .TType .SuEntryIcon,
+		.BlackTheme .TEnumeration .SuEntryIcon,
+		.BlackTheme .TDelegate .SuEntryIcon {
+			background-color: $TypePrototypeBackground_Dark;
+			border: 1px solid $TypePrototypeBorder_Dark;
+			}
 		.DarkTheme .TType .SeEntryIcon,
 		.DarkTheme .TEnumeration .SeEntryIcon,
 		.DarkTheme .TDelegate .SeEntryIcon,
-		.BlackTheme .TType .SuEntryIcon,
-		.BlackTheme .TEnumeration .SuEntryIcon,
-		.BlackTheme .TDelegate .SuEntryIcon,
 		.BlackTheme .TType .SeEntryIcon,
 		.BlackTheme .TEnumeration .SeEntryIcon,
 		.BlackTheme .TDelegate .SeEntryIcon {
-			background-color: #291D1B;
-			border: 1px solid #4B3632;
+			background-color: #372320;
+			border: 1px solid #573733;
 			}
 
 
@@ -2162,9 +2177,9 @@ $EventPrototypeBorder: #B6D1B6;
 		border: 1px solid #A9C8A9;
 		}
 
-$EventPrototypeBackground_Dark: #1B271B;
-$EventPrototypeBackground_Black: #151E15;
-$EventPrototypeBorder_Dark: #2F442F;
+$EventPrototypeBackground_Dark: #1C2C1C;
+$EventPrototypeBackground_Black: #152215;
+$EventPrototypeBorder_Dark: #2D472D;
 $EventPrototypeBorder_Black: $EventPrototypeBorder_Dark;
 
 	.DarkTheme .TEvent .NDPrototype {
@@ -2192,11 +2207,14 @@ $EventPrototypeBorder_Black: $EventPrototypeBorder_Dark;
 			}
 
 		.DarkTheme .TEvent .SuEntryIcon,
+		.BlackTheme .TEvent .SuEntryIcon {
+			background-color: $EventPrototypeBackground_Dark;
+			border: 1px solid $EventPrototypeBorder_Dark;
+			}
 		.DarkTheme .TEvent .SeEntryIcon,
-		.BlackTheme .TEvent .SuEntryIcon,
 		.BlackTheme .TEvent .SeEntryIcon {
-			background-color: #1A261A;
-			border: 1px solid #2D412D;
+			background-color: #1E341E;
+			border: 1px solid #2D4D2D;
 			}
 
 
