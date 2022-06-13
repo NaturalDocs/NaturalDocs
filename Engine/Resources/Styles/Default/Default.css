@@ -100,7 +100,13 @@
 		$TextLinkActiveColor_Dark: #FFE0E0;
 		$TextLinkActiveColor_Black: #FFE8E8;
 
-	/* Make sure to change icons to match */
+	$SearchResultsTextColor: #000000;
+		/* Half way between content and menu colors */
+		/* Make sure to change search-group-arrow-dark/black.svg to match */
+		$SearchResultsTextColor_Dark: #CACACA;
+		$SearchResultsTextColor_Black: #DADADA;
+
+	/* Make sure to change search-dark/black.svg to match */
 	$SearchOutlineColor_Dark: #6E6E6E;
 	$SearchOutlineColor_Black: #747474;
 
@@ -578,13 +584,13 @@ td {
 	a.SeEntry:hover,
 	a.SeEntry:active,
 	a.SeEntry:visited {
-		color: #000000;
+		color: $SearchResultsTextColor;
 		text-decoration: none;
 		}
 		.DarkTheme a.SeEntry:link,
-		.DarkTheme a.SeEntry:visited { color: $ContentTextColor_Dark; }
+		.DarkTheme a.SeEntry:visited { color: $SearchResultsTextColor_Dark; }
 		.BlackTheme a.SeEntry:link,
-		.BlackTheme a.SeEntry:visited { color: $ContentTextColor_Black; }
+		.BlackTheme a.SeEntry:visited { color: $SearchResultsTextColor_Black; }
 		.DarkTheme a.SeEntry:hover,
 		.DarkTheme a.SeEntry:active,
 		.BlackTheme a.SeEntry:hover,
