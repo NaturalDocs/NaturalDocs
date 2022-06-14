@@ -1,0 +1,40 @@
+
+// Class: Namespace.FullDotClass1
+class Namespace.FullDotClass1 { }
+
+// Class: Namespace1.Namespace2.FullDotClass2
+class Namespace1.Namespace2.FullDotClass2 { }
+
+
+// Class: Namespace.PartialDotClass1
+class PartialDotClass1 { }
+
+// Class: Namespace1.Namespace2.PartialDotClass2
+class PartialDotClass2 { }
+
+
+// Class: Namespace::FullColonClass1
+class Namespace::FullColonClass1 { }
+
+// Class: Namespace1::Namespace2::FullColonClass2
+class Namespace1::Namespace2::FullColonClass2 { }
+
+
+// Class: Namespace::PartialColonClass1
+class PartialColonClass1 { }
+
+// Class: Namespace1::Namespace2::PartialColonClass2
+class PartialColonClass2 { }
+
+
+// Class: WrongDotClass1.X1
+class WrongDotClass1 { }
+
+// Class: X2.WrongDotClass2.Y2
+class WrongDotClass2 { }
+
+// Class: WrongColonClass3::X3
+class WrongColonClass3 { }
+
+// Class: X4::WrongColonClass4::Y4
+class WrongColonClass4 { }

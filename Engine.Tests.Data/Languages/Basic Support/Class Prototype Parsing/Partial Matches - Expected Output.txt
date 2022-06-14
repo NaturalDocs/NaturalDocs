@@ -1,0 +1,85 @@
+class Namespace.FullDotClass1
+
+  - Name: Namespace.FullDotClass1
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+class Namespace1.Namespace2.FullDotClass2
+
+  - Name: Namespace1.Namespace2.FullDotClass2
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+class PartialDotClass1
+
+  - Name: PartialDotClass1
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+class PartialDotClass2
+
+  - Name: PartialDotClass2
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+class Namespace::FullColonClass1
+
+  - Name: Namespace::FullColonClass1
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+class Namespace1::Namespace2::FullColonClass2
+
+  - Name: Namespace1::Namespace2::FullColonClass2
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+class PartialColonClass1
+
+  - Name: PartialColonClass1
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+class PartialColonClass2
+
+  - Name: PartialColonClass2
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+(No class prototype detected)
+
+-----
+
+(No class prototype detected)
+
+-----
+
+(No class prototype detected)
+
+-----
+
+(No class prototype detected)
