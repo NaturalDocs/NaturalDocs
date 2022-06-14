@@ -1832,6 +1832,33 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			string undecoratedTitle, parameters;
 			Symbols.ParameterString.SplitFromParameters(topic.Title, out undecoratedTitle, out parameters);
 
+			// If the topic is scoped, only check the last segment.  This lets "// Class: MyNamespace.MyClass" match "class MyClass {}".
+			string[] separators = { ".", "::" };
+			int separatorCutPoint = -1;
+
+			// For each separator, find the last instance of it that still has content afterwards (i.e. not "Class: MyClass::").  Use the
+			// rightmost one.
+			foreach (var separator in separators)
+				{
+				int lastIndex = undecoratedTitle.LastIndexOf(separator);
+
+				while (lastIndex != -1)
+					{
+					if (lastIndex + separator.Length < undecoratedTitle.Length)
+						{
+						if (lastIndex + separator.Length > separatorCutPoint)
+							{  separatorCutPoint = lastIndex + separator.Length;  }
+
+						break;
+						}
+
+					lastIndex = undecoratedTitle.LastIndexOf(separator, 0, lastIndex);
+					}
+				}
+
+			if (separatorCutPoint != -1)
+				{  undecoratedTitle = undecoratedTitle.Substring(separatorCutPoint);  }
+
 			Tokenizer tokenizer = prototypeStart.Tokenizer;
 
 			if (tokenizer.ContainsTextBetween(undecoratedTitle, true, prototypeStart, prototypeEnd))
