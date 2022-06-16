@@ -3620,7 +3620,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					parsedClassPrototype.GetParentName(i, out start, out end);
 
 					link.Symbol = SymbolString.FromPlainText_NoParameters( start.TextBetween(end) );
-					link.Context = topic.PrototypeContext;
+
+					// Use BodyContext instead of PrototypeContext so that the parent's scope is included.  So for this:
+					//
+					//    // Class: X.Y.MyClass
+					//    class MyClass : public MyParent
+					//
+					// "MyParent" could be interpreted as X.Y.MyParent in addition to global.
+					//
+					link.Context = topic.BodyContext;
+
 					link.FileID = topic.FileID;
 					link.ClassString = topic.ClassString;
 					link.LanguageID = topic.LanguageID;
