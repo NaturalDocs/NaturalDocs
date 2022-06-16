@@ -1657,18 +1657,39 @@ td {
 */
 
 	.CPEntry {
-		border-width: 1px 2px 2px 1px; border-style: solid; border-color: #000000;
+		border-width: 1px 2px 2px 1px; border-style: solid; border-color: $ContentTextColor;
 		padding: .25rem .5rem;
 		margin-bottom: .35rem;
 		border-radius: .5rem;
 
-		background-color: #FFFFFF;
+		background-color: $ContentBackgroundColor;
 		overflow: auto;
 		scrollbar-width: thin;
 		}
+		.DarkTheme .CPEntry,
+		.BlackTheme .CPEntry {
+			border-width: 2px 1px 1px 2px;
+			}
+		.DarkTheme .CPEntry.Parent,
+		.DarkTheme .CPEntry.Child,
+		.BlackTheme .CPEntry.Parent,
+		.BlackTheme .CPEntry.Child {
+			border-width: 1px;
+			}
+
+		.DarkTheme .CPEntry {
+			border-color: $ContentTextColor_Dark;
+			background-color: $ContentBackgroundColor_Dark;
+			}
+		.BlackTheme .CPEntry {
+			border-color: $ContentTextColor_Black;
+			background-color: $ContentBackgroundColor_Black;
+			}
+
 		.CPEntry::-webkit-scrollbar {
 			height: 7px;
 			}
+
 	a.CPEntry,
 	a.CPAdditionalChildrenNotice {
 		display: block;
@@ -1677,9 +1698,22 @@ td {
 	a.CPEntry:hover,
 	a.CPEntry:visited,
 	a.CPEntry:active {
-		color: #000000;
+		color: $ContentTextColor;
 		text-decoration: none;
 		}
+		.DarkTheme a.CPEntry:link,
+		.DarkTheme a.CPEntry:hover,
+		.DarkTheme a.CPEntry:visited,
+		.DarkTheme a.CPEntry:active {
+			color: $ContentTextColor_Dark;
+			}
+		.BlackTheme a.CPEntry:link,
+		.BlackTheme a.CPEntry:hover,
+		.BlackTheme a.CPEntry:visited,
+		.BlackTheme a.CPEntry:active {
+			color: $ContentTextColor_Black;
+			}
+
 	a.CPEntry:hover .CPName,
 	a.CPEntry:active .CPName {
 		text-decoration: underline;
@@ -1716,8 +1750,9 @@ td {
 	.CPName .Qualifier,
 	.CPName .TemplateSignature {
 		font-weight: normal;
-		color: #282828;
+		opacity: .84375;
 		}
+
 	.CPEntry.Parent .CPName,
 	.CPEntry.Child .CPName {
 		font-size: 10pt;
@@ -1727,6 +1762,18 @@ td {
 	.CPEntry.Child {
 		opacity: .5;
 		}
+		.DarkTheme .CPEntry.Parent,
+		.DarkTheme .CPEntry.Child,
+		.BlackTheme .CPEntry.Parent,
+		.BlackTheme .CPEntry.Child {
+			opacity: 1;
+			}
+		.DarkTheme .CPEntry.Parent .CPName,
+		.DarkTheme .CPEntry.Child .CPName,
+		.BlackTheme .CPEntry.Parent .CPName,
+		.BlackTheme .CPEntry.Child .CPName {
+			opacity: .7;
+			}
 
 	.CPEntry .CPPrePrototypeLine,
 	.CPEntry .CPModifiers,
@@ -1734,6 +1781,14 @@ td {
 		font-size: 8pt;
 		opacity: .5;
 		}
+		.DarkTheme .CPEntry .CPPrePrototypeLine,
+		.DarkTheme .CPEntry .CPModifiers,
+		.DarkTheme .CPEntry .CPPostPrototypeLine,
+		.BlackTheme .CPEntry .CPPrePrototypeLine,
+		.BlackTheme .CPEntry .CPModifiers,
+		.BlackTheme .CPEntry .CPPostPrototypeLine {
+			opacity: .7;
+			}
 
 	a.CPAdditionalChildrenNotice:link,
 	a.CPAdditionalChildrenNotice:visited,
@@ -1745,6 +1800,20 @@ td {
 		padding: 0 .5rem;
 		border-left: 1px solid $ContentBackgroundColor;
 		}
+		.DarkTheme a.CPAdditionalChildrenNotice:link,
+		.DarkTheme a.CPAdditionalChildrenNotice:visited,
+		.DarkTheme a.CPAdditionalChildrenNotice:hover,
+		.DarkTheme a.CPAdditionalChildrenNotice:active {
+			color: #919191;
+			border-left-color: $ContentBackgroundColor_Dark;
+			}
+		.BlackTheme a.CPAdditionalChildrenNotice:link,
+		.BlackTheme a.CPAdditionalChildrenNotice:visited,
+		.BlackTheme a.CPAdditionalChildrenNotice:hover,
+		.BlackTheme a.CPAdditionalChildrenNotice:active {
+			color: #9A9A9A;
+			border-left-color: $ContentBackgroundColor_Black;
+			}
 
 	.CPAdditionalChildren {
 		display: none;
@@ -2231,6 +2300,74 @@ $ClassPrototypeSecondaryScrollbar: #A5A5A5;
 			background-color: $ClassPrototypeSecondaryScrollbar;
 			}
 
+$ClassPrototypeBackground_Dark: #363636;
+$ClassPrototypeBorderA_Dark: #888888;
+$ClassPrototypeBorderB_Dark: #606060;
+
+$FadedClassPrototypeBackground_Dark: #262626;
+$FadedClassPrototypeBorderA_Dark: #6E6E6E;
+$FadedClassPrototypeBorderB_Dark: #565656;
+
+.DarkTheme .NDClassPrototype .CPEntry {
+	border-color: $ClassPrototypeBorderA_Dark $ClassPrototypeBorderB_Dark $ClassPrototypeBorderB_Dark $ClassPrototypeBorderA_Dark;
+	background-color: $ClassPrototypeBackground_Dark;
+	scrollbar-color: $ClassPrototypeBorderB_Dark $ClassPrototypeBackground_Dark;
+	}
+	.DarkTheme .NDClassPrototype .CPEntry::-webkit-scrollbar-thumb {
+		background-color: $ClassPrototypeBorderB_Dark;
+		}
+	.DarkTheme .NDClassPrototype .CPEntry::-webkit-scrollbar-track {
+		background-color: $ClassPrototypeBackground_Dark;
+		}
+	.DarkTheme .NDClassPrototype .CPEntry.Parent,
+	.DarkTheme .NDClassPrototype .CPEntry.Child {
+		border-color: $FadedClassPrototypeBorderA_Dark $FadedClassPrototypeBorderB_Dark $FadedClassPrototypeBorderB_Dark $FadedClassPrototypeBorderA_Dark;
+		background-color: $FadedClassPrototypeBackground_Dark;
+		scrollbar-color: $FadedClassPrototypeBorderB_Dark $FadedClassPrototypeBackground_Dark;
+		}
+		.DarkTheme .NDClassPrototype .CPEntry.Parent::-webkit-scrollbar-thumb,
+		.DarkTheme .NDClassPrototype .CPEntry.Child::-webkit-scrollbar-thumb {
+			background-color: $FadedClassPrototypeBorderB_Dark;
+			}
+		.DarkTheme .NDClassPrototype .CPEntry.Parent::-webkit-scrollbar-track,
+		.DarkTheme .NDClassPrototype .CPEntry.Child::-webkit-scrollbar-track {
+			background-color: $FadedClassPrototypeBackground_Dark;
+			}
+
+$ClassPrototypeBackground_Black: #2E2E2E;
+$ClassPrototypeBorderA_Black: #888888;
+$ClassPrototypeBorderB_Black: #666666;
+
+$FadedClassPrototypeBackground_Black: #181818;
+$FadedClassPrototypeBorderA_Black: #646464;
+$FadedClassPrototypeBorderB_Black: #515151;
+
+.BlackTheme .NDClassPrototype .CPEntry {
+	border-color: $ClassPrototypeBorderA_Black $ClassPrototypeBorderB_Black $ClassPrototypeBorderB_Black $ClassPrototypeBorderA_Black;
+	background-color: $ClassPrototypeBackground_Black;
+	scrollbar-color: $ClassPrototypeBorderB_Black $ClassPrototypeBackground_Black;
+	}
+	.BlackTheme .NDClassPrototype .CPEntry::-webkit-scrollbar-thumb {
+		background-color: $ClassPrototypeBorderB_Black;
+		}
+	.BlackTheme .NDClassPrototype .CPEntry::-webkit-scrollbar-track {
+		background-color: $ClassPrototypeBackground_Black;
+		}
+	.BlackTheme .NDClassPrototype .CPEntry.Parent,
+	.BlackTheme .NDClassPrototype .CPEntry.Child {
+		border-color: $FadedClassPrototypeBorderA_Black $FadedClassPrototypeBorderB_Black $FadedClassPrototypeBorderB_Black $FadedClassPrototypeBorderA_Black;
+		background-color: $FadedClassPrototypeBackground_Black;
+		scrollbar-color: $FadedClassPrototypeBorderB_Black $FadedClassPrototypeBackground_Black;
+		}
+		.BlackTheme .NDClassPrototype .CPEntry.Parent::-webkit-scrollbar-thumb,
+		.BlackTheme .NDClassPrototype .CPEntry.Child::-webkit-scrollbar-thumb {
+			background-color: $FadedClassPrototypeBorderB_Black;
+			}
+		.BlackTheme .NDClassPrototype .CPEntry.Parent::-webkit-scrollbar-track,
+		.BlackTheme .NDClassPrototype .CPEntry.Child::-webkit-scrollbar-track {
+			background-color: $FadedClassPrototypeBackground_Black;
+			}
+
 
 /* --- Interfaces --- */
 
@@ -2261,6 +2398,74 @@ $InterfacePrototypeSecondaryScrollbar: #AFAFC9;
 		.NDClassPrototype .CPEntry.TInterface.Parent::-webkit-scrollbar-thumb,
 		.NDClassPrototype .CPEntry.TInterface.Child::-webkit-scrollbar-thumb {
 			background-color: $InterfacePrototypeSecondaryScrollbar;
+			}
+
+$InterfacePrototypeBackground_Dark: #33334B;
+$InterfacePrototypeBorderA_Dark: #6D6D8F;
+$InterfacePrototypeBorderB_Dark: #515178;
+
+$FadedInterfacePrototypeBackground_Dark: #2B2B3E;
+$FadedInterfacePrototypeBorderA_Dark: #6C6C8C;
+$FadedInterfacePrototypeBorderB_Dark: #4B4B6B;
+
+.DarkTheme .NDClassPrototype .CPEntry.TInterface {
+	border-color: $InterfacePrototypeBorderA_Dark $InterfacePrototypeBorderB_Dark $InterfacePrototypeBorderB_Dark $InterfacePrototypeBorderA_Dark;
+	background-color: $InterfacePrototypeBackground_Dark;
+	scrollbar-color: $InterfacePrototypeBorderB_Dark $InterfacePrototypeBackground_Dark;
+	}
+	.DarkTheme .NDClassPrototype .CPEntry.TInterface::-webkit-scrollbar-thumb {
+		background-color: $InterfacePrototypeBorderB_Dark;
+		}
+	.DarkTheme .NDClassPrototype .CPEntry.TInterface::-webkit-scrollbar-track {
+		background-color: $InterfacePrototypeBackground_Dark;
+		}
+	.DarkTheme .NDClassPrototype .CPEntry.TInterface.Parent,
+	.DarkTheme .NDClassPrototype .CPEntry.TInterface.Child {
+		border-color: $FadedInterfacePrototypeBorderA_Dark $FadedInterfacePrototypeBorderB_Dark $FadedInterfacePrototypeBorderB_Dark $FadedInterfacePrototypeBorderA_Dark;
+		background-color: $FadedInterfacePrototypeBackground_Dark;
+		scrollbar-color: $FadedInterfacePrototypeBorderB_Dark $FadedInterfacePrototypeBackground_Dark;
+		}
+		.DarkTheme .NDClassPrototype .CPEntry.TInterface.Parent::-webkit-scrollbar-thumb,
+		.DarkTheme .NDClassPrototype .CPEntry.TInterface.Child::-webkit-scrollbar-thumb {
+			background-color: $FadedInterfacePrototypeBorderB_Dark;
+			}
+		.DarkTheme .NDClassPrototype .CPEntry.TInterface.Parent::-webkit-scrollbar-track,
+		.DarkTheme .NDClassPrototype .CPEntry.TInterface.Child::-webkit-scrollbar-track {
+			background-color: $FadedInterfacePrototypeBackground_Dark;
+			}
+
+$InterfacePrototypeBackground_Black: #29293F;
+$InterfacePrototypeBorderA_Black: #7D7D98;
+$InterfacePrototypeBorderB_Black: #646484;
+
+$FadedInterfacePrototypeBackground_Black: #222230;
+$FadedInterfacePrototypeBorderA_Black: #656583;
+$FadedInterfacePrototypeBorderB_Black: #4C4C65;
+
+.BlackTheme .NDClassPrototype .CPEntry.TInterface {
+	border-color: $InterfacePrototypeBorderA_Black $InterfacePrototypeBorderB_Black $InterfacePrototypeBorderB_Black $InterfacePrototypeBorderA_Black;
+	background-color: $InterfacePrototypeBackground_Black;
+	scrollbar-color: $InterfacePrototypeBorderB_Black $InterfacePrototypeBackground_Black;
+	}
+	.BlackTheme .NDClassPrototype .CPEntry.TInterface::-webkit-scrollbar-thumb {
+		background-color: $InterfacePrototypeBorderB_Black;
+		}
+	.BlackTheme .NDClassPrototype .CPEntry.TInterface::-webkit-scrollbar-track {
+		background-color: $InterfacePrototypeBackground_Black;
+		}
+	.BlackTheme .NDClassPrototype .CPEntry.TInterface.Parent,
+	.BlackTheme .NDClassPrototype .CPEntry.TInterface.Child {
+		border-color: $FadedInterfacePrototypeBorderA_Black $FadedInterfacePrototypeBorderB_Black $FadedInterfacePrototypeBorderB_Black $FadedInterfacePrototypeBorderA_Black;
+		background-color: $FadedInterfacePrototypeBackground_Black;
+		scrollbar-color: $FadedInterfacePrototypeBorderB_Black $FadedInterfacePrototypeBackground_Black;
+		}
+		.BlackTheme .NDClassPrototype .CPEntry.TInterface.Parent::-webkit-scrollbar-thumb,
+		.BlackTheme .NDClassPrototype .CPEntry.TInterface.Child::-webkit-scrollbar-thumb {
+			background-color: $FadedInterfacePrototypeBorderB_Black;
+			}
+		.BlackTheme .NDClassPrototype .CPEntry.TInterface.Parent::-webkit-scrollbar-track,
+		.BlackTheme .NDClassPrototype .CPEntry.TInterface.Child::-webkit-scrollbar-track {
+			background-color: $FadedInterfacePrototypeBackground_Black;
 			}
 
 
