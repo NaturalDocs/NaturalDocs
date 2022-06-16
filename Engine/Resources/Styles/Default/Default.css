@@ -1826,16 +1826,13 @@ $FunctionPrototypeBorder_Black: $FunctionPrototypeBorder_Dark;
 	.DarkTheme .TFunction .SuEntryIcon,
 	.DarkTheme .TOperator .SuEntryIcon,
 	.DarkTheme .TFunction .SeEntryIcon,
-	.DarkTheme .TOperator .SeEntryIcon {
-		background-color: #232323;
-		border-color: #3B3B3B;
-		}
+	.DarkTheme .TOperator .SeEntryIcon,
 	.BlackTheme .TFunction .SuEntryIcon,
 	.BlackTheme .TOperator .SuEntryIcon,
 	.BlackTheme .TFunction .SeEntryIcon,
 	.BlackTheme .TOperator .SeEntryIcon {
-		background-color: #1C1C1C;
-		border-color: #363636;
+		background-color: #272727;
+		border-color: #474747;
 		}
 
 
@@ -1864,9 +1861,9 @@ $PropertyPrototypeBorder: #C4C4EC;
 		border: 1px solid #AAAAE8;
 		}
 
-$PropertyPrototypeBackground_Dark: #28283D;
-$PropertyPrototypeBackground_Black: #171723;
-$PropertyPrototypeBorder_Dark: #404062;
+$PropertyPrototypeBackground_Dark: #282840;
+$PropertyPrototypeBackground_Black: #171725;
+$PropertyPrototypeBorder_Dark: #404067;
 $PropertyPrototypeBorder_Black: $PropertyPrototypeBorder_Dark;
 
 	.DarkTheme .TProperty .NDPrototype {
@@ -1894,14 +1891,11 @@ $PropertyPrototypeBorder_Black: $PropertyPrototypeBorder_Dark;
 			}
 
 	.DarkTheme .TProperty .SuEntryIcon,
-	.BlackTheme .TProperty .SuEntryIcon {
-		background-color: $PropertyPrototypeBackground_Dark;
-		border: 1px solid $PropertyPrototypeBorder_Dark;
-		}
+	.BlackTheme .TProperty .SuEntryIcon,
 	.DarkTheme .TProperty .SeEntryIcon,
 	.BlackTheme .TProperty .SeEntryIcon {
-		background-color: #2B2B47;
-		border: 1px solid #41416D;
+		background-color: #2F2F4B;
+		border: 1px solid #535386;
 		}
 
 
@@ -1973,16 +1967,13 @@ $VariablePrototypeBorder_Black: $VariablePrototypeBorder_Dark;
 	.DarkTheme .TVariable .SuEntryIcon,
 	.DarkTheme .TDatabaseField .SuEntryIcon,
 	.BlackTheme .TVariable .SuEntryIcon,
-	.BlackTheme .TDatabaseField .SuEntryIcon {
-		background-color: $VariablePrototypeBackground_Dark;
-		border: 1px solid $VariablePrototypeBorder_Dark;
-		}
+	.BlackTheme .TDatabaseField .SuEntryIcon,
 	.DarkTheme .TVariable .SeEntryIcon,
 	.DarkTheme .TDatabaseField .SeEntryIcon,
 	.BlackTheme .TVariable .SeEntryIcon,
 	.BlackTheme .TDatabaseField .SeEntryIcon {
-		background-color: #303020;
-		border: 1px solid #4F4F33;
+		background-color: #3A3A2A;
+		border: 1px solid #65654A;
 		}
 
 
@@ -2011,7 +2002,7 @@ $ConstantPrototypeBorder: #BABABA;
 		border: 1px solid #818181;
 		}
 
-$ConstantPrototypeBackground_Dark: #0E0E0E;
+$ConstantPrototypeBackground_Dark: #131313;
 $ConstantPrototypeBackground_Black: #000000;
 $ConstantPrototypeBorder_Dark: #3B3B3B;
 $ConstantPrototypeBorder_Black: $ConstantPrototypeBorder_Dark;
@@ -2028,13 +2019,10 @@ $ConstantPrototypeBorder_Black: $ConstantPrototypeBorder_Dark;
 			background-color: $ConstantPrototypeBackground_Dark;
 			}
 
-		.DarkTheme .TConstant .SuEntryIcon {
-			background-color: #0F0F0F;
-			border: 1px solid $ConstantPrototypeBorder_Dark;
-			}
+		.DarkTheme .TConstant .SuEntryIcon,
 		.DarkTheme .TConstant .SeEntryIcon {
-			background-color: #000000;
-			border: 1px solid $ConstantPrototypeBorder_Dark;
+			background-color: #0C0C0C;
+			border: 1px solid #444444;
 			}
 
 	.BlackTheme .TConstant .NDPrototype {
@@ -2051,8 +2039,8 @@ $ConstantPrototypeBorder_Black: $ConstantPrototypeBorder_Dark;
 
 		.BlackTheme .TConstant .SuEntryIcon,
 		.BlackTheme .TConstant .SeEntryIcon {
-			background-color: $ConstantPrototypeBackground_Black;
-			border: 1px solid $ConstantPrototypeBorder_Black;
+			background-color: #000000;
+			border: 1px solid #494949;
 			}
 
 
@@ -2137,18 +2125,15 @@ $TypePrototypeBorder_Black: $TypePrototypeBorder_Dark;
 		.DarkTheme .TDelegate .SuEntryIcon,
 		.BlackTheme .TType .SuEntryIcon,
 		.BlackTheme .TEnumeration .SuEntryIcon,
-		.BlackTheme .TDelegate .SuEntryIcon {
-			background-color: $TypePrototypeBackground_Dark;
-			border: 1px solid $TypePrototypeBorder_Dark;
-			}
+		.BlackTheme .TDelegate .SuEntryIcon,
 		.DarkTheme .TType .SeEntryIcon,
 		.DarkTheme .TEnumeration .SeEntryIcon,
 		.DarkTheme .TDelegate .SeEntryIcon,
 		.BlackTheme .TType .SeEntryIcon,
 		.BlackTheme .TEnumeration .SeEntryIcon,
 		.BlackTheme .TDelegate .SeEntryIcon {
-			background-color: #372320;
-			border: 1px solid #573733;
+			background-color: #3C2926;
+			border: 1px solid #684642;
 			}
 
 
@@ -2207,14 +2192,11 @@ $EventPrototypeBorder_Black: $EventPrototypeBorder_Dark;
 			}
 
 		.DarkTheme .TEvent .SuEntryIcon,
-		.BlackTheme .TEvent .SuEntryIcon {
-			background-color: $EventPrototypeBackground_Dark;
-			border: 1px solid $EventPrototypeBorder_Dark;
-			}
+		.BlackTheme .TEvent .SuEntryIcon,
 		.DarkTheme .TEvent .SeEntryIcon,
 		.BlackTheme .TEvent .SeEntryIcon {
-			background-color: #1E341E;
-			border: 1px solid #2D4D2D;
+			background-color: #243924;
+			border: 1px solid #3C5E3C;
 			}
 
 
