@@ -2514,6 +2514,16 @@ $FadedInterfacePrototypeBorderB_Black: #4C4C65;
 	border-radius: 1ex;
 	box-shadow: $PopupShadow;
 	}
+	.DarkTheme .NDToolTip {
+		background-color: $SummaryBackgroundColor_Dark;
+		border-color: $SearchOutlineColor_Dark;
+		box-shadow: $PopupShadow_Dark;
+		}
+	.BlackTheme .NDToolTip {
+		background-color: #0C0C0C;
+		border-color: $MenuLineColor_Black;
+		box-shadow: $PopupShadow_Black;
+		}
 
 	.NDToolTip .NDPrototype,
 	.NDToolTip .NDClassPrototype {
