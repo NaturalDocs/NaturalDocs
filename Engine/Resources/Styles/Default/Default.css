@@ -208,6 +208,12 @@ html {
 	background-color: $MenuBackgroundColor;
 	margin: 0; padding: 0;
 	}
+	.DarkTheme.NDFramePage body {
+		background-color: $MenuBackgroundColor_Dark;
+		}
+	.BlackTheme.NDFramePage body {
+		background-color: $MenuBackgroundColor_Black;
+		}
 
 a:link, a:visited {
 	text-decoration: none;
@@ -249,6 +255,13 @@ td {
 	height: 40px;
 	background: URL("images/menu-loading.gif") no-repeat center center;
 	}
+	.DarkTheme #NDLoadingNotice {
+		background-image: URL("images/menu-loading-dark.gif");
+		}
+	.BlackTheme #NDLoadingNotice {
+		background-image: URL("images/menu-loading-black.gif");
+		}
+
 #NDJavaScriptRequiredNotice {
 	margin: 20px;
 	text-align: center;
@@ -286,12 +299,14 @@ td {
 	}
 	.DarkTheme #NDHeader {
 		background-image: linear-gradient(to top, #2C2C4C 0%, #1F1F36 100%);
+		border-bottom-color: #2C2C4C;
 
 		/* Use an inset box shadow to add a horizontal line */
 		box-shadow: 0 -1px 0 0 #585894 inset;
 		}
 	.BlackTheme #NDHeader {
 		background-image: linear-gradient(to top, $MenuHoverBackgroundColor_Black 0%, #000000 66%);
+		border-bottom-color: $MenuHoverBackgroundColor_Black;
 		box-shadow: 0 -1px 0 0 $MenuLineColor_Black inset;
 		}
 
@@ -786,6 +801,12 @@ td {
 		height: 20px;
 		background: URL("images/menu-loading.gif") no-repeat center bottom;
 		}
+		.DarkTheme .MLoadingNotice {
+			background-image: URL("images/menu-loading-dark.gif");
+			}
+		.BlackTheme .MLoadingNotice {
+			background-image: URL("images/menu-loading-black.gif");
+			}
 
 	#MTabBar {
 		background-color: $MenuLineColor;
@@ -1154,6 +1175,12 @@ td {
 		height: 20px;
 		background: URL("images/summary-loading.gif") no-repeat center bottom;
 		}
+		.DarkTheme .SuLoadingNotice {
+			background-image: URL("images/summary-loading-dark.gif");
+			}
+		.BlackTheme .SuLoadingNotice {
+			background-image: URL("images/menu-loading-black.gif");
+			}
 
 	.SuEntry {
 		display: block;
