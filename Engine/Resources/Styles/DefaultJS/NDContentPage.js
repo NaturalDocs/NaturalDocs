@@ -84,9 +84,15 @@ var NDContentPage = new function ()
 
 		var ttLocation = location.href;
 
-		var hashIndex = ttLocation.indexOf('#');
-		if (hashIndex != -1)
-			{  ttLocation = ttLocation.substr(0, hashIndex);  }
+		var queryIndex = ttLocation.indexOf('?');
+		if (queryIndex != -1)
+			{  ttLocation = ttLocation.substr(0, queryIndex);  }
+		else
+			{
+			var hashIndex = ttLocation.indexOf('#');
+			if (hashIndex != -1)
+				{  ttLocation = ttLocation.substr(0, hashIndex);  }
+			}
 
 		// Replace .html with -ToolTips.js
 		ttLocation = ttLocation.substr(0, ttLocation.length - 5) + "-ToolTips.js";
