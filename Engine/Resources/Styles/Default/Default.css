@@ -27,13 +27,21 @@
 		$ContentTextColor_Dark: #DCDCDC;  /* same as Visual Studio */
 		$ContentTextColor_Black: #F4F4F4;
 
-	$ContentScrollbarColors: #CCCCCC #F0F0F0;
-		$ContentScrollbarColors_Dark: #3D3D3D #262626;
-		$ContentScrollbarColors_Black: $MenuHoverBackgroundColor_Black #040404;
 
+	$ContentScrollbarThumbColor: #CCCCCC;
+	$ContentScrollbarTrackColor: #F0F0F0;
+
+	$ContentScrollbarThumbColor_Dark: #424242;
+	$ContentScrollbarTrackColor_Dark: #262626;
+
+	$ContentScrollbarThumbColor_Black: #343434;
+	$ContentScrollbarTrackColor_Black: #040404;
+
+	
 	$SummaryContentBorderColor: #E8E8E8;
 		$SummaryContentBorderColor_Dark: #363636;
 		$SummaryContentBorderColor_Black: $MenuLineColor_Black;
+
 
 	$SummaryBackgroundColor: #F8F8F8;
 		$SummaryBackgroundColor_Dark: #161616;
@@ -48,13 +56,21 @@
 		$SummaryHoverBackgroundColor_Dark: #2C2C2C;
 		$SummaryHoverBackgroundColor_Black: $MenuHoverBackgroundColor_Black;
 
-	$SummaryScrollbarColors: #D0D0D0 #F0F0F0;
-		$SummaryScrollbarColors_Dark: $SummaryContentBorderColor_Dark #1C1C1C;
-		$SummaryScrollbarColors_Black: $ContentScrollbarColors_Black;
+
+	$SummaryScrollbarThumbColor: #D0D0D0;
+	$SummaryScrollbarTrackColor: #F0F0F0;
+
+	$SummaryScrollbarThumbColor_Dark: $SummaryContentBorderColor_Dark;
+	$SummaryScrollbarTrackColor_Dark: #1C1C1C;
+
+	$SummaryScrollbarThumbColor_Black: $MenuHoverBackgroundColor_Black;
+	$SummaryScrollbarTrackColor_Black: #040404;
+
 
 	$MenuSummaryBorderColor: #D8D8D8;
 		$MenuSummaryBorderColor_Dark: $MenuLineColor_Dark;
 		$MenuSummaryBorderColor_Black: $MenuLineColor_Black;
+
 
 	$MenuBackgroundColor: #E0E0E0;
 		$MenuBackgroundColor_Dark: #0D0D0D;
@@ -78,9 +94,16 @@
 	$MenuHoverTextColor_Dark: $ContentTextColor_Dark;
 	$MenuHoverTextColor_Black: $ContentTextColor_Black;
 
-	$MenuScrollbarColors: #C8C8C8 #E8E8E8;
-		$MenuScrollbarColors_Dark: $MenuSummaryBorderColor_Dark #131313;
-		$MenuScrollbarColors_Black: $ContentScrollbarColors_Black;
+
+	$MenuScrollbarThumbColor: #C8C8C8;
+	$MenuScrollbarTrackColor: #E8E8E8;
+
+	$MenuScrollbarThumbColor_Dark: $MenuSummaryBorderColor_Dark;
+	$MenuScrollbarTrackColor_Dark: #131313;
+
+	$MenuScrollbarThumbColor_Black: $MenuHoverBackgroundColor_Black;
+	$MenuScrollbarTrackColor_Black: #040404;
+
 
 	$FooterTextColor: #909090;
 		$FooterTextColor_Dark: #909090;  /* going darker makes it difficult to read */
@@ -186,22 +209,47 @@ html {
 	/* Needed to allow full height gradients on the home page. */
 	height: 100%;
 
-	/* Can't apply to iframe or body.NDContentPage, needs to be on HTML in Firefox.*/
-	scrollbar-color: $ContentScrollbarColors;
-
 	/* This becomes the base for all rem measurements */
 	font: $ContentFontSize $ContentFontFamily;
-	}
-	html.DarkTheme { 
-		scrollbar-color: $ContentScrollbarColors_Dark;
 
-		/* Dark scrollbars on Chrome.  Isn't as good as custom colors, but you can't manually set colors without losing the arrow buttons. */
-		/* Firefox will still choose scrollbar-color over this. */
-		color-scheme: dark;
+	/* Can't apply to iframe or body.NDContentPage, needs to be on HTML in Firefox.*/
+	scrollbar-color: $ContentScrollbarThumbColor $ContentScrollbarTrackColor;
+	}
+	html::-webkit-scrollbar {
+		width: 18px;
 		}
+	html::-webkit-scrollbar-track,
+	html::-webkit-scrollbar-corner {  
+		background-color: $ContentBackgroundColor; 
+		}
+	html::-webkit-scrollbar-thumb {  
+		background-color: $ContentScrollbarThumbColor; 
+		border: 4px solid $ContentBackgroundColor;
+		border-radius: 10px;
+		}
+
+	html.DarkTheme { 
+		scrollbar-color: $ContentScrollbarThumbColor_Dark $ContentScrollbarTrackColor_Dark;
+		}
+	html.DarkTheme::-webkit-scrollbar-track,
+	html.DarkTheme::-webkit-scrollbar-corner {  
+		background-color: $ContentBackgroundColor_Dark; 
+		}
+	html.DarkTheme::-webkit-scrollbar-thumb {  
+		background-color: $ContentScrollbarThumbColor_Dark; 
+		border-color: $ContentBackgroundColor_Dark;
+		}
+
 	html.BlackTheme { 
-		scrollbar-color: $ContentScrollbarColors_Black;
-		color-scheme: dark;
+		scrollbar-color: $ContentScrollbarThumbColor_Black $ContentScrollbarTrackColor_Black;
+		}
+	html.BlackTheme::-webkit-scrollbar-track,
+	html.BlackTheme::-webkit-scrollbar-corner {  
+		background-color: $ContentBackgroundColor_Black; 
+		}
+	html.BlackTheme::-webkit-scrollbar-thumb {  
+		background-color: $ContentScrollbarThumbColor_Black; 
+		border-color: $ContentBackgroundColor_Black;
 		}
 
 .NDFramePage body {
@@ -549,29 +597,56 @@ td {
 	border-style: solid;
 	border-width: 1px;
 	border-color: #BCBCBC #747474 #747474 #BCBCBC;
-	scrollbar-color: $ContentScrollbarColors;
 	box-shadow: $PopupShadow;
+
+	scrollbar-color: $ContentScrollbarThumbColor $ContentScrollbarTrackColor;
 	}
+	#NDSearchResults::-webkit-scrollbar {
+		width: 15px;
+		}
+	#NDSearchResults::-webkit-scrollbar-track,
+	#NDSearchResults::-webkit-scrollbar-corner {  
+		background-color: $ContentBackgroundColor; 
+		}
+	#NDSearchResults::-webkit-scrollbar-thumb {  
+		background-color: $ContentScrollbarThumbColor; 
+		border: 4px solid $ContentBackgroundColor;
+		border-radius: 8px;
+		}
+
 	.DarkTheme #NDSearchResults {
 		/* Better visual separation than using $ContentBackgroundColor_Dark. */
 		background-color: $SummaryBackgroundColor_Dark;
 
 		border-color: $SearchOutlineColor_Dark;
-		scrollbar-color: $SummaryScrollbarColors_Dark;
-
-		/* Dark scrollbars on Chrome.  Isn't as good as custom colors, but you can't manually set colors without losing the arrow buttons. */
-		/* Firefox will still choose scrollbar-color over this. */
-		color-scheme: dark;
-
 		box-shadow: $PopupShadow_Dark;
+
+		scrollbar-color: $ContentScrollbarThumbColor_Dark $SummaryScrollbarTrackColor_Dark;
 		}
+		.DarkTheme #NDSearchResults::-webkit-scrollbar-track,
+		.DarkTheme #NDSearchResults::-webkit-scrollbar-corner {  
+			background-color: $SummaryBackgroundColor_Dark; 
+			}
+		.DarkTheme #NDSearchResults::-webkit-scrollbar-thumb {  
+			background-color: $ContentScrollbarThumbColor_Dark; 
+			border-color: $SummaryBackgroundColor_Dark;
+			}
+
 	.BlackTheme #NDSearchResults {
 		background-color: $ContentBackgroundColor_Black;
 		border-color: $MenuLineColor_Black;
-		scrollbar-color: $ContentScrollbarColors_Black;
-		color-scheme: dark;
 		box-shadow: $PopupShadow_Black;
+
+		scrollbar-color: $ContentScrollbarThumbColor_Black $ContentScrollbarTrackColor_Black;
 		}
+		.BlackTheme #NDSearchResults::-webkit-scrollbar-track,
+		.BlackTheme #NDSearchResults::-webkit-scrollbar-corner {  
+			background-color: $ContentBackgroundColor_Black; 
+			}
+		.BlackTheme #NDSearchResults::-webkit-scrollbar-thumb {  
+			background-color: $ContentScrollbarThumbColor_Black; 
+			border-color: $ContentBackgroundColor_Black;
+			}
 
 	.SeEntry {
 		padding: .05em .75rem .15em 1.65rem;
@@ -768,25 +843,51 @@ td {
 #NDMenu {
 	font: $MenuFontSize $MenuFontFamily;
 	background-color: $MenuBackgroundColor;
-	scrollbar-color: $MenuScrollbarColors;
 	z-index: $NDMenuZIndex;
 	overflow: auto;
 	width: 15rem;
 	display: none;  /* Default for loading page, will be changed by JavaScript once the scripts are loaded */
+
+	scrollbar-color: $MenuScrollbarThumbColor $MenuScrollbarTrackColor;
 	}
+	#NDMenu::-webkit-scrollbar {
+		width: 15px;  
+		}
+	#NDMenu::-webkit-scrollbar-track,
+	#NDMenu::-webkit-scrollbar-corner {  
+		background-color: $MenuBackgroundColor; 
+		}
+	#NDMenu::-webkit-scrollbar-thumb {  
+		background-color: $MenuScrollbarThumbColor; 
+		border: 3px solid $MenuBackgroundColor;
+		border-radius: 8px;
+		}
+
 	.DarkTheme #NDMenu { 
 		background-color: $MenuBackgroundColor_Dark; 
-		scrollbar-color: $MenuScrollbarColors_Dark;
-
-		/* Dark scrollbars on Chrome.  Isn't as good as custom colors, but you can't manually set colors without losing the arrow buttons. */
-		/* Firefox will still choose scrollbar-color over this. */
-		color-scheme: dark;
+		scrollbar-color: $MenuScrollbarThumbColor_Dark $MenuScrollbarTrackColor_Dark;
 		}
+		.DarkTheme #NDMenu::-webkit-scrollbar-track,
+		.DarkTheme #NDMenu::-webkit-scrollbar-corner {  
+			background-color: $MenuBackgroundColor_Dark; 
+			}
+		.DarkTheme #NDMenu::-webkit-scrollbar-thumb {  
+			background-color: $MenuScrollbarThumbColor_Dark; 
+			border-color: $MenuBackgroundColor_Dark;
+			}
+
 	.BlackTheme #NDMenu { 
 		background-color: $MenuBackgroundColor_Black; 
-		scrollbar-color: $MenuScrollbarColors_Black;
-		color-scheme: dark;
+		scrollbar-color: $MenuScrollbarThumbColor_Black $MenuScrollbarTrackColor_Black;
 		}
+		.BlackTheme #NDMenu::-webkit-scrollbar-track,
+		.BlackTheme #NDMenu::-webkit-scrollbar-corner {  
+			background-color: $MenuBackgroundColor_Black; 
+			}
+		.BlackTheme #NDMenu::-webkit-scrollbar-thumb {  
+			background-color: $MenuScrollbarThumbColor_Black; 
+			border-color: $MenuBackgroundColor_Black;
+			}
 
 	#NDMenu a:hover,
 	#NDMenu a:active {
@@ -1140,31 +1241,59 @@ td {
 
 #NDSummary {
 	background-color: $SummaryBackgroundColor;
-	scrollbar-color: $SummaryScrollbarColors;
 	border-left: 1px solid $MenuSummaryBorderColor;
 	border-right: 1px solid $SummaryContentBorderColor;
 	z-index: $NDSummaryZIndex;
 	overflow: auto;
 	width: 15rem;
 	display: none;  /* Default for loading page, will be changed by JavaScript once the scripts are loaded */
+
+	scrollbar-color: $SummaryScrollbarThumbColor $SummaryScrollbarTrackColor;
 	}
+	#NDSummary::-webkit-scrollbar {
+		width: 15px;
+		}
+	#NDSummary::-webkit-scrollbar-track,
+	#NDSummary::-webkit-scrollbar-corner {  
+		background-color: $SummaryBackgroundColor; 
+		}
+	#NDSummary::-webkit-scrollbar-thumb {  
+		background-color: $SummaryScrollbarThumbColor; 
+		border: 3px solid $SummaryBackgroundColor;
+		border-radius: 8px;
+		}
+
 	.DarkTheme #NDSummary { 
 		background-color: $SummaryBackgroundColor_Dark; 
 		border-right-color: $SummaryContentBorderColor_Dark;
 		border-left-color: $MenuSummaryBorderColor_Dark;
-		scrollbar-color: $SummaryScrollbarColors_Dark;
 
-		/* Dark scrollbars on Chrome.  Isn't as good as custom colors, but you can't manually set colors without losing the arrow buttons. */
-		/* Firefox will still choose scrollbar-color over this. */
-		color-scheme: dark;
+		scrollbar-color: $SummaryScrollbarThumbColor_Dark $SummaryScrollbarTrackColor_Dark;
 		}
+		.DarkTheme #NDSummary::-webkit-scrollbar-track,
+		.DarkTheme #NDSummary::-webkit-scrollbar-corner {  
+			background-color: $SummaryBackgroundColor_Dark; 
+			}
+		.DarkTheme #NDSummary::-webkit-scrollbar-thumb {  
+			background-color: $SummaryScrollbarThumbColor_Dark; 
+			border-color: $SummaryBackgroundColor_Dark;
+			}
+
 	.BlackTheme #NDSummary { 
 		background-color: $SummaryBackgroundColor_Black; 
 		border-right-color: $SummaryContentBorderColor_Black;
 		border-left-color: $MenuSummaryBorderColor_Black;
-		scrollbar-color: $SummaryScrollbarColors_Black;
-		color-scheme: dark;
+
+		scrollbar-color: $SummaryScrollbarThumbColor_Black $SummaryScrollbarTrackColor_Black;
 		}
+		.BlackTheme #NDSummary::-webkit-scrollbar-track,
+		.BlackTheme #NDSummary::-webkit-scrollbar-corner {  
+			background-color: $SummaryBackgroundColor_Black; 
+			}
+		.BlackTheme #NDSummary::-webkit-scrollbar-thumb {  
+			background-color: $SummaryScrollbarThumbColor_Black; 
+			border-color: $SummaryBackgroundColor_Black;
+			}
 
 	#NDSummary a:hover,
 	#NDSummary a:active {
@@ -2547,6 +2676,7 @@ $FadedInterfacePrototypeBorderB_Black: #4C4C65;
 */
 
 .NDToolTip {
+	color: $ContentTextColor;
 	background-color: #FCFCE8;  /* match variable prototype background */
 	border-style: solid;
 	border-width: 1px;
@@ -2557,11 +2687,13 @@ $FadedInterfacePrototypeBorderB_Black: #4C4C65;
 	box-shadow: $PopupShadow;
 	}
 	.DarkTheme .NDToolTip {
+		color: $ContentTextColor_Dark;
 		background-color: $SummaryBackgroundColor_Dark;
 		border-color: $SearchOutlineColor_Dark;
 		box-shadow: $PopupShadow_Dark;
 		}
 	.BlackTheme .NDToolTip {
+		color: $ContentTextColor_Black;
 		background-color: #0C0C0C;
 		border-color: $MenuLineColor_Black;
 		box-shadow: $PopupShadow_Black;
