@@ -356,8 +356,10 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 		// Group: Static Variables
 		// __________________________________________________________________________
 
-		static protected Regex TableTagsRegex = new Regex("</?(?:table|tr|td)[^>]*>", RegexOptions.Compiled | RegexOptions.Singleline);
-		static protected Regex IDNumbersRegex = new Regex(" id=\"ND(?:Class)?Prototype[0-9]+\"", RegexOptions.Compiled | RegexOptions.Singleline);
+		static protected Regex TableTagsRegex = new Regex("</?(?:table|tr|td)[^>]*>",
+																					RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant);
+		static protected Regex IDNumbersRegex = new Regex(" id=\"ND(?:Class)?Prototype[0-9]+\"",
+																					   RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant);
 
 		}
 	}

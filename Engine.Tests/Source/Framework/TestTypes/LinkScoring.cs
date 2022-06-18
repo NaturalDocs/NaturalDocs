@@ -640,11 +640,11 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 			}
 
 		protected static Regex GetPropertyRegex = new Regex(@"^[ \t]*(Topic|Link)\.([a-z]+)[ \t]*=[ \t]*(null|"".*"")[ \t]*$",
-																				  RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.IgnoreCase);
+																				  RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 		protected static Regex AddPrefixRegex = new Regex(@"^[ \t]*Link\.Using[ \t]*(\+?=)[ \t]*Add Prefix ""(.*)""[ \t]*$",
-																			  RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.IgnoreCase);
+																			  RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 		protected static Regex ReplacePrefixRegex = new Regex(@"^[ \t]*Link\.Using[ \t]*(\+?=)[ \t]*Replace Prefix ""(.*)"" with ""(.*)""[ \t]*$",
-																					RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.IgnoreCase);
+																					RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
 		}
 	}

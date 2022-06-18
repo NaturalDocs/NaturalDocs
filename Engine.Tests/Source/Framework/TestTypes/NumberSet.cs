@@ -143,9 +143,12 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 			return output.ToString();
 			}
 
-		protected static Regex GetBracesRegex = new Regex(@"{.*?}", RegexOptions.Compiled | RegexOptions.Singleline);
-		protected static Regex GetNumberRegex = new Regex("[0-9]+", RegexOptions.Compiled | RegexOptions.Singleline);
-		protected static Regex ExtractRangeRegex = new Regex("Extract ([0-9]+), ?([0-9]+)", RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.IgnoreCase);
+		protected static Regex GetBracesRegex = new Regex(@"{.*?}",
+																					 RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant);
+		protected static Regex GetNumberRegex = new Regex("[0-9]+",
+																					   RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant);
+		protected static Regex ExtractRangeRegex = new Regex("Extract ([0-9]+), ?([0-9]+)",
+																						 RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
 		}
 	}

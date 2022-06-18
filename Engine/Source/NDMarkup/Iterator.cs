@@ -497,7 +497,8 @@ namespace CodeClear.NaturalDocs.Engine.NDMarkup
 			private static System.Text.RegularExpressions.Regex TagValidationRegex
 				= new System.Text.RegularExpressions.Regex("^</?[a-z]+(?: [a-z]+=\"[^<>\"]*\")*>$",
 																								  System.Text.RegularExpressions.RegexOptions.Compiled |
-																								  System.Text.RegularExpressions.RegexOptions.Singleline);
+																								  System.Text.RegularExpressions.RegexOptions.Singleline |
+																								  System.Text.RegularExpressions.RegexOptions.CultureInvariant);
 		#endif
 
 		}
