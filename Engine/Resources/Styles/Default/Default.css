@@ -1630,11 +1630,11 @@ td {
 		overflow: auto;
 
 		margin: $DiagramSpacing $Indent;
-		border: 1px solid #7C7C7C;
+		border: 1px solid #C0C0C0;
 		padding: $CodePadding;
 		}
 		.DarkTheme .CTopic pre { border-color: #808080; }
-		.BlackTheme .CTopic pre { border-color: #7E7E7E; }
+		.BlackTheme .CTopic pre { border-color: #787878; }
 
 		.CTopic pre.CCode {
 			color: $ContentTextColor;
@@ -2649,24 +2649,40 @@ $FadedInterfacePrototypeBorderB_Black: #4C4C65;
 .SHComment {
 	color: #808080;
 	}
+	.DarkTheme .SHComment { color: #989898; }
+	.BlackTheme .SHComment { color: #A0A0A0; }
+
 .SHKeyword {
 	color: #880000;
 	}
+	.DarkTheme .SHKeyword { color: #F0B0B0; }
+	.BlackTheme .SHKeyword { color: #FFB8B8; }
+
 .SHNumber,
 .SHString {
 	color: #000088;
 	}
+	.DarkTheme .SHNumber,
+	.DarkTheme .SHString { color: #B0B0F0; }
+	.BlackTheme .SHNumber,
+	.BlackTheme .SHString { color: #B8B8FF; }
+
 .SHPreprocessingDirective {
-	color: #000000;
+	color: $ContentTextColor;
 	font-weight: bold;
 	}
+	.DarkTheme .SHPreprocessingDirective { color: $ContentTextColor_Dark; }
+	.BlackTheme .SHPreprocessingDirective { color: $ContentTextColor_Black; }
+
 .SHMetadata {
 	color: #808000;
 	}
-	.CPPrePrototypeLine .SHMetadata {
-		/*  Normal color is too light to easily read at .5 opacity  */
-		color: #505000;
-		}
+	.DarkTheme .SHMetadata { color: #C0C080; }
+	.BlackTheme .SHMetadata { color: #C8C888; }
+
+	/* The normal color is too light to easily read at .5 opacity */
+	/* The dark and black theme colors are fine at .7 opacity, so only apply this to light */
+	.LightTheme .CPPrePrototypeLine .SHMetadata { color: #505000; }
 
 
 
