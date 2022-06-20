@@ -413,7 +413,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			else if (TryToSkipIdentifier(ref lookahead, mode, PrototypeParsingType.Type))
 				{
 				if (lookahead.Character == '(')
-					{  TryToSkipTypeParetheses(ref lookahead, mode);  }
+					{  TryToSkipTypeParentheses(ref lookahead, mode);  }
 				}
 
 			if (lookahead > end)
@@ -442,7 +442,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					TryToSkipWhitespace(ref lookahead, true, mode);
 
 					if (lookahead < end)
-						{  TryToSkipTypeParetheses(ref lookahead, mode);  }
+						{  TryToSkipTypeParentheses(ref lookahead, mode);  }
 					}
 				else if (TryToSkipWhitespace(ref lookahead, true, mode) ||
 						   TryToSkipString(ref lookahead, mode))
@@ -519,7 +519,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					TryToSkipWhitespace(ref lookahead, true, mode);
 
 					if (lookahead < end)
-						{  TryToSkipTypeParetheses(ref lookahead, mode);  }
+						{  TryToSkipTypeParentheses(ref lookahead, mode);  }
 					}
 				else if (TryToSkipWhitespace(ref lookahead, true, mode) ||
 						   TryToSkipString(ref lookahead, mode))
@@ -772,7 +772,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 							{
 							if (beginningOfType < lookahead &&
 								beginningOfType.Character == '(')
-								{  TryToSkipTypeParetheses(ref beginningOfType, mode);  }
+								{  TryToSkipTypeParentheses(ref beginningOfType, mode);  }
 							}
 						else
 							{  beginningOfType.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.Type);  }
@@ -803,7 +803,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				else if (TryToSkipIdentifier(ref lookahead, mode, PrototypeParsingType.Type))
 					{
 					if (lookahead.Character == '(')
-						{  TryToSkipTypeParetheses(ref lookahead, mode);  }
+						{  TryToSkipTypeParentheses(ref lookahead, mode);  }
 					}
 				else
 					{
@@ -1237,7 +1237,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					TryToSkipWhitespace(ref lookahead, true, mode);
 					}
 
-				if (TryToSkipTypeParetheses(ref lookahead, mode) && lookahead < limit)
+				if (TryToSkipTypeParentheses(ref lookahead, mode) && lookahead < limit)
 					{  iterator = lookahead;  }
 
 				return true;
@@ -1287,7 +1287,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					{
 					TryToSkipWhitespace(ref lookahead, true, mode);
 
-					if (TryToSkipTypeParetheses(ref lookahead, mode) && lookahead < limit)
+					if (TryToSkipTypeParentheses(ref lookahead, mode) && lookahead < limit)
 						{  iterator = lookahead;  }
 					else if (OnAnyKeyword(lookahead, "BEGIN", "IS", "RETURN", "RETURNS", "DEFAULT"))
 						{  break;  }
@@ -1328,7 +1328,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipTypeParetheses (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+		protected bool TryToSkipTypeParentheses (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
 			if (iterator.Character != '(')
 				{  return false;  }
