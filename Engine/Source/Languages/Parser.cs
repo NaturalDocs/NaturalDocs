@@ -1024,7 +1024,34 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			if (language.Type == Language.LanguageType.Container)
 				{  throw new Exceptions.BadContainerOperation("SyntaxHighlight");  }
 
-			SimpleSyntaxHighlight(source);
+			TokenIterator iterator = source.FirstToken;
+
+			while (iterator.IsInBounds)
+				{
+				if (TryToSkipComment(ref iterator, ParseMode.SyntaxHighlight) ||
+					TryToSkipString(ref iterator, ParseMode.SyntaxHighlight) ||
+					TryToSkipNumber(ref iterator, ParseMode.SyntaxHighlight))
+					{
+					}
+				else if (iterator.FundamentalType == FundamentalType.Text || iterator.Character == '_')
+					{
+					TokenIterator endOfIdentifier = iterator;
+
+					do
+						{  endOfIdentifier.Next();  }
+					while (endOfIdentifier.FundamentalType == FundamentalType.Text ||
+							 endOfIdentifier.Character == '_');
+
+					string identifier = source.TextBetween(iterator, endOfIdentifier);
+
+					if (IsKeyword(identifier))
+						{  iterator.SetSyntaxHighlightingTypeByCharacters(SyntaxHighlightingType.Keyword, identifier.Length);  }
+
+					iterator = endOfIdentifier;
+					}
+				else
+					{  iterator.Next();  }
+				}
 			}
 
 
@@ -1353,7 +1380,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 */
 		virtual public bool IsBuiltInType (string type)
 			{
-			return defaultKeywords.Contains(type);
+			return IsKeyword(type);
 			}
 
 
@@ -4460,6 +4487,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		// __________________________________________________________________________
 
 
+		/* Function: IsKeyword
+		 * Returns whether the string is a keyword such as "class".
+		 */
+		protected bool IsKeyword (string text)
+			{
+			return defaultKeywords.Contains(text);
+			}
+
+
 		/* Function: TryToGetBlockComment
 		 *
 		 * If the iterator is on a line that starts with the opening symbol of a block comment, this function moves the iterator
@@ -5145,47 +5181,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 		// Group: Other Support Functions
 		// __________________________________________________________________________
-
-
-		/* Function: SimpleSyntaxHighlight
-		 * Applies syntax highlighting based on the passed keywords with the assumption that there's no unusual rules for
-		 * comments or strings, and there's nothing like unquoted regular expressions to confuse a simple parser.  If no
-		 * keywords are passed it uses <defaultKeywords>.
-		 */
-		protected void SimpleSyntaxHighlight (Tokenizer source, StringSet keywords = null)
-			{
-			if (keywords == null)
-				{  keywords = defaultKeywords;  }
-
-			TokenIterator iterator = source.FirstToken;
-
-			while (iterator.IsInBounds)
-				{
-				if (TryToSkipComment(ref iterator, ParseMode.SyntaxHighlight) ||
-					TryToSkipString(ref iterator, ParseMode.SyntaxHighlight) ||
-					TryToSkipNumber(ref iterator, ParseMode.SyntaxHighlight))
-					{
-					}
-				else if (iterator.FundamentalType == FundamentalType.Text || iterator.Character == '_')
-					{
-					TokenIterator endOfIdentifier = iterator;
-
-					do
-						{  endOfIdentifier.Next();  }
-					while (endOfIdentifier.FundamentalType == FundamentalType.Text ||
-							 endOfIdentifier.Character == '_');
-
-					string identifier = source.TextBetween(iterator, endOfIdentifier);
-
-					if (keywords.Contains(identifier))
-						{  iterator.SetSyntaxHighlightingTypeByCharacters(SyntaxHighlightingType.Keyword, identifier.Length);  }
-
-					iterator = endOfIdentifier;
-					}
-				else
-					{  iterator.Next();  }
-				}
-			}
 
 
 		/* Function: ValidateElements
