@@ -137,7 +137,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					 iterator.PrototypeParsingType != PrototypeParsingType.StartOfParams)
 				{  iterator.Next();  }
 
-			if (iterator.PrototypeParsingType == PrototypeParsingType.StartOfParams)
+			// Note that it could be more than one token, such as "(*".
+			while (iterator.PrototypeParsingType == PrototypeParsingType.StartOfParams)
 				{  iterator.Next();  }
 
 			beforeParameters = new Section(start, iterator);
