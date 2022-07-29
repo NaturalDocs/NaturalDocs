@@ -77,45 +77,124 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 
 	/* Enum: PrototypeParsingType
 	 *
-	 * Null - Returned when the token is out of bounds or one of these values hasn't been assigned to it yet.
+	 *		Null - Returned when the token is out of bounds or one of these values hasn't been assigned to it yet.
 	 *
-	 * StartOfPrototypeSection - The first token of a new prototype section.  It is possible for these to appear without
-	 *										 corresponding <EndOfPrototypeSections>.
-	 * EndOfPrototypeSection - The last token of a prototype section, causing the next token to start a new one.  It is possible
-	 *										for these to appear without corresponding <StartOfPrototypeSections>.
 	 *
-	 * StartOfParams - The start of a parameter list, such as an opening parenthesis.
-	 * EndOfParams - The end of a parameter list, such as a closing parenthesis.
-	 * ParamSeparator - A separator between parameters, such as a comma.
+	 * Sections:
 	 *
-	 * Type - The type excluding all modifiers and qualifiers, such as "int" in "unsigned int" or "Class" in "PkgA.PkgB.Class".
-	 * TypeModifier - A separate word modifying a type, such as "const" in "const int".
-	 * TypeQualifier - Everything prior to the ending word in a qualified type, such as "PkgA.PkgB." in "PkgA.PkgB.Class".
-	 * OpeningTypeModifier - An opening symbol modifying a type, such as "[" in "int[]" or "<" in "List<int>".
-	 * ClosingTypeModifier - A closing symbol modifying a type, such as "]" in "int[]" or ">" in "List<int>".
+	 *		Sections are used to separate prototypes into blocks which are individually formatted.  For example, attributes in C# are
+	 *		separated into their own sections so they appear on a separate line:
 	 *
-	 * StartOfTuple - The start of a tuple, such as an opening parenthesis.
-	 * EndOfTuple - The end of a tuple, such as a closing parenthesis.
-	 * TupleMemberSeparator - A separator between tuple members, such as a comma.
-	 * TupleMemberName - The name of a tuple member.
+	 *		--- C#
+	 *		[DllImport ("library.dll")]
+	 *		extern static private bool LibraryFunction ();
+	 *		---
 	 *
-	 * NameTypeSeparator - In languages that use them, the symbol separating a variable name from its type, such as ":" in
-	 *									"x: int".  In languages that simply use a space this type won't appear.
+	 *		StartOfPrototypeSection - The first token of a new prototype section.  It is possible for these to appear without
+	 *											  corresponding <EndOfPrototypeSections>.
+	 *		EndOfPrototypeSection - The last token of a prototype section, causing the next token to start a new one.  It is possible
+	 *											for these to appear without corresponding <StartOfPrototypeSections>.
 	 *
-	 * Name - The name of the parameter or the code element being defined by the prototype.
+	 * Parameters:
 	 *
-	 * ParamModifier - Any parameter modifiers.  These usually appear with the name but are part of the type, and aren't
-	 *						   shared with other parameters inheriting the type, such as "*" in "int *x" in C++.
-	 * OpeningParamModifier - An opening symbol modifying a parameter.  These usually appear with the name but are part
-	 *									  of the type, such as "[" in "int x[5]".
-	 * ClosingParamModifier - A closing symbol modifying a parameter.  These usually appear with the name but are part of
-	 *									 the type, such as "]" in "int x[5]".
+	 *		StartOfParams - The start of a parameter list, such as an opening parenthesis.
+	 *		EndOfParams - The end of a parameter list, such as a closing parenthesis.
+	 *		ParamSeparator - A separator between parameters, such as a comma.
 	 *
-	 * DefaultValueSeparator - The symbol separating the name and type from its default value, such as "=" or ":=".
-	 * DefaultValue - The default value of the parameter.
 	 *
-	 * PropertyValueSeparator - The symbol separating a property name from its value, such as "=" or ":".
-	 * PropertyValue - The value of a property, such as "12" in "@RequestForEnhancement(id = 12)" in Java annotations.
+	 *	Types:
+	 *
+	 *		Type - The type excluding all modifiers and qualifiers, such as "int" in "unsigned int" or "Class" in "PkgA.PkgB.Class".
+	 *		TypeModifier - A separate word modifying a type, such as "const" in "const int".
+	 *		TypeQualifier - Everything prior to the ending word in a qualified type, such as "PkgA.PkgB." in "PkgA.PkgB.Class".
+	 *		OpeningTypeModifier - An opening symbol modifying a type, such as "[" in "int[]" or "<" in "List<int>".
+	 *		ClosingTypeModifier - A closing symbol modifying a type, such as "]" in "int[]" or ">" in "List<int>".
+	 *
+	 *
+	 *	Tuples:
+	 *
+	 *		Tuples are groups of types declared inline and used as a single type, essentially creating a struct without declaring it first.
+	 *		In C# they look like this.  The members can be named or unnamed:
+	 *
+	 *		--- C#
+	 *		public (string, int) varA;
+	 *		public (string a, int b) varB;
+	 *		---
+	 *
+	 *		They can also be nested:
+	 *
+	 *		--- C#
+	 *		public (string, (int, float)) varC;
+	 *		public (string a, (int b, float c)) varD;
+	 *		---
+	 *
+	 *		StartOfTuple - The start of a tuple, such as an opening parenthesis.
+	 *		EndOfTuple - The end of a tuple, such as a closing parenthesis.
+	 *		TupleMemberSeparator - A separator between tuple members, such as a comma.
+	 *		TupleMemberName - The name of a tuple member.
+	 *
+	 *
+	 *	Names:
+	 *
+	 *		NameTypeSeparator - In languages that use them, the symbol separating a variable name from its type, such as ":" in
+	 *										"x: int".  In languages that simply use a space this type won't appear.
+	 *
+	 *		Name - The name of the parameter or the code element being defined by the prototype.
+	 *
+	 *
+	 *	Parameter Modifiers:
+	 *
+	 *		Parameter modifiers are symbols that are part of the type but appear with the parameter name and only affect that parameter.
+	 *		For example:
+	 *
+	 *		--- C++
+	 *		int *x, y;
+	 *		---
+	 *
+	 *		Here * is a parameter modifier, as the type of x is int* but the type of y is just int.
+	 *
+	 *		--- C++
+	 *		int x[12], y;
+	 *		---
+	 *
+	 *		Here [12] is a parameter modifier, as the type of x is int[12] but the type of y is just int.
+	 *
+	 *		ParamModifier - Any parameter modifiers.  These usually appear with the name but are part of the type, and aren't
+	 *							    shared with other parameters inheriting the type, such as "*" in "int *x" in C++.
+	 *		OpeningParamModifier - An opening symbol modifying a parameter.  These usually appear with the name but are part
+	 *											of the type, such as "[" in "int x[5]".
+	 *		ClosingParamModifier - A closing symbol modifying a parameter.  These usually appear with the name but are part of
+	 *										   the type, such as "]" in "int x[5]".
+	 *
+	 *
+	 * Default Values:
+	 *
+	 *		DefaultValueSeparator - The symbol separating the name and type from its default value, such as "=" or ":=".
+	 *		DefaultValue - The default value of the parameter.
+	 *
+	 *
+	 *	Properties:
+	 *
+	 *		Properties are key/value pairs appearing in metadata, such as decorators in Python or annotations in Java:
+	 *
+	 *		--- Python
+	 *		@decorator(arg1 = 12,
+	 *		           arg2 = "text")
+	 *		def DecoratedFunction ()
+	 *		---
+	 *
+	 *		They're also used for attributes in SystemVerilog:
+	 *
+	 *		--- SystemVerilog
+	 *		(* arg1 = 12,
+	 *		   arg2 = "text" *)
+	 *		module ModuleWithAttributes ()
+	 *		---
+	 *
+	 *		Property names are marked with standard <Name> tags.
+	 *
+	 *		PropertyValueSeparator - The symbol separating a property name from its value, such as "=" or ":".
+	 *		PropertyValue - The value of a property, such as "12" in "@RequestForEnhancement(id = 12)" in Java annotations.
 	 */
 	public enum PrototypeParsingType :  byte
 		{
