@@ -835,7 +835,23 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			TokenIterator start, end;
 			parameterTableSection.GetBeforeParameters(out start, out end);
 
+			// Add a &nbsp; if there was an ending whitespace character that was marked as part of the BeforeParameters section.
+			// This should only happen if it was significant, it should have been excluded otherwise.
 			bool addNBSP = end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
+
+			// Also add it if the BeforeParameters section doesn't end with a nice symbol like (.  If it ends with something like (* we
+			// want to add it anyway for legibility.
+			if (!addNBSP)
+				{
+				TokenIterator beforeEnd = end;
+				beforeEnd.Previous();
+
+				addNBSP = (beforeEnd >= start &&
+								  beforeEnd.Character != '(' &&
+								  beforeEnd.Character != '[' &&
+								  beforeEnd.Character != '{' &&
+								  beforeEnd.Character != '<');
+				}
 
 			output.Append("<td class=\"PBeforeParameters\">");
 
@@ -860,8 +876,23 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			output.Append("<td class=\"PAfterParameters\">");
 
-			if (start.NextPastWhitespace(end))
-				{  output.Append("&nbsp;");  };
+			// Add a &nbsp; if there was a leading whitespace character that was marked as part of the AfterParameters section.
+			// This should only happen if it was significant, it should have been excluded otherwise.
+			addNBSP = start.NextPastWhitespace(end);
+
+			// Also add it if the AfterParameters section doesn't start with a nice symbol like ).  If it starts with something like *)
+			// we want to add it anyway for legibility.
+			if (!addNBSP)
+				{
+				addNBSP = (start < end &&
+								  start.Character != ')' &&
+								  start.Character != ']' &&
+								  start.Character != '}' &&
+								  start.Character != '>');
+				}
+
+			if (addNBSP)
+				{  output.Append("&nbsp;"); };
 
 			AppendSectionText(start, end, output);
 
