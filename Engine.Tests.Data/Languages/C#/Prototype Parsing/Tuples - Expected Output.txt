@@ -56,13 +56,13 @@
 ------------------------------
 
 - Parameter Section:
-  - Before Parameters: public (string a, (int b, float c)) FunctionD (
+  - Before Parameters: public (string a, (int m, float n) b) FunctionD (
     - Access Level: Public
     - Link Candidates: string, int, float
 
-  - Parameter 1: (string a, (int b, float c)) x
+  - Parameter 1: (string a, (int m, float n) b) x
     - Name: x
-    - Full Type: (string a, (int b, float c))
+    - Full Type: (string a, (int m, float n) b)
     - Base Type: (not detected)
     - Link Candidates: string, int, float
     - Default Value: (not detected)
@@ -73,13 +73,13 @@
 ------------------------------
 
 - Parameter Section:
-  - Before Parameters: public (string[,,] a, (Namespace.MyClass<int> b, float? c)) FunctionE (
+  - Before Parameters: public (string[,,] a, (Namespace.MyClass<int> m, float? n) b) FunctionE (
     - Access Level: Public
     - Link Candidates: string, Namespace.MyClass, int, float
 
-  - Parameter 1: (string[,,] a, (Namespace.MyClass<int> b, float? c)) x
+  - Parameter 1: (string[,,] a, (Namespace.MyClass<int> m, float? n) b) x
     - Name: x
-    - Full Type: (string[,,] a, (Namespace.MyClass<int> b, float? c))
+    - Full Type: (string[,,] a, (Namespace.MyClass<int> m, float? n) b)
     - Base Type: (not detected)
     - Link Candidates: string, Namespace.MyClass, int, float
     - Default Value: (not detected)
@@ -107,13 +107,13 @@
 
 ------------------------------
 
-- Plain Section: public (string a, (int b, float c)) varD
+- Plain Section: public (string a, (int m, float n) b) varD
   - Access Level: Public
   - Link Candidates: string, int, float
 
 ------------------------------
 
-- Plain Section: public (string[,,] a, (Namespace.MyClass<int> b, float? c)) varE
+- Plain Section: public (string[,,] a, (Namespace.MyClass<int> m, float? n) b) varE
   - Access Level: Public
   - Link Candidates: string, Namespace.MyClass, int, float
 
@@ -137,13 +137,13 @@
 
 ------------------------------
 
-- Plain Section: public (string a, (int b, float c)) PropertyD { get; set }
+- Plain Section: public (string a, (int m, float n) b) PropertyD { get; set }
   - Access Level: Public
   - Link Candidates: string, int, float
 
 ------------------------------
 
-- Plain Section: public (string[,,] a, (Namespace.MyClass<int> b, float? c)) PropertyE { get }
+- Plain Section: public (string[,,] a, (Namespace.MyClass<int> m, float? n) b) PropertyE { get }
   - Access Level: Public
   - Link Candidates: string, Namespace.MyClass, int, float
 
@@ -168,30 +168,30 @@
     - Link Candidates: int, int, float, string, string
     - Default Value: (not detected)
 
-  - Parameter 3: ( ( int a , int b ) , float c , ( string d , string e ) ) x3,
+  - Parameter 3: ( ( int m , int n ) a , float b , ( string i , string j ) c ) x3,
     - Name: x3
-    - Full Type: ((int a, int b), float c, (string d, string e))
+    - Full Type: ((int m, int n) a, float b, (string i, string j) c)
     - Base Type: (not detected)
     - Link Candidates: int, int, float, string, string
     - Default Value: (not detected)
 
-  - Parameter 4: ((int a,int b),float c,(string d,string e)) x4,
+  - Parameter 4: ((int m,int n)a,float b,(string i,string j)c) x4,
     - Name: x4
-    - Full Type: ((int a, int b), float c, (string d, string e))
+    - Full Type: ((int m, int n) a, float b, (string i, string j) c)
     - Base Type: (not detected)
     - Link Candidates: int, int, float, string, string
     - Default Value: (not detected)
 
-  - Parameter 5: ( string[,,] a, ( Namespace.MyClass<int> b , float? c ) ) x5,
+  - Parameter 5: ( string[,,] a, ( Namespace.MyClass<int> m , float? n ) b ) x5,
     - Name: x5
-    - Full Type: (string[,,] a, (Namespace.MyClass<int> b, float? c))
+    - Full Type: (string[,,] a, (Namespace.MyClass<int> m, float? n) b)
     - Base Type: (not detected)
     - Link Candidates: string, Namespace.MyClass, int, float
     - Default Value: (not detected)
 
-  - Parameter 6: (string[,,] a,(Namespace.MyClass<int> b,float? c)) x6
+  - Parameter 6: (string[,,] a,(Namespace.MyClass<int> m,float? n)b) x6
     - Name: x6
-    - Full Type: (string[,,] a, (Namespace.MyClass<int> b, float? c))
+    - Full Type: (string[,,] a, (Namespace.MyClass<int> m, float? n) b)
     - Base Type: (not detected)
     - Link Candidates: string, Namespace.MyClass, int, float
     - Default Value: (not detected)

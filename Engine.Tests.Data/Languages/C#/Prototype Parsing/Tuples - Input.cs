@@ -12,10 +12,10 @@ class TestClass
 	public (string, (int, float)) FunctionC ((string, (int, float)) x)
 		{  }
 
-	public (string a, (int b, float c)) FunctionD ((string a, (int b, float c)) x)
+	public (string a, (int m, float n) b) FunctionD ((string a, (int m, float n) b) x)
 		{  }
 
-	public (string[,,] a, (Namespace.MyClass<int> b, float? c)) FunctionE ((string[,,] a, (Namespace.MyClass<int> b, float? c)) x)
+	public (string[,,] a, (Namespace.MyClass<int> m, float? n) b) FunctionE ((string[,,] a, (Namespace.MyClass<int> m, float? n) b) x)
 		{  }
 
 
@@ -27,9 +27,9 @@ class TestClass
 
 	public (string, (int, float)) varC;
 
-	public (string a, (int b, float c)) varD;
+	public (string a, (int m, float n) b) varD;
 
-	public (string[,,] a, (Namespace.MyClass<int> b, float? c)) varE;
+	public (string[,,] a, (Namespace.MyClass<int> m, float? n) b) varE;
 
 
 	// Properties
@@ -43,10 +43,10 @@ class TestClass
 	public (string, (int, float)) PropertyC
 		{  get { }  }
 
-	public (string a, (int b, float c)) PropertyD
+	public (string a, (int m, float n) b) PropertyD
 		{  get { } set { }  }
 
-	public (string[,,] a, (Namespace.MyClass<int> b, float? c)) PropertyE
+	public (string[,,] a, (Namespace.MyClass<int> m, float? n) b) PropertyE
 		{  get  }
 
 
@@ -54,10 +54,10 @@ class TestClass
 
 	public void TypeSpacing ( ( ( int , int ) , float , ( string , string ) ) x1,
 										  ((int,int),float,(string,string)) x2,
-										  ( ( int a , int b ) , float c , ( string d , string e ) ) x3,
-										  ((int a,int b),float c,(string d,string e)) x4,
-										  ( string[,,] a, ( Namespace.MyClass<int> b , float? c ) ) x5,
-										  (string[,,] a,(Namespace.MyClass<int> b,float? c)) x6)
+										  ( ( int m , int n ) a , float b , ( string i , string j ) c ) x3,
+										  ((int m,int n)a,float b,(string i,string j)c) x4,
+										  ( string[,,] a, ( Namespace.MyClass<int> m , float? n ) b ) x5,
+										  (string[,,] a,(Namespace.MyClass<int> m,float? n)b) x6)
 		{  }
 
 	}

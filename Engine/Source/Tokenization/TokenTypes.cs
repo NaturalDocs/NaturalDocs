@@ -118,14 +118,14 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	 *
 	 *		--- C#
 	 *		public (string, int) varA;
-	 *		public (string a, int b) varB;
+	 *		public (string m, int n) varB;
 	 *		---
 	 *
 	 *		They can also be nested:
 	 *
 	 *		--- C#
 	 *		public (string, (int, float)) varC;
-	 *		public (string a, (int b, float c)) varD;
+	 *		public (string m, (int i, float j) n) varD;
 	 *		---
 	 *
 	 *		StartOfTuple - The start of a tuple, such as an opening parenthesis.

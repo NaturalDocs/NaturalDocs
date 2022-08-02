@@ -29,12 +29,12 @@
     ---------------
     Function: FunctionD
     TestClass.FunctionD
-    public (string a, (int b, float c)) FunctionD ((string a, (int b, float c)) x)
+    public (string a, (int m, float n) b) FunctionD ((string a, (int m, float n) b) x)
     (line 15, char 2, child of TestClass)
     ---------------
     Function: FunctionE
     TestClass.FunctionE
-    public (string[,,] a, (Namespace.MyClass<int> b, float? c)) FunctionE ((string[,,] a, (Namespace.MyClass<int> b, float? c)) x)
+    public (string[,,] a, (Namespace.MyClass<int> m, float? n) b) FunctionE ((string[,,] a, (Namespace.MyClass<int> m, float? n) b) x)
     (line 18, char 2, child of TestClass)
     ---------------
     Variable: varA
@@ -54,12 +54,12 @@
     ---------------
     Variable: varD
     TestClass.varD
-    public (string a, (int b, float c)) varD
+    public (string a, (int m, float n) b) varD
     (line 30, char 2, child of TestClass)
     ---------------
     Variable: varE
     TestClass.varE
-    public (string[,,] a, (Namespace.MyClass<int> b, float? c)) varE
+    public (string[,,] a, (Namespace.MyClass<int> m, float? n) b) varE
     (line 32, char 2, child of TestClass)
     ---------------
     Property: PropertyA
@@ -79,10 +79,10 @@
     ---------------
     Property: PropertyD
     TestClass.PropertyD
-    public (string a, (int b, float c)) PropertyD { get; set }
+    public (string a, (int m, float n) b) PropertyD { get; set }
     (line 46, char 2, child of TestClass)
     ---------------
     Property: PropertyE
     TestClass.PropertyE
-    public (string[,,] a, (Namespace.MyClass<int> b, float? c)) PropertyE { get }
+    public (string[,,] a, (Namespace.MyClass<int> m, float? n) b) PropertyE { get }
     (line 49, char 2, child of TestClass)

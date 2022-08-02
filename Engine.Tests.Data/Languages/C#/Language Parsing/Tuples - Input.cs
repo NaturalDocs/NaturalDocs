@@ -12,10 +12,10 @@ class TestClass
 	public (string, (int, float)) FunctionC ((string, (int, float)) x)
 		{  }
 
-	public (string a, (int b, float c)) FunctionD ((string a, (int b, float c)) x)
+	public (string a, (int m, float n) b) FunctionD ((string a, (int m, float n) b) x)
 		{  }
 
-	public (string[,,] a, (Namespace.MyClass<int> b, float? c)) FunctionE ((string[,,] a, (Namespace.MyClass<int> b, float? c)) x)
+	public (string[,,] a, (Namespace.MyClass<int> m, float? n) b) FunctionE ((string[,,] a, (Namespace.MyClass<int> m, float? n) b) x)
 		{  }
 
 
@@ -27,9 +27,9 @@ class TestClass
 
 	public (string, (int, float)) varC;
 
-	public (string a, (int b, float c)) varD;
+	public (string a, (int m, float n) b) varD;
 
-	public (string[,,] a, (Namespace.MyClass<int> b, float? c)) varE;
+	public (string[,,] a, (Namespace.MyClass<int> m, float? n) b) varE;
 
 
 	// Properties
@@ -43,10 +43,10 @@ class TestClass
 	public (string, (int, float)) PropertyC
 		{  get { }  }
 
-	public (string a, (int b, float c)) PropertyD
+	public (string a, (int m, float n) b) PropertyD
 		{  get { } set { }  }
 
-	public (string[,,] a, (Namespace.MyClass<int> b, float? c)) PropertyE
+	public (string[,,] a, (Namespace.MyClass<int> m, float? n) b) PropertyE
 		{  get  }
 
 	}
