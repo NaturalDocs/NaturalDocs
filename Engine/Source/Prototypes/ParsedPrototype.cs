@@ -264,25 +264,44 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 				while (endOfSection.IsInBounds)
 					{
-					// Break if we hit the beginning of the next section, but not if it's the start of the current section
+					// End the section if we find the start of a new one, but not if it's just the first token of the current one
 					if (endOfSection.PrototypeParsingType == PrototypeParsingType.StartOfPrototypeSection &&
 						endOfSection > startOfSection)
 						{  break;  }
 
+					// End the section if we're starting parameters when the current section already has some
+					if (endOfSection.PrototypeParsingType == PrototypeParsingType.StartOfParams &&
+						sectionHasParams)
+						{  break;  }
+
+					// At this point we know the current token will be part of the section
 					if (endOfSection.FundamentalType != FundamentalType.Whitespace)
 						{  sectionIsEmpty = false; }
 
 					if (endOfSection.PrototypeParsingType == PrototypeParsingType.Name)
-						{  sectionHasName = true;  }
+						{
+						sectionHasName = true;
+						endOfSection.Next();
+						}
 					else if (endOfSection.PrototypeParsingType == PrototypeParsingType.StartOfParams)
-						{  sectionHasParams = true;  }
+						{
+						sectionHasParams = true;
+						endOfSection.Next();
+
+						// The start of params may span multiple tokens, so skip them all so they don't get interpreted as multiple
+						// parameter blocks
+						while (endOfSection.PrototypeParsingType == PrototypeParsingType.StartOfParams)
+							{  endOfSection.Next();  }
+						}
 					else if (endOfSection.PrototypeParsingType == PrototypeParsingType.EndOfPrototypeSection)
 						{
 						endOfSection.Next();
 						break;
 						}
-
-					endOfSection.Next();
+					else
+						{
+						endOfSection.Next();
+						}
 					}
 
 
