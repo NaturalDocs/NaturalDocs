@@ -319,7 +319,7 @@ Parameter Section, Wide Form:
 
 			</tr>
 		</table>
-	</PSection PParameterSection WideForm CStyle/PascalStyle>
+	</PSection PParameterSection CStyle/PascalStyle>
 
 ----------
 
@@ -350,7 +350,7 @@ Parameter Section, Narrow Form:
 
 			</tr>
 		</table>
-	</PSection PParameterSection NarrowForm CStyle/PascalStyle>
+	</PSection PParameterSection CStyle/PascalStyle>
 
 ----------
 
