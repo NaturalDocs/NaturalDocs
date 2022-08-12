@@ -271,13 +271,13 @@ Frame:
 
 --- text ---
 
-	<NDPrototype #NDPrototype[ID] WideForm/Narrowform>
+	<NDPrototype #NDPrototype[ID] WideForm/NarrowForm?>
 
 		section
 		section
 		...
 
-	</NDPrototype #NDPrototype[ID] WideForm/NarrowForm>
+	</NDPrototype #NDPrototype[ID] WideForm/NarrowForm?>
 
 ----------
 
@@ -297,59 +297,24 @@ Plain Section:
 ----------
 
 
-Parameter Section, Wide Form:
+Parameter Section:
 
 --- text ---
 
 	<PSection PParameterSection CStyle/PascalStyle>
-		<table>
-			<tr>
 
-				<td PBeforeParameters>
-					...
-				</td PBeforeParameters>
+		<PBeforeParameters>
+			...
+		</PBeforeParameters>
 
-				<td PParametersParentCell>
-					[Parameter Table]
-				</td PParametersParentCell>
+		<PParametersParentCell>
+			[Parameter Table]
+		</PParametersParentCell>
 
-				<td PAfterParameters>
-					...
-				</td PAfterParameters>
+		<PAfterParameters>
+			...
+		</PAfterParameters>
 
-			</tr>
-		</table>
-	</PSection PParameterSection CStyle/PascalStyle>
-
-----------
-
-
-Parameter Section, Narrow Form:
-
---- text ---
-
-	<PSection PParameterSection CStyle/PascalStyle>
-		<table>
-			<tr>
-
-				<td PBeforeParameters>
-					...
-				</td PBeforeParameters>
-
-			</tr><tr>
-
-				<td PParametersParentCell>
-					[Parameter Table]
-				</td PParametersParentCell>
-
-			</tr><tr>
-
-				<td PAfterParameters>
-					...
-				</td PAfterParameters>
-
-			</tr>
-		</table>
 	</PSection PParameterSection CStyle/PascalStyle>
 
 ----------

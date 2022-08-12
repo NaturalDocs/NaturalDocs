@@ -1749,29 +1749,36 @@ td {
 			.BlackTheme .NDPrototype::-webkit-scrollbar-thumb {  background-color: #686868;  }
 
 
+	.PBeforeParameters,
+	.PAfterParameters,
 	.PParameterSection td {
 		white-space: nowrap;
 		}
 
-	/* Only narrow form can wrap.  Otherwise the JS to convert between the two
-		won't be able to measure the wide form correctly. */
-	.NDPrototype.NarrowForm td.PBeforeParameters,
-	.NDPrototype.NarrowForm td.PAfterParameters,
-	.NDPrototype.NarrowForm td.PDefaultValue,
-	.NDPrototype.NarrowForm td.PPropertyValue {
-		white-space: normal;
+	.WideForm .PParameterSection {
+		display: flex;
+		flex-flow: row nowrap;
 		}
+		.WideForm .PAfterParameters {
+			align-self: flex-end;
+			}
 
-	.PParameters td.last {
-		width: 100%;
+	.NarrowForm .PParameterSection {
+		display: flex;
+		flex-flow: column nowrap;
 		}
-	.NDPrototype.NarrowForm td.PParametersParentCell,
-	.NDPrototype.NarrowForm td.PAfterParameters {
-		padding-left: 3ch;
-		}
-	.NDPrototype.WideForm td.PAfterParameters {
-		vertical-align: bottom;
-		}
+		/* Only narrow form can wrap.  Otherwise the JS to convert between the two
+			won't be able to measure the wide form correctly. */
+		.NarrowForm .PBeforeParameters,
+		.NarrowForm .PAfterParameters,
+		.NarrowForm td.PDefaultValue,
+		.NarrowForm td.PPropertyValue {
+			white-space: normal;
+			}
+		.NarrowForm .PParametersParentCell,
+		.NarrowForm .PAfterParameters {
+			padding-left: 3ch;
+			}
 
 
 	/* Links default back to black so we don't screw up the syntax highlighting. */

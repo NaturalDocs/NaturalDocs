@@ -314,42 +314,8 @@ var NDCore = new function ()
 	*/
 	this.ChangePrototypeToNarrowForm = function (prototype)
 		{
-		var newPrototype = document.createElement("div");
-		newPrototype.id = prototype.id;
-		newPrototype.className = prototype.className;
-
-		this.RemoveClass(newPrototype, "WideForm");
-		this.AddClass(newPrototype, "NarrowForm");
-
-		var sections = prototype.children;
-
-		for (var i = 0; i < sections.length; i++)
-			{
-			if (this.HasClass(sections[i], "PParameterSection") == false)
-				{  newPrototype.appendChild(sections[i].cloneNode(true));  }
-			else
-				{
-				var newSection = document.createElement("div");
-				newSection.className = sections[i].className;
-
-				var table = sections[i].firstChild;
-				var newTable = document.createElement("table");
-
-				var newRow = newTable.insertRow(-1);
-				newRow.appendChild(table.rows[0].cells[0].cloneNode(true));
-
-				newRow = newTable.insertRow(-1);
-				newRow.appendChild(table.rows[0].cells[1].cloneNode(true));
-
-				newRow = newTable.insertRow(-1);
-				newRow.appendChild(table.rows[0].cells[2].cloneNode(true));
-
-				newSection.appendChild(newTable);
-				newPrototype.appendChild(newSection);
-				}
-			}
-
-		prototype.parentNode.replaceChild(newPrototype, prototype);
+		this.RemoveClass(prototype, "WideForm");
+		this.AddClass(prototype, "NarrowForm");
 		};
 
 
@@ -358,38 +324,8 @@ var NDCore = new function ()
 	*/
 	this.ChangePrototypeToWideForm = function (prototype)
 		{
-		var newPrototype = document.createElement("div");
-		newPrototype.id = prototype.id;
-		newPrototype.className = prototype.className;
-
-		this.RemoveClass(newPrototype, "NarrowForm");
-		this.AddClass(newPrototype, "WideForm");
-
-		var sections = prototype.children;
-
-		for (var i = 0; i < sections.length; i++)
-			{
-			if (this.HasClass(sections[i], "PParameterSection") == false)
-				{  newPrototype.appendChild(sections[i].cloneNode(true));  }
-			else
-				{
-				var newSection = document.createElement("div");
-				newSection.className = sections[i].className;
-
-				var table = sections[i].firstChild;
-				var newTable = document.createElement("table");
-
-				var newRow = newTable.insertRow(-1);
-				newRow.appendChild(table.rows[0].cells[0].cloneNode(true));
-				newRow.appendChild(table.rows[1].cells[0].cloneNode(true));
-				newRow.appendChild(table.rows[2].cells[0].cloneNode(true));
-
-				newSection.appendChild(newTable);
-				newPrototype.appendChild(newSection);
-				}
-			}
-
-		prototype.parentNode.replaceChild(newPrototype, prototype);
+		this.RemoveClass(prototype, "NarrowForm");
+		this.AddClass(prototype, "WideForm");
 		};
 
 

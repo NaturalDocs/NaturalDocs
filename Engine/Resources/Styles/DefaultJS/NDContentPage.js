@@ -167,26 +167,31 @@ var NDContentPage = new function ()
 		{
 		var prototypes = document.getElementsByClassName("NDPrototype");
 
-		for (var i = 0; i < prototypes.length; i++)
+		for (var prototypeIndex = 0; prototypeIndex < prototypes.length; prototypeIndex++)
 			{
-			if (NDCore.HasClass(prototypes[i], "WideForm"))
+			if (NDCore.HasClass(prototypes[prototypeIndex], "WideForm"))
 				{
-				var id = this.GetPrototypeIDNumber(prototypes[i]);
+				var prototypeID = this.GetPrototypeIDNumber(prototypes[prototypeIndex]);
 
-				if (id != -1)
+				if (prototypeID != -1)
 					{
-					var tables = prototypes[i].getElementsByTagName("table");
+					var parameterSections = prototypes[prototypeIndex].getElementsByClassName("PParameterSection");
 					var maxWidth = 0;
 
-					for (var t = 0; t < tables.length; t++)
+					for (var parameterSectionIndex = 0; parameterSectionIndex < parameterSections.length; parameterSectionIndex++)
 						{
-						var tableWidth = tables[t].offsetWidth;
+						var sectionWidth = 0;
 
-						if (tableWidth > maxWidth)
-							{  maxWidth = tableWidth;  }
+						for (var childIndex = 0; childIndex < parameterSections[parameterSectionIndex].children.length; childIndex++)
+							{
+							sectionWidth += parameterSections[parameterSectionIndex].children[childIndex].offsetWidth;
+							}
+
+						if (sectionWidth > maxWidth)
+							{  maxWidth = sectionWidth;  }
 						}
 
-					this.wideFormPrototypeWidths[id] = maxWidth;
+					this.wideFormPrototypeWidths[prototypeID] = maxWidth;
 					}
 				}
 			}

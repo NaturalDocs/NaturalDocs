@@ -827,7 +827,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				}
 
 			output.Append("<div class=\"PSection PParameterSection " + parameterClass + "\">");
-			output.Append("<table><tr>");
 
 
 			// Before parameters
@@ -853,28 +852,28 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 								  beforeEnd.Character != '<');
 				}
 
-			output.Append("<td class=\"PBeforeParameters\">");
+			output.Append("<div class=\"PBeforeParameters\">");
 
 			AppendSectionText(start, end, output, excludePartial: true);
 
 			if (addNBSP)
 				{  output.Append("&nbsp;");  }
 
-			output.Append("</td>");
+			output.Append("</div>");
 
 
 			// Parameters
 
-			output.Append("<td class=\"PParametersParentCell\">");
+			output.Append("<div class=\"PParametersParentCell\">");
 			AppendParameterTable(output);
-			output.Append("</td>");
+			output.Append("</div>");
 
 
 			// After parameters
 
 			parameterTableSection.GetAfterParameters(out start, out end);
 
-			output.Append("<td class=\"PAfterParameters\">");
+			output.Append("<div class=\"PAfterParameters\">");
 
 			// Add a &nbsp; if there was a leading whitespace character that was marked as part of the AfterParameters section.
 			// This should only happen if it was significant, it should have been excluded otherwise.
@@ -896,8 +895,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			AppendSectionText(start, end, output);
 
-			output.Append("</td></tr></table>");
-			output.Append("</div>");
+			output.Append("</div></div>");
 			}
 
 
