@@ -281,12 +281,14 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 			for (;;)
 				{
-				var tag = TableTagsRegex.Match(input, currentIndex);
+				var tag = IndentTagsRegex.Match(input, currentIndex);
 
 				if (tag.Success == false)
 					{  break;  }
 
-				if (tag.Value.StartsWith("</tr") || tag.Value.StartsWith("</table"))
+				// Put tag on new line with decreased indent
+				if (tag.Value.StartsWith("</tr") ||
+					tag.Value.StartsWith("</table"))
 					{
 					if (newLine == false)
 						{
@@ -294,6 +296,15 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 						newLine = true;
 						}
 					indent -= indentAmount;
+					}
+
+				// Put tag on new line but leave indent alone
+				else if (tag.Value.StartsWith("<div class=\"PBeforeParameters") ||
+						   tag.Value.StartsWith("<div class=\"PParametersParentCell") ||
+						   tag.Value.StartsWith("<div class=\"PAfterParameters"))
+					{
+					output.AppendLine();
+					newLine = true;
 					}
 
 				if (newLine && indent > 0)
@@ -305,21 +316,24 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 				output.Append(tag.Value);
 				currentIndex = tag.Index + tag.Value.Length;
 
-				if (tag.Value.StartsWith("<table") || tag.Value.StartsWith("<tr"))
+				// Start new line after tag at increased indent
+				if (tag.Value.StartsWith("<table") ||
+					tag.Value.StartsWith("<tr"))
 					{
 					output.AppendLine();
 					newLine = true;
 					indent += indentAmount;
 					}
+
+				// Start new line after tag but leave indent alone
 				else if (tag.Value.StartsWith("</td"))
 					{
 					output.AppendLine();
 					newLine = true;
 					}
+
 				else
 					{  newLine = false;  }
-
-
 				}
 
 			if (currentIndex < input.Length)
@@ -356,7 +370,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 		// Group: Static Variables
 		// __________________________________________________________________________
 
-		static protected Regex TableTagsRegex = new Regex("</?(?:table|tr|td)[^>]*>",
+		static protected Regex IndentTagsRegex = new Regex("</?(?:table|tr|td|div)[^>]*>",
 																					RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant);
 		static protected Regex IDNumbersRegex = new Regex(" id=\"ND(?:Class)?Prototype[0-9]+\"",
 																					   RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant);
