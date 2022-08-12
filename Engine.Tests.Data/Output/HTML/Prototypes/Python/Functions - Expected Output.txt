@@ -1,169 +1,148 @@
 <div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">def</span> Python_Empty_Parens ()</div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">def</span> Python_Params (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">def</span> Python_Params (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">a,</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td class="last"></td>
-         </tr><tr>
-            <td class="PName first">b</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">int</span>,</td>
-            <td></td>
-            <td class="last"></td>
-         </tr><tr>
-            <td class="PName first">c</td>
-            <td></td>
-            <td></td>
-            <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
-            <td class="PDefaultValue last"><span class="SHNumber">12</span>,</td>
-         </tr><tr>
-            <td class="PName first">d</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">str</span></td>
-            <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
-            <td class="PDefaultValue last"><span class="SHString">&quot;string&quot;</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PName first">a,</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td class="last"></td>
+   </tr><tr>
+      <td class="PName first">b</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">int</span>,</td>
+      <td></td>
+      <td class="last"></td>
+   </tr><tr>
+      <td class="PName first">c</td>
+      <td></td>
+      <td></td>
+      <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
+      <td class="PDefaultValue last"><span class="SHNumber">12</span>,</td>
+   </tr><tr>
+      <td class="PName first">d</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">str</span></td>
+      <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
+      <td class="PDefaultValue last"><span class="SHString">&quot;string&quot;</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">def</span> Python_Params_StarArgs (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">def</span> Python_Params_StarArgs (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="first"></td>
-            <td class="PName">a,</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td class="last"></td>
-         </tr><tr>
-            <td class="PModifierQualifier first">*</td>
-            <td class="PName">b,</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td class="last"></td>
-         </tr><tr>
-            <td class="PModifierQualifier first">**</td>
-            <td class="PName">c,</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td class="last"></td>
-         </tr><tr>
-            <td class="first"></td>
-            <td class="PName">d</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">int</span></td>
-            <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
-            <td class="PDefaultValue last"><span class="SHNumber">12</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="first"></td>
+      <td class="PName">a,</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td class="last"></td>
+   </tr><tr>
+      <td class="PModifierQualifier first">*</td>
+      <td class="PName">b,</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td class="last"></td>
+   </tr><tr>
+      <td class="PModifierQualifier first">**</td>
+      <td class="PName">c,</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td class="last"></td>
+   </tr><tr>
+      <td class="first"></td>
+      <td class="PName">d</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">int</span></td>
+      <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
+      <td class="PDefaultValue last"><span class="SHNumber">12</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">def</span> Ŭnicode_Pŷthon (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">def</span> Ŭnicode_Pŷthon (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first last">Ŭnicode_Pŷthon_Arg</td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PName first last">Ŭnicode_Pŷthon_Arg</td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHMetadata">@f1(</span></div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHMetadata">@f1(</span></td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PPropertyValue first last"><span class="SHMetadata">arg</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters"><span class="SHMetadata">)</span></td>
+      <td class="PPropertyValue first last"><span class="SHMetadata">arg</span></td>
    </tr>
-</table></div><div class="PSection PPlainSection"><span class="SHMetadata">@f2</span></div><div class="PSection PPlainSection"><span class="SHKeyword">def</span> Python_Decorators ()</div></div>
+</table></div>
+<div class="PAfterParameters"><span class="SHMetadata">)</span></div></div><div class="PSection PPlainSection"><span class="SHMetadata">@f2</span></div><div class="PSection PPlainSection"><span class="SHKeyword">def</span> Python_Decorators ()</div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHMetadata">@f1(</span></div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHMetadata">@f1(</span></td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first"><span class="SHMetadata">arg1</span></td>
-            <td class="PPropertyValueSeparator">&nbsp;<span class="SHMetadata">=</span>&nbsp;</td>
-            <td class="PPropertyValue last"><span class="SHMetadata">12,</span></td>
-         </tr><tr>
-            <td class="PName first"><span class="SHMetadata">arg2</span></td>
-            <td class="PPropertyValueSeparator">&nbsp;<span class="SHMetadata">=</span>&nbsp;</td>
-            <td class="PPropertyValue last"><span class="SHMetadata">&quot;string&quot;</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters"><span class="SHMetadata">)</span></td>
+      <td class="PName first"><span class="SHMetadata">arg1</span></td>
+      <td class="PPropertyValueSeparator">&nbsp;<span class="SHMetadata">=</span>&nbsp;</td>
+      <td class="PPropertyValue last"><span class="SHMetadata">12,</span></td>
+   </tr><tr>
+      <td class="PName first"><span class="SHMetadata">arg2</span></td>
+      <td class="PPropertyValueSeparator">&nbsp;<span class="SHMetadata">=</span>&nbsp;</td>
+      <td class="PPropertyValue last"><span class="SHMetadata">&quot;string&quot;</span></td>
    </tr>
-</table></div><div class="PSection PPlainSection"><span class="SHMetadata">@f2</span></div><div class="PSection PPlainSection"><span class="SHKeyword">def</span> Python_Decorator_Params ()</div></div>
+</table></div>
+<div class="PAfterParameters"><span class="SHMetadata">)</span></div></div><div class="PSection PPlainSection"><span class="SHMetadata">@f2</span></div><div class="PSection PPlainSection"><span class="SHKeyword">def</span> Python_Decorator_Params ()</div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHMetadata">@f1(</span></div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHMetadata">@f1(</span></td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first"><span class="SHMetadata">arg1</span></td>
-            <td class="PPropertyValueSeparator">&nbsp;<span class="SHMetadata">=</span>&nbsp;</td>
-            <td class="PPropertyValue last"><span class="SHMetadata">12,</span></td>
-         </tr><tr>
-            <td class="PName first"><span class="SHMetadata">arg2</span></td>
-            <td class="PPropertyValueSeparator">&nbsp;<span class="SHMetadata">=</span>&nbsp;</td>
-            <td class="PPropertyValue last"><span class="SHMetadata">&quot;string&quot;</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters"><span class="SHMetadata">)</span></td>
+      <td class="PName first"><span class="SHMetadata">arg1</span></td>
+      <td class="PPropertyValueSeparator">&nbsp;<span class="SHMetadata">=</span>&nbsp;</td>
+      <td class="PPropertyValue last"><span class="SHMetadata">12,</span></td>
+   </tr><tr>
+      <td class="PName first"><span class="SHMetadata">arg2</span></td>
+      <td class="PPropertyValueSeparator">&nbsp;<span class="SHMetadata">=</span>&nbsp;</td>
+      <td class="PPropertyValue last"><span class="SHMetadata">&quot;string&quot;</span></td>
    </tr>
-</table></div><div class="PSection PPlainSection"><span class="SHMetadata">@f2</span></div><div class="PSection PParameterSection PascalStyle"><table>
+</table></div>
+<div class="PAfterParameters"><span class="SHMetadata">)</span></div></div><div class="PSection PPlainSection"><span class="SHMetadata">@f2</span></div><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">def</span> Everything (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">def</span> Everything (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="first"></td>
-            <td class="PName">Ŭnicode_Pŷthon_Arg,</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td class="last"></td>
-         </tr><tr>
-            <td class="PModifierQualifier first">*</td>
-            <td class="PName">b,</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td class="last"></td>
-         </tr><tr>
-            <td class="PModifierQualifier first">**</td>
-            <td class="PName">c,</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td class="last"></td>
-         </tr><tr>
-            <td class="first"></td>
-            <td class="PName">d</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">int</span></td>
-            <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
-            <td class="PDefaultValue last"><span class="SHNumber">12</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="first"></td>
+      <td class="PName">Ŭnicode_Pŷthon_Arg,</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td class="last"></td>
+   </tr><tr>
+      <td class="PModifierQualifier first">*</td>
+      <td class="PName">b,</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td class="last"></td>
+   </tr><tr>
+      <td class="PModifierQualifier first">**</td>
+      <td class="PName">c,</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td class="last"></td>
+   </tr><tr>
+      <td class="first"></td>
+      <td class="PName">d</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">int</span></td>
+      <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
+      <td class="PDefaultValue last"><span class="SHNumber">12</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>

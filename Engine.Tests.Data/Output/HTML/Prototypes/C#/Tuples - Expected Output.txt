@@ -1,67 +1,52 @@
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span>, <span class="SHKeyword">int</span>) FunctionA (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span>, <span class="SHKeyword">int</span>) FunctionA (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PType first">(<span class="SHKeyword">string</span>, <span class="SHKeyword">int</span>)&nbsp;</td>
-            <td class="PName last">x</td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PType first">(<span class="SHKeyword">string</span>, <span class="SHKeyword">int</span>)&nbsp;</td>
+      <td class="PName last">x</td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span> a, <span class="SHKeyword">int</span> b) FunctionB (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span> a, <span class="SHKeyword">int</span> b) FunctionB (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PType first">(<span class="SHKeyword">string</span> a, <span class="SHKeyword">int</span> b)&nbsp;</td>
-            <td class="PName last">x</td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PType first">(<span class="SHKeyword">string</span> a, <span class="SHKeyword">int</span> b)&nbsp;</td>
+      <td class="PName last">x</td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span>, (<span class="SHKeyword">int</span>, <span class="SHKeyword">float</span>)) FunctionC (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span>, (<span class="SHKeyword">int</span>, <span class="SHKeyword">float</span>)) FunctionC (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PType first">(<span class="SHKeyword">string</span>, (<span class="SHKeyword">int</span>, <span class="SHKeyword">float</span>))&nbsp;</td>
-            <td class="PName last">x</td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PType first">(<span class="SHKeyword">string</span>, (<span class="SHKeyword">int</span>, <span class="SHKeyword">float</span>))&nbsp;</td>
+      <td class="PName last">x</td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span> a, (<span class="SHKeyword">int</span> m, <span class="SHKeyword">float</span> n) b) FunctionD (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span> a, (<span class="SHKeyword">int</span> m, <span class="SHKeyword">float</span> n) b) FunctionD (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PType first">(<span class="SHKeyword">string</span> a, (<span class="SHKeyword">int</span> m, <span class="SHKeyword">float</span> n) b)&nbsp;</td>
-            <td class="PName last">x</td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PType first">(<span class="SHKeyword">string</span> a, (<span class="SHKeyword">int</span> m, <span class="SHKeyword">float</span> n) b)&nbsp;</td>
+      <td class="PName last">x</td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span>[,,] a, (Namespace.MyClass&lt;<span class="SHKeyword">int</span>&gt; m, <span class="SHKeyword">float</span>? n) b) FunctionE (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span>[,,] a, (Namespace.MyClass&lt;<span class="SHKeyword">int</span>&gt; m, <span class="SHKeyword">float</span>? n) b) FunctionE (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PType first">(<span class="SHKeyword">string</span>[,,] a, (Namespace.MyClass&lt;<span class="SHKeyword">int</span>&gt; m, <span class="SHKeyword">float</span>? n) b)&nbsp;</td>
-            <td class="PName last">x</td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PType first">(<span class="SHKeyword">string</span>[,,] a, (Namespace.MyClass&lt;<span class="SHKeyword">int</span>&gt; m, <span class="SHKeyword">float</span>? n) b)&nbsp;</td>
+      <td class="PName last">x</td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
 <div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span>, <span class="SHKeyword">int</span>) varA</div></div>
 -----
@@ -83,30 +68,27 @@
 -----
 <div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span>[,,] a, (Namespace.MyClass&lt;<span class="SHKeyword">int</span>&gt; m, <span class="SHKeyword">float</span>? n) b) PropertyE { <span class="SHKeyword">get</span> }</div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> TypeSpacing (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> TypeSpacing (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PType first">( ( <span class="SHKeyword">int</span> , <span class="SHKeyword">int</span> ) , <span class="SHKeyword">float</span> , ( <span class="SHKeyword">string</span> , <span class="SHKeyword">string</span> ) )&nbsp;</td>
-            <td class="PName last">x1,</td>
-         </tr><tr>
-            <td class="PType first">((<span class="SHKeyword">int</span>,<span class="SHKeyword">int</span>),<span class="SHKeyword">float</span>,(<span class="SHKeyword">string</span>,<span class="SHKeyword">string</span>))&nbsp;</td>
-            <td class="PName last">x2,</td>
-         </tr><tr>
-            <td class="PType first">( ( <span class="SHKeyword">int</span> m , <span class="SHKeyword">int</span> n ) a , <span class="SHKeyword">float</span> b , ( <span class="SHKeyword">string</span> i , <span class="SHKeyword">string</span> j ) c )&nbsp;</td>
-            <td class="PName last">x3,</td>
-         </tr><tr>
-            <td class="PType first">((<span class="SHKeyword">int</span> m,<span class="SHKeyword">int</span> n)a,<span class="SHKeyword">float</span> b,(<span class="SHKeyword">string</span> i,<span class="SHKeyword">string</span> j)c)&nbsp;</td>
-            <td class="PName last">x4,</td>
-         </tr><tr>
-            <td class="PType first">( <span class="SHKeyword">string</span>[,,] a, ( Namespace.MyClass&lt;<span class="SHKeyword">int</span>&gt; m , <span class="SHKeyword">float</span>? n ) b )&nbsp;</td>
-            <td class="PName last">x5,</td>
-         </tr><tr>
-            <td class="PType first">(<span class="SHKeyword">string</span>[,,] a,(Namespace.MyClass&lt;<span class="SHKeyword">int</span>&gt; m,<span class="SHKeyword">float</span>? n)b)&nbsp;</td>
-            <td class="PName last">x6</td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PType first">( ( <span class="SHKeyword">int</span> , <span class="SHKeyword">int</span> ) , <span class="SHKeyword">float</span> , ( <span class="SHKeyword">string</span> , <span class="SHKeyword">string</span> ) )&nbsp;</td>
+      <td class="PName last">x1,</td>
+   </tr><tr>
+      <td class="PType first">((<span class="SHKeyword">int</span>,<span class="SHKeyword">int</span>),<span class="SHKeyword">float</span>,(<span class="SHKeyword">string</span>,<span class="SHKeyword">string</span>))&nbsp;</td>
+      <td class="PName last">x2,</td>
+   </tr><tr>
+      <td class="PType first">( ( <span class="SHKeyword">int</span> m , <span class="SHKeyword">int</span> n ) a , <span class="SHKeyword">float</span> b , ( <span class="SHKeyword">string</span> i , <span class="SHKeyword">string</span> j ) c )&nbsp;</td>
+      <td class="PName last">x3,</td>
+   </tr><tr>
+      <td class="PType first">((<span class="SHKeyword">int</span> m,<span class="SHKeyword">int</span> n)a,<span class="SHKeyword">float</span> b,(<span class="SHKeyword">string</span> i,<span class="SHKeyword">string</span> j)c)&nbsp;</td>
+      <td class="PName last">x4,</td>
+   </tr><tr>
+      <td class="PType first">( <span class="SHKeyword">string</span>[,,] a, ( Namespace.MyClass&lt;<span class="SHKeyword">int</span>&gt; m , <span class="SHKeyword">float</span>? n ) b )&nbsp;</td>
+      <td class="PName last">x5,</td>
+   </tr><tr>
+      <td class="PType first">(<span class="SHKeyword">string</span>[,,] a,(Namespace.MyClass&lt;<span class="SHKeyword">int</span>&gt; m,<span class="SHKeyword">float</span>? n)b)&nbsp;</td>
+      <td class="PName last">x6</td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>

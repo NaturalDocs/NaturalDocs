@@ -6,146 +6,122 @@
 -----
 <div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHMetadata">@ Preliminary ()</span></div><div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Marker_Annotation4 ()</div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHMetadata">@Copyright(</span></div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHMetadata">@Copyright(</span></td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PPropertyValue first last"><span class="SHMetadata">&quot;Text String&quot;</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters"><span class="SHMetadata">)</span></td>
+      <td class="PPropertyValue first last"><span class="SHMetadata">&quot;Text String&quot;</span></td>
    </tr>
-</table></div><div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Single_Element_Annotation1 ()</div></div>
+</table></div>
+<div class="PAfterParameters"><span class="SHMetadata">)</span></div></div><div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Single_Element_Annotation1 ()</div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHMetadata">@Endorsers(</span></div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHMetadata">@Endorsers(</span></td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PPropertyValue first last"><span class="SHMetadata">{&quot;String 1&quot;, &quot;String 2&quot;}</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters"><span class="SHMetadata">)</span></td>
+      <td class="PPropertyValue first last"><span class="SHMetadata">{&quot;String 1&quot;, &quot;String 2&quot;}</span></td>
    </tr>
-</table></div><div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Single_Element_Annotation2 ()</div></div>
+</table></div>
+<div class="PAfterParameters"><span class="SHMetadata">)</span></div></div><div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Single_Element_Annotation2 ()</div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHMetadata">@RequestForEnhancement(</span></div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHMetadata">@RequestForEnhancement(</span></td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first"><span class="SHMetadata">id</span></td>
-            <td class="PPropertyValueSeparator">&nbsp;<span class="SHMetadata">=</span>&nbsp;</td>
-            <td class="PPropertyValue last"><span class="SHMetadata">2868724,</span></td>
-         </tr><tr>
-            <td class="PName first"><span class="SHMetadata">engineer</span></td>
-            <td class="PPropertyValueSeparator">&nbsp;<span class="SHMetadata">=</span>&nbsp;</td>
-            <td class="PPropertyValue last"><span class="SHMetadata">&quot;String&quot;,</span></td>
-         </tr><tr>
-            <td class="PName first"><span class="SHMetadata">date</span></td>
-            <td class="PPropertyValueSeparator">&nbsp;<span class="SHMetadata">=</span>&nbsp;</td>
-            <td class="PPropertyValue last"><span class="SHMetadata">&quot;4/1/2004&quot;</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters"><span class="SHMetadata">)</span></td>
+      <td class="PName first"><span class="SHMetadata">id</span></td>
+      <td class="PPropertyValueSeparator">&nbsp;<span class="SHMetadata">=</span>&nbsp;</td>
+      <td class="PPropertyValue last"><span class="SHMetadata">2868724,</span></td>
+   </tr><tr>
+      <td class="PName first"><span class="SHMetadata">engineer</span></td>
+      <td class="PPropertyValueSeparator">&nbsp;<span class="SHMetadata">=</span>&nbsp;</td>
+      <td class="PPropertyValue last"><span class="SHMetadata">&quot;String&quot;,</span></td>
+   </tr><tr>
+      <td class="PName first"><span class="SHMetadata">date</span></td>
+      <td class="PPropertyValueSeparator">&nbsp;<span class="SHMetadata">=</span>&nbsp;</td>
+      <td class="PPropertyValue last"><span class="SHMetadata">&quot;4/1/2004&quot;</span></td>
    </tr>
-</table></div><div class="PSection PPlainSection"><span class="SHKeyword">public static</span> <span class="SHKeyword">void</span> Key_Value_Annotation1 ()</div></div>
+</table></div>
+<div class="PAfterParameters"><span class="SHMetadata">)</span></div></div><div class="PSection PPlainSection"><span class="SHKeyword">public static</span> <span class="SHKeyword">void</span> Key_Value_Annotation1 ()</div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PPlainSection"><span class="SHMetadata">@Preliminary</span></div><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PPlainSection"><span class="SHMetadata">@Preliminary</span></div><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHMetadata">@Copyright(</span></div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHMetadata">@Copyright(</span></td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PPropertyValue first last"><span class="SHMetadata">&quot;Text String&quot;</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters"><span class="SHMetadata">)</span></td>
+      <td class="PPropertyValue first last"><span class="SHMetadata">&quot;Text String&quot;</span></td>
    </tr>
-</table></div><div class="PSection PParameterSection CStyle"><table>
+</table></div>
+<div class="PAfterParameters"><span class="SHMetadata">)</span></div></div><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHMetadata">@RequestForEnhancement(</span></div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHMetadata">@RequestForEnhancement(</span></td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first"><span class="SHMetadata">id</span></td>
-            <td class="PPropertyValueSeparator">&nbsp;<span class="SHMetadata">=</span>&nbsp;</td>
-            <td class="PPropertyValue last"><span class="SHMetadata">2868724,</span></td>
-         </tr><tr>
-            <td class="PName first"><span class="SHMetadata">engineer</span></td>
-            <td class="PPropertyValueSeparator">&nbsp;<span class="SHMetadata">=</span>&nbsp;</td>
-            <td class="PPropertyValue last"><span class="SHMetadata">&quot;String&quot;,</span></td>
-         </tr><tr>
-            <td class="PName first"><span class="SHMetadata">array</span></td>
-            <td class="PPropertyValueSeparator">&nbsp;<span class="SHMetadata">=</span>&nbsp;</td>
-            <td class="PPropertyValue last"><span class="SHMetadata">{&quot;string 1&quot;, &quot;string 2&quot;}</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters"><span class="SHMetadata">)</span></td>
+      <td class="PName first"><span class="SHMetadata">id</span></td>
+      <td class="PPropertyValueSeparator">&nbsp;<span class="SHMetadata">=</span>&nbsp;</td>
+      <td class="PPropertyValue last"><span class="SHMetadata">2868724,</span></td>
+   </tr><tr>
+      <td class="PName first"><span class="SHMetadata">engineer</span></td>
+      <td class="PPropertyValueSeparator">&nbsp;<span class="SHMetadata">=</span>&nbsp;</td>
+      <td class="PPropertyValue last"><span class="SHMetadata">&quot;String&quot;,</span></td>
+   </tr><tr>
+      <td class="PName first"><span class="SHMetadata">array</span></td>
+      <td class="PPropertyValueSeparator">&nbsp;<span class="SHMetadata">=</span>&nbsp;</td>
+      <td class="PPropertyValue last"><span class="SHMetadata">{&quot;string 1&quot;, &quot;string 2&quot;}</span></td>
    </tr>
-</table></div><div class="PSection PParameterSection CStyle"><table>
+</table></div>
+<div class="PAfterParameters"><span class="SHMetadata">)</span></div></div><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHMetadata">@Endorsers(</span></div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHMetadata">@Endorsers(</span></td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PPropertyValue first last"><span class="SHMetadata">{&quot;String 1&quot;, &quot;String 2&quot;}</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters"><span class="SHMetadata">)</span></td>
+      <td class="PPropertyValue first last"><span class="SHMetadata">{&quot;String 1&quot;, &quot;String 2&quot;}</span></td>
    </tr>
-</table></div><div class="PSection PPlainSection"><span class="SHKeyword">public static</span> <span class="SHKeyword">void</span> Multiple_Annotations ()</div></div>
+</table></div>
+<div class="PAfterParameters"><span class="SHMetadata">)</span></div></div><div class="PSection PPlainSection"><span class="SHKeyword">public static</span> <span class="SHKeyword">void</span> Multiple_Annotations ()</div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PPlainSection"><span class="SHMetadata">@GET</span></div><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PPlainSection"><span class="SHMetadata">@GET</span></div><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHMetadata">@Produces(</span></div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHMetadata">@Produces(</span></td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PPropertyValue first last"><span class="SHMetadata">MediaType.APPLICATION_JSON</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters"><span class="SHMetadata">)</span></td>
+      <td class="PPropertyValue first last"><span class="SHMetadata">MediaType.APPLICATION_JSON</span></td>
    </tr>
-</table></div><div class="PSection PParameterSection CStyle"><table>
+</table></div>
+<div class="PAfterParameters"><span class="SHMetadata">)</span></div></div><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> JAXRS_Annotations (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> JAXRS_Annotations (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PModifierQualifier first"><span class="SHMetadata">@Context</span>&nbsp;</td>
-            <td class="PType">HttpServletRequest&nbsp;</td>
-            <td class="PName last">req,</td>
-         </tr><tr>
-            <td class="PModifierQualifier first"><span class="SHMetadata">@QueryParam(&quot;token&quot;)</span>&nbsp;</td>
-            <td class="PType">String&nbsp;</td>
-            <td class="PName last">token,</td>
-         </tr><tr>
-            <td class="PModifierQualifier first"><span class="SHMetadata">@QueryParam(&quot;start&quot;)</span>&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">int</span>&nbsp;</td>
-            <td class="PName last">start,</td>
-         </tr><tr>
-            <td class="PModifierQualifier first"><span class="SHMetadata">@QueryParam(&quot;length&quot;)</span>&nbsp;</td>
-            <td class="PType">Integer&nbsp;</td>
-            <td class="PName last">length,</td>
-         </tr><tr>
-            <td class="PModifierQualifier first"><span class="SHMetadata">@QueryParam(&quot;valid_from&quot;)</span>&nbsp;</td>
-            <td class="PType">String&nbsp;</td>
-            <td class="PName last">validFrom,</td>
-         </tr><tr>
-            <td class="PModifierQualifier first"><span class="SHMetadata">@QueryParam(&quot;valid_to&quot;)</span>&nbsp;</td>
-            <td class="PType">String&nbsp;</td>
-            <td class="PName last">validTo,</td>
-         </tr><tr>
-            <td class="PModifierQualifier first"><span class="SHMetadata">@DefaultValue(&quot;id&quot;) @QueryParam(&quot;order_by&quot;)</span>&nbsp;</td>
-            <td class="PType">String&nbsp;</td>
-            <td class="PName last">orderBy,</td>
-         </tr><tr>
-            <td class="PModifierQualifier first"><span class="SHMetadata">@DefaultValue(&quot;false&quot;) @QueryParam(&quot;order_direction&quot;)</span>&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">boolean</span>&nbsp;</td>
-            <td class="PName last">orderDirection,</td>
-         </tr><tr>
-            <td class="PModifierQualifier first"><span class="SHMetadata">@DefaultValue(&quot;true&quot;) @QueryParam(&quot;only_enabled&quot;)</span>&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">boolean</span>&nbsp;</td>
-            <td class="PName last">onlyEnabled</td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PModifierQualifier first"><span class="SHMetadata">@Context</span>&nbsp;</td>
+      <td class="PType">HttpServletRequest&nbsp;</td>
+      <td class="PName last">req,</td>
+   </tr><tr>
+      <td class="PModifierQualifier first"><span class="SHMetadata">@QueryParam(&quot;token&quot;)</span>&nbsp;</td>
+      <td class="PType">String&nbsp;</td>
+      <td class="PName last">token,</td>
+   </tr><tr>
+      <td class="PModifierQualifier first"><span class="SHMetadata">@QueryParam(&quot;start&quot;)</span>&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">int</span>&nbsp;</td>
+      <td class="PName last">start,</td>
+   </tr><tr>
+      <td class="PModifierQualifier first"><span class="SHMetadata">@QueryParam(&quot;length&quot;)</span>&nbsp;</td>
+      <td class="PType">Integer&nbsp;</td>
+      <td class="PName last">length,</td>
+   </tr><tr>
+      <td class="PModifierQualifier first"><span class="SHMetadata">@QueryParam(&quot;valid_from&quot;)</span>&nbsp;</td>
+      <td class="PType">String&nbsp;</td>
+      <td class="PName last">validFrom,</td>
+   </tr><tr>
+      <td class="PModifierQualifier first"><span class="SHMetadata">@QueryParam(&quot;valid_to&quot;)</span>&nbsp;</td>
+      <td class="PType">String&nbsp;</td>
+      <td class="PName last">validTo,</td>
+   </tr><tr>
+      <td class="PModifierQualifier first"><span class="SHMetadata">@DefaultValue(&quot;id&quot;) @QueryParam(&quot;order_by&quot;)</span>&nbsp;</td>
+      <td class="PType">String&nbsp;</td>
+      <td class="PName last">orderBy,</td>
+   </tr><tr>
+      <td class="PModifierQualifier first"><span class="SHMetadata">@DefaultValue(&quot;false&quot;) @QueryParam(&quot;order_direction&quot;)</span>&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">boolean</span>&nbsp;</td>
+      <td class="PName last">orderDirection,</td>
+   </tr><tr>
+      <td class="PModifierQualifier first"><span class="SHMetadata">@DefaultValue(&quot;true&quot;) @QueryParam(&quot;only_enabled&quot;)</span>&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">boolean</span>&nbsp;</td>
+      <td class="PName last">onlyEnabled</td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>

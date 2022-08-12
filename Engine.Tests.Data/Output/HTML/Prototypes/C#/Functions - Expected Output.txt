@@ -1,190 +1,160 @@
 <div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">void</span> Parameterless ()</div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">void</span> Basic (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">void</span> Basic (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
-            <td class="PName last">x,</td>
-         </tr><tr>
-            <td class="PType first"><span class="SHKeyword">string</span>&nbsp;</td>
-            <td class="PName last">y</td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
+      <td class="PName last">x,</td>
+   </tr><tr>
+      <td class="PType first"><span class="SHKeyword">string</span>&nbsp;</td>
+      <td class="PName last">y</td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">public static</span> <span class="SHKeyword">string</span> Modifiers (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">public static</span> <span class="SHKeyword">string</span> Modifiers (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="first"></td>
-            <td class="PType"><span class="SHKeyword">int</span>?&nbsp;</td>
-            <td class="PName last">x,</td>
-         </tr><tr>
-            <td class="PModifierQualifier first"><span class="SHKeyword">out</span>&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">string</span>&nbsp;</td>
-            <td class="PName last">y</td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="first"></td>
+      <td class="PType"><span class="SHKeyword">int</span>?&nbsp;</td>
+      <td class="PName last">x,</td>
+   </tr><tr>
+      <td class="PModifierQualifier first"><span class="SHKeyword">out</span>&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">string</span>&nbsp;</td>
+      <td class="PName last">y</td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PPlainSection"><span class="SHMetadata">[Attribute]</span></div><div class="PSection PPlainSection"><span class="SHMetadata">[DllImport (&quot;NaturalDocs.Engine.SQLite.dll&quot;)]</span></div><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PPlainSection"><span class="SHMetadata">[Attribute]</span></div><div class="PSection PPlainSection"><span class="SHMetadata">[DllImport (&quot;NaturalDocs.Engine.SQLite.dll&quot;)]</span></div><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">extern static private</span> <span class="SHKeyword">bool</span> Attributes_NoBraces (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">extern static private</span> <span class="SHKeyword">bool</span> Attributes_NoBraces (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PModifierQualifier first"><span class="SHMetadata">[MarshalAs(UnmanagedType.LPStr)]</span>&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">string</span>&nbsp;</td>
-            <td class="PName last">x,</td>
-         </tr><tr>
-            <td class="PModifierQualifier first"><span class="SHMetadata">[param: something(&quot;don't trip on this: )]){&quot;)][AnotherOne]</span>&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">int</span>&nbsp;</td>
-            <td class="PName last">y,</td>
-         </tr><tr>
-            <td class="PModifierQualifier first"><span class="SHKeyword">out</span>&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">int</span>&nbsp;</td>
-            <td class="PName last">z</td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PModifierQualifier first"><span class="SHMetadata">[MarshalAs(UnmanagedType.LPStr)]</span>&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">string</span>&nbsp;</td>
+      <td class="PName last">x,</td>
+   </tr><tr>
+      <td class="PModifierQualifier first"><span class="SHMetadata">[param: something(&quot;don't trip on this: )]){&quot;)][AnotherOne]</span>&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">int</span>&nbsp;</td>
+      <td class="PName last">y,</td>
+   </tr><tr>
+      <td class="PModifierQualifier first"><span class="SHKeyword">out</span>&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">int</span>&nbsp;</td>
+      <td class="PName last">z</td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">void</span> DefaultValues (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">void</span> DefaultValues (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PType first"><span class="SHKeyword">string</span>&nbsp;</td>
-            <td class="PName">x</td>
-            <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
-            <td class="PDefaultValue last"> <span class="SHString">&quot;),;[&lt;{ \&quot; ),;[&lt;{&quot;</span>,</td>
-         </tr><tr>
-            <td class="PType first"><span class="SHKeyword">int</span>[,,]&nbsp;</td>
-            <td class="PName">y</td>
-            <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
-            <td class="PDefaultValue last"> [<span class="SHNumber">1</span>,<span class="SHNumber">2</span>,<span class="SHNumber">3</span>],</td>
-         </tr><tr>
-            <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
-            <td class="PName">z</td>
-            <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
-            <td class="PDefaultValue last"> <span class="SHNumber">6</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PType first"><span class="SHKeyword">string</span>&nbsp;</td>
+      <td class="PName">x</td>
+      <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
+      <td class="PDefaultValue last"> <span class="SHString">&quot;),;[&lt;{ \&quot; ),;[&lt;{&quot;</span>,</td>
+   </tr><tr>
+      <td class="PType first"><span class="SHKeyword">int</span>[,,]&nbsp;</td>
+      <td class="PName">y</td>
+      <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
+      <td class="PDefaultValue last"> [<span class="SHNumber">1</span>,<span class="SHNumber">2</span>,<span class="SHNumber">3</span>],</td>
+   </tr><tr>
+      <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
+      <td class="PName">z</td>
+      <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
+      <td class="PDefaultValue last"> <span class="SHNumber">6</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">public</span> List&lt;<span class="SHKeyword">int</span>&gt; Templates (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">public</span> List&lt;<span class="SHKeyword">int</span>&gt; Templates (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PModifierQualifier first">System.Collections.Generic.</td>
-            <td class="PType">Dictionary&lt;Nullable&lt;<span class="SHKeyword">int</span>&gt;, Map&lt;<span class="SHKeyword">string</span>, Object[]&gt;&gt;&nbsp;</td>
-            <td class="PName">x</td>
-            <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
-            <td class="PDefaultValue last"> <span class="SHKeyword">null</span>,</td>
-         </tr><tr>
-            <td class="first"></td>
-            <td class="PType"><span class="SHKeyword">int</span>&nbsp;</td>
-            <td class="PName">y</td>
-            <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
-            <td class="PDefaultValue last"> <span class="SHNumber">12</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PModifierQualifier first">System.Collections.Generic.</td>
+      <td class="PType">Dictionary&lt;Nullable&lt;<span class="SHKeyword">int</span>&gt;, Map&lt;<span class="SHKeyword">string</span>, Object[]&gt;&gt;&nbsp;</td>
+      <td class="PName">x</td>
+      <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
+      <td class="PDefaultValue last"> <span class="SHKeyword">null</span>,</td>
+   </tr><tr>
+      <td class="first"></td>
+      <td class="PType"><span class="SHKeyword">int</span>&nbsp;</td>
+      <td class="PName">y</td>
+      <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
+      <td class="PDefaultValue last"> <span class="SHNumber">12</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">public</span> List&lt;T1&gt; WhereClause&lt;T1,T2&gt; (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">public</span> List&lt;T1&gt; WhereClause&lt;T1,T2&gt; (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PType first">List&lt;T2&gt;&nbsp;</td>
-            <td class="PName last">x,</td>
-         </tr><tr>
-            <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
-            <td class="PName last">y</td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PType first">List&lt;T2&gt;&nbsp;</td>
+      <td class="PName last">x,</td>
+   </tr><tr>
+      <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
+      <td class="PName last">y</td>
    </tr>
-</table></div><div class="PSection PPlainSection"><span class="SHKeyword">where</span> T1: <span class="SHKeyword">class</span>, Interface, <span class="SHKeyword">new</span> ()</div><div class="PSection PPlainSection"><span class="SHKeyword">where</span> T2: System.Collections.IEnumerable&lt;T2&gt;</div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div><div class="PSection PPlainSection"><span class="SHKeyword">where</span> T1: <span class="SHKeyword">class</span>, Interface, <span class="SHKeyword">new</span> ()</div><div class="PSection PPlainSection"><span class="SHKeyword">where</span> T2: System.Collections.IEnumerable&lt;T2&gt;</div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> FunctionPointer (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> FunctionPointer (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PType first"><span class="SHKeyword">delegate</span>* <span class="SHKeyword">unmanaged</span>[Cdecl] &lt;<span class="SHKeyword">int</span>, <span class="SHKeyword">float</span>&gt;&nbsp;</td>
-            <td class="PName last">x,</td>
-         </tr><tr>
-            <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
-            <td class="PName last">y</td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PType first"><span class="SHKeyword">delegate</span>* <span class="SHKeyword">unmanaged</span>[Cdecl] &lt;<span class="SHKeyword">int</span>, <span class="SHKeyword">float</span>&gt;&nbsp;</td>
+      <td class="PName last">x,</td>
+   </tr><tr>
+      <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
+      <td class="PName last">y</td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
 <div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Partial_BeginningOfModifiers ()</div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Partial_BeginningOfModifiers2 (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Partial_BeginningOfModifiers2 (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
-            <td class="PName last">x,</td>
-         </tr><tr>
-            <td class="PType first"><span class="SHKeyword">float</span>&nbsp;</td>
-            <td class="PName last">y</td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
+      <td class="PName last">x,</td>
+   </tr><tr>
+      <td class="PType first"><span class="SHKeyword">float</span>&nbsp;</td>
+      <td class="PName last">y</td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
 <div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Partial_MiddleOfModifiers ()</div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Partial_MiddleOfModifiers2 (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Partial_MiddleOfModifiers2 (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
-            <td class="PName last">x,</td>
-         </tr><tr>
-            <td class="PType first"><span class="SHKeyword">float</span>&nbsp;</td>
-            <td class="PName last">y</td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
+      <td class="PName last">x,</td>
+   </tr><tr>
+      <td class="PType first"><span class="SHKeyword">float</span>&nbsp;</td>
+      <td class="PName last">y</td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
 <div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public</span> Partial_EndOfModifiers ()</div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">public</span> Partial_EndOfModifiers2 (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">public</span> Partial_EndOfModifiers2 (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
-            <td class="PName last">x,</td>
-         </tr><tr>
-            <td class="PType first"><span class="SHKeyword">float</span>&nbsp;</td>
-            <td class="PName last">y</td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
+      <td class="PName last">x,</td>
+   </tr><tr>
+      <td class="PType first"><span class="SHKeyword">float</span>&nbsp;</td>
+      <td class="PName last">y</td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>

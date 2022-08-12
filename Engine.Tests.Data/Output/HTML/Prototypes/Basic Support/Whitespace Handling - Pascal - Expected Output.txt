@@ -1,292 +1,241 @@
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters">Function TypeNameSeparatorsAll (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters">Function TypeNameSeparatorsAll (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">a</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType last"><span class="SHKeyword">int</span>,</td>
-         </tr><tr>
-            <td class="PName first">b</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType last"><span class="SHKeyword">int</span>,</td>
-         </tr><tr>
-            <td class="PName first">c</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType last"><span class="SHKeyword">int</span>,</td>
-         </tr><tr>
-            <td class="PName first">d</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType last"><span class="SHKeyword">int</span>,</td>
-         </tr><tr>
-            <td class="PName first">e</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType last"><span class="SHKeyword">int</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PName first">a</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType last"><span class="SHKeyword">int</span>,</td>
+   </tr><tr>
+      <td class="PName first">b</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType last"><span class="SHKeyword">int</span>,</td>
+   </tr><tr>
+      <td class="PName first">c</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType last"><span class="SHKeyword">int</span>,</td>
+   </tr><tr>
+      <td class="PName first">d</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType last"><span class="SHKeyword">int</span>,</td>
+   </tr><tr>
+      <td class="PName first">e</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType last"><span class="SHKeyword">int</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters">Function TypeNameSeparators1 (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters">Function TypeNameSeparators1 (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">a</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType last"><span class="SHKeyword">int</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PName first">a</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType last"><span class="SHKeyword">int</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters">Function TypeNameSeparators2 (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters">Function TypeNameSeparators2 (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">b</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType last"><span class="SHKeyword">int</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PName first">b</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType last"><span class="SHKeyword">int</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters">Function TypeNameSeparators3 (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters">Function TypeNameSeparators3 (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">c</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType last"><span class="SHKeyword">int</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PName first">c</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType last"><span class="SHKeyword">int</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters">Function TypeNameSeparators4 (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters">Function TypeNameSeparators4 (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">d</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType last"><span class="SHKeyword">int</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PName first">d</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType last"><span class="SHKeyword">int</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters">Function TypeNameSeparators5 (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters">Function TypeNameSeparators5 (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">e</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType last"><span class="SHKeyword">int</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PName first">e</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType last"><span class="SHKeyword">int</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters">Function DefaultValuesAll (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters">Function DefaultValuesAll (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">a</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">int</span></td>
-            <td class="PDefaultValueSeparator">&nbsp;:=&nbsp;</td>
-            <td class="PDefaultValue last"><span class="SHNumber">1</span>,</td>
-         </tr><tr>
-            <td class="PName first">b</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">int</span></td>
-            <td class="PDefaultValueSeparator">&nbsp;:=&nbsp;</td>
-            <td class="PDefaultValue last"><span class="SHNumber">2</span>,</td>
-         </tr><tr>
-            <td class="PName first">c</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">int</span></td>
-            <td class="PDefaultValueSeparator">&nbsp;:=&nbsp;</td>
-            <td class="PDefaultValue last"><span class="SHNumber">3</span>,</td>
-         </tr><tr>
-            <td class="PName first">d</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">int</span></td>
-            <td class="PDefaultValueSeparator">&nbsp;:=&nbsp;</td>
-            <td class="PDefaultValue last"><span class="SHNumber">4</span>,</td>
-         </tr><tr>
-            <td class="PName first">e</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">int</span></td>
-            <td class="PDefaultValueSeparator">&nbsp;:=&nbsp;</td>
-            <td class="PDefaultValue last"><span class="SHNumber">5</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PName first">a</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">int</span></td>
+      <td class="PDefaultValueSeparator">&nbsp;:=&nbsp;</td>
+      <td class="PDefaultValue last"><span class="SHNumber">1</span>,</td>
+   </tr><tr>
+      <td class="PName first">b</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">int</span></td>
+      <td class="PDefaultValueSeparator">&nbsp;:=&nbsp;</td>
+      <td class="PDefaultValue last"><span class="SHNumber">2</span>,</td>
+   </tr><tr>
+      <td class="PName first">c</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">int</span></td>
+      <td class="PDefaultValueSeparator">&nbsp;:=&nbsp;</td>
+      <td class="PDefaultValue last"><span class="SHNumber">3</span>,</td>
+   </tr><tr>
+      <td class="PName first">d</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">int</span></td>
+      <td class="PDefaultValueSeparator">&nbsp;:=&nbsp;</td>
+      <td class="PDefaultValue last"><span class="SHNumber">4</span>,</td>
+   </tr><tr>
+      <td class="PName first">e</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">int</span></td>
+      <td class="PDefaultValueSeparator">&nbsp;:=&nbsp;</td>
+      <td class="PDefaultValue last"><span class="SHNumber">5</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters">Function DefaultValues1 (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters">Function DefaultValues1 (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">a</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">int</span></td>
-            <td class="PDefaultValueSeparator">&nbsp;:=&nbsp;</td>
-            <td class="PDefaultValue last"><span class="SHNumber">1</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PName first">a</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">int</span></td>
+      <td class="PDefaultValueSeparator">&nbsp;:=&nbsp;</td>
+      <td class="PDefaultValue last"><span class="SHNumber">1</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters">Function DefaultValues2 (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters">Function DefaultValues2 (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">b</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">int</span></td>
-            <td class="PDefaultValueSeparator">&nbsp;:=&nbsp;</td>
-            <td class="PDefaultValue last"><span class="SHNumber">2</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PName first">b</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">int</span></td>
+      <td class="PDefaultValueSeparator">&nbsp;:=&nbsp;</td>
+      <td class="PDefaultValue last"><span class="SHNumber">2</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters">Function DefaultValues3 (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters">Function DefaultValues3 (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">c</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">int</span></td>
-            <td class="PDefaultValueSeparator">&nbsp;:=&nbsp;</td>
-            <td class="PDefaultValue last"><span class="SHNumber">3</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PName first">c</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">int</span></td>
+      <td class="PDefaultValueSeparator">&nbsp;:=&nbsp;</td>
+      <td class="PDefaultValue last"><span class="SHNumber">3</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters">Function DefaultValues4 (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters">Function DefaultValues4 (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">d</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">int</span></td>
-            <td class="PDefaultValueSeparator">&nbsp;:=&nbsp;</td>
-            <td class="PDefaultValue last"><span class="SHNumber">4</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PName first">d</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">int</span></td>
+      <td class="PDefaultValueSeparator">&nbsp;:=&nbsp;</td>
+      <td class="PDefaultValue last"><span class="SHNumber">4</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters">Function DefaultValues5 (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters">Function DefaultValues5 (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">e</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">int</span></td>
-            <td class="PDefaultValueSeparator">&nbsp;:=&nbsp;</td>
-            <td class="PDefaultValue last"><span class="SHNumber">5</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PName first">e</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">int</span></td>
+      <td class="PDefaultValueSeparator">&nbsp;:=&nbsp;</td>
+      <td class="PDefaultValue last"><span class="SHNumber">5</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters">Function Parens1 (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters">Function Parens1 (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">a</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType last"><span class="SHKeyword">int</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PName first">a</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType last"><span class="SHKeyword">int</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters">Function Parens2 (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters">Function Parens2 (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">a</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType last"><span class="SHKeyword">int</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PName first">a</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType last"><span class="SHKeyword">int</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters">Function Parens3 (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters">Function Parens3 (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">a</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType last"><span class="SHKeyword">int</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PName first">a</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType last"><span class="SHKeyword">int</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters">Function Parens4 (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters">Function Parens4 (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">a</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType last"><span class="SHKeyword">int</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PName first">a</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType last"><span class="SHKeyword">int</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters">Function Parens5 (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters">Function Parens5 (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">a</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType last"><span class="SHKeyword">int</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PName first">a</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType last"><span class="SHKeyword">int</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
 <div class="NDPrototype"><div class="PSection PPlainSection">Function Parens6 ()</div></div>
 -----

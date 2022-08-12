@@ -1,47 +1,38 @@
 <div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public</span> TestClass ()</div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">private</span> TestClass (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">private</span> TestClass (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
-            <td class="PName last">x</td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
+      <td class="PName last">x</td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">private</span> TestClass (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">private</span> TestClass (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
-            <td class="PName last">x,</td>
-         </tr><tr>
-            <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
-            <td class="PName last">y</td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
+      <td class="PName last">x,</td>
+   </tr><tr>
+      <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
+      <td class="PName last">y</td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
 <div class="NDPrototype"><div class="PSection PPlainSection">~TestClass ()</div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">extern static</span> TestClass (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">extern static</span> TestClass (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PType first"><span class="SHKeyword">float</span>&nbsp;</td>
-            <td class="PName last">x</td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PType first"><span class="SHKeyword">float</span>&nbsp;</td>
+      <td class="PName last">x</td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
 <div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">extern</span> ~TestClass ()</div></div>

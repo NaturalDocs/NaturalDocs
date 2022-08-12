@@ -1,81 +1,72 @@
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionName (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionName (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PModifierQualifier first"><span class="SHKeyword">const</span>&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">int</span> *&nbsp;</td>
-            <td class="PName last">a,</td>
-         </tr><tr>
-            <td class="first"></td>
-            <td class="PType"><span class="SHKeyword">int</span> * <span class="SHKeyword">const</span>&nbsp;</td>
-            <td class="PName last">b,</td>
-         </tr><tr>
-            <td class="PModifierQualifier first"><span class="SHKeyword">const</span>&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">int</span> * <span class="SHKeyword">const</span>&nbsp;</td>
-            <td class="PName last">c,</td>
-         </tr><tr>
-            <td class="first"></td>
-            <td class="PType"><span class="SHKeyword">int</span> <span class="SHKeyword">const</span> * <span class="SHKeyword">const</span>&nbsp;</td>
-            <td class="PName last">d</td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PModifierQualifier first"><span class="SHKeyword">const</span>&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">int</span> *&nbsp;</td>
+      <td class="PName last">a,</td>
+   </tr><tr>
+      <td class="first"></td>
+      <td class="PType"><span class="SHKeyword">int</span> * <span class="SHKeyword">const</span>&nbsp;</td>
+      <td class="PName last">b,</td>
+   </tr><tr>
+      <td class="PModifierQualifier first"><span class="SHKeyword">const</span>&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">int</span> * <span class="SHKeyword">const</span>&nbsp;</td>
+      <td class="PName last">c,</td>
+   </tr><tr>
+      <td class="first"></td>
+      <td class="PType"><span class="SHKeyword">int</span> <span class="SHKeyword">const</span> * <span class="SHKeyword">const</span>&nbsp;</td>
+      <td class="PName last">d</td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionName2 (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionName2 (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PModifierQualifier first"><span class="SHKeyword">const</span>&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">int</span>*&nbsp;</td>
-            <td class="PName last">a,</td>
-         </tr><tr>
-            <td class="first"></td>
-            <td class="PType"><span class="SHKeyword">int</span>* <span class="SHKeyword">const</span>&nbsp;</td>
-            <td class="PName last">b,</td>
-         </tr><tr>
-            <td class="PModifierQualifier first"><span class="SHKeyword">const</span>&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">int</span>* <span class="SHKeyword">const</span>&nbsp;</td>
-            <td class="PName last">c,</td>
-         </tr><tr>
-            <td class="first"></td>
-            <td class="PType"><span class="SHKeyword">int</span> <span class="SHKeyword">const</span>* <span class="SHKeyword">const</span>&nbsp;</td>
-            <td class="PName last">d</td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PModifierQualifier first"><span class="SHKeyword">const</span>&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">int</span>*&nbsp;</td>
+      <td class="PName last">a,</td>
+   </tr><tr>
+      <td class="first"></td>
+      <td class="PType"><span class="SHKeyword">int</span>* <span class="SHKeyword">const</span>&nbsp;</td>
+      <td class="PName last">b,</td>
+   </tr><tr>
+      <td class="PModifierQualifier first"><span class="SHKeyword">const</span>&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">int</span>* <span class="SHKeyword">const</span>&nbsp;</td>
+      <td class="PName last">c,</td>
+   </tr><tr>
+      <td class="first"></td>
+      <td class="PType"><span class="SHKeyword">int</span> <span class="SHKeyword">const</span>* <span class="SHKeyword">const</span>&nbsp;</td>
+      <td class="PName last">d</td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionName3 (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionName3 (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PModifierQualifier first"><span class="SHKeyword">const</span>&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">int</span>&nbsp;</td>
-            <td class="PSymbols">*</td>
-            <td class="PName last">a,</td>
-         </tr><tr>
-            <td class="first"></td>
-            <td class="PType"><span class="SHKeyword">int</span> *<span class="SHKeyword">const</span>&nbsp;</td>
-            <td></td>
-            <td class="PName last">b,</td>
-         </tr><tr>
-            <td class="PModifierQualifier first"><span class="SHKeyword">const</span>&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">int</span> *<span class="SHKeyword">const</span>&nbsp;</td>
-            <td></td>
-            <td class="PName last">c,</td>
-         </tr><tr>
-            <td class="first"></td>
-            <td class="PType"><span class="SHKeyword">int</span> <span class="SHKeyword">const</span> *<span class="SHKeyword">const</span>&nbsp;</td>
-            <td></td>
-            <td class="PName last">d</td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PModifierQualifier first"><span class="SHKeyword">const</span>&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">int</span>&nbsp;</td>
+      <td class="PSymbols">*</td>
+      <td class="PName last">a,</td>
+   </tr><tr>
+      <td class="first"></td>
+      <td class="PType"><span class="SHKeyword">int</span> *<span class="SHKeyword">const</span>&nbsp;</td>
+      <td></td>
+      <td class="PName last">b,</td>
+   </tr><tr>
+      <td class="PModifierQualifier first"><span class="SHKeyword">const</span>&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">int</span> *<span class="SHKeyword">const</span>&nbsp;</td>
+      <td></td>
+      <td class="PName last">c,</td>
+   </tr><tr>
+      <td class="first"></td>
+      <td class="PType"><span class="SHKeyword">int</span> <span class="SHKeyword">const</span> *<span class="SHKeyword">const</span>&nbsp;</td>
+      <td></td>
+      <td class="PName last">d</td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>

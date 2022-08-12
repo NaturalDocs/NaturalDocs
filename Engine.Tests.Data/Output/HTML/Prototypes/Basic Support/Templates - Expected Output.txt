@@ -1,37 +1,31 @@
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">int</span> FunctionName (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">int</span> FunctionName (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PType first">List&lt;<span class="SHKeyword">int</span>&gt;&nbsp;</td>
-            <td class="PName last">x,</td>
-         </tr><tr>
-            <td class="PType first"><span class="SHKeyword">int</span>[]&nbsp;</td>
-            <td class="PName last">y</td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PType first">List&lt;<span class="SHKeyword">int</span>&gt;&nbsp;</td>
+      <td class="PName last">x,</td>
+   </tr><tr>
+      <td class="PType first"><span class="SHKeyword">int</span>[]&nbsp;</td>
+      <td class="PName last">y</td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionName2 (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionName2 (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PModifierQualifier first">System.Collections.Generic.</td>
-            <td class="PType">Dictionary&lt;Nullable&lt;<span class="SHKeyword">int</span>&gt;, Map&lt;<span class="SHKeyword">string</span>, Object[]&gt;&gt;&nbsp;</td>
-            <td class="PName">x</td>
-            <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
-            <td class="PDefaultValue last"><span class="SHKeyword">null</span>,</td>
-         </tr><tr>
-            <td class="first"></td>
-            <td class="PType"><span class="SHKeyword">int</span>&nbsp;</td>
-            <td class="PName">y</td>
-            <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
-            <td class="PDefaultValue last"><span class="SHNumber">12</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PModifierQualifier first">System.Collections.Generic.</td>
+      <td class="PType">Dictionary&lt;Nullable&lt;<span class="SHKeyword">int</span>&gt;, Map&lt;<span class="SHKeyword">string</span>, Object[]&gt;&gt;&nbsp;</td>
+      <td class="PName">x</td>
+      <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
+      <td class="PDefaultValue last"><span class="SHKeyword">null</span>,</td>
+   </tr><tr>
+      <td class="first"></td>
+      <td class="PType"><span class="SHKeyword">int</span>&nbsp;</td>
+      <td class="PName">y</td>
+      <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
+      <td class="PDefaultValue last"><span class="SHNumber">12</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>

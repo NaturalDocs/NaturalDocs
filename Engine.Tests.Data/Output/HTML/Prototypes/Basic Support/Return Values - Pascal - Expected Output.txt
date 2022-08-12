@@ -1,19 +1,16 @@
 <div class="NDPrototype"><div class="PSection PPlainSection">Function FuncA (): MyClass</div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters">Function FuncB (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters">Function FuncB (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">a</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType last">Class2,</td>
-         </tr><tr>
-            <td class="PName first">b</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType last">Pkg.MyClass</td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">): Pkg.MyClass&lt;<span class="SHKeyword">int</span>, Class2&gt;</td>
+      <td class="PName first">a</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType last">Class2,</td>
+   </tr><tr>
+      <td class="PName first">b</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType last">Pkg.MyClass</td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">): Pkg.MyClass&lt;<span class="SHKeyword">int</span>, Class2&gt;</div></div></div>

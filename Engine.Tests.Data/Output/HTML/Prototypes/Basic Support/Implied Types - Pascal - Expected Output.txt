@@ -1,43 +1,37 @@
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters">Function FunctionA (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters">Function FunctionA (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">x,</td>
-            <td></td>
-            <td class="last"></td>
-         </tr><tr>
-            <td class="PName first">y</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType last"><span class="SHKeyword">integer</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">): <span class="SHKeyword">integer</span></td>
+      <td class="PName first">x,</td>
+      <td></td>
+      <td class="last"></td>
+   </tr><tr>
+      <td class="PName first">y</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType last"><span class="SHKeyword">integer</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">): <span class="SHKeyword">integer</span></div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters">Function FunctionB (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters">Function FunctionB (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">a,</td>
-            <td></td>
-            <td class="last"></td>
-         </tr><tr>
-            <td class="PName first">b</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType last">Package.Class,</td>
-         </tr><tr>
-            <td class="PName first">c,</td>
-            <td></td>
-            <td class="last"></td>
-         </tr><tr>
-            <td class="PName first">d</td>
-            <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType last"><span class="SHKeyword">string</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">): <span class="SHKeyword">integer</span></td>
+      <td class="PName first">a,</td>
+      <td></td>
+      <td class="last"></td>
+   </tr><tr>
+      <td class="PName first">b</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType last">Package.Class,</td>
+   </tr><tr>
+      <td class="PName first">c,</td>
+      <td></td>
+      <td class="last"></td>
+   </tr><tr>
+      <td class="PName first">d</td>
+      <td class="PTypeNameSeparator">:&nbsp;</td>
+      <td class="PType last"><span class="SHKeyword">string</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">): <span class="SHKeyword">integer</span></div></div></div>

@@ -1,19 +1,16 @@
 <div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public</span> MyClass FuncA()</div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">public static</span> Pkg.MyClass&lt;<span class="SHKeyword">int</span>, Class2&gt; FuncB(</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">public static</span> Pkg.MyClass&lt;<span class="SHKeyword">int</span>, Class2&gt; FuncB(</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="first"></td>
-            <td class="PType">Class2&nbsp;</td>
-            <td class="PName last">a,</td>
-         </tr><tr>
-            <td class="PModifierQualifier first">Pkg.</td>
-            <td class="PType">MyClass&nbsp;</td>
-            <td class="PName last">b</td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="first"></td>
+      <td class="PType">Class2&nbsp;</td>
+      <td class="PName last">a,</td>
+   </tr><tr>
+      <td class="PModifierQualifier first">Pkg.</td>
+      <td class="PType">MyClass&nbsp;</td>
+      <td class="PName last">b</td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>

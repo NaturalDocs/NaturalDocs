@@ -22,42 +22,36 @@
 -----
 <div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @Cursor <span class="SHKeyword">CURSOR</span></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">DECLARE</span> @Table1 <span class="SHKeyword">TABLE</span> (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">DECLARE</span> @Table1 <span class="SHKeyword">TABLE</span> (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">Column1&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">INT</span> <span class="SHKeyword">PRIMARY KEY NOT NULL</span>,</td>
-            <td></td>
-            <td class="last"></td>
-         </tr><tr>
-            <td class="PName first">Column2&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">NVARCHAR</span>(<span class="SHNumber">255</span>)</td>
-            <td class="PDefaultValueSeparator">&nbsp;<span class="SHKeyword">DEFAULT</span>&nbsp;</td>
-            <td class="PDefaultValue last"><span class="SHString">'string'</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PName first">Column1&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">INT</span> <span class="SHKeyword">PRIMARY KEY NOT NULL</span>,</td>
+      <td></td>
+      <td class="last"></td>
+   </tr><tr>
+      <td class="PName first">Column2&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">NVARCHAR</span>(<span class="SHNumber">255</span>)</td>
+      <td class="PDefaultValueSeparator">&nbsp;<span class="SHKeyword">DEFAULT</span>&nbsp;</td>
+      <td class="PDefaultValue last"><span class="SHString">'string'</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">DECLARE</span> @Table2 <span class="SHKeyword">AS</span> <span class="SHKeyword">TABLE</span>(</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">DECLARE</span> @Table2 <span class="SHKeyword">AS</span> <span class="SHKeyword">TABLE</span>(</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">Column1&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">INT</span> <span class="SHKeyword">PRIMARY KEY NOT NULL</span>,</td>
-            <td></td>
-            <td class="last"></td>
-         </tr><tr>
-            <td class="PName first">Column2&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">NVARCHAR</span>(<span class="SHNumber">255</span>)</td>
-            <td class="PDefaultValueSeparator">&nbsp;<span class="SHKeyword">DEFAULT</span>&nbsp;</td>
-            <td class="PDefaultValue last"><span class="SHString">'string'</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PName first">Column1&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">INT</span> <span class="SHKeyword">PRIMARY KEY NOT NULL</span>,</td>
+      <td></td>
+      <td class="last"></td>
+   </tr><tr>
+      <td class="PName first">Column2&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">NVARCHAR</span>(<span class="SHNumber">255</span>)</td>
+      <td class="PDefaultValueSeparator">&nbsp;<span class="SHKeyword">DEFAULT</span>&nbsp;</td>
+      <td class="PDefaultValue last"><span class="SHString">'string'</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>

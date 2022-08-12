@@ -2,225 +2,192 @@
 -----
 <div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">CREATE FUNCTION</span> Returns2</div><div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> SCHEMA.INTEGER(<span class="SHNumber">2</span>,<span class="SHNumber">3</span>)</div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PPlainSection"><span class="SHKeyword">CREATE OR ALTER FUNCTION</span> Returns3</div><div class="PSection PParameterSection PascalStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PPlainSection"><span class="SHKeyword">CREATE OR ALTER FUNCTION</span> Returns3</div><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">RETURNS TABLE</span> (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">RETURNS TABLE</span> (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">Column1&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">INT</span> <span class="SHKeyword">PRIMARY KEY NOT NULL</span>,</td>
-            <td></td>
-            <td class="last"></td>
-         </tr><tr>
-            <td class="PName first">Column2&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">NVARCHAR</span>(<span class="SHNumber">255</span>)</td>
-            <td class="PDefaultValueSeparator">&nbsp;<span class="SHKeyword">DEFAULT</span>&nbsp;</td>
-            <td class="PDefaultValue last"><span class="SHString">'string'</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PName first">Column1&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">INT</span> <span class="SHKeyword">PRIMARY KEY NOT NULL</span>,</td>
+      <td></td>
+      <td class="last"></td>
+   </tr><tr>
+      <td class="PName first">Column2&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">NVARCHAR</span>(<span class="SHNumber">255</span>)</td>
+      <td class="PDefaultValueSeparator">&nbsp;<span class="SHKeyword">DEFAULT</span>&nbsp;</td>
+      <td class="PDefaultValue last"><span class="SHString">'string'</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">FUNCTION</span> Params1&nbsp;</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">FUNCTION</span> Params1&nbsp;</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">@Param1</td>
-            <td></td>
-            <td class="PType"><span class="SHKeyword">INTEGER</span>,</td>
-            <td></td>
-            <td class="last"></td>
-         </tr><tr>
-            <td class="PName first">@Param2</td>
-            <td></td>
-            <td class="PType"><span class="SHKeyword">VARCHAR</span>(<span class="SHNumber">100</span>),</td>
-            <td></td>
-            <td class="last"></td>
-         </tr><tr>
-            <td class="PName first">@Param3</td>
-            <td></td>
-            <td class="PType"><span class="SHKeyword">VARCHAR</span>(<span class="SHNumber">40</span>)</td>
-            <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
-            <td class="PDefaultValue last"><span class="SHString">'string'</span>,</td>
-         </tr><tr>
-            <td class="PName first">@Param4</td>
-            <td class="PTypeNameSeparator">&nbsp;<span class="SHKeyword">AS</span>&nbsp;</td>
-            <td class="PType">SCHEMA.NUMBER(<span class="SHNumber">5</span>,<span class="SHNumber">6</span>)</td>
-            <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
-            <td class="PDefaultValue last"><span class="SHNumber">+.2e-1</span>,</td>
-         </tr><tr>
-            <td class="PName first">@Param5</td>
-            <td class="PTypeNameSeparator">&nbsp;<span class="SHKeyword">AS</span>&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">VARCHAR</span>(<span class="SHKeyword">max</span>)</td>
-            <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
-            <td class="PDefaultValue last"><span class="SHString">'escaped''apostrophe'</span>,</td>
-         </tr><tr>
-            <td class="PName first">@Param6</td>
-            <td class="PTypeNameSeparator">&nbsp;<span class="SHKeyword">AS</span>&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">INTEGER</span></td>
-            <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
-            <td class="PDefaultValue last"><span class="SHNumber">0xdeadbeef</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters"></td>
+      <td class="PName first">@Param1</td>
+      <td></td>
+      <td class="PType"><span class="SHKeyword">INTEGER</span>,</td>
+      <td></td>
+      <td class="last"></td>
+   </tr><tr>
+      <td class="PName first">@Param2</td>
+      <td></td>
+      <td class="PType"><span class="SHKeyword">VARCHAR</span>(<span class="SHNumber">100</span>),</td>
+      <td></td>
+      <td class="last"></td>
+   </tr><tr>
+      <td class="PName first">@Param3</td>
+      <td></td>
+      <td class="PType"><span class="SHKeyword">VARCHAR</span>(<span class="SHNumber">40</span>)</td>
+      <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
+      <td class="PDefaultValue last"><span class="SHString">'string'</span>,</td>
+   </tr><tr>
+      <td class="PName first">@Param4</td>
+      <td class="PTypeNameSeparator">&nbsp;<span class="SHKeyword">AS</span>&nbsp;</td>
+      <td class="PType">SCHEMA.NUMBER(<span class="SHNumber">5</span>,<span class="SHNumber">6</span>)</td>
+      <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
+      <td class="PDefaultValue last"><span class="SHNumber">+.2e-1</span>,</td>
+   </tr><tr>
+      <td class="PName first">@Param5</td>
+      <td class="PTypeNameSeparator">&nbsp;<span class="SHKeyword">AS</span>&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">VARCHAR</span>(<span class="SHKeyword">max</span>)</td>
+      <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
+      <td class="PDefaultValue last"><span class="SHString">'escaped''apostrophe'</span>,</td>
+   </tr><tr>
+      <td class="PName first">@Param6</td>
+      <td class="PTypeNameSeparator">&nbsp;<span class="SHKeyword">AS</span>&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">INTEGER</span></td>
+      <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
+      <td class="PDefaultValue last"><span class="SHNumber">0xdeadbeef</span></td>
    </tr>
-</table></div><div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div></div>
+</table></div>
+<div class="PAfterParameters"></div></div><div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">CREATE FUNCTION</span> Params2 (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">CREATE FUNCTION</span> Params2 (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">@Param1</td>
-            <td></td>
-            <td class="PType"><span class="SHKeyword">VARYING</span> <span class="SHKeyword">INTEGER</span> <span class="SHKeyword">NULL</span>,</td>
-            <td></td>
-            <td class="last"></td>
-         </tr><tr>
-            <td class="PName first">@Param2</td>
-            <td></td>
-            <td class="PType"><span class="SHKeyword">INTEGER</span> <span class="SHKeyword">OUT</span>,</td>
-            <td></td>
-            <td class="last"></td>
-         </tr><tr>
-            <td class="PName first">@Param3</td>
-            <td class="PTypeNameSeparator">&nbsp;<span class="SHKeyword">AS</span>&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">INTEGER</span> <span class="SHKeyword">NOT NULL READONLY</span>,</td>
-            <td></td>
-            <td class="last"></td>
-         </tr><tr>
-            <td class="PName first">@Param4</td>
-            <td class="PTypeNameSeparator">&nbsp;<span class="SHKeyword">AS</span>&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">VARYING</span> SCHEMA.NUMBER <span class="SHKeyword">NOT NULL</span></td>
-            <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
-            <td class="PDefaultValue last"><span class="SHNumber">12</span> <span class="SHKeyword">READONLY</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PName first">@Param1</td>
+      <td></td>
+      <td class="PType"><span class="SHKeyword">VARYING</span> <span class="SHKeyword">INTEGER</span> <span class="SHKeyword">NULL</span>,</td>
+      <td></td>
+      <td class="last"></td>
+   </tr><tr>
+      <td class="PName first">@Param2</td>
+      <td></td>
+      <td class="PType"><span class="SHKeyword">INTEGER</span> <span class="SHKeyword">OUT</span>,</td>
+      <td></td>
+      <td class="last"></td>
+   </tr><tr>
+      <td class="PName first">@Param3</td>
+      <td class="PTypeNameSeparator">&nbsp;<span class="SHKeyword">AS</span>&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">INTEGER</span> <span class="SHKeyword">NOT NULL READONLY</span>,</td>
+      <td></td>
+      <td class="last"></td>
+   </tr><tr>
+      <td class="PName first">@Param4</td>
+      <td class="PTypeNameSeparator">&nbsp;<span class="SHKeyword">AS</span>&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">VARYING</span> SCHEMA.NUMBER <span class="SHKeyword">NOT NULL</span></td>
+      <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
+      <td class="PDefaultValue last"><span class="SHNumber">12</span> <span class="SHKeyword">READONLY</span></td>
    </tr>
-</table></div><div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div><div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PPlainSection"><span class="SHKeyword">FUNCTION</span> With1</div><div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PPlainSection"><span class="SHKeyword">FUNCTION</span> With1</div><div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHMetadata">WITH</span>&nbsp;</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHMetadata">WITH</span>&nbsp;</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PType first last"><span class="SHMetadata">NATIVE_COMPILATION,</span></td>
-         </tr><tr>
-            <td class="PType first last"><span class="SHMetadata">SCHEMABINDING,</span></td>
-         </tr><tr>
-            <td class="PType first last"><span class="SHMetadata">EXECUTE AS 'Name'</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters"></td>
+      <td class="PType first last"><span class="SHMetadata">NATIVE_COMPILATION,</span></td>
+   </tr><tr>
+      <td class="PType first last"><span class="SHMetadata">SCHEMABINDING,</span></td>
+   </tr><tr>
+      <td class="PType first last"><span class="SHMetadata">EXECUTE AS 'Name'</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters"></div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PPlainSection"><span class="SHKeyword">FUNCTION</span> With2</div><div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PPlainSection"><span class="SHKeyword">FUNCTION</span> With2</div><div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHMetadata">WITH</span>&nbsp;</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHMetadata">WITH</span>&nbsp;</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PType first last"><span class="SHMetadata">EXEC AS 'RETURNS',</span></td>
-         </tr><tr>
-            <td class="PType first last"><span class="SHMetadata">INLINE = OFF,</span></td>
-         </tr><tr>
-            <td class="PType first last"><span class="SHMetadata">RETURNS NULL ON NULL INPUT</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters"></td>
+      <td class="PType first last"><span class="SHMetadata">EXEC AS 'RETURNS',</span></td>
+   </tr><tr>
+      <td class="PType first last"><span class="SHMetadata">INLINE = OFF,</span></td>
+   </tr><tr>
+      <td class="PType first last"><span class="SHMetadata">RETURNS NULL ON NULL INPUT</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters"></div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PPlainSection"><span class="SHKeyword">CREATE OR ALTER FUNCTION</span> With3</div><div class="PSection PPlainSection"><span class="SHKeyword">RETURNS TABLE</span></div><div class="PSection PParameterSection CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PPlainSection"><span class="SHKeyword">CREATE OR ALTER FUNCTION</span> With3</div><div class="PSection PPlainSection"><span class="SHKeyword">RETURNS TABLE</span></div><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHMetadata">WITH</span>&nbsp;</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHMetadata">WITH</span>&nbsp;</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PType first last"><span class="SHMetadata">EXECUTE AS 'BEGIN'</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters"></td>
+      <td class="PType first last"><span class="SHMetadata">EXECUTE AS 'BEGIN'</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters"></div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">ALTER FUNCTION</span> @Something.@Complex&nbsp;</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">ALTER FUNCTION</span> @Something.@Complex&nbsp;</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">@Param1&nbsp;</td>
-            <td class="PType last"><span class="SHKeyword">INTEGER</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters"></td>
+      <td class="PName first">@Param1&nbsp;</td>
+      <td class="PType last"><span class="SHKeyword">INTEGER</span></td>
    </tr>
-</table></div><div class="PSection PParameterSection PascalStyle"><table>
+</table></div>
+<div class="PAfterParameters"></div></div><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">RETURNS TABLE</span> (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">RETURNS TABLE</span> (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">Column1&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">INT</span> <span class="SHKeyword">PRIMARY KEY NOT NULL</span>,</td>
-            <td></td>
-            <td class="last"></td>
-         </tr><tr>
-            <td class="PName first">Column2&nbsp;</td>
-            <td class="PType"><span class="SHKeyword">NVARCHAR</span>(<span class="SHNumber">255</span>)</td>
-            <td class="PDefaultValueSeparator">&nbsp;<span class="SHKeyword">DEFAULT</span>&nbsp;</td>
-            <td class="PDefaultValue last"><span class="SHString">'string'</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PName first">Column1&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">INT</span> <span class="SHKeyword">PRIMARY KEY NOT NULL</span>,</td>
+      <td></td>
+      <td class="last"></td>
+   </tr><tr>
+      <td class="PName first">Column2&nbsp;</td>
+      <td class="PType"><span class="SHKeyword">NVARCHAR</span>(<span class="SHNumber">255</span>)</td>
+      <td class="PDefaultValueSeparator">&nbsp;<span class="SHKeyword">DEFAULT</span>&nbsp;</td>
+      <td class="PDefaultValue last"><span class="SHString">'string'</span></td>
    </tr>
-</table></div><div class="PSection PParameterSection CStyle"><table>
+</table></div>
+<div class="PAfterParameters">)</div></div><div class="PSection PParameterSection CStyle">
+<div class="PBeforeParameters"><span class="SHMetadata">WITH</span>&nbsp;</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHMetadata">WITH</span>&nbsp;</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PType first last"><span class="SHMetadata">NATIVE_COMPILATION,</span></td>
-         </tr><tr>
-            <td class="PType first last"><span class="SHMetadata">SCHEMABINDING,</span></td>
-         </tr><tr>
-            <td class="PType first last"><span class="SHMetadata">EXECUTE AS 'AS',</span></td>
-         </tr><tr>
-            <td class="PType first last"><span class="SHMetadata">INLINE = OFF,</span></td>
-         </tr><tr>
-            <td class="PType first last"><span class="SHMetadata">RETURNS NULL ON NULL INPUT</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters"></td>
+      <td class="PType first last"><span class="SHMetadata">NATIVE_COMPILATION,</span></td>
+   </tr><tr>
+      <td class="PType first last"><span class="SHMetadata">SCHEMABINDING,</span></td>
+   </tr><tr>
+      <td class="PType first last"><span class="SHMetadata">EXECUTE AS 'AS',</span></td>
+   </tr><tr>
+      <td class="PType first last"><span class="SHMetadata">INLINE = OFF,</span></td>
+   </tr><tr>
+      <td class="PType first last"><span class="SHMetadata">RETURNS NULL ON NULL INPUT</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters"></div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">CREATE FUNCTION</span> Fakeout&nbsp;</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">CREATE FUNCTION</span> Fakeout&nbsp;</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">@AS&nbsp;</td>
-            <td class="PType last"><span class="SHKeyword">INTEGER</span>,</td>
-         </tr><tr>
-            <td class="PName first">@WITH&nbsp;</td>
-            <td class="PType last"><span class="SHKeyword">INTEGER</span>,</td>
-         </tr><tr>
-            <td class="PName first">@RETURNS&nbsp;</td>
-            <td class="PType last"><span class="SHKeyword">INTEGER</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters"></td>
+      <td class="PName first">@AS&nbsp;</td>
+      <td class="PType last"><span class="SHKeyword">INTEGER</span>,</td>
+   </tr><tr>
+      <td class="PName first">@WITH&nbsp;</td>
+      <td class="PType last"><span class="SHKeyword">INTEGER</span>,</td>
+   </tr><tr>
+      <td class="PName first">@RETURNS&nbsp;</td>
+      <td class="PType last"><span class="SHKeyword">INTEGER</span></td>
    </tr>
-</table></div><div class="PSection PParameterSection PascalStyle"><table>
+</table></div>
+<div class="PAfterParameters"></div></div><div class="PSection PParameterSection PascalStyle">
+<div class="PBeforeParameters"><span class="SHKeyword">RETURNS</span> @WITH <span class="SHKeyword">TABLE</span> (</div>
+<div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">RETURNS</span> @WITH <span class="SHKeyword">TABLE</span> (</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">Column1&nbsp;</td>
-            <td class="PType last"><span class="SHKeyword">INT</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters">)</td>
+      <td class="PName first">Column1&nbsp;</td>
+      <td class="PType last"><span class="SHKeyword">INT</span></td>
    </tr>
-</table></div></div>
+</table></div>
+<div class="PAfterParameters">)</div></div></div>
