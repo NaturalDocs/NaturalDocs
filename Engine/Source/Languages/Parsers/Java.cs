@@ -161,7 +161,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				// We have enough tokens marked to create the parsed prototype.  This will also let us iterate through the parameters
 				// easily.
 
-				parsedPrototype = new ParsedPrototype(tokenizedPrototype, commentTypeID);
+				parsedPrototype = new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID);
 
 
 				// Set the main section to the last one, since any annotations present will each be in their own section.  Some can have
@@ -200,7 +200,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			else
 				{
-				parsedPrototype = new ParsedPrototype(tokenizedPrototype, commentTypeID);
+				parsedPrototype = new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID);
 				TokenIterator start = tokenizedPrototype.FirstToken;
 				TokenIterator end = tokenizedPrototype.LastToken;
 
