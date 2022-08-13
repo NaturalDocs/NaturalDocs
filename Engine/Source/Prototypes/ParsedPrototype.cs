@@ -57,12 +57,13 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		/* Constructor: ParsedPrototype
 		 * Creates a new parsed prototype.
 		 */
-		public ParsedPrototype (Tokenizer prototype, bool supportsImpliedTypes = true)
+		public ParsedPrototype (Tokenizer prototype, int commentTypeID, bool supportsImpliedTypes = true)
 			{
 			tokenizer = prototype;
 			sections = null;
 			mainSectionIndex = 0;
 
+			this.commentTypeID = commentTypeID;
 			this.supportsImpliedTypes = supportsImpliedTypes;
 
 			RecalculateSections();
@@ -422,6 +423,16 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			}
 
 
+		/* Property: CommentTypeID
+		 * The comment type ID associated with this prototype.
+		 */
+		public int CommentTypeID
+			{
+			get
+				{  return commentTypeID;  }
+			}
+
+
 		/* Property: SupportsImpliedTypes
 		 * Whether the prototype's language supports implied types.
 		 */
@@ -451,6 +462,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * and parameters.
 		 */
 		protected int mainSectionIndex;
+
+		/* var: commentTypeID
+		 * The comment type ID associated with this prototype.
+		 */
+		protected int commentTypeID;
 
 		/* var: supportsImpliedTypes
 		 * Whether the prototype's language supports implied types.
