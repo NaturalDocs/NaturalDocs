@@ -75,7 +75,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			parameterTableSection = null;
 			parameterTableTokenIndexes = null;
 			parameterTableColumnsUsed = null;
-			symbolColumnWidth = 0;
 
 			links = null;
 			linkTargets = null;
@@ -180,8 +179,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: CalculateParameterTable
-		 * Fills in <parameterTableTokenIndexes>, <parameterTableColumnUsed>, and <symbolColumnWidth> for the
-		 * passed section.
+		 * Fills in <parameterTableTokenIndexes> and <parameterTableColumnUsed> for the passed section.
 		 */
 		protected void CalculateParameterTable (Prototypes.ParameterSection section)
 			{
@@ -708,37 +706,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						}
 					}
 				}
-
-
-
-			//
-			// Next determine the symbol column's width
-			//
-
-			symbolColumnWidth = 0;
-
-			if (parameterTableColumnsUsed[SymbolsColumnIndex])
-				{
-				for (int parameterIndex = 0; parameterIndex < section.NumberOfParameters; parameterIndex++)
-					{
-					int startTokenIndex = parameterTableTokenIndexes[parameterIndex, SymbolsColumnIndex];
-					int endTokenIndex = parameterTableTokenIndexes[parameterIndex, SymbolsColumnIndex + 1];
-
-					if (endTokenIndex > startTokenIndex)
-						{
-						TokenIterator start, end;
-						section.GetParameterBounds(parameterIndex, out start, out end);
-
-						start.Next(startTokenIndex - start.TokenIndex);
-						end.Previous(end.TokenIndex - endTokenIndex);
-
-						int paramColumnWidth = end.RawTextIndex - start.RawTextIndex;
-
-						if (paramColumnWidth > symbolColumnWidth)
-							{  symbolColumnWidth = paramColumnWidth;  }
-						}
-					}
-				}
 			}
 
 
@@ -1146,11 +1113,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * An array representing whether each column in <parameterTableTokenIndexes> is used at all.
 		 */
 		protected bool[] parameterTableColumnsUsed;
-
-		/* var: symbolColumnWidth
-		 * The width in characters of the longest entry in the symbol column, if any.  Will be zero if it's not used.
-		 */
-		protected int symbolColumnWidth;
 
 		/* var: links
 		 * A list of <Links> that contain any which will appear in the prototype, or null if links aren't needed.
