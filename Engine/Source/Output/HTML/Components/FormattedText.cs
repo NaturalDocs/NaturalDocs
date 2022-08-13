@@ -115,10 +115,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * Appends the text between the two iterators to the passed StringBuilder as HTML with syntax highlighting applied.  The
 		 * syntax highlighting is based on the set <Tokenization.SyntaxHighlightingTypes>.
 		 *
-		 * If excludeKeywords is set, it will ignore any <SyntaxHighlightingType.Keyword> sections.  This is useful in situations where
-		 * you know the text is an identifier but it may be accidentally marked as a keyword by basic language support highlighting.
+		 * This function will not highlight keywords for tokens where <PrototypeParsingType.Name> or a similar identifier token is
+		 * also set.  The basic language support syntax highlighter may accidentally mark some identifiers as keywords, so if the
+		 * prototype parser knows it's the name of an identifier it will ignore the highlighting.
 		 */
-		public void AppendSyntaxHighlightedText (TokenIterator start, TokenIterator end, StringBuilder output, bool excludeKeywords = false)
+		public void AppendSyntaxHighlightedText (TokenIterator start, TokenIterator end, StringBuilder output)
 			{
 			TokenIterator iterator = start;
 
@@ -132,36 +133,41 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				else
 					{
 					TokenIterator startStretch = iterator;
+					SyntaxHighlightingType stretchType = NameSafeSyntaxHighlightingTypeOf(startStretch);
+
 					TokenIterator endStretch = iterator;
 					endStretch.Next();
-
-					SyntaxHighlightingType stretchType = startStretch.SyntaxHighlightingType;
+					SyntaxHighlightingType endStretchType = NameSafeSyntaxHighlightingTypeOf(endStretch);
 
 					for (;;)
 						{
 						if (endStretch == end || endStretch.FundamentalType == FundamentalType.LineBreak)
 							{  break;  }
-						else if (endStretch.SyntaxHighlightingType == stretchType)
-							{  endStretch.Next();  }
+						else if (endStretchType == stretchType)
+							{
+							endStretch.Next();
+							endStretchType = NameSafeSyntaxHighlightingTypeOf(endStretch);
+							}
 
-						// We can include unhighlighted whitespace if there's content of the same type beyond it.  This prevents
-						// unnecessary span tags.
+						// We can include whitespace if there's content of the same type beyond it.  This prevents unnecessary span
+						// tags.
 						else if (stretchType != SyntaxHighlightingType.Null &&
-								   endStretch.SyntaxHighlightingType == SyntaxHighlightingType.Null &&
 								   endStretch.FundamentalType == FundamentalType.Whitespace)
 							{
 							TokenIterator lookahead = endStretch;
 
 							do
 								{  lookahead.Next();  }
-							while (lookahead.SyntaxHighlightingType == SyntaxHighlightingType.Null &&
-									  lookahead.FundamentalType == FundamentalType.Whitespace &&
+							while (lookahead.FundamentalType == FundamentalType.Whitespace &&
 									  lookahead < end);
 
-							if (lookahead < end && lookahead.SyntaxHighlightingType == stretchType)
+							SyntaxHighlightingType lookaheadHighlightingType = NameSafeSyntaxHighlightingTypeOf(lookahead);
+
+							if (lookahead < end && lookaheadHighlightingType == stretchType)
 								{
 								endStretch = lookahead;
 								endStretch.Next();
+								endStretchType = NameSafeSyntaxHighlightingTypeOf(endStretch);
 								}
 							else
 								{  break;  }
@@ -177,8 +183,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 							output.Append("<span class=\"SHComment\">");
 							break;
 						case SyntaxHighlightingType.Keyword:
-							if (!excludeKeywords)
-								{  output.Append("<span class=\"SHKeyword\">");  }
+							output.Append("<span class=\"SHKeyword\">");
 							break;
 						case SyntaxHighlightingType.Number:
 							output.Append("<span class=\"SHNumber\">");
@@ -203,8 +208,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 					output.EntityEncodeAndAppend(startStretch.TextBetween(endStretch));
 
-					if (stretchType != SyntaxHighlightingType.Null &&
-						!(stretchType == SyntaxHighlightingType.Keyword && excludeKeywords) )
+					if (stretchType != SyntaxHighlightingType.Null)
 						{  output.Append("</span>");  }
 
 					iterator = endStretch;
@@ -217,6 +221,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 *
 		 * Formats the text between the iterators with syntax highlighting and links for any tokens marked with
 		 * <PrototypeParsingType.Type> and <PrototypeParsingType.TypeQualifier>.  Appends the result to the passed StringBuilder.
+		 *
+		 * This function will not highlight keywords for tokens where <PrototypeParsingType.Name> or a similar identifier token is
+		 * also set.  The basic language support syntax highlighter may accidentally mark some identifiers as keywords, so if the
+		 * prototype parser knows it's the name of an identifier it will ignore the highlighting.
 		 *
 		 * Parameters:
 		 *
@@ -389,6 +397,27 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					AppendSyntaxHighlightedText(startText, iterator, output);
 					}
 				}
+			}
+
+
+		/* Function: NameSafeSyntaxHighlightingTypeOf
+		 *
+		 * Returns the <SyntaxHighlightingType> of the passed iterator, but substituting <SyntaxHighlightingType.Null> for
+		 * <SyntaxHighlightingType.Keyword> if the iterator is on a <PrototypeParsingType.Name> or similar identifier token.  This is
+		 * needed because the basic language support syntax highlighter may accidentally mark some identifiers as keywords, so if the
+		 * prototype parser knows it's the name of an identifier we can make sure it won't be highlighted.
+		 */
+		public SyntaxHighlightingType NameSafeSyntaxHighlightingTypeOf (TokenIterator iterator)
+			{
+			var syntaxHighlightingType = iterator.SyntaxHighlightingType;
+
+			// We only want to do this for keywords.  Names appearing in metadata should still be highlighted as metadata.
+			if (syntaxHighlightingType == SyntaxHighlightingType.Keyword &&
+				(iterator.PrototypeParsingType == PrototypeParsingType.Name ||
+				 iterator.PrototypeParsingType == PrototypeParsingType.TupleMemberName))
+				{  return SyntaxHighlightingType.Null;  }
+			else
+				{  return syntaxHighlightingType;  }
 			}
 
 

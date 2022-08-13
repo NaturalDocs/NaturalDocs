@@ -1009,11 +1009,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				(type == ColumnType.TypeNameSeparator && start.FundamentalType == FundamentalType.Text))
 				{  output.Append("&nbsp;");  }
 
-			// We don't want to highlight keywords on the Name cell because identifiers can accidentally be marked as them with
-			// basic language support, such as "event" in "wxPaintEvent &event".
-			if (type == ColumnType.Name)
-				{  AppendSyntaxHighlightedText(start, end, output, excludeKeywords: true);  }
-			else if (addLinks)
+			if (addLinks)
 				{  AppendSyntaxHighlightedTextWithTypeLinks(start, end, output, links, linkTargets, extendTypeSearch: true);  }
 			else
 				{  AppendSyntaxHighlightedText(start, end, output);  }
