@@ -1924,12 +1924,57 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			else // mode isn't CreateElements
 				{
-				// If mode is ParsePrototypes, we're not marking the accessors as if they were parameters.  Just skip everything.
-
 				if (lookahead.Character == '{')
 					{
+					if (mode == ParseMode.ParsePrototype)
+						{  lookahead.PrototypeParsingType = PrototypeParsingType.StartOfParams;  }
+
 					lookahead.Next();
-					GenericSkipUntilAfter(ref lookahead, '}');
+					TokenIterator startOfModifiers = lookahead;
+
+					while (lookahead.IsInBounds)
+						{
+						if (lookahead.Character == '}')
+							{
+							if (mode == ParseMode.ParsePrototype)
+								{  lookahead.PrototypeParsingType = PrototypeParsingType.EndOfParams;  }
+
+							lookahead.Next();
+							break;
+							}
+						else if (lookahead.Character == ';')
+							{
+							if (mode == ParseMode.ParsePrototype)
+								{  lookahead.PrototypeParsingType = PrototypeParsingType.ParamSeparator;  }
+
+							lookahead.Next();
+							startOfModifiers = lookahead;
+							}
+						else if (lookahead.MatchesToken("get") ||
+								   lookahead.MatchesToken("set") ||
+								   lookahead.MatchesToken("init"))
+							{
+							if (mode == ParseMode.ParsePrototype)
+								{
+								lookahead.PrototypeParsingType = PrototypeParsingType.Name;
+
+								TokenIterator endOfModifiers = lookahead;
+								endOfModifiers.Previous();
+								endOfModifiers.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds);
+
+								startOfModifiers.NextPastWhitespace();
+
+								if (endOfModifiers > startOfModifiers)
+									{  startOfModifiers.SetPrototypeParsingTypeBetween(endOfModifiers, PrototypeParsingType.TypeModifier);  }
+								}
+
+							lookahead.Next();
+							}
+						else
+							{
+							GenericSkip(ref lookahead);
+							}
+						}
 					}
 				else // =>
 					{
