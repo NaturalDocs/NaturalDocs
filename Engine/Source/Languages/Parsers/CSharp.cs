@@ -1007,6 +1007,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// Name
 
 			string name;
+			TokenIterator startOfName = lookahead;
+
 			if (TryToSkipIdentifier(ref lookahead, out name, mode, PrototypeParsingType.Name) == false)
 				{
 				ResetTokensBetween(iterator, lookahead, mode);
@@ -1020,8 +1022,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{
 				keyword = "operator";
 				name += ' ';
-
-				TokenIterator startOfOperator = lookahead;
 
 				if (lookahead.MatchesToken("true") ||
 					lookahead.MatchesToken("false"))
@@ -1040,7 +1040,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					}
 
 				if (mode == ParseMode.ParsePrototype)
-					{  startOfOperator.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.Name);  }
+					{  startOfName.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.KeywordName);  }
 
 				TryToSkipWhitespace(ref lookahead);
 				}
@@ -1366,7 +1366,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 			if (mode == ParseMode.ParsePrototype)
-				{  lookahead.PrototypeParsingType = PrototypeParsingType.Name;  }
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.KeywordName;  }
 
 			lookahead.Next();
 			TryToSkipWhitespace(ref lookahead);
@@ -1387,7 +1387,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			startOfType.AppendTextBetweenTo(lookahead, name);
 
 			if (mode == ParseMode.ParsePrototype)
-				{  startOfType.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.Name);  }
+				{  startOfType.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.KeywordName);  }
 
 			TryToSkipWhitespace(ref lookahead);
 
@@ -1771,6 +1771,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// Name
 
 			string name;
+			TokenIterator startOfName = lookahead;
+
 			if (TryToSkipIdentifier(ref lookahead, out name, mode, PrototypeParsingType.Name) == false)
 				{
 				ResetTokensBetween(iterator, lookahead, mode);
@@ -1786,6 +1788,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				name.EndsWith(".this"))  // It may be InterfaceName.this[]
 				{
 				keyword = "operator";
+
+				if (mode == ParseMode.ParsePrototype)
+					{  startOfName.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.KeywordName);  }
 
 				if (!TryToSkipParameters(ref lookahead, mode, openingSymbol: '['))
 					{
@@ -1956,7 +1961,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 							{
 							if (mode == ParseMode.ParsePrototype)
 								{
-								lookahead.PrototypeParsingType = PrototypeParsingType.Name;
+								lookahead.PrototypeParsingType = PrototypeParsingType.KeywordName;
 
 								TokenIterator endOfModifiers = lookahead;
 								endOfModifiers.Previous();
