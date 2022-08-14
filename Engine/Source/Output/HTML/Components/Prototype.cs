@@ -806,7 +806,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			bool addNBSP = end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
 
 			// Also add it if the BeforeParameters section doesn't end with a nice symbol like (.  If it ends with something like (* we
-			// want to add it anyway for legibility.
+			// want to add it anyway for legibility.  Also for {.
 			if (!addNBSP)
 				{
 				TokenIterator beforeEnd = end;
@@ -815,7 +815,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				addNBSP = (beforeEnd >= start &&
 								  beforeEnd.Character != '(' &&
 								  beforeEnd.Character != '[' &&
-								  beforeEnd.Character != '{' &&
 								  beforeEnd.Character != '<');
 				}
 
@@ -853,7 +852,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				addNBSP = (start < end &&
 								  start.Character != ')' &&
 								  start.Character != ']' &&
-								  start.Character != '}' &&
 								  start.Character != '>');
 				}
 
