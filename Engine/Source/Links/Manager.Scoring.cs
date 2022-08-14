@@ -721,6 +721,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 							break;
 
 						case PrototypeParsingType.Name:
+						case PrototypeParsingType.KeywordName:
 
 							if (linkParamStart < linkParamEnd && linkParamStart.MatchesToken(prototypeParamStart, ignoreCase))
 								{

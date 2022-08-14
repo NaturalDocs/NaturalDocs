@@ -355,6 +355,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 							// Include the parameter separator because there may not be a default value.
 							// Include modifiers because there still may be some after the name.
 							if (type == PrototypeParsingType.Name ||
+								type == PrototypeParsingType.KeywordName ||
 								type == PrototypeParsingType.TypeModifier ||
 								type == PrototypeParsingType.ParamModifier ||
 								type == PrototypeParsingType.ParamSeparator ||
@@ -511,6 +512,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 							// Include the parameter separator because there may not be a type.
 							if (type == PrototypeParsingType.Name ||
+								type == PrototypeParsingType.KeywordName ||
 								type == PrototypeParsingType.ParamSeparator ||
 								type == PrototypeParsingType.Null)
 								{  iterator.Next();   }

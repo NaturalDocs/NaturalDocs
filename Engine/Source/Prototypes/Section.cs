@@ -54,16 +54,19 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			TokenIterator iterator = start;
 
 			while (iterator < end &&
-					  iterator.PrototypeParsingType != PrototypeParsingType.Name)
+					  iterator.PrototypeParsingType != PrototypeParsingType.Name &&
+					  iterator.PrototypeParsingType != PrototypeParsingType.KeywordName)
 				{  iterator.Next();  }
 
-			if (iterator.PrototypeParsingType == PrototypeParsingType.Name)
+			if (iterator.PrototypeParsingType == PrototypeParsingType.Name ||
+				iterator.PrototypeParsingType == PrototypeParsingType.KeywordName)
 				{
 				nameStart = iterator;
 
 				do
 					{  iterator.Next();  }
-				while (iterator.PrototypeParsingType == PrototypeParsingType.Name);
+				while (iterator.PrototypeParsingType == PrototypeParsingType.Name ||
+						  iterator.PrototypeParsingType == PrototypeParsingType.KeywordName);
 
 				nameEnd = iterator;
 				return true;

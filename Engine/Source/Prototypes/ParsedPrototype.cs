@@ -280,7 +280,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					if (endOfSection.FundamentalType != FundamentalType.Whitespace)
 						{  sectionIsEmpty = false; }
 
-					if (endOfSection.PrototypeParsingType == PrototypeParsingType.Name)
+					if (endOfSection.PrototypeParsingType == PrototypeParsingType.Name ||
+						endOfSection.PrototypeParsingType == PrototypeParsingType.KeywordName)
 						{
 						sectionHasName = true;
 						endOfSection.Next();

@@ -337,7 +337,9 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 						iterator = parameters[index].Start;
 						end = parameters[index].End;
 
-						while (iterator < end && iterator.PrototypeParsingType != PrototypeParsingType.Name)
+						while (iterator < end &&
+								  iterator.PrototypeParsingType != PrototypeParsingType.Name &&
+								  iterator.PrototypeParsingType != PrototypeParsingType.KeywordName)
 							{
 							if (iterator.PrototypeParsingType == PrototypeParsingType.ParamModifier)
 								{
@@ -496,7 +498,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 				while (iterator < parameter.End)
 					{
-					if (iterator.PrototypeParsingType == PrototypeParsingType.Name)
+					if (iterator.PrototypeParsingType == PrototypeParsingType.Name ||
+						iterator.PrototypeParsingType == PrototypeParsingType.KeywordName)
 						{
 						if (foundType)
 							{

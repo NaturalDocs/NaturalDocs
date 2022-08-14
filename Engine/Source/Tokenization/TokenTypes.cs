@@ -141,6 +141,9 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	 *
 	 *		Name - The name of the parameter or the code element being defined by the prototype.
 	 *
+	 *		KeywordName - The name of the code element being defined that is also a keyword, such as "operator" when overloading
+	 *								operators or "get" and "set" when defining properties.
+	 *
 	 *
 	 *	Parameter Modifiers:
 	 *
@@ -208,9 +211,9 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 
 		StartOfTuple, EndOfTuple, TupleMemberSeparator, TupleMemberName,
 
-		NameTypeSeparator,
+		NameTypeSeparator, Name, KeywordName,
 
-		Name, ParamModifier, OpeningParamModifier, ClosingParamModifier,
+		ParamModifier, OpeningParamModifier, ClosingParamModifier,
 
 		DefaultValueSeparator, DefaultValue,
 
