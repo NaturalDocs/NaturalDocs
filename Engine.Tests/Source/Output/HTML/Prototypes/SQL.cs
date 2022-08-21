@@ -19,7 +19,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Output.HTML.Prototypes
 		public void All ()
 			{
 			TestFolder("Output/HTML/Prototypes/SQL", null, "div", "NDPrototype", true,
-							outputTitle: "Prototype Tests", outputSubtitle: "SQL");
+							outputTitle: "SQL Prototype Tests");
 			}
 
 		}
