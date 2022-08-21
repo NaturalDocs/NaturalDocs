@@ -1063,26 +1063,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			}
 
 
-		/* Property: SymbolsColumnIndex
-		 * The index into <ColumnOrder> where <ColumnType.Symbols> appears.
-		 */
-		protected int SymbolsColumnIndex
-			{
-			get
-				{
-				switch (parameterTableSection.ParameterStyle)
-					{
-					case ParsedPrototype.ParameterStyle.C:
-						return CSymbolsColumnIndex;
-					case ParsedPrototype.ParameterStyle.Pascal:
-						return PascalSymbolsColumnIndex;
-					default:
-						throw new NotSupportedException();
-					}
-				}
-			}
-
-
 
 		// Group: Variables
 		// __________________________________________________________________________
@@ -1142,11 +1122,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 																		   ColumnType.DefaultValueSeparator,
 																		   ColumnType.DefaultValue };
 
-		/* var: CSymbolsColumnIndex
-		 * The index into <CColumnOrder> where <ColumnType.Symbols> appears.
-		 */
-		static public int CSymbolsColumnIndex = 2;
-
 		/* var: PascalColumnOrder
 		 * An array of <ColumnTypes> representing the order in which columns should appear for Pascal-style prototypes.
 		 */
@@ -1159,11 +1134,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 																				  ColumnType.PropertyValue,
 																				  ColumnType.DefaultValueSeparator,
 																				  ColumnType.DefaultValue };
-
-		/* var: PascalSymbolsColumnIndex
-		 * The index into <PascalColumnOrder> where <ColumnType.Symbols> appears.
-		 */
-		static public int PascalSymbolsColumnIndex = 3;
 
 		}
 	}
