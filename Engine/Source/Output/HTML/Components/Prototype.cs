@@ -943,7 +943,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				{  AppendSyntaxHighlightedText(start, end, output);  }
 
 			// Default value separators, property value separators, and type/name separators always get spaces after.  Make sure
-			// the spaces aren't duplicated by the preceding cells.
+			// the spaces won't be duplicated by the following cell.
 			if (type == ColumnType.DefaultValueSeparator ||
 				type == ColumnType.PropertyValueSeparator ||
 				type == ColumnType.TypeNameSeparator ||
