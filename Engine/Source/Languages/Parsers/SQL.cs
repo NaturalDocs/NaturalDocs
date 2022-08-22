@@ -847,6 +847,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				if (mode == ParseMode.ParsePrototype)
 					{  lookahead.PrototypeParsingType = PrototypeParsingType.StartOfParams;  }
 
+				lookahead.Next();
+				TokenIterator startOfStretch = lookahead;
+
 				while (lookahead.IsInBounds &&
 						  !OnAnyKeyword(lookahead, "RETURN", "AS", "BEGIN") &&
 						  !OnKeyphrase(lookahead, "FOR REPLICATION"))
@@ -859,9 +862,19 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					else if (lookahead.Character == ',')
 						{
 						if (mode == ParseMode.ParsePrototype)
-							{  lookahead.PrototypeParsingType = PrototypeParsingType.ParamSeparator;  }
+							{
+							startOfStretch.NextPastWhitespace();
+							TokenIterator endOfStretch = lookahead;
+							endOfStretch.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds);
+
+							if (startOfStretch < endOfStretch)
+								{  startOfStretch.SetPrototypeParsingTypeBetween(endOfStretch, PrototypeParsingType.Name);  }
+
+							lookahead.PrototypeParsingType = PrototypeParsingType.ParamSeparator;
+							}
 
 						lookahead.Next();
+						startOfStretch = lookahead;
 						}
 					else
 						{  GenericSkip(ref lookahead, ParseMode.IterateOnly);  }
@@ -869,6 +882,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 				if (mode == ParseMode.SyntaxHighlight)
 					{  startOfWith.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.Metadata);  }
+				else if (mode == ParseMode.ParsePrototype)
+					{
+					startOfStretch.NextPastWhitespace();
+					TokenIterator endOfStretch = lookahead;
+					endOfStretch.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds);
+
+					if (startOfStretch < endOfStretch)
+						{  startOfStretch.SetPrototypeParsingTypeBetween(endOfStretch, PrototypeParsingType.Name);  }
+					}
 
 				iterator = lookahead;
 				}
