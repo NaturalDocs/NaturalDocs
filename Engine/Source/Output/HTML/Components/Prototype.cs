@@ -30,38 +30,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 	public class Prototype : HTML.Components.FormattedText
 		{
 
-		// Group: Types
-		// __________________________________________________________________________
-
-
-		/* Enum: ColumnType
-		 *
-		 * A prototype's parameter column type.  Note that the prototype CSS classes are directly mapped to these
-		 * names.
-		 *
-		 * ModifierQualifier - For C-style prototypes, a separate column for modifiers and qualifiers.  For Pascal-style
-		 *							  prototypes, any modifiers that appear before the name.
-		 * Type - The parameter type.  For C-style prototypes this will only be the last word.  For Pascal-style
-		 *			  prototypes this will be the entire symbol.
-		 * TypeNameSeparator - For Pascal-style prototypes, the symbol separating the name from the type.
-		 * Symbols - Symbols between names and types that should be formatted in a separate column, such as *
-		 *				   and &.
-		 * Name - The parameter name.
-		 * DefaultValueSeparator - If present, the symbol for assigning a default value like = or :=.
-		 * DefaultValue - The default value.
-		 * PropertyValueSeparator - If present, the symbol for assigning a value to a property like = or :.
-		 * PropertyValue - The property value, such as could appear in Java annotations.
-		 */
-		public enum ColumnType : byte
-			{
-			ModifierQualifier, Type, TypeNameSeparator,
-			Symbols, Name,
-			DefaultValueSeparator, DefaultValue,
-			PropertyValueSeparator, PropertyValue
-			}
-
-
-
 		// Group: Functions
 		// __________________________________________________________________________
 
@@ -71,10 +39,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		public Prototype (Context context) : base (context)
 			{
 			parsedPrototype = null;
-
-			parameterTableSection = null;
-			parameterTableTokenIndexes = null;
-			parameterTableColumnsUsed = null;
 
 			links = null;
 			linkTargets = null;
@@ -178,526 +142,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		// __________________________________________________________________________
 
 
-		/* Function: CalculateParameterTable
-		 * Fills in <parameterTableTokenIndexes> and <parameterTableColumnUsed> for the passed section.
-		 */
-		protected void CalculateParameterTable (Prototypes.ParameterSection section)
-			{
-
-			//
-			// Fill in parameterTableTokenIndexes
-			//
-
-			parameterTableTokenIndexes = new int[section.NumberOfParameters, NumberOfColumns + 1];
-
-			for (int parameterIndex = 0; parameterIndex < section.NumberOfParameters; parameterIndex++)
-				{
-				TokenIterator startOfParam, endOfParam;
-				section.GetParameterBounds(parameterIndex, out startOfParam, out endOfParam);
-
-				TokenIterator iterator = startOfParam;
-				iterator.NextPastWhitespace(endOfParam);
-
-
-				// C-Style Parameters
-
-				if (section.ParameterStyle == ParsedPrototype.ParameterStyle.C)
-					{
-					while (iterator < endOfParam &&
-							  iterator.PrototypeParsingType == PrototypeParsingType.Null &&
-							  iterator.FundamentalType == FundamentalType.Whitespace)
-						{  iterator.Next();  }
-
-
-					// ModifierQualifier
-
-					int currentColumn = 0;
-					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
-
-					TokenIterator startOfType = iterator;
-
-					while (iterator < endOfParam)
-						{
-						PrototypeParsingType type = iterator.PrototypeParsingType;
-
-						// Null covers whitespace and any random symbols we encountered that went unmarked.
-						if (type == PrototypeParsingType.TypeModifier ||
-							type == PrototypeParsingType.TypeQualifier ||
-							type == PrototypeParsingType.ParamModifier ||
-							type == PrototypeParsingType.Null)
-							{  iterator.Next();   }
-						else if (type == PrototypeParsingType.OpeningTypeModifier ||
-									type == PrototypeParsingType.OpeningParamModifier)
-							{  SkipModifierBlock(ref iterator, endOfParam);  }
-						else
-							{  break;  }
-						}
-
-
-					// Type
-
-					currentColumn++;
-					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
-
-					while (iterator < endOfParam)
-						{
-						PrototypeParsingType type = iterator.PrototypeParsingType;
-
-						// The previous loop already got any modifiers before the type, so this will only cover the type
-						// plus any modifiers following it.
-						if (type == PrototypeParsingType.Type ||
-							type == PrototypeParsingType.TypeModifier ||
-							type == PrototypeParsingType.ParamModifier ||
-							type == PrototypeParsingType.Null)
-							{  iterator.Next();   }
-						else if (type == PrototypeParsingType.OpeningTypeModifier ||
-									type == PrototypeParsingType.OpeningParamModifier)
-							{  SkipModifierBlock(ref iterator, endOfParam);  }
-						else if (type == PrototypeParsingType.StartOfTuple)
-							{  SkipTuple(ref iterator, endOfParam);  }
-						else
-							{  break;  }
-						}
-
-
-					// Symbols
-
-					currentColumn++;
-					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
-
-					// All symbols are part of the type column right now because they're marked as type or param
-					// modifiers.  Walk backwards to claim the symbols from the type column.
-
-					if (iterator > startOfType)
-						{
-						TokenIterator lookbehind = iterator;
-						lookbehind.Previous();
-
-						if (lookbehind.FundamentalType == FundamentalType.Symbol &&
-							lookbehind.Character != '_' &&
-							lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingTypeModifier &&
-							lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingParamModifier)
-							{
-							parameterTableTokenIndexes[parameterIndex, currentColumn] = lookbehind.TokenIndex;
-							lookbehind.Previous();
-
-							while (lookbehind >= startOfType)
-								{
-								if (lookbehind.FundamentalType == FundamentalType.Symbol &&
-									lookbehind.Character != '_' &&
-									lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingTypeModifier &&
-									lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingParamModifier)
-									{
-									parameterTableTokenIndexes[parameterIndex, currentColumn] = lookbehind.TokenIndex;
-									lookbehind.Previous();
-									}
-								else
-									{  break;  }
-								}
-
-							// Fix up any columns we stole from
-							for (int i = 0; i < currentColumn; i++)
-								{
-								if (parameterTableTokenIndexes[parameterIndex, i] > parameterTableTokenIndexes[parameterIndex, currentColumn])
-									{  parameterTableTokenIndexes[parameterIndex, i] = parameterTableTokenIndexes[parameterIndex, currentColumn];  }
-								}
-							}
-						}
-
-
-					// Name
-
-					currentColumn++;
-					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
-
-					while (iterator < endOfParam)
-						{
-						PrototypeParsingType type = iterator.PrototypeParsingType;
-
-						// Include the parameter separator because there may not be a default value.
-						// Include modifiers because there still may be some after the name.
-						if (type == PrototypeParsingType.Name ||
-							type == PrototypeParsingType.KeywordName ||
-							type == PrototypeParsingType.TypeModifier ||
-							type == PrototypeParsingType.ParamModifier ||
-							type == PrototypeParsingType.ParamSeparator ||
-							type == PrototypeParsingType.Null)
-							{  iterator.Next();   }
-						else if (type == PrototypeParsingType.OpeningTypeModifier ||
-									type == PrototypeParsingType.OpeningParamModifier)
-							{  SkipModifierBlock(ref iterator, endOfParam);  }
-						else
-							{  break;  }
-						}
-
-
-					// PropertyValueSeparator
-
-					currentColumn++;
-					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
-
-					while (iterator < endOfParam)
-						{
-						PrototypeParsingType type = iterator.PrototypeParsingType;
-
-						if (type == PrototypeParsingType.PropertyValueSeparator ||
-							type == PrototypeParsingType.Null)
-							{  iterator.Next();   }
-						else
-							{  break;  }
-						}
-
-
-					// PropertyValue
-
-					currentColumn++;
-					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
-
-					while (iterator < endOfParam)
-						{
-						PrototypeParsingType type = iterator.PrototypeParsingType;
-
-						if (type == PrototypeParsingType.PropertyValue ||
-							type == PrototypeParsingType.ParamSeparator ||
-							type == PrototypeParsingType.Null)
-							{  iterator.Next();   }
-						else
-							{  break;  }
-						}
-
-
-					// DefaultValueSeparator
-
-					currentColumn++;
-					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
-
-					while (iterator < endOfParam)
-						{
-						PrototypeParsingType type = iterator.PrototypeParsingType;
-
-						if (type == PrototypeParsingType.DefaultValueSeparator ||
-							type == PrototypeParsingType.Null)
-							{  iterator.Next();   }
-						else
-							{  break;  }
-						}
-
-
-					// DefaultValue
-
-					currentColumn++;
-					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
-
-
-					// End of param
-
-					currentColumn++;
-					parameterTableTokenIndexes[parameterIndex, currentColumn] = endOfParam.TokenIndex;
-					}
-
-
-				// Pascal-Style Parameters
-
-				else if (section.ParameterStyle == ParsedPrototype.ParameterStyle.Pascal)
-					{
-					while (iterator < endOfParam &&
-							  iterator.PrototypeParsingType == PrototypeParsingType.Null &&
-							  iterator.FundamentalType == FundamentalType.Whitespace)
-						{  iterator.Next();  }
-
-
-					// ModifierQualifier
-
-					int currentColumn = 0;
-					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
-
-					while (iterator < endOfParam)
-						{
-						PrototypeParsingType type = iterator.PrototypeParsingType;
-
-						if (type == PrototypeParsingType.TypeModifier ||
-							type == PrototypeParsingType.ParamModifier ||
-							type == PrototypeParsingType.ParamSeparator ||
-							type == PrototypeParsingType.Null)
-							{  iterator.Next();   }
-						else if (type == PrototypeParsingType.OpeningTypeModifier ||
-									type == PrototypeParsingType.OpeningParamModifier)
-							{  SkipModifierBlock(ref iterator, endOfParam);  }
-						else
-							{  break;  }
-						}
-
-
-					// Do we have a name-type separator?  We may not, such as for SQL.
-
-					bool hasNameTypeSeparator = false;
-					TokenIterator lookahead = iterator;
-
-					while (lookahead < endOfParam)
-						{
-						if (lookahead.PrototypeParsingType == PrototypeParsingType.NameTypeSeparator)
-							{
-							hasNameTypeSeparator = true;
-							break;
-							}
-
-						lookahead.Next();
-						}
-
-
-					// Name
-
-					currentColumn++;
-					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
-
-					while (iterator < endOfParam)
-						{
-						PrototypeParsingType type = iterator.PrototypeParsingType;
-
-						// Include the parameter separator because there may not be a type.
-						if (type == PrototypeParsingType.Name ||
-							type == PrototypeParsingType.KeywordName ||
-							type == PrototypeParsingType.ParamSeparator ||
-							type == PrototypeParsingType.Null)
-							{  iterator.Next();   }
-						// Include modifiers because there still may be some after the name, but only if there's a name-type separator.
-						else if (hasNameTypeSeparator &&
-									(type == PrototypeParsingType.TypeModifier ||
-									type == PrototypeParsingType.ParamModifier))
-							{  iterator.Next();   }
-						else if (type == PrototypeParsingType.OpeningTypeModifier ||
-									type == PrototypeParsingType.OpeningParamModifier)
-							{  SkipModifierBlock(ref iterator, endOfParam);  }
-						else
-							{  break;  }
-						}
-
-
-					// TypeNameSeparator
-
-					currentColumn++;
-					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
-
-					while (iterator < endOfParam)
-						{
-						PrototypeParsingType type = iterator.PrototypeParsingType;
-
-						if (type == PrototypeParsingType.NameTypeSeparator ||
-							type == PrototypeParsingType.Null)
-							{  iterator.Next();   }
-						else
-							{  break;  }
-						}
-
-
-					// Symbols
-
-					currentColumn++;
-					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
-
-					if (iterator < endOfParam &&
-						iterator.FundamentalType == FundamentalType.Symbol &&
-						iterator.Character != '_')
-						{
-						while (iterator < endOfParam)
-							{
-							PrototypeParsingType type = iterator.PrototypeParsingType;
-
-							if ( (
-									( iterator.FundamentalType == FundamentalType.Symbol && iterator.Character != '_' ) ||
-									( iterator.FundamentalType == FundamentalType.Whitespace )
-									) &&
-								( type == PrototypeParsingType.TypeModifier ||
-									type == PrototypeParsingType.ParamModifier ||
-									type == PrototypeParsingType.Null) )
-								{  iterator.Next();   }
-							else
-								{  break;  }
-							}
-						}
-
-
-					// Type
-
-					currentColumn++;
-					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
-
-					// Allow this column to claim the contents of a raw prototype.  They should all be null tokens.
-					// We use the type column instead of the name column because the name column isn't syntax highlighted.
-					while (iterator < endOfParam)
-						{
-						PrototypeParsingType type = iterator.PrototypeParsingType;
-
-						// Include the parameter separator because there may not be a default value.
-						if (type == PrototypeParsingType.Type ||
-							type == PrototypeParsingType.TypeModifier ||
-							type == PrototypeParsingType.TypeQualifier ||
-							type == PrototypeParsingType.ParamModifier ||
-							type == PrototypeParsingType.ParamSeparator ||
-							type == PrototypeParsingType.Null)
-							{  iterator.Next();   }
-						else if (type == PrototypeParsingType.OpeningTypeModifier ||
-								   type == PrototypeParsingType.OpeningParamModifier)
-							{  SkipModifierBlock(ref iterator, endOfParam);  }
-						else if (type == PrototypeParsingType.StartOfTuple)
-							{  SkipTuple(ref iterator, endOfParam);  }
-						else
-							{  break;  }
-						}
-
-
-					// PropertyValueSeparator
-
-					currentColumn++;
-					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
-
-					while (iterator < endOfParam)
-						{
-						PrototypeParsingType type = iterator.PrototypeParsingType;
-
-						if (type == PrototypeParsingType.PropertyValueSeparator ||
-							type == PrototypeParsingType.Null)
-							{  iterator.Next();   }
-						else
-							{  break;  }
-						}
-
-
-					// PropertyValue
-
-					currentColumn++;
-					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
-
-					while (iterator < endOfParam)
-						{
-						PrototypeParsingType type = iterator.PrototypeParsingType;
-
-						if (type == PrototypeParsingType.PropertyValue ||
-							type == PrototypeParsingType.ParamSeparator ||
-							type == PrototypeParsingType.Null)
-							{  iterator.Next();   }
-						else
-							{  break;  }
-						}
-
-
-					// DefaultValueSeparator
-
-					currentColumn++;
-					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
-
-					while (iterator < endOfParam)
-						{
-						PrototypeParsingType type = iterator.PrototypeParsingType;
-
-						if (type == PrototypeParsingType.DefaultValueSeparator ||
-							type == PrototypeParsingType.Null)
-							{  iterator.Next();   }
-						else
-							{  break;  }
-						}
-
-
-					// DefaultValue
-
-					currentColumn++;
-					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
-
-
-					// End of param
-
-					currentColumn++;
-					parameterTableTokenIndexes[parameterIndex, currentColumn] = endOfParam.TokenIndex;
-					}
-				}
-
-
-
-			//
-			// Next fill in parameterTableColumnsUsed
-			//
-
-			// There's a very high likelihood of this array always being the same length so it's worth it to try to reuse the
-			// memory and avoid a reallocation.
-			if (parameterTableColumnsUsed != null &&
-				parameterTableColumnsUsed.Length == NumberOfColumns)
-				{  Array.Clear(parameterTableColumnsUsed, 0, NumberOfColumns);  }
-			else
-				{  parameterTableColumnsUsed = new bool[NumberOfColumns];  }
-
-			for (int parameterIndex = 0; parameterIndex < section.NumberOfParameters; parameterIndex++)
-				{
-				for (int columnIndex = 0; columnIndex < NumberOfColumns; columnIndex++)
-					{
-					if (parameterTableTokenIndexes[parameterIndex, columnIndex] !=
-						parameterTableTokenIndexes[parameterIndex, columnIndex + 1])
-						{
-						parameterTableColumnsUsed[columnIndex] = true;
-						}
-					}
-				}
-			}
-
-
-		/* Function: SkipModifierBlock
-		 * If the iterator is on a <PrototypeParsingType.OpeningTypeModifier> or <PrototypeParsingType.OpeningParamModifier>
-		 * token, moves the token iterator past the entire block, including any nested blocks.
-		 */
-		protected void SkipModifierBlock (ref TokenIterator iterator, TokenIterator limit)
-			{
-			if (iterator < limit &&
-				(iterator.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier ||
-				 iterator.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier))
-				{
-				int level = 1;
-				iterator.Next();
-
-				while (iterator < limit && level > 0)
-					{
-					if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier ||
-						iterator.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier)
-						{  level++;  }
-					else if (iterator.PrototypeParsingType == PrototypeParsingType.ClosingTypeModifier ||
-							   iterator.PrototypeParsingType == PrototypeParsingType.ClosingParamModifier)
-						{  level--;  }
-
-					iterator.Next();
-					}
-				}
-			}
-
-
-		/* Function: SkipTuple
-		 * If the iterator is on a <PrototypeParsingType.StartOfTuple> token, moves the token iterator past the entire tuple,
-		 * including any nested tuples.
-		 */
-		protected void SkipTuple (ref TokenIterator iterator, TokenIterator limit)
-			{
-			if (iterator < limit &&
-				iterator.PrototypeParsingType == PrototypeParsingType.StartOfTuple)
-				{
-				int level = 1;
-				iterator.Next();
-
-				while (iterator < limit && level > 0)
-					{
-					if (iterator.PrototypeParsingType == PrototypeParsingType.StartOfTuple)
-						{  level++;  }
-					else if (iterator.PrototypeParsingType == PrototypeParsingType.EndOfTuple)
-						{  level--;  }
-
-					iterator.Next();
-					}
-				}
-			}
-
-
 		/* Function: AppendPlainSection
 		 */
 		protected void AppendPlainSection (Prototypes.Section section, StringBuilder output)
 			{
 			output.Append("<div class=\"PSection PPlainSection\">");
-			AppendSectionText(section.Start, section.End, output, excludePartial: true);
+			AppendText_ExcludePartialKeyword(section.Start, section.End, output);
 			output.Append("</div>");
 			}
 
@@ -705,13 +155,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		/* Function: AppendParameterSection
 		 * Builds the HTML for a <Prototypes.ParameterSection>.  It will always be in wide form.
 		 */
-		protected void AppendParameterSection (Prototypes.ParameterSection parameterTableSection, StringBuilder output)
+		protected void AppendParameterSection (Prototypes.ParameterSection section, StringBuilder output)
 			{
-			this.parameterTableSection = parameterTableSection;
+			var parameters = new PrototypeParameters(parsedPrototype, section);
 
 			string parameterClass;
 
-			switch (parameterTableSection.ParameterStyle)
+			switch (section.ParameterStyle)
 				{
 				case ParsedPrototype.ParameterStyle.C:
 					parameterClass = "CStyle";
@@ -729,7 +179,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			// Before parameters
 
 			TokenIterator start, end;
-			parameterTableSection.GetBeforeParameters(out start, out end);
+			section.GetBeforeParameters(out start, out end);
 
 			// Add a &nbsp; if there was an ending whitespace character that was marked as part of the BeforeParameters section.
 			// This should only happen if it was significant, it should have been excluded otherwise.
@@ -750,7 +200,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			output.Append("<div class=\"PBeforeParameters\">");
 
-			AppendSectionText(start, end, output, excludePartial: true);
+			AppendText_ExcludePartialKeyword(start, end, output);
 
 			if (addNBSP)
 				{  output.Append("&nbsp;");  }
@@ -761,13 +211,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			// Parameters
 
 			output.Append("<div class=\"PParametersParentCell\">");
-			AppendParameterTable(output);
+			AppendParameters(parameters, output);
 			output.Append("</div>");
 
 
 			// After parameters
 
-			parameterTableSection.GetAfterParameters(out start, out end);
+			section.GetAfterParameters(out start, out end);
 
 			output.Append("<div class=\"PAfterParameters\">");
 
@@ -788,20 +238,32 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			if (addNBSP)
 				{  output.Append("&nbsp;"); };
 
-			AppendSectionText(start, end, output);
+			AppendText(start, end, output);
 
 			output.Append("</div></div>");
 			}
 
 
-		/* Function: AppendSectionText
+		/* Function: AppendText
 		 */
-		protected void AppendSectionText (TokenIterator start, TokenIterator end, StringBuilder output, bool excludePartial = false)
+		protected void AppendText (TokenIterator start, TokenIterator end, StringBuilder output)
+			{
+			if (addLinks)
+				{  AppendSyntaxHighlightedTextWithTypeLinks(start, end, output, links, linkTargets);  }
+			else
+				{  AppendSyntaxHighlightedText(start, end, output);  }
+			}
+
+
+		/* Function: AppendText_ExcludePartialKeyword
+		 * The same as <AppendText()>, but if the keyword "partial" appears in the text as a type modifier it will be excluded
+		 * from the output.
+		 */
+		protected void AppendText_ExcludePartialKeyword (TokenIterator start, TokenIterator end, StringBuilder output)
 			{
 			TokenIterator partial;
 
-			if (excludePartial &&
-				start.Tokenizer.FindTokenBetween("partial", false, start, end, out partial) &&
+			if (start.Tokenizer.FindTokenBetween("partial", false, start, end, out partial) &&
 				partial.IsStandaloneWord() &&
 				partial.PrototypeParsingType == PrototypeParsingType.TypeModifier)
 				{
@@ -813,10 +275,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					TokenIterator lookbehind = partial;
 					hasSpaceBeforePartial = lookbehind.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds);
 
-					if (addLinks)
-						{  AppendSyntaxHighlightedTextWithTypeLinks(start, lookbehind, output, links, linkTargets);  }
-					else
-						{  AppendSyntaxHighlightedText(start, lookbehind, output);  }
+					AppendText(start, lookbehind, output);
 					}
 
 				partial.Next();
@@ -829,57 +288,42 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					if (hasBeforePartial && (hasSpaceBeforePartial || hasSpaceAfterPartial))
 						{  output.Append(' ');  }
 
-					if (addLinks)
-						{  AppendSyntaxHighlightedTextWithTypeLinks(partial, end, output, links, linkTargets);  }
-					else
-						{  AppendSyntaxHighlightedText(partial, end, output);  }
+					AppendText(partial, end, output);
 					}
 				}
 
 			else // no partial
-				{
-				if (addLinks)
-					{  AppendSyntaxHighlightedTextWithTypeLinks(start, end, output, links, linkTargets);  }
-				else
-					{  AppendSyntaxHighlightedText(start, end, output);  }
-				}
+				{  AppendText(start, end, output);  }
 			}
 
 
-		/* Function: AppendParameterTable
+		/* Function: AppendParameters
 		 */
-		protected void AppendParameterTable (StringBuilder output)
+		protected void AppendParameters (PrototypeParameters parameters, StringBuilder output)
 			{
-			CalculateParameterTable(parameterTableSection);
-
-			int firstUsedCell = 0;
-			while (firstUsedCell < NumberOfColumns && parameterTableColumnsUsed[firstUsedCell] == false)
-				{  firstUsedCell++;  }
-
-			int lastUsedCell = NumberOfColumns - 1;
-			while (lastUsedCell > 0 && parameterTableColumnsUsed[lastUsedCell] == false)
-				{  lastUsedCell--;  }
+			int firstUsedColumn = parameters.Columns.FirstUsed;
+			int lastUsedColumn = parameters.Columns.LastUsed;
 
 			output.Append("<table class=\"PParameters\">");
 
-			for (int parameterIndex = 0; parameterIndex < parameterTableSection.NumberOfParameters; parameterIndex++)
+			for (int parameterIndex = 0; parameterIndex < parameters.Count; parameterIndex++)
 				{
 				output.Append("<tr>");
 
-				for (int cellIndex = firstUsedCell; cellIndex <= lastUsedCell; cellIndex++)
+				for (int columnIndex = firstUsedColumn; columnIndex <= lastUsedColumn; columnIndex++)
 					{
-					if (parameterTableColumnsUsed[cellIndex])
+					if (parameters.Columns.IsUsed(columnIndex))
 						{
 						string extraClass = null;
 
-						if (cellIndex == firstUsedCell && cellIndex == lastUsedCell)
+						if (columnIndex == firstUsedColumn && columnIndex == lastUsedColumn)
 							{  extraClass = "first last";  }
-						else if (cellIndex == firstUsedCell)
+						else if (columnIndex == firstUsedColumn)
 							{  extraClass = "first";  }
-						else if (cellIndex == lastUsedCell)
+						else if (columnIndex == lastUsedColumn)
 							{  extraClass = "last";  }
 
-						if (parameterTableTokenIndexes[parameterIndex, cellIndex] == parameterTableTokenIndexes[parameterIndex, cellIndex + 1])
+						if (parameters.HasContentAt(parameterIndex, columnIndex))
 							{
 							if (extraClass == null)
 								{  output.Append("<td></td>");  }
@@ -888,9 +332,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 							}
 						else
 							{
-							output.Append("<td class=\"P" + ColumnOrder[cellIndex].ToString() + (extraClass != null ? ' ' + extraClass : "") + "\">");
+							output.Append("<td class=\"P" + parameters.Columns.TypeOf(columnIndex).ToString() + (extraClass != null ? ' ' + extraClass : "") + "\">");
 
-							AppendCellContents(parameterIndex, cellIndex, output);
+							AppendParameterColumn(parameters, parameterIndex, columnIndex, output);
 
 							output.Append("</td>");
 							}
@@ -904,27 +348,24 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			}
 
 
-		/* Function: AppendCellContents
+		/* Function: AppendParameterColumn
 		 */
-		protected void AppendCellContents (int parameterIndex, int cellIndex, StringBuilder output)
+		protected void AppendParameterColumn (PrototypeParameters parameters, int parameterIndex, int columnIndex, StringBuilder output)
 			{
-			TokenIterator start = parameterTableSection.Start;
-			start.Next(parameterTableTokenIndexes[parameterIndex, cellIndex] - start.TokenIndex);
-
-			TokenIterator end = start;
-			end.Next(parameterTableTokenIndexes[parameterIndex, cellIndex + 1] - end.TokenIndex);
+			TokenIterator start, end;
+			parameters.GetContentAt(parameterIndex, columnIndex, out start, out end);
 
 			bool hadTrailingWhitespace = end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
 
-			ColumnType type = ColumnOrder[cellIndex];
+			PrototypeColumnType type = parameters.Columns.TypeOf(columnIndex);
 
 			// Find the type of the next used cell
-			ColumnType? nextType = null;
-			for (int nextCellIndex = cellIndex + 1; nextCellIndex < NumberOfColumns; nextCellIndex++)
+			PrototypeColumnType? nextType = null;
+			for (int nextCellIndex = columnIndex + 1; nextCellIndex < parameters.Columns.Count; nextCellIndex++)
 				{
-				if (parameterTableColumnsUsed[nextCellIndex])
+				if (parameters.Columns.IsUsed(nextCellIndex))
 					{
-					nextType = ColumnOrder[nextCellIndex];
+					nextType = parameters.Columns.TypeOf(nextCellIndex);
 					break;
 					}
 				}
@@ -932,9 +373,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			// Default value separators always get spaces before.
 			// Property value separators get them unless they're ":", but watch out for ":=".
 			// Type-name separators get them if they're text (SQL's "AS") instead of symbols (Pascal's ":").
-			if (type == ColumnType.DefaultValueSeparator ||
-				(type == ColumnType.PropertyValueSeparator && (start.Character != ':' || start.MatchesAcrossTokens(":="))) ||
-				(type == ColumnType.TypeNameSeparator && start.FundamentalType == FundamentalType.Text))
+			if (type == PrototypeColumnType.DefaultValueSeparator ||
+				(type == PrototypeColumnType.PropertyValueSeparator && (start.Character != ':' || start.MatchesAcrossTokens(":="))) ||
+				(type == PrototypeColumnType.TypeNameSeparator && start.FundamentalType == FundamentalType.Text))
 				{  output.Append("&nbsp;");  }
 
 			if (addLinks)
@@ -944,50 +385,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			// Default value separators, property value separators, and type/name separators always get spaces after.  Make sure
 			// the spaces won't be duplicated by the following cell.
-			if (type == ColumnType.DefaultValueSeparator ||
-				type == ColumnType.PropertyValueSeparator ||
-				type == ColumnType.TypeNameSeparator ||
+			if (type == PrototypeColumnType.DefaultValueSeparator ||
+				type == PrototypeColumnType.PropertyValueSeparator ||
+				type == PrototypeColumnType.TypeNameSeparator ||
 				(hadTrailingWhitespace &&
-					type != ColumnType.DefaultValue &&
-					nextType != ColumnType.DefaultValueSeparator &&
-					nextType != ColumnType.PropertyValueSeparator &&
-					nextType != ColumnType.TypeNameSeparator) )
+					type != PrototypeColumnType.DefaultValue &&
+					nextType != PrototypeColumnType.DefaultValueSeparator &&
+					nextType != PrototypeColumnType.PropertyValueSeparator &&
+					nextType != PrototypeColumnType.TypeNameSeparator) )
 				{  output.Append("&nbsp;");  }
-			}
-
-
-
-		// Group: Properties
-		// __________________________________________________________________________
-
-
-		/* Property: NumberOfColumns
-		 * Returns the number of columns used in the parameter style.
-		 */
-		protected int NumberOfColumns
-			{
-			get
-				{  return ColumnOrder.Length;  }
-			}
-
-
-		/* Property: ColumnOrder
-		 * Returns the column order array appropriate for the parameter style.  Do not change the data.
-		 */
-		protected ColumnType[] ColumnOrder
-			{
-			get
-				{
-				switch (parameterTableSection.ParameterStyle)
-					{
-					case ParsedPrototype.ParameterStyle.C:
-						return CColumnOrder;
-					case ParsedPrototype.ParameterStyle.Pascal:
-						return PascalColumnOrder;
-					default:
-						throw new NotSupportedException();
-					}
-				}
 			}
 
 
@@ -1000,23 +406,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * The prototype as a <ParsedPrototype> object.
 		 */
 		protected ParsedPrototype parsedPrototype;
-
-		/* var: parameterTableSection
-		 * The <Prototypes.ParameterSection> currently being processed.
-		 */
-		protected Prototypes.ParameterSection parameterTableSection;
-
-		/* var: parameterTableTokenIndexes
-		 * A table representing the <parameterTableSection> as rows and the columns determined by <ColumnOrder>.
-		 * Each value represents the starting token index of that cell.  Each row will also contain one extra value
-		 * representing the token index of the end of the final cell.
-		 */
-		protected int[,] parameterTableTokenIndexes;
-
-		/* var: parameterTableColumnsUsed
-		 * An array representing whether each column in <parameterTableTokenIndexes> is used at all.
-		 */
-		protected bool[] parameterTableColumnsUsed;
 
 		/* var: links
 		 * A list of <Links> that contain any which will appear in the prototype, or null if links aren't needed.
@@ -1032,36 +421,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * Whether to add type links to the prototype.
 		 */
 		protected bool addLinks;
-
-
-
-		// Group: Static Variables
-		// __________________________________________________________________________
-
-		/* var: CColumnOrder
-		 * An array of <ColumnTypes> representing the order in which columns should appear for C-style prototypes.
-		 */
-		static public ColumnType[] CColumnOrder = { ColumnType.ModifierQualifier,
-																		   ColumnType.Type,
-																		   ColumnType.Symbols,
-																		   ColumnType.Name,
-																		   ColumnType.PropertyValueSeparator,
-																		   ColumnType.PropertyValue,
-																		   ColumnType.DefaultValueSeparator,
-																		   ColumnType.DefaultValue };
-
-		/* var: PascalColumnOrder
-		 * An array of <ColumnTypes> representing the order in which columns should appear for Pascal-style prototypes.
-		 */
-		static public ColumnType[] PascalColumnOrder = { ColumnType.ModifierQualifier,
-																				  ColumnType.Name,
-																				  ColumnType.TypeNameSeparator,
-																				  ColumnType.Symbols,
-																				  ColumnType.Type,
-																				  ColumnType.PropertyValueSeparator,
-																				  ColumnType.PropertyValue,
-																				  ColumnType.DefaultValueSeparator,
-																				  ColumnType.DefaultValue };
 
 		}
 	}
