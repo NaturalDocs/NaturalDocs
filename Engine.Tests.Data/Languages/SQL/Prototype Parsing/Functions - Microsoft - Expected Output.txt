@@ -233,21 +233,21 @@
     - Link Candidates: (none)
 
   - Parameter 1: NATIVE_COMPILATION,
-    - Name: (not detected)
+    - Name: NATIVE_COMPILATION
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (none)
     - Default Value: (not detected)
 
   - Parameter 2: SCHEMABINDING,
-    - Name: (not detected)
+    - Name: SCHEMABINDING
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (none)
     - Default Value: (not detected)
 
   - Parameter 3: EXECUTE AS 'Name'
-    - Name: (not detected)
+    - Name: EXECUTE AS 'Name'
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (none)
@@ -269,21 +269,21 @@
     - Link Candidates: (none)
 
   - Parameter 1: EXEC AS 'RETURNS',
-    - Name: (not detected)
+    - Name: EXEC AS 'RETURNS'
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (none)
     - Default Value: (not detected)
 
   - Parameter 2: INLINE = OFF,
-    - Name: (not detected)
+    - Name: INLINE = OFF
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (none)
     - Default Value: (not detected)
 
   - Parameter 3: RETURNS NULL ON NULL INPUT
-    - Name: (not detected)
+    - Name: RETURNS NULL ON NULL INPUT
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (none)
@@ -305,7 +305,7 @@
     - Link Candidates: (none)
 
   - Parameter 1: EXECUTE AS 'BEGIN'
-    - Name: (not detected)
+    - Name: EXECUTE AS 'BEGIN'
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (none)
@@ -353,35 +353,35 @@
     - Link Candidates: (none)
 
   - Parameter 1: NATIVE_COMPILATION,
-    - Name: (not detected)
+    - Name: NATIVE_COMPILATION
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (none)
     - Default Value: (not detected)
 
   - Parameter 2: SCHEMABINDING,
-    - Name: (not detected)
+    - Name: SCHEMABINDING
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (none)
     - Default Value: (not detected)
 
   - Parameter 3: EXECUTE AS 'AS',
-    - Name: (not detected)
+    - Name: EXECUTE AS 'AS'
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (none)
     - Default Value: (not detected)
 
   - Parameter 4: INLINE = OFF,
-    - Name: (not detected)
+    - Name: INLINE = OFF
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (none)
     - Default Value: (not detected)
 
   - Parameter 5: RETURNS NULL ON NULL INPUT
-    - Name: (not detected)
+    - Name: RETURNS NULL ON NULL INPUT
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (none)

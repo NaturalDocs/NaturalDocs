@@ -151,28 +151,28 @@
     - Link Candidates: (none)
 
   - Parameter 1: NATIVE_COMPILATION,
-    - Name: (not detected)
+    - Name: NATIVE_COMPILATION
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (none)
     - Default Value: (not detected)
 
   - Parameter 2: SCHEMABINDING,
-    - Name: (not detected)
+    - Name: SCHEMABINDING
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (none)
     - Default Value: (not detected)
 
   - Parameter 3: INLINE = OFF,
-    - Name: (not detected)
+    - Name: INLINE = OFF
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (none)
     - Default Value: (not detected)
 
   - Parameter 4: EXECUTE AS 'AS'
-    - Name: (not detected)
+    - Name: EXECUTE AS 'AS'
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (none)

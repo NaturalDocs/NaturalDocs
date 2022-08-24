@@ -74,13 +74,13 @@
 <div class="PBeforeParameters"><span class="SHMetadata">WITH</span>&nbsp;</div>
 <div class="PParametersParentCell"><table class="PParameters">
    <tr>
-      <td class="PType first last"><span class="SHMetadata">NATIVE_COMPILATION,</span></td>
+      <td class="PName first last"><span class="SHMetadata">NATIVE_COMPILATION,</span></td>
    </tr><tr>
-      <td class="PType first last"><span class="SHMetadata">SCHEMABINDING,</span></td>
+      <td class="PName first last"><span class="SHMetadata">SCHEMABINDING,</span></td>
    </tr><tr>
-      <td class="PType first last"><span class="SHMetadata">INLINE = OFF,</span></td>
+      <td class="PName first last"><span class="SHMetadata">INLINE = OFF,</span></td>
    </tr><tr>
-      <td class="PType first last"><span class="SHMetadata">EXECUTE AS 'AS'</span></td>
+      <td class="PName first last"><span class="SHMetadata">EXECUTE AS 'AS'</span></td>
    </tr>
 </table></div>
 <div class="PAfterParameters"></div></div><div class="PSection PPlainSection"><span class="SHMetadata">FOR REPLICATION</span></div></div>
