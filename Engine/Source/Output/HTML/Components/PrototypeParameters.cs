@@ -52,7 +52,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			{
 			if (parameterIndex <= Count && columnIndex <= columns.Count)
 				{
-				return ( tokenIndexes[parameterIndex, columnIndex] == tokenIndexes[parameterIndex, columnIndex + 1] );
+				return ( tokenIndexes[parameterIndex, columnIndex + 1] > tokenIndexes[parameterIndex, columnIndex] );
 				}
 			else
 				{  throw new IndexOutOfRangeException();  }
