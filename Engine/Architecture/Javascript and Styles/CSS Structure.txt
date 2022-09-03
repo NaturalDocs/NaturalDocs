@@ -25,6 +25,9 @@ Title: CSS Structure
 	  the element may or may not have the CSS class Dragging applied, in this case because it only appears
 	  while it's actively being dragged.
 
+	- data-MyProperty="..." means the HTML element will have a data attribute of that name, such as
+	  <div data-Index="4">.
+
 	Hopefully everything else should be self-explanitory.
 
 
@@ -269,7 +272,7 @@ _______________________________________________________________________________
 
 Frame:
 
---- text ---
+	--- text ---
 
 	<NDPrototype #NDPrototype[ID] WideForm/NarrowForm?>
 
@@ -279,14 +282,16 @@ Frame:
 
 	</NDPrototype #NDPrototype[ID] WideForm/NarrowForm?>
 
-----------
+	----------
 
-The prototype will only have a WideForm or NarrowForm attribute if it contains a parameter section.
+	Prototypes are a frame and then a series of sections within it.  The sections are formatted differently depending on their type.
+
+	The prototype will only have a WideForm or NarrowForm attribute if it contains a parameter section.
 
 
 Plain Section:
 
---- text ---
+	--- text ---
 
 	<PSection PPlainSection>
 
@@ -294,62 +299,61 @@ Plain Section:
 
 	</PSection PPlainSection>
 
-----------
+	----------
 
 
 Parameter Section:
 
---- text ---
+	--- text ---
 
 	<PSection PParameterSection CStyle/PascalStyle>
+		<PParameterCells data-WideColumnCount="..." data-NarrowColumnCount="...">
 
-		<PBeforeParameters>
+			<P[CellType] data-WideGridArea="..." data-NarrowGridArea="..." [Formatting Properties]?>
+
+				content
+
+			</P[CellType] data-WideGridArea="..." data-NarrowGridArea="..." [Formatting Properties]?>
+
+			<P[CellType]>...
+			<P[CellType]>...
 			...
-		</PBeforeParameters>
 
-		<PParametersParentCell>
-			[Parameter Table]
-		</PParametersParentCell>
-
-		<PAfterParameters>
-			...
-		</PAfterParameters>
-
+		</PParameterCells>
 	</PSection PParameterSection CStyle/PascalStyle>
 
-----------
+	----------
+
+	Parameter sections are formatted using a CSS grid layout.  Inside each section is a series of cells which have
+	data-WideGridArea and data-NarrowGridArea values that define their grid positions in the wide and narrow
+	prototype layouts.  data-WideGridArea will be applied by default via the style="" attribute, but they can be
+	switched between using JavaScript.  The parent PParameterCells object will also have a count of the total
+	number of columns in the data-WideColumnCount and data-NarrowColumnCount properties.
 
 
-Parameter Table:
+	P[CellType]:
 
---- text ---
+		PBeforeParameters - The section appearing before the first parameter, including the opening parameter
+									   symbol, if any.
+		PAfterParameters - The section appearing after the last parameter, including the closing parameter symobl,
+									if any.
 
-		<table PParameters>
-			<tr>
+		PModifierQualifier - For C-style prototypes, a separate column for modifiers and qualifiers.
+		PType - The parameter type.  For C-style prototypes this will only be the last word.  For Pascal-style
+						prototypes this will be the entire symbol.
+		PTypeNameSeparator - For Pascal-style prototypes, the symbol separating the name from the type.
+		PSymbols - Symbols before a parameter name that should be formatted with the name, such as * and &.
+		PName - The parameter name.
+		PDefaultValueSeparator - If present, the symbol for assigning a default value like = or :=.
+		PDefaultValue - The default value.
+		PPropertyValueSeparator - If present, the symbol for assigning a value to a property like = or :.
+		PPropertyValue - The property value, such as could appear in Java annotations.
 
-				<td P[ColumnType]>column</td P[ColumnType]>
-				<td P[ColumnType]>column</td P[ColumnType]>
-				...
 
-			</tr><tr>
-				...
-			</tr>
-		</table PParameters>
+	Formatting Properties:
 
-----------
-
-P[ColumnType]:
-
-	PModifierQualifier - For C-style prototypes, a separate column for modifiers and qualifiers.
-	PType - The parameter type.  For C-style prototypes this will only be the last word.  For Pascal-style
-					prototypes this will be the entire symbol.
-	PTypeNameSeparator - For Pascal-style prototypes, the symbol separating the name from the type.
-	PSymbols - Symbols before a parameter name that should be formatted with the name, such as * and &.
-	PName - The parameter name.
-	PDefaultValueSeparator - If present, the symbol for assigning a default value like = or :=.
-	PDefaultValue - The default value.
-	PPropertyValueSeparator - If present, the symbol for assigning a value to a property like = or :.
-	PPropertyValue - The property value, such as could appear in Java annotations.
+		InFirstParameterColumn - The cell is a member of the first column of the parameters table.
+		InLastParameterColumn - The cell is a member of the last column of the parameters table.
 
 
 

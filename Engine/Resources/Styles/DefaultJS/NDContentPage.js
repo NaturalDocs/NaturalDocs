@@ -175,17 +175,12 @@ var NDContentPage = new function ()
 
 				if (prototypeID != -1)
 					{
-					var parameterSections = prototypes[prototypeIndex].getElementsByClassName("PParameterSection");
+					var parameterSections = prototypes[prototypeIndex].getElementsByClassName("PParameterCells");
 					var maxWidth = 0;
 
 					for (var parameterSectionIndex = 0; parameterSectionIndex < parameterSections.length; parameterSectionIndex++)
 						{
-						var sectionWidth = 0;
-
-						for (var childIndex = 0; childIndex < parameterSections[parameterSectionIndex].children.length; childIndex++)
-							{
-							sectionWidth += parameterSections[parameterSectionIndex].children[childIndex].offsetWidth;
-							}
+						var sectionWidth = parameterSections[parameterSectionIndex].offsetWidth;
 
 						if (sectionWidth > maxWidth)
 							{  maxWidth = sectionWidth;  }

@@ -22,7 +22,6 @@ using System.Text;
 using CodeClear.NaturalDocs.Engine.Links;
 using CodeClear.NaturalDocs.Engine.Prototypes;
 using CodeClear.NaturalDocs.Engine.Tokenization;
-using CodeClear.NaturalDocs.Engine.Topics;
 
 
 namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
@@ -158,28 +157,61 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		protected void AppendParameterSection (Prototypes.ParameterSection section, StringBuilder output)
 			{
 			var parameters = new PrototypeParameters(parsedPrototype, section);
+			var gridMap = new PrototypeColumnGridMap(parameters.Columns);
 
-			string parameterClass;
+
+			// Opening tags
+
+			string parameterCSSClass;
 
 			switch (section.ParameterStyle)
 				{
 				case ParsedPrototype.ParameterStyle.C:
-					parameterClass = "CStyle";
+					parameterCSSClass = "CStyle";
 					break;
 				case ParsedPrototype.ParameterStyle.Pascal:
-					parameterClass = "PascalStyle";
+					parameterCSSClass = "PascalStyle";
 					break;
 				default:
 					throw new NotImplementedException();
 				}
 
-			output.Append("<div class=\"PSection PParameterSection " + parameterClass + "\">");
+			output.Append("<div class=\"PSection PParameterSection " + parameterCSSClass + "\">");
+
+
+			int wideColumnCount = 1 + gridMap.UsedColumnCount + 1;
+
+			// Need one extra column in case the before/after parameters section are wider than the parameter columns.  If we didn't
+			// have it the other columns would stretch to fill the horizontal space.
+			int narrowColumnCount = gridMap.UsedColumnCount + 1;
+
+			output.Append("<div class=\"PParameterCells\" " +
+										"data-WideColumnCount=\"" + wideColumnCount + "\" " +
+										"data-NarrowColumnCount=\"" + narrowColumnCount + "\">");
 
 
 			// Before parameters
 
+			int wideRowStart = 1;
+			int narrowRowStart = 1;
+
 			TokenIterator start, end;
 			section.GetBeforeParameters(out start, out end);
+
+			// The order for grid-area is grid-row-start/grid-column-start/grid-row-end/grid-column-end
+
+			// Put it in the first column, full height.
+			string wideGridArea = wideRowStart +
+											"/1/" +
+											(wideRowStart + Math.Max(parameters.Count, 1)) +
+											"/2";
+
+			// Put it in the first row, all columns.  Add one more column than the parameters use so the cells don't get stretched out
+			// if this is longer than them.
+			string narrowGridArea = narrowRowStart +
+												"/1/" +
+												(narrowRowStart + 1) + "/" +
+												(1 + gridMap.UsedColumnCount + 1);
 
 			// Add a &nbsp; if there was an ending whitespace character that was marked as part of the BeforeParameters section.
 			// This should only happen if it was significant, it should have been excluded otherwise.
@@ -198,7 +230,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 								  beforeEnd.Character != '<');
 				}
 
-			output.Append("<div class=\"PBeforeParameters\">");
+			output.Append("<div class=\"PBeforeParameters\" " +
+										"data-WideGridArea=\"" + wideGridArea + "\" " +
+										"data-NarrowGridArea=\"" + narrowGridArea + "\" " +
+										"style=\"grid-area:" + wideGridArea + "\">");
 
 			AppendText_ExcludePartialKeyword(start, end, output);
 
@@ -210,16 +245,30 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			// Parameters
 
-			output.Append("<div class=\"PParametersParentCell\">");
-			AppendParameters(parameters, output);
-			output.Append("</div>");
+			AppendParameters(parameters, gridMap, wideRowStart, narrowRowStart, output);
 
 
 			// After parameters
 
 			section.GetAfterParameters(out start, out end);
 
-			output.Append("<div class=\"PAfterParameters\">");
+			// Put it in the last row, last column
+			wideGridArea = (wideRowStart + Math.Max(parameters.Count, 1) - 1) + "/" +
+									(2 + gridMap.UsedColumnCount) + "/" +
+									(wideRowStart + Math.Max(parameters.Count, 1)) + "/" +
+									(3 + gridMap.UsedColumnCount);
+
+			// Put it in the last row, all columns.  Add one more column than the parameters use so the cells don't get stretched out
+			// if this is longer than them.
+			narrowGridArea = (narrowRowStart + 1 + parameters.Count) +
+										"/1/" +
+										(narrowRowStart + 1 + parameters.Count + 1) + "/" +
+										(1 + gridMap.UsedColumnCount + 1);
+
+			output.Append("<div class=\"PAfterParameters\" " +
+										"data-WideGridArea=\"" + wideGridArea + "\" " +
+										"data-NarrowGridArea=\"" + narrowGridArea + "\" " +
+										"style=\"grid-area:" + wideGridArea + "\">");
 
 			// Add a &nbsp; if there was a leading whitespace character that was marked as part of the AfterParameters section.
 			// This should only happen if it was significant, it should have been excluded otherwise.
@@ -239,6 +288,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				{  output.Append("&nbsp;"); };
 
 			AppendText(start, end, output);
+
+			output.Append("</div>");
+
+
+			// Closing tags
 
 			output.Append("</div></div>");
 			}
@@ -299,58 +353,59 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 		/* Function: AppendParameters
 		 */
-		protected void AppendParameters (PrototypeParameters parameters, StringBuilder output)
+		protected void AppendParameters (PrototypeParameters parameters, PrototypeColumnGridMap gridMap,
+														  int wideRowStart, int narrowRowStart,  StringBuilder output)
 			{
 			int firstUsedColumn = parameters.Columns.FirstUsed;
 			int lastUsedColumn = parameters.Columns.LastUsed;
 
-			output.Append("<table class=\"PParameters\">");
-
 			for (int parameterIndex = 0; parameterIndex < parameters.Count; parameterIndex++)
 				{
-				output.Append("<tr>");
-
 				for (int columnIndex = firstUsedColumn; columnIndex <= lastUsedColumn; columnIndex++)
 					{
 					if (parameters.Columns.IsUsed(columnIndex))
 						{
-						string extraClass = null;
+						string extraCSSClass = null;
 
 						if (columnIndex == firstUsedColumn && columnIndex == lastUsedColumn)
-							{  extraClass = "first last";  }
+							{  extraCSSClass = "InFirstParameterColumn InLastParameterColumn";  }
 						else if (columnIndex == firstUsedColumn)
-							{  extraClass = "first";  }
+							{  extraCSSClass = "InFirstParameterColumn";  }
 						else if (columnIndex == lastUsedColumn)
-							{  extraClass = "last";  }
+							{  extraCSSClass = "InLastParameterColumn";  }
 
 						if (parameters.HasContentAt(parameterIndex, columnIndex))
 							{
-							if (extraClass == null)
-								{  output.Append("<td></td>");  }
-							else
-								{  output.Append("<td class=\"" + extraClass + "\"></td>");  }
-							}
-						else
-							{
-							output.Append("<td class=\"P" + parameters.Columns.TypeOf(columnIndex).ToString() + (extraClass != null ? ' ' + extraClass : "") + "\">");
+							// The order for grid-area is grid-row-start/grid-column-start/grid-row-end/grid-column-end
 
-							AppendParameterColumn(parameters, parameterIndex, columnIndex, output);
+							string wideGridArea = (wideRowStart + parameterIndex) + "/" +
+															gridMap.GridValueOf(columnIndex, 2) + "/" +
+															(wideRowStart + parameterIndex + 1) + "/" +
+															(gridMap.GridValueOf(columnIndex, 2) + 1);
 
-							output.Append("</td>");
+							string narrowGridArea = (narrowRowStart + 1 + parameterIndex) + "/" +
+																gridMap.GridValueOf(columnIndex, 1) + "/" +
+																(narrowRowStart + 1 + parameterIndex + 1) + "/" +
+																(gridMap.GridValueOf(columnIndex, 1) + 1);
+
+							output.Append("<div class=\"P" + parameters.Columns.TypeOf(columnIndex).ToString() + (extraCSSClass != null ? ' ' + extraCSSClass : "") + "\" " +
+														"data-WideGridArea=\"" + wideGridArea + "\" " +
+														"data-NarrowGridArea=\"" + narrowGridArea + "\" " +
+														"style=\"grid-area:" + wideGridArea + "\">");
+
+							AppendParameterCell(parameters, parameterIndex, columnIndex, output);
+
+							output.Append("</div>");
 							}
 						}
 					}
-
-				output.Append("</tr>");
 				}
-
-			output.Append("</table>");
 			}
 
 
-		/* Function: AppendParameterColumn
+		/* Function: AppendParameterCell
 		 */
-		protected void AppendParameterColumn (PrototypeParameters parameters, int parameterIndex, int columnIndex, StringBuilder output)
+		protected void AppendParameterCell (PrototypeParameters parameters, int parameterIndex, int columnIndex, StringBuilder output)
 			{
 			TokenIterator start, end;
 			parameters.GetContentAt(parameterIndex, columnIndex, out start, out end);

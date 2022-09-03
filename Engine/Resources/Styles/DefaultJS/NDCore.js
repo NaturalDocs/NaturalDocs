@@ -316,6 +316,14 @@ var NDCore = new function ()
 		{
 		this.RemoveClass(prototype, "WideForm");
 		this.AddClass(prototype, "NarrowForm");
+
+		var divs = prototype.getElementsByTagName("div");
+
+		for (var i = 0; i < divs.length; i++)
+			{
+			if (divs[i].dataset.narrowgridarea)
+				{  divs[i].style.gridArea = divs[i].dataset.narrowgridarea;  }
+			}
 		};
 
 
@@ -326,6 +334,14 @@ var NDCore = new function ()
 		{
 		this.RemoveClass(prototype, "NarrowForm");
 		this.AddClass(prototype, "WideForm");
+
+		var divs = prototype.getElementsByTagName("div");
+
+		for (var i = 0; i < divs.length; i++)
+			{
+			if (divs[i].dataset.widegridarea)
+				{  divs[i].style.gridArea = divs[i].dataset.widegridarea;  }
+			}
 		};
 
 

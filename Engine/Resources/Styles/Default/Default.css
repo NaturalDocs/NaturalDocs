@@ -1748,34 +1748,38 @@ td {
 			.BlackTheme .NDPrototype::-webkit-scrollbar-track {  background-color: $ContentBackgroundColor_Black;  }
 			.BlackTheme .NDPrototype::-webkit-scrollbar-thumb {  background-color: #686868;  }
 
-
-	.PBeforeParameters,
-	.PAfterParameters,
-	.PParameterSection td {
-		white-space: nowrap;
+	
+	.PParameterCells {
+		display: inline-grid;
 		}
+		.NarrowForm .PParameterCells[data-NarrowColumnCount="2"] { grid-template-columns: auto 1fr }
+		.NarrowForm .PParameterCells[data-NarrowColumnCount="3"] { grid-template-columns: repeat(2, auto) 1fr }
+		.NarrowForm .PParameterCells[data-NarrowColumnCount="4"] { grid-template-columns: repeat(3, auto) 1fr }
+		.NarrowForm .PParameterCells[data-NarrowColumnCount="5"] { grid-template-columns: repeat(4, auto) 1fr }
+		.NarrowForm .PParameterCells[data-NarrowColumnCount="6"] { grid-template-columns: repeat(5, auto) 1fr }
+		.NarrowForm .PParameterCells[data-NarrowColumnCount="7"] { grid-template-columns: repeat(6, auto) 1fr }
+		.NarrowForm .PParameterCells[data-NarrowColumnCount="8"] { grid-template-columns: repeat(7, auto) 1fr }
+		.NarrowForm .PParameterCells[data-NarrowColumnCount="9"] { grid-template-columns: repeat(8, auto) 1fr }
+		.NarrowForm .PParameterCells[data-NarrowColumnCount="10"] { grid-template-columns: repeat(9, auto) 1fr }
+		.NarrowForm .PParameterCells[data-NarrowColumnCount="11"] { grid-template-columns: repeat(10, auto) 1fr }
+		.NarrowForm .PParameterCells[data-NarrowColumnCount="12"] { grid-template-columns: repeat(11, auto) 1fr }
+		.NarrowForm .PParameterCells[data-NarrowColumnCount="13"] { grid-template-columns: repeat(12, auto) 1fr }
+		.NarrowForm .PParameterCells[data-NarrowColumnCount="14"] { grid-template-columns: repeat(13, auto) 1fr }
+		.NarrowForm .PParameterCells[data-NarrowColumnCount="15"] { grid-template-columns: repeat(14, auto) 1fr }
 
-	.WideForm .PParameterSection {
-		display: flex;
-		flex-flow: row nowrap;
-		}
-		.WideForm .PAfterParameters {
-			align-self: flex-end;
-			}
-
-	.NarrowForm .PParameterSection {
-		display: flex;
-		flex-flow: column nowrap;
-		}
 		/* Only narrow form can wrap.  Otherwise the JS to convert between the two
 			won't be able to measure the wide form correctly. */
-		.NarrowForm .PBeforeParameters,
-		.NarrowForm .PAfterParameters,
-		.NarrowForm td.PDefaultValue,
-		.NarrowForm td.PPropertyValue {
+		.PParameterCells div {
+			white-space: nowrap;
+			}
+		.NarrowForm div.PBeforeParameters,
+		.NarrowForm div.PAfterParameters,
+		.NarrowForm div.PDefaultValue,
+		.NarrowForm div.PPropertyValue {
 			white-space: normal;
 			}
-		.NarrowForm .PParametersParentCell,
+
+		.NarrowForm .InFirstParameterColumn,
 		.NarrowForm .PAfterParameters {
 			padding-left: 3ch;
 			}
