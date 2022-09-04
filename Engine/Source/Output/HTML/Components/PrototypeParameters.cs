@@ -93,6 +93,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 */
 		protected void CalculateTokenIndexes ()
 			{
+			// DEPENDENCY: This code depends on the order of PrototypeColumns.CColumnOrder and PascalColumnOrder.
+
 			tokenIndexes = new int[parameterSection.NumberOfParameters, PrototypeColumns.CountOf(parameterSection.ParameterStyle) + 1];
 
 			for (int parameterIndex = 0; parameterIndex < parameterSection.NumberOfParameters; parameterIndex++)

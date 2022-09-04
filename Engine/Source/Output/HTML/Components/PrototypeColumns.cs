@@ -335,6 +335,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		// Group: Static Variables
 		// __________________________________________________________________________
 
+		// DEPENDENCY: PrototypeParameters.CalculateTokenIndexes() depends on the order of these.
 
 		/* var: CColumnOrder
 		 * An array of <PrototypeColumnTypes> representing the order in which columns should appear for C-style prototypes.
