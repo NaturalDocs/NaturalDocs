@@ -155,11 +155,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			while (column < Count)
 				{
-				int startingCharOffset = iterator.CharNumber;
+				int startingCharOffset = iterator.RawTextIndex;
 
 				iterator.Next( tokenIndexes[parameter, column+1] - iterator.TokenIndex );
 
-				int endingCharOffset = iterator.CharNumber;
+				int endingCharOffset = iterator.RawTextIndex;
 
 				columnWidths[column] = endingCharOffset - startingCharOffset;
 
@@ -177,11 +177,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				while (column < Count)
 					{
-					int startingCharOffset = iterator.CharNumber;
+					int startingCharOffset = iterator.RawTextIndex;
 
 					iterator.Next( tokenIndexes[parameter, column+1] - iterator.TokenIndex );
 
-					int endingCharOffset = iterator.CharNumber;
+					int endingCharOffset = iterator.RawTextIndex;
 
 					if (endingCharOffset - startingCharOffset > columnWidths[column])
 						{  columnWidths[column] = endingCharOffset - startingCharOffset;  }
