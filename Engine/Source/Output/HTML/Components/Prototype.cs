@@ -410,20 +410,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			TokenIterator start, end;
 			parameters.GetContentAt(parameterIndex, columnIndex, out start, out end);
 
-			bool hadTrailingWhitespace = end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
-
 			PrototypeColumnType type = parameters.Columns.TypeOf(columnIndex);
-
-			// Find the type of the next used cell
-			PrototypeColumnType? nextType = null;
-			for (int nextCellIndex = columnIndex + 1; nextCellIndex < parameters.Columns.Count; nextCellIndex++)
-				{
-				if (parameters.Columns.IsUsed(nextCellIndex))
-					{
-					nextType = parameters.Columns.TypeOf(nextCellIndex);
-					break;
-					}
-				}
+			bool hadTrailingWhitespace = end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
 
 			// Default value separators always get spaces before.
 			// Property value separators get them unless they're ":", but watch out for ":=".
@@ -438,17 +426,29 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			else
 				{  AppendSyntaxHighlightedText(start, end, output);  }
 
-			// Default value separators, property value separators, and type/name separators always get spaces after.  Make sure
-			// the spaces won't be duplicated by the following cell.
+			// Default value separators, property value separators, and type/name separators always get spaces after.
 			if (type == PrototypeColumnType.DefaultValueSeparator ||
 				type == PrototypeColumnType.PropertyValueSeparator ||
-				type == PrototypeColumnType.TypeNameSeparator ||
-				(hadTrailingWhitespace &&
-					type != PrototypeColumnType.DefaultValue &&
-					nextType != PrototypeColumnType.DefaultValueSeparator &&
-					nextType != PrototypeColumnType.PropertyValueSeparator &&
-					nextType != PrototypeColumnType.TypeNameSeparator) )
+				type == PrototypeColumnType.TypeNameSeparator)
 				{  output.Append("&nbsp;");  }
+
+			// Also add a trailing space if the original cell had one, unless it's the last column or it would be doubled by the next cell having a
+			// leading space.
+			else if (hadTrailingWhitespace &&
+						columnIndex != parameters.Columns.LastUsed)
+				{
+				int nextUsedColumnIndex = parameters.Columns.NextUsed(columnIndex);
+
+				if (nextUsedColumnIndex != -1)
+					{
+					PrototypeColumnType nextUsedColumnType = parameters.Columns.TypeOf(nextUsedColumnIndex);
+
+					if (nextUsedColumnType != PrototypeColumnType.DefaultValueSeparator &&
+						nextUsedColumnType != PrototypeColumnType.PropertyValueSeparator &&
+						nextUsedColumnType != PrototypeColumnType.TypeNameSeparator)
+						{  output.Append("&nbsp;");  }
+					}
+				}
 			}
 
 

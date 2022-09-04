@@ -56,6 +56,36 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			}
 
 
+		/* Function: NextUsed
+		 * Returns the index of the next used column, or -1 if there isn't one.
+		 */
+		 public int NextUsed (int columnIndex)
+			{
+			for (int i = columnIndex + 1; i < columnWidths.Length; i++)
+				{
+				if (columnWidths[i] != 0)
+					{  return i;  }
+				}
+
+			return -1;
+			}
+
+
+		/* Function: PreviousUsed
+		 * Returns the index of the previous used column, or -1 if there isn't one.
+		 */
+		 public int PreviousUsed (int columnIndex)
+			{
+			for (int i = columnIndex - 1; i >= 0; i--)
+				{
+				if (columnWidths[i] != 0)
+					{  return i;  }
+				}
+
+			return -1;
+			}
+
+
 		/* Function: WidthOf
 		 * Returns the width of the column in characters, which will be the width across all parameters.  Will return zero if the column
 		 * is not used.
