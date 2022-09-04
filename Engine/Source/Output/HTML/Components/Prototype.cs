@@ -157,7 +157,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		protected void AppendParameterSection (Prototypes.ParameterSection section, StringBuilder output)
 			{
 			var parameters = new PrototypeParameters(parsedPrototype, section);
-			var gridMap = new PrototypeColumnGridMap(parameters.Columns);
 
 
 			// Opening tags
@@ -179,11 +178,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			output.Append("<div class=\"PSection PParameterSection " + parameterCSSClass + "\">");
 
 
-			int wideColumnCount = 1 + gridMap.UsedColumnCount + 1;
+			int wideColumnCount = 1 + parameters.Columns.UsedCount + 1;
 
 			// Need one extra column in case the before/after parameters section are wider than the parameter columns.  If we didn't
 			// have it the other columns would stretch to fill the horizontal space.
-			int narrowColumnCount = gridMap.UsedColumnCount + 1;
+			int narrowColumnCount = parameters.Columns.UsedCount + 1;
 
 			output.Append("<div class=\"PParameterCells\" " +
 										"data-WideColumnCount=\"" + wideColumnCount + "\" " +
@@ -211,7 +210,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			string narrowGridArea = narrowRowStart +
 												"/1/" +
 												(narrowRowStart + 1) + "/" +
-												(1 + gridMap.UsedColumnCount + 1);
+												(1 + parameters.Columns.UsedCount + 1);
 
 			// Add a &nbsp; if there was an ending whitespace character that was marked as part of the BeforeParameters section.
 			// This should only happen if it was significant, it should have been excluded otherwise.
@@ -245,7 +244,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			// Parameters
 
-			AppendParameters(parameters, gridMap, wideRowStart, narrowRowStart, output);
+			AppendParameters(parameters, wideRowStart, narrowRowStart, output);
 
 
 			// After parameters
@@ -254,16 +253,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			// Put it in the last row, last column
 			wideGridArea = (wideRowStart + Math.Max(parameters.Count, 1) - 1) + "/" +
-									(2 + gridMap.UsedColumnCount) + "/" +
+									(2 + parameters.Columns.UsedCount) + "/" +
 									(wideRowStart + Math.Max(parameters.Count, 1)) + "/" +
-									(3 + gridMap.UsedColumnCount);
+									(3 + parameters.Columns.UsedCount);
 
 			// Put it in the last row, all columns.  Add one more column than the parameters use so the cells don't get stretched out
 			// if this is longer than them.
 			narrowGridArea = (narrowRowStart + 1 + parameters.Count) +
 										"/1/" +
 										(narrowRowStart + 1 + parameters.Count + 1) + "/" +
-										(1 + gridMap.UsedColumnCount + 1);
+										(1 + parameters.Columns.UsedCount + 1);
 
 			output.Append("<div class=\"PAfterParameters\" " +
 										"data-WideGridArea=\"" + wideGridArea + "\" " +
@@ -353,8 +352,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 		/* Function: AppendParameters
 		 */
-		protected void AppendParameters (PrototypeParameters parameters, PrototypeColumnGridMap gridMap,
-														  int wideRowStart, int narrowRowStart,  StringBuilder output)
+		protected void AppendParameters (PrototypeParameters parameters, int wideRowStart, int narrowRowStart,  StringBuilder output)
 			{
 			int firstUsedColumn = parameters.Columns.FirstUsed;
 			int lastUsedColumn = parameters.Columns.LastUsed;
@@ -379,14 +377,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 							// The order for grid-area is grid-row-start/grid-column-start/grid-row-end/grid-column-end
 
 							string wideGridArea = (wideRowStart + parameterIndex) + "/" +
-															gridMap.GridValueOf(columnIndex, 2) + "/" +
-															(wideRowStart + parameterIndex + 1) + "/" +
-															(gridMap.GridValueOf(columnIndex, 2) + 1);
+																(parameters.Columns.UsedColumnIndexOf(columnIndex) + 2) + "/" +
+																(wideRowStart + parameterIndex + 1) + "/" +
+																(parameters.Columns.UsedColumnIndexOf(columnIndex) + 3);
 
 							string narrowGridArea = (narrowRowStart + 1 + parameterIndex) + "/" +
-																gridMap.GridValueOf(columnIndex, 1) + "/" +
-																(narrowRowStart + 1 + parameterIndex + 1) + "/" +
-																(gridMap.GridValueOf(columnIndex, 1) + 1);
+																	(parameters.Columns.UsedColumnIndexOf(columnIndex) + 1) + "/" +
+																	(narrowRowStart + 1 + parameterIndex + 1) + "/" +
+																	(parameters.Columns.UsedColumnIndexOf(columnIndex) + 2);
 
 							output.Append("<div class=\"P" + parameters.Columns.TypeOf(columnIndex).ToString() + (extraCSSClass != null ? ' ' + extraCSSClass : "") + "\" " +
 														"data-WideGridArea=\"" + wideGridArea + "\" " +

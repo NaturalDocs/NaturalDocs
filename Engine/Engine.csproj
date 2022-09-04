@@ -56,7 +56,6 @@
     <Compile Include="Source\Exceptions\PathMustBeRelative.cs" />
     <Compile Include="Source\Files\ChangeProcessorDetailedStatus.cs" />
     <Compile Include="Source\Languages\Parsers\SystemVerilog.cs" />
-    <Compile Include="Source\Output\HTML\Components\PrototypeColumnGridMap.cs" />
     <Compile Include="Source\Output\HTML\Components\PrototypeColumnType.cs" />
     <Compile Include="Source\Output\HTML\Components\PrototypeColumns.cs" />
     <Compile Include="Source\Output\HTML\Components\PrototypeParameters.cs" />

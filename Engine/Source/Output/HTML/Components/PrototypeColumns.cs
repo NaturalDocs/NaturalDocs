@@ -111,6 +111,27 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			}
 
 
+		/* Function: UsedColumnIndexOf
+		 * Converts a column index to an index into the number of used columns, so this will return zero for the first used column,
+		 * one for the second used column, etc.  It will return -1 for columns that aren't used.
+		 */
+		 public int UsedColumnIndexOf (int columnIndex)
+			{
+			if (!IsUsed(columnIndex))
+				{  return -1;  }
+
+			int usedColumnIndex = 0;
+
+			for (int i = 0; i < columnIndex; i++)
+				{
+				if (columnWidths[i] != 0)
+					{  usedColumnIndex++;  }
+				}
+
+			return usedColumnIndex;
+			}
+
+
 
 		// Group: Support Functions
 		// __________________________________________________________________________
@@ -177,7 +198,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Property: Count
-		 * Returns the number of columns used in the parameter style.
+		 * Returns the total number of columns for the parameter style, regardless of how many are used.
 		 */
 		public int Count
 			{
@@ -186,13 +207,23 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			}
 
 
-		/* Property: Order
-		 * Returns an array of column types appropriate for the parameter style.  Do not change the data.
+		/* Property: UsedCount
+		 * Returns the number of used columns.
 		 */
-		public PrototypeColumnType[] Order
+		public int UsedCount
 			{
 			get
-				{  return OrderOf(parameterStyle);  }
+				{
+				int usedCount = 0;
+
+				for (int i = 0; i < columnWidths.Length; i++)
+					{
+					if (columnWidths[i] != 0)
+						{  usedCount++;  }
+					}
+
+				return usedCount;
+				}
 			}
 
 
@@ -229,6 +260,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				return -1;
 				}
+			}
+
+
+		/* Property: Order
+		 * Returns an array of column types appropriate for the parameter style.  Do not change the data.
+		 */
+		public PrototypeColumnType[] Order
+			{
+			get
+				{  return OrderOf(parameterStyle);  }
 			}
 
 
