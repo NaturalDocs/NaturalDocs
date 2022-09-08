@@ -417,10 +417,10 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			else
 				{
 				start = tokenizer.FirstToken;
-				start.Next(section.StartIndex);
+				start.TokenIndex = section.StartIndex;
 
 				end = start;
-				end.Next(section.EndIndex - section.StartIndex);
+				end.TokenIndex = section.EndIndex;
 
 				return true;
 				}

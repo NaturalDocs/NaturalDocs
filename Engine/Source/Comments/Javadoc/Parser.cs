@@ -146,7 +146,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 
 			while (textIndex != -1)
 				{
-				start.NextByCharacters(textIndex - start.RawTextIndex);
+				start.RawTextIndex = textIndex;
 				start.Next();
 
 				if (textIndex > 0 && text[textIndex - 1] == '{')
