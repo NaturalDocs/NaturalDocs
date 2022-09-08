@@ -855,12 +855,15 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 
 		/* Property: RawTextIndex
 		 * The offset of the current token into <Tokenizer.RawText>.  Will be zero if it went past the beginning, or the index
-		 * one past the last character if it went past the end.
+		 * one past the last character if it went past the end.  Setting it will move the iterator to that position.  The new
+		 * position must be on a token boundary or it will throw and exception.
 		 */
 		public int RawTextIndex
 			{
 			get
 				{  return rawTextIndex;  }
+			set
+				{  NextByCharacters(value - rawTextIndex);  }
 			}
 
 		/* Property: RawTextLength
@@ -878,12 +881,14 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 			}
 
 		/* Property: TokenIndex
-		 * The current index into <Tokenizer.Tokens>.
+		 * The current index into <Tokenizer.Tokens>.  Setting it will move the iterator to that position.
 		 */
 		public int TokenIndex
 			{
 			get
 				{  return tokenIndex;  }
+			set
+				{  Next(value - tokenIndex);  }
 			}
 
 		/* Property: IsInBounds
