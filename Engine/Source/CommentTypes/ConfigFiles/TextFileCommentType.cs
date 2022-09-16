@@ -127,8 +127,11 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 			this.displayName = displayName;
 			this.displayNamePropertyLocation = propertyLocation;
 
-			this.displayNameFromLocale = null;
-			this.displayNameFromLocalePropertyLocation = default;
+			if (displayName != null)
+				{
+				this.displayNameFromLocale = null;
+				this.displayNameFromLocalePropertyLocation = default;
+				}
 			}
 
 		/* Function: SetDisplayNameFromLocale
@@ -140,8 +143,11 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 			this.displayNameFromLocale = displayNameFromLocale;
 			this.displayNameFromLocalePropertyLocation = propertyLocation;
 
-			this.displayName = null;
-			this.displayNamePropertyLocation = default;
+			if (displayNameFromLocale != null)
+				{
+				this.displayName = null;
+				this.displayNamePropertyLocation = default;
+				}
 			}
 
 		/* Function: SetPluralDisplayName
@@ -153,8 +159,11 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 			this.pluralDisplayName = pluralDisplayName;
 			this.pluralDisplayNamePropertyLocation = propertyLocation;
 
-			this.pluralDisplayNameFromLocale = null;
-			this.pluralDisplayNameFromLocalePropertyLocation = default;
+			if (pluralDisplayName != null)
+				{
+				this.pluralDisplayNameFromLocale = null;
+				this.pluralDisplayNameFromLocalePropertyLocation = default;
+				}
 			}
 
 		/* Function: SetPluralDisplayNameFromLocale
@@ -166,8 +175,11 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 			this.pluralDisplayNameFromLocale = pluralDisplayNameFromLocale;
 			this.pluralDisplayNameFromLocalePropertyLocation = propertyLocation;
 
-			this.pluralDisplayName = null;
-			this.pluralDisplayNamePropertyLocation = default;
+			if (pluralDisplayNameFromLocale != null)
+				{
+				this.pluralDisplayName = null;
+				this.pluralDisplayNamePropertyLocation = default;
+				}
 			}
 
 		/* Function: SetSimpleIdentifier
