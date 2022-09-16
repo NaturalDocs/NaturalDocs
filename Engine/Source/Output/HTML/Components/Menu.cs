@@ -362,7 +362,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			if (rootContainer == null)
 				{
 				rootContainer = new MenuEntries.Container(hierarchy.ID);
-				rootContainer.Title = Engine.Locale.SafeGet("NaturalDocs.Engine", "Menu." + hierarchy.PluralSimpleIdentifier, hierarchy.PluralName);
+
+				// See if we can get a title by treating the hierarchy name as a keyword.  This will let people rename the Classes
+				// tab from Comments.txt.  If not, use the translation file.
+				var hierarchyAsCommentType = EngineInstance.CommentTypes.FromKeyword(hierarchy.Name, 0);
+
+				if (hierarchyAsCommentType != null)
+					{  rootContainer.Title  = hierarchyAsCommentType.PluralDisplayName;  }
+				else
+					{  rootContainer.Title = Engine.Locale.SafeGet("NaturalDocs.Engine", "Menu." + hierarchy.PluralSimpleIdentifier, hierarchy.PluralName);  }
 
 				if (hierarchyRoots == null)
 					{
