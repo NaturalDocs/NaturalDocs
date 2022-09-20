@@ -76,7 +76,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				end = start;
 				end.Next( endingTokenIndex - end.TokenIndex );
 
-				return (start > end);
+				return (start < end);
 				}
 			else
 				{  throw new IndexOutOfRangeException();  }
