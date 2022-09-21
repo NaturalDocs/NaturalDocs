@@ -372,7 +372,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						else if (columnIndex == lastUsedColumn)
 							{  extraCSSClass = "InLastParameterColumn";  }
 
-						if (parameters.HasContentAt(parameterIndex, columnIndex))
+						if (parameters.HasContent(parameterIndex, columnIndex))
 							{
 							// The order for grid-area is grid-row-start/grid-column-start/grid-row-end/grid-column-end
 
@@ -406,47 +406,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		protected void AppendParameterCell (PrototypeParameters parameters, int parameterIndex, int columnIndex, StringBuilder output)
 			{
 			TokenIterator start, end;
-			parameters.GetContentAt(parameterIndex, columnIndex, out start, out end);
+			parameters.GetContent(parameterIndex, columnIndex, out start, out end);
 
-			PrototypeColumnType type = parameters.Columns.TypeOf(columnIndex);
-			bool hadTrailingWhitespace = end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
-
-			// Default value separators always get spaces before.
-			// Property value separators get them unless they're ":", but watch out for ":=".
-			// Type-name separators get them if they're text (SQL's "AS") instead of symbols (Pascal's ":").
-			if (type == PrototypeColumnType.DefaultValueSeparator ||
-				(type == PrototypeColumnType.PropertyValueSeparator && (start.Character != ':' || start.MatchesAcrossTokens(":="))) ||
-				(type == PrototypeColumnType.TypeNameSeparator && start.FundamentalType == FundamentalType.Text))
-				{  output.Append("&nbsp;");  }
+			if (parameters.HasLeadingSpace(parameterIndex, columnIndex))
+				{  output.Append("&nbsp");  }
 
 			if (addLinks)
 				{  AppendSyntaxHighlightedTextWithTypeLinks(start, end, output, links, linkTargets, extendTypeSearch: true);  }
 			else
 				{  AppendSyntaxHighlightedText(start, end, output);  }
 
-			// Default value separators, property value separators, and type/name separators always get spaces after.
-			if (type == PrototypeColumnType.DefaultValueSeparator ||
-				type == PrototypeColumnType.PropertyValueSeparator ||
-				type == PrototypeColumnType.TypeNameSeparator)
+			if (parameters.HasTrailingSpace(parameterIndex, columnIndex))
 				{  output.Append("&nbsp;");  }
-
-			// Also add a trailing space if the original cell had one, unless it's the last column or it would be doubled by the next cell having a
-			// leading space.
-			else if (hadTrailingWhitespace &&
-						columnIndex != parameters.Columns.LastUsed)
-				{
-				int nextUsedColumnIndex = parameters.Columns.NextUsed(columnIndex);
-
-				if (nextUsedColumnIndex != -1)
-					{
-					PrototypeColumnType nextUsedColumnType = parameters.Columns.TypeOf(nextUsedColumnIndex);
-
-					if (nextUsedColumnType != PrototypeColumnType.DefaultValueSeparator &&
-						nextUsedColumnType != PrototypeColumnType.PropertyValueSeparator &&
-						nextUsedColumnType != PrototypeColumnType.TypeNameSeparator)
-						{  output.Append("&nbsp;");  }
-					}
-				}
 			}
 
 
