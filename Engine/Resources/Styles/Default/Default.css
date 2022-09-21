@@ -1779,11 +1779,19 @@ td {
 			white-space: normal;
 			}
 
+		.WideForm .LeftSpaceOnWide { padding-left: 1ch; }
+		.WideForm .RightSpaceOnWide { padding-right: 1ch; }
+		.NarrowForm .LeftSpaceOnNarrow { padding-left: 1ch; }
+		.NarrowForm .RightSpaceOnNarrow { padding-right: 1ch; }
+
 		.NarrowForm .InFirstParameterColumn,
 		.NarrowForm .PAfterParameters {
 			padding-left: 3ch;
 			}
-
+			.NarrowForm .InFirstParameterColumn.LeftSpaceOnNarrow,
+			.NarrowForm .PAfterParameters.LeftSpaceOnNarrow {
+				padding-left: 4ch;
+				}
 
 	/* Links default back to black so we don't screw up the syntax highlighting. */
 	.NDPrototype a:link,

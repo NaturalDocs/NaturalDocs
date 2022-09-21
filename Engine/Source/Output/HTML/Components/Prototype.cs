@@ -205,39 +205,37 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 											(wideRowStart + Math.Max(parameters.Count, 1)) +
 											"/2";
 
-			// Put it in the first row, all columns.  Add one more column than the parameters use so the cells don't get stretched out
-			// if this is longer than them.
+			// Put it in the first row, all columns.  Add one more column than the parameters use so the cells don't get
+			// stretched out if this is longer than them.
 			string narrowGridArea = narrowRowStart +
 												"/1/" +
 												(narrowRowStart + 1) + "/" +
 												(1 + parameters.Columns.UsedCount + 1);
 
-			// Add a &nbsp; if there was an ending whitespace character that was marked as part of the BeforeParameters section.
-			// This should only happen if it was significant, it should have been excluded otherwise.
-			bool addNBSP = end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
+			// Add a space between this and the parameters if there was an ending whitespace character that was marked
+			// as part of the BeforeParameters section.  This should only happen if it was significant; it should have been
+			// excluded otherwise.
+			bool addSpace = end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
 
-			// Also add it if the BeforeParameters section doesn't end with a nice symbol like (.  If it ends with something like (* we
-			// want to add it anyway for legibility.  Also for {.
-			if (!addNBSP)
+			// Also add it if the BeforeParameters section doesn't end with a nice symbol like (.  If it ends with something
+			// like (* we want to add it anyway for legibility.  Also for {.
+			if (!addSpace)
 				{
 				TokenIterator beforeEnd = end;
 				beforeEnd.Previous();
 
-				addNBSP = (beforeEnd >= start &&
-								  beforeEnd.Character != '(' &&
-								  beforeEnd.Character != '[' &&
-								  beforeEnd.Character != '<');
+				addSpace = (beforeEnd >= start &&
+								   beforeEnd.Character != '(' &&
+								   beforeEnd.Character != '[' &&
+								   beforeEnd.Character != '<');
 				}
 
-			output.Append("<div class=\"PBeforeParameters\" " +
+			output.Append("<div class=\"PBeforeParameters" + (addSpace ? " RightSpaceOnWide" : "") + "\" " +
 										"data-WideGridArea=\"" + wideGridArea + "\" " +
 										"data-NarrowGridArea=\"" + narrowGridArea + "\" " +
 										"style=\"grid-area:" + wideGridArea + "\">");
 
 			AppendText_ExcludePartialKeyword(start, end, output);
-
-			if (addNBSP)
-				{  output.Append("&nbsp;");  }
 
 			output.Append("</div>");
 
@@ -257,34 +255,32 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 									(wideRowStart + Math.Max(parameters.Count, 1)) + "/" +
 									(3 + parameters.Columns.UsedCount);
 
-			// Put it in the last row, all columns.  Add one more column than the parameters use so the cells don't get stretched out
-			// if this is longer than them.
+			// Put it in the last row, all columns.  Add one more column than the parameters use so the cells don't get
+			// stretched out if this is longer than them.
 			narrowGridArea = (narrowRowStart + 1 + parameters.Count) +
 										"/1/" +
 										(narrowRowStart + 1 + parameters.Count + 1) + "/" +
 										(1 + parameters.Columns.UsedCount + 1);
 
-			output.Append("<div class=\"PAfterParameters\" " +
+			// Add a space between this and the parameters if there was a leading whitespace character that was marked
+			// as part of the AfterParameters section.  This should only happen if it was significant; it should have been
+			// excluded otherwise.
+			addSpace = start.NextPastWhitespace(end);
+
+			// Also add it if the AfterParameters section doesn't start with a nice symbol like ).  If it starts with something
+			// like *) we want to add it anyway for legibility.  Also for }.
+			if (!addSpace)
+				{
+				addSpace = (start < end &&
+								   start.Character != ')' &&
+								   start.Character != ']' &&
+								   start.Character != '>');
+				}
+
+			output.Append("<div class=\"PAfterParameters" + (addSpace ? " LeftSpaceOnWide" : "") + "\" " +
 										"data-WideGridArea=\"" + wideGridArea + "\" " +
 										"data-NarrowGridArea=\"" + narrowGridArea + "\" " +
 										"style=\"grid-area:" + wideGridArea + "\">");
-
-			// Add a &nbsp; if there was a leading whitespace character that was marked as part of the AfterParameters section.
-			// This should only happen if it was significant, it should have been excluded otherwise.
-			addNBSP = start.NextPastWhitespace(end);
-
-			// Also add it if the AfterParameters section doesn't start with a nice symbol like ).  If it starts with something like *)
-			// we want to add it anyway for legibility.
-			if (!addNBSP)
-				{
-				addNBSP = (start < end &&
-								  start.Character != ')' &&
-								  start.Character != ']' &&
-								  start.Character != '>');
-				}
-
-			if (addNBSP)
-				{  output.Append("&nbsp;"); };
 
 			AppendText(start, end, output);
 

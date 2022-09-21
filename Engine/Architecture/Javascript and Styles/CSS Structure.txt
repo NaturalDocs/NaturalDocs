@@ -349,11 +349,19 @@ Parameter Section:
 		PPropertyValueSeparator - If present, the symbol for assigning a value to a property like = or :.
 		PPropertyValue - The property value, such as could appear in Java annotations.
 
-
 	Formatting Properties:
 
 		InFirstParameterColumn - The cell is a member of the first column of the parameters table.
 		InLastParameterColumn - The cell is a member of the last column of the parameters table.
+
+		LeftSpaceOnNarrow - The cell should have an additional space on its left side, but only for the narrow
+										prototype form.
+		LeftSpaceOnWide - The cell should have an additional space on its left side, but only for the wide
+									prototype form.
+		RightSpaceOnNarrow - The cell should have an additional space on its right side, but only for the narrow
+										 prototype form.
+		RightSpaceOnWide - The cell should have an additional space on its rightside, but only for the wide
+									  prototype form.
 
 
 
