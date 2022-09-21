@@ -1,20 +1,7 @@
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
-<div class="PBeforeParameters"><span class="SHKeyword">public delegate</span> <span class="SHKeyword">void</span> DelegateA (</div>
-<div class="PParametersParentCell"><table class="PParameters">
-   <tr>
-      <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
-      <td class="PName last">a</td>
-   </tr>
-</table></div>
-<div class="PAfterParameters">)</div></div></div>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+<div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">public delegate</span> <span class="SHKeyword">void</span> DelegateA (</div><div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span>&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">a</div>
+<div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">)</div></div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PPlainSection"><span class="SHMetadata">[Attribute]</span></div><div class="PSection PParameterSection CStyle">
-<div class="PBeforeParameters"><span class="SHKeyword">protected internal delegate</span> IList&lt;T&gt; DelegateB&lt;<span class="SHKeyword">in</span> T&gt; (</div>
-<div class="PParametersParentCell"><table class="PParameters">
-   <tr>
-      <td class="PModifierQualifier first"><span class="SHKeyword">params</span>&nbsp;</td>
-      <td class="PType"><span class="SHKeyword">object</span>[]&nbsp;</td>
-      <td class="PName last">x</td>
-   </tr>
-</table></div>
-<div class="PAfterParameters">)</div></div><div class="PSection PPlainSection"><span class="SHKeyword">where</span> T: System.Collections.IEnumerable, <span class="SHKeyword">new</span>()</div></div>
+<div class="NDPrototype WideForm"><div class="PSection PPlainSection"><span class="SHMetadata">[Attribute]</span></div><div class="PSection PParameterSection CStyle"><div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
+<div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/2/2"><span class="SHKeyword">protected internal delegate</span> IList&lt;T&gt; DelegateB&lt;<span class="SHKeyword">in</span> T&gt; (</div><div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">params</span>&nbsp;</div><div class="PType" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4"><span class="SHKeyword">object</span>[]&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5">x</div>
+<div class="PAfterParameters" data-WideGridArea="1/5/2/6" data-NarrowGridArea="3/1/4/5" style="grid-area:1/5/2/6">)</div></div></div><div class="PSection PPlainSection"><span class="SHKeyword">where</span> T: System.Collections.IEnumerable, <span class="SHKeyword">new</span>()</div></div>

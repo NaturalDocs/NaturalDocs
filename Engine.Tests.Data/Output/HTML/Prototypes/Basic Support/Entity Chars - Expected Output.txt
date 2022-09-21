@@ -1,18 +1,3 @@
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
-<div class="PBeforeParameters"><span class="SHKeyword">int</span> FunctionName (</div>
-<div class="PParametersParentCell"><table class="PParameters">
-   <tr>
-      <td class="PType first">List&lt;<span class="SHKeyword">int</span>&gt;&nbsp;</td>
-      <td class="PSymbols">&amp;</td>
-      <td class="PName">x,</td>
-      <td></td>
-      <td class="last"></td>
-   </tr><tr>
-      <td class="PType first"><span class="SHKeyword">string</span>&nbsp;</td>
-      <td></td>
-      <td class="PName">y</td>
-      <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
-      <td class="PDefaultValue last"><span class="SHString">&quot;test&quot;</span></td>
-   </tr>
-</table></div>
-<div class="PAfterParameters">)</div></div></div>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
+<div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/7" style="grid-area:1/1/3/2"><span class="SHKeyword">int</span> FunctionName (</div><div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">List&lt;<span class="SHKeyword">int</span>&gt;&nbsp;</div><div class="PSymbols" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">&amp;</div><div class="PName" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5">x,</div><div class="PType InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHKeyword">string</span>&nbsp;</div><div class="PName" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5">y</div><div class="PDefaultValueSeparator" data-WideGridArea="2/5/3/6" data-NarrowGridArea="3/4/4/5" style="grid-area:2/5/3/6">=&nbsp;</div><div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/6/3/7" data-NarrowGridArea="3/5/4/6" style="grid-area:2/6/3/7"><span class="SHString">&quot;test&quot;</span></div>
+<div class="PAfterParameters" data-WideGridArea="2/7/3/8" data-NarrowGridArea="4/1/5/7" style="grid-area:2/7/3/8">)</div></div></div></div>

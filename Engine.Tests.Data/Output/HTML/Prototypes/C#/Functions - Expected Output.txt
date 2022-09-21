@@ -1,160 +1,47 @@
 <div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">void</span> Parameterless ()</div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
-<div class="PBeforeParameters"><span class="SHKeyword">void</span> Basic (</div>
-<div class="PParametersParentCell"><table class="PParameters">
-   <tr>
-      <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
-      <td class="PName last">x,</td>
-   </tr><tr>
-      <td class="PType first"><span class="SHKeyword">string</span>&nbsp;</td>
-      <td class="PName last">y</td>
-   </tr>
-</table></div>
-<div class="PAfterParameters">)</div></div></div>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+<div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/3/2"><span class="SHKeyword">void</span> Basic (</div><div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span>&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">x,</div><div class="PType InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHKeyword">string</span>&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4">y</div>
+<div class="PAfterParameters" data-WideGridArea="2/4/3/5" data-NarrowGridArea="4/1/5/4" style="grid-area:2/4/3/5">)</div></div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
-<div class="PBeforeParameters"><span class="SHKeyword">public static</span> <span class="SHKeyword">string</span> Modifiers (</div>
-<div class="PParametersParentCell"><table class="PParameters">
-   <tr>
-      <td class="first"></td>
-      <td class="PType"><span class="SHKeyword">int</span>?&nbsp;</td>
-      <td class="PName last">x,</td>
-   </tr><tr>
-      <td class="PModifierQualifier first"><span class="SHKeyword">out</span>&nbsp;</td>
-      <td class="PType"><span class="SHKeyword">string</span>&nbsp;</td>
-      <td class="PName last">y</td>
-   </tr>
-</table></div>
-<div class="PAfterParameters">)</div></div></div>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
+<div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2"><span class="SHKeyword">public static</span> <span class="SHKeyword">string</span> Modifiers (</div><div class="PType" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4"><span class="SHKeyword">int</span>?&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5">x,</div><div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHKeyword">out</span>&nbsp;</div><div class="PType" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4"><span class="SHKeyword">string</span>&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5">y</div>
+<div class="PAfterParameters" data-WideGridArea="2/5/3/6" data-NarrowGridArea="4/1/5/5" style="grid-area:2/5/3/6">)</div></div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PPlainSection"><span class="SHMetadata">[Attribute]</span></div><div class="PSection PPlainSection"><span class="SHMetadata">[DllImport (&quot;NaturalDocs.Engine.SQLite.dll&quot;)]</span></div><div class="PSection PParameterSection CStyle">
-<div class="PBeforeParameters"><span class="SHKeyword">extern static private</span> <span class="SHKeyword">bool</span> Attributes_NoBraces (</div>
-<div class="PParametersParentCell"><table class="PParameters">
-   <tr>
-      <td class="PModifierQualifier first"><span class="SHMetadata">[MarshalAs(UnmanagedType.LPStr)]</span>&nbsp;</td>
-      <td class="PType"><span class="SHKeyword">string</span>&nbsp;</td>
-      <td class="PName last">x,</td>
-   </tr><tr>
-      <td class="PModifierQualifier first"><span class="SHMetadata">[param: something(&quot;don't trip on this: )]){&quot;)][AnotherOne]</span>&nbsp;</td>
-      <td class="PType"><span class="SHKeyword">int</span>&nbsp;</td>
-      <td class="PName last">y,</td>
-   </tr><tr>
-      <td class="PModifierQualifier first"><span class="SHKeyword">out</span>&nbsp;</td>
-      <td class="PType"><span class="SHKeyword">int</span>&nbsp;</td>
-      <td class="PName last">z</td>
-   </tr>
-</table></div>
-<div class="PAfterParameters">)</div></div></div>
+<div class="NDPrototype WideForm"><div class="PSection PPlainSection"><span class="SHMetadata">[Attribute]</span></div><div class="PSection PPlainSection"><span class="SHMetadata">[DllImport (&quot;NaturalDocs.Engine.SQLite.dll&quot;)]</span></div><div class="PSection PParameterSection CStyle"><div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
+<div class="PBeforeParameters" data-WideGridArea="1/1/4/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/4/2"><span class="SHKeyword">extern static private</span> <span class="SHKeyword">bool</span> Attributes_NoBraces (</div><div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHMetadata">[MarshalAs(UnmanagedType.LPStr)]</span>&nbsp;</div><div class="PType" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4"><span class="SHKeyword">string</span>&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5">x,</div><div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHMetadata">[param: something(&quot;don't trip on this: )]){&quot;)][AnotherOne]</span>&nbsp;</div><div class="PType" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4"><span class="SHKeyword">int</span>&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5">y,</div><div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="3/2/4/3" data-NarrowGridArea="4/1/5/2" style="grid-area:3/2/4/3"><span class="SHKeyword">out</span>&nbsp;</div><div class="PType" data-WideGridArea="3/3/4/4" data-NarrowGridArea="4/2/5/3" style="grid-area:3/3/4/4"><span class="SHKeyword">int</span>&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="3/4/4/5" data-NarrowGridArea="4/3/5/4" style="grid-area:3/4/4/5">z</div>
+<div class="PAfterParameters" data-WideGridArea="3/5/4/6" data-NarrowGridArea="5/1/6/5" style="grid-area:3/5/4/6">)</div></div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
-<div class="PBeforeParameters"><span class="SHKeyword">void</span> DefaultValues (</div>
-<div class="PParametersParentCell"><table class="PParameters">
-   <tr>
-      <td class="PType first"><span class="SHKeyword">string</span>&nbsp;</td>
-      <td class="PName">x</td>
-      <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
-      <td class="PDefaultValue last"> <span class="SHString">&quot;),;[&lt;{ \&quot; ),;[&lt;{&quot;</span>,</td>
-   </tr><tr>
-      <td class="PType first"><span class="SHKeyword">int</span>[,,]&nbsp;</td>
-      <td class="PName">y</td>
-      <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
-      <td class="PDefaultValue last"> [<span class="SHNumber">1</span>,<span class="SHNumber">2</span>,<span class="SHNumber">3</span>],</td>
-   </tr><tr>
-      <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
-      <td class="PName">z</td>
-      <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
-      <td class="PDefaultValue last"> <span class="SHNumber">6</span></td>
-   </tr>
-</table></div>
-<div class="PAfterParameters">)</div></div></div>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
+<div class="PBeforeParameters" data-WideGridArea="1/1/4/2" data-NarrowGridArea="1/1/2/6" style="grid-area:1/1/4/2"><span class="SHKeyword">void</span> DefaultValues (</div><div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">string</span>&nbsp;</div><div class="PName" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">x</div><div class="PDefaultValueSeparator" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5">&nbsp=&nbsp;</div><div class="PDefaultValue InLastParameterColumn" data-WideGridArea="1/5/2/6" data-NarrowGridArea="2/4/3/5" style="grid-area:1/5/2/6"> <span class="SHString">&quot;),;[&lt;{ \&quot; ),;[&lt;{&quot;</span>,</div><div class="PType InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHKeyword">int</span>[,,]&nbsp;</div><div class="PName" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4">y</div><div class="PDefaultValueSeparator" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5">&nbsp=&nbsp;</div><div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/5/3/6" data-NarrowGridArea="3/4/4/5" style="grid-area:2/5/3/6"> [<span class="SHNumber">1</span>,<span class="SHNumber">2</span>,<span class="SHNumber">3</span>],</div><div class="PType InFirstParameterColumn" data-WideGridArea="3/2/4/3" data-NarrowGridArea="4/1/5/2" style="grid-area:3/2/4/3"><span class="SHKeyword">int</span>&nbsp;</div><div class="PName" data-WideGridArea="3/3/4/4" data-NarrowGridArea="4/2/5/3" style="grid-area:3/3/4/4">z</div><div class="PDefaultValueSeparator" data-WideGridArea="3/4/4/5" data-NarrowGridArea="4/3/5/4" style="grid-area:3/4/4/5">&nbsp=&nbsp;</div><div class="PDefaultValue InLastParameterColumn" data-WideGridArea="3/5/4/6" data-NarrowGridArea="4/4/5/5" style="grid-area:3/5/4/6"> <span class="SHNumber">6</span></div>
+<div class="PAfterParameters" data-WideGridArea="3/6/4/7" data-NarrowGridArea="5/1/6/6" style="grid-area:3/6/4/7">)</div></div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
-<div class="PBeforeParameters"><span class="SHKeyword">public</span> List&lt;<span class="SHKeyword">int</span>&gt; Templates (</div>
-<div class="PParametersParentCell"><table class="PParameters">
-   <tr>
-      <td class="PModifierQualifier first">System.Collections.Generic.</td>
-      <td class="PType">Dictionary&lt;Nullable&lt;<span class="SHKeyword">int</span>&gt;, Map&lt;<span class="SHKeyword">string</span>, Object[]&gt;&gt;&nbsp;</td>
-      <td class="PName">x</td>
-      <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
-      <td class="PDefaultValue last"> <span class="SHKeyword">null</span>,</td>
-   </tr><tr>
-      <td class="first"></td>
-      <td class="PType"><span class="SHKeyword">int</span>&nbsp;</td>
-      <td class="PName">y</td>
-      <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
-      <td class="PDefaultValue last"> <span class="SHNumber">12</span></td>
-   </tr>
-</table></div>
-<div class="PAfterParameters">)</div></div></div>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
+<div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/7" style="grid-area:1/1/3/2"><span class="SHKeyword">public</span> List&lt;<span class="SHKeyword">int</span>&gt; Templates (</div><div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">System.Collections.Generic.</div><div class="PType" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">Dictionary&lt;Nullable&lt;<span class="SHKeyword">int</span>&gt;, Map&lt;<span class="SHKeyword">string</span>, Object[]&gt;&gt;&nbsp;</div><div class="PName" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5">x</div><div class="PDefaultValueSeparator" data-WideGridArea="1/5/2/6" data-NarrowGridArea="2/4/3/5" style="grid-area:1/5/2/6">&nbsp=&nbsp;</div><div class="PDefaultValue InLastParameterColumn" data-WideGridArea="1/6/2/7" data-NarrowGridArea="2/5/3/6" style="grid-area:1/6/2/7"> <span class="SHKeyword">null</span>,</div><div class="PType" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4"><span class="SHKeyword">int</span>&nbsp;</div><div class="PName" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5">y</div><div class="PDefaultValueSeparator" data-WideGridArea="2/5/3/6" data-NarrowGridArea="3/4/4/5" style="grid-area:2/5/3/6">&nbsp=&nbsp;</div><div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/6/3/7" data-NarrowGridArea="3/5/4/6" style="grid-area:2/6/3/7"> <span class="SHNumber">12</span></div>
+<div class="PAfterParameters" data-WideGridArea="2/7/3/8" data-NarrowGridArea="4/1/5/7" style="grid-area:2/7/3/8">)</div></div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
-<div class="PBeforeParameters"><span class="SHKeyword">public</span> List&lt;T1&gt; WhereClause&lt;T1,T2&gt; (</div>
-<div class="PParametersParentCell"><table class="PParameters">
-   <tr>
-      <td class="PType first">List&lt;T2&gt;&nbsp;</td>
-      <td class="PName last">x,</td>
-   </tr><tr>
-      <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
-      <td class="PName last">y</td>
-   </tr>
-</table></div>
-<div class="PAfterParameters">)</div></div><div class="PSection PPlainSection"><span class="SHKeyword">where</span> T1: <span class="SHKeyword">class</span>, Interface, <span class="SHKeyword">new</span> ()</div><div class="PSection PPlainSection"><span class="SHKeyword">where</span> T2: System.Collections.IEnumerable&lt;T2&gt;</div></div>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+<div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/3/2"><span class="SHKeyword">public</span> List&lt;T1&gt; WhereClause&lt;T1,T2&gt; (</div><div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">List&lt;T2&gt;&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">x,</div><div class="PType InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHKeyword">int</span>&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4">y</div>
+<div class="PAfterParameters" data-WideGridArea="2/4/3/5" data-NarrowGridArea="4/1/5/4" style="grid-area:2/4/3/5">)</div></div></div><div class="PSection PPlainSection"><span class="SHKeyword">where</span> T1: <span class="SHKeyword">class</span>, Interface, <span class="SHKeyword">new</span> ()</div><div class="PSection PPlainSection"><span class="SHKeyword">where</span> T2: System.Collections.IEnumerable&lt;T2&gt;</div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
-<div class="PBeforeParameters"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> FunctionPointer (</div>
-<div class="PParametersParentCell"><table class="PParameters">
-   <tr>
-      <td class="PType first"><span class="SHKeyword">delegate</span>* <span class="SHKeyword">unmanaged</span>[Cdecl] &lt;<span class="SHKeyword">int</span>, <span class="SHKeyword">float</span>&gt;&nbsp;</td>
-      <td class="PName last">x,</td>
-   </tr><tr>
-      <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
-      <td class="PName last">y</td>
-   </tr>
-</table></div>
-<div class="PAfterParameters">)</div></div></div>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+<div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/3/2"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> FunctionPointer (</div><div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">delegate</span>* <span class="SHKeyword">unmanaged</span>[Cdecl] &lt;<span class="SHKeyword">int</span>, <span class="SHKeyword">float</span>&gt;&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">x,</div><div class="PType InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHKeyword">int</span>&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4">y</div>
+<div class="PAfterParameters" data-WideGridArea="2/4/3/5" data-NarrowGridArea="4/1/5/4" style="grid-area:2/4/3/5">)</div></div></div></div>
 -----
 <div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Partial_BeginningOfModifiers ()</div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
-<div class="PBeforeParameters"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Partial_BeginningOfModifiers2 (</div>
-<div class="PParametersParentCell"><table class="PParameters">
-   <tr>
-      <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
-      <td class="PName last">x,</td>
-   </tr><tr>
-      <td class="PType first"><span class="SHKeyword">float</span>&nbsp;</td>
-      <td class="PName last">y</td>
-   </tr>
-</table></div>
-<div class="PAfterParameters">)</div></div></div>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+<div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/3/2"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Partial_BeginningOfModifiers2 (</div><div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span>&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">x,</div><div class="PType InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHKeyword">float</span>&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4">y</div>
+<div class="PAfterParameters" data-WideGridArea="2/4/3/5" data-NarrowGridArea="4/1/5/4" style="grid-area:2/4/3/5">)</div></div></div></div>
 -----
 <div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Partial_MiddleOfModifiers ()</div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
-<div class="PBeforeParameters"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Partial_MiddleOfModifiers2 (</div>
-<div class="PParametersParentCell"><table class="PParameters">
-   <tr>
-      <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
-      <td class="PName last">x,</td>
-   </tr><tr>
-      <td class="PType first"><span class="SHKeyword">float</span>&nbsp;</td>
-      <td class="PName last">y</td>
-   </tr>
-</table></div>
-<div class="PAfterParameters">)</div></div></div>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+<div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/3/2"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Partial_MiddleOfModifiers2 (</div><div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span>&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">x,</div><div class="PType InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHKeyword">float</span>&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4">y</div>
+<div class="PAfterParameters" data-WideGridArea="2/4/3/5" data-NarrowGridArea="4/1/5/4" style="grid-area:2/4/3/5">)</div></div></div></div>
 -----
 <div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public</span> Partial_EndOfModifiers ()</div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
-<div class="PBeforeParameters"><span class="SHKeyword">public</span> Partial_EndOfModifiers2 (</div>
-<div class="PParametersParentCell"><table class="PParameters">
-   <tr>
-      <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
-      <td class="PName last">x,</td>
-   </tr><tr>
-      <td class="PType first"><span class="SHKeyword">float</span>&nbsp;</td>
-      <td class="PName last">y</td>
-   </tr>
-</table></div>
-<div class="PAfterParameters">)</div></div></div>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+<div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/3/2"><span class="SHKeyword">public</span> Partial_EndOfModifiers2 (</div><div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span>&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">x,</div><div class="PType InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHKeyword">float</span>&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4">y</div>
+<div class="PAfterParameters" data-WideGridArea="2/4/3/5" data-NarrowGridArea="4/1/5/4" style="grid-area:2/4/3/5">)</div></div></div></div>

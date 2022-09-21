@@ -1,75 +1,27 @@
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
-<div class="PBeforeParameters"><span class="SHKeyword">public static</span> TestClass <span class="SHKeyword">operator</span> ! (</div>
-<div class="PParametersParentCell"><table class="PParameters">
-   <tr>
-      <td class="PType first">TestClass&nbsp;</td>
-      <td class="PName last">input</td>
-   </tr>
-</table></div>
-<div class="PAfterParameters">)</div></div></div>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+<div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">public static</span> TestClass <span class="SHKeyword">operator</span> ! (</div><div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">TestClass&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">input</div>
+<div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">)</div></div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
-<div class="PBeforeParameters"><span class="SHKeyword">public static</span> TestClass <span class="SHKeyword">operator</span>++ (</div>
-<div class="PParametersParentCell"><table class="PParameters">
-   <tr>
-      <td class="PType first">TestClass&nbsp;</td>
-      <td class="PName last">input</td>
-   </tr>
-</table></div>
-<div class="PAfterParameters">)</div></div></div>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+<div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">public static</span> TestClass <span class="SHKeyword">operator</span>++ (</div><div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">TestClass&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">input</div>
+<div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">)</div></div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
-<div class="PBeforeParameters"><span class="SHKeyword">public static extern</span> <span class="SHKeyword">bool</span> <span class="SHKeyword">operator true</span> (</div>
-<div class="PParametersParentCell"><table class="PParameters">
-   <tr>
-      <td class="PType first">TestClass&nbsp;</td>
-      <td class="PName last">input</td>
-   </tr>
-</table></div>
-<div class="PAfterParameters">)</div></div></div>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+<div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">public static extern</span> <span class="SHKeyword">bool</span> <span class="SHKeyword">operator true</span> (</div><div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">TestClass&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">input</div>
+<div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">)</div></div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
-<div class="PBeforeParameters"><span class="SHKeyword">public static</span> TestClass <span class="SHKeyword">operator</span>+ (</div>
-<div class="PParametersParentCell"><table class="PParameters">
-   <tr>
-      <td class="PType first">TestClass&nbsp;</td>
-      <td class="PName last">a,</td>
-   </tr><tr>
-      <td class="PType first">TestClass&nbsp;</td>
-      <td class="PName last">b</td>
-   </tr>
-</table></div>
-<div class="PAfterParameters">)</div></div></div>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+<div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/3/2"><span class="SHKeyword">public static</span> TestClass <span class="SHKeyword">operator</span>+ (</div><div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">TestClass&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">a,</div><div class="PType InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3">TestClass&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4">b</div>
+<div class="PAfterParameters" data-WideGridArea="2/4/3/5" data-NarrowGridArea="4/1/5/4" style="grid-area:2/4/3/5">)</div></div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PPlainSection"><span class="SHMetadata">[Attribute]</span></div><div class="PSection PParameterSection CStyle">
-<div class="PBeforeParameters"><span class="SHKeyword">public static</span> TestClass&lt;T&gt; <span class="SHKeyword">operator</span>&lt;&lt; (</div>
-<div class="PParametersParentCell"><table class="PParameters">
-   <tr>
-      <td class="PType first">TestClass&lt;T&gt;&nbsp;</td>
-      <td class="PName last">a,</td>
-   </tr><tr>
-      <td class="PType first">TestClass&lt;T&gt;&nbsp;</td>
-      <td class="PName last">b</td>
-   </tr>
-</table></div>
-<div class="PAfterParameters">)</div></div></div>
+<div class="NDPrototype WideForm"><div class="PSection PPlainSection"><span class="SHMetadata">[Attribute]</span></div><div class="PSection PParameterSection CStyle"><div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+<div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/3/2"><span class="SHKeyword">public static</span> TestClass&lt;T&gt; <span class="SHKeyword">operator</span>&lt;&lt; (</div><div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">TestClass&lt;T&gt;&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">a,</div><div class="PType InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3">TestClass&lt;T&gt;&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4">b</div>
+<div class="PAfterParameters" data-WideGridArea="2/4/3/5" data-NarrowGridArea="4/1/5/4" style="grid-area:2/4/3/5">)</div></div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
-<div class="PBeforeParameters"><span class="SHKeyword">public static extern implicit operator string</span> (</div>
-<div class="PParametersParentCell"><table class="PParameters">
-   <tr>
-      <td class="PType first">TestClass&nbsp;</td>
-      <td class="PName last">input</td>
-   </tr>
-</table></div>
-<div class="PAfterParameters">)</div></div></div>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+<div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">public static extern implicit operator string</span> (</div><div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">TestClass&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">input</div>
+<div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">)</div></div></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle">
-<div class="PBeforeParameters"><span class="SHKeyword">public static explicit operator</span> List&lt;<span class="SHKeyword">string</span>&gt; (</div>
-<div class="PParametersParentCell"><table class="PParameters">
-   <tr>
-      <td class="PType first">TestClass&nbsp;</td>
-      <td class="PName last">input</td>
-   </tr>
-</table></div>
-<div class="PAfterParameters">)</div></div></div>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+<div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">public static explicit operator</span> List&lt;<span class="SHKeyword">string</span>&gt; (</div><div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">TestClass&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">input</div>
+<div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">)</div></div></div></div>

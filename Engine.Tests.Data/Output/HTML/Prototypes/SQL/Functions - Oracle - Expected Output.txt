@@ -4,78 +4,21 @@
 -----
 <div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">CREATE OR REPLACE FUNCTION</span> Returns3</div><div class="PSection PPlainSection"><span class="SHKeyword">RETURN</span> <span class="SHKeyword">NUMBER</span></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
-<div class="PBeforeParameters"><span class="SHKeyword">FUNCTION</span> Params1 (</div>
-<div class="PParametersParentCell"><table class="PParameters">
-   <tr>
-      <td class="PName first">Param1&nbsp;</td>
-      <td class="PType"><span class="SHKeyword">INTEGER</span>,</td>
-      <td></td>
-      <td class="last"></td>
-   </tr><tr>
-      <td class="PName first">Param2&nbsp;</td>
-      <td class="PType"><span class="SHKeyword">VARCHAR2</span>(<span class="SHNumber">100</span>),</td>
-      <td></td>
-      <td class="last"></td>
-   </tr><tr>
-      <td class="PName first">Param3&nbsp;</td>
-      <td class="PType"><span class="SHKeyword">NUMBER</span>(<span class="SHNumber">4</span>)</td>
-      <td class="PDefaultValueSeparator">&nbsp;<span class="SHKeyword">DEFAULT</span>&nbsp;</td>
-      <td class="PDefaultValue last"><span class="SHNumber">5</span>,</td>
-   </tr><tr>
-      <td class="PName first">Param4&nbsp;</td>
-      <td class="PType"><span class="SHKeyword">NUMBER</span>(<span class="SHNumber">5</span>,<span class="SHNumber">6</span>)</td>
-      <td class="PDefaultValueSeparator">&nbsp;:=&nbsp;</td>
-      <td class="PDefaultValue last"><span class="SHNumber">2e-1</span></td>
-   </tr>
-</table></div>
-<div class="PAfterParameters">)</div></div><div class="PSection PPlainSection"><span class="SHKeyword">RETURN</span> <span class="SHKeyword">NUMBER</span></div></div>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
+<div class="PBeforeParameters" data-WideGridArea="1/1/5/2" data-NarrowGridArea="1/1/2/6" style="grid-area:1/1/5/2"><span class="SHKeyword">FUNCTION</span> Params1 (</div><div class="PName InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">Param1&nbsp;</div><div class="PType" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4"><span class="SHKeyword">INTEGER</span>,</div><div class="PName InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3">Param2&nbsp;</div><div class="PType" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4"><span class="SHKeyword">VARCHAR2</span>(<span class="SHNumber">100</span>),</div><div class="PName InFirstParameterColumn" data-WideGridArea="3/2/4/3" data-NarrowGridArea="4/1/5/2" style="grid-area:3/2/4/3">Param3&nbsp;</div><div class="PType" data-WideGridArea="3/3/4/4" data-NarrowGridArea="4/2/5/3" style="grid-area:3/3/4/4"><span class="SHKeyword">NUMBER</span>(<span class="SHNumber">4</span>)</div><div class="PDefaultValueSeparator" data-WideGridArea="3/4/4/5" data-NarrowGridArea="4/3/5/4" style="grid-area:3/4/4/5">&nbsp<span class="SHKeyword">DEFAULT</span>&nbsp;</div><div class="PDefaultValue InLastParameterColumn" data-WideGridArea="3/5/4/6" data-NarrowGridArea="4/4/5/5" style="grid-area:3/5/4/6"><span class="SHNumber">5</span>,</div><div class="PName InFirstParameterColumn" data-WideGridArea="4/2/5/3" data-NarrowGridArea="5/1/6/2" style="grid-area:4/2/5/3">Param4&nbsp;</div><div class="PType" data-WideGridArea="4/3/5/4" data-NarrowGridArea="5/2/6/3" style="grid-area:4/3/5/4"><span class="SHKeyword">NUMBER</span>(<span class="SHNumber">5</span>,<span class="SHNumber">6</span>)</div><div class="PDefaultValueSeparator" data-WideGridArea="4/4/5/5" data-NarrowGridArea="5/3/6/4" style="grid-area:4/4/5/5">&nbsp:=&nbsp;</div><div class="PDefaultValue InLastParameterColumn" data-WideGridArea="4/5/5/6" data-NarrowGridArea="5/4/6/5" style="grid-area:4/5/5/6"><span class="SHNumber">2e-1</span></div>
+<div class="PAfterParameters" data-WideGridArea="4/6/5/7" data-NarrowGridArea="6/1/7/6" style="grid-area:4/6/5/7">)</div></div></div><div class="PSection PPlainSection"><span class="SHKeyword">RETURN</span> <span class="SHKeyword">NUMBER</span></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
-<div class="PBeforeParameters"><span class="SHKeyword">CREATE FUNCTION</span> Params2 (</div>
-<div class="PParametersParentCell"><table class="PParameters">
-   <tr>
-      <td class="PName first">Param1&nbsp;</td>
-      <td class="PType last"><span class="SHKeyword">IN</span> <span class="SHKeyword">INTEGER</span>,</td>
-   </tr><tr>
-      <td class="PName first">Param2&nbsp;</td>
-      <td class="PType last"><span class="SHKeyword">OUT</span> <span class="SHKeyword">INTEGER</span> <span class="SHKeyword">NOT NULL</span>,</td>
-   </tr><tr>
-      <td class="PName first">Param3&nbsp;</td>
-      <td class="PType last"><span class="SHKeyword">IN OUT</span> <span class="SHKeyword">INTEGER</span>,</td>
-   </tr><tr>
-      <td class="PName first">Param4&nbsp;</td>
-      <td class="PType last"><span class="SHKeyword">IN OUT NOCOPY</span> <span class="SHKeyword">NUMBER</span> <span class="SHKeyword">NOT NULL</span></td>
-   </tr>
-</table></div>
-<div class="PAfterParameters">)</div></div><div class="PSection PPlainSection"><span class="SHKeyword">RETURN</span> <span class="SHKeyword">NUMBER</span></div></div>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+<div class="PBeforeParameters" data-WideGridArea="1/1/5/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/5/2"><span class="SHKeyword">CREATE FUNCTION</span> Params2 (</div><div class="PName InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">Param1&nbsp;</div><div class="PType InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4"><span class="SHKeyword">IN</span> <span class="SHKeyword">INTEGER</span>,</div><div class="PName InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3">Param2&nbsp;</div><div class="PType InLastParameterColumn" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4"><span class="SHKeyword">OUT</span> <span class="SHKeyword">INTEGER</span> <span class="SHKeyword">NOT NULL</span>,</div><div class="PName InFirstParameterColumn" data-WideGridArea="3/2/4/3" data-NarrowGridArea="4/1/5/2" style="grid-area:3/2/4/3">Param3&nbsp;</div><div class="PType InLastParameterColumn" data-WideGridArea="3/3/4/4" data-NarrowGridArea="4/2/5/3" style="grid-area:3/3/4/4"><span class="SHKeyword">IN OUT</span> <span class="SHKeyword">INTEGER</span>,</div><div class="PName InFirstParameterColumn" data-WideGridArea="4/2/5/3" data-NarrowGridArea="5/1/6/2" style="grid-area:4/2/5/3">Param4&nbsp;</div><div class="PType InLastParameterColumn" data-WideGridArea="4/3/5/4" data-NarrowGridArea="5/2/6/3" style="grid-area:4/3/5/4"><span class="SHKeyword">IN OUT NOCOPY</span> <span class="SHKeyword">NUMBER</span> <span class="SHKeyword">NOT NULL</span></div>
+<div class="PAfterParameters" data-WideGridArea="4/4/5/5" data-NarrowGridArea="6/1/7/4" style="grid-area:4/4/5/5">)</div></div></div><div class="PSection PPlainSection"><span class="SHKeyword">RETURN</span> <span class="SHKeyword">NUMBER</span></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
-<div class="PBeforeParameters"><span class="SHKeyword">CREATE OR REPLACE FUNCTION</span> Params3 (</div>
-<div class="PParametersParentCell"><table class="PParameters">
-   <tr>
-      <td class="PName first">Param1&nbsp;</td>
-      <td class="PType">CLASS.VARIABLE<span class="SHKeyword">%TYPE</span>,</td>
-      <td></td>
-      <td class="last"></td>
-   </tr><tr>
-      <td class="PName first">Param2&nbsp;</td>
-      <td class="PType"><span class="SHKeyword">IN OUT NOCOPY</span> <span class="SHKeyword">NUMBER</span>(<span class="SHNumber">5</span>, <span class="SHNumber">6</span>) <span class="SHKeyword">NOT NULL</span></td>
-      <td class="PDefaultValueSeparator">&nbsp;:=&nbsp;</td>
-      <td class="PDefaultValue last"><span class="SHNumber">+6E2</span></td>
-   </tr>
-</table></div>
-<div class="PAfterParameters">)</div></div><div class="PSection PPlainSection"><span class="SHKeyword">RETURN</span> <span class="SHKeyword">NUMBER</span></div></div>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
+<div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/6" style="grid-area:1/1/3/2"><span class="SHKeyword">CREATE OR REPLACE FUNCTION</span> Params3 (</div><div class="PName InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">Param1&nbsp;</div><div class="PType" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">CLASS.VARIABLE<span class="SHKeyword">%TYPE</span>,</div><div class="PName InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3">Param2&nbsp;</div><div class="PType" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4"><span class="SHKeyword">IN OUT NOCOPY</span> <span class="SHKeyword">NUMBER</span>(<span class="SHNumber">5</span>, <span class="SHNumber">6</span>) <span class="SHKeyword">NOT NULL</span></div><div class="PDefaultValueSeparator" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5">&nbsp:=&nbsp;</div><div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/5/3/6" data-NarrowGridArea="3/4/4/5" style="grid-area:2/5/3/6"><span class="SHNumber">+6E2</span></div>
+<div class="PAfterParameters" data-WideGridArea="2/6/3/7" data-NarrowGridArea="4/1/5/6" style="grid-area:2/6/3/7">)</div></div></div><div class="PSection PPlainSection"><span class="SHKeyword">RETURN</span> <span class="SHKeyword">NUMBER</span></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle">
-<div class="PBeforeParameters"><span class="SHKeyword">CREATE OR ALTER EDITIONABLE RANDOM_WORD FUNCTION</span> ExtraKeywords (</div>
-<div class="PParametersParentCell"><table class="PParameters">
-   <tr>
-      <td class="PName first">Param1&nbsp;</td>
-      <td class="PType last"><span class="SHKeyword">INTEGER</span></td>
-   </tr>
-</table></div>
-<div class="PAfterParameters">)</div></div><div class="PSection PPlainSection"><span class="SHKeyword">RETURN</span> <span class="SHKeyword">NUMBER</span></div></div>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+<div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">CREATE OR ALTER EDITIONABLE RANDOM_WORD FUNCTION</span> ExtraKeywords (</div><div class="PName InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">Param1&nbsp;</div><div class="PType InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4"><span class="SHKeyword">INTEGER</span></div>
+<div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">)</div></div></div><div class="PSection PPlainSection"><span class="SHKeyword">RETURN</span> <span class="SHKeyword">NUMBER</span></div></div>
 -----
 <div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">CREATE FUNCTION</span> Modifiers1</div><div class="PSection PPlainSection"><span class="SHKeyword">RETURN</span> <span class="SHKeyword">NUMBER</span></div><div class="PSection PPlainSection"><span class="SHMetadata">SHARING = NONE</span></div><div class="PSection PPlainSection"><span class="SHMetadata">AUTHID DEFINER</span></div><div class="PSection PPlainSection"><span class="SHMetadata">ACCESSIBLE BY (FUNCTION Func1, PACKAGE A.B)</span></div><div class="PSection PPlainSection"><span class="SHMetadata">DEFAULT COLLATION USING_NLS_COMP</span></div></div>
 -----
