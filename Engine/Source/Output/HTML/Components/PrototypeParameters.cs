@@ -850,7 +850,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				if (defaultValueSeparatorColumnIndex == -1 ||
 					( HasContent(parameterIndex, defaultValueSeparatorColumnIndex) &&
 					  HasContent(parameterIndex, beforeDefaultValueSeparatorColumnIndex) &&
-					  cells[parameterIndex, beforeDefaultValueSeparatorColumnIndex].Width == columns.WidthOf(beforeDefaultValueSeparatorColumnIndex) ))
+					  cells[parameterIndex, beforeDefaultValueSeparatorColumnIndex].Width == columns.WidthOf(beforeDefaultValueSeparatorColumnIndex) ) ||
+
+					// Don't apply this tweak when the separator is text based, like SQL's "DEFAULT".  Doesn't look as good.
+					( GetContent(parameterIndex, defaultValueSeparatorColumnIndex, out start, out end) &&
+					  start.FundamentalType == FundamentalType.Text ))
 					{
 					canRemoveDefaultValueSeparatorLeadingSpace = false;
 					}
