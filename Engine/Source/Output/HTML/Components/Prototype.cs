@@ -242,7 +242,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			// Parameters
 
-			AppendParameters(parameters, wideRowStart, narrowRowStart, output);
+			bool lastCellEndsWithSpace;
+
+			AppendParameters(parameters, wideRowStart, narrowRowStart, output, out lastCellEndsWithSpace);
 
 
 			// After parameters
@@ -276,6 +278,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 								   start.Character != ']' &&
 								   start.Character != '>');
 				}
+
+			// However, don't add the space if the last cell already ends with one by being shorter than the other ones.
+			if (addSpace && lastCellEndsWithSpace)
+				{  addSpace = false;  }
 
 			output.Append("<div class=\"PAfterParameters" + (addSpace ? " LeftSpaceOnWide" : "") + "\" " +
 										"data-WideGridArea=\"" + wideGridArea + "\" " +
@@ -348,7 +354,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 		/* Function: AppendParameters
 		 */
-		protected void AppendParameters (PrototypeParameters parameters, int wideRowStart, int narrowRowStart,  StringBuilder output)
+		protected void AppendParameters (PrototypeParameters parameters, int wideRowStart, int narrowRowStart,  StringBuilder output,
+														  out bool lastCellEndsWithSpace)
 			{
 			int firstUsedColumn = parameters.Columns.FirstUsed;
 			int lastUsedColumn = parameters.Columns.LastUsed;
@@ -394,6 +401,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						}
 					}
 				}
+
+
+			// Determine lastCellEndsWithSpace before returning
+
+			int lastCellWidth = parameters.GetContentWidth(parameters.Count - 1, lastUsedColumn);
+			lastCellEndsWithSpace = (lastCellWidth < parameters.Columns.WidthOf(lastUsedColumn));
 			}
 
 

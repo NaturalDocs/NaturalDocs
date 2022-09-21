@@ -83,6 +83,21 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			}
 
 
+		/* Function: GetContentWidth
+		 * Returns the width of the content at the specified parameter and column, in characters.
+		 */
+		public int GetContentWidth (int parameterIndex, int columnIndex)
+			{
+			if (parameterIndex < parameters.NumberOfParameters &&
+				columnIndex < columns.Count)
+				{
+				return cells[parameterIndex, columnIndex].Width;
+				}
+			else
+				{  throw new IndexOutOfRangeException();  }
+			}
+
+
 		/* Function: HasLeadingSpace
 		 * Whether the passed parameter and column has a leading space.
 		 */
