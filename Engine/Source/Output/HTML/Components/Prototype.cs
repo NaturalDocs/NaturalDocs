@@ -279,11 +279,23 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 								   start.Character != '>');
 				}
 
-			// However, don't add the space if the last cell already ends with one by being shorter than the other ones.
-			if (addSpace && lastCellEndsWithSpace)
-				{  addSpace = false;  }
+			string extraCSSClass;
 
-			output.Append("<div class=\"PAfterParameters" + (addSpace ? " LeftSpaceOnWide" : "") + "\" " +
+			if (addSpace)
+				{
+				// We only need to actually add the space if the last parameter doesn't already have one at the end.
+				// Otherwise ignore it so it's not overly wide.
+				extraCSSClass = (lastCellEndsWithSpace ? "" : " LeftSpaceOnWide");
+				}
+			else
+				{
+				// On the other hand, if there's not supposed to be a space and the last parameter ends with one anyway
+				// we can bleed the ending part an extra character into it.  This lets closing parentheses line up with the
+				// commas in between parameters.
+				extraCSSClass = (lastCellEndsWithSpace ? " NegativeLeftSpaceOnWide" : "");
+				}
+
+			output.Append("<div class=\"PAfterParameters" + extraCSSClass + "\" " +
 										"data-WideGridArea=\"" + wideGridArea + "\" " +
 										"data-NarrowGridArea=\"" + narrowGridArea + "\" " +
 										"style=\"grid-area:" + wideGridArea + "\">");

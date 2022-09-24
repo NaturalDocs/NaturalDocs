@@ -1793,6 +1793,8 @@ td {
 				padding-left: 4ch;
 				}
 
+		.WideForm .NegativeLeftSpaceOnWide { text-indent: -1ch; }
+
 	/* Links default back to black so we don't screw up the syntax highlighting. */
 	.NDPrototype a:link,
 	.NDPrototype a:visited,

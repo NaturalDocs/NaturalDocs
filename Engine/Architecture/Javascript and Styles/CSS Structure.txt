@@ -363,6 +363,9 @@ Parameter Section:
 		RightSpaceOnWide - The cell should have an additional space on its rightside, but only for the wide
 									  prototype form.
 
+		NegativeLeftSpaceOnWide - The first line of the cell can start one space to the left of where its normal
+												 bounds would be, but only for the wide prototype form.
+
 
 
 Topic: Class Prototype
