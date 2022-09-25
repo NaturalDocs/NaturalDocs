@@ -73,9 +73,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 
 		/* Function: GetBeforeParameters
-		 * Returns the bounds of the section of the prototype prior to the parameters and whether it exists.  If it has parameters,
-		 * it will include the starting symbol of the parameter list such as the opening parenthesis.  If there are no parameters, this
-		 * will return the bounds of the entire prototype.
+		 * Returns the bounds of the section of the prototype prior to the parameters and whether it exists.  If it does
+		 * exist, the bounds will include the opening symbol of the parameter list such as the opening parenthesis.
 		 */
 		public bool GetBeforeParameters (out TokenIterator beforeParametersStart, out TokenIterator beforeParametersEnd)
 			{
