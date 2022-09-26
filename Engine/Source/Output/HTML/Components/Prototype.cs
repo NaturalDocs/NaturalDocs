@@ -249,60 +249,64 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			// After parameters
 
-			section.GetAfterParameters(out start, out end);
-
-			// Put it in the last row, last column
-			wideGridArea = (wideRowStart + Math.Max(parameters.Count, 1) - 1) + "/" +
-									(2 + parameters.Columns.UsedCount) + "/" +
-									(wideRowStart + Math.Max(parameters.Count, 1)) + "/" +
-									(3 + parameters.Columns.UsedCount);
-
-			// Put it in the last row, all columns.  Add one more column than the parameters use so the cells don't get
-			// stretched out if this is longer than them.
-			narrowGridArea = (narrowRowStart + 1 + parameters.Count) +
-										"/1/" +
-										(narrowRowStart + 1 + parameters.Count + 1) + "/" +
-										(1 + parameters.Columns.UsedCount + 1);
-
-			// Add a space between this and the parameters if there was a leading whitespace character that was marked
-			// as part of the AfterParameters section.  This should only happen if it was significant; it should have been
-			// excluded otherwise.
-			addSpace = start.NextPastWhitespace(end);
-
-			// Also add it if the AfterParameters section doesn't start with a nice symbol like ).  If it starts with something
-			// like *) we want to add it anyway for legibility.  Also for }.
-			if (!addSpace)
+			// Not every prototype with parameters will have an after parameters section, mainly Microsoft SQL functions
+			// because they don't require parentheses.  Just omit it.
+			if (section.GetAfterParameters(out start, out end))
 				{
-				addSpace = (start < end &&
-								   start.Character != ')' &&
-								   start.Character != ']' &&
-								   start.Character != '>');
+
+				// Put it in the last row, last column
+				wideGridArea = (wideRowStart + Math.Max(parameters.Count, 1) - 1) + "/" +
+										(2 + parameters.Columns.UsedCount) + "/" +
+										(wideRowStart + Math.Max(parameters.Count, 1)) + "/" +
+										(3 + parameters.Columns.UsedCount);
+
+				// Put it in the last row, all columns.  Add one more column than the parameters use so the cells don't get
+				// stretched out if this is longer than them.
+				narrowGridArea = (narrowRowStart + 1 + parameters.Count) +
+											"/1/" +
+											(narrowRowStart + 1 + parameters.Count + 1) + "/" +
+											(1 + parameters.Columns.UsedCount + 1);
+
+				// Add a space between this and the parameters if there was a leading whitespace character that was marked
+				// as part of the AfterParameters section.  This should only happen if it was significant; it should have been
+				// excluded otherwise.
+				addSpace = start.NextPastWhitespace(end);
+
+				// Also add it if the AfterParameters section doesn't start with a nice symbol like ).  If it starts with something
+				// like *) we want to add it anyway for legibility.  Also for }.
+				if (!addSpace)
+					{
+					addSpace = (start < end &&
+									   start.Character != ')' &&
+									   start.Character != ']' &&
+									   start.Character != '>');
+					}
+
+				string extraCSSClass;
+
+				if (addSpace)
+					{
+					// We only need to actually add the space if the last parameter doesn't already have one at the end.
+					// Otherwise ignore it so it's not overly wide.
+					extraCSSClass = (lastCellEndsWithSpace ? "" : " LeftSpaceOnWide");
+					}
+				else
+					{
+					// On the other hand, if there's not supposed to be a space and the last parameter ends with one anyway
+					// we can bleed the ending part an extra character into it.  This lets closing parentheses line up with the
+					// commas in between parameters.
+					extraCSSClass = (lastCellEndsWithSpace ? " NegativeLeftSpaceOnWide" : "");
+					}
+
+				output.Append("<div class=\"PAfterParameters" + extraCSSClass + "\" " +
+											"data-WideGridArea=\"" + wideGridArea + "\" " +
+											"data-NarrowGridArea=\"" + narrowGridArea + "\" " +
+											"style=\"grid-area:" + wideGridArea + "\">");
+
+				AppendText(start, end, output);
+
+				output.Append("</div>");
 				}
-
-			string extraCSSClass;
-
-			if (addSpace)
-				{
-				// We only need to actually add the space if the last parameter doesn't already have one at the end.
-				// Otherwise ignore it so it's not overly wide.
-				extraCSSClass = (lastCellEndsWithSpace ? "" : " LeftSpaceOnWide");
-				}
-			else
-				{
-				// On the other hand, if there's not supposed to be a space and the last parameter ends with one anyway
-				// we can bleed the ending part an extra character into it.  This lets closing parentheses line up with the
-				// commas in between parameters.
-				extraCSSClass = (lastCellEndsWithSpace ? " NegativeLeftSpaceOnWide" : "");
-				}
-
-			output.Append("<div class=\"PAfterParameters" + extraCSSClass + "\" " +
-										"data-WideGridArea=\"" + wideGridArea + "\" " +
-										"data-NarrowGridArea=\"" + narrowGridArea + "\" " +
-										"style=\"grid-area:" + wideGridArea + "\">");
-
-			AppendText(start, end, output);
-
-			output.Append("</div>");
 
 
 			// Closing tags
