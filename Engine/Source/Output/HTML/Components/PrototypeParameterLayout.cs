@@ -1,8 +1,8 @@
 ﻿/*
- * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeParameters
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeParameterLayout
  * ____________________________________________________________________________
  *
- * A class for storing information about a single <Prototypes.ParameterSection>.
+ * A class for storing information about the HTML layout of a single <Prototypes.ParameterSection>.
  *
  *
  * Threading: Not Thread Safe
@@ -23,16 +23,16 @@ using CodeClear.NaturalDocs.Engine.Tokenization;
 
 namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 	{
-	public class PrototypeParameters
+	public class PrototypeParameterLayout
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 
 
-		/* Constructor: PrototypeParameters
+		/* Constructor: PrototypeParameterLayout
 		 */
-		public PrototypeParameters (ParsedPrototype parsedPrototype, Prototypes.ParameterSection parameterSection)
+		public PrototypeParameterLayout (ParsedPrototype parsedPrototype, Prototypes.ParameterSection parameterSection)
 			{
 			this.parsedPrototype = parsedPrototype;
 			this.parameters = parameterSection;
@@ -41,7 +41,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			// CleanupCellSpacing() depends on this so it has to be created first.  CleanupCellSpacing() will recalculate
 			// it if necessary.
-			this.columns = new PrototypeColumns(parsedPrototype, parameterSection, cells);
+			this.columns = new PrototypeColumnLayout(parsedPrototype, parameterSection, cells);
 
 			CleanupCellSpacing();
 			}
@@ -134,7 +134,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 */
 		protected void CalculateCells ()
 			{
-			cells = new PrototypeCell[ parameters.NumberOfParameters, PrototypeColumns.CountOf(parameters.ParameterStyle) ];
+			cells = new PrototypeCellLayout[ parameters.NumberOfParameters, PrototypeColumnLayout.CountOf(parameters.ParameterStyle) ];
 
 			for (int parameterIndex = 0; parameterIndex < parameters.NumberOfParameters; parameterIndex++)
 				{
@@ -148,7 +148,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				// C-Style Parameters
 				//
 
-				// DEPENDENCY: This code depends on the order of PrototypeColumns.CColumnOrder and PascalColumnOrder.
+				// DEPENDENCY: This code depends on the order of PrototypeColumnLayout.CColumnOrder and PascalColumnOrder.
 
 				if (parameters.ParameterStyle == ParsedPrototype.ParameterStyle.C)
 					{
@@ -688,7 +688,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				}
 
 			// Calculate the columns now that we're done
-			columns = new PrototypeColumns(parsedPrototype, parameters, cells);
+			columns = new PrototypeColumnLayout(parsedPrototype, parameters, cells);
 			}
 
 
@@ -917,10 +917,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		// __________________________________________________________________________
 
 
-		/* Property: Count
+		/* Property: NumberOfParameters
 		 * The number of parameters.
 		 */
-		public int Count
+		public int NumberOfParameters
 			{
 			get
 				{  return parameters.NumberOfParameters;  }
@@ -930,7 +930,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		/* Property: Columns
 		 * Information about the columns across all parameters.
 		 */
-		public PrototypeColumns Columns
+		public PrototypeColumnLayout Columns
 			{
 			get
 				{  return columns;  }
@@ -957,12 +957,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * <PrototypeCells> in either <PrototypeColumns.CColumnOrder> or <PrototypeColumns.PascalColumnOrder>.  If the
 		 * column is empty the start and end indexes will be the same.
 		 */
-		protected PrototypeCell[,] cells;
+		protected PrototypeCellLayout[,] cells;
 
 		/* var: columns
 		 * Information about the columns across all parameters.
 		 */
-		protected PrototypeColumns columns;
+		protected PrototypeColumnLayout columns;
 
 		}
 	}

@@ -1,8 +1,8 @@
 ﻿/*
- * Struct: CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeCell
+ * Struct: CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeCellLayout
  * ____________________________________________________________________________
  *
- * A simlpe struct for storing information about a single parameter cell in a <Prototypes.ParameterSections>.
+ * A simple struct for storing information about a single cell in a <PrototypeParameterLayout>.
  *
  */
 
@@ -16,7 +16,7 @@ using System;
 
 namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 	{
-	public struct PrototypeCell
+	public struct PrototypeCellLayout
 		{
 
 		// Group: Properties

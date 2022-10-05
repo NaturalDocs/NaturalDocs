@@ -1,8 +1,8 @@
 ﻿/*
- * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeColumns
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeColumnLayout
  * ____________________________________________________________________________
  *
- * A class for storing information about the columns in one or more <Prototypes.ParameterSections>.
+ * A class for storing information about the columns in one or more <PrototypeParameterLayouts>.
  *
  *
  * Threading: Not Thread Safe
@@ -18,24 +18,23 @@
 
 using System;
 using CodeClear.NaturalDocs.Engine.Prototypes;
-using CodeClear.NaturalDocs.Engine.Tokenization;
 
 
 namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 	{
-	public class PrototypeColumns
+	public class PrototypeColumnLayout
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 
 
-		/* Constructor: PrototypeColumns
+		/* Constructor: PrototypeColumnLayout
 		 * Creates a new columns object from the token indexes in a <PrototypeParameters> object.  This should only be called by
 		 * <PrototypeParameters>.
 		 */
-		public PrototypeColumns (ParsedPrototype parsedPrototype, Prototypes.ParameterSection parameterSection,
-											  PrototypeCell[,] cells)
+		public PrototypeColumnLayout (ParsedPrototype parsedPrototype, Prototypes.ParameterSection parameterSection,
+													  PrototypeCellLayout[,] cells)
 			{
 			parameterStyle = parameterSection.ParameterStyle;
 			columnWidths = new int[CountOf(parameterStyle)];
@@ -167,7 +166,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * Updates the column widths if the <PrototypeCells> have changed.
 		 */
 		public void RecalculateWidths (ParsedPrototype parsedPrototype, Prototypes.ParameterSection parameterSection,
-													 PrototypeCell[,] cells)
+													 PrototypeCellLayout[,] cells)
 			{
 			#if DEBUG
 			if (CountOf(parameterSection.ParameterStyle) != columnWidths.Length)
@@ -271,7 +270,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Property: Order
-		 * Returns an array of column types appropriate for the parameter style.  Do not change the data.
+		 * Returns the order of column types for the parameter style.  Do not change the data.
 		 */
 		public PrototypeColumnType[] Order
 			{
@@ -322,7 +321,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: OrderOf
-		 * Returns an array of column types appropriate for the passed parameter style.  Do not change the data.
+		 * Returns the order of column types for the passed parameter style.  Do not change the data.
 		 */
 		public static PrototypeColumnType[] OrderOf (ParsedPrototype.ParameterStyle parameterStyle)
 			{
@@ -342,7 +341,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		// Group: Static Variables
 		// __________________________________________________________________________
 
-		// DEPENDENCY: PrototypeParameters.CalculateTokenIndexes() depends on the order of these.
+		// DEPENDENCY: PrototypeParameterLayout.CalculateCells() depends on the order of these.
 
 		/* var: CColumnOrder
 		 * An array of <PrototypeColumnTypes> representing the order in which columns should appear for C-style prototypes.

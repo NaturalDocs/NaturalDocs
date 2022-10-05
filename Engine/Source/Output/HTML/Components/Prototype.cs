@@ -154,16 +154,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		/* Function: AppendParameterSection
 		 * Builds the HTML for a <Prototypes.ParameterSection>.  It will always be in wide form.
 		 */
-		protected void AppendParameterSection (Prototypes.ParameterSection section, StringBuilder output)
+		protected void AppendParameterSection (Prototypes.ParameterSection parameterContent, StringBuilder output)
 			{
-			var parameters = new PrototypeParameters(parsedPrototype, section);
+			var parameterLayout = new PrototypeParameterLayout(parsedPrototype, parameterContent);
 
 
 			// Opening tags
 
 			string parameterCSSClass;
 
-			switch (section.ParameterStyle)
+			switch (parameterContent.ParameterStyle)
 				{
 				case ParsedPrototype.ParameterStyle.C:
 					parameterCSSClass = "CStyle";
@@ -178,11 +178,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			output.Append("<div class=\"PSection PParameterSection " + parameterCSSClass + "\">");
 
 
-			int wideColumnCount = 1 + parameters.Columns.UsedCount + 1;
+			int wideColumnCount = 1 + parameterLayout.Columns.UsedCount + 1;
 
 			// Need one extra column in case the before/after parameters section are wider than the parameter columns.  If we didn't
 			// have it the other columns would stretch to fill the horizontal space.
-			int narrowColumnCount = parameters.Columns.UsedCount + 1;
+			int narrowColumnCount = parameterLayout.Columns.UsedCount + 1;
 
 			output.Append("<div class=\"PParameterCells\" " +
 										"data-WideColumnCount=\"" + wideColumnCount + "\" " +
@@ -195,14 +195,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			int narrowRowStart = 1;
 
 			TokenIterator start, end;
-			section.GetBeforeParameters(out start, out end);
+			parameterContent.GetBeforeParameters(out start, out end);
 
 			// The order for grid-area is grid-row-start/grid-column-start/grid-row-end/grid-column-end
 
 			// Put it in the first column, full height.
 			string wideGridArea = wideRowStart +
 											"/1/" +
-											(wideRowStart + Math.Max(parameters.Count, 1)) +
+											(wideRowStart + Math.Max(parameterLayout.NumberOfParameters, 1)) +
 											"/2";
 
 			// Put it in the first row, all columns.  Add one more column than the parameters use so the cells don't get
@@ -210,7 +210,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			string narrowGridArea = narrowRowStart +
 												"/1/" +
 												(narrowRowStart + 1) + "/" +
-												(1 + parameters.Columns.UsedCount + 1);
+												(1 + parameterLayout.Columns.UsedCount + 1);
 
 			// Add a space between this and the parameters if there was an ending whitespace character that was marked
 			// as part of the BeforeParameters section.  This should only happen if it was significant; it should have been
@@ -244,28 +244,28 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			bool lastCellEndsWithSpace;
 
-			AppendParameters(parameters, wideRowStart, narrowRowStart, output, out lastCellEndsWithSpace);
+			AppendParameters(parameterLayout, wideRowStart, narrowRowStart, output, out lastCellEndsWithSpace);
 
 
 			// After parameters
 
 			// Not every prototype with parameters will have an after parameters section, mainly Microsoft SQL functions
 			// because they don't require parentheses.  Just omit it.
-			if (section.GetAfterParameters(out start, out end))
+			if (parameterContent.GetAfterParameters(out start, out end))
 				{
 
 				// Put it in the last row, last column
-				wideGridArea = (wideRowStart + Math.Max(parameters.Count, 1) - 1) + "/" +
-										(2 + parameters.Columns.UsedCount) + "/" +
-										(wideRowStart + Math.Max(parameters.Count, 1)) + "/" +
-										(3 + parameters.Columns.UsedCount);
+				wideGridArea = (wideRowStart + Math.Max(parameterLayout.NumberOfParameters, 1) - 1) + "/" +
+										(2 + parameterLayout.Columns.UsedCount) + "/" +
+										(wideRowStart + Math.Max(parameterLayout.NumberOfParameters, 1)) + "/" +
+										(3 + parameterLayout.Columns.UsedCount);
 
 				// Put it in the last row, all columns.  Add one more column than the parameters use so the cells don't get
 				// stretched out if this is longer than them.
-				narrowGridArea = (narrowRowStart + 1 + parameters.Count) +
+				narrowGridArea = (narrowRowStart + 1 + parameterLayout.NumberOfParameters) +
 											"/1/" +
-											(narrowRowStart + 1 + parameters.Count + 1) + "/" +
-											(1 + parameters.Columns.UsedCount + 1);
+											(narrowRowStart + 1 + parameterLayout.NumberOfParameters + 1) + "/" +
+											(1 + parameterLayout.Columns.UsedCount + 1);
 
 				// Add a space between this and the parameters if there was a leading whitespace character that was marked
 				// as part of the AfterParameters section.  This should only happen if it was significant; it should have been
@@ -370,13 +370,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 		/* Function: AppendParameters
 		 */
-		protected void AppendParameters (PrototypeParameters parameters, int wideRowStart, int narrowRowStart,  StringBuilder output,
+		protected void AppendParameters (PrototypeParameterLayout parameters, int wideRowStart, int narrowRowStart,  StringBuilder output,
 														  out bool lastCellEndsWithSpace)
 			{
 			int firstUsedColumn = parameters.Columns.FirstUsed;
 			int lastUsedColumn = parameters.Columns.LastUsed;
 
-			for (int parameterIndex = 0; parameterIndex < parameters.Count; parameterIndex++)
+			for (int parameterIndex = 0; parameterIndex < parameters.NumberOfParameters; parameterIndex++)
 				{
 				for (int columnIndex = firstUsedColumn; columnIndex <= lastUsedColumn; columnIndex++)
 					{
@@ -421,14 +421,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			// Determine lastCellEndsWithSpace before returning
 
-			int lastCellWidth = parameters.GetContentWidth(parameters.Count - 1, lastUsedColumn);
+			int lastCellWidth = parameters.GetContentWidth(parameters.NumberOfParameters - 1, lastUsedColumn);
 			lastCellEndsWithSpace = (lastCellWidth < parameters.Columns.WidthOf(lastUsedColumn));
 			}
 
 
 		/* Function: AppendParameterCell
 		 */
-		protected void AppendParameterCell (PrototypeParameters parameters, int parameterIndex, int columnIndex, StringBuilder output)
+		protected void AppendParameterCell (PrototypeParameterLayout parameters, int parameterIndex, int columnIndex, StringBuilder output)
 			{
 			TokenIterator start, end;
 			parameters.GetContent(parameterIndex, columnIndex, out start, out end);
