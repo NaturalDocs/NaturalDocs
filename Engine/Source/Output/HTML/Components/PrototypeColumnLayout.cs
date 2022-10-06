@@ -30,16 +30,53 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Constructor: PrototypeColumnLayout
-		 * Creates a new columns object from the token indexes in a <PrototypeParameters> object.  This should only be called by
-		 * <PrototypeParameters>.
+		 * Calculates the column layout of a <ParsedPrototype> <ParameterSection> that has already been divided into
+		 * cells.  This should only be called by <HTML.Components.PrototypeParameterLayout>.
 		 */
-		public PrototypeColumnLayout (ParsedPrototype parsedPrototype, Prototypes.ParameterSection parameterSection,
-													  PrototypeCellLayout[,] cells)
+		internal PrototypeColumnLayout (ParsedPrototype parsedPrototype, Prototypes.ParameterSection parameterSection,
+														PrototypeCellLayout[,] cells)
 			{
 			parameterStyle = parameterSection.ParameterStyle;
 			columnWidths = new int[CountOf(parameterStyle)];
 
 			RecalculateWidths(parsedPrototype, parameterSection, cells);
+			}
+
+
+		/* Constructor: PrototypeColumnLayout
+		 * Duplicates the passed PrototypeColumnLayout.
+		 */
+		public PrototypeColumnLayout (PrototypeColumnLayout toCopy)
+			{
+			parameterStyle = toCopy.parameterStyle;
+			columnWidths = (int[])toCopy.columnWidths.Clone();
+			}
+
+
+		/* Function: Duplicate
+		 * Creates an independent copy of the PrototypeColumnLayout.
+		 */
+		public PrototypeColumnLayout Duplicate ()
+			{
+			return new PrototypeColumnLayout(this);
+			}
+
+
+		/* Function: MergeWith
+		 * Merges the values of the passed column layout into our own to provide information about a combined set of columns.
+		 * The passed columns must have the same <ParameterStyle>.
+		 */
+		public void MergeWith (PrototypeColumnLayout toMergeWith)
+			{
+			#if DEBUG
+			if (this.parameterStyle != toMergeWith.parameterStyle)
+				{  throw new Exception("Can only merge with the same parameter style.");  }
+			#endif
+
+			for (int i = 0; i < columnWidths.Length; i++)
+				{
+				this.columnWidths[i] = Math.Max(this.columnWidths[i], toMergeWith.columnWidths[i]);
+				}
 			}
 
 
