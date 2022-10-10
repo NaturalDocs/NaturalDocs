@@ -11,7 +11,7 @@ Title: CSS Structure
 	- Lowercase tags represent HTML elements, so <html NDPage> is the root html element with NDPage
 	  applied.  Style with "html.NDPage" or just ".NDPage".
 
-		- Most tags will not specify a element type so you should not rely on them being a particular
+		- Most tags will not specify an element type so you should not rely on them being a particular
 		  type.
 
 	- Multiple tags are multiple CSS classes applied to the same element, so <html NDPage NDContentPage>
@@ -212,7 +212,7 @@ _______________________________________________________________________________
 						<p>Bullet list item paragraph 1</p>
 						<p>Bullet list item paragraph 2</p>
 						<ul>
-							<li>Nested bullet list item</li>
+							<li><p>Nested bullet list item</p></li>
 						</ul>
 					</li>
 				</ul>
@@ -240,7 +240,7 @@ _______________________________________________________________________________
 
 				<CImage>
 					<a ZoomLink>
-						<img KnownDimensions? UnknownDimensions?>
+						<img KnownDimensions/UnknownDimensions>
 					</a ZoomLink>
 					<CICaption>Caption</CICaption>?
 				</CImage>
