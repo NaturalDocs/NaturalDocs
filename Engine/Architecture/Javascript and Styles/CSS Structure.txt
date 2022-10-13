@@ -360,8 +360,11 @@ Parameter Section:
 									prototype form.
 		RightSpaceOnNarrow - The cell should have an additional space on its right side, but only for the narrow
 										 prototype form.
-		RightSpaceOnWide - The cell should have an additional space on its rightside, but only for the wide
+		RightSpaceOnWide - The cell should have an additional space on its right side, but only for the wide
 									  prototype form.
+
+		RightAlignOnNarrow - The cell should right aligned, but only for the narrow prototype form.
+		RightAlignOnWide - The cell should be right aligned, but only for the wide prototype form.
 
 		NegativeLeftSpaceOnWide - The first line of the cell can start one space to the left of where its normal
 												 bounds would be, but only for the wide prototype form.

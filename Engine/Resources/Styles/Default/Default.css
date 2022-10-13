@@ -1779,9 +1779,9 @@ td {
 			white-space: normal;
 			}
 
-		.WideForm .LeftSpaceOnWide { padding-left: 1ch; }
-		.WideForm .RightSpaceOnWide { padding-right: 1ch; }
+		.WideForm .LeftSpaceOnWide,
 		.NarrowForm .LeftSpaceOnNarrow { padding-left: 1ch; }
+		.WideForm .RightSpaceOnWide,
 		.NarrowForm .RightSpaceOnNarrow { padding-right: 1ch; }
 
 		.NarrowForm .InFirstParameterColumn,
@@ -1792,6 +1792,9 @@ td {
 			.NarrowForm .PAfterParameters.LeftSpaceOnNarrow {
 				padding-left: 4ch;
 				}
+
+		.WideForm .RightAlignOnWide,
+		.NarrowForm .RightAlignOnNarrow { text-align: right; }
 
 		.WideForm .NegativeLeftSpaceOnWide { text-indent: -1ch; }
 

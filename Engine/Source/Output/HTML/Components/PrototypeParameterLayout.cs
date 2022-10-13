@@ -917,6 +917,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		// __________________________________________________________________________
 
 
+		/* Property: ParameterStyle
+		 */
+		public ParsedPrototype.ParameterStyle ParameterStyle
+			{
+			get
+				{  return parameters.ParameterStyle;  }
+			}
+
+
 		/* Property: NumberOfParameters
 		 * The number of parameters.
 		 */
