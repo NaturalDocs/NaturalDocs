@@ -207,7 +207,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			{
 			#if DEBUG
 			if (CountOf(parameterSection.ParameterStyle) != columnWidths.Length)
-				{  throw new Exception("Can only call PrototypeColumns.RecalculateWidths() on the same prototype.");  }
+				{  throw new Exception("Can only call RecalculateWidths() on the same prototype.");  }
 			#endif
 
 			if (parameterSection.NumberOfParameters == 0)

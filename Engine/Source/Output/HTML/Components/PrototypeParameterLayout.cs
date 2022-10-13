@@ -954,8 +954,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 		/* var: cells
 		 * A table of cells representing the parameter table.  There is one row per parameter, and each row is a series of
-		 * <PrototypeCells> in either <PrototypeColumns.CColumnOrder> or <PrototypeColumns.PascalColumnOrder>.  If the
-		 * column is empty the start and end indexes will be the same.
+		 * <PrototypeCellLayouts> in either <PrototypeColumnLayout.CColumnOrder> or
+		 * <PrototypeColumnLayout.PascalColumnOrder>.  If the column is empty the start and end indexes will be the same.
 		 */
 		protected PrototypeCellLayout[,] cells;
 
