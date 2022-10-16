@@ -124,6 +124,45 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			}
 
 
+		/* Function: SetLeadingSpace
+		 * Sets whether the passed parameter and column has a leading space.  Calling this does not automatically update
+		 * <Columns>.  After you're done making changes with this function and <SetTrailingSpace()> call
+		 * <RecalculateColumns()> to update it.
+		 */
+		public void SetLeadingSpace (int parameterIndex, int columnIndex, bool hasLeadingSpace)
+			{
+			if (parameterIndex < parameters.NumberOfParameters &&
+				columnIndex < columns.Count)
+				{  cells[parameterIndex, columnIndex].LeadingSpace = hasLeadingSpace;  }
+			else
+				{  throw new IndexOutOfRangeException();  }
+			}
+
+
+		/* Function: SetTrailingSpace
+		 * Sets whether the passed parameter and column has a trailing space.  Calling this does not automatically update
+		 * <Columns>.  After you're done making changes with this function and <SetLeadingSpace()> call
+		 * <RecalculateColumns()> to update it.
+		 */
+		public void SetTrailingSpace (int parameterIndex, int columnIndex, bool hasTrailingSpace)
+			{
+			if (parameterIndex < parameters.NumberOfParameters &&
+				columnIndex < columns.Count)
+				{  cells[parameterIndex, columnIndex].TrailingSpace = hasTrailingSpace;  }
+			else
+				{  throw new IndexOutOfRangeException();  }
+			}
+
+
+		/* Function: RecalculateColumns
+		 * Recalculates <Columns> after making changes to the layout via <SetleadingSpace()> or <SetTrailingSpace()>.
+		 */
+		public void RecalculateColumns ()
+			{
+			columns.RecalculateWidths(parsedPrototype, parameters, cells);
+			}
+
+
 
 		// Group: Support Functions
 		// __________________________________________________________________________
