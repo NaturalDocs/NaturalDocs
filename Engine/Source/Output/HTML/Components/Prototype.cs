@@ -164,22 +164,22 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			while (sectionIndex < parsedPrototype.Sections.Count)
 				{
-				var section = parsedPrototype.Sections[sectionIndex];
-				var sectionLayout = parameterLayouts[sectionIndex];  // will be null if not a parameter section or is an empty one
+ 				var sectionParameterLayout = parameterLayouts[sectionIndex];
 
-				if (sectionLayout != null)
-					{
-					PrototypeColumnLayout columnLayout;
-					int sectionCount = CalculateParameterSectionGroup(sectionIndex, out columnLayout);
-
-					AppendParameterSectionGroup(sectionIndex, sectionCount, columnLayout, output);
-
-					sectionIndex += sectionCount;
-					}
-				else
+				// Will be null if it wasn't a parameter section or it contained no parameters
+				if (sectionParameterLayout == null)
 					{
 					AppendPlainSection(sectionIndex, output);
 					sectionIndex++;
+					}
+				else
+					{
+					int sectionCount = GroupParameterSections(sectionIndex);
+					var sharedColumnLayout = FormatParameterSections(sectionIndex, sectionCount);
+
+					AppendParameterSections(sectionIndex, sectionCount, sharedColumnLayout, output);
+
+					sectionIndex += sectionCount;
 					}
 				}
 
@@ -260,28 +260,285 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			}
 
 
-		/* Function: CalculateParameterSectionGroup
-		 * Determines how many <Prototype.ParameterSections> should be grouped together for the next call to
-		 * <AppendParameterSectionGroup()>.
+		/* Function: GroupParameterSections
+		 * Determines how many consecutive <Prototype.ParameterSections> should be grouped together for the next call to
+		 * <AppendParameterSections()>.  It will always return at least 1.
 		 */
-		protected int CalculateParameterSectionGroup (int sectionIndex, out PrototypeColumnLayout columnLayout)
+		protected int GroupParameterSections (int sectionIndex)
 			{
 			int count = 1;
-			columnLayout = parameterLayouts[sectionIndex].Columns;
+			var parameterStyle = parameterLayouts[sectionIndex].ParameterStyle;
 
-			while (sectionIndex + count < parsedPrototype.Sections.Count &&
-					  parameterLayouts[sectionIndex + count] != null &&
-					  parameterLayouts[sectionIndex + count].ParameterStyle == parameterLayouts[sectionIndex].ParameterStyle)
-				{  count++;  }
+			for (int i = sectionIndex + 1; i < parsedPrototype.Sections.Count; i++)
+				{
+				if (parameterLayouts[i] == null ||  // not a parameter section
+					parameterLayouts[i].ParameterStyle != parameterStyle)  // not the same style
+					{  break;  }
+
+				count++;
+				}
 
 			return count;
 			}
 
 
-		/* Function: AppendParameterSectionGroup
+		/* Function: FormatParameterSections
+		 * Reformats some cells in the <Prototype.ParameterSections> to make the spacing consistent, including some tweaks
+		 * based on the shared column layout.  Returns the shared column layout.
+		 */
+		protected PrototypeColumnLayout FormatParameterSections (int sectionIndex, int sectionCount)
+			{
+			var columnLayout = GetSharedColumnLayout(sectionIndex, sectionCount);
+
+
+			// First gather some information about the column layout
+
+			int firstUsedColumnIndex = columnLayout.FirstUsed;
+			int lastUsedColumnIndex = columnLayout.LastUsed;
+
+			int defaultValueSeparatorColumnIndex;
+			int beforeDefaultValueSeparatorColumnIndex;
+
+			if (columnLayout.IsUsed(PrototypeColumnType.DefaultValueSeparator))
+				{
+				defaultValueSeparatorColumnIndex = columnLayout.IndexOf(PrototypeColumnType.DefaultValueSeparator);
+				beforeDefaultValueSeparatorColumnIndex = columnLayout.PreviousUsed(defaultValueSeparatorColumnIndex);
+				}
+			else
+				{
+				defaultValueSeparatorColumnIndex = -1;
+				beforeDefaultValueSeparatorColumnIndex = -1;
+				}
+
+			int propertyValueSeparatorColumnIndex;
+			int beforePropertyValueSeparatorColumnIndex;
+
+			if (columnLayout.IsUsed(PrototypeColumnType.PropertyValueSeparator))
+				{
+				propertyValueSeparatorColumnIndex = columnLayout.IndexOf(PrototypeColumnType.PropertyValueSeparator);
+				beforePropertyValueSeparatorColumnIndex = columnLayout.PreviousUsed(propertyValueSeparatorColumnIndex);
+				}
+			else
+				{
+				propertyValueSeparatorColumnIndex = -1;
+				beforePropertyValueSeparatorColumnIndex = -1;
+				}
+
+			int typeNameSeparatorColumnIndex;
+			int beforeTypeNameSeparatorColumnIndex;
+
+			if (columnLayout.IsUsed(PrototypeColumnType.TypeNameSeparator))
+				{
+				typeNameSeparatorColumnIndex = columnLayout.IndexOf(PrototypeColumnType.TypeNameSeparator);
+				beforeTypeNameSeparatorColumnIndex = columnLayout.PreviousUsed(typeNameSeparatorColumnIndex);
+				}
+			else
+				{
+				typeNameSeparatorColumnIndex = -1;
+				beforeTypeNameSeparatorColumnIndex = -1;
+				}
+
+
+			// Initial run through for easy normalizations
+
+			TokenIterator start, end;
+
+			for (int i = sectionIndex; i < sectionIndex + sectionCount; i++)
+				{
+				var section = parameterLayouts[i];
+
+				for (int parameterIndex = 0; parameterIndex < section.NumberOfParameters; parameterIndex++)
+					{
+					// The first used column always gets leading spaces removed
+					section.SetLeadingSpace(parameterIndex, firstUsedColumnIndex, false);
+
+					// The last used column always gets trailing spaces removed
+					section.SetTrailingSpace(parameterIndex, lastUsedColumnIndex, false);
+
+					// If there's a default value separator it should always have both leading and trailing spaces
+					if (defaultValueSeparatorColumnIndex != -1 &&
+						section.HasContent(parameterIndex, defaultValueSeparatorColumnIndex))
+						{
+						section.SetLeadingSpace(parameterIndex, defaultValueSeparatorColumnIndex, true);
+						section.SetTrailingSpace(parameterIndex, defaultValueSeparatorColumnIndex, true);
+						}
+
+					// Also remove the trailing space of the column before it.  This isn't conditional on this column having
+					// content in this particular parameter, just that the column exists at all.
+					if (beforeDefaultValueSeparatorColumnIndex != -1)
+						{  section.SetTrailingSpace(parameterIndex, beforeDefaultValueSeparatorColumnIndex, false);  }
+
+					// If there's a property value separator it should always have a trailing space.  It should also have a leading
+					// space unless it's ":".  Watch out for ":=" though.
+					if (propertyValueSeparatorColumnIndex != -1 &&
+						section.GetContent(parameterIndex, propertyValueSeparatorColumnIndex, out start, out end))
+						{
+						bool leadingSpace = (start.Character != ':' || start.MatchesAcrossTokens(":=") || start.MatchesAcrossTokens("::="));
+
+						section.SetLeadingSpace(parameterIndex, propertyValueSeparatorColumnIndex, leadingSpace);
+						section.SetTrailingSpace(parameterIndex, propertyValueSeparatorColumnIndex, true);
+						}
+
+					// Also remove the trailing space of the column before it.  This isn't conditional on this column having
+					// content in this particular parameter, just that the column exists at all.
+					if (beforePropertyValueSeparatorColumnIndex != -1)
+						{  section.SetTrailingSpace(parameterIndex, beforePropertyValueSeparatorColumnIndex, false);  }
+
+					// If there's a type name separator it should always have a trailing space.  It should not have a leading
+					// space unless it's text-based, such as SQL's "AS", as opposed to something like Pascal's ":".
+					if (typeNameSeparatorColumnIndex != -1 &&
+						section.GetContent(parameterIndex, typeNameSeparatorColumnIndex, out start, out end))
+						{
+						bool leadingSpace = (start.FundamentalType == FundamentalType.Text);
+
+						section.SetLeadingSpace(parameterIndex, typeNameSeparatorColumnIndex, leadingSpace);
+						section.SetTrailingSpace(parameterIndex, typeNameSeparatorColumnIndex, true);
+						}
+
+					// Also remove the trailing space of the column before it.  This isn't conditional on this column having
+					// content in this particular parameter, just that the column exists at all.
+					if (beforeTypeNameSeparatorColumnIndex != -1)
+						{  section.SetTrailingSpace(parameterIndex, beforeTypeNameSeparatorColumnIndex, false);  }
+					}
+				}
+
+
+			// Recalculate the columns since their widths may have changed
+			RecalculateColumns(sectionIndex, sectionCount);
+			columnLayout = GetSharedColumnLayout(sectionIndex, sectionCount);
+
+
+			// Now we get into pickier things.  Cells with leading spaces don't need them if the preceding one is empty or
+			// shorter than the entire column, because there would be space there anyway.  However, this has to be true of
+			// ALL cells in that column for us to remove them because they won't be aligned otherwise.
+
+			bool canRemoveDefaultValueSeparatorLeadingSpace = true;
+			bool canRemovePropertyValueSeparatorLeadingSpace = true;
+			bool canRemoveTypeNameSeparatorLeadingSpace = true;
+
+			int beforeDefaultValueSeparatorColumnWidth = (beforeDefaultValueSeparatorColumnIndex == -1 ?
+																				   0 : columnLayout.WidthOf(beforeDefaultValueSeparatorColumnIndex));
+			int beforePropertyValueSeparatorColumnWidth = (beforePropertyValueSeparatorColumnIndex == -1 ?
+																					0 : columnLayout.WidthOf(beforePropertyValueSeparatorColumnIndex));
+			int beforeTypeNameSeparatorColumnWidth = (beforeTypeNameSeparatorColumnIndex == -1 ?
+																			   0 : columnLayout.WidthOf(beforeTypeNameSeparatorColumnIndex));
+
+			for (int i = sectionIndex; i < sectionIndex + sectionCount; i++)
+				{
+				var section = parameterLayouts[i];
+
+				for (int parameterIndex = 0; parameterIndex < section.NumberOfParameters; parameterIndex++)
+					{
+					if (defaultValueSeparatorColumnIndex == -1 ||
+
+						// Don't apply this tweak when both columns have content and the left one uses the full column width,
+						// since then they'll be right next to each other with no implied space so we need the extra one.
+						(section.HasContent(parameterIndex, defaultValueSeparatorColumnIndex) &&
+						 section.HasContent(parameterIndex, beforeDefaultValueSeparatorColumnIndex) &&
+						 section.GetContentWidth(parameterIndex, beforeDefaultValueSeparatorColumnIndex) == beforeDefaultValueSeparatorColumnWidth) ||
+
+						// Also don't apply this tweak when the separator is text based, like SQL's "DEFAULT".  Doesn't look as good.
+						(section.GetContent(parameterIndex, defaultValueSeparatorColumnIndex, out start, out end) &&
+						 start.FundamentalType == FundamentalType.Text))
+						{
+						canRemoveDefaultValueSeparatorLeadingSpace = false;
+						}
+
+					if (propertyValueSeparatorColumnIndex == -1 ||
+
+						// Don't apply this tweak when both columns have content and the left one uses the full column width,
+						// since then they'll be right next to each other with no implied space so we need the extra one.
+						(section.HasContent(parameterIndex, propertyValueSeparatorColumnIndex) &&
+						 section.HasContent(parameterIndex, beforePropertyValueSeparatorColumnIndex) &&
+						 section.GetContentWidth(parameterIndex, beforePropertyValueSeparatorColumnIndex) == beforePropertyValueSeparatorColumnWidth))
+						{
+						canRemovePropertyValueSeparatorLeadingSpace = false;
+						}
+
+					if (typeNameSeparatorColumnIndex == -1 ||
+
+						// Don't apply this tweak when both columns have content and the left one uses the full column width,
+						// since then they'll be right next to each other with no implied space so we need the extra one.
+						(section.HasContent(parameterIndex, typeNameSeparatorColumnIndex) &&
+						 section.HasContent(parameterIndex, beforeTypeNameSeparatorColumnIndex) &&
+						 section.GetContentWidth(parameterIndex, beforeTypeNameSeparatorColumnIndex) == beforeTypeNameSeparatorColumnWidth) ||
+
+						// Also don't apply this tweak when the separator is text based, like SQL's "AS".  Doesn't look as good.
+						(section.GetContent(parameterIndex, typeNameSeparatorColumnIndex, out start, out end) &&
+						 start.FundamentalType == FundamentalType.Text))
+						{
+						canRemoveTypeNameSeparatorLeadingSpace = false;
+						}
+					}
+				}
+
+			if (canRemoveDefaultValueSeparatorLeadingSpace ||
+				canRemovePropertyValueSeparatorLeadingSpace ||
+				canRemoveTypeNameSeparatorLeadingSpace)
+				{
+				for (int i = sectionIndex; i < sectionIndex + sectionCount; i++)
+					{
+					var section = parameterLayouts[i];
+
+					for (int parameterIndex = 0; parameterIndex < section.NumberOfParameters; parameterIndex++)
+						{
+						if (canRemoveDefaultValueSeparatorLeadingSpace)
+							{  section.SetLeadingSpace(parameterIndex, defaultValueSeparatorColumnIndex, false);  }
+
+						if (canRemovePropertyValueSeparatorLeadingSpace)
+							{  section.SetLeadingSpace(parameterIndex, propertyValueSeparatorColumnIndex, false);  }
+
+						if (canRemoveTypeNameSeparatorLeadingSpace)
+							{  section.SetLeadingSpace(parameterIndex, typeNameSeparatorColumnIndex, false);  }
+						}
+					}
+
+				// Recalculate the columns since their widths may have changed again
+				RecalculateColumns(sectionIndex, sectionCount);
+				columnLayout = GetSharedColumnLayout(sectionIndex, sectionCount);
+				}
+
+			return columnLayout;
+			}
+
+
+		/* Function: GetSharedColumnLayout
+		 * Returns the combined column layout of the <PrototypeParameterLayouts>.  If there is only one it will return a
+		 * reference to that layout's columns.
+		 */
+		protected PrototypeColumnLayout GetSharedColumnLayout (int sectionIndex, int sectionCount)
+			{
+			if (sectionCount == 1)
+				{  return parameterLayouts[sectionIndex].Columns;  }
+			else
+				{
+				var sharedColumnLayout = parameterLayouts[sectionIndex].Columns.Duplicate();
+
+				for (int i = sectionIndex + 1; i < sectionIndex + sectionCount; i++)
+					{
+					sharedColumnLayout.MergeWith(parameterLayouts[i].Columns);
+					}
+
+				return sharedColumnLayout;
+				}
+			}
+
+
+		/* Function: RecalculateColumns
+		 * Runs <PrototypeColumnLayout.RecalculateColumns()> on each <PrototypeParameterLayout>.
+		 */
+		protected void RecalculateColumns (int sectionIndex, int sectionCount)
+			{
+			for (int i = sectionIndex; i < sectionIndex + sectionCount; i++)
+				{  parameterLayouts[i].RecalculateColumns();  }
+			}
+
+
+		/* Function: AppendParameterSections
 		 * Builds the HTML for one or more <Prototypes.ParameterSections>.  They will always be in wide form.
 		 */
-		protected void AppendParameterSectionGroup (int sectionIndex, int sectionCount, PrototypeColumnLayout columnLayout, StringBuilder output)
+		protected void AppendParameterSections (int sectionIndex, int sectionCount, PrototypeColumnLayout columnLayout,
+																	StringBuilder output)
 			{
 			#if DEBUG
 			if (parsedPrototype.Sections[sectionIndex] is not Prototypes.ParameterSection)
