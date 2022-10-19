@@ -101,7 +101,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			{
 			if (parameterIndex < parameters.NumberOfParameters &&
 				columnIndex < columns.Count)
-				{  return cells[parameterIndex, columnIndex].LeadingSpace;  }
+				{  return cells[parameterIndex, columnIndex].HasLeadingSpace;  }
 			else
 				{  throw new IndexOutOfRangeException();  }
 			}
@@ -114,7 +114,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			{
 			if (parameterIndex < parameters.NumberOfParameters &&
 				columnIndex < columns.Count)
-				{  return cells[parameterIndex, columnIndex].TrailingSpace;  }
+				{  return cells[parameterIndex, columnIndex].HasTrailingSpace;  }
 			else
 				{  throw new IndexOutOfRangeException();  }
 			}
@@ -129,7 +129,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			{
 			if (parameterIndex < parameters.NumberOfParameters &&
 				columnIndex < columns.Count)
-				{  cells[parameterIndex, columnIndex].LeadingSpace = hasLeadingSpace;  }
+				{  cells[parameterIndex, columnIndex].HasLeadingSpace = hasLeadingSpace;  }
 			else
 				{  throw new IndexOutOfRangeException();  }
 			}
@@ -144,7 +144,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			{
 			if (parameterIndex < parameters.NumberOfParameters &&
 				columnIndex < columns.Count)
-				{  cells[parameterIndex, columnIndex].TrailingSpace = hasTrailingSpace;  }
+				{  cells[parameterIndex, columnIndex].HasTrailingSpace = hasTrailingSpace;  }
 			else
 				{  throw new IndexOutOfRangeException();  }
 			}
@@ -219,7 +219,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					TokenIterator endOfCell = iterator;
 
 					cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
-					cells[parameterIndex, currentColumn].TrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
+					cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
 					cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
 
 
@@ -251,7 +251,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					endOfCell = iterator;
 
 					cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
-					cells[parameterIndex, currentColumn].TrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
+					cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
 					cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
 
 
@@ -263,7 +263,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					// Start with an empty column and walk backwards to claim the symbols from the type column.
 
 					cells[parameterIndex, currentColumn].StartingTextIndex = iterator.RawTextIndex;
-					cells[parameterIndex, currentColumn].TrailingSpace = false;
+					cells[parameterIndex, currentColumn].HasTrailingSpace = false;
 					cells[parameterIndex, currentColumn].EndingTextIndex = iterator.RawTextIndex;
 
 					if (iterator > startOfType)
@@ -304,7 +304,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 								if (cells[parameterIndex, i].StartingTextIndex >= cutPoint)
 									{
 									cells[parameterIndex, i].StartingTextIndex = cutPoint;
-									cells[parameterIndex, i].TrailingSpace = false;
+									cells[parameterIndex, i].HasTrailingSpace = false;
 									cells[parameterIndex, i].EndingTextIndex = cutPoint;
 									}
 
@@ -322,11 +322,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 									if (cellEnd.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, cellStart))
 										{
 										cells[parameterIndex, i].EndingTextIndex = cellEnd.RawTextIndex;
-										cells[parameterIndex, i].TrailingSpace = true;
+										cells[parameterIndex, i].HasTrailingSpace = true;
 										}
 									else
 										{
-										cells[parameterIndex, i].TrailingSpace = false;
+										cells[parameterIndex, i].HasTrailingSpace = false;
 										}
 
 									break;
@@ -367,7 +367,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					endOfCell = iterator;
 
 					cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
-					cells[parameterIndex, currentColumn].TrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
+					cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
 					cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
 
 
@@ -390,7 +390,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					endOfCell = iterator;
 
 					cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
-					cells[parameterIndex, currentColumn].TrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
+					cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
 					cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
 
 
@@ -414,7 +414,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					endOfCell = iterator;
 
 					cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
-					cells[parameterIndex, currentColumn].TrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
+					cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
 					cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
 
 
@@ -437,7 +437,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					endOfCell = iterator;
 
 					cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
-					cells[parameterIndex, currentColumn].TrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
+					cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
 					cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
 
 
@@ -449,7 +449,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					endOfCell = endOfParam;
 
 					cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
-					cells[parameterIndex, currentColumn].TrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
+					cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
 					cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
 					}
 
@@ -507,7 +507,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					TokenIterator endOfCell = iterator;
 
 					cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
-					cells[parameterIndex, currentColumn].TrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
+					cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
 					cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
 
 
@@ -541,7 +541,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					endOfCell = iterator;
 
 					cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
-					cells[parameterIndex, currentColumn].TrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
+					cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
 					cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
 
 
@@ -564,7 +564,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					endOfCell = iterator;
 
 					cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
-					cells[parameterIndex, currentColumn].TrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
+					cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
 					cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
 
 
@@ -597,7 +597,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					endOfCell = iterator;
 
 					cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
-					cells[parameterIndex, currentColumn].TrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
+					cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
 					cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
 
 
@@ -632,7 +632,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					endOfCell = iterator;
 
 					cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
-					cells[parameterIndex, currentColumn].TrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
+					cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
 					cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
 
 
@@ -655,7 +655,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					endOfCell = iterator;
 
 					cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
-					cells[parameterIndex, currentColumn].TrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
+					cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
 					cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
 
 
@@ -679,7 +679,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					endOfCell = iterator;
 
 					cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
-					cells[parameterIndex, currentColumn].TrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
+					cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
 					cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
 
 
@@ -702,7 +702,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					endOfCell = iterator;
 
 					cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
-					cells[parameterIndex, currentColumn].TrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
+					cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
 					cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
 
 
@@ -714,7 +714,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					endOfCell = endOfParam;
 
 					cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
-					cells[parameterIndex, currentColumn].TrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
+					cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
 					cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
 					}
 

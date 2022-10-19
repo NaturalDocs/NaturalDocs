@@ -40,9 +40,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				{
 				int width = EndingTextIndex - StartingTextIndex;
 
-				if (LeadingSpace)
+				if (HasLeadingSpace)
 					{  width++;  }
-				if (TrailingSpace)
+				if (HasTrailingSpace)
 					{  width++;  }
 
 				return width;
@@ -65,15 +65,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 */
 		public int EndingTextIndex;
 
-		/* var: LeadingSpace
+		/* var: HasLeadingSpace
 		 * Whether the cell has a leading space.
 		 */
-		public bool LeadingSpace;
+		public bool HasLeadingSpace;
 
-		/* var: TrailingSpace
+		/* var: HasTrailingSpace
 		 * Whether the cell has a trailing space.
 		 */
-		public bool TrailingSpace;
+		public bool HasTrailingSpace;
 
 		}
 	}
