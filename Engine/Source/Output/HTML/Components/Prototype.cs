@@ -269,10 +269,24 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			int count = 1;
 			var parameterStyle = parameterLayouts[sectionIndex].ParameterStyle;
 
+			TokenIterator start, end;
+
 			for (int i = sectionIndex + 1; i < parsedPrototype.Sections.Count; i++)
 				{
 				if (parameterLayouts[i] == null ||  // not a parameter section
 					parameterLayouts[i].ParameterStyle != parameterStyle)  // not the same style
+					{  break;  }
+
+				// Check the BeforeParameters section.  We only want to include it if it's something short like { or (*.
+				(parsedPrototype.Sections[i] as Prototypes.ParameterSection).GetBeforeParameters(out start, out end);
+				int beforeParametersLength = end.RawTextIndex - start.RawTextIndex;
+
+				if (beforeParametersLength > 2)
+					{  break;  }
+				else if (start.Character != '(' &&
+						   start.Character != '[' &&
+						   start.Character != '{' &&
+						   start.Character != '<')
 					{  break;  }
 
 				count++;
