@@ -500,6 +500,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			// Now check the parts before and after the parameters, such as "void FunctionName (" and ")",  to see if they
 			// need spaces.
 			//
+			// Also check each section to see if the last cell ends with a space, meaning it either doesn't have content or
+			// it doesn't use the entire column width.
+			//
 
 			for (int i = sectionIndex; i < sectionIndex + sectionCount; i++)
 				{
@@ -555,6 +558,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						}
 					}
 
+				// Check if the last cell ends in a space, meaning it either doesn't have content or it doesn't use the entire column
+				// width.
+				int lastParameterIndex = sectionLayout.NumberOfParameters - 1;
+				int lastColumnIndex = columnLayout.LastUsed;
+
+				sectionLayout.LastCellEndsWithSpace =
+					(sectionLayout.HasContent(lastParameterIndex, lastColumnIndex) == false ||
+					 sectionLayout.GetContentWidth(lastParameterIndex, lastColumnIndex) < columnLayout.WidthOf(lastColumnIndex));
 				}
 
 
@@ -606,6 +617,20 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			if (parameterLayouts[sectionIndex] == null)
 				{  throw new Exception("AppendParameterSectionGroup was called on an index that doesn't have a layout.");  }
 			#endif
+
+
+			bool allLastCellsEndWithSpace = true;
+
+			for (int i = sectionIndex; i < sectionIndex + sectionCount; i++)
+				{
+				var section = parameterLayouts[i];
+
+				if (!section.LastCellEndsWithSpace)
+					{
+					allLastCellsEndWithSpace = false;
+					break;
+					}
+				}
 
 
 			// Opening tags
@@ -685,9 +710,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				// Parameters
 
-				bool lastCellEndsWithSpace;
-
-				AppendParameters(parameterLayout, columnLayout, wideRowStart, narrowRowStart, output, out lastCellEndsWithSpace);
+				AppendParameters(parameterLayout, columnLayout, wideRowStart, narrowRowStart, output);
 
 
 				// After parameters
@@ -719,14 +742,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						{
 						// We only need to actually add the space if the last parameter doesn't already have one at the end.
 						// Otherwise ignore it so it's not overly wide.
-						extraCSSClass = (lastCellEndsWithSpace ? "" : " LeftSpaceOnWide");
+						extraCSSClass = (allLastCellsEndWithSpace ? "" : " LeftSpaceOnWide");
 						}
 					else
 						{
 						// On the other hand, if there's not supposed to be a space and the last parameter ends with one anyway
 						// we can bleed the ending part an extra character into it.  This lets closing parentheses line up with the
 						// commas in between parameters.
-						extraCSSClass = (lastCellEndsWithSpace ? " NegativeLeftSpaceOnWide" : "");
+						extraCSSClass = (allLastCellsEndWithSpace ? " NegativeLeftSpaceOnWide" : "");
 						}
 
 					output.Append("<div class=\"PAfterParameters" + extraCSSClass + "\" " +
@@ -759,7 +782,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		/* Function: AppendParameters
 		 */
 		protected void AppendParameters (PrototypeParameterLayout parameters, PrototypeColumnLayout columnLayout, int wideRowStart,
-														  int narrowRowStart, StringBuilder output, out bool lastCellEndsWithSpace)
+														  int narrowRowStart, StringBuilder output)
 			{
 			int firstUsedColumn = columnLayout.FirstUsed;
 			int lastUsedColumn = columnLayout.LastUsed;
@@ -805,12 +828,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						}
 					}
 				}
-
-
-			// Determine lastCellEndsWithSpace before returning
-
-			int lastCellWidth = parameters.GetContentWidth(parameters.NumberOfParameters - 1, lastUsedColumn);
-			lastCellEndsWithSpace = (lastCellWidth < columnLayout.WidthOf(lastUsedColumn));
 			}
 
 
