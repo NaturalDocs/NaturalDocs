@@ -495,6 +495,69 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				columnLayout = GetSharedColumnLayout(sectionIndex, sectionCount);
 				}
 
+
+			//
+			// Now check the parts before and after the parameters, such as "void FunctionName (" and ")",  to see if they
+			// need spaces.
+			//
+
+			for (int i = sectionIndex; i < sectionIndex + sectionCount; i++)
+				{
+				var sectionLayout = parameterLayouts[i];
+
+				(parsedPrototype.Sections[i] as Prototypes.ParameterSection).GetBeforeParameters(out start, out end);
+
+				// Add a space before the parameters if there was an ending whitespace character that was marked as part of
+				// the BeforeParameters section.  This should only happen if it was significant; it should have been excluded
+				// otherwise.
+				if (end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start))
+					{
+					sectionLayout.HasSpaceBeforeParameters = true;
+					}
+
+				// Also add one if the BeforeParameters section doesn't end with a nice symbol like (.  If it ends with something
+				// like (* we want to add it anyway for legibility.  Also for {.
+				else
+					{
+					TokenIterator beforeEnd = end;
+					beforeEnd.Previous();
+
+					bool spaceBeforeParams = (beforeEnd >= start &&
+															beforeEnd.Character != '(' &&
+															beforeEnd.Character != '[' &&
+															beforeEnd.Character != '<');
+
+					sectionLayout.HasSpaceBeforeParameters = spaceBeforeParams;
+					}
+
+				// Not every prototype with parameters will have an AfterParameters section, mainly Microsoft SQL functions
+				// because they don't require parentheses.
+				if ((parsedPrototype.Sections[i] as Prototypes.ParameterSection).GetAfterParameters(out start, out end))
+					{
+					// Add a space between this and the parameters if there was a leading whitespace character that was marked
+					// as part of the AfterParameters section.  This should only happen if it was significant; it should have been
+					// excluded otherwise.
+					if (start.NextPastWhitespace(end))
+						{
+						sectionLayout.HasSpaceAfterParameters = true;
+						}
+
+					// Also add it if the AfterParameters section doesn't start with a nice symbol like ).  If it starts with something
+					// like *) we want to add it anyway for legibility.  Also for }.
+					else
+						{
+						bool spaceAfterParams = (start < end &&
+															  start.Character != ')' &&
+															  start.Character != ']' &&
+															  start.Character != '>');
+
+						sectionLayout.HasSpaceAfterParameters = spaceAfterParams;
+						}
+					}
+
+				}
+
+
 			return columnLayout;
 			}
 
@@ -580,16 +643,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			int wideRowStart = 1;
 			int narrowRowStart = 1;
 
-			for (int i = 0; i < sectionCount; i++)
+			for (int i = sectionIndex; i < sectionIndex + sectionCount; i++)
 				{
-				var parameterContent = (parsedPrototype.Sections[sectionIndex + i]) as Prototypes.ParameterSection;
-				var parameterLayout = parameterLayouts[sectionIndex + i];
+				var parameterContent = (parsedPrototype.Sections[i]) as Prototypes.ParameterSection;
+				var parameterLayout = parameterLayouts[i];
 
 
 				// Before parameters
 
 				TokenIterator start, end;
 				parameterContent.GetBeforeParameters(out start, out end);
+				end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
+
 
 				// The order for grid-area is grid-row-start/grid-column-start/grid-row-end/grid-column-end
 
@@ -606,25 +671,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 													(narrowRowStart + 1) + "/" +
 													(1 + columnLayout.UsedCount + 1);
 
-				// Add a space between this and the parameters if there was an ending whitespace character that was marked
-				// as part of the BeforeParameters section.  This should only happen if it was significant; it should have been
-				// excluded otherwise.
-				bool addSpace = end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
-
-				// Also add it if the BeforeParameters section doesn't end with a nice symbol like (.  If it ends with something
-				// like (* we want to add it anyway for legibility.  Also for {.
-				if (!addSpace)
-					{
-					TokenIterator beforeEnd = end;
-					beforeEnd.Previous();
-
-					addSpace = (beforeEnd >= start &&
-									   beforeEnd.Character != '(' &&
-									   beforeEnd.Character != '[' &&
-									   beforeEnd.Character != '<');
-					}
-
-				output.Append("<div class=\"PBeforeParameters" + (addSpace ? " RightSpaceOnWide" : "") + (sectionCount > 1 ? " RightAlignOnWide" : "") + "\" " +
+				output.Append("<div class=\"PBeforeParameters" +
+												(parameterLayout.HasSpaceBeforeParameters ? " RightSpaceOnWide" : "") +
+												(sectionCount > 1 ? " RightAlignOnWide" : "") + "\" " +
 											"data-WideGridArea=\"" + wideGridArea + "\" " +
 											"data-NarrowGridArea=\"" + narrowGridArea + "\" " +
 											"style=\"grid-area:" + wideGridArea + "\">");
@@ -649,6 +698,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				if (hasAfterParameters)
 					{
+					start.NextPastWhitespace(end);
 
 					// Put it in the last row, last column
 					wideGridArea = (wideRowStart + Math.Max(parameterLayout.NumberOfParameters, 1) - 1) + "/" +
@@ -663,24 +713,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 												(narrowRowStart + 1 + parameterLayout.NumberOfParameters + 1) + "/" +
 												(1 + columnLayout.UsedCount + 1);
 
-					// Add a space between this and the parameters if there was a leading whitespace character that was marked
-					// as part of the AfterParameters section.  This should only happen if it was significant; it should have been
-					// excluded otherwise.
-					addSpace = start.NextPastWhitespace(end);
-
-					// Also add it if the AfterParameters section doesn't start with a nice symbol like ).  If it starts with something
-					// like *) we want to add it anyway for legibility.  Also for }.
-					if (!addSpace)
-						{
-						addSpace = (start < end &&
-										   start.Character != ')' &&
-										   start.Character != ']' &&
-										   start.Character != '>');
-						}
-
 					string extraCSSClass;
 
-					if (addSpace)
+					if (parameterLayout.HasSpaceAfterParameters)
 						{
 						// We only need to actually add the space if the last parameter doesn't already have one at the end.
 						// Otherwise ignore it so it's not overly wide.

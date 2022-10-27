@@ -39,7 +39,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			CalculateCells();
 
-			this.columns = new PrototypeColumnLayout(parsedPrototype, parameterSection, cells);
+			columns = new PrototypeColumnLayout(parsedPrototype, parameterSection, cells);
+			hasSpaceBeforeParameters = false;
+			hasSpaceAfterParameters = false;
 			}
 
 
@@ -814,6 +816,32 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			}
 
 
+		/* Property: HasSpaceBeforeParameters
+		 * Whether there should be a space between the parameters and the part before it, which would include things
+		 * like the opening parenthesis.
+		 */
+		public bool HasSpaceBeforeParameters
+			{
+			get
+				{  return hasSpaceBeforeParameters;  }
+			set
+				{  hasSpaceBeforeParameters = value;  }
+			}
+
+
+		/* Property: HasSpaceAfterParameters
+		 * Whether there should be a space between the parameters and the part after it, which would include things
+		 * like the closing parenthesis.
+		 */
+		public bool HasSpaceAfterParameters
+			{
+			get
+				{  return hasSpaceAfterParameters;  }
+			set
+				{  hasSpaceAfterParameters = value;  }
+			}
+
+
 
 		// Group: Variables
 		// __________________________________________________________________________
@@ -840,6 +868,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * Information about the columns across all parameters.
 		 */
 		protected PrototypeColumnLayout columns;
+
+		/* var: hasSpaceBeforeParameters
+		 * Whether there should be a space between the parameters and the part before it, which would include things
+		 * like the opening parenthesis.
+		 */
+		protected bool hasSpaceBeforeParameters;
+
+		/* var: hasSpaceAfterParameters
+		 * Whether there should be a space between the parameters and the part after it, which would include things
+		 * like the closing parenthesis.
+		 */
+		protected bool hasSpaceAfterParameters;
 
 		}
 	}
