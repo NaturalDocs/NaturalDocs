@@ -1,12 +1,41 @@
-- Plain Section: int PropertyA { get }
-  - Access Level: Unknown
-  - Link Candidates: int
+- Parameter Section:
+  - Before Parameters: int PropertyA {
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: get
+    - Name: get
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
 
 ------------------------------
 
-- Plain Section: protected int PropertyB { get; private set }
-  - Access Level: Protected
-  - Link Candidates: int
+- Parameter Section:
+  - Before Parameters: protected int PropertyB {
+    - Access Level: Protected
+    - Link Candidates: int
+
+  - Parameter 1: get;
+    - Name: get
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: private set
+    - Name: set
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
 
 ------------------------------
 
@@ -14,66 +43,243 @@
   - Access Level: Unknown
   - Link Candidates: (none)
 
-- Plain Section: internal System.Text.StringBuilder PropertyC { [SetAttribute] protected internal set; [GetAttribute] internal get }
-  - Access Level: Internal
-  - Link Candidates: System.Text.StringBuilder
+- Parameter Section:
+  - Before Parameters: internal System.Text.StringBuilder PropertyC {
+    - Access Level: Internal
+    - Link Candidates: System.Text.StringBuilder
+
+  - Parameter 1: [SetAttribute] protected internal set;
+    - Name: set
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: [GetAttribute] internal get
+    - Name: get
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
 
 ------------------------------
 
-- Plain Section: abstract int PropertyD { get; set }
-  - Access Level: Unknown
-  - Link Candidates: int
+- Parameter Section:
+  - Before Parameters: abstract int PropertyD {
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: get;
+    - Name: get
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: set
+    - Name: set
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
 
 ------------------------------
 
-- Plain Section: unsafe abstract void* PropertyE { get; set }
-  - Access Level: Unknown
-  - Link Candidates: void
+- Parameter Section:
+  - Before Parameters: unsafe abstract void* PropertyE {
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - Parameter 1: get;
+    - Name: get
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: set
+    - Name: set
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
 
 ------------------------------
 
-- Plain Section: public int PropertyF { get }
-  - Access Level: Public
-  - Link Candidates: int
+- Parameter Section:
+  - Before Parameters: public int PropertyF {
+    - Access Level: Public
+    - Link Candidates: int
+
+  - Parameter 1: get
+    - Name: get
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
 
 ------------------------------
 
-- Plain Section: public string PropertyG { get }
-  - Access Level: Public
-  - Link Candidates: string
+- Parameter Section:
+  - Before Parameters: public string PropertyG {
+    - Access Level: Public
+    - Link Candidates: string
+
+  - Parameter 1: get
+    - Name: get
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
 
 ------------------------------
 
-- Plain Section: public int PropertyH { readonly get; set }
-  - Access Level: Public
-  - Link Candidates: int
+- Parameter Section:
+  - Before Parameters: public int PropertyH {
+    - Access Level: Public
+    - Link Candidates: int
+
+  - Parameter 1: readonly get;
+    - Name: get
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: set
+    - Name: set
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
 
 ------------------------------
 
-- Plain Section: public string PropertyI { get; set }
-  - Access Level: Public
-  - Link Candidates: string
+- Parameter Section:
+  - Before Parameters: public string PropertyI {
+    - Access Level: Public
+    - Link Candidates: string
+
+  - Parameter 1: get;
+    - Name: get
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: set
+    - Name: set
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
 
 ------------------------------
 
-- Plain Section: public string PropertyJ { get }
-  - Access Level: Public
-  - Link Candidates: string
+- Parameter Section:
+  - Before Parameters: public string PropertyJ {
+    - Access Level: Public
+    - Link Candidates: string
+
+  - Parameter 1: get
+    - Name: get
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
 
 ------------------------------
 
-- Plain Section: public string PropertyK { get; init }
-  - Access Level: Public
-  - Link Candidates: string
+- Parameter Section:
+  - Before Parameters: public string PropertyK {
+    - Access Level: Public
+    - Link Candidates: string
+
+  - Parameter 1: get;
+    - Name: get
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: init
+    - Name: init
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
 
 ------------------------------
 
-- Plain Section: public string ProperyL { get; init }
-  - Access Level: Public
-  - Link Candidates: string
+- Parameter Section:
+  - Before Parameters: public string ProperyL {
+    - Access Level: Public
+    - Link Candidates: string
+
+  - Parameter 1: get;
+    - Name: get
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: init
+    - Name: init
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
 
 ------------------------------
 
-- Plain Section: public string PropertyM { get; init }
-  - Access Level: Public
-  - Link Candidates: string
+- Parameter Section:
+  - Before Parameters: public string PropertyM {
+    - Access Level: Public
+    - Link Candidates: string
+
+  - Parameter 1: get;
+    - Name: get
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: init
+    - Name: init
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)

@@ -10,7 +10,22 @@
     - Link Candidates: int
     - Default Value: (not detected)
 
-  - After Parameters: ] { get }
+  - After Parameters: ]
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: {
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: get
+    - Name: get
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
     - Link Candidates: (none)
 
 ------------------------------
@@ -27,7 +42,29 @@
     - Link Candidates: int
     - Default Value: (not detected)
 
-  - After Parameters: ] { get; private set }
+  - After Parameters: ]
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: {
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: get;
+    - Name: get
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: private set
+    - Name: set
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
     - Link Candidates: (none)
 
 ------------------------------
@@ -55,7 +92,29 @@
     - Link Candidates: int
     - Default Value: (not detected)
 
-  - After Parameters: ] { [SetAttribute] protected internal set; [GetAttribute] internal get }
+  - After Parameters: ]
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: {
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: [SetAttribute] protected internal set;
+    - Name: set
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: [GetAttribute] internal get
+    - Name: get
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
     - Link Candidates: (none)
 
 ------------------------------
@@ -72,7 +131,29 @@
     - Link Candidates: int
     - Default Value: (not detected)
 
-  - After Parameters: ] { get; set }
+  - After Parameters: ]
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: {
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: get;
+    - Name: get
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: set
+    - Name: set
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
     - Link Candidates: (none)
 
 ------------------------------
@@ -89,7 +170,22 @@
     - Link Candidates: int
     - Default Value: (not detected)
 
-  - After Parameters: ] { get }
+  - After Parameters: ]
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: {
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: get
+    - Name: get
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
     - Link Candidates: (none)
 
 ------------------------------
@@ -106,5 +202,27 @@
     - Link Candidates: int
     - Default Value: (not detected)
 
-  - After Parameters: ] { get; set }
+  - After Parameters: ]
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: {
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: get;
+    - Name: get
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: set
+    - Name: set
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
     - Link Candidates: (none)

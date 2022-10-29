@@ -24,9 +24,27 @@
 
 ------------------------------
 
-- Plain Section: internal event Delegate EventD { add; remove }
-  - Access Level: Internal
-  - Link Candidates: Delegate
+- Parameter Section:
+  - Before Parameters: internal event Delegate EventD {
+    - Access Level: Internal
+    - Link Candidates: Delegate
+
+  - Parameter 1: add;
+    - Name: add
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: remove
+    - Name: remove
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
 
 ------------------------------
 
@@ -34,6 +52,24 @@
   - Access Level: Unknown
   - Link Candidates: (none)
 
-- Plain Section: internal event Delegate EventE { [AddAttribute] add; [RemoveAttribute] remove }
-  - Access Level: Internal
-  - Link Candidates: Delegate
+- Parameter Section:
+  - Before Parameters: internal event Delegate EventE {
+    - Access Level: Internal
+    - Link Candidates: Delegate
+
+  - Parameter 1: [AddAttribute] add;
+    - Name: add
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: [RemoveAttribute] remove
+    - Name: remove
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)

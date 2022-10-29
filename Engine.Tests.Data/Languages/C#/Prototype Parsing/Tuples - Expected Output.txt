@@ -119,33 +119,102 @@
 
 ------------------------------
 
-- Plain Section: public (string, int) PropertyA { get }
-  - Access Level: Public
-  - Link Candidates: string, int
+- Parameter Section:
+  - Before Parameters: public (string, int) PropertyA {
+    - Access Level: Public
+    - Link Candidates: string, int
+
+  - Parameter 1: get
+    - Name: get
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
 
 ------------------------------
 
-- Plain Section: public (string a, int b) PropertyB { get; set }
-  - Access Level: Public
-  - Link Candidates: string, int
+- Parameter Section:
+  - Before Parameters: public (string a, int b) PropertyB {
+    - Access Level: Public
+    - Link Candidates: string, int
+
+  - Parameter 1: get;
+    - Name: get
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: set
+    - Name: set
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
 
 ------------------------------
 
-- Plain Section: public (string, (int, float)) PropertyC { get }
-  - Access Level: Public
-  - Link Candidates: string, int, float
+- Parameter Section:
+  - Before Parameters: public (string, (int, float)) PropertyC {
+    - Access Level: Public
+    - Link Candidates: string, int, float
+
+  - Parameter 1: get
+    - Name: get
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
 
 ------------------------------
 
-- Plain Section: public (string a, (int m, float n) b) PropertyD { get; set }
-  - Access Level: Public
-  - Link Candidates: string, int, float
+- Parameter Section:
+  - Before Parameters: public (string a, (int m, float n) b) PropertyD {
+    - Access Level: Public
+    - Link Candidates: string, int, float
+
+  - Parameter 1: get;
+    - Name: get
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: set
+    - Name: set
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
 
 ------------------------------
 
-- Plain Section: public (string[,,] a, (Namespace.MyClass<int> m, float? n) b) PropertyE { get }
-  - Access Level: Public
-  - Link Candidates: string, Namespace.MyClass, int, float
+- Parameter Section:
+  - Before Parameters: public (string[,,] a, (Namespace.MyClass<int> m, float? n) b) PropertyE {
+    - Access Level: Public
+    - Link Candidates: string, Namespace.MyClass, int, float
+
+  - Parameter 1: get
+    - Name: get
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
 
 ------------------------------
 
