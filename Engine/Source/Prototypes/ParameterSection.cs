@@ -49,7 +49,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		override public bool GetName (out TokenIterator nameStart, out TokenIterator nameEnd)
 			{
 			if (beforeParameters != null)
-				{  return GetName(out nameStart, out nameEnd);  }
+				{  return beforeParameters.GetName(out nameStart, out nameEnd);  }
 			else
 				{
 				nameStart = end;
