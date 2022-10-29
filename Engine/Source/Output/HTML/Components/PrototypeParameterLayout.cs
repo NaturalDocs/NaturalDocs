@@ -40,9 +40,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			CalculateCells();
 
 			columns = new PrototypeColumnLayout(parsedPrototype, parameterSection, cells);
+
 			hasSpaceBeforeParameters = false;
 			hasSpaceAfterParameters = false;
-			lastCellEndsWithSpace = false;
 			}
 
 
@@ -850,9 +850,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		public bool LastCellEndsWithSpace
 			{
 			get
-				{  return lastCellEndsWithSpace;  }
-			set
-				{  lastCellEndsWithSpace = value;  }
+				{
+				int lastParameterIndex = NumberOfParameters - 1;
+				int lastColumnIndex = columns.LastUsed;
+
+				return (HasContent(lastParameterIndex, lastColumnIndex) == false ||
+						   GetContentWidth(lastParameterIndex, lastColumnIndex) < columns.WidthOf(lastColumnIndex));
+				}
 			}
 
 
@@ -894,12 +898,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * like the closing parenthesis.
 		 */
 		protected bool hasSpaceAfterParameters;
-
-		/* var: lastCellEndsWithSpace
-		 * Whether the last column of the last parameter either doesn't have any content or its content is shorter than the
-		 * column width, resulting in empty space between it and the part after the parameters.
-		 */
-		protected bool lastCellEndsWithSpace;
 
 		}
 	}

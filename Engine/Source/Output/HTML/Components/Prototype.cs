@@ -623,9 +623,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			// Now check the parts before and after the parameters, such as "void FunctionName (" and ")",  to see if they
 			// need spaces.
 			//
-			// Also check each section to see if the last cell ends with a space, meaning it either doesn't have content or
-			// it doesn't use the entire column width.
-			//
 
 			for (int i = sectionIndex; i < sectionIndex + sectionCount; i++)
 				{
@@ -680,15 +677,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						sectionLayout.HasSpaceAfterParameters = spaceAfterParams;
 						}
 					}
-
-				// Check if the last cell ends in a space, meaning it either doesn't have content or it doesn't use the entire column
-				// width.
-				int lastParameterIndex = sectionLayout.NumberOfParameters - 1;
-				int lastColumnIndex = columnLayout.LastUsed;
-
-				sectionLayout.LastCellEndsWithSpace =
-					(sectionLayout.HasContent(lastParameterIndex, lastColumnIndex) == false ||
-					 sectionLayout.GetContentWidth(lastParameterIndex, lastColumnIndex) < columnLayout.WidthOf(lastColumnIndex));
 				}
 
 
