@@ -1955,9 +1955,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 							lookahead.Next();
 							startOfModifiers = lookahead;
 							}
-						else if (lookahead.MatchesToken("get") ||
-								   lookahead.MatchesToken("set") ||
-								   lookahead.MatchesToken("init"))
+						else if ( (
+									  (keyword == "property" || keyword == "operator") &&
+								 	  (lookahead.MatchesToken("get") ||
+								       lookahead.MatchesToken("set") ||
+								       lookahead.MatchesToken("init"))
+									 ) ||
+
+									(
+									  keyword == "event" &&
+								 	   (lookahead.MatchesToken("add") ||
+								        lookahead.MatchesToken("remove"))
+									) )
 							{
 							if (mode == ParseMode.ParsePrototype)
 								{
