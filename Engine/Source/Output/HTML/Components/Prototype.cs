@@ -18,7 +18,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Text;
 using CodeClear.NaturalDocs.Engine.Links;
 using CodeClear.NaturalDocs.Engine.Prototypes;
@@ -86,7 +85,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 												   IList<Link> links = null, IList<Topics.Topic> linkTargets = null)
 			{
 
+			//
 			// Set up variables
+			//
 
 			this.parsedPrototype = parsedPrototype;
 			this.context = context;
@@ -106,7 +107,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			#endif
 
 
+			//
 			// Build the parameter layouts array
+			//
 
 			// Allocate the array or reallocate it if it's not big enough.  Make it at least four long so we're unlikely to need to
 			// reallocate it for other prototypes.
@@ -119,8 +122,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			// Also determine if there are any parameters at all since we're going to be walking through the sections.
 			bool hasParameters = false;
 
-			// Go by parameterLayouts.Length instead of parsedPrototype.Sections.Count because if the array is longer we want
-			// to make sure its extra entries are null.
+			// Loop until the end of parameterLayouts.Length instead of parsedPrototype.Sections.Count because if the array
+			// is longer we want to make sure its extra entries are null.
 			for (int i = 0; i < parameterLayouts.Length; i++)
 				{
 				if (i < parsedPrototype.Sections.Count &&
@@ -142,7 +145,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				}
 
 
+			//
 			// Apply syntax highlighting if it hasn't already been done
+			//
 
 			if (parsedPrototype.Tokenizer.HasSyntaxHighlighting == false)
 				{
@@ -151,14 +156,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				}
 
 
-			// Start prototype outer tag
+			//
+			// Add the outer tag to the output
+			//
 
 			// We always build the wide form by default, but only include the extra CSS class if there's parameters
 			output.Append("<div id=\"NDPrototype" + Context.Topic.TopicID + "\" class=\"NDPrototype" +
 								  (hasParameters ? " WideForm" : "") + "\">");
 
 
-			// Prototype content sections
+			//
+			// Add the content sections to the output
+			//
 
 			int sectionIndex = 0;
 
@@ -166,7 +175,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				{
  				var sectionParameterLayout = parameterLayouts[sectionIndex];
 
-				// Will be null if it wasn't a parameter section or it contained no parameters
+				// sectionParameterLayout will be null if it wasn't a parameter section or it contained no parameters
 				if (sectionParameterLayout == null)
 					{
 					AppendPlainSection(sectionIndex, output);
@@ -184,7 +193,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				}
 
 
-			// End prototype outer tag
+			//
+			// Close the outer tag in the output
+			//
 
 			output.Append("</div>");
 			}
@@ -273,11 +284,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			for (int i = sectionIndex + 1; i < parsedPrototype.Sections.Count; i++)
 				{
-				if (parameterLayouts[i] == null ||  // not a parameter section
-					parameterLayouts[i].ParameterStyle != parameterStyle)  // not the same style
+				// Don't include the section in the group if it's not a parameter section or not the same parameter style
+				if (parameterLayouts[i] == null ||
+					parameterLayouts[i].ParameterStyle != parameterStyle)
 					{  break;  }
 
-				// Check the BeforeParameters section.  We only want to include it if it's something short like { or (*.
+				// Also, only include it if the BeforeParameters section is something short like { or (*
 				(parsedPrototype.Sections[i] as Prototypes.ParameterSection).GetBeforeParameters(out start, out end);
 				int beforeParametersLength = end.RawTextIndex - start.RawTextIndex;
 
