@@ -833,7 +833,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				output.Append("<div class=\"PBeforeParameters" +
 												(parameterLayout.HasSpaceBeforeParameters ? " RightSpaceOnWide" : "") +
-												(sectionCount > 1 ? " RightAlignOnWide" : "") + "\" " +
+												(i > sectionIndex ? " RightAlignOnWide" : "") + "\" " +
 											"data-WideGridArea=\"" + wideGridArea + "\" " +
 											"data-NarrowGridArea=\"" + narrowGridArea + "\" " +
 											"style=\"grid-area:" + wideGridArea + "\">");
@@ -996,7 +996,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				output.Append("<div class=\"PBeforeParameters" +
 												(parameterLayout.HasSpaceBeforeParameters ? " RightSpaceOnWide" : "") +
-												(sectionCount > 1 ? " RightAlignOnWide" : "") + "\" " +
+												(i > sectionIndex ? " RightAlignOnWide" : "") + "\" " +
 											"data-WideGridArea=\"" + wideGridArea + "\" " +
 											"data-NarrowGridArea=\"" + narrowGridArea + "\" " +
 											"style=\"grid-area:" + wideGridArea + "\">");
