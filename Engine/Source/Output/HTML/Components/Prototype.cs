@@ -805,10 +805,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				// If the content is short enough to fit into the left indent of the narrow prototype form stuff it in there
 				// instead of creating another line that doesn't actually save any space.
-				int beforeParametersWidth = end.RawTextIndex - start.RawTextIndex;
-
-				bool beforeParametersFitsIntoIndent = (beforeParametersWidth <= 2 ||
-																		 (beforeParametersWidth == 3 && parameterLayout.HasSpaceBeforeParameters == false));
+				bool beforeParametersFitsIntoIndent = (parameterLayout.BeforeParametersWidth <= 3);
 
 				// The order for grid-area is grid-row-start/grid-column-start/grid-row-end/grid-column-end
 
@@ -982,10 +979,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				// If the content is short enough to fit into the left indent of the narrow prototype form stuff it in there
 				// instead of creating another line that doesn't actually save any space.
-				int beforeParametersWidth = end.RawTextIndex - start.RawTextIndex;
-
-				bool beforeParametersFitsIntoIndent = (beforeParametersWidth <= 2 ||
-																		 (beforeParametersWidth == 3 && parameterLayout.HasSpaceBeforeParameters == false));
+				bool beforeParametersFitsIntoIndent = (parameterLayout.BeforeParametersWidth <= 3);
 
 				// The order for grid-area is grid-row-start/grid-column-start/grid-row-end/grid-column-end
 				string wideGridArea = wideRowStart +

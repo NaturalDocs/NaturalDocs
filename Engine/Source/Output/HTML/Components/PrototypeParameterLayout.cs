@@ -43,6 +43,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			hasSpaceBeforeParameters = false;
 			hasSpaceAfterParameters = false;
+
+			TokenIterator start, end;
+
+			parameterSection.GetBeforeParameters(out start, out end);
+			end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
+			beforeParametersContentWidth = end.RawTextIndex - start.RawTextIndex;
+
+			parameterSection.GetAfterParameters(out start, out end);
+			afterParametersContentWidth = end.RawTextIndex - start.RawTextIndex;
 			}
 
 
@@ -860,6 +869,32 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			}
 
 
+		/* Property: BeforeParametersWidth
+		 * The width of the section before the parameters.  This includes <HasSpaceBeforeParameters>.
+		 */
+		public int BeforeParametersWidth
+			{
+			get
+				{  return beforeParametersContentWidth + (hasSpaceBeforeParameters ? 1 : 0);  }
+			}
+
+
+		/* Property: AfterParameterswidth
+		 * The width of the section after the parameters, or zero if there is none.  This includes <HasSpaceAfterParameters>.
+		 */
+		public int AfterParametersWidth
+			{
+			get
+				{
+				// We always want to return zero here, regardless of hasSpaceAfterParameters
+				if (afterParametersContentWidth == 0)
+					{  return 0;  }
+
+				return afterParametersContentWidth + (hasSpaceAfterParameters ? 1 : 0);
+				}
+			}
+
+
 
 		// Group: Variables
 		// __________________________________________________________________________
@@ -898,6 +933,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * like the closing parenthesis.
 		 */
 		protected bool hasSpaceAfterParameters;
+
+		/* var: beforeParametersContentWidth
+		 * The width of the content of the section before the parameters.  This does not include <hasSpaceBeforeParameters>.
+		 */
+		protected int beforeParametersContentWidth;
+
+		/* var: afterParametersContentWidth
+		 * The width of the content of the section after the parameters, or zero if there is none.  This does not include 
+		 * <hasSpaceAfterParameters>.
+		 */
+		protected int afterParametersContentWidth;
 
 		}
 	}
