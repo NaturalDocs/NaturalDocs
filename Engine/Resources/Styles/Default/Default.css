@@ -1801,6 +1801,13 @@ td {
 			.NarrowForm .PAfterParameters.LeftSpaceOnNarrow {
 				padding-left: 4ch;
 				}
+			.NarrowForm .PAfterParameters.FitIntoRightIndentOnNarrow {
+				padding-left: 0;
+				margin-top: auto; /* functions as vertical-align: bottom */
+				}
+			.NarrowForm .PAfterParameters.FitIntoRightIndentOnNarrow.LeftSpaceOnNarrow {
+				padding-left: 1ch;
+				}
 
 		.WideForm .RightAlignOnWide,
 		.NarrowForm .RightAlignOnNarrow { text-align: right; }

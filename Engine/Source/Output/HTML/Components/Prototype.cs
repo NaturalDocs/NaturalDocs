@@ -742,17 +742,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			#endif
 
 
+			bool allBeforeAndAfterParametersSectionsAreShort = true;
 			bool allLastCellsEndWithSpace = true;
 
 			for (int i = sectionIndex; i < sectionIndex + sectionCount; i++)
 				{
-				var section = parameterLayouts[i];
+				var parameterLayout = parameterLayouts[i];
 
-				if (!section.LastCellEndsWithSpace)
-					{
-					allLastCellsEndWithSpace = false;
-					break;
-					}
+				if (parameterLayout.BeforeParametersWidth > 3 ||
+					parameterLayout.AfterParametersWidth > 3)
+					{  allBeforeAndAfterParametersSectionsAreShort = false;  }
+				if (!parameterLayout.LastCellEndsWithSpace)
+					{  allLastCellsEndWithSpace = false;  }
 				}
 
 
@@ -860,12 +861,27 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 											(wideRowStart + Math.Max(parameterLayout.NumberOfParameters, 1)) + "/" +
 											(3 + columnLayout.UsedCount);
 
-					// Put it in the last row, all columns.  Add one more column than the parameters use so the cells don't get
-					// stretched out if this is longer than them.
-					narrowGridArea = (narrowRowStart + parameterLayout.NumberOfParameters) +
-												"/1/" +
-												(narrowRowStart + parameterLayout.NumberOfParameters + 1) + "/" +
-												(1 + columnLayout.UsedCount + 1);
+					if (allBeforeAndAfterParametersSectionsAreShort)
+						{
+						// If all the AfterParameters content is short enough we can leave it in the same row in the narrow form
+						// instead of giving it its own row.  However, only do this when the BeforeParameters section is also short.
+						// This lets things like { } and (* *) not move at all but keeps the old behavior for things like
+						// "void Function (" and ")".  Also, only do this when it applies to ALL of the sections because we don't
+						// want a mix of styles.
+						narrowGridArea = (narrowRowStart + Math.Max(parameterLayout.NumberOfParameters, 1) - 1) + "/" +
+													(2 + columnLayout.UsedCount) + "/" +
+													(narrowRowStart + Math.Max(parameterLayout.NumberOfParameters, 1)) + "/" +
+													(3 + columnLayout.UsedCount);
+						}
+					else
+						{
+						// Put it in the last row, all columns.  Add one more column than the parameters use so the cells don't get
+						// stretched out if this is longer than them.
+						narrowGridArea = (narrowRowStart + parameterLayout.NumberOfParameters) +
+													"/1/" +
+													(narrowRowStart + parameterLayout.NumberOfParameters + 1) + "/" +
+													(1 + columnLayout.UsedCount + 1);
+						}
 
 					string extraCSSClass;
 
@@ -873,14 +889,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						{
 						// We only need to actually add the space if the last parameter doesn't already have one at the end.
 						// Otherwise ignore it so it's not overly wide.
-						extraCSSClass = (allLastCellsEndWithSpace ? "" : " LeftSpaceOnWide");
+						extraCSSClass = (allLastCellsEndWithSpace ? "" : " LeftSpaceOnWide") +
+												 (allBeforeAndAfterParametersSectionsAreShort ? " FitIntoRightIndentOnNarrow LeftSpaceOnNarrow" : "");
 						}
 					else
 						{
 						// On the other hand, if there's not supposed to be a space and the last parameter ends with one anyway
 						// we can bleed the ending part an extra character into it.  This lets closing parentheses line up with the
 						// commas in between parameters.
-						extraCSSClass = (allLastCellsEndWithSpace ? " NegativeLeftSpaceOnWide" : "");
+						extraCSSClass = (allLastCellsEndWithSpace ? " NegativeLeftSpaceOnWide" : "") +
+												 (allBeforeAndAfterParametersSectionsAreShort ? " FitIntoRightIndentOnNarrow" : "");
 						}
 
 					output.Append("<div class=\"PAfterParameters" + extraCSSClass + "\" " +
@@ -932,6 +950,21 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			if (parameterLayouts[sectionIndex] == null)
 				{  throw new Exception("The indexed section doesn't have a generated layout.");  }
 			#endif
+
+
+			bool allBeforeAndAfterParametersSectionsAreShort = true;
+
+			for (int i = sectionIndex; i < sectionIndex + sectionCount; i++)
+				{
+				var parameterLayout = parameterLayouts[i];
+
+				if (parameterLayout.BeforeParametersWidth > 3 ||
+					parameterLayout.AfterParametersWidth > 3)
+					{
+					allBeforeAndAfterParametersSectionsAreShort = false;
+					break;
+					}
+				}
 
 
 			// Opening tags
@@ -1055,12 +1088,24 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 											(1 + Math.Max(parameterLayout.NumberOfParameters, 1)) + "/" +
 											(2 + parameterLayout.Columns.UsedCount);
 
-					// Put it in the last row, all columns.  Add one more column than the parameters use so the cells don't get
-					// stretched out if this is longer than them.
-					narrowGridArea = (1 + parameterLayout.NumberOfParameters) +
-												"/1/" +
-												(1 + parameterLayout.NumberOfParameters + 1) + "/" +
-												(1 + parameterLayout.Columns.UsedCount + 1);
+					if (allBeforeAndAfterParametersSectionsAreShort)
+						{
+						// If all the AfterParameters content is short enough we can leave it in the same row in the narrow form
+						// instead of giving it its own row.  However, only do this when the BeforeParameters section is also short.
+						// This lets things like { } and (* *) not move at all but keeps the old behavior for things like
+						// "void Function (" and ")".  Also, only do this when it applies to ALL of the sections because we don't
+						// want a mix of styles.
+						narrowGridArea = wideGridArea;
+						}
+					else
+						{
+						// Put it in the last row, all columns.  Add one more column than the parameters use so the cells don't get
+						// stretched out if this is longer than them.
+						narrowGridArea = (1 + parameterLayout.NumberOfParameters) +
+													"/1/" +
+													(1 + parameterLayout.NumberOfParameters + 1) + "/" +
+													(1 + parameterLayout.Columns.UsedCount + 1);
+						}
 
 					string extraCSSClass;
 
@@ -1068,14 +1113,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						{
 						// We only need to actually add the space if the last parameter doesn't already have one at the end.
 						// Otherwise ignore it so it's not overly wide.
-						extraCSSClass = (parameterLayout.LastCellEndsWithSpace ? "" : " LeftSpaceOnWide");
+						extraCSSClass = (parameterLayout.LastCellEndsWithSpace ? "" : " LeftSpaceOnWide") +
+												 (allBeforeAndAfterParametersSectionsAreShort ? " FitIntoRightIndentOnNarrow LeftSpaceOnNarrow" : "");
 						}
 					else
 						{
 						// On the other hand, if there's not supposed to be a space and the last parameter ends with one anyway
 						// we can bleed the ending part an extra character into it.  This lets closing parentheses line up with the
 						// commas in between parameters.
-						extraCSSClass = (parameterLayout.LastCellEndsWithSpace ? " NegativeLeftSpaceOnWide" : "");
+						extraCSSClass = (parameterLayout.LastCellEndsWithSpace ? " NegativeLeftSpaceOnWide" : "") +
+												 (allBeforeAndAfterParametersSectionsAreShort ? " FitIntoRightIndentOnNarrow" : "");
 						}
 
 					output.Append("<div class=\"PAfterParameters" + extraCSSClass + "\" " +

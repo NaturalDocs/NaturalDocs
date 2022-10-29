@@ -940,7 +940,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		protected int beforeParametersContentWidth;
 
 		/* var: afterParametersContentWidth
-		 * The width of the content of the section after the parameters, or zero if there is none.  This does not include 
+		 * The width of the content of the section after the parameters, or zero if there is none.  This does not include
 		 * <hasSpaceAfterParameters>.
 		 */
 		protected int afterParametersContentWidth;
