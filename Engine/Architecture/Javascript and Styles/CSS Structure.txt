@@ -388,7 +388,8 @@ Parameter Section:
 
 		NegativeLeftSpaceOnWide - The first line of the cell can start one space to the left of where its normal
 												 bounds would be, but only for the wide prototype form.
-
+		FitIntoLeftIndentOnNarrow - The cell is overlaid on another cell with a left indent, and so should fit itself
+												  into that 5width.
 
 
 Topic: Class Prototype

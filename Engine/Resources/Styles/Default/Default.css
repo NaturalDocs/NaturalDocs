@@ -1807,6 +1807,12 @@ td {
 
 		.WideForm .NegativeLeftSpaceOnWide { text-indent: -1ch; }
 
+		.NarrowForm .FitIntoLeftIndentOnNarrow { width: 3ch; }
+
+		/* Seems to ignore padding-right, so just shrink the width */
+		.NarrowForm .FitIntoLeftIndentOnNarrow.RightSpaceOnNarrow { width: 2ch; }
+
+
 	/* Links default back to black so we don't screw up the syntax highlighting. */
 	.NDPrototype a:link,
 	.NDPrototype a:visited,

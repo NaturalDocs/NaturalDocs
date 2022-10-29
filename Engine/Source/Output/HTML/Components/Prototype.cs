@@ -815,6 +815,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				parameterContent.GetBeforeParameters(out start, out end);
 				end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
 
+				// If the content is short enough to fit into the left indent of the narrow prototype form stuff it in there
+				// instead of creating another line that doesn't actually save any space.
+				int beforeParametersWidth = end.RawTextIndex - start.RawTextIndex;
+
+				bool beforeParametersFitsIntoIndent = (beforeParametersWidth <= 2 ||
+																		 (beforeParametersWidth == 3 && parameterLayout.HasSpaceBeforeParameters == false));
 
 				// The order for grid-area is grid-row-start/grid-column-start/grid-row-end/grid-column-end
 
@@ -833,7 +839,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				output.Append("<div class=\"PBeforeParameters" +
 												(parameterLayout.HasSpaceBeforeParameters ? " RightSpaceOnWide" : "") +
-												(i > sectionIndex ? " RightAlignOnWide" : "") + "\" " +
+												(i > sectionIndex ? " RightAlignOnWide" : "") +
+												(beforeParametersFitsIntoIndent ? " FitIntoLeftIndentOnNarrow RightAlignOnNarrow" : "") +
+												(beforeParametersFitsIntoIndent && parameterLayout.HasSpaceBeforeParameters ? " RightSpaceOnNarrow" : "") + "\" " +
 											"data-WideGridArea=\"" + wideGridArea + "\" " +
 											"data-NarrowGridArea=\"" + narrowGridArea + "\" " +
 											"style=\"grid-area:" + wideGridArea + "\">");
@@ -842,10 +850,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				output.Append("</div>");
 
+				if (!beforeParametersFitsIntoIndent)
+					{  narrowRowStart++;  }
+
 
 				// Parameters
 
-				AppendParameters(parameterLayout, columnLayout, wideRowStart, 2, narrowRowStart + 1, 1, output);
+				AppendParameters(parameterLayout, columnLayout, wideRowStart, 2, narrowRowStart, 1, output);
 
 
 				// After parameters
@@ -866,9 +877,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 					// Put it in the last row, all columns.  Add one more column than the parameters use so the cells don't get
 					// stretched out if this is longer than them.
-					narrowGridArea = (narrowRowStart + 1 + parameterLayout.NumberOfParameters) +
+					narrowGridArea = (narrowRowStart + parameterLayout.NumberOfParameters) +
 												"/1/" +
-												(narrowRowStart + 1 + parameterLayout.NumberOfParameters + 1) + "/" +
+												(narrowRowStart + parameterLayout.NumberOfParameters + 1) + "/" +
 												(1 + columnLayout.UsedCount + 1);
 
 					string extraCSSClass;
@@ -901,7 +912,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				// Update position for next section
 
 				wideRowStart += Math.Max(parameterLayout.NumberOfParameters, 1);
-				narrowRowStart += 1 + parameterLayout.NumberOfParameters;
+				narrowRowStart += parameterLayout.NumberOfParameters;
 
 				if (hasAfterParameters)
 					{  narrowRowStart++;  }
@@ -981,9 +992,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				parameterContent.GetBeforeParameters(out start, out end);
 				end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
 
+				// If the content is short enough to fit into the left indent of the narrow prototype form stuff it in there
+				// instead of creating another line that doesn't actually save any space.
+				int beforeParametersWidth = end.RawTextIndex - start.RawTextIndex;
+
+				bool beforeParametersFitsIntoIndent = (beforeParametersWidth <= 2 ||
+																		 (beforeParametersWidth == 3 && parameterLayout.HasSpaceBeforeParameters == false));
 
 				// The order for grid-area is grid-row-start/grid-column-start/grid-row-end/grid-column-end
-
 				string wideGridArea = wideRowStart +
 												"/1/" +
 												(wideRowStart + 1) +
@@ -996,7 +1012,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				output.Append("<div class=\"PBeforeParameters" +
 												(parameterLayout.HasSpaceBeforeParameters ? " RightSpaceOnWide" : "") +
-												(i > sectionIndex ? " RightAlignOnWide" : "") + "\" " +
+												(i > sectionIndex ? " RightAlignOnWide" : "") +
+												(beforeParametersFitsIntoIndent ? " FitIntoLeftIndentOnNarrow RightAlignOnNarrow" : "") +
+												(beforeParametersFitsIntoIndent && parameterLayout.HasSpaceBeforeParameters ? " RightSpaceOnNarrow" : "") + "\" " +
 											"data-WideGridArea=\"" + wideGridArea + "\" " +
 											"data-NarrowGridArea=\"" + narrowGridArea + "\" " +
 											"style=\"grid-area:" + wideGridArea + "\">");
@@ -1004,6 +1022,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				AppendText_ExcludePartialKeyword(start, end, output);
 
 				output.Append("</div>");
+
+				if (!beforeParametersFitsIntoIndent)
+					{  narrowRowStart++;  }
 
 
 				// Nested cell container
@@ -1013,9 +1034,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 										(wideRowStart + 1) +
 										"/3";
 
-				narrowGridArea = (narrowRowStart + 1) +
+				narrowGridArea = narrowRowStart +
 										   "/1/" +
-										   (narrowRowStart + 2) +
+										   (narrowRowStart + 1) +
 										   "/2";
 
 				// Need one extra column in case the containing cell is wider than the nested grid.  If we didn't have it other
@@ -1094,7 +1115,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				// Update position for next section
 
 				wideRowStart++;
-				narrowRowStart += 2;
+				narrowRowStart++;
 				}
 
 
