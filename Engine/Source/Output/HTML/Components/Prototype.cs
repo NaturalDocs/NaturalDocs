@@ -29,6 +29,34 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 	public class Prototype : HTML.Components.FormattedText
 		{
 
+		// Group: Types
+		// __________________________________________________________________________
+
+
+		/* Enum: ParameterGroupAlignment
+		 *
+		 * The way multiple <PrototypeParameterLayouts> should be aligned when together in a group.
+		 *
+		 *		AlignAllColumns - All columns are aligned between the parameter sections.
+		 *
+		 *		--- SystemVerilog Code ---
+		 *		(* param1  = "abcde" *)
+		 *		(* param22 = "abc"   *)
+		 *		---
+		 *
+		 *		AlignBeforeParameters - Only the BeforeParameters parts align between sections.
+		 *
+		 *		--- C# Code --
+		 *		int Indexer [unsigned int x,
+		 *		                       int y ]
+		 *		           { get,
+		 *		             set  }
+		 */
+		public enum ParameterGroupAlignment
+			{  AlignAllColumns, AlignBeforeParameters  }
+
+
+
 		// Group: Functions
 		// __________________________________________________________________________
 
@@ -183,10 +211,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					}
 				else
 					{
-					int sectionCount = GroupParameterSections(sectionIndex);
-					var sharedColumnLayout = FormatParameterSections(sectionIndex, sectionCount);
+					int sectionCount;
+					ParameterGroupAlignment alignment;
 
-					AppendParameterSections(sectionIndex, sectionCount, sharedColumnLayout, output);
+					GroupParameterSections(sectionIndex, out sectionCount, out alignment);
+
+					var sharedColumnLayout = FormatParameterSections(sectionIndex, sectionCount, alignment);
+
+					if (alignment == ParameterGroupAlignment.AlignAllColumns)
+						{  AppendSharedColumnParameterSections(sectionIndex, sectionCount, sharedColumnLayout, output);  }
+					else if (alignment == ParameterGroupAlignment.AlignBeforeParameters)
+						{  AppendLeftAlignedParameterSections(sectionIndex, sectionCount, output);  }
+					else
+						{  throw new NotImplementedException();  }
 
 					sectionIndex += sectionCount;
 					}
@@ -273,14 +310,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 		/* Function: GroupParameterSections
 		 * Determines how many consecutive <Prototype.ParameterSections> should be grouped together for the next call to
-		 * <AppendParameterSections()>.  It will always return at least 1.
+		 * <AppendParameterSections()>, and how they should be aligned in the output.  The count will always be at least 1.
 		 */
-		protected int GroupParameterSections (int sectionIndex)
+		protected void GroupParameterSections (int sectionIndex, out int count, out ParameterGroupAlignment alignment)
 			{
-			int count = 1;
-			var parameterStyle = parameterLayouts[sectionIndex].ParameterStyle;
+
+			// First determine how long the group should be
+
+			count = 1;
 
 			TokenIterator start, end;
+			var parameterStyle = parameterLayouts[sectionIndex].ParameterStyle;
 
 			for (int i = sectionIndex + 1; i < parsedPrototype.Sections.Count; i++)
 				{
@@ -304,17 +344,64 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				count++;
 				}
 
-			return count;
+
+			// Next determine the alignment, which is only relevant if there's more than one member of the group
+
+			alignment = ParameterGroupAlignment.AlignAllColumns;
+
+			if (count > 1)
+				{
+				// The alignment defaults to AlignAllColumns.  The parameter sections can be one of three types, determined by
+				// the syntax highlighting of the variable name:
+				//
+				//    - Regular parameters, which should have no highlighting on the name
+				//    - Property members like get/set/init, which should be highlighted as keywords
+				//    - Metadata properties, which should be highlighted as metadata
+				//
+				// All sections must have the same type to keep using AlignAllColumns.  If any are different then we switch to
+				// AlignBeforeParameters.  Trying to align the columns of disparate parameter types will not look good.
+
+				(parsedPrototype.Sections[sectionIndex] as Prototypes.ParameterSection).GetParameterName(0, out start, out end);
+				var highlightType = start.SyntaxHighlightingType;
+
+				for (int i = sectionIndex + 1; i < sectionIndex + count; i++)
+					{
+					(parsedPrototype.Sections[i] as Prototypes.ParameterSection).GetParameterName(0, out start, out end);
+
+					if (start.SyntaxHighlightingType != highlightType)
+						{
+						alignment = ParameterGroupAlignment.AlignBeforeParameters;
+						break;
+						}
+					}
+				}
 			}
 
 
 		/* Function: FormatParameterSections
 		 * Reformats some cells in the <Prototype.ParameterSections> to make the spacing consistent, including some tweaks
-		 * based on the shared column layout.  Returns the shared column layout.
+		 * based on the shared column layout.  Returns the shared column layout if you're using
+		 * <ParameterGroupAlignment.AlignAllColumns>, null otherwise.
 		 */
-		protected PrototypeColumnLayout FormatParameterSections (int sectionIndex, int sectionCount)
+		protected PrototypeColumnLayout FormatParameterSections (int sectionIndex, int sectionCount,
+																								ParameterGroupAlignment alignment)
 			{
-			var columnLayout = GetSharedColumnLayout(sectionIndex, sectionCount);
+			// If we're using AlignBeforeParameters, format each one independently instead of with a shared layout.
+			if (sectionCount > 1 && alignment == ParameterGroupAlignment.AlignBeforeParameters)
+				{
+				for (int i = sectionIndex; i < sectionIndex + sectionCount; i++)
+					{  FormatParameterSections(i, 1, alignment);  }
+
+				return null;
+				}
+
+
+			PrototypeColumnLayout columnLayout;
+
+			if (sectionCount > 1 && alignment == ParameterGroupAlignment.AlignAllColumns)
+				{  columnLayout = GetSharedColumnLayout(sectionIndex, sectionCount);  }
+			else
+				{  columnLayout = parameterLayouts[sectionIndex].Columns;  }
 
 
 			//
@@ -421,8 +508,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 			// Recalculate the columns since their widths may have changed
-			RecalculateColumns(sectionIndex, sectionCount);
-			columnLayout = GetSharedColumnLayout(sectionIndex, sectionCount);
+			if (sectionCount > 1 && alignment == ParameterGroupAlignment.AlignAllColumns)
+				{
+				RecalculateColumns(sectionIndex, sectionCount);
+				columnLayout = GetSharedColumnLayout(sectionIndex, sectionCount);
+				}
+			else
+				{  parameterLayouts[sectionIndex].RecalculateColumns();  }
 
 
 			//
@@ -517,8 +609,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					}
 
 				// Recalculate the columns since their widths may have changed again
-				RecalculateColumns(sectionIndex, sectionCount);
-				columnLayout = GetSharedColumnLayout(sectionIndex, sectionCount);
+				if (sectionCount > 1 && alignment == ParameterGroupAlignment.AlignAllColumns)
+					{
+					RecalculateColumns(sectionIndex, sectionCount);
+					columnLayout = GetSharedColumnLayout(sectionIndex, sectionCount);
+					}
+				else
+					{  parameterLayouts[sectionIndex].RecalculateColumns();  }
 				}
 
 
@@ -595,7 +692,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				}
 
 
-			return columnLayout;
+			if (alignment == ParameterGroupAlignment.AlignAllColumns)
+				{  return columnLayout;  }
+			else
+				{  return null;  }
 			}
 
 
@@ -631,17 +731,26 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			}
 
 
-		/* Function: AppendParameterSections
+		/* Function: AppendSharedColumnParameterSections
+		 *
 		 * Builds the HTML for one or more <Prototypes.ParameterSections>.  They will always be in wide form.
+		 *
+		 * This function will build the output so that all the parameter sections share a single column layout.  This lets
+		 * the content align across sections, such as for consecutive SystemVerilog attributes:
+		 *
+		 *		--- SystemVerilog Code ---
+		 *		(* param1  = "abcde" *)
+		 *		(* param22 = "abc"   *)
+		 *		---
 		 */
-		protected void AppendParameterSections (int sectionIndex, int sectionCount, PrototypeColumnLayout columnLayout,
-																	StringBuilder output)
+		protected void AppendSharedColumnParameterSections (int sectionIndex, int sectionCount, PrototypeColumnLayout columnLayout,
+																						  StringBuilder output)
 			{
 			#if DEBUG
 			if (parsedPrototype.Sections[sectionIndex] is not Prototypes.ParameterSection)
-				{  throw new Exception("AppendParameterSectionGroup was called on an index that wasn't a parameter section.");  }
+				{  throw new Exception("The indexed section isn't a parameter section.");  }
 			if (parameterLayouts[sectionIndex] == null)
-				{  throw new Exception("AppendParameterSectionGroup was called on an index that doesn't have a layout.");  }
+				{  throw new Exception("The indexed section doesn't have a generated layout.");  }
 			#endif
 
 
@@ -736,7 +845,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				// Parameters
 
-				AppendParameters(parameterLayout, columnLayout, wideRowStart, narrowRowStart, output);
+				AppendParameters(parameterLayout, columnLayout, wideRowStart, 2, narrowRowStart + 1, 1, output);
 
 
 				// After parameters
@@ -805,10 +914,200 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			}
 
 
+		/* Function: AppendLeftAlignedParameterSections
+		 *
+		 * Builds the HTML for one or more <Prototypes.ParameterSections>.  They will always be in wide form.
+		 *
+		 * This function will build the output so that each parameter section will be aligned to the BeforeParameters
+		 * section of the first one.  However, their columns layouts will remain independent.  For example:
+		 *
+		 *		--- C# Code --
+		 *		int Indexer [unsigned int x,
+		 *		                       int y ]
+		 *		           { get,
+		 *		             set  }
+		 *		---
+		 */
+		protected void AppendLeftAlignedParameterSections (int sectionIndex, int sectionCount, StringBuilder output)
+			{
+			#if DEBUG
+			if (parsedPrototype.Sections[sectionIndex] is not Prototypes.ParameterSection)
+				{  throw new Exception("The indexed section isn't a parameter section.");  }
+			if (parameterLayouts[sectionIndex] == null)
+				{  throw new Exception("The indexed section doesn't have a generated layout.");  }
+			#endif
+
+
+			// Opening tags
+
+			string parameterCSSClass;
+
+			switch (parameterLayouts[sectionIndex].ParameterStyle)
+				{
+				case ParsedPrototype.ParameterStyle.C:
+					parameterCSSClass = "CStyle";
+					break;
+				case ParsedPrototype.ParameterStyle.Pascal:
+					parameterCSSClass = "PascalStyle";
+					break;
+				default:
+					throw new NotImplementedException();
+				}
+
+			output.Append("<div class=\"PSection PParameterSection " + parameterCSSClass + "\">");
+
+
+			// There's always 2 wide columns: before parameters and the cell for the nested grid
+			// There's always 1 narrow column for everything
+			output.Append("<div class=\"PParameterCells\" " +
+										"data-WideColumnCount=\"2\" " +
+										"data-NarrowColumnCount=\"1\">");
+
+
+			// Sections
+
+			int wideRowStart = 1;
+			int narrowRowStart = 1;
+
+			for (int i = sectionIndex; i < sectionIndex + sectionCount; i++)
+				{
+				var parameterContent = (parsedPrototype.Sections[i]) as Prototypes.ParameterSection;
+				var parameterLayout = parameterLayouts[i];
+
+
+				// Before parameters
+
+				TokenIterator start, end;
+				parameterContent.GetBeforeParameters(out start, out end);
+				end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
+
+
+				// The order for grid-area is grid-row-start/grid-column-start/grid-row-end/grid-column-end
+
+				string wideGridArea = wideRowStart +
+												"/1/" +
+												(wideRowStart + 1) +
+												"/2";
+
+				string narrowGridArea = narrowRowStart +
+													"/1/" +
+													(narrowRowStart + 1) +
+													"/2";
+
+				output.Append("<div class=\"PBeforeParameters" +
+												(parameterLayout.HasSpaceBeforeParameters ? " RightSpaceOnWide" : "") +
+												(sectionCount > 1 ? " RightAlignOnWide" : "") + "\" " +
+											"data-WideGridArea=\"" + wideGridArea + "\" " +
+											"data-NarrowGridArea=\"" + narrowGridArea + "\" " +
+											"style=\"grid-area:" + wideGridArea + "\">");
+
+				AppendText_ExcludePartialKeyword(start, end, output);
+
+				output.Append("</div>");
+
+
+				// Nested cell container
+
+				wideGridArea = wideRowStart +
+										"/2/" +
+										(wideRowStart + 1) +
+										"/3";
+
+				narrowGridArea = (narrowRowStart + 1) +
+										   "/1/" +
+										   (narrowRowStart + 2) +
+										   "/2";
+
+				// Need one extra column in case the containing cell is wider than the nested grid.  If we didn't have it other
+				// columns would stretch to fill the horizontal space.
+				int nestedWideColumnCount = parameterLayout.Columns.UsedCount + 2;
+				int nestedNarrowColumnCount = parameterLayout.Columns.UsedCount + 1;
+
+				output.Append("<div class=\"PParameterCells Nested\" " +
+											"data-WideGridArea=\"" + wideGridArea + "\" " +
+											"data-NarrowGridArea=\"" + narrowGridArea + "\" " +
+											"style=\"grid-area:" + wideGridArea + "\" " +
+											"data-WideColumnCount=\"" + nestedWideColumnCount + "\" " +
+											"data-NarrowColumnCount=\"" + nestedNarrowColumnCount + "\">");
+
+
+				// Parameters
+
+				AppendParameters(parameterLayout, parameterLayout.Columns, 1, 1, 1, 1, output);
+
+
+				// After parameters
+
+				// Not every prototype with parameters will have an after parameters section, mainly Microsoft SQL functions
+				// because they don't require parentheses.  Just omit it.
+				bool hasAfterParameters = parameterContent.GetAfterParameters(out start, out end);
+
+				if (hasAfterParameters)
+					{
+					start.NextPastWhitespace(end);
+
+					// Put it in the last row, last column
+					wideGridArea = (1 + Math.Max(parameterLayout.NumberOfParameters, 1) - 1) + "/" +
+											(1 + parameterLayout.Columns.UsedCount) + "/" +
+											(1 + Math.Max(parameterLayout.NumberOfParameters, 1)) + "/" +
+											(2 + parameterLayout.Columns.UsedCount);
+
+					// Put it in the last row, all columns.  Add one more column than the parameters use so the cells don't get
+					// stretched out if this is longer than them.
+					narrowGridArea = (1 + parameterLayout.NumberOfParameters) +
+												"/1/" +
+												(1 + parameterLayout.NumberOfParameters + 1) + "/" +
+												(1 + parameterLayout.Columns.UsedCount + 1);
+
+					string extraCSSClass;
+
+					if (parameterLayout.HasSpaceAfterParameters)
+						{
+						// We only need to actually add the space if the last parameter doesn't already have one at the end.
+						// Otherwise ignore it so it's not overly wide.
+						extraCSSClass = (parameterLayout.LastCellEndsWithSpace ? "" : " LeftSpaceOnWide");
+						}
+					else
+						{
+						// On the other hand, if there's not supposed to be a space and the last parameter ends with one anyway
+						// we can bleed the ending part an extra character into it.  This lets closing parentheses line up with the
+						// commas in between parameters.
+						extraCSSClass = (parameterLayout.LastCellEndsWithSpace ? " NegativeLeftSpaceOnWide" : "");
+						}
+
+					output.Append("<div class=\"PAfterParameters" + extraCSSClass + "\" " +
+												"data-WideGridArea=\"" + wideGridArea + "\" " +
+												"data-NarrowGridArea=\"" + narrowGridArea + "\" " +
+												"style=\"grid-area:" + wideGridArea + "\">");
+
+					AppendText(start, end, output);
+
+					output.Append("</div>");
+					}
+
+
+				// Close nested cell container
+
+				output.Append("</div>");
+
+
+				// Update position for next section
+
+				wideRowStart++;
+				narrowRowStart += 2;
+				}
+
+
+			// Closing tags
+
+			output.Append("</div></div>");
+			}
+
+
 		/* Function: AppendParameters
 		 */
 		protected void AppendParameters (PrototypeParameterLayout parameters, PrototypeColumnLayout columnLayout, int wideRowStart,
-														  int narrowRowStart, StringBuilder output)
+														  int wideColumnStart, int narrowRowStart, int narrowColumnStart, StringBuilder output)
 			{
 			int firstUsedColumn = columnLayout.FirstUsed;
 			int lastUsedColumn = columnLayout.LastUsed;
@@ -833,14 +1132,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 							// The order for grid-area is grid-row-start/grid-column-start/grid-row-end/grid-column-end
 
 							string wideGridArea = (wideRowStart + parameterIndex) + "/" +
-															 (columnLayout.UsedColumnIndexOf(columnIndex) + 2) + "/" +
+															 (wideColumnStart + columnLayout.UsedColumnIndexOf(columnIndex)) + "/" +
 															 (wideRowStart + parameterIndex + 1) + "/" +
-															 (columnLayout.UsedColumnIndexOf(columnIndex) + 3);
+															 (wideColumnStart + columnLayout.UsedColumnIndexOf(columnIndex) + 1);
 
-							string narrowGridArea = (narrowRowStart + 1 + parameterIndex) + "/" +
-																(columnLayout.UsedColumnIndexOf(columnIndex) + 1) + "/" +
-																(narrowRowStart + 1 + parameterIndex + 1) + "/" +
-																(columnLayout.UsedColumnIndexOf(columnIndex) + 2);
+							string narrowGridArea = (narrowRowStart + parameterIndex) + "/" +
+																(narrowColumnStart + columnLayout.UsedColumnIndexOf(columnIndex)) + "/" +
+																(narrowRowStart + parameterIndex + 1) + "/" +
+																(narrowColumnStart + columnLayout.UsedColumnIndexOf(columnIndex) + 1);
 
 							output.Append("<div class=\"P" + columnLayout.TypeOf(columnIndex).ToString() + (extraCSSClass != null ? ' ' + extraCSSClass : "") + "\" " +
 														"data-WideGridArea=\"" + wideGridArea + "\" " +

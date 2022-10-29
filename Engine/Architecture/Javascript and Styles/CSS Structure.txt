@@ -319,6 +319,16 @@ Parameter Section:
 			<P[CellType]>...
 			...
 
+			<PParameterCells Nested
+				data-WideColumnCount="..." data-NarrowColumnCount="..."
+				data-WideGridArea="..." data-NarrowGridArea="...">
+
+				<P[CellType]>...
+				<P[CellType]>...
+				...
+
+			</PParameterCells Nested>
+
 		</PParameterCells>
 	</PSection PParameterSection CStyle/PascalStyle>
 
@@ -329,6 +339,16 @@ Parameter Section:
 	prototype layouts.  data-WideGridArea will be applied by default via the style="" attribute, but they can be
 	switched between using JavaScript.  The parent PParameterCells object will also have a count of the total
 	number of columns in the data-WideColumnCount and data-NarrowColumnCount properties.
+
+	It's possible to have an nested set of parameter cells.  This is used when a section has two sets of parameters
+	and you want the before parameters parts to line up but not the parameters within them.  For example:
+
+	--- Code
+	int Indexer [unsigned int x,
+	                      int y ]
+	           { get,
+	             set  }
+	---
 
 
 	P[CellType]:
