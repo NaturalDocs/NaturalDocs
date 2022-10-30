@@ -1432,11 +1432,6 @@ td {
 #NDContentCover {
 	position: fixed;
 	z-index: $NDContentCoverZIndex;
-
-	/* Background image is required.  If it's set to "transparent" or isn't specified IE will send some events
-		through to what's being covered.  Even though the image is transparent and doesn't repeat the entire
-		div is still treated as opaque.  */
-	background: url("images/transparent.gif") no-repeat;
 	}
 
 

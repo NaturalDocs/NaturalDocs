@@ -526,8 +526,8 @@ var NDFramePage = new function ()
 			document.onmouseup = function (e) {  return NDFramePage.OnSizerMouseUp(e);  };
 			document.onselectstart = function () {  return false;  };  // Helps IE
 
-			// We need a div to cover the content iframe or else if you drag too fast over it IE will send some of the messages
-			// to the iframe instead.  The z-index is set in CSS to be between the sizers and everything else.
+			// We need a div to cover the content iframe or else some messages will be sent there instead and you'll have
+			// difficulty dragging the sizer over it.  The z-index is set in CSS to be between the sizers and everything else.
 			var contentCover = document.createElement("div");
 			contentCover.id = "NDContentCover";
 
