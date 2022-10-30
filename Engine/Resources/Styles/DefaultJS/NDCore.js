@@ -270,41 +270,6 @@ var NDCore = new function ()
 
 
 
-	// Group: Browser Functions
-	// ________________________________________________________________________
-
-
-	/* Function: IsIE
-		Returns whether or not you're using Internet Explorer.  This will not return true for Edge, either the EdgeHTML
-		version or the Chromium version.
-	*/
-	this.IsIE = function ()
-		{
-		return (navigator.userAgent.indexOf("MSIE") != -1 ||
-				   navigator.userAgent.indexOf("Trident") != -1);
-		};
-
-	/* Function: IsEdgeHTML
-		Returns whether or not you're using the EdgeHTML version of Microsoft Edge.  This will not return true for Internet
-		Explorer or the Chromium version of Edge.
-	*/
-	this.IsEdgeHTML = function ()
-		{
-		// Chromium Edge uses "Edg" with no e.
-		return (navigator.userAgent.indexOf("Edge") != -1);
-		};
-
-	/* Function: CaseInsensitiveAnchors
-		Returns whether the browser is known to use case-insensitive anchors, which would affect hash navigation.
-	*/
-	this.CaseInsensitiveAnchors = function ()
-		{
-		// Chromium Edge doesn't have this issue.
-		return (this.IsIE() || this.IsEdgeHTML());
-		};
-
-
-
 	// Group: Prototype Functions
 	// ________________________________________________________________________
 

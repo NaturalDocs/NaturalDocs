@@ -132,8 +132,6 @@ var NDSummary = new function ()
 			if (newLocation.summaryFile)
 				{  NDCore.LoadJavaScript(newLocation.summaryFile, "NDSummaryLoader");  }
 			}
-
-		this.FinishNavigation();
 		};
 
 
@@ -148,7 +146,6 @@ var NDSummary = new function ()
 			this.summaryEntries = summaryEntries;
 
 			this.Build();
-			this.FinishNavigation();
 
 
 			// Load the tooltips.  We only do this after the summary is loaded to avoid having to wait for it.
@@ -243,51 +240,6 @@ var NDSummary = new function ()
 		// Don't resize on the loading notice to avoid unnecessary jumpiness.
 		if (this.summaryEntries != undefined)
 			{  NDFramePage.SizeSummaryToContent();  }
-		};
-
-
-	/* Function: FinishNavigation
-		In some cases the content iframe can't be set by <NDFramePage.OnHashChange()> because the browser uses
-		case-insensitive anchors.  This function will set the iframe in a way that works with them in these situations.
-	*/
-	this.FinishNavigation = function ()
-		{
-		if (NDCore.CaseInsensitiveAnchors() &&
-			this.summaryEntries != undefined &&
-			NDFramePage.currentLocation != undefined &&
-			NDFramePage.currentLocation.member != undefined)
-			{
-			var topicID = -1;
-
-			for (var i = 0; i < this.summaryEntries.length; i++)
-				{
-				if (this.summaryEntries[i][$Entry_Symbol] == NDFramePage.currentLocation.member)
-					{
-					topicID = this.summaryEntries[i][$Entry_TopicID];
-					break;
-					}
-				}
-
-			var frame = document.getElementById("CFrame");
-			var targetLocation = NDFramePage.currentLocation.contentPage;
-
-			// Replace the symbol anchor with the Topic# anchor.  If we didn't find the entry in the summary, we
-			// still want to load the base page.
-			var hashIndex = targetLocation.indexOf('#');
-			if (hashIndex != -1)
-				{  targetLocation = targetLocation.substr(0, hashIndex);  }
-
-			if (topicID != -1)
-				{  targetLocation += "#Topic" + topicID;  }
-
-			if (NDThemes.effectiveThemeID != undefined)
-				{  targetLocation = NDCore.AddQueryParams(targetLocation, "Theme=" + NDThemes.effectiveThemeID);  }
-
-			frame.contentWindow.location = targetLocation;
-
-			// Set focus to the content page iframe so that keyboard scrolling works without clicking over to it.
-			frame.contentWindow.focus();
-			}
 		};
 
 

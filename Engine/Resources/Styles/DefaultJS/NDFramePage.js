@@ -104,14 +104,6 @@ var NDFramePage = new function ()
 		document.onmousedown = function (e) {  return NDFramePage.OnMouseDown(e);  };
 
 
-		// ...however, IE 11 and EdgeHTML still use case-insensitive anchors, so we still need to poll the location to detect
-		// navigation between "Member" and "member".  They'll still mess up the back/forward browser history a bit, but
-		// at least clicking between them will work.
-
-		if (NDCore.CaseInsensitiveAnchors())
-			{  this.CreateHashChangePoller();  }
-
-
 		// We want to close the search results when we click anywhere else.  OnMouseDown handles clicks on most of the
 		// page but not inside the content iframe.  window.onblur will fire for IE 10, Firefox, and Chrome.  document.onblur
 		// will only fire for Firefox.  IE 8 and earlier won't fire either, oh well.
@@ -159,13 +151,6 @@ var NDFramePage = new function ()
 		this.currentLocation = new NDLocation(location.hash);
 
 
-		// Update the poller for the browsers that need it to prevent this function from being called twice.  The poller will
-		// therefore only catch navigation that the event doesn't fire for, like moving from "Member" to "member".
-
-		if (this.hashChangePoller != undefined)
-			{  this.hashChangePoller.lastHash = location.hash;  }
-
-
 		// Clear any search results since that may be the way we got here.
 
 		NDSearch.ClearResults();
@@ -196,26 +181,12 @@ var NDFramePage = new function ()
 		// Set the content page
 
 		var frame = document.getElementById("CFrame");
+		var newLocation = this.currentLocation.contentPage;
 
-		// If the browser treats anchors as case-insensitive and the hash path has a member we won't do the navigation here because
-		// it would confuse member and Member.  Instead we'll let the summary look up the member and do the navigation with a
-		// Topic# anchor.
-		if (NDCore.CaseInsensitiveAnchors() && this.currentLocation.member != undefined)
-			{
-			// Do nothing.  We can't even go to the base page here and let the summary replace it with the anchor because they don't
-			// always occur in the right order.
-			}
+		if (NDThemes.effectiveThemeID != undefined)
+			{  newLocation = NDCore.AddQueryParams(newLocation, "Theme=" + NDThemes.effectiveThemeID);  }
 
-		// Everything else is case sensitive and can go right to the target without waiting for the summary to load.
-		else
-			{
-			var newLocation = this.currentLocation.contentPage;
-
-			if (NDThemes.effectiveThemeID != undefined)
-				{  newLocation = NDCore.AddQueryParams(newLocation, "Theme=" + NDThemes.effectiveThemeID);  }
-
-			frame.contentWindow.location.replace(newLocation);
-			}
+		frame.contentWindow.location.replace(newLocation);
 
 
 		// Set focus to the content page iframe so that keyboard scrolling works without clicking over to it.
@@ -283,49 +254,6 @@ var NDFramePage = new function ()
 			{  document.title = pageTitle + " - " + this.projectTitle;  }
 		else
 			{  document.title = this.projectTitle;  }
-		};
-
-
-	/* Function: CreateHashChangePoller
-		Creates and starts <hashChangePoller> to make sure browsers with case-insensitive anchors still fire <OnHashChange()>
-		when navigating between "Member" and "member".
-	*/
-	this.CreateHashChangePoller = function ()
-		{
-		this.hashChangePoller = {
-			// timeoutID: undefined,
-			timeoutLength: 200,  // Every fifth of a second
-
-			// Remember the initial hash so it doesn't get triggered immediately.
-			lastHash: location.hash
-			};
-
-		this.hashChangePoller.Start = function ()
-			{
-			this.Poll();
-			};
-
-		this.hashChangePoller.Stop = function ()
-			{
-			if (this.timeoutID != undefined)
-				{
-				clearTimeout(this.timeoutID);
-				this.timeoutID = undefined;
-				}
-			};
-
-		this.hashChangePoller.Poll = function ()
-			{
-			if (location.hash != this.lastHash)
-				{
-				this.lastHash = location.hash;
-				NDFramePage.OnHashChange();
-				}
-
-			this.timeoutID = setTimeout("NDFramePage.hashChangePoller.Poll()", this.timeoutLength);
-			};
-
-		this.hashChangePoller.Start();
 		};
 
 
@@ -882,10 +810,6 @@ var NDFramePage = new function ()
 	/* var: sourceFileHomePageHashPath
 		The hash path of the source file serving as a custom home page, or undefined if none.  This will be 
 		undefined if there is no custom home page or if there is a custom home page but it is a HTML file.
-	*/
-
-	/* var: hashChangePoller
-		An object to assist with hash change polling on browsers that use case-insensitive anchors.
 	*/
 
 
