@@ -54,7 +54,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			while (iterator.IsInBounds)
 				{
-				if (TryToSkipComment(ref iterator, ParseMode.SyntaxHighlight) ||
+				if (TryToSkipAttributes(ref iterator, ParseMode.SyntaxHighlight) ||
+					TryToSkipComment(ref iterator, ParseMode.SyntaxHighlight) ||
 					TryToSkipString(ref iterator, ParseMode.SyntaxHighlight) ||
 					TryToSkipNumber(ref iterator, ParseMode.SyntaxHighlight))
 					{
@@ -99,6 +100,150 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		// Group: Component Parsing Functions
 		// __________________________________________________________________________
+
+
+		/* Function: TryToSkipAttributes
+		 *
+		 * If the iterator is on attributes, moves it past them and returns true.  This will skip multiple consecutive attributes
+		 * blocks if they are only separated by whitespace.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipAttributes (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			if (!TryToSkipAttributesBlock(ref iterator, mode))
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+
+			for (;;)
+				{
+				TryToSkipWhitespace(ref lookahead, mode);
+
+				if (TryToSkipAttributesBlock(ref lookahead, mode))
+					{
+					iterator = lookahead;
+					}
+				else
+					{
+					ResetTokensBetween(iterator, lookahead, mode);
+					break;
+					}
+				}
+
+			return true;
+			}
+
+
+		/* Function: TryToSkipAttributesBlock
+		 *
+		 * If the iterator is on an attributes block, moves it past it and returns true.  This will only skip a single (* *) block.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipAttributesBlock (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			if (iterator.MatchesAcrossTokens("(*") == false)
+				{  return false;  }
+
+			bool success = false;
+
+			if (mode == ParseMode.ParsePrototype)
+				{  iterator.SetPrototypeParsingTypeByCharacters(PrototypeParsingType.StartOfParams, 2);  }
+
+			TokenIterator lookahead = iterator;
+			lookahead.NextByCharacters(2);
+
+			while (lookahead.IsInBounds)
+				{
+				if (lookahead.MatchesAcrossTokens("*)"))
+					{
+					if (mode == ParseMode.ParsePrototype)
+						{  lookahead.SetPrototypeParsingTypeByCharacters(PrototypeParsingType.EndOfParams, 2);  }
+
+					lookahead.NextByCharacters(2);
+
+					success = true;
+					break;
+					}
+				else if (lookahead.Character == '=')
+					{
+					if (mode == ParseMode.ParsePrototype)
+						{  lookahead.PrototypeParsingType = PrototypeParsingType.PropertyValueSeparator;  }
+
+					lookahead.Next();
+					}
+				else if (lookahead.Character == ',')
+					{
+					if (mode == ParseMode.ParsePrototype)
+						{  lookahead.PrototypeParsingType = PrototypeParsingType.ParamSeparator;  }
+
+					lookahead.Next();
+					}
+				else if (lookahead.Character == ')')
+					{
+					// If we found a ) before a *) then this isn't an attributes block.  It could be a pointer like (*pointer), so
+					// break and fail.
+					break;
+					}
+				else
+					{
+					// This will skip nested parentheses so we won't fail on the closing parenthesis of (* name = (value) *).
+					GenericSkip(ref lookahead);
+					}
+				}
+
+			if (!success)
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+
+			if (mode == ParseMode.SyntaxHighlight)
+				{
+				iterator.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.Metadata);
+				}
+			else if (mode == ParseMode.ParsePrototype)
+				{
+				// We marked StartOfParams, EndOfParams, ParamSeparator, and PropertyValueSeparator.
+				// Find and mark tokens that should be Name and PropertyValue now.
+				TokenIterator end = lookahead;
+				lookahead = iterator;
+
+				bool inValue = false;
+
+				while (lookahead < end)
+					{
+					if (lookahead.PrototypeParsingType == PrototypeParsingType.PropertyValueSeparator)
+						{  inValue = true;  }
+					else if (lookahead.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
+						{  inValue = false;  }
+					else if (lookahead.PrototypeParsingType == PrototypeParsingType.Null &&
+							   lookahead.FundamentalType != FundamentalType.Whitespace)
+						{
+						if (inValue)
+							{  lookahead.PrototypeParsingType = PrototypeParsingType.PropertyValue;  }
+						else
+							{  lookahead.PrototypeParsingType = PrototypeParsingType.Name;  }
+						}
+
+					lookahead.Next();
+					}
+				}
+
+			iterator = lookahead;
+			return true;
+			}
 
 
 		/* Function: TryToSkipIdentifier
@@ -175,6 +320,80 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		// Group: Base Parsing Functions
 		// __________________________________________________________________________
+
+
+		/* Function: GenericSkip
+		 *
+		 * Advances the iterator one place through general code.
+		 *
+		 * - If the position is on a string, it will skip it completely.
+		 * - If the position is on an opening brace, parenthesis, or bracket it will skip until the past the closing symbol.
+		 * - Otherwise it skips one token.
+		 */
+		protected void GenericSkip (ref TokenIterator iterator)
+			{
+			if (iterator.MatchesAcrossTokens("(*"))
+				{
+				iterator.Next();
+				GenericSkipUntilAfter(ref iterator, "*)");
+				}
+			else if (iterator.Character == '(')
+				{
+				iterator.Next();
+				GenericSkipUntilAfter(ref iterator, ')');
+				}
+			else if (iterator.Character == '[')
+				{
+				iterator.Next();
+				GenericSkipUntilAfter(ref iterator, ']');
+				}
+			else if (iterator.Character == '{')
+				{
+				iterator.Next();
+				GenericSkipUntilAfter(ref iterator, '}');
+				}
+			else if (TryToSkipString(ref iterator) ||
+					  TryToSkipWhitespace(ref iterator))
+				{  }
+			else
+				{  iterator.Next();  }
+			}
+
+
+		/* Function: GenericSkipUntilAfter
+		 * Advances the iterator via <GenericSkip()> until a specific symbol is reached and passed.
+		 */
+		protected void GenericSkipUntilAfter (ref TokenIterator iterator, char symbol)
+			{
+			while (iterator.IsInBounds)
+				{
+				if (iterator.Character == symbol)
+					{
+					iterator.Next();
+					break;
+					}
+				else
+					{  GenericSkip(ref iterator);  }
+				}
+			}
+
+
+		/* Function: GenericSkipUntilAfter
+		 * Advances the iterator via <GenericSkip()> until a specific symbol is reached and passed.
+		 */
+		protected void GenericSkipUntilAfter (ref TokenIterator iterator, string symbol)
+			{
+			while (iterator.IsInBounds)
+				{
+				if (iterator.MatchesAcrossTokens(symbol))
+					{
+					iterator.NextByCharacters(symbol.Length);
+					break;
+					}
+				else
+					{  GenericSkip(ref iterator);  }
+				}
+			}
 
 
 		/* Function: TryToSkipWhitespace
