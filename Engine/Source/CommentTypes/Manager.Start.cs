@@ -669,7 +669,9 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				baseCommentType.SetScope(overridingCommentType.Scope,
 														  overridingCommentType.ScopePropertyLocation);
 				}
-			if (overridingCommentType.HasHierarchyName)
+
+			// Use PropertyLocation.IsDefined instead of HasHierarchyName because if it was set back to null we want to apply it
+			if (overridingCommentType.HierarchyNamePropertyLocation.IsDefined)
 				{
 				baseCommentType.SetHierarchyName(overridingCommentType.HierarchyName,
 																		overridingCommentType.HierarchyNamePropertyLocation);

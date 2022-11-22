@@ -476,6 +476,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 								{
 								string[] flagStrings = commaSeparatorRegex.Split(value);
 								CommentType.FlagValue flagsValue = default;
+								string hierarchyName = null;
 
 								foreach (string flagString in flagStrings)
 									{
@@ -495,7 +496,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 
 										if (hierarchyMatch.Success)
 											{
-											currentCommentType.SetHierarchyName(hierarchyMatch.Groups[1].ToString(), file.PropertyLocation);
+											hierarchyName = hierarchyMatch.Groups[1].ToString();
 											}
 										else if (string.IsNullOrEmpty(flagString) == false)
 											{
@@ -507,6 +508,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 									}
 
 								currentCommentType.SetFlags(flagsValue, file.PropertyLocation);
+								currentCommentType.SetHierarchyName(hierarchyName, file.PropertyLocation);
 								}
 							}
 						}
