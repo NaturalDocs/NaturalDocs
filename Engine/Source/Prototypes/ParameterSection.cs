@@ -221,6 +221,33 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				}
 
 
+			// Remove the last parameter if it's empty.  This could happen when formatting things like structs where there's
+			// a separator after each member and not just between them.  However, don't remove it if there's only one.
+
+			if (parameters != null &&
+				parameters.Count > 1)
+				{
+				var lastParameter = parameters[parameters.Count - 1];
+				bool lastParameterIsEmpty = true;
+
+				iterator = lastParameter.Start;
+
+				while (iterator < lastParameter.End)
+					{
+					if (iterator.FundamentalType != FundamentalType.Whitespace)
+						{
+						lastParameterIsEmpty = false;
+						break;
+						}
+					}
+
+				if (lastParameterIsEmpty)
+					{
+					parameters.RemoveAt(parameters.Count - 1);
+					}
+				}
+
+
 			// Parameter style
 
 			// Set to null so it recalculates on next use rather than doing it preemptively
