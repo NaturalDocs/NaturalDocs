@@ -61,6 +61,7 @@
     <Compile Include="Source\Output\HTML\Components\PrototypeColumnLayout.cs" />
     <Compile Include="Source\Output\HTML\Components\PrototypeParameterLayout.cs" />
     <Compile Include="Source\Output\HTML\Target.Start.cs" />
+    <Compile Include="Source\Prototypes\ParsedPrototypes\SystemVerilog.cs" />
     <Compile Include="Source\RelativePath.cs" />
     <Compile Include="Source\CommentTypes\Config.cs" />
     <Compile Include="Source\CommentTypes\ConfigFiles\TextFile.cs" />
