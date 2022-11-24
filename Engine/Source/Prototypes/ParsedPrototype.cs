@@ -105,7 +105,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * Returns the bounds of a numbered parameter.  Numbers start at zero.  It will return false if one does not exist at that
 		 * number.
 		 */
-		public bool GetParameter (int parameterIndex, out TokenIterator parameterStart, out TokenIterator parameterEnd)
+		virtual public bool GetParameter (int parameterIndex, out TokenIterator parameterStart, out TokenIterator parameterEnd)
 			{
 			if (sections[mainSectionIndex] is ParameterSection)
 				{
@@ -123,7 +123,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		/* Function: GetParameterName
 		 * Returns the bounds of the name of the passed parameter, or false if it couldn't find it.
 		 */
-		public bool GetParameterName (int parameterIndex, out TokenIterator parameterNameStart, out TokenIterator parameterNameEnd)
+		virtual public bool GetParameterName (int parameterIndex, out TokenIterator parameterNameStart, out TokenIterator parameterNameEnd)
 			{
 			if (sections[mainSectionIndex] is ParameterSection)
 				{
@@ -151,8 +151,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * If implied types is set and <SupportsImpliedTypes> is true this will return "int" for y in "int x, y".  If it is not set or
 		 * <SupportsImpliedTypes> is false then it will return false for y.
 		 */
-		public bool BuildFullParameterType (int parameterIndex, out TokenIterator fullTypeStart, out TokenIterator fullTypeEnd,
-															bool impliedTypes = true)
+		virtual public bool BuildFullParameterType (int parameterIndex, out TokenIterator fullTypeStart, out TokenIterator fullTypeEnd,
+																	  bool impliedTypes = true)
 			{
 			if (sections[mainSectionIndex] is ParameterSection)
 				{
@@ -176,7 +176,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * If implied types is set and <SupportsImpliedTypes> is true this will return "int" for y in "int x, y".  If it is not set or
 		 * <SupportsImpliedTypes> is false then it will return false for y.
 		 */
-		public bool GetBaseParameterType (int parameterIndex, out TokenIterator start, out TokenIterator end, bool impliedTypes = true)
+		virtual public bool GetBaseParameterType (int parameterIndex, out TokenIterator start, out TokenIterator end, bool impliedTypes = true)
 			{
 			if (sections[mainSectionIndex] is ParameterSection)
 				{
@@ -195,7 +195,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		/* Function: GetParameterDefaultValue
 		 * Returns the bounds of the default value of the passed parameter, or false if it doesn't exist.
 		 */
-		public bool GetParameterDefaultValue (int parameterIndex, out TokenIterator defaultValueStart, out TokenIterator defaultValueEnd)
+		virtual public bool GetParameterDefaultValue (int parameterIndex, out TokenIterator defaultValueStart, out TokenIterator defaultValueEnd)
 			{
 			if (sections[mainSectionIndex] is ParameterSection)
 				{
@@ -242,7 +242,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * Each section containing <PrototypeParsingType.StartOfParams> will generate a <ParameterSection>.  All others will generate a
 		 * regular <Section>.
 		 */
-		public void RecalculateSections ()
+		virtual public void RecalculateSections ()
 			{
 			if (sections == null)
 				{  sections = new List<Section>(1);  }
@@ -396,7 +396,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 		/* Property: NumberOfParameters
 		 */
-		public int NumberOfParameters
+		virtual public int NumberOfParameters
 			{
 			get
 				{
