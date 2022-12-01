@@ -309,7 +309,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: GroupParameterSections
-		 * Determines how many consecutive <Prototype.ParameterSections> should be grouped together for the next call to
+		 * Determines how many consecutive <Prototypes.ParameterSections> should be grouped together for the next call to
 		 * <AppendParameterSections()>, and how they should be aligned in the output.  The count will always be at least 1.
 		 */
 		protected void GroupParameterSections (int sectionIndex, out int count, out ParameterGroupAlignment alignment)
@@ -379,7 +379,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: FormatParameterSections
-		 * Reformats some cells in the <Prototype.ParameterSections> to make the spacing consistent, including some tweaks
+		 * Reformats some cells in the <Prototypes.ParameterSections> to make the spacing consistent, including some tweaks
 		 * based on the shared column layout.  Returns the shared column layout if you're using
 		 * <ParameterGroupAlignment.AlignAllColumns>, null otherwise.
 		 */
@@ -710,7 +710,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: RecalculateColumns
-		 * Runs <PrototypeColumnLayout.RecalculateColumns()> on each <PrototypeParameterLayout>.
+		 * Runs <PrototypeParameterLayout.RecalculateColumns()> on each <PrototypeParameterLayout>.
 		 */
 		protected void RecalculateColumns (int sectionIndex, int sectionCount)
 			{
