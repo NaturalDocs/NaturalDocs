@@ -218,12 +218,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 					var sharedColumnLayout = FormatParameterSections(sectionIndex, sectionCount, alignment);
 
-					if (alignment == ParameterGroupAlignment.AlignAllColumns)
-						{  AppendSharedColumnParameterSections(sectionIndex, sectionCount, sharedColumnLayout, output);  }
-					else if (alignment == ParameterGroupAlignment.AlignBeforeParameters)
-						{  AppendLeftAlignedParameterSections(sectionIndex, sectionCount, output);  }
-					else
-						{  throw new NotImplementedException();  }
+					AppendParameterSections(sectionIndex, sectionCount, alignment, sharedColumnLayout, output);
 
 					sectionIndex += sectionCount;
 					}
@@ -716,6 +711,21 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			{
 			for (int i = sectionIndex; i < sectionIndex + sectionCount; i++)
 				{  parameterLayouts[i].RecalculateColumns();  }
+			}
+
+
+		/* Function: AppendParameterSections
+		 * Builds the HTML for one or more <Prototypes.ParameterSections>.  They will always be in wide form.
+		 */
+		protected void AppendParameterSections (int sectionIndex, int sectionCount, ParameterGroupAlignment alignment,
+																	 PrototypeColumnLayout columnLayout, StringBuilder output)
+			{
+			if (alignment == ParameterGroupAlignment.AlignAllColumns)
+				{  AppendSharedColumnParameterSections(sectionIndex, sectionCount, columnLayout, output);  }
+			else if (alignment == ParameterGroupAlignment.AlignBeforeParameters)
+				{  AppendLeftAlignedParameterSections(sectionIndex, sectionCount, output);  }
+			else
+				{  throw new NotImplementedException();  }
 			}
 
 
