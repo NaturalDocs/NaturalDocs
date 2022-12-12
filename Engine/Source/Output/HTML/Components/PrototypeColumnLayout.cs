@@ -211,25 +211,31 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			#endif
 
 			if (parameterSection.NumberOfParameters == 0)
-				{  return;  }
-
-			// Just copy the first parameter's widths.  Don't merge this loop into the second one because we may be
-			// recalculating an existing array and want to overwrite its values to start.
-			for (int columnIndex = 0; columnIndex < this.Count; columnIndex++)
-				{
-				columnWidths[columnIndex] = cells[0, columnIndex].Width;
-				}
-
-			// See if later parameter widths are bigger.
-			for (int parameterIndex = 1; parameterIndex < parameterSection.NumberOfParameters; parameterIndex++)
 				{
 				for (int columnIndex = 0; columnIndex < this.Count; columnIndex++)
-					{
-					int oldWidth = columnWidths[columnIndex];
-					int newWidth = cells[parameterIndex, columnIndex].Width;
+					{  columnWidths[columnIndex] = 0;  }
+				}
 
-					if (newWidth > oldWidth)
-						{  columnWidths[columnIndex] = newWidth;  }
+			else
+				{
+				// Just copy the first parameter's widths.  Don't merge this loop into the second one because we may be
+				// recalculating an existing array and want to overwrite its values to start.
+				for (int columnIndex = 0; columnIndex < this.Count; columnIndex++)
+					{
+					columnWidths[columnIndex] = cells[0, columnIndex].Width;
+					}
+
+				// See if later parameter widths are bigger.
+				for (int parameterIndex = 1; parameterIndex < parameterSection.NumberOfParameters; parameterIndex++)
+					{
+					for (int columnIndex = 0; columnIndex < this.Count; columnIndex++)
+						{
+						int oldWidth = columnWidths[columnIndex];
+						int newWidth = cells[parameterIndex, columnIndex].Width;
+
+						if (newWidth > oldWidth)
+							{  columnWidths[columnIndex] = newWidth;  }
+						}
 					}
 				}
 			}

@@ -181,6 +181,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 */
 		protected void CalculateCells ()
 			{
+			if (parameters.NumberOfParameters == 0)
+				{
+				cells = null;
+				return;
+				}
+
 			cells = new PrototypeCellLayout[ parameters.NumberOfParameters, PrototypeColumnLayout.CountOf(parameters.ParameterStyle) ];
 
 			for (int parameterIndex = 0; parameterIndex < parameters.NumberOfParameters; parameterIndex++)
@@ -860,6 +866,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			{
 			get
 				{
+				if (NumberOfParameters == 0)
+					{  return false;  }
+
 				int lastParameterIndex = NumberOfParameters - 1;
 				int lastColumnIndex = columns.LastUsed;
 
@@ -914,6 +923,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * A table of cells representing the parameter table.  There is one row per parameter, and each row is a series of
 		 * <PrototypeCellLayouts> in either <PrototypeColumnLayout.CColumnOrder> or
 		 * <PrototypeColumnLayout.PascalColumnOrder>.  If the column is empty the start and end indexes will be the same.
+		 * If there are no parameters, this will be null.
 		 */
 		protected PrototypeCellLayout[,] cells;
 
