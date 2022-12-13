@@ -33,6 +33,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		// __________________________________________________________________________
 
 
+		/* Enum: SectionType
+		 *
+		 *		Plain - A plain prototype section without parameter formatting.
+		 *		Parameter - A prototype section with parameter formatting.
+		 */
+		public enum SectionType
+			{  Plain, Parameter  }
+
+
 		/* Enum: ParameterGroupAlignment
 		 *
 		 * The way multiple <PrototypeParameterLayouts> should be aligned when together in a group.
@@ -158,15 +167,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					parsedPrototype.Sections[i] is Prototypes.ParameterSection)
 					{
 					var parameterSection = (Prototypes.ParameterSection)parsedPrototype.Sections[i];
+					parameterLayouts[i] = new PrototypeParameterLayout(parsedPrototype, parameterSection);
 
-					// Empty parameter sections don't get a layout nor do they make hasParameters true.
 					if (parameterSection.NumberOfParameters > 0)
-						{
-						parameterLayouts[i] = new PrototypeParameterLayout(parsedPrototype, parameterSection);
-						hasParameters = true;
-						}
-					else
-						{  parameterLayouts[i] = null;  }
+						{  hasParameters = true;  }
 					}
 				else
 					{  parameterLayouts[i] = null;  }
@@ -199,29 +203,25 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			int sectionIndex = 0;
 
+			SectionType groupType;
+			int groupCount;
+			ParameterGroupAlignment groupAlignment;
+
 			while (sectionIndex < parsedPrototype.Sections.Count)
 				{
- 				var sectionParameterLayout = parameterLayouts[sectionIndex];
+				GroupSections(sectionIndex, out groupType, out groupCount, out groupAlignment);
 
-				// sectionParameterLayout will be null if it wasn't a parameter section or it contained no parameters
-				if (sectionParameterLayout == null)
+				if (groupType == SectionType.Plain)
+					{  AppendPlainSections(sectionIndex, groupCount, output);  }
+				else if (groupType == SectionType.Parameter)
 					{
-					AppendPlainSection(sectionIndex, output);
-					sectionIndex++;
+					var sharedColumnLayout = FormatParameterSections(sectionIndex, groupCount, groupAlignment);
+					AppendParameterSections(sectionIndex, groupCount, groupAlignment, sharedColumnLayout, output);
 					}
 				else
-					{
-					int sectionCount;
-					ParameterGroupAlignment alignment;
+					{  throw new NotImplementedException();  }
 
-					GroupParameterSections(sectionIndex, out sectionCount, out alignment);
-
-					var sharedColumnLayout = FormatParameterSections(sectionIndex, sectionCount, alignment);
-
-					AppendParameterSections(sectionIndex, sectionCount, alignment, sharedColumnLayout, output);
-
-					sectionIndex += sectionCount;
-					}
+				sectionIndex += groupCount;
 				}
 
 
@@ -291,85 +291,147 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			}
 
 
-		/* Function: AppendPlainSection
+		/* Function: GroupSections
+		 * Determines how many consecutive <Prototypes.Sections> should be formatted together in calls to <AppendPlainSections()>
+		 * or <AppendParameterSections()>.  The count will always be at least one.
 		 */
-		protected void AppendPlainSection (int sectionIndex, StringBuilder output)
+		protected void GroupSections (int sectionIndex, out SectionType groupType, out int groupCount,
+													out ParameterGroupAlignment groupAlignment)
 			{
 			var section = parsedPrototype.Sections[sectionIndex];
 
-			output.Append("<div class=\"PSection PPlainSection\">");
-			AppendText_ExcludePartialKeyword(section.Start, section.End, output);
-			output.Append("</div>");
-			}
-
-
-		/* Function: GroupParameterSections
-		 * Determines how many consecutive <Prototypes.ParameterSections> should be grouped together for the next call to
-		 * <AppendParameterSections()>, and how they should be aligned in the output.  The count will always be at least 1.
-		 */
-		protected void GroupParameterSections (int sectionIndex, out int count, out ParameterGroupAlignment alignment)
-			{
-
-			// First determine how long the group should be
-
-			count = 1;
-
-			TokenIterator start, end;
-			var parameterStyle = parameterLayouts[sectionIndex].ParameterStyle;
-
-			for (int i = sectionIndex + 1; i < parsedPrototype.Sections.Count; i++)
+			if (section is Prototypes.ParameterSection)
 				{
-				// Don't include the section in the group if it's not a parameter section or not the same parameter style
-				if (parameterLayouts[i] == null ||
-					parameterLayouts[i].ParameterStyle != parameterStyle)
-					{  break;  }
-
-				// Also, only include it if the BeforeParameters section is something short like { or (*
-				(parsedPrototype.Sections[i] as Prototypes.ParameterSection).GetBeforeParameters(out start, out end);
-				int beforeParametersLength = end.RawTextIndex - start.RawTextIndex;
-
-				if (beforeParametersLength > 2)
-					{  break;  }
-				else if (start.Character != '(' &&
-						   start.Character != '[' &&
-						   start.Character != '{' &&
-						   start.Character != '<')
-					{  break;  }
-
-				count++;
-				}
+				var parameterSection = (Prototypes.ParameterSection)section;
 
 
-			// Next determine the alignment, which is only relevant if there's more than one member of the group
+				// An empty parameter section can be formatted as a plain section.  If there are additional following short sections
+				// we can add them on to the plain section if they're also empty, such as "module ModuleName #() ()".  However, if
+				// any of them aren't empty we need to switch to formatting them all as parameter sections, such as
+				// "module ModuleName #() (int x)".
 
-			alignment = ParameterGroupAlignment.AlignAllColumns;
-
-			if (count > 1)
-				{
-				// The alignment defaults to AlignAllColumns.  The parameter sections can be one of three types, determined by
-				// the syntax highlighting of the variable name:
-				//
-				//    - Regular parameters, which should have no highlighting on the name
-				//    - Property members like get/set/init, which should be highlighted as keywords
-				//    - Metadata properties, which should be highlighted as metadata
-				//
-				// All sections must have the same type to keep using AlignAllColumns.  If any are different then we switch to
-				// AlignBeforeParameters.  Trying to align the columns of disparate parameter types will not look good.
-
-				(parsedPrototype.Sections[sectionIndex] as Prototypes.ParameterSection).GetParameterName(0, out start, out end);
-				var highlightType = start.SyntaxHighlightingType;
-
-				for (int i = sectionIndex + 1; i < sectionIndex + count; i++)
+				if (parameterSection.NumberOfParameters == 0)
 					{
-					(parsedPrototype.Sections[i] as Prototypes.ParameterSection).GetParameterName(0, out start, out end);
+					groupCount = 1;
+					groupType = SectionType.Plain;
+					groupAlignment = ParameterGroupAlignment.AlignBeforeParameters;
 
-					if (start.SyntaxHighlightingType != highlightType)
+					for (int i = sectionIndex + 1; i < parsedPrototype.Sections.Count; i++)
 						{
-						alignment = ParameterGroupAlignment.AlignBeforeParameters;
-						break;
+						if (parsedPrototype.Sections[i] is not Prototypes.ParameterSection)
+							{  break;  }
+
+						var nextParameterSection = (parsedPrototype.Sections[i] as Prototypes.ParameterSection);
+						var nextParameterLayout = parameterLayouts[i];
+
+						if (nextParameterLayout.BeforeParametersWidth > 3 ||
+							nextParameterLayout.AfterParametersWidth > 8)
+							{  break;  }
+
+						TokenIterator start = nextParameterSection.Start;
+
+						if (start.Character != '(' &&
+							start.Character != '[' &&
+							start.Character != '{' &&
+							start.Character != '<')
+							{  break;  }
+
+						if (nextParameterLayout.NumberOfParameters > 0)
+							{  groupType = SectionType.Parameter;  }
+
+						groupCount++;
+						}
+					}
+
+
+				// Parameter sections that aren't empty.  If there are additional following short sections we can add them on,
+				// but they can be formatted so that all the columns align or so that each section is left aligned but the columns
+				// are independent, depending on how similar they are.
+
+				else
+					{
+					// The alignment defaults to AlignAllColumns.  The parameter sections can be one of three types, determined by
+					// the syntax highlighting of the variable name:
+					//
+					//    - Regular parameters, which should have no highlighting on the name
+					//    - Property members like get/set/init, which should be highlighted as keywords
+					//    - Metadata properties, which should be highlighted as metadata
+					//
+					// All sections must have the same type to keep using AlignAllColumns.  If any are different then we switch to
+					// AlignBeforeParameters.  Trying to align the columns of disparate parameter types will not look good.
+
+					groupType = SectionType.Parameter;
+					groupCount = 1;
+					groupAlignment = ParameterGroupAlignment.AlignAllColumns;
+
+					var parameterStyle = parameterLayouts[sectionIndex].ParameterStyle;
+
+					TokenIterator start, end;
+					(parsedPrototype.Sections[sectionIndex] as Prototypes.ParameterSection).GetParameterName(0, out start, out end);
+					var highlightType = start.SyntaxHighlightingType;
+
+					for (int i = sectionIndex + 1; i < parsedPrototype.Sections.Count; i++)
+						{
+						if (parsedPrototype.Sections[i] is not Prototypes.ParameterSection)
+							{  break;  }
+
+						var nextParameterSection = (parsedPrototype.Sections[i] as Prototypes.ParameterSection);
+						var nextParameterLayout = parameterLayouts[i];
+
+						if (nextParameterLayout.BeforeParametersWidth > 3)
+							{  break;  }
+
+						start = nextParameterSection.Start;
+
+						if (start.Character != '(' &&
+							start.Character != '[' &&
+							start.Character != '{' &&
+							start.Character != '<')
+							{  break;  }
+
+						if (nextParameterSection.NumberOfParameters == 0 ||
+							nextParameterSection.ParameterStyle != parameterStyle)
+							{  groupAlignment = ParameterGroupAlignment.AlignBeforeParameters;  }
+						else
+							{
+							nextParameterSection.GetParameterName(0, out start, out end);
+
+							if (start.SyntaxHighlightingType != highlightType)
+								{  groupAlignment = ParameterGroupAlignment.AlignBeforeParameters;  }
+							}
+
+						groupCount++;
 						}
 					}
 				}
+
+			// A plain section is always just a single plain section.
+			else
+				{
+				groupType = SectionType.Plain;
+				groupCount = 1;
+				groupAlignment = ParameterGroupAlignment.AlignBeforeParameters;  // ignored, but have to set a value
+				}
+			}
+
+
+		/* Function: AppendPlainSections
+		 */
+		protected void AppendPlainSections (int sectionIndex, int count, StringBuilder output)
+			{
+			output.Append("<div class=\"PSection PPlainSection\">");
+
+			for (int i = sectionIndex; i < sectionIndex + count; i++)
+				{
+				var section = parsedPrototype.Sections[i];
+
+				if (i > sectionIndex)
+					{  output.Append(' ');  }
+
+				AppendText_ExcludePartialKeyword(section.Start, section.End, output);
+				}
+
+			output.Append("</div>");
 			}
 
 
