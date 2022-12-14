@@ -1783,6 +1783,13 @@ td {
 			white-space: normal;
 			}
 
+		/* Indent wrapped text only */
+		div.PPlainSection,
+		.NarrowForm div.PBeforeParameters {
+			padding-left: 3ch;
+			text-indent: -3ch;
+			}
+
 		.WideForm .LeftSpaceOnWide,
 		.NarrowForm .LeftSpaceOnNarrow { padding-left: 1ch; }
 		.WideForm .RightSpaceOnWide,
