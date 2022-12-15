@@ -1,9 +1,34 @@
-<div class="NDClassPrototype"><div class="CPEntry TClass Current"><div class="CPName">Plain</div></div></div>
+<div class="NDClassPrototype">
+   <div class="CPEntry TClass Current">
+      <div class="CPName">Plain</div>
+   </div>
+</div>
 -----
-<div class="NDClassPrototype"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">public static</span></div><div class="CPName">WithModifiers</div></div></div>
+<div class="NDClassPrototype">
+   <div class="CPEntry TClass Current">
+      <div class="CPModifiers"><span class="SHKeyword">public static</span></div>
+      <div class="CPName">WithModifiers</div>
+   </div>
+</div>
 -----
-<div class="NDClassPrototype"><div class="CPEntry TClass Current"><div class="CPName">AsTemplate&#8203;<span class="TemplateSignature">&lt;T&gt;</span></div></div></div>
+<div class="NDClassPrototype">
+   <div class="CPEntry TClass Current">
+      <div class="CPName">AsTemplate&#8203;<span class="TemplateSignature">&lt;T&gt;</span></div>
+   </div>
+</div>
 -----
-<div class="NDClassPrototype"><div class="CPEntry TClass Current"><div class="CPPrePrototypeLine"><span class="SHMetadata">[Something]</span></div><div class="CPName">WithMetadata</div></div></div>
+<div class="NDClassPrototype">
+   <div class="CPEntry TClass Current">
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">[Something]</span></div>
+      <div class="CPName">WithMetadata</div>
+   </div>
+</div>
 -----
-<div class="NDClassPrototype"><div class="CPEntry TClass Current"><div class="CPPrePrototypeLine"><span class="SHMetadata">[Something(&quot;value&quot;, 2)]</span></div><div class="CPPrePrototypeLine"><span class="SHMetadata">[SomethingElse]</span></div><div class="CPModifiers"><span class="SHKeyword">public static</span></div><div class="CPName">WithEverything&#8203;<span class="TemplateSignature">&lt;X, Y&gt;</span></div></div></div>
+<div class="NDClassPrototype">
+   <div class="CPEntry TClass Current">
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">[Something(&quot;value&quot;, 2)]</span></div>
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">[SomethingElse]</span></div>
+      <div class="CPModifiers"><span class="SHKeyword">public static</span></div>
+      <div class="CPName">WithEverything&#8203;<span class="TemplateSignature">&lt;X, Y&gt;</span></div>
+   </div>
+</div>

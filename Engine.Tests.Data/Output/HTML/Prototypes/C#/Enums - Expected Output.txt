@@ -1,3 +1,8 @@
-<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public enum</span> EnumA</div></div>
+<div class="NDPrototype">
+   <div class="PSection PPlainSection"><span class="SHKeyword">public enum</span> EnumA</div>
+</div>
 -----
-<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHMetadata">[Attribute]</span></div><div class="PSection PPlainSection"><span class="SHKeyword">public enum</span> EnumB : <span class="SHKeyword">byte</span></div></div>
+<div class="NDPrototype">
+   <div class="PSection PPlainSection"><span class="SHMetadata">[Attribute]</span></div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">public enum</span> EnumB : <span class="SHKeyword">byte</span></div>
+</div>

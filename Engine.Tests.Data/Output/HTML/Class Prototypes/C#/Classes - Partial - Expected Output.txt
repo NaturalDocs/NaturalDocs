@@ -1,11 +1,40 @@
-<div class="NDClassPrototype"><div class="CPEntry TClass Current"><div class="CPName">PartialClass</div></div></div>
+<div class="NDClassPrototype">
+   <div class="CPEntry TClass Current">
+      <div class="CPName">PartialClass</div>
+   </div>
+</div>
 -----
-<div class="NDClassPrototype"><div class="CPEntry TStruct Current"><div class="CPModifiers"><span class="SHKeyword">struct</span></div><div class="CPName">PartialStruct</div></div></div>
+<div class="NDClassPrototype">
+   <div class="CPEntry TStruct Current">
+      <div class="CPModifiers"><span class="SHKeyword">struct</span></div>
+      <div class="CPName">PartialStruct</div>
+   </div>
+</div>
 -----
-<div class="NDClassPrototype"><div class="CPEntry TInterface Current"><div class="CPModifiers"><span class="SHKeyword">interface</span></div><div class="CPName">PartialInterface</div></div></div>
+<div class="NDClassPrototype">
+   <div class="CPEntry TInterface Current">
+      <div class="CPModifiers"><span class="SHKeyword">interface</span></div>
+      <div class="CPName">PartialInterface</div>
+   </div>
+</div>
 -----
-<div class="NDClassPrototype"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">public static</span></div><div class="CPName">EndOfModifiers</div></div></div>
+<div class="NDClassPrototype">
+   <div class="CPEntry TClass Current">
+      <div class="CPModifiers"><span class="SHKeyword">public static</span></div>
+      <div class="CPName">EndOfModifiers</div>
+   </div>
+</div>
 -----
-<div class="NDClassPrototype"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">public static</span></div><div class="CPName">BeginningOfModifiers</div></div></div>
+<div class="NDClassPrototype">
+   <div class="CPEntry TClass Current">
+      <div class="CPModifiers"><span class="SHKeyword">public static</span></div>
+      <div class="CPName">BeginningOfModifiers</div>
+   </div>
+</div>
 -----
-<div class="NDClassPrototype"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">public</span> <span class="SHKeyword">static</span></div><div class="CPName">MiddleOfModifiers</div></div></div>
+<div class="NDClassPrototype">
+   <div class="CPEntry TClass Current">
+      <div class="CPModifiers"><span class="SHKeyword">public</span> <span class="SHKeyword">static</span></div>
+      <div class="CPName">MiddleOfModifiers</div>
+   </div>
+</div>

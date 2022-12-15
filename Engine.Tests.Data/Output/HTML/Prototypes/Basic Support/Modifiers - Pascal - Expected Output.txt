@@ -1,7 +1,36 @@
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
-<div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/6" style="grid-area:1/1/3/2">Function FunctionA (</div><div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">const</span>&nbsp;</div><div class="PName" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">x</div><div class="PTypeNameSeparator" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5">:&nbsp;</div><div class="PType InLastParameterColumn" data-WideGridArea="1/5/2/6" data-NarrowGridArea="2/4/3/5" style="grid-area:1/5/2/6"><span class="SHKeyword">integer</span>,</div><div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHKeyword">var</span>&nbsp;</div><div class="PName" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4">y</div><div class="PTypeNameSeparator" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5">:&nbsp;</div><div class="PType InLastParameterColumn" data-WideGridArea="2/5/3/6" data-NarrowGridArea="3/4/4/5" style="grid-area:2/5/3/6">array of <span class="SHKeyword">integer</span></div>
-<div class="PAfterParameters" data-WideGridArea="2/6/3/7" data-NarrowGridArea="4/1/5/6" style="grid-area:2/6/3/7">): <span class="SHKeyword">integer</span></div></div></div></div>
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection PascalStyle">
+      <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/6" style="grid-area:1/1/3/2">Function FunctionA (</div>
+         <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">const</span>&nbsp;</div>
+         <div class="PName" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">x</div>
+         <div class="PTypeNameSeparator" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5">:&nbsp;</div>
+         <div class="PType InLastParameterColumn" data-WideGridArea="1/5/2/6" data-NarrowGridArea="2/4/3/5" style="grid-area:1/5/2/6"><span class="SHKeyword">integer</span>,</div>
+         <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHKeyword">var</span>&nbsp;</div>
+         <div class="PName" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4">y</div>
+         <div class="PTypeNameSeparator" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5">:&nbsp;</div>
+         <div class="PType InLastParameterColumn" data-WideGridArea="2/5/3/6" data-NarrowGridArea="3/4/4/5" style="grid-area:2/5/3/6">array of <span class="SHKeyword">integer</span></div>
+         <div class="PAfterParameters" data-WideGridArea="2/6/3/7" data-NarrowGridArea="4/1/5/6" style="grid-area:2/6/3/7">): <span class="SHKeyword">integer</span></div>
+      </div>
+   </div>
+</div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
-<div class="PBeforeParameters" data-WideGridArea="1/1/5/2" data-NarrowGridArea="1/1/2/6" style="grid-area:1/1/5/2">Function FunctionB (</div><div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">const</span>&nbsp;</div><div class="PName" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">a,</div><div class="PName" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4">b</div><div class="PTypeNameSeparator" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5">:&nbsp;</div><div class="PType InLastParameterColumn" data-WideGridArea="2/5/3/6" data-NarrowGridArea="3/4/4/5" style="grid-area:2/5/3/6">Package.Class,</div><div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="3/2/4/3" data-NarrowGridArea="4/1/5/2" style="grid-area:3/2/4/3"><span class="SHKeyword">var</span>&nbsp;</div><div class="PName" data-WideGridArea="3/3/4/4" data-NarrowGridArea="4/2/5/3" style="grid-area:3/3/4/4">c,</div><div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="4/2/5/3" data-NarrowGridArea="5/1/6/2" style="grid-area:4/2/5/3"><span class="SHKeyword">out</span>&nbsp;</div><div class="PName" data-WideGridArea="4/3/5/4" data-NarrowGridArea="5/2/6/3" style="grid-area:4/3/5/4">d</div><div class="PTypeNameSeparator" data-WideGridArea="4/4/5/5" data-NarrowGridArea="5/3/6/4" style="grid-area:4/4/5/5">:&nbsp;</div><div class="PType InLastParameterColumn" data-WideGridArea="4/5/5/6" data-NarrowGridArea="5/4/6/5" style="grid-area:4/5/5/6">array of <span class="SHKeyword">string</span></div>
-<div class="PAfterParameters" data-WideGridArea="4/6/5/7" data-NarrowGridArea="6/1/7/6" style="grid-area:4/6/5/7">): <span class="SHKeyword">integer</span></div></div></div></div>
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection PascalStyle">
+      <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/5/2" data-NarrowGridArea="1/1/2/6" style="grid-area:1/1/5/2">Function FunctionB (</div>
+         <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">const</span>&nbsp;</div>
+         <div class="PName" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">a,</div>
+         <div class="PName" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4">b</div>
+         <div class="PTypeNameSeparator" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5">:&nbsp;</div>
+         <div class="PType InLastParameterColumn" data-WideGridArea="2/5/3/6" data-NarrowGridArea="3/4/4/5" style="grid-area:2/5/3/6">Package.Class,</div>
+         <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="3/2/4/3" data-NarrowGridArea="4/1/5/2" style="grid-area:3/2/4/3"><span class="SHKeyword">var</span>&nbsp;</div>
+         <div class="PName" data-WideGridArea="3/3/4/4" data-NarrowGridArea="4/2/5/3" style="grid-area:3/3/4/4">c,</div>
+         <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="4/2/5/3" data-NarrowGridArea="5/1/6/2" style="grid-area:4/2/5/3"><span class="SHKeyword">out</span>&nbsp;</div>
+         <div class="PName" data-WideGridArea="4/3/5/4" data-NarrowGridArea="5/2/6/3" style="grid-area:4/3/5/4">d</div>
+         <div class="PTypeNameSeparator" data-WideGridArea="4/4/5/5" data-NarrowGridArea="5/3/6/4" style="grid-area:4/4/5/5">:&nbsp;</div>
+         <div class="PType InLastParameterColumn" data-WideGridArea="4/5/5/6" data-NarrowGridArea="5/4/6/5" style="grid-area:4/5/5/6">array of <span class="SHKeyword">string</span></div>
+         <div class="PAfterParameters" data-WideGridArea="4/6/5/7" data-NarrowGridArea="6/1/7/6" style="grid-area:4/6/5/7">): <span class="SHKeyword">integer</span></div>
+      </div>
+   </div>
+</div>

@@ -1,11 +1,60 @@
-<div class="NDClassPrototype HasParents"><div class="CPEntry Parent TClass"><div class="CPName">Parent</div></div><div class="CPEntry Parent TClass"><div class="CPName">Interface</div></div><div class="CPEntry Parent TClass"><div class="CPName">Interface2</div></div><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">public</span> <span class="SHKeyword">record</span></div><div class="CPName">WithInheritance</div></div></div>
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry Parent TClass">
+      <div class="CPName">Parent</div>
+   </div>
+   <div class="CPEntry Parent TClass">
+      <div class="CPName">Interface</div>
+   </div>
+   <div class="CPEntry Parent TClass">
+      <div class="CPName">Interface2</div>
+   </div>
+   <div class="CPEntry TClass Current">
+      <div class="CPModifiers"><span class="SHKeyword">public</span> <span class="SHKeyword">record</span></div>
+      <div class="CPName">WithInheritance</div>
+   </div>
+</div>
 -----
-<div class="NDClassPrototype"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">internal sealed</span> <span class="SHKeyword">record</span></div><div class="CPName">WithModifiers</div></div></div>
+<div class="NDClassPrototype">
+   <div class="CPEntry TClass Current">
+      <div class="CPModifiers"><span class="SHKeyword">internal sealed</span> <span class="SHKeyword">record</span></div>
+      <div class="CPName">WithModifiers</div>
+   </div>
+</div>
 -----
-<div class="NDClassPrototype"><div class="CPEntry TClass Current"><div class="CPPrePrototypeLine"><span class="SHMetadata">[Attibute]</span></div><div class="CPModifiers"><span class="SHKeyword">internal protected</span> <span class="SHKeyword">record</span></div><div class="CPName"><span class="Qualifier">Namespace.</span>&#8203;WithAttributesAndNamespace</div></div></div>
+<div class="NDClassPrototype">
+   <div class="CPEntry TClass Current">
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">[Attibute]</span></div>
+      <div class="CPModifiers"><span class="SHKeyword">internal protected</span> <span class="SHKeyword">record</span></div>
+      <div class="CPName"><span class="Qualifier">Namespace.</span>&#8203;WithAttributesAndNamespace</div>
+   </div>
+</div>
 -----
-<div class="NDClassPrototype"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">public</span> <span class="SHKeyword">record</span></div><div class="CPName">AsTemplate&#8203;<span class="TemplateSignature">&lt;T&gt;</span></div></div></div>
+<div class="NDClassPrototype">
+   <div class="CPEntry TClass Current">
+      <div class="CPModifiers"><span class="SHKeyword">public</span> <span class="SHKeyword">record</span></div>
+      <div class="CPName">AsTemplate&#8203;<span class="TemplateSignature">&lt;T&gt;</span></div>
+   </div>
+</div>
 -----
-<div class="NDClassPrototype HasParents"><div class="CPEntry Parent TClass"><div class="CPName"><span class="Qualifier">System.&#8203;Collections.</span>&#8203;List&#8203;<span class="TemplateSignature">&lt;Y&gt;</span></div></div><div class="CPEntry Parent TClass"><div class="CPName">Interface</div></div><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">public</span> <span class="SHKeyword">record</span></div><div class="CPName">AsTemplateWithInheritance&#8203;<span class="TemplateSignature">&lt;X,Y&gt;</span></div></div></div>
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry Parent TClass">
+      <div class="CPName"><span class="Qualifier">System.&#8203;Collections.</span>&#8203;List&#8203;<span class="TemplateSignature">&lt;Y&gt;</span></div>
+   </div>
+   <div class="CPEntry Parent TClass">
+      <div class="CPName">Interface</div>
+   </div>
+   <div class="CPEntry TClass Current">
+      <div class="CPModifiers"><span class="SHKeyword">public</span> <span class="SHKeyword">record</span></div>
+      <div class="CPName">AsTemplateWithInheritance&#8203;<span class="TemplateSignature">&lt;X,Y&gt;</span></div>
+   </div>
+</div>
 -----
-<div class="NDClassPrototype"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">public</span> <span class="SHKeyword">record</span></div><div class="CPName">AsTemplateWithConditions&#8203;<span class="TemplateSignature">&lt;<span class="SHKeyword">in</span> X, <span class="SHKeyword">out</span> Y, <span class="SHKeyword">out</span> Z&gt;</span></div><div class="CPPostPrototypeLine"><span class="SHKeyword">where</span> X: <span class="SHKeyword">class</span>, Interface, <span class="SHKeyword">new</span> ()</div><div class="CPPostPrototypeLine"><span class="SHKeyword">where</span> Y: System.Collections.IEnumerable&lt;Y&gt;</div><div class="CPPostPrototypeLine"><span class="SHKeyword">where</span> Z: <span class="SHKeyword">class</span>?, <span class="SHKeyword">unmanaged</span>, <span class="SHKeyword">notnull</span></div></div></div>
+<div class="NDClassPrototype">
+   <div class="CPEntry TClass Current">
+      <div class="CPModifiers"><span class="SHKeyword">public</span> <span class="SHKeyword">record</span></div>
+      <div class="CPName">AsTemplateWithConditions&#8203;<span class="TemplateSignature">&lt;<span class="SHKeyword">in</span> X, <span class="SHKeyword">out</span> Y, <span class="SHKeyword">out</span> Z&gt;</span></div>
+      <div class="CPPostPrototypeLine"><span class="SHKeyword">where</span> X: <span class="SHKeyword">class</span>, Interface, <span class="SHKeyword">new</span> ()</div>
+      <div class="CPPostPrototypeLine"><span class="SHKeyword">where</span> Y: System.Collections.IEnumerable&lt;Y&gt;</div>
+      <div class="CPPostPrototypeLine"><span class="SHKeyword">where</span> Z: <span class="SHKeyword">class</span>?, <span class="SHKeyword">unmanaged</span>, <span class="SHKeyword">notnull</span></div>
+   </div>
+</div>

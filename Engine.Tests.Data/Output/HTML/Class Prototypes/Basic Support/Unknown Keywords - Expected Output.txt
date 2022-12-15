@@ -1,19 +1,66 @@
-<div class="NDClassPrototype"><div class="CPEntry TClass Current"><div class="CPName">NoKeyword</div></div></div>
+<div class="NDClassPrototype">
+   <div class="CPEntry TClass Current">
+      <div class="CPName">NoKeyword</div>
+   </div>
+</div>
 -----
-<div class="NDClassPrototype"><div class="CPEntry TStruct Current"><div class="CPModifiers">unknownkeyword </div><div class="CPName">UnknownKeyword</div></div></div>
+<div class="NDClassPrototype">
+   <div class="CPEntry TStruct Current">
+      <div class="CPModifiers">unknownkeyword </div>
+      <div class="CPName">UnknownKeyword</div>
+   </div>
+</div>
 -----
-<div class="NDClassPrototype"><div class="CPEntry TInterface Current"><div class="CPModifiers">unknown_keyword </div><div class="CPName">_Unknown_Keyword_2</div></div></div>
+<div class="NDClassPrototype">
+   <div class="CPEntry TInterface Current">
+      <div class="CPModifiers">unknown_keyword </div>
+      <div class="CPName">_Unknown_Keyword_2</div>
+   </div>
+</div>
 -----
-<div class="NDClassPrototype"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">public static</span> </div><div class="CPName">NoKeywordWithModifiers</div></div></div>
+<div class="NDClassPrototype">
+   <div class="CPEntry TClass Current">
+      <div class="CPModifiers"><span class="SHKeyword">public static</span> </div>
+      <div class="CPName">NoKeywordWithModifiers</div>
+   </div>
+</div>
 -----
-<div class="NDClassPrototype"><div class="CPEntry TStruct Current"><div class="CPModifiers"><span class="SHKeyword">public static</span> unknownkeyword </div><div class="CPName">UnknownKeywordWithModifiers</div></div></div>
+<div class="NDClassPrototype">
+   <div class="CPEntry TStruct Current">
+      <div class="CPModifiers"><span class="SHKeyword">public static</span> unknownkeyword </div>
+      <div class="CPName">UnknownKeywordWithModifiers</div>
+   </div>
+</div>
 -----
-<div class="NDClassPrototype"><div class="CPEntry TInterface Current"><div class="CPModifiers"><span class="SHKeyword">public static</span> unknown_keyword </div><div class="CPName">_Unknown_Keyword_With_Modifiers_2</div></div></div>
+<div class="NDClassPrototype">
+   <div class="CPEntry TInterface Current">
+      <div class="CPModifiers"><span class="SHKeyword">public static</span> unknown_keyword </div>
+      <div class="CPName">_Unknown_Keyword_With_Modifiers_2</div>
+   </div>
+</div>
 -----
-<div class="NDClassPrototype"><div class="CPEntry TClass Current"><div class="CPName">NoKeywordTemplate&#8203;<span class="TemplateSignature">&lt;T&gt;</span></div></div></div>
+<div class="NDClassPrototype">
+   <div class="CPEntry TClass Current">
+      <div class="CPName">NoKeywordTemplate&#8203;<span class="TemplateSignature">&lt;T&gt;</span></div>
+   </div>
+</div>
 -----
-<div class="NDClassPrototype"><div class="CPEntry TClass Current"><div class="CPModifiers">unknownkeyword </div><div class="CPName">UnknownKeywordNestedTemplates&#8203;<span class="TemplateSignature">&lt;List&lt;X,Y&gt;, Z&gt;</span></div></div></div>
+<div class="NDClassPrototype">
+   <div class="CPEntry TClass Current">
+      <div class="CPModifiers">unknownkeyword </div>
+      <div class="CPName">UnknownKeywordNestedTemplates&#8203;<span class="TemplateSignature">&lt;List&lt;X,Y&gt;, Z&gt;</span></div>
+   </div>
+</div>
 -----
-<div class="NDClassPrototype"><div class="CPEntry TInterface Current"><div class="CPName"><span class="Qualifier">No.&#8203;Keyword.&#8203;With.</span>&#8203;Qualifiers</div></div></div>
+<div class="NDClassPrototype">
+   <div class="CPEntry TInterface Current">
+      <div class="CPName"><span class="Qualifier">No.&#8203;Keyword.&#8203;With.</span>&#8203;Qualifiers</div>
+   </div>
+</div>
 -----
-<div class="NDClassPrototype"><div class="CPEntry TInterface Current"><div class="CPModifiers">unknownkeyword </div><div class="CPName"><span class="Qualifier">Unknown.&#8203;Keyword.&#8203;With.</span>&#8203;Qualifiers</div></div></div>
+<div class="NDClassPrototype">
+   <div class="CPEntry TInterface Current">
+      <div class="CPModifiers">unknownkeyword </div>
+      <div class="CPName"><span class="Qualifier">Unknown.&#8203;Keyword.&#8203;With.</span>&#8203;Qualifiers</div>
+   </div>
+</div>

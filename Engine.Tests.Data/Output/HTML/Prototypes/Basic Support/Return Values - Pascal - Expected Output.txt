@@ -1,5 +1,18 @@
-<div class="NDPrototype"><div class="PSection PPlainSection">Function FuncA (): MyClass</div></div>
+<div class="NDPrototype">
+   <div class="PSection PPlainSection">Function FuncA (): MyClass</div>
+</div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
-<div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2">Function FuncB (</div><div class="PName InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">a</div><div class="PTypeNameSeparator" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">:&nbsp;</div><div class="PType InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5">Class2,</div><div class="PName InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3">b</div><div class="PTypeNameSeparator" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4">:&nbsp;</div><div class="PType InLastParameterColumn" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5">Pkg.MyClass</div>
-<div class="PAfterParameters" data-WideGridArea="2/5/3/6" data-NarrowGridArea="4/1/5/5" style="grid-area:2/5/3/6">): Pkg.MyClass&lt;<span class="SHKeyword">int</span>, Class2&gt;</div></div></div></div>
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection PascalStyle">
+      <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2">Function FuncB (</div>
+         <div class="PName InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">a</div>
+         <div class="PTypeNameSeparator" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">:&nbsp;</div>
+         <div class="PType InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5">Class2,</div>
+         <div class="PName InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3">b</div>
+         <div class="PTypeNameSeparator" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4">:&nbsp;</div>
+         <div class="PType InLastParameterColumn" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5">Pkg.MyClass</div>
+         <div class="PAfterParameters" data-WideGridArea="2/5/3/6" data-NarrowGridArea="4/1/5/5" style="grid-area:2/5/3/6">): Pkg.MyClass&lt;<span class="SHKeyword">int</span>, Class2&gt;</div>
+      </div>
+   </div>
+</div>

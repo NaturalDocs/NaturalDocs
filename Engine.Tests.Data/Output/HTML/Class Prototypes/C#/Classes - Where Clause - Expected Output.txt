@@ -1,5 +1,30 @@
-<div class="NDClassPrototype"><div class="CPEntry TClass Current"><div class="CPName">WhereClause&#8203;<span class="TemplateSignature">&lt;X&gt;</span></div><div class="CPPostPrototypeLine"><span class="SHKeyword">where</span> X : <span class="SHKeyword">struct</span></div></div></div>
+<div class="NDClassPrototype">
+   <div class="CPEntry TClass Current">
+      <div class="CPName">WhereClause&#8203;<span class="TemplateSignature">&lt;X&gt;</span></div>
+      <div class="CPPostPrototypeLine"><span class="SHKeyword">where</span> X : <span class="SHKeyword">struct</span></div>
+   </div>
+</div>
 -----
-<div class="NDClassPrototype"><div class="CPEntry TClass Current"><div class="CPName">MultipleWhereClauses&#8203;<span class="TemplateSignature">&lt;X,Y, <span class="SHKeyword">out</span> Z&gt;</span></div><div class="CPPostPrototypeLine"><span class="SHKeyword">where</span> X : BaseClass</div><div class="CPPostPrototypeLine"><span class="SHKeyword">where</span> Y : <span class="SHKeyword">new</span>(), <span class="SHKeyword">class</span></div><div class="CPPostPrototypeLine"><span class="SHKeyword">where</span> Z : <span class="SHKeyword">class</span>?, <span class="SHKeyword">unmanaged</span>, <span class="SHKeyword">notnull</span></div></div></div>
+<div class="NDClassPrototype">
+   <div class="CPEntry TClass Current">
+      <div class="CPName">MultipleWhereClauses&#8203;<span class="TemplateSignature">&lt;X,Y, <span class="SHKeyword">out</span> Z&gt;</span></div>
+      <div class="CPPostPrototypeLine"><span class="SHKeyword">where</span> X : BaseClass</div>
+      <div class="CPPostPrototypeLine"><span class="SHKeyword">where</span> Y : <span class="SHKeyword">new</span>(), <span class="SHKeyword">class</span></div>
+      <div class="CPPostPrototypeLine"><span class="SHKeyword">where</span> Z : <span class="SHKeyword">class</span>?, <span class="SHKeyword">unmanaged</span>, <span class="SHKeyword">notnull</span></div>
+   </div>
+</div>
 -----
-<div class="NDClassPrototype HasParents"><div class="CPEntry Parent TClass"><div class="CPName">Parent1&#8203;<span class="TemplateSignature">&lt;X&gt;</span></div></div><div class="CPEntry Parent TClass"><div class="CPName">Parent2&#8203;<span class="TemplateSignature">&lt;Y&gt;</span></div></div><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">public static</span></div><div class="CPName">WhereClausesWithInheritance&#8203;<span class="TemplateSignature">&lt;X,Y&gt;</span></div><div class="CPPostPrototypeLine"><span class="SHKeyword">where</span> X : A.B.BaseClass&lt;X&gt;, X.Y.Interface</div><div class="CPPostPrototypeLine"><span class="SHKeyword">where</span> Y : <span class="SHKeyword">new</span>(), <span class="SHKeyword">class</span></div></div></div>
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry Parent TClass">
+      <div class="CPName">Parent1&#8203;<span class="TemplateSignature">&lt;X&gt;</span></div>
+   </div>
+   <div class="CPEntry Parent TClass">
+      <div class="CPName">Parent2&#8203;<span class="TemplateSignature">&lt;Y&gt;</span></div>
+   </div>
+   <div class="CPEntry TClass Current">
+      <div class="CPModifiers"><span class="SHKeyword">public static</span></div>
+      <div class="CPName">WhereClausesWithInheritance&#8203;<span class="TemplateSignature">&lt;X,Y&gt;</span></div>
+      <div class="CPPostPrototypeLine"><span class="SHKeyword">where</span> X : A.B.BaseClass&lt;X&gt;, X.Y.Interface</div>
+      <div class="CPPostPrototypeLine"><span class="SHKeyword">where</span> Y : <span class="SHKeyword">new</span>(), <span class="SHKeyword">class</span></div>
+   </div>
+</div>

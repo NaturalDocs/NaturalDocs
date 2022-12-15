@@ -1,1 +1,3 @@
-<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">enum</span> EnumType</div></div>
+<div class="NDPrototype">
+   <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">enum</span> EnumType</div>
+</div>

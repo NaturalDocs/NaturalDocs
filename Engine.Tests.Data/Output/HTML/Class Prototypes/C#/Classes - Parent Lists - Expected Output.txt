@@ -1,11 +1,68 @@
-<div class="NDClassPrototype HasParents"><div class="CPEntry Parent TClass"><div class="CPName">Parent</div></div><div class="CPEntry TClass Current"><div class="CPName">OneParent</div></div></div>
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry Parent TClass">
+      <div class="CPName">Parent</div>
+   </div>
+   <div class="CPEntry TClass Current">
+      <div class="CPName">OneParent</div>
+   </div>
+</div>
 -----
-<div class="NDClassPrototype HasParents"><div class="CPEntry Parent TClass"><div class="CPName">Parent1</div></div><div class="CPEntry Parent TClass"><div class="CPName">Parent2</div></div><div class="CPEntry Parent TClass"><div class="CPName">Parent3</div></div><div class="CPEntry TClass Current"><div class="CPName">ThreeParents</div></div></div>
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry Parent TClass">
+      <div class="CPName">Parent1</div>
+   </div>
+   <div class="CPEntry Parent TClass">
+      <div class="CPName">Parent2</div>
+   </div>
+   <div class="CPEntry Parent TClass">
+      <div class="CPName">Parent3</div>
+   </div>
+   <div class="CPEntry TClass Current">
+      <div class="CPName">ThreeParents</div>
+   </div>
+</div>
 -----
-<div class="NDClassPrototype HasParents"><div class="CPEntry Parent TClass"><div class="CPName"><span class="Qualifier">X.&#8203;Y.</span>&#8203;Parent1</div></div><div class="CPEntry Parent TClass"><div class="CPName"><span class="Qualifier">A.&#8203;B.</span>&#8203;Parent2</div></div><div class="CPEntry TClass Current"><div class="CPName">ParentsWithQualifiers</div></div></div>
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry Parent TClass">
+      <div class="CPName"><span class="Qualifier">X.&#8203;Y.</span>&#8203;Parent1</div>
+   </div>
+   <div class="CPEntry Parent TClass">
+      <div class="CPName"><span class="Qualifier">A.&#8203;B.</span>&#8203;Parent2</div>
+   </div>
+   <div class="CPEntry TClass Current">
+      <div class="CPName">ParentsWithQualifiers</div>
+   </div>
+</div>
 -----
-<div class="NDClassPrototype HasParents"><div class="CPEntry Parent TClass"><div class="CPName">List&#8203;<span class="TemplateSignature">&lt;<span class="SHKeyword">int</span>&gt;</span></div></div><div class="CPEntry TClass Current"><div class="CPName">ParentTemplate</div></div></div>
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry Parent TClass">
+      <div class="CPName">List&#8203;<span class="TemplateSignature">&lt;<span class="SHKeyword">int</span>&gt;</span></div>
+   </div>
+   <div class="CPEntry TClass Current">
+      <div class="CPName">ParentTemplate</div>
+   </div>
+</div>
 -----
-<div class="NDClassPrototype HasParents"><div class="CPEntry Parent TClass"><div class="CPName"><span class="Qualifier">System.&#8203;Collections.&#8203;Generic.</span>&#8203;IEnumerable&#8203;<span class="TemplateSignature">&lt;X&gt;</span></div></div><div class="CPEntry Parent TClass"><div class="CPName">Parent2&#8203;<span class="TemplateSignature">&lt;X,Y&gt;</span></div></div><div class="CPEntry TClass Current"><div class="CPName">TemplateWithQualifiedParentTemplates&#8203;<span class="TemplateSignature">&lt;X,Y&gt;</span></div></div></div>
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry Parent TClass">
+      <div class="CPName"><span class="Qualifier">System.&#8203;Collections.&#8203;Generic.</span>&#8203;IEnumerable&#8203;<span class="TemplateSignature">&lt;X&gt;</span></div>
+   </div>
+   <div class="CPEntry Parent TClass">
+      <div class="CPName">Parent2&#8203;<span class="TemplateSignature">&lt;X,Y&gt;</span></div>
+   </div>
+   <div class="CPEntry TClass Current">
+      <div class="CPName">TemplateWithQualifiedParentTemplates&#8203;<span class="TemplateSignature">&lt;X,Y&gt;</span></div>
+   </div>
+</div>
 -----
-<div class="NDClassPrototype HasParents"><div class="CPEntry Parent TClass"><div class="CPName">IList</div></div><div class="CPEntry Parent TClass"><div class="CPName">IList&#8203;<span class="TemplateSignature">&lt;T&gt;</span></div></div><div class="CPEntry TClass Current"><div class="CPName">SimilarParentNames</div></div></div>
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry Parent TClass">
+      <div class="CPName">IList</div>
+   </div>
+   <div class="CPEntry Parent TClass">
+      <div class="CPName">IList&#8203;<span class="TemplateSignature">&lt;T&gt;</span></div>
+   </div>
+   <div class="CPEntry TClass Current">
+      <div class="CPName">SimilarParentNames</div>
+   </div>
+</div>

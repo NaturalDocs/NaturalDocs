@@ -1,39 +1,131 @@
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
-<div class="PBeforeParameters" data-WideGridArea="1/1/10/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/10/2"><span class="SHKeyword">void</span> FunctionName (</div><div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span>*&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5">a,</div><div class="PType InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHKeyword">int</span>&nbsp;</div><div class="PSymbols" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4">*</div><div class="PName InLastParameterColumn" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5">b,</div><div class="PType InFirstParameterColumn" data-WideGridArea="3/2/4/3" data-NarrowGridArea="4/1/5/2" style="grid-area:3/2/4/3"><span class="SHKeyword">int</span> *&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="3/4/4/5" data-NarrowGridArea="4/3/5/4" style="grid-area:3/4/4/5">c,</div><div class="PType InFirstParameterColumn" data-WideGridArea="4/2/5/3" data-NarrowGridArea="5/1/6/2" style="grid-area:4/2/5/3"><span class="SHKeyword">int</span>**&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="4/4/5/5" data-NarrowGridArea="5/3/6/4" style="grid-area:4/4/5/5">d,</div><div class="PType InFirstParameterColumn" data-WideGridArea="5/2/6/3" data-NarrowGridArea="6/1/7/2" style="grid-area:5/2/6/3"><span class="SHKeyword">int</span>&nbsp;</div><div class="PSymbols" data-WideGridArea="5/3/6/4" data-NarrowGridArea="6/2/7/3" style="grid-area:5/3/6/4">**</div><div class="PName InLastParameterColumn" data-WideGridArea="5/4/6/5" data-NarrowGridArea="6/3/7/4" style="grid-area:5/4/6/5">e,</div><div class="PType InFirstParameterColumn" data-WideGridArea="6/2/7/3" data-NarrowGridArea="7/1/8/2" style="grid-area:6/2/7/3"><span class="SHKeyword">int</span> **&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="6/4/7/5" data-NarrowGridArea="7/3/8/4" style="grid-area:6/4/7/5">f,</div><div class="PType InFirstParameterColumn" data-WideGridArea="7/2/8/3" data-NarrowGridArea="8/1/9/2" style="grid-area:7/2/8/3"><span class="SHKeyword">int</span>* *&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="7/4/8/5" data-NarrowGridArea="8/3/9/4" style="grid-area:7/4/8/5">g,</div><div class="PType InFirstParameterColumn" data-WideGridArea="8/2/9/3" data-NarrowGridArea="9/1/10/2" style="grid-area:8/2/9/3"><span class="SHKeyword">int</span> *&nbsp;</div><div class="PSymbols" data-WideGridArea="8/3/9/4" data-NarrowGridArea="9/2/10/3" style="grid-area:8/3/9/4">*</div><div class="PName InLastParameterColumn" data-WideGridArea="8/4/9/5" data-NarrowGridArea="9/3/10/4" style="grid-area:8/4/9/5">h,</div><div class="PType InFirstParameterColumn" data-WideGridArea="9/2/10/3" data-NarrowGridArea="10/1/11/2" style="grid-area:9/2/10/3"><span class="SHKeyword">int</span> * *&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="9/4/10/5" data-NarrowGridArea="10/3/11/4" style="grid-area:9/4/10/5">i</div>
-<div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="9/5/10/6" data-NarrowGridArea="11/1/12/5" style="grid-area:9/5/10/6">)</div></div></div></div>
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/10/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/10/2"><span class="SHKeyword">void</span> FunctionName (</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span>*&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5">a,</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHKeyword">int</span>&nbsp;</div>
+         <div class="PSymbols" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4">*</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5">b,</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="3/2/4/3" data-NarrowGridArea="4/1/5/2" style="grid-area:3/2/4/3"><span class="SHKeyword">int</span> *&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="3/4/4/5" data-NarrowGridArea="4/3/5/4" style="grid-area:3/4/4/5">c,</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="4/2/5/3" data-NarrowGridArea="5/1/6/2" style="grid-area:4/2/5/3"><span class="SHKeyword">int</span>**&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="4/4/5/5" data-NarrowGridArea="5/3/6/4" style="grid-area:4/4/5/5">d,</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="5/2/6/3" data-NarrowGridArea="6/1/7/2" style="grid-area:5/2/6/3"><span class="SHKeyword">int</span>&nbsp;</div>
+         <div class="PSymbols" data-WideGridArea="5/3/6/4" data-NarrowGridArea="6/2/7/3" style="grid-area:5/3/6/4">**</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="5/4/6/5" data-NarrowGridArea="6/3/7/4" style="grid-area:5/4/6/5">e,</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="6/2/7/3" data-NarrowGridArea="7/1/8/2" style="grid-area:6/2/7/3"><span class="SHKeyword">int</span> **&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="6/4/7/5" data-NarrowGridArea="7/3/8/4" style="grid-area:6/4/7/5">f,</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="7/2/8/3" data-NarrowGridArea="8/1/9/2" style="grid-area:7/2/8/3"><span class="SHKeyword">int</span>* *&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="7/4/8/5" data-NarrowGridArea="8/3/9/4" style="grid-area:7/4/8/5">g,</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="8/2/9/3" data-NarrowGridArea="9/1/10/2" style="grid-area:8/2/9/3"><span class="SHKeyword">int</span> *&nbsp;</div>
+         <div class="PSymbols" data-WideGridArea="8/3/9/4" data-NarrowGridArea="9/2/10/3" style="grid-area:8/3/9/4">*</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="8/4/9/5" data-NarrowGridArea="9/3/10/4" style="grid-area:8/4/9/5">h,</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="9/2/10/3" data-NarrowGridArea="10/1/11/2" style="grid-area:9/2/10/3"><span class="SHKeyword">int</span> * *&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="9/4/10/5" data-NarrowGridArea="10/3/11/4" style="grid-area:9/4/10/5">i</div>
+         <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="9/5/10/6" data-NarrowGridArea="11/1/12/5" style="grid-area:9/5/10/6">)</div>
+      </div>
+   </div>
+</div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
-<div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">void</span> FunctionName2 (</div><div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span>*&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">a</div>
-<div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">)</div></div></div></div>
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">void</span> FunctionName2 (</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span>*&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">a</div>
+         <div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">)</div>
+      </div>
+   </div>
+</div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
-<div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/2/2"><span class="SHKeyword">void</span> FunctionName3 (</div><div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span>&nbsp;</div><div class="PSymbols" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">*</div><div class="PName InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5">b</div>
-<div class="PAfterParameters" data-WideGridArea="1/5/2/6" data-NarrowGridArea="3/1/4/5" style="grid-area:1/5/2/6">)</div></div></div></div>
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/2/2"><span class="SHKeyword">void</span> FunctionName3 (</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span>&nbsp;</div>
+         <div class="PSymbols" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">*</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5">b</div>
+         <div class="PAfterParameters" data-WideGridArea="1/5/2/6" data-NarrowGridArea="3/1/4/5" style="grid-area:1/5/2/6">)</div>
+      </div>
+   </div>
+</div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
-<div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">void</span> FunctionName4 (</div><div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span> *&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">c</div>
-<div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">)</div></div></div></div>
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">void</span> FunctionName4 (</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span> *&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">c</div>
+         <div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">)</div>
+      </div>
+   </div>
+</div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
-<div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">void</span> FunctionName5 (</div><div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span>**&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">d</div>
-<div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">)</div></div></div></div>
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">void</span> FunctionName5 (</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span>**&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">d</div>
+         <div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">)</div>
+      </div>
+   </div>
+</div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
-<div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/2/2"><span class="SHKeyword">void</span> FunctionName6 (</div><div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span>&nbsp;</div><div class="PSymbols" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">**</div><div class="PName InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5">e</div>
-<div class="PAfterParameters" data-WideGridArea="1/5/2/6" data-NarrowGridArea="3/1/4/5" style="grid-area:1/5/2/6">)</div></div></div></div>
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/2/2"><span class="SHKeyword">void</span> FunctionName6 (</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span>&nbsp;</div>
+         <div class="PSymbols" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">**</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5">e</div>
+         <div class="PAfterParameters" data-WideGridArea="1/5/2/6" data-NarrowGridArea="3/1/4/5" style="grid-area:1/5/2/6">)</div>
+      </div>
+   </div>
+</div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
-<div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">void</span> FunctionName7 (</div><div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span> **&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">f</div>
-<div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">)</div></div></div></div>
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">void</span> FunctionName7 (</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span> **&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">f</div>
+         <div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">)</div>
+      </div>
+   </div>
+</div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
-<div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">void</span> FunctionName8 (</div><div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span>* *&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">g</div>
-<div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">)</div></div></div></div>
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">void</span> FunctionName8 (</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span>* *&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">g</div>
+         <div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">)</div>
+      </div>
+   </div>
+</div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
-<div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/2/2"><span class="SHKeyword">void</span> FunctionName9 (</div><div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span> *&nbsp;</div><div class="PSymbols" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">*</div><div class="PName InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5">h</div>
-<div class="PAfterParameters" data-WideGridArea="1/5/2/6" data-NarrowGridArea="3/1/4/5" style="grid-area:1/5/2/6">)</div></div></div></div>
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/2/2"><span class="SHKeyword">void</span> FunctionName9 (</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span> *&nbsp;</div>
+         <div class="PSymbols" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">*</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5">h</div>
+         <div class="PAfterParameters" data-WideGridArea="1/5/2/6" data-NarrowGridArea="3/1/4/5" style="grid-area:1/5/2/6">)</div>
+      </div>
+   </div>
+</div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
-<div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">void</span> FunctionName10 (</div><div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span> * *&nbsp;</div><div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">i</div>
-<div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">)</div></div></div></div>
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">void</span> FunctionName10 (</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span> * *&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">i</div>
+         <div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">)</div>
+      </div>
+   </div>
+</div>

@@ -1,31 +1,77 @@
-<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @Simple1 <span class="SHKeyword">INTEGER</span></div></div>
+<div class="NDPrototype">
+   <div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @Simple1 <span class="SHKeyword">INTEGER</span></div>
+</div>
 -----
-<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @Simple2 <span class="SHKeyword">AS</span> <span class="SHKeyword">INTEGER</span></div></div>
+<div class="NDPrototype">
+   <div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @Simple2 <span class="SHKeyword">AS</span> <span class="SHKeyword">INTEGER</span></div>
+</div>
 -----
-<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @DefaultValue1 <span class="SHKeyword">INTEGER</span></div></div>
+<div class="NDPrototype">
+   <div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @DefaultValue1 <span class="SHKeyword">INTEGER</span></div>
+</div>
 -----
-<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @DefaultValue2 <span class="SHKeyword">AS</span> <span class="SHKeyword">VARCHAR</span></div></div>
+<div class="NDPrototype">
+   <div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @DefaultValue2 <span class="SHKeyword">AS</span> <span class="SHKeyword">VARCHAR</span></div>
+</div>
 -----
-<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @DefaultValue3 <span class="SHKeyword">INTEGER</span></div></div>
+<div class="NDPrototype">
+   <div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @DefaultValue3 <span class="SHKeyword">INTEGER</span></div>
+</div>
 -----
-<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @DefaultValue4 <span class="SHKeyword">AS</span> <span class="SHKeyword">Real</span></div></div>
+<div class="NDPrototype">
+   <div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @DefaultValue4 <span class="SHKeyword">AS</span> <span class="SHKeyword">Real</span></div>
+</div>
 -----
-<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @DefaultValue5 <span class="SHKeyword">real</span></div></div>
+<div class="NDPrototype">
+   <div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @DefaultValue5 <span class="SHKeyword">real</span></div>
+</div>
 -----
-<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @DefaultValue6 <span class="SHKeyword">AS</span> <span class="SHKeyword">VarChar</span>(<span class="SHNumber">12</span>)</div></div>
+<div class="NDPrototype">
+   <div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @DefaultValue6 <span class="SHKeyword">AS</span> <span class="SHKeyword">VarChar</span>(<span class="SHNumber">12</span>)</div>
+</div>
 -----
-<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @TypeParens1 <span class="SHKeyword">NUMERIC</span>(<span class="SHNumber">6</span>)</div></div>
+<div class="NDPrototype">
+   <div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @TypeParens1 <span class="SHKeyword">NUMERIC</span>(<span class="SHNumber">6</span>)</div>
+</div>
 -----
-<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @TypeParens2 <span class="SHKeyword">AS</span> <span class="SHKeyword">NUMERIC</span>(<span class="SHNumber">6</span>, <span class="SHNumber">8</span>)</div></div>
+<div class="NDPrototype">
+   <div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @TypeParens2 <span class="SHKeyword">AS</span> <span class="SHKeyword">NUMERIC</span>(<span class="SHNumber">6</span>, <span class="SHNumber">8</span>)</div>
+</div>
 -----
-<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @AllCombined <span class="SHKeyword">AS</span> <span class="SHKeyword">NUMERIC</span>(<span class="SHNumber">3</span>,<span class="SHNumber">4</span>)</div></div>
+<div class="NDPrototype">
+   <div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @AllCombined <span class="SHKeyword">AS</span> <span class="SHKeyword">NUMERIC</span>(<span class="SHNumber">3</span>,<span class="SHNumber">4</span>)</div>
+</div>
 -----
-<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @Cursor <span class="SHKeyword">CURSOR</span></div></div>
+<div class="NDPrototype">
+   <div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @Cursor <span class="SHKeyword">CURSOR</span></div>
+</div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
-<div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/6" style="grid-area:1/1/3/2"><span class="SHKeyword">DECLARE</span> @Table1 <span class="SHKeyword">TABLE</span> (</div><div class="PName InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">Column1&nbsp;</div><div class="PType" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4"><span class="SHKeyword">INT</span> <span class="SHKeyword">PRIMARY KEY NOT NULL</span>,</div><div class="PName InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3">Column2&nbsp;</div><div class="PType" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4"><span class="SHKeyword">NVARCHAR</span>(<span class="SHNumber">255</span>)</div><div class="PDefaultValueSeparator" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5">&nbsp<span class="SHKeyword">DEFAULT</span>&nbsp;</div><div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/5/3/6" data-NarrowGridArea="3/4/4/5" style="grid-area:2/5/3/6"><span class="SHString">'string'</span></div>
-<div class="PAfterParameters" data-WideGridArea="2/6/3/7" data-NarrowGridArea="4/1/5/6" style="grid-area:2/6/3/7">)</div></div></div></div>
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection PascalStyle">
+      <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/6" style="grid-area:1/1/3/2"><span class="SHKeyword">DECLARE</span> @Table1 <span class="SHKeyword">TABLE</span> (</div>
+         <div class="PName InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">Column1&nbsp;</div>
+         <div class="PType" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4"><span class="SHKeyword">INT</span> <span class="SHKeyword">PRIMARY KEY NOT NULL</span>,</div>
+         <div class="PName InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3">Column2&nbsp;</div>
+         <div class="PType" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4"><span class="SHKeyword">NVARCHAR</span>(<span class="SHNumber">255</span>)</div>
+         <div class="PDefaultValueSeparator" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5">&nbsp<span class="SHKeyword">DEFAULT</span>&nbsp;</div>
+         <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/5/3/6" data-NarrowGridArea="3/4/4/5" style="grid-area:2/5/3/6"><span class="SHString">'string'</span></div>
+         <div class="PAfterParameters" data-WideGridArea="2/6/3/7" data-NarrowGridArea="4/1/5/6" style="grid-area:2/6/3/7">)</div>
+      </div>
+   </div>
+</div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
-<div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/6" style="grid-area:1/1/3/2"><span class="SHKeyword">DECLARE</span> @Table2 <span class="SHKeyword">AS</span> <span class="SHKeyword">TABLE</span>(</div><div class="PName InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">Column1&nbsp;</div><div class="PType" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4"><span class="SHKeyword">INT</span> <span class="SHKeyword">PRIMARY KEY NOT NULL</span>,</div><div class="PName InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3">Column2&nbsp;</div><div class="PType" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4"><span class="SHKeyword">NVARCHAR</span>(<span class="SHNumber">255</span>)</div><div class="PDefaultValueSeparator" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5">&nbsp<span class="SHKeyword">DEFAULT</span>&nbsp;</div><div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/5/3/6" data-NarrowGridArea="3/4/4/5" style="grid-area:2/5/3/6"><span class="SHString">'string'</span></div>
-<div class="PAfterParameters" data-WideGridArea="2/6/3/7" data-NarrowGridArea="4/1/5/6" style="grid-area:2/6/3/7">)</div></div></div></div>
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection PascalStyle">
+      <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/6" style="grid-area:1/1/3/2"><span class="SHKeyword">DECLARE</span> @Table2 <span class="SHKeyword">AS</span> <span class="SHKeyword">TABLE</span>(</div>
+         <div class="PName InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">Column1&nbsp;</div>
+         <div class="PType" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4"><span class="SHKeyword">INT</span> <span class="SHKeyword">PRIMARY KEY NOT NULL</span>,</div>
+         <div class="PName InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3">Column2&nbsp;</div>
+         <div class="PType" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4"><span class="SHKeyword">NVARCHAR</span>(<span class="SHNumber">255</span>)</div>
+         <div class="PDefaultValueSeparator" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5">&nbsp<span class="SHKeyword">DEFAULT</span>&nbsp;</div>
+         <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/5/3/6" data-NarrowGridArea="3/4/4/5" style="grid-area:2/5/3/6"><span class="SHString">'string'</span></div>
+         <div class="PAfterParameters" data-WideGridArea="2/6/3/7" data-NarrowGridArea="4/1/5/6" style="grid-area:2/6/3/7">)</div>
+      </div>
+   </div>
+</div>
