@@ -35,6 +35,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 using CodeClear.NaturalDocs.Engine;
+using CodeClear.NaturalDocs.Engine.Collections;
 
 
 namespace CodeClear.NaturalDocs.Engine.Tests.Framework
@@ -274,72 +275,79 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 			{
 			StringBuilder output = new StringBuilder();
 
-			int currentIndex = 0;
-			int indent = 0;
-			int indentAmount = 3;
-			bool newLine = false;
+			int textPosition = 0;
+			int lastNewSectionPosition = 0;
+			int afterLastClosingTagPosition = -1;
+
+			int indentLevel = 0;
+			int spacesPerIndentLevel = 3;
 
 			for (;;)
 				{
-				var tag = IndentTagsRegex.Match(input, currentIndex);
+				// Find next relevant tag
+				var tagMatch = TagsToFormatRegex.Match(input, textPosition);
 
-				if (tag.Success == false)
+				if (tagMatch.Success == false)
 					{  break;  }
 
-				// Put tag on new line with decreased indent
-				if (tag.Value.StartsWith("</tr") ||
-					tag.Value.StartsWith("</table"))
+				// Append text between the current position and the next relevant tag
+				if (tagMatch.Index > textPosition)
+					{  output.Append(input, textPosition, tagMatch.Index - textPosition);  }
+
+				// Section separator
+				if (tagMatch.Value.StartsWith("-----"))
 					{
-					if (newLine == false)
+					output.Append(tagMatch.Value);  // will include newline
+
+					indentLevel = 0;
+
+					textPosition = tagMatch.Index + tagMatch.Length;
+					lastNewSectionPosition = textPosition;
+					}
+
+				// Relevant closing tags
+				else if (tagMatch.Value.StartsWith("</"))
+					{
+					// Only put it on a new line if it immediately follows another closing tag
+					if (textPosition == afterLastClosingTagPosition)
 						{
 						output.AppendLine();
-						newLine = true;
+						output.Append(' ', indentLevel * spacesPerIndentLevel);
 						}
-					indent -= indentAmount;
+
+					output.Append(tagMatch.Value);
+
+					// Safety check since the HTML could be invalid
+					if (indentLevel > 0)
+						{  indentLevel--;  }
+
+					textPosition = tagMatch.Index + tagMatch.Length;
+					afterLastClosingTagPosition = textPosition;
 					}
 
-				// Put tag on new line but leave indent alone
-				else if (tag.Value.StartsWith("<div class=\"PBeforeParameters") ||
-						   tag.Value.StartsWith("<div class=\"PParametersParentCell") ||
-						   tag.Value.StartsWith("<div class=\"PAfterParameters"))
-					{
-					output.AppendLine();
-					newLine = true;
-					}
-
-				if (newLine && indent > 0)
-					{  output.Append(' ', indent);  }
-
-				if (tag.Index > currentIndex)
-					{  output.Append(input, currentIndex, tag.Index - currentIndex);  }
-
-				output.Append(tag.Value);
-				currentIndex = tag.Index + tag.Value.Length;
-
-				// Start new line after tag at increased indent
-				if (tag.Value.StartsWith("<table") ||
-					tag.Value.StartsWith("<tr"))
-					{
-					output.AppendLine();
-					newLine = true;
-					indent += indentAmount;
-					}
-
-				// Start new line after tag but leave indent alone
-				else if (tag.Value.StartsWith("</td"))
-					{
-					output.AppendLine();
-					newLine = true;
-					}
-
+				// Relevant opening tags
 				else
-					{  newLine = false;  }
+					{
+					if (textPosition != lastNewSectionPosition)
+						{
+						output.AppendLine();
+						indentLevel++;
+						}
+
+					output.Append(' ', indentLevel * spacesPerIndentLevel);
+					output.Append(tagMatch.Value);
+
+					textPosition = tagMatch.Index + tagMatch.Length;
+					}
 				}
 
-			if (currentIndex < input.Length)
-				{  output.Append(input, currentIndex, input.Length - currentIndex);  }
+			// Append remaining text after the last tag
+			if (textPosition < input.Length)
+				{  output.Append(input, textPosition, input.Length - textPosition);  }
 
 			string outputString = output.ToString();
+
+			// Remove ID numbers from tags
 			outputString = IDNumbersRegex.Replace(outputString, "");
 
 			return outputString;
@@ -370,8 +378,8 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 		// Group: Static Variables
 		// __________________________________________________________________________
 
-		static protected Regex IndentTagsRegex = new Regex("</?(?:table|tr|td|div)[^>]*>",
-																					RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant);
+		static protected Regex TagsToFormatRegex = new Regex("(?:</?div[^>]*>|-----\r\n)",
+																						 RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant);
 		static protected Regex IDNumbersRegex = new Regex(" id=\"ND(?:Class)?Prototype[0-9]+\"",
 																					   RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant);
 
