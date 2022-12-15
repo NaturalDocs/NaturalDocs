@@ -824,7 +824,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				if (parameterLayout.BeforeParametersWidth > 3 ||
 					parameterLayout.AfterParametersWidth > 3)
 					{  allBeforeAndAfterParametersSectionsAreShort = false;  }
-				if (!parameterLayout.LastCellEndsWithSpace)
+				if (!parameterLayout.LastCellEndsWithSpace(columnLayout))
 					{  allLastCellsEndWithSpace = false;  }
 				}
 
@@ -1185,7 +1185,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						{
 						// We only need to actually add the space if the last parameter doesn't already have one at the end.
 						// Otherwise ignore it so it's not overly wide.
-						extraCSSClass = (parameterLayout.LastCellEndsWithSpace ? "" : " LeftSpaceOnWide") +
+						extraCSSClass = (parameterLayout.LastCellEndsWithSpace(parameterLayout.Columns) ? "" : " LeftSpaceOnWide") +
 												 (allBeforeAndAfterParametersSectionsAreShort ? " FitIntoRightIndentOnNarrow LeftSpaceOnNarrow" : "");
 						}
 					else
@@ -1193,7 +1193,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						// On the other hand, if there's not supposed to be a space and the last parameter ends with one anyway
 						// we can bleed the ending part an extra character into it.  This lets closing parentheses line up with the
 						// commas in between parameters.
-						extraCSSClass = (parameterLayout.LastCellEndsWithSpace ? " NegativeLeftSpaceOnWide" : "") +
+						extraCSSClass = (parameterLayout.LastCellEndsWithSpace(parameterLayout.Columns) ? " NegativeLeftSpaceOnWide" : "") +
 												 (allBeforeAndAfterParametersSectionsAreShort ? " FitIntoRightIndentOnNarrow" : "");
 						}
 

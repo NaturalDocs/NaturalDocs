@@ -162,6 +162,23 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			}
 
 
+		/* Function: LastCellEndsWithSpace
+		 * Whether the last column of the last parameter either doesn't have any content or its content is shorter than the
+		 * column width, resulting in empty space between it and the part after the parameters.
+		 */
+		public bool LastCellEndsWithSpace (PrototypeColumnLayout columnLayout)
+			{
+			if (NumberOfParameters == 0)
+				{  return false;  }
+
+			int lastParameterIndex = NumberOfParameters - 1;
+			int lastColumnIndex = columnLayout.LastUsed;
+
+			return (HasContent(lastParameterIndex, lastColumnIndex) == false ||
+						GetContentWidth(lastParameterIndex, lastColumnIndex) < columnLayout.WidthOf(lastColumnIndex));
+			}
+
+
 		/* Function: RecalculateColumns
 		 * Recalculates <Columns> after making changes to the layout via <SetleadingSpace()> or <SetTrailingSpace()>.
 		 */
@@ -855,26 +872,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				{  return hasSpaceAfterParameters;  }
 			set
 				{  hasSpaceAfterParameters = value;  }
-			}
-
-
-		/* Property: LastCellEndsWithSpace
-		 * Whether the last column of the last parameter either doesn't have any content or its content is shorter than the
-		 * column width, resulting in empty space between it and the part after the parameters.
-		 */
-		public bool LastCellEndsWithSpace
-			{
-			get
-				{
-				if (NumberOfParameters == 0)
-					{  return false;  }
-
-				int lastParameterIndex = NumberOfParameters - 1;
-				int lastColumnIndex = columns.LastUsed;
-
-				return (HasContent(lastParameterIndex, lastColumnIndex) == false ||
-						   GetContentWidth(lastParameterIndex, lastColumnIndex) < columns.WidthOf(lastColumnIndex));
-				}
 			}
 
 
