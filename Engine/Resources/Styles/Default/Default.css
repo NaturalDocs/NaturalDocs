@@ -1812,7 +1812,11 @@ td {
 				}
 
 		.WideForm .RightAlignOnWide,
-		.NarrowForm .RightAlignOnNarrow { text-align: right; }
+		.NarrowForm .RightAlignOnNarrow { 
+			text-align: right;
+			padding-left: 0 !important;
+			text-indent: 0 !important;
+			}
 
 		.WideForm .NegativeLeftSpaceOnWide { text-indent: -1ch; }
 
