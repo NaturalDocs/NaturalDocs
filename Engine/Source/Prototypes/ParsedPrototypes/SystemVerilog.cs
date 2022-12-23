@@ -37,8 +37,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 		/* Constructor: SystemVerilog
 		 */
-		public SystemVerilog (Tokenizer prototype, int languageID, int commentTypeID, bool supportsImpliedTypes = true)
-			: base (prototype, languageID, commentTypeID, supportsImpliedTypes)
+		public SystemVerilog (Tokenizer prototype, int languageID, int commentTypeID)
+			: base (prototype, languageID, commentTypeID, parameterStyle: ParameterStyles.C, supportsImpliedTypes: true)
 			{
 			// The base constructor will call RecalculateSections() and the overridden version will set secondarySectionIndex.
 			}

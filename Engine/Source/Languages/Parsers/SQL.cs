@@ -323,7 +323,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				ParseVariable(tokenizedPrototype.FirstToken, tokenizedPrototype.LastToken, ParseMode.ParsePrototype);
 				}
 
-			return new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID);
+			return new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID,
+													 parameterStyle: ParsedPrototype.ParameterStyles.Pascal,
+													 supportsImpliedTypes: true);
 			}
 
 

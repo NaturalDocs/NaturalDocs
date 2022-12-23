@@ -220,7 +220,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				// DEPENDENCY: This code depends on the order of PrototypeColumnLayout.CColumnOrder and PascalColumnOrder.
 
-				if (parameters.ParameterStyle == ParsedPrototype.ParameterStyle.C)
+				if (parameters.ParameterStyle == ParsedPrototype.ParameterStyles.C)
 					{
 					while (iterator < endOfParam &&
 							  iterator.PrototypeParsingType == PrototypeParsingType.Null &&
@@ -493,7 +493,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				// Pascal-Style Parameters
 				//
 
-				else if (parameters.ParameterStyle == ParsedPrototype.ParameterStyle.Pascal)
+				else if (parameters.ParameterStyle == ParsedPrototype.ParameterStyles.Pascal)
 					{
 					while (iterator < endOfParam &&
 							  iterator.PrototypeParsingType == PrototypeParsingType.Null &&
@@ -822,7 +822,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 		/* Property: ParameterStyle
 		 */
-		public ParsedPrototype.ParameterStyle ParameterStyle
+		public ParsedPrototype.ParameterStyles ParameterStyle
 			{
 			get
 				{  return parameters.ParameterStyle;  }

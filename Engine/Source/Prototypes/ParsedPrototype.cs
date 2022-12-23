@@ -38,15 +38,14 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		// __________________________________________________________________________
 
 
-		/* Enum: ParameterStyle
+		/* Enum: ParameterStyles
 		 *
+		 * Null - The prototype either doesn't have parameters or the style hasn't been determined yet.
 		 * C - A C-style prototype with parameters in a form similar to "int x = 12".
 		 * Pascal - A Pascal-style prototype with parameters in a form similar to "x: int := 12".
-		 *
-		 * Typeless prototypes will be returned as C-style.
 		 */
-		public enum ParameterStyle : byte
-			{  C, Pascal  }
+		public enum ParameterStyles : byte
+			{  Null = 0, C, Pascal  }
 
 
 
@@ -57,12 +56,14 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		/* Constructor: ParsedPrototype
 		 * Creates a new parsed prototype.
 		 */
-		public ParsedPrototype (Tokenizer prototype, int languageID, int commentTypeID, bool supportsImpliedTypes = true)
+		public ParsedPrototype (Tokenizer prototype, int languageID, int commentTypeID,
+										   ParameterStyles parameterStyle = ParameterStyles.Null, bool supportsImpliedTypes = true)
 			{
 			tokenizer = prototype;
 			sections = null;
 			mainSectionIndex = 0;
 
+			this.parameterStyle = parameterStyle;
 			this.languageID = languageID;
 			this.commentTypeID = commentTypeID;
 			this.supportsImpliedTypes = supportsImpliedTypes;
@@ -316,7 +317,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					startOfSection.NextPastWhitespace(endOfSection);
 
 					if (sectionHasParams)
-						{  sections.Add( new ParameterSection(startOfSection, endOfSection, supportsImpliedTypes) );  }
+						{  sections.Add( new ParameterSection(startOfSection, endOfSection, parameterStyle, supportsImpliedTypes) );  }
 					else
 						{  sections.Add( new Section(startOfSection, endOfSection) );  }
 
@@ -408,19 +409,23 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			}
 
 
-		/* Property: Style
-		 * The format of the prototype, such as C-style parameters ("int x") or Pascal-style ("x: int").  If it has no parameters or
-		 * no types this will return C.  Tokens must be marked with <PrototypeParsingType.Name>, <PrototypeParsingType.Type>,
-		 * and <PrototypeParsingType.NameTypeSeparator> for this to work.
+		/* Property: ParameterStyle
+		 * The format of the prototype's parameters, such as C-style ("int x") or Pascal-style ("x: int").  If it doesn't have
+		 * parameters, the parameters don't have types, or this hasn't been determined yet it will be <ParameterStyles.Null>.
 		 */
-		public ParameterStyle Style
+		public ParameterStyles ParameterStyle
 			{
 			get
+				{  return parameterStyle;  }
+			set
 				{
-				if (sections[mainSectionIndex] is ParameterSection)
-					{  return (sections[mainSectionIndex] as ParameterSection).ParameterStyle;  }
-				else
-					{  return ParameterStyle.C;  }
+				parameterStyle = value;
+
+				foreach (var section in sections)
+					{
+					if (section is ParameterSection)
+						{  (section as ParameterSection).ParameterStyle = value;  }
+					}
 				}
 			}
 
@@ -474,6 +479,12 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * and parameters.
 		 */
 		protected int mainSectionIndex;
+
+		/* var: parameterStyle
+		 * The format of the prototype's parameters, such as C-style ("int x") or Pascal-style ("x: int").  If it doesn't have
+		 * parameters, the parameters don't have types, or this hasn't been determined yet it will be <ParameterStyles.Null>.
+		 */
+		protected ParameterStyles parameterStyle;
 
 		/* var: languageID
 		 * The language ID associated with this prototype.

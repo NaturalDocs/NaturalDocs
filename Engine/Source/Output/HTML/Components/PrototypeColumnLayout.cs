@@ -325,7 +325,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		/* Property: ParameterStyle
 		 * Returns the <ParsedPrototype.ParameterStyle> associated with the columns.
 		 */
-		public ParsedPrototype.ParameterStyle ParameterStyle
+		public ParsedPrototype.ParameterStyles ParameterStyle
 			{
 			get
 				{  return parameterStyle;  }
@@ -340,7 +340,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		/* var: parameterStyle
 		 * The <ParsedPrototype.ParameterStyle> of the columns.
 		 */
-		protected ParsedPrototype.ParameterStyle parameterStyle;
+		protected ParsedPrototype.ParameterStyles parameterStyle;
 
 		/* var: columnWidths
 		 * An array of the column widths in characters.  Each one will be the longest width of that column in any individual
@@ -357,7 +357,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		/* Function: CountOf
 		 * Returns the number of columns in the passed <ParsedPrototype.ParameterStyle>.
 		 */
-		public static int CountOf (ParsedPrototype.ParameterStyle parameterStyle)
+		public static int CountOf (ParsedPrototype.ParameterStyles parameterStyle)
 			{
 			return OrderOf(parameterStyle).Length;
 			}
@@ -366,14 +366,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		/* Function: OrderOf
 		 * Returns the order of column types for the passed parameter style.  Do not change the data.
 		 */
-		public static PrototypeColumnType[] OrderOf (ParsedPrototype.ParameterStyle parameterStyle)
+		public static PrototypeColumnType[] OrderOf (ParsedPrototype.ParameterStyles parameterStyle)
 			{
 			switch (parameterStyle)
 				{
-				case ParsedPrototype.ParameterStyle.C:
+				case ParsedPrototype.ParameterStyles.C:
 					return CColumnOrder;
-				case ParsedPrototype.ParameterStyle.Pascal:
+				case ParsedPrototype.ParameterStyles.Pascal:
 					return PascalColumnOrder;
+				case ParsedPrototype.ParameterStyles.Null:
+					return NullColumnOrder;
 				default:
 					throw new NotSupportedException();
 				}
@@ -385,6 +387,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		// __________________________________________________________________________
 
 		// DEPENDENCY: PrototypeParameterLayout.CalculateCells() depends on the order of these.
+
+		/* var: NullColumnOrder
+		 * A stub array for if this class is used with <ParsedPrototype.ColumnStyles.Null>.
+		 */
+		static public PrototypeColumnType[] NullColumnOrder = { };
 
 		/* var: CColumnOrder
 		 * An array of <PrototypeColumnTypes> representing the order in which columns should appear for C-style prototypes.

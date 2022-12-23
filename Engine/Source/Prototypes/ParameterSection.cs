@@ -30,13 +30,16 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * Pass the start and end of the entire section to be covered, including the before and after parameters part.  This function will
 		 * automatically call <RecalculateParameters()> so you don't have to.
 		 */
-		public ParameterSection (TokenIterator start, TokenIterator end, bool supportsImpliedTypes = true) : base (start, end)
+		public ParameterSection (TokenIterator start, TokenIterator end,
+											 ParsedPrototype.ParameterStyles parameterStyle = ParsedPrototype.ParameterStyles.Null,
+											 bool supportsImpliedTypes = true)
+			: base (start, end)
 			{
 			beforeParameters = null;
 			afterParameters = null;
 			parameters = null;
-			parameterStyle = null;
 
+			this.parameterStyle = parameterStyle;
 			this.supportsImpliedTypes = supportsImpliedTypes;
 
 			RecalculateParameters();
@@ -246,12 +249,6 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					parameters.RemoveAt(parameters.Count - 1);
 					}
 				}
-
-
-			// Parameter style
-
-			// Set to null so it recalculates on next use rather than doing it preemptively
-			parameterStyle = null;
 			}
 
 
@@ -358,7 +355,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 					TokenIterator iterator, end, name;
 
-					if (ParameterStyle == ParsedPrototype.ParameterStyle.Pascal)
+					if (ParameterStyle == ParsedPrototype.ParameterStyles.Pascal)
 						{
 						iterator = parameters[index].Start;
 						end = parameters[index].End;
@@ -437,7 +434,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					// "[12]" in "out a[12], b: integer".  For C-style parameters we'll start at the beginning because we didn't add
 					// any before.
 
-					if (ParameterStyle == ParsedPrototype.ParameterStyle.Pascal)
+					if (ParameterStyle == ParsedPrototype.ParameterStyles.Pascal)
 						{  iterator = name;  }
 					else
 						{  iterator = parameters[index].Start;  }
@@ -502,59 +499,6 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			}
 
 
-		/* Function: RecalculateParameterStyle
-		 * Determines whether the parameters are C-style ("int x") or Pascal-style ("x: int").  If it has no parameters or
-		 * no types this will return C.  Tokens must be marked with <PrototypeParsingType.Name>, <PrototypeParsingType.Type>,
-		 * and <PrototypeParsingType.NameTypeSeparator> for this to work.
-		 */
-		public void RecalculateParameterStyle ()
-			{
-			if (parameters == null)
-				{
-				parameterStyle = ParsedPrototype.ParameterStyle.C;
-				return;
-				}
-
-			foreach (var parameter in parameters)
-				{
-				bool foundName = false;
-				bool foundType = false;
-
-				TokenIterator iterator = parameter.Start;
-
-				while (iterator < parameter.End)
-					{
-					if (iterator.PrototypeParsingType == PrototypeParsingType.Name ||
-						iterator.PrototypeParsingType == PrototypeParsingType.KeywordName)
-						{
-						if (foundType)
-							{
-							parameterStyle = ParsedPrototype.ParameterStyle.C;
-							return;
-							}
-						else
-							{  foundName = true;  }
-						}
-					else if (iterator.PrototypeParsingType == PrototypeParsingType.Type)
-						{
-						if (foundName)
-							{
-							parameterStyle = ParsedPrototype.ParameterStyle.Pascal;
-							return;
-							}
-						else
-							{  foundType = true;  }
-						}
-
-					iterator.Next();
-					}
-				}
-
-			// If we hit the end without anything definitive, treat it as C
-			parameterStyle = ParsedPrototype.ParameterStyle.C;
-			}
-
-
 		/* Function: GetImpliedTypeIndex
 		 * If the parameter at the passed index doesn't define its own type, returns the index of the closest parameter that does.
 		 * It will search backwards for C-style parameters ("int x, y") and forwards for Pascal-style parameters ("x, y: integer").  It
@@ -566,7 +510,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 			for (;;)
 				{
-				if (ParameterStyle == ParsedPrototype.ParameterStyle.C)
+				if (ParameterStyle == ParsedPrototype.ParameterStyles.C)
 					{
 					impliedTypeIndex--;
 
@@ -576,7 +520,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 						return false;
 						}
 					}
-				else if (ParameterStyle == ParsedPrototype.ParameterStyle.Pascal)
+				else if (ParameterStyle == ParsedPrototype.ParameterStyles.Pascal)
 					{
 					impliedTypeIndex++;
 
@@ -598,6 +542,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 		// Group: Irrelevant Functions
 		// __________________________________________________________________________
+		//
 		// These functions are no longer relevant for parameter sections and always return false.  You should use the <Parameter
 		// Functions> instead.
 
@@ -656,15 +601,12 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 		/* Property: ParameterStyle
 		 */
-		public ParsedPrototype.ParameterStyle ParameterStyle
+		public ParsedPrototype.ParameterStyles ParameterStyle
 			{
 			get
-				{
-				if (parameterStyle == null)
-					{  RecalculateParameterStyle();  }
-
-				return (ParsedPrototype.ParameterStyle)parameterStyle;
-				}
+				{  return parameterStyle;  }
+			set
+				{  parameterStyle = value;  }
 			}
 
 
@@ -699,9 +641,10 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		protected List<Section> parameters;
 
 		/* var: parameterStyle
-		 * The parameter format, or null if it hasn't been determined yet.
+		 * The format of the parameters, such as C-style ("int x") or Pascal-style ("x: int").  If it doesn't have parameters, the
+		 * parameters don't have types, or this hasn't been determined yet it will be <ParameterStyles.Null>.
 		 */
-		protected ParsedPrototype.ParameterStyle? parameterStyle;
+		protected ParsedPrototype.ParameterStyles parameterStyle;
 
 		/* var: supportsImpliedTypes
 		 * Whether the prototype's language supports implied types.

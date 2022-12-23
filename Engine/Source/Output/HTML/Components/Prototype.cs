@@ -835,10 +835,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			switch (parameterLayouts[sectionIndex].ParameterStyle)
 				{
-				case ParsedPrototype.ParameterStyle.C:
+				case ParsedPrototype.ParameterStyles.C:
 					parameterCSSClass = "CStyle";
 					break;
-				case ParsedPrototype.ParameterStyle.Pascal:
+				case ParsedPrototype.ParameterStyles.Pascal:
 					parameterCSSClass = "PascalStyle";
 					break;
 				default:
@@ -1045,10 +1045,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			switch (parameterLayouts[sectionIndex].ParameterStyle)
 				{
-				case ParsedPrototype.ParameterStyle.C:
+				case ParsedPrototype.ParameterStyles.C:
 					parameterCSSClass = "CStyle";
 					break;
-				case ParsedPrototype.ParameterStyle.Pascal:
+				case ParsedPrototype.ParameterStyles.Pascal:
 					parameterCSSClass = "PascalStyle";
 					break;
 				default:

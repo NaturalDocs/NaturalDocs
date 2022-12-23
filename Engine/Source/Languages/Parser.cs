@@ -33,7 +33,6 @@ using System.Text;
 using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.Comments;
 using CodeClear.NaturalDocs.Engine.CommentTypes;
-using CodeClear.NaturalDocs.Engine.Hierarchies;
 using CodeClear.NaturalDocs.Engine.Links;
 using CodeClear.NaturalDocs.Engine.Prototypes;
 using CodeClear.NaturalDocs.Engine.Symbols;
@@ -543,15 +542,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 				if (parsedPrototype.NumberOfParameters > 0)
 					{
-					var parameterStyle = DetectParameterStyle(parsedPrototype);
+					parsedPrototype.ParameterStyle = DetectParameterStyle(parsedPrototype);
 
 					for (int i = 0; i < parsedPrototype.NumberOfParameters; i++)
 						{
 						parsedPrototype.GetParameter(i, out start, out end);
 
-						if (parameterStyle == ParsedPrototype.ParameterStyle.C)
+						if (parsedPrototype.ParameterStyle == ParsedPrototype.ParameterStyles.C)
 							{  MarkCParameter(start, end);  }
-						else if (parameterStyle == ParsedPrototype.ParameterStyle.Pascal)
+						else if (parsedPrototype.ParameterStyle == ParsedPrototype.ParameterStyles.Pascal)
 							{  MarkPascalParameter(start, end);  }
 						else
 							{  throw new NotImplementedException();  }
@@ -605,11 +604,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				TokenIterator start = tokenizedPrototype.FirstToken;
 				TokenIterator end = tokenizedPrototype.LastToken;
 
-				var parameterStyle = DetectParameterStyle(start, end);
+				parsedPrototype.ParameterStyle = DetectParameterStyle(start, end);
 
-				if (parameterStyle == ParsedPrototype.ParameterStyle.C)
+				if (parsedPrototype.ParameterStyle == ParsedPrototype.ParameterStyles.C)
 					{  MarkCParameter(start, end);  }
-				else if (parameterStyle == ParsedPrototype.ParameterStyle.Pascal)
+				else if (parsedPrototype.ParameterStyle == ParsedPrototype.ParameterStyles.Pascal)
 					{  MarkPascalParameter(start, end);  }
 				else
 					{  throw new NotImplementedException();  }
@@ -3698,7 +3697,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * may contain individual parameters that look like C style parameters, but it should always have at least one that looks like
 		 * a Pascal style parameter.
 		 */
-		protected ParsedPrototype.ParameterStyle DetectParameterStyle (TokenIterator start, TokenIterator end)
+		protected ParsedPrototype.ParameterStyles DetectParameterStyle (TokenIterator start, TokenIterator end)
 			{
 			TokenIterator iterator = start;
 
@@ -3714,7 +3713,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 				// Can only check for a colon after checking for := and ::
 				else if (iterator.Character == ':')
-					{  return ParsedPrototype.ParameterStyle.Pascal;  }
+					{  return ParsedPrototype.ParameterStyles.Pascal;  }
 
 				else if (TryToSkipTypeOrVarName(ref iterator, end) ||
 						   TryToSkipComment(ref iterator) ||
@@ -3735,15 +3734,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				}
 
 			// If we didn't find anything Pascal, then we're C.
-			return ParsedPrototype.ParameterStyle.C;
+			return ParsedPrototype.ParameterStyles.C;
 			}
 
 
 		/* Function: DetectParameterStyle
 		 * Determines whether the parameters in this prototype use the C or Pascal style.
 		 */
-		protected ParsedPrototype.ParameterStyle DetectParameterStyle (ParsedPrototype prototype)
+		protected ParsedPrototype.ParameterStyles DetectParameterStyle (ParsedPrototype prototype)
 			{
+			if (prototype.NumberOfParameters == 0)
+				{  return ParsedPrototype.ParameterStyles.Null;  }
+
 			// We have to go through all the parameters to see if any are Pascal-style since some may appear as C-style.  For
 			// example:
 			//
@@ -3758,12 +3760,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{
 				prototype.GetParameter(i, out start, out end);
 
-				if (DetectParameterStyle(start, end) == ParsedPrototype.ParameterStyle.Pascal)
-					{  return ParsedPrototype.ParameterStyle.Pascal;  }
+				if (DetectParameterStyle(start, end) == ParsedPrototype.ParameterStyles.Pascal)
+					{  return ParsedPrototype.ParameterStyles.Pascal;  }
 				}
 
-			// If we didn't find anything Pascal, then we're C.  If there's no parameters then it doesn't matter which we return.
-			return ParsedPrototype.ParameterStyle.C;
+			// If we didn't find anything Pascal then we're C.
+			return ParsedPrototype.ParameterStyles.C;
 			}
 
 

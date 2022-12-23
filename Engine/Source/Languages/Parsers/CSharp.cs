@@ -106,9 +106,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			    }
 
 			if (parsed)
-				{  return new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID);  }
+				{
+				return new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID,
+														 parameterStyle: ParsedPrototype.ParameterStyles.C,
+														 supportsImpliedTypes: true);
+				}
 			else
-			    {  return base.ParsePrototype(stringPrototype, commentTypeID);  }
+			    {
+				return base.ParsePrototype(stringPrototype, commentTypeID);
+				}
 			}
 
 
@@ -798,7 +804,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 						// Now we can throw it into a ParsedPrototype in order to easily iterate through the parameters and get their
 						// properties.
-						var parametersPrototype = new ParsedPrototype(parametersTokenizer, this.Language.ID, propertyCommentTypeID);
+						var parametersPrototype = new ParsedPrototype(parametersTokenizer, this.Language.ID, propertyCommentTypeID,
+																							   parameterStyle: ParsedPrototype.ParameterStyles.C,
+																							   supportsImpliedTypes: true);
 
 						for (int i = 0; i < parametersPrototype.NumberOfParameters; i++)
 							{
