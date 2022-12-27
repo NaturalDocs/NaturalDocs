@@ -371,9 +371,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			switch (parameterStyle)
 				{
 				case ParsedPrototype.ParameterStyles.C:
-					return CColumnOrder;
+					return PrototypeStyles.C.ColumnOrder;
 				case ParsedPrototype.ParameterStyles.Pascal:
-					return PascalColumnOrder;
+					return PrototypeStyles.Pascal.ColumnOrder;
 				case ParsedPrototype.ParameterStyles.Null:
 					return NullColumnOrder;
 				default:
@@ -386,36 +386,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		// Group: Static Variables
 		// __________________________________________________________________________
 
-		// DEPENDENCY: PrototypeParameterLayout.CalculateCells() depends on the order of these.
-
 		/* var: NullColumnOrder
 		 * A stub array for if this class is used with <ParsedPrototype.ColumnStyles.Null>.
 		 */
 		static public PrototypeColumnType[] NullColumnOrder = { };
 
-		/* var: CColumnOrder
-		 * An array of <PrototypeColumnTypes> representing the order in which columns should appear for C-style prototypes.
-		 */
-		static public PrototypeColumnType[] CColumnOrder = { PrototypeColumnType.ModifierQualifier,
-																						 PrototypeColumnType.Type,
-																						 PrototypeColumnType.Symbols,
-																						 PrototypeColumnType.Name,
-																						 PrototypeColumnType.PropertyValueSeparator,
-																						 PrototypeColumnType.PropertyValue,
-																						 PrototypeColumnType.DefaultValueSeparator,
-																						 PrototypeColumnType.DefaultValue };
-
-		/* var: PascalColumnOrder
-		 * An array of <PrototypeColumnTypes> representing the order in which columns should appear for Pascal-style prototypes.
-		 */
-		static public PrototypeColumnType[] PascalColumnOrder = { PrototypeColumnType.ModifierQualifier,
-																								PrototypeColumnType.Name,
-																								PrototypeColumnType.TypeNameSeparator,
-																								PrototypeColumnType.Symbols,
-																								PrototypeColumnType.Type,
-																								PrototypeColumnType.PropertyValueSeparator,
-																								PrototypeColumnType.PropertyValue,
-																								PrototypeColumnType.DefaultValueSeparator,
-																								PrototypeColumnType.DefaultValue };
 		}
 	}
