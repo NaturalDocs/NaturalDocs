@@ -309,6 +309,8 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 		 */
 		public int TokensInCharacters (int characterCount)
 			{
+			if (characterCount == 0)
+				{  return 0;  }
 			if (!IsInBounds)
 				{  return -1;  }
 
@@ -335,6 +337,9 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 		 */
 		public int TokensInPreviousCharacters (int characterCount)
 			{
+			if (characterCount == 0)
+				{  return 0;  }
+
 			// We want to accept if the iterator is one past the last token
 			if (!IsInBounds && tokenIndex != tokenizer.TokenCount)
 				{  return -1;  }
