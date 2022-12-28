@@ -319,5 +319,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyles
 																					  PrototypeColumnType.PropertyValue,
 																					  PrototypeColumnType.DefaultValueSeparator,
 																					  PrototypeColumnType.DefaultValue };
+		/* var: ColumnsAlwaysSpaced
+		 * An array of <PrototypeColumnTypes> representing the columns that should always be formatted with spaces on both
+		 * sides of the content.
+		 */
+		static public PrototypeColumnType[] ColumnsAlwaysSpaced = { PrototypeColumnType.DefaultValueSeparator };
+
+		/* var: ColumnsSpacedUnlessColon
+		 * An array of <PrototypeColumnTypes> representing the columns that should always be formatted with spaces on both
+		 * sides of the content, unless the content is a colon, in which case it should only be on the right.
+		 */
+		static public PrototypeColumnType[] ColumnsSpacedUnlessColon = { PrototypeColumnType.TypeNameSeparator,
+																										   PrototypeColumnType.PropertyValueSeparator };
+
 		}
 	}

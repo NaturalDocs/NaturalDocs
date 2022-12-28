@@ -453,6 +453,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				}
 
 
+			// Otherwise continue with a single layout
+
 			PrototypeColumnLayout columnLayout;
 
 			if (sectionCount > 1 && alignment == ParameterGroupAlignment.AlignAllColumns)
@@ -460,40 +462,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			else
 				{  columnLayout = parameterLayouts[sectionIndex].Columns;  }
 
-
-			//
-			// First determine some column indexes we'll need
-			//
-
 			int firstUsedColumnIndex = columnLayout.FirstUsed;
 			int lastUsedColumnIndex = columnLayout.LastUsed;
 
-			int defaultValueSeparatorColumnIndex = -1;
-			int beforeDefaultValueSeparatorColumnIndex = -1;
+			var columnsAlwaysSpaced = columnLayout.ColumnsAlwaysSpaced;
+			var columnsSpacedUnlessColon = columnLayout.ColumnsSpacedUnlessColon;
 
-			if (columnLayout.IsUsed(PrototypeColumnType.DefaultValueSeparator))
-				{
-				defaultValueSeparatorColumnIndex = columnLayout.IndexOf(PrototypeColumnType.DefaultValueSeparator);
-				beforeDefaultValueSeparatorColumnIndex = columnLayout.PreviousUsed(defaultValueSeparatorColumnIndex);
-				}
+			// Make a merged array from the two above
+			var columnsWithAdjustedSpacing = new PrototypeColumnType[ columnsAlwaysSpaced.Length + columnsSpacedUnlessColon.Length ];
+			columnsAlwaysSpaced.CopyTo(columnsWithAdjustedSpacing, 0);
+			columnsSpacedUnlessColon.CopyTo(columnsWithAdjustedSpacing, columnsAlwaysSpaced.Length);
 
-			int propertyValueSeparatorColumnIndex = -1;
-			int beforePropertyValueSeparatorColumnIndex = -1;
-
-			if (columnLayout.IsUsed(PrototypeColumnType.PropertyValueSeparator))
-				{
-				propertyValueSeparatorColumnIndex = columnLayout.IndexOf(PrototypeColumnType.PropertyValueSeparator);
-				beforePropertyValueSeparatorColumnIndex = columnLayout.PreviousUsed(propertyValueSeparatorColumnIndex);
-				}
-
-			int typeNameSeparatorColumnIndex = -1;
-			int beforeTypeNameSeparatorColumnIndex = -1;
-
-			if (columnLayout.IsUsed(PrototypeColumnType.TypeNameSeparator))
-				{
-				typeNameSeparatorColumnIndex = columnLayout.IndexOf(PrototypeColumnType.TypeNameSeparator);
-				beforeTypeNameSeparatorColumnIndex = columnLayout.PreviousUsed(typeNameSeparatorColumnIndex);
-				}
 
 
 			//
@@ -514,51 +493,49 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					// The last used column always gets trailing spaces removed
 					sectionLayout.SetTrailingSpace(parameterIndex, lastUsedColumnIndex, false);
 
-					// If there's a default value separator it should always have both leading and trailing spaces
-					if (defaultValueSeparatorColumnIndex != -1)
+					// Apply columns that should always have both leading and trailing spaces
+					foreach (var columnType in columnsAlwaysSpaced)
 						{
-						if (sectionLayout.HasContent(parameterIndex, defaultValueSeparatorColumnIndex))
-							{
-							sectionLayout.SetLeadingSpace(parameterIndex, defaultValueSeparatorColumnIndex, true);
-							sectionLayout.SetTrailingSpace(parameterIndex, defaultValueSeparatorColumnIndex, true);
-							}
+						int columnIndex = columnLayout.IndexOf(columnType);
 
-						// Also remove the trailing space of the column before it.  It doesn't matter if the cell has content in this
-						// particular parameter, just that the column exists at all.
-						if (beforeDefaultValueSeparatorColumnIndex != -1)
-							{  sectionLayout.SetTrailingSpace(parameterIndex, beforeDefaultValueSeparatorColumnIndex, false);  }
+						if (columnLayout.IsUsed(columnIndex))
+							{
+							if (sectionLayout.HasContent(parameterIndex, columnIndex))
+								{
+								sectionLayout.SetLeadingSpace(parameterIndex, columnIndex, true);
+								sectionLayout.SetTrailingSpace(parameterIndex, columnIndex, true);
+								}
+
+							// Also remove the trailing space of the column before it.  It doesn't matter if the cell has content in this
+							// particular parameter, just that the column exists at all.
+							int beforeColumnIndex = columnLayout.PreviousUsed(columnIndex);
+
+							if (beforeColumnIndex != -1)
+								{  sectionLayout.SetTrailingSpace(parameterIndex, beforeColumnIndex, false);  }
+							}
 						}
 
-					// If there's a property value separator it should always have a trailing space.  It should also have a leading
-					// space unless it's ":".  Watch out for ":=" though.
-					if (propertyValueSeparatorColumnIndex != -1)
+					// Apply columns that should always have both leading and trailing spaces, unless it's a colon.  Make sure to check that
+					// it's not ":=" though.
+					foreach (var columnType in columnsSpacedUnlessColon)
 						{
-						if (sectionLayout.GetContent(parameterIndex, propertyValueSeparatorColumnIndex, out start, out end))
+						int columnIndex = columnLayout.IndexOf(columnType);
+
+						if (columnLayout.IsUsed(columnIndex))
 							{
-							bool leadingSpace = (start.Character != ':' || start.MatchesAcrossTokens(":=") || start.MatchesAcrossTokens("::="));
+							if (sectionLayout.GetContent(parameterIndex, columnIndex, out start, out end))
+								{
+								bool leadingSpace = (start.Character != ':' || start.MatchesAcrossTokens(":=") || start.MatchesAcrossTokens("::="));
 
-							sectionLayout.SetLeadingSpace(parameterIndex, propertyValueSeparatorColumnIndex, leadingSpace);
-							sectionLayout.SetTrailingSpace(parameterIndex, propertyValueSeparatorColumnIndex, true);
+								sectionLayout.SetLeadingSpace(parameterIndex, columnIndex, leadingSpace);
+								sectionLayout.SetTrailingSpace(parameterIndex, columnIndex, true);
+								}
+
+							int beforeColumnIndex = columnLayout.PreviousUsed(columnIndex);
+
+							if (beforeColumnIndex != -1)
+								{  sectionLayout.SetTrailingSpace(parameterIndex, beforeColumnIndex, false);  }
 							}
-
-						if (beforePropertyValueSeparatorColumnIndex != -1)
-							{  sectionLayout.SetTrailingSpace(parameterIndex, beforePropertyValueSeparatorColumnIndex, false);  }
-						}
-
-					// If there's a type name separator it should always have a trailing space.  It should not have a leading space
-					// unless it's text-based, such as SQL's "AS", as opposed to something like Pascal's ":".
-					if (typeNameSeparatorColumnIndex != -1)
-						{
-						if (sectionLayout.GetContent(parameterIndex, typeNameSeparatorColumnIndex, out start, out end))
-							{
-							bool leadingSpace = (start.FundamentalType == FundamentalType.Text);
-
-							sectionLayout.SetLeadingSpace(parameterIndex, typeNameSeparatorColumnIndex, leadingSpace);
-							sectionLayout.SetTrailingSpace(parameterIndex, typeNameSeparatorColumnIndex, true);
-							}
-
-						if (beforeTypeNameSeparatorColumnIndex != -1)
-							{  sectionLayout.SetTrailingSpace(parameterIndex, beforeTypeNameSeparatorColumnIndex, false);  }
 						}
 					}
 				}
@@ -581,91 +558,69 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			// apply it because the column's contents won't be aligned otherwise.
 			//
 
-			bool canRemoveDefaultValueSeparatorLeadingSpace = true;
-			bool canRemovePropertyValueSeparatorLeadingSpace = true;
-			bool canRemoveTypeNameSeparatorLeadingSpace = true;
+			bool changedSpacing = false;
 
-			int beforeDefaultValueSeparatorColumnWidth = (beforeDefaultValueSeparatorColumnIndex == -1 ?
-																				   0 : columnLayout.WidthOf(beforeDefaultValueSeparatorColumnIndex));
-			int beforePropertyValueSeparatorColumnWidth = (beforePropertyValueSeparatorColumnIndex == -1 ?
-																					0 : columnLayout.WidthOf(beforePropertyValueSeparatorColumnIndex));
-			int beforeTypeNameSeparatorColumnWidth = (beforeTypeNameSeparatorColumnIndex == -1 ?
-																			   0 : columnLayout.WidthOf(beforeTypeNameSeparatorColumnIndex));
-
-			for (int i = sectionIndex; i < sectionIndex + sectionCount; i++)
+			foreach (var columnType in columnsWithAdjustedSpacing)
 				{
-				var sectionLayout = parameterLayouts[i];
+				int columnIndex = columnLayout.IndexOf(columnType);
 
-				for (int parameterIndex = 0; parameterIndex < sectionLayout.NumberOfParameters; parameterIndex++)
+				if (columnLayout.IsUsed(columnIndex))
 					{
-					if (defaultValueSeparatorColumnIndex == -1 ||
-						beforeDefaultValueSeparatorColumnIndex == -1 ||
+					bool canRemoveLeadingSpace = true;
 
-						// Don't apply this tweak when both columns have content and the left one uses the full column width,
-						// since then they'll be right next to each other with no implied space so we need the extra one.
-						(sectionLayout.HasContent(parameterIndex, defaultValueSeparatorColumnIndex) &&
-						 sectionLayout.HasContent(parameterIndex, beforeDefaultValueSeparatorColumnIndex) &&
-						 sectionLayout.GetContentWidth(parameterIndex, beforeDefaultValueSeparatorColumnIndex) >= beforeDefaultValueSeparatorColumnWidth) ||
+					int beforeColumnIndex = columnLayout.PreviousUsed(columnIndex);
 
-						// Also don't apply this tweak when the separator is text based, like SQL's "DEFAULT".  Doesn't look as good.
-						(sectionLayout.GetContent(parameterIndex, defaultValueSeparatorColumnIndex, out start, out end) &&
-						 start.FundamentalType == FundamentalType.Text))
+					if (beforeColumnIndex == -1)
+						{  canRemoveLeadingSpace = false;  }
+					else
 						{
-						canRemoveDefaultValueSeparatorLeadingSpace = false;
-						}
+						int beforeColumnWidth = columnLayout.WidthOf(beforeColumnIndex);
 
-					if (propertyValueSeparatorColumnIndex == -1 ||
-						beforePropertyValueSeparatorColumnIndex == -1 ||
+						for (int i = sectionIndex; i < sectionIndex + sectionCount && canRemoveLeadingSpace; i++)
+							{
+							var sectionLayout = parameterLayouts[i];
 
-						// Don't apply this tweak when both columns have content and the left one uses the full column width,
-						// since then they'll be right next to each other with no implied space so we need the extra one.
-						(sectionLayout.HasContent(parameterIndex, propertyValueSeparatorColumnIndex) &&
-						 sectionLayout.HasContent(parameterIndex, beforePropertyValueSeparatorColumnIndex) &&
-						 sectionLayout.GetContentWidth(parameterIndex, beforePropertyValueSeparatorColumnIndex) >= beforePropertyValueSeparatorColumnWidth))
-						{
-						canRemovePropertyValueSeparatorLeadingSpace = false;
-						}
+							for (int parameterIndex = 0; parameterIndex < sectionLayout.NumberOfParameters && canRemoveLeadingSpace; parameterIndex++)
+								{
+								// Don't apply this tweak when both columns have content and the left one uses the full column width,
+								// since then they'll be right next to each other with no implied space so we need the extra one.
+								if (sectionLayout.HasContent(parameterIndex, columnIndex) &&
+									sectionLayout.HasContent(parameterIndex, beforeColumnIndex) &&
+									sectionLayout.GetContentWidth(parameterIndex, beforeColumnIndex) >= beforeColumnWidth)
+									{
+									canRemoveLeadingSpace = false;
+									break;
+									}
 
-					if (typeNameSeparatorColumnIndex == -1 ||
-						beforeTypeNameSeparatorColumnIndex == -1 ||
+								// Also don't apply this tweak when the separator is text based, like SQL's "DEFAULT".  Doesn't look as good.
+								if (sectionLayout.GetContent(parameterIndex, columnIndex, out start, out end) &&
+									start.FundamentalType == FundamentalType.Text)
+									{
+									canRemoveLeadingSpace = false;
+									break;
+									}
+								}
+							}
 
-						// Don't apply this tweak when both columns have content and the left one uses the full column width,
-						// since then they'll be right next to each other with no implied space so we need the extra one.
-						(sectionLayout.HasContent(parameterIndex, typeNameSeparatorColumnIndex) &&
-						 sectionLayout.HasContent(parameterIndex, beforeTypeNameSeparatorColumnIndex) &&
-						 sectionLayout.GetContentWidth(parameterIndex, beforeTypeNameSeparatorColumnIndex) >= beforeTypeNameSeparatorColumnWidth) ||
+						if (canRemoveLeadingSpace)
+							{
+							for (int i = sectionIndex; i < sectionIndex + sectionCount; i++)
+								{
+								var sectionLayout = parameterLayouts[i];
 
-						// Also don't apply this tweak when the separator is text based, like SQL's "AS".  Doesn't look as good.
-						(sectionLayout.GetContent(parameterIndex, typeNameSeparatorColumnIndex, out start, out end) &&
-						 start.FundamentalType == FundamentalType.Text))
-						{
-						canRemoveTypeNameSeparatorLeadingSpace = false;
+								for (int parameterIndex = 0; parameterIndex < sectionLayout.NumberOfParameters; parameterIndex++)
+									{  sectionLayout.SetLeadingSpace(parameterIndex, columnIndex, false);  }
+								}
+
+							changedSpacing = true;
+							}
 						}
 					}
 				}
 
-			if (canRemoveDefaultValueSeparatorLeadingSpace ||
-				canRemovePropertyValueSeparatorLeadingSpace ||
-				canRemoveTypeNameSeparatorLeadingSpace)
+			// Recalculate the columns since their widths may have changed again
+			if (changedSpacing)
 				{
-				for (int i = sectionIndex; i < sectionIndex + sectionCount; i++)
-					{
-					var section = parameterLayouts[i];
-
-					for (int parameterIndex = 0; parameterIndex < section.NumberOfParameters; parameterIndex++)
-						{
-						if (canRemoveDefaultValueSeparatorLeadingSpace)
-							{  section.SetLeadingSpace(parameterIndex, defaultValueSeparatorColumnIndex, false);  }
-
-						if (canRemovePropertyValueSeparatorLeadingSpace)
-							{  section.SetLeadingSpace(parameterIndex, propertyValueSeparatorColumnIndex, false);  }
-
-						if (canRemoveTypeNameSeparatorLeadingSpace)
-							{  section.SetLeadingSpace(parameterIndex, typeNameSeparatorColumnIndex, false);  }
-						}
-					}
-
-				// Recalculate the columns since their widths may have changed again
 				if (sectionCount > 1 && alignment == ParameterGroupAlignment.AlignAllColumns)
 					{
 					RecalculateColumns(sectionIndex, sectionCount);

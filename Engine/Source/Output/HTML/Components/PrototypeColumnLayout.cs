@@ -332,6 +332,27 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			}
 
 
+		/* Property: ColumnsAlwaysSpaced
+		 * Returns an array of the <PrototypeColumnTypes> that should always be formatted with spaces on both sides of the content.
+		 */
+		public PrototypeColumnType[] ColumnsAlwaysSpaced
+			{
+			get
+				{  return ColumnsAlwaysSpacedOf(parameterStyle);  }
+			}
+
+
+		/* Property: ColumnsSpacedUnlessColon
+		 * Returns an array of the <PrototypeColumnTypes> that should always be formatted with spaces on both sides of the content,
+		 * unless the content is a colon, in which case it should only be on the right.
+		 */
+		public PrototypeColumnType[] ColumnsSpacedUnlessColon
+			{
+			get
+				{  return ColumnsSpacedUnlessColonOf(parameterStyle);  }
+			}
+
+
 
 		// Group: Variables
 		// __________________________________________________________________________
@@ -374,8 +395,53 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					return PrototypeStyles.C.ColumnOrder;
 				case ParsedPrototype.ParameterStyles.Pascal:
 					return PrototypeStyles.Pascal.ColumnOrder;
+				case ParsedPrototype.ParameterStyles.SystemVerilog:
+					return PrototypeStyles.SystemVerilog.ColumnOrder;
 				case ParsedPrototype.ParameterStyles.Null:
-					return NullColumnOrder;
+					return EmptyColumnList;
+				default:
+					throw new NotSupportedException();
+				}
+			}
+
+
+		/* Function: ColumnsAlwaysSpacedOf
+		 * Returns an array of the <PrototypeColumnTypes> that should always be formatted with spaces on both sides of the content.
+		 */
+		public static PrototypeColumnType[] ColumnsAlwaysSpacedOf (ParsedPrototype.ParameterStyles parameterStyle)
+			{
+			switch (parameterStyle)
+				{
+				case ParsedPrototype.ParameterStyles.C:
+					return PrototypeStyles.C.ColumnsAlwaysSpaced;
+				case ParsedPrototype.ParameterStyles.Pascal:
+					return PrototypeStyles.Pascal.ColumnsAlwaysSpaced;
+				case ParsedPrototype.ParameterStyles.SystemVerilog:
+					return PrototypeStyles.SystemVerilog.ColumnsAlwaysSpaced;
+				case ParsedPrototype.ParameterStyles.Null:
+					return EmptyColumnList;
+				default:
+					throw new NotSupportedException();
+				}
+			}
+
+
+		/* Function: ColumnsSpacedUnlessColonOf
+		 * Returns an array of the <PrototypeColumnTypes> that should always be formatted with spaces on both sides of the content,
+		 * unless the content is a colon, in which case it should only be on the right.
+		 */
+		public static PrototypeColumnType[] ColumnsSpacedUnlessColonOf (ParsedPrototype.ParameterStyles parameterStyle)
+			{
+			switch (parameterStyle)
+				{
+				case ParsedPrototype.ParameterStyles.C:
+					return PrototypeStyles.C.ColumnsSpacedUnlessColon;
+				case ParsedPrototype.ParameterStyles.Pascal:
+					return PrototypeStyles.Pascal.ColumnsSpacedUnlessColon;
+				case ParsedPrototype.ParameterStyles.SystemVerilog:
+					return PrototypeStyles.SystemVerilog.ColumnsSpacedUnlessColon;
+				case ParsedPrototype.ParameterStyles.Null:
+					return EmptyColumnList;
 				default:
 					throw new NotSupportedException();
 				}
@@ -386,10 +452,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		// Group: Static Variables
 		// __________________________________________________________________________
 
-		/* var: NullColumnOrder
+		/* var: EmptyColumnList
 		 * A stub array for if this class is used with <ParsedPrototype.ColumnStyles.Null>.
 		 */
-		static public PrototypeColumnType[] NullColumnOrder = { };
+		static public PrototypeColumnType[] EmptyColumnList = { };
 
 		}
 	}
