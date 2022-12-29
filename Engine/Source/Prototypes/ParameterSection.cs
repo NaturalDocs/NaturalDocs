@@ -632,7 +632,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		protected Section beforeParameters;
 
 		/* var: afterParameters
-		 * The part of the section after the last parameter, including <PrototypeParsingTYpes.EndOfParams>, or null if none.
+		 * The part of the section after the last parameter, including <PrototypeParsingTypes.EndOfParams>, or null if none.
 		 */
 		protected Section afterParameters;
 
