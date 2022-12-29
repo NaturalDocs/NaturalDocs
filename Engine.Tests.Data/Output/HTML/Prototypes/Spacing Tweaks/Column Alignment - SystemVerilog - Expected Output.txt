@@ -21,7 +21,7 @@
          <div class="PAfterParameters FitIntoRightIndentOnNarrow LeftSpaceOnNarrow" data-WideGridArea="4/5/5/6" data-NarrowGridArea="6/5/7/6" style="grid-area:4/5/5/6"><span class="SHMetadata">*)</span></div>
       </div>
    </div>
-   <div class="PSection PPlainSection"><span class="SHKeyword">module</span> Attributes1 ();</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">module</span> Attributes1 ()</div>
 </div>
 -----
 <div class="NDPrototype WideForm">
@@ -42,7 +42,7 @@
          <div class="PAfterParameters LeftSpaceOnWide FitIntoRightIndentOnNarrow LeftSpaceOnNarrow" data-WideGridArea="3/5/4/6" data-NarrowGridArea="5/5/6/6" style="grid-area:3/5/4/6"><span class="SHMetadata">*)</span></div>
       </div>
    </div>
-   <div class="PSection PPlainSection"><span class="SHKeyword">module</span> NoValue1 ();</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">module</span> NoValue1 ()</div>
 </div>
 -----
 <div class="NDPrototype WideForm">
@@ -58,7 +58,7 @@
          <div class="PAfterParameters LeftSpaceOnWide FitIntoRightIndentOnNarrow LeftSpaceOnNarrow" data-WideGridArea="2/5/3/6" data-NarrowGridArea="3/5/4/6" style="grid-area:2/5/3/6"><span class="SHMetadata">*)</span></div>
       </div>
    </div>
-   <div class="PSection PPlainSection"><span class="SHKeyword">module</span> NoValue2 ();</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">module</span> NoValue2 ()</div>
 </div>
 -----
 <div class="NDPrototype WideForm">
@@ -77,5 +77,5 @@
          <div class="PAfterParameters LeftSpaceOnWide FitIntoRightIndentOnNarrow LeftSpaceOnNarrow" data-WideGridArea="3/5/4/6" data-NarrowGridArea="5/5/6/6" style="grid-area:3/5/4/6"><span class="SHMetadata">*)</span></div>
       </div>
    </div>
-   <div class="PSection PPlainSection"><span class="SHKeyword">module</span> NoValue3 ();</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">module</span> NoValue3 ()</div>
 </div>

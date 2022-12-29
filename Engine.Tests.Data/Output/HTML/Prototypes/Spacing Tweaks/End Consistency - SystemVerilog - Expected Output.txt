@@ -14,7 +14,7 @@
          <div class="PAfterParameters LeftSpaceOnWide FitIntoRightIndentOnNarrow LeftSpaceOnNarrow" data-WideGridArea="3/5/4/6" data-NarrowGridArea="4/5/5/6" style="grid-area:3/5/4/6"><span class="SHMetadata">*)</span></div>
       </div>
    </div>
-   <div class="PSection PPlainSection"><span class="SHKeyword">module</span> EndConsistency1 ();</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">module</span> EndConsistency1 ()</div>
 </div>
 -----
 <div class="NDPrototype WideForm">
@@ -33,7 +33,7 @@
          <div class="PAfterParameters FitIntoRightIndentOnNarrow LeftSpaceOnNarrow" data-WideGridArea="3/5/4/6" data-NarrowGridArea="4/5/5/6" style="grid-area:3/5/4/6"><span class="SHMetadata">*)</span></div>
       </div>
    </div>
-   <div class="PSection PPlainSection"><span class="SHKeyword">module</span> EndConsistency2 ();</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">module</span> EndConsistency2 ()</div>
 </div>
 -----
 <div class="NDPrototype WideForm">
@@ -54,7 +54,7 @@
          <div class="PAfterParameters LeftSpaceOnWide FitIntoRightIndentOnNarrow LeftSpaceOnNarrow" data-WideGridArea="3/5/4/6" data-NarrowGridArea="4/5/5/6" style="grid-area:3/5/4/6"><span class="SHMetadata">*)</span></div>
       </div>
    </div>
-   <div class="PSection PPlainSection"><span class="SHKeyword">module</span> EndConsistency3 ();</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">module</span> EndConsistency3 ()</div>
 </div>
 -----
 <div class="NDPrototype WideForm">
@@ -75,7 +75,7 @@
          <div class="PAfterParameters FitIntoRightIndentOnNarrow LeftSpaceOnNarrow" data-WideGridArea="3/5/4/6" data-NarrowGridArea="4/5/5/6" style="grid-area:3/5/4/6"><span class="SHMetadata">*)</span></div>
       </div>
    </div>
-   <div class="PSection PPlainSection"><span class="SHKeyword">module</span> EndConsistency4 ();</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">module</span> EndConsistency4 ()</div>
 </div>
 -----
 <div class="NDPrototype WideForm">
@@ -96,7 +96,7 @@
          <div class="PAfterParameters LeftSpaceOnWide FitIntoRightIndentOnNarrow LeftSpaceOnNarrow" data-WideGridArea="3/5/4/6" data-NarrowGridArea="4/5/5/6" style="grid-area:3/5/4/6"><span class="SHMetadata">*)</span></div>
       </div>
    </div>
-   <div class="PSection PPlainSection"><span class="SHKeyword">module</span> EndConsistency5 ();</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">module</span> EndConsistency5 ()</div>
 </div>
 -----
 <div class="NDPrototype WideForm">
@@ -117,5 +117,5 @@
          <div class="PAfterParameters LeftSpaceOnWide FitIntoRightIndentOnNarrow LeftSpaceOnNarrow" data-WideGridArea="3/5/4/6" data-NarrowGridArea="4/5/5/6" style="grid-area:3/5/4/6"><span class="SHMetadata">*)</span></div>
       </div>
    </div>
-   <div class="PSection PPlainSection"><span class="SHKeyword">module</span> EndConsistency6 ();</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">module</span> EndConsistency6 ()</div>
 </div>
