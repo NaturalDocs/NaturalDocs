@@ -200,14 +200,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			{
 			if (parameters.NumberOfParameters == 0)
 				{  cells = null;  }
-			else if (parameters.ParameterStyle == ParameterStyle.C)
-				{  cells = PrototypeStyles.C.CalculateCells(parameters);  }
-			else if (parameters.ParameterStyle == ParameterStyle.Pascal)
-				{  cells = PrototypeStyles.Pascal.CalculateCells(parameters);  }
-			else if (parameters.ParameterStyle == ParameterStyle.SystemVerilog)
-				{  cells = PrototypeStyles.SystemVerilog.CalculateCells(parameters);  }
 			else
-				{  throw new NotImplementedException();  }
+				{  cells = Prototype.FormatterOf(parameters.ParameterStyle).CalculateCells(parameters);  }
 
 			columns = new PrototypeColumnLayout(parsedPrototype, parameters, cells);
 			}

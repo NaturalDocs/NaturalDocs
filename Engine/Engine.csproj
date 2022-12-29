@@ -60,10 +60,11 @@
     <Compile Include="Source\Output\HTML\Components\PrototypeColumnType.cs" />
     <Compile Include="Source\Output\HTML\Components\PrototypeColumnLayout.cs" />
     <Compile Include="Source\Output\HTML\Components\PrototypeParameterLayout.cs" />
-    <Compile Include="Source\Output\HTML\Components\PrototypeStyles\Shared.cs" />
-    <Compile Include="Source\Output\HTML\Components\PrototypeStyles\Pascal.cs" />
-    <Compile Include="Source\Output\HTML\Components\PrototypeStyles\SystemVerilog.cs" />
-    <Compile Include="Source\Output\HTML\Components\PrototypeStyles\C.cs" />
+    <Compile Include="Source\Output\HTML\Components\PrototypeStyleFormatters\Unknown.cs" />
+    <Compile Include="Source\Output\HTML\Components\PrototypeStyleFormatters\C.cs" />
+    <Compile Include="Source\Output\HTML\Components\PrototypeStyleFormatters\Pascal.cs" />
+    <Compile Include="Source\Output\HTML\Components\PrototypeStyleFormatters\SystemVerilog.cs" />
+    <Compile Include="Source\Output\HTML\Components\PrototypeStyleFormatter.cs" />
     <Compile Include="Source\Output\HTML\Target.Start.cs" />
     <Compile Include="Source\Prototypes\ParameterStyle.cs" />
     <Compile Include="Source\Prototypes\ParsedPrototypes\SystemVerilog.cs" />

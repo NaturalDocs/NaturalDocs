@@ -1,8 +1,8 @@
 ﻿/*
- * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyles.C
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleFormatters.SystemVerilog
  * ____________________________________________________________________________
  *
- * Information to help format <ParameterStyle.C> parameters.
+ * A class to help format <ParameterStyle.SystemVerilog> parameters.
  *
  */
 
@@ -16,22 +16,22 @@ using CodeClear.NaturalDocs.Engine.Prototypes;
 using CodeClear.NaturalDocs.Engine.Tokenization;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyles
+namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleFormatters
 	{
-	public static class C
+	public class SystemVerilog : PrototypeStyleFormatter
 		{
 
-		// Group: Static Functions
+		// Group: Functions
 		// __________________________________________________________________________
 
 
 		/* Function: CalculateCells
-		 * Takes a C-style <ParameterSection> and generates a table of <PrototypeCellLayouts>.  Each row represents a parameter, and
-		 * each cell is a column in <ColumnOrder>.
+		 * Takes a SystemVerilog <ParameterSection> and generates a table of <PrototypeCellLayouts>.  Each row represents
+		 * a parameter, and each cell is a column in <ColumnOrder>.
 		 */
-		public static PrototypeCellLayout[,] CalculateCells (ParameterSection parameters)
+		override public PrototypeCellLayout[,] CalculateCells (ParameterSection parameters)
 			{
-			var cells = new PrototypeCellLayout[ parameters.NumberOfParameters, ColumnOrder.Length ];
+			var cells = new PrototypeCellLayout[ parameters.NumberOfParameters, ColumnCount ];
 
 			for (int parameterIndex = 0; parameterIndex < parameters.NumberOfParameters; parameterIndex++)
 				{
@@ -46,7 +46,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyles
 					{  iterator.Next();  }
 
 
-				// ModifierQualifier
+				// Parameter Keywords
 
 				int currentColumn = 0;
 				TokenIterator startOfCell = iterator;
@@ -56,15 +56,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyles
 					{
 					PrototypeParsingType type = iterator.PrototypeParsingType;
 
-					// Null covers whitespace and any random symbols we encountered that went unmarked.
-					if (type == PrototypeParsingType.TypeModifier ||
-						type == PrototypeParsingType.TypeQualifier ||
-						type == PrototypeParsingType.ParamModifier ||
+					// We merge parameter keywords ("localparam" etc) with in/out ("input") since there will usually only
+					// be one or the other, so they should share a column in the output.  Null covers whitespace if more than
+					// one exists.
+					if (type == PrototypeParsingType.ParamKeyword ||
+						type == PrototypeParsingType.InOut ||
 						type == PrototypeParsingType.Null)
 						{  iterator.Next();   }
-					else if (type == PrototypeParsingType.OpeningTypeModifier ||
-								type == PrototypeParsingType.OpeningParamModifier)
-						{  Shared.SkipModifierBlock(ref iterator, endOfParam);  }
 					else
 						{  break;  }
 					}
@@ -85,18 +83,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyles
 					{
 					PrototypeParsingType type = iterator.PrototypeParsingType;
 
-					// The previous loop already got any modifiers before the type, so this will only cover the type
-					// plus any modifiers following it.
 					if (type == PrototypeParsingType.Type ||
-						type == PrototypeParsingType.TypeModifier ||
-						type == PrototypeParsingType.ParamModifier ||
 						type == PrototypeParsingType.Null)
 						{  iterator.Next();   }
-					else if (type == PrototypeParsingType.OpeningTypeModifier ||
-								type == PrototypeParsingType.OpeningParamModifier)
-						{  Shared.SkipModifierBlock(ref iterator, endOfParam);  }
-					else if (type == PrototypeParsingType.StartOfTuple)
-						{  Shared.SkipTuple(ref iterator, endOfParam);  }
 					else
 						{  break;  }
 					}
@@ -108,88 +97,51 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyles
 				cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
 
 
-				// Symbols
+				// Signed
 
 				currentColumn++;
+				startOfCell = iterator;
 
-				// All symbols are part of the type column right now because they're marked as type or param modifiers.
-				// Start with an empty column and walk backwards to claim the symbols from the type column.
-
-				cells[parameterIndex, currentColumn].StartingTextIndex = iterator.RawTextIndex;
-				cells[parameterIndex, currentColumn].HasTrailingSpace = false;
-				cells[parameterIndex, currentColumn].EndingTextIndex = iterator.RawTextIndex;
-
-				if (iterator > startOfType)
+				while (iterator < endOfParam)
 					{
-					TokenIterator lookbehind = iterator;
-					lookbehind.Previous();
+					PrototypeParsingType type = iterator.PrototypeParsingType;
 
-					if (lookbehind.FundamentalType == FundamentalType.Symbol &&
-						lookbehind.Character != '_' &&
-						lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingTypeModifier &&
-						lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingParamModifier)
-						{
-						cells[parameterIndex, currentColumn].StartingTextIndex = lookbehind.RawTextIndex;
-						lookbehind.Previous();
-
-						while (lookbehind >= startOfType)
-							{
-							if (lookbehind.FundamentalType == FundamentalType.Symbol &&
-								lookbehind.Character != '_' &&
-								lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingTypeModifier &&
-								lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingParamModifier)
-								{
-								cells[parameterIndex, currentColumn].StartingTextIndex = lookbehind.RawTextIndex;
-								lookbehind.Previous();
-								}
-							else
-								{  break;  }
-							}
-
-
-						// Fix up any columns we stole from
-
-						int cutPoint = cells[parameterIndex, currentColumn].StartingTextIndex;
-
-						for (int i = currentColumn - 1; i >= 0; i--)
-							{
-							// If the starting point is at or after the cut, we cancelled out an entire column
-							if (cells[parameterIndex, i].StartingTextIndex >= cutPoint)
-								{
-								cells[parameterIndex, i].StartingTextIndex = cutPoint;
-								cells[parameterIndex, i].HasTrailingSpace = false;
-								cells[parameterIndex, i].EndingTextIndex = cutPoint;
-								}
-
-							// If only the ending point is after the cut, we truncated the column
-							else if (cells[parameterIndex, i].EndingTextIndex > cutPoint)
-								{
-								cells[parameterIndex, i].EndingTextIndex = cutPoint;
-
-								TokenIterator cellStart = iterator;
-								cellStart.RawTextIndex = cells[parameterIndex, i].StartingTextIndex;
-
-								TokenIterator cellEnd = cellStart;
-								cellEnd.RawTextIndex = cutPoint;
-
-								if (cellEnd.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, cellStart))
-									{
-									cells[parameterIndex, i].EndingTextIndex = cellEnd.RawTextIndex;
-									cells[parameterIndex, i].HasTrailingSpace = true;
-									}
-								else
-									{
-									cells[parameterIndex, i].HasTrailingSpace = false;
-									}
-
-								break;
-								}
-
-							else
-								{  break;  }
-							}
-						}
+					if (type == PrototypeParsingType.Signed ||
+						type == PrototypeParsingType.Null)
+						{  iterator.Next();   }
+					else
+						{  break;  }
 					}
+
+				endOfCell = iterator;
+
+				cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
+				cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
+				cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
+
+
+				// Type Dimension
+
+				currentColumn++;
+				startOfCell = iterator;
+
+				while (iterator < endOfParam)
+					{
+					PrototypeParsingType type = iterator.PrototypeParsingType;
+
+					if (type == PrototypeParsingType.OpeningTypeModifier)
+						{  SkipModifierBlock(ref iterator, endOfParam);  }
+					else if (type == PrototypeParsingType.Null)
+						{  iterator.Next();   }
+					else
+						{  break;  }
+					}
+
+				endOfCell = iterator;
+
+				cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
+				cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
+				cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
 
 
 				// Name
@@ -202,17 +154,35 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyles
 					PrototypeParsingType type = iterator.PrototypeParsingType;
 
 					// Include the parameter separator because there may not be a default value.
-					// Include modifiers because there still may be some after the name.
 					if (type == PrototypeParsingType.Name ||
 						type == PrototypeParsingType.KeywordName ||
-						type == PrototypeParsingType.TypeModifier ||
-						type == PrototypeParsingType.ParamModifier ||
 						type == PrototypeParsingType.ParamSeparator ||
 						type == PrototypeParsingType.Null)
 						{  iterator.Next();   }
-					else if (type == PrototypeParsingType.OpeningTypeModifier ||
-								type == PrototypeParsingType.OpeningParamModifier)
-						{  Shared.SkipModifierBlock(ref iterator, endOfParam);  }
+					else
+						{  break;  }
+					}
+
+				endOfCell = iterator;
+
+				cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
+				cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
+				cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
+
+
+				// Parameter Dimension
+
+				currentColumn++;
+				startOfCell = iterator;
+
+				while (iterator < endOfParam)
+					{
+					PrototypeParsingType type = iterator.PrototypeParsingType;
+
+					if (type == PrototypeParsingType.OpeningParamModifier)
+						{  SkipModifierBlock(ref iterator, endOfParam);  }
+					else if (type == PrototypeParsingType.Null)
+						{  iterator.Next();   }
 					else
 						{  break;  }
 					}
@@ -311,33 +281,58 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyles
 
 
 
+		// Group: Properties
+		// __________________________________________________________________________
+
+
+		/* Property: ColumnOrder
+		 * An array of <PrototypeColumnTypes> representing the order in which columns should appear for SystemVerilog prototypes.
+		 */
+		override public PrototypeColumnType[] ColumnOrder
+			{
+			get
+				{  return ColumnOrderArray;  }
+			}
+
+
+		/* Property: ColumnsAlwaysSpaced
+		 * An array of <PrototypeColumnTypes> representing the columns that should always be formatted with spaces on both
+		 * sides of the content.
+		 */
+		override public PrototypeColumnType[] ColumnsAlwaysSpaced
+			{
+			get
+				{  return ColumnsAlwaysSpacedArray;  }
+			}
+
+
+
 		// Group: Static Variables
 		// __________________________________________________________________________
 
 
-		/* var: ColumnOrder
-		 * An array of <PrototypeColumnTypes> representing the order in which columns should appear for C-style prototypes.
+		/* var: ColumnOrderArray
+		 * An array of <PrototypeColumnTypes> representing the order in which columns should appear for SystemVerilog prototypes.
 		 */
-		static public PrototypeColumnType[] ColumnOrder = { PrototypeColumnType.ModifierQualifier,
-																					  PrototypeColumnType.Type,
-																					  PrototypeColumnType.Symbols,
-																					  PrototypeColumnType.Name,
-																					  PrototypeColumnType.PropertyValueSeparator,
-																					  PrototypeColumnType.PropertyValue,
-																					  PrototypeColumnType.DefaultValueSeparator,
-																					  PrototypeColumnType.DefaultValue };
+		readonly static public PrototypeColumnType[] ColumnOrderArray = { PrototypeColumnType.ParameterKeywords,
+																										  PrototypeColumnType.Type,
+																										  PrototypeColumnType.Signed,
+																										  PrototypeColumnType.TypeDimension,
+																										  PrototypeColumnType.Name,
+																										  PrototypeColumnType.ParameterDimension,
+																										  PrototypeColumnType.PropertyValueSeparator,
+																										  PrototypeColumnType.PropertyValue,
+																										  PrototypeColumnType.DefaultValueSeparator,
+																										  PrototypeColumnType.DefaultValue };
 
-		/* var: ColumnsAlwaysSpaced
+		/* var: ColumnsAlwaysSpacedArray
 		 * An array of <PrototypeColumnTypes> representing the columns that should always be formatted with spaces on both
 		 * sides of the content.
 		 */
-		static public PrototypeColumnType[] ColumnsAlwaysSpaced = { PrototypeColumnType.DefaultValueSeparator };
-
-		/* var: ColumnsSpacedUnlessColon
-		 * An array of <PrototypeColumnTypes> representing the columns that should always be formatted with spaces on both
-		 * sides of the content, unless the content is a colon, in which case it should only be on the right.
-		 */
-		static public PrototypeColumnType[] ColumnsSpacedUnlessColon = { PrototypeColumnType.PropertyValueSeparator };
+		readonly static public PrototypeColumnType[] ColumnsAlwaysSpacedArray = { PrototypeColumnType.TypeDimension,
+																														PrototypeColumnType.ParameterDimension,
+																														PrototypeColumnType.PropertyValueSeparator,
+																														PrototypeColumnType.DefaultValueSeparator };
 
 		}
 	}

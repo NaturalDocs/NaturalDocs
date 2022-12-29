@@ -465,8 +465,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			int firstUsedColumnIndex = columnLayout.FirstUsed;
 			int lastUsedColumnIndex = columnLayout.LastUsed;
 
-			var columnsAlwaysSpaced = columnLayout.ColumnsAlwaysSpaced;
-			var columnsSpacedUnlessColon = columnLayout.ColumnsSpacedUnlessColon;
+			var columnsAlwaysSpaced = columnLayout.Formatter.ColumnsAlwaysSpaced;
+			var columnsSpacedUnlessColon = columnLayout.Formatter.ColumnsSpacedUnlessColon;
 
 			// Make a merged array from the two above
 			var columnsWithAdjustedSpacing = new PrototypeColumnType[ columnsAlwaysSpaced.Length + columnsSpacedUnlessColon.Length ];
@@ -1259,6 +1259,43 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * Whether to add type links to the prototype.
 		 */
 		protected bool addLinks;
+
+
+
+		// Group: Static Functions
+		// __________________________________________________________________________
+
+
+		/* Function: FormatterOf
+		 * Returns the <PrototypeStyleFormatter> associated with the <ParameterStyle>.
+		 */
+		static public PrototypeStyleFormatter FormatterOf (ParameterStyle parameterStyle)
+			{
+			switch (parameterStyle)
+				{
+				case ParameterStyle.C:
+					return CFormatter;
+				case ParameterStyle.Pascal:
+					return PascalFormatter;
+				case ParameterStyle.SystemVerilog:
+					return SystemVerilogFormatter;
+				case ParameterStyle.Unknown:
+					return UnknownFormatter;
+				default:
+					throw new NotImplementedException();
+				}
+			}
+
+
+
+		// Group: Static Variables
+		// __________________________________________________________________________
+
+
+		static public PrototypeStyleFormatters.C CFormatter = new PrototypeStyleFormatters.C ();
+		static public PrototypeStyleFormatters.Pascal PascalFormatter = new PrototypeStyleFormatters.Pascal ();
+		static public PrototypeStyleFormatters.SystemVerilog SystemVerilogFormatter = new PrototypeStyleFormatters.SystemVerilog ();
+		static public PrototypeStyleFormatters.Unknown UnknownFormatter = new PrototypeStyleFormatters.Unknown ();
 
 		}
 	}
