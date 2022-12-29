@@ -7,6 +7,7 @@
  *		Unknown - The style hasn't been determined yet.
  *		C - A C-style prototype with parameters in a form similar to "int x = 12".
  *		Pascal - A Pascal-style prototype with parameters in a form similar to "x: int := 12".
+ *		SystemVerilog - A SystemVerilog prototype.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
@@ -20,5 +21,5 @@ using System;
 namespace CodeClear.NaturalDocs.Engine.Prototypes
 	{
 	public enum ParameterStyle
-		{  Unknown = 0, C, Pascal  }
+		{  Unknown = 0, C, Pascal, SystemVerilog  }
 	}

@@ -796,6 +796,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				case ParameterStyle.Pascal:
 					parameterCSSClass = "PascalStyle";
 					break;
+				case ParameterStyle.SystemVerilog:
+					parameterCSSClass = "SystemVerilogStyle";
+					break;
 				default:
 					throw new NotImplementedException();
 				}
@@ -1005,6 +1008,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					break;
 				case ParameterStyle.Pascal:
 					parameterCSSClass = "PascalStyle";
+					break;
+				case ParameterStyle.SystemVerilog:
+					parameterCSSClass = "SystemVerilogStyle";
 					break;
 				default:
 					throw new NotImplementedException();

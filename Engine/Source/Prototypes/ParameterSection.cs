@@ -510,7 +510,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 			for (;;)
 				{
-				if (ParameterStyle == ParameterStyle.C)
+				if (ParameterStyle == ParameterStyle.C ||
+					ParameterStyle == ParameterStyle.SystemVerilog)
 					{
 					impliedTypeIndex--;
 

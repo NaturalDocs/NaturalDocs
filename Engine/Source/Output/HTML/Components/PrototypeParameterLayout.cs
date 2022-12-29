@@ -204,6 +204,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				{  cells = PrototypeStyles.C.CalculateCells(parameters);  }
 			else if (parameters.ParameterStyle == ParameterStyle.Pascal)
 				{  cells = PrototypeStyles.Pascal.CalculateCells(parameters);  }
+			else if (parameters.ParameterStyle == ParameterStyle.SystemVerilog)
+				{  cells = PrototypeStyles.SystemVerilog.CalculateCells(parameters);  }
 			else
 				{  throw new NotImplementedException();  }
 
