@@ -786,22 +786,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			// Opening tags
 
-			string parameterCSSClass;
-
-			switch (parameterLayouts[sectionIndex].ParameterStyle)
-				{
-				case ParameterStyle.C:
-					parameterCSSClass = "CStyle";
-					break;
-				case ParameterStyle.Pascal:
-					parameterCSSClass = "PascalStyle";
-					break;
-				case ParameterStyle.SystemVerilog:
-					parameterCSSClass = "SystemVerilogStyle";
-					break;
-				default:
-					throw new NotImplementedException();
-				}
+			string parameterCSSClass = parameterLayouts[sectionIndex].ParameterStyle.ToString() + "Style";
 
 			output.Append("<div class=\"PSection PParameterSection " + parameterCSSClass + "\">");
 
@@ -999,22 +984,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			// Opening tags
 
-			string parameterCSSClass;
-
-			switch (parameterLayouts[sectionIndex].ParameterStyle)
-				{
-				case ParameterStyle.C:
-					parameterCSSClass = "CStyle";
-					break;
-				case ParameterStyle.Pascal:
-					parameterCSSClass = "PascalStyle";
-					break;
-				case ParameterStyle.SystemVerilog:
-					parameterCSSClass = "SystemVerilogStyle";
-					break;
-				default:
-					throw new NotImplementedException();
-				}
+			string parameterCSSClass = parameterLayouts[sectionIndex].ParameterStyle.ToString() + "Style";
 
 			output.Append("<div class=\"PSection PParameterSection " + parameterCSSClass + "\">");
 
