@@ -170,6 +170,17 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	 *										   the type, such as "]" in "int x[5]".
 	 *
 	 *
+	 * Specific Modifier Types:
+	 *
+	 *		In some languages, namely SystemVerilog, there are type and parameter modifiers you may want to break out into their own
+	 *		columns when formatting the output.  You can use these types to distinguish them.  For other languages this isn't necessary
+	 *		and you can use <TypeModifier> and <ParamModifier> instead.
+	 *
+	 *		ParamKeyword - The keyword defining a parameter type, like "localparam" in SystemVerilog.
+	 *		InOut - The direction of the parameter, like "input" or "inout".
+	 *		Signed - The data type signing keyword, like "signed" or "unsigned".
+	 *
+	 *
 	 * Default Values:
 	 *
 	 *		DefaultValueSeparator - The symbol separating the name and type from its default value, such as "=" or ":=".
@@ -198,6 +209,7 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	 *
 	 *		PropertyValueSeparator - The symbol separating a property name from its value, such as "=" or ":".
 	 *		PropertyValue - The value of a property, such as "12" in "@RequestForEnhancement(id = 12)" in Java annotations.
+	 *
 	 */
 	public enum PrototypeParsingType :  byte
 		{
@@ -214,6 +226,8 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 		NameTypeSeparator, Name, KeywordName,
 
 		ParamModifier, OpeningParamModifier, ClosingParamModifier,
+
+		ParamKeyword, InOut, Signed,
 
 		DefaultValueSeparator, DefaultValue,
 
