@@ -200,9 +200,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			{
 			if (parameters.NumberOfParameters == 0)
 				{  cells = null;  }
-			else if (parameters.ParameterStyle == ParsedPrototype.ParameterStyles.C)
+			else if (parameters.ParameterStyle == ParameterStyle.C)
 				{  cells = PrototypeStyles.C.CalculateCells(parameters);  }
-			else if (parameters.ParameterStyle == ParsedPrototype.ParameterStyles.Pascal)
+			else if (parameters.ParameterStyle == ParameterStyle.Pascal)
 				{  cells = PrototypeStyles.Pascal.CalculateCells(parameters);  }
 			else
 				{  throw new NotImplementedException();  }
@@ -218,7 +218,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 		/* Property: ParameterStyle
 		 */
-		public ParsedPrototype.ParameterStyles ParameterStyle
+		public ParameterStyle ParameterStyle
 			{
 			get
 				{  return parameters.ParameterStyle;  }

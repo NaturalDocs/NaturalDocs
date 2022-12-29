@@ -324,8 +324,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 			return new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID,
-													 parameterStyle: ParsedPrototype.ParameterStyles.Pascal,
-													 supportsImpliedTypes: true);
+													 parameterStyle: ParameterStyle.Pascal, supportsImpliedTypes: true);
 			}
 
 

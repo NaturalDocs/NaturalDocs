@@ -34,21 +34,6 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 	public class ParsedPrototype
 		{
 
-		// Group: Types
-		// __________________________________________________________________________
-
-
-		/* Enum: ParameterStyles
-		 *
-		 * Null - The prototype either doesn't have parameters or the style hasn't been determined yet.
-		 * C - A C-style prototype with parameters in a form similar to "int x = 12".
-		 * Pascal - A Pascal-style prototype with parameters in a form similar to "x: int := 12".
-		 */
-		public enum ParameterStyles : byte
-			{  Null = 0, C, Pascal  }
-
-
-
 		// Group: Functions
 		// __________________________________________________________________________
 
@@ -57,7 +42,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * Creates a new parsed prototype.
 		 */
 		public ParsedPrototype (Tokenizer prototype, int languageID, int commentTypeID,
-										   ParameterStyles parameterStyle = ParameterStyles.Null, bool supportsImpliedTypes = true)
+										   ParameterStyle parameterStyle = ParameterStyle.Unknown, bool supportsImpliedTypes = true)
 			{
 			tokenizer = prototype;
 			sections = null;
@@ -410,10 +395,9 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 
 		/* Property: ParameterStyle
-		 * The format of the prototype's parameters, such as C-style ("int x") or Pascal-style ("x: int").  If it doesn't have
-		 * parameters, the parameters don't have types, or this hasn't been determined yet it will be <ParameterStyles.Null>.
+		 * The format of the prototype's parameters, such as C-style ("int x") or Pascal-style ("x: int").
 		 */
-		public ParameterStyles ParameterStyle
+		public ParameterStyle ParameterStyle
 			{
 			get
 				{  return parameterStyle;  }
@@ -481,10 +465,9 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		protected int mainSectionIndex;
 
 		/* var: parameterStyle
-		 * The format of the prototype's parameters, such as C-style ("int x") or Pascal-style ("x: int").  If it doesn't have
-		 * parameters, the parameters don't have types, or this hasn't been determined yet it will be <ParameterStyles.Null>.
+		 * The format of the prototype's parameters, such as C-style ("int x") or Pascal-style ("x: int").
 		 */
-		protected ParameterStyles parameterStyle;
+		protected ParameterStyle parameterStyle;
 
 		/* var: languageID
 		 * The language ID associated with this prototype.

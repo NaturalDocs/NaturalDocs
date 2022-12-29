@@ -2,7 +2,7 @@
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyles.C
  * ____________________________________________________________________________
  *
- * Information to help format <ParsedPrototype.ParameterStyles.C> parameters.
+ * Information to help format <ParameterStyle.C> parameters.
  *
  */
 

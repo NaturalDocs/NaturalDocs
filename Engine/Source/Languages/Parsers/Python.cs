@@ -164,8 +164,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				// easily.
 
 				parsedPrototype = new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID,
-																		  parameterStyle: ParsedPrototype.ParameterStyles.Pascal,
-																		  supportsImpliedTypes: false);
+																		  parameterStyle: ParameterStyle.Pascal, supportsImpliedTypes: false);
 
 
 				// Set the main section to the last one, since any decorators present will each be in their own section.  Some can have
@@ -205,8 +204,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			else
 				{
 				parsedPrototype = new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID,
-																		  parameterStyle: ParsedPrototype.ParameterStyles.Pascal,
-																		  supportsImpliedTypes: false);
+																		  parameterStyle: ParameterStyle.Pascal, supportsImpliedTypes: false);
 				TokenIterator start = tokenizedPrototype.FirstToken;
 				TokenIterator end = tokenizedPrototype.LastToken;
 

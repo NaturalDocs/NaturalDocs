@@ -94,8 +94,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				// easily.
 
 				parsedPrototype = new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID,
-																		  parameterStyle: ParsedPrototype.ParameterStyles.C,
-																		  supportsImpliedTypes: false);
+																		  parameterStyle: ParameterStyle.C, supportsImpliedTypes: false);
 
 
 				// Mark the part before the parameters, which includes the name and return value.
@@ -129,8 +128,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			else
 				{
 				parsedPrototype = new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID,
-																		  parameterStyle: ParsedPrototype.ParameterStyles.C,
-																		  supportsImpliedTypes: false);
+																		  parameterStyle: ParameterStyle.C, supportsImpliedTypes: false);
 				TokenIterator start = tokenizedPrototype.FirstToken;
 				TokenIterator end = tokenizedPrototype.LastToken;
 

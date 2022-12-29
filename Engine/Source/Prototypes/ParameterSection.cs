@@ -31,7 +31,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * automatically call <RecalculateParameters()> so you don't have to.
 		 */
 		public ParameterSection (TokenIterator start, TokenIterator end,
-											 ParsedPrototype.ParameterStyles parameterStyle = ParsedPrototype.ParameterStyles.Null,
+											 ParameterStyle parameterStyle = ParameterStyle.Unknown,
 											 bool supportsImpliedTypes = true)
 			: base (start, end)
 			{
@@ -355,7 +355,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 					TokenIterator iterator, end, name;
 
-					if (ParameterStyle == ParsedPrototype.ParameterStyles.Pascal)
+					if (ParameterStyle == ParameterStyle.Pascal)
 						{
 						iterator = parameters[index].Start;
 						end = parameters[index].End;
@@ -434,7 +434,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					// "[12]" in "out a[12], b: integer".  For C-style parameters we'll start at the beginning because we didn't add
 					// any before.
 
-					if (ParameterStyle == ParsedPrototype.ParameterStyles.Pascal)
+					if (ParameterStyle == ParameterStyle.Pascal)
 						{  iterator = name;  }
 					else
 						{  iterator = parameters[index].Start;  }
@@ -510,7 +510,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 			for (;;)
 				{
-				if (ParameterStyle == ParsedPrototype.ParameterStyles.C)
+				if (ParameterStyle == ParameterStyle.C)
 					{
 					impliedTypeIndex--;
 
@@ -520,7 +520,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 						return false;
 						}
 					}
-				else if (ParameterStyle == ParsedPrototype.ParameterStyles.Pascal)
+				else if (ParameterStyle == ParameterStyle.Pascal)
 					{
 					impliedTypeIndex++;
 
@@ -601,7 +601,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 		/* Property: ParameterStyle
 		 */
-		public ParsedPrototype.ParameterStyles ParameterStyle
+		public ParameterStyle ParameterStyle
 			{
 			get
 				{  return parameterStyle;  }
@@ -641,10 +641,9 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		protected List<Section> parameters;
 
 		/* var: parameterStyle
-		 * The format of the parameters, such as C-style ("int x") or Pascal-style ("x: int").  If it doesn't have parameters, the
-		 * parameters don't have types, or this hasn't been determined yet it will be <ParameterStyles.Null>.
+		 * The format of the parameters, such as C-style ("int x") or Pascal-style ("x: int").
 		 */
-		protected ParsedPrototype.ParameterStyles parameterStyle;
+		protected ParameterStyle parameterStyle;
 
 		/* var: supportsImpliedTypes
 		 * Whether the prototype's language supports implied types.

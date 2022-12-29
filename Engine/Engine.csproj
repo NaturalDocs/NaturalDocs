@@ -64,6 +64,7 @@
     <Compile Include="Source\Output\HTML\Components\PrototypeStyles\Pascal.cs" />
     <Compile Include="Source\Output\HTML\Components\PrototypeStyles\C.cs" />
     <Compile Include="Source\Output\HTML\Target.Start.cs" />
+    <Compile Include="Source\Prototypes\ParameterStyle.cs" />
     <Compile Include="Source\Prototypes\ParsedPrototypes\SystemVerilog.cs" />
     <Compile Include="Source\RelativePath.cs" />
     <Compile Include="Source\CommentTypes\Config.cs" />

@@ -2,7 +2,7 @@
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyles.Pascal
  * ____________________________________________________________________________
  *
- * Information to help format <ParsedPrototype.ParameterStyles.Pascal> parameters.
+ * Information to help format <ParameterStyle.Pascal> parameters.
  *
  */
 

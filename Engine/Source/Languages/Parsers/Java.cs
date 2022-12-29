@@ -162,8 +162,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				// easily.
 
 				parsedPrototype = new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID,
-																		  parameterStyle: ParsedPrototype.ParameterStyles.C,
-																		  supportsImpliedTypes: true);
+																		  parameterStyle: ParameterStyle.C, supportsImpliedTypes: true);
 
 
 				// Set the main section to the last one, since any annotations present will each be in their own section.  Some can have
@@ -203,8 +202,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			else
 				{
 				parsedPrototype = new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID,
-																		  parameterStyle: ParsedPrototype.ParameterStyles.C,
-																		  supportsImpliedTypes: true);
+																		  parameterStyle: ParameterStyle.C, supportsImpliedTypes: true);
 				TokenIterator start = tokenizedPrototype.FirstToken;
 				TokenIterator end = tokenizedPrototype.LastToken;
 

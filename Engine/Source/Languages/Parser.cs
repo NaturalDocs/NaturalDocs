@@ -548,9 +548,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						{
 						parsedPrototype.GetParameter(i, out start, out end);
 
-						if (parsedPrototype.ParameterStyle == ParsedPrototype.ParameterStyles.C)
+						if (parsedPrototype.ParameterStyle == ParameterStyle.C)
 							{  MarkCParameter(start, end);  }
-						else if (parsedPrototype.ParameterStyle == ParsedPrototype.ParameterStyles.Pascal)
+						else if (parsedPrototype.ParameterStyle == ParameterStyle.Pascal)
 							{  MarkPascalParameter(start, end);  }
 						else
 							{  throw new NotImplementedException();  }
@@ -606,9 +606,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 				parsedPrototype.ParameterStyle = DetectParameterStyle(start, end);
 
-				if (parsedPrototype.ParameterStyle == ParsedPrototype.ParameterStyles.C)
+				if (parsedPrototype.ParameterStyle == ParameterStyle.C)
 					{  MarkCParameter(start, end);  }
-				else if (parsedPrototype.ParameterStyle == ParsedPrototype.ParameterStyles.Pascal)
+				else if (parsedPrototype.ParameterStyle == ParameterStyle.Pascal)
 					{  MarkPascalParameter(start, end);  }
 				else
 					{  throw new NotImplementedException();  }
@@ -3697,7 +3697,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * may contain individual parameters that look like C style parameters, but it should always have at least one that looks like
 		 * a Pascal style parameter.
 		 */
-		protected ParsedPrototype.ParameterStyles DetectParameterStyle (TokenIterator start, TokenIterator end)
+		protected ParameterStyle DetectParameterStyle (TokenIterator start, TokenIterator end)
 			{
 			TokenIterator iterator = start;
 
@@ -3713,7 +3713,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 				// Can only check for a colon after checking for := and ::
 				else if (iterator.Character == ':')
-					{  return ParsedPrototype.ParameterStyles.Pascal;  }
+					{  return ParameterStyle.Pascal;  }
 
 				else if (TryToSkipTypeOrVarName(ref iterator, end) ||
 						   TryToSkipComment(ref iterator) ||
@@ -3734,17 +3734,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				}
 
 			// If we didn't find anything Pascal, then we're C.
-			return ParsedPrototype.ParameterStyles.C;
+			return ParameterStyle.C;
 			}
 
 
 		/* Function: DetectParameterStyle
 		 * Determines whether the parameters in this prototype use the C or Pascal style.
 		 */
-		protected ParsedPrototype.ParameterStyles DetectParameterStyle (ParsedPrototype prototype)
+		protected ParameterStyle DetectParameterStyle (ParsedPrototype prototype)
 			{
 			if (prototype.NumberOfParameters == 0)
-				{  return ParsedPrototype.ParameterStyles.Null;  }
+				{  return ParameterStyle.Unknown;  }
 
 			// We have to go through all the parameters to see if any are Pascal-style since some may appear as C-style.  For
 			// example:
@@ -3760,12 +3760,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{
 				prototype.GetParameter(i, out start, out end);
 
-				if (DetectParameterStyle(start, end) == ParsedPrototype.ParameterStyles.Pascal)
-					{  return ParsedPrototype.ParameterStyles.Pascal;  }
+				if (DetectParameterStyle(start, end) == ParameterStyle.Pascal)
+					{  return ParameterStyle.Pascal;  }
 				}
 
 			// If we didn't find anything Pascal then we're C.
-			return ParsedPrototype.ParameterStyles.C;
+			return ParameterStyle.C;
 			}
 
 

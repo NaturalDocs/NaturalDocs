@@ -323,9 +323,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Property: ParameterStyle
-		 * Returns the <ParsedPrototype.ParameterStyle> associated with the columns.
+		 * Returns the <ParameterStyle> associated with the columns.
 		 */
-		public ParsedPrototype.ParameterStyles ParameterStyle
+		public ParameterStyle ParameterStyle
 			{
 			get
 				{  return parameterStyle;  }
@@ -359,9 +359,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* var: parameterStyle
-		 * The <ParsedPrototype.ParameterStyle> of the columns.
+		 * The <ParameterStyle> of the columns.
 		 */
-		protected ParsedPrototype.ParameterStyles parameterStyle;
+		protected ParameterStyle parameterStyle;
 
 		/* var: columnWidths
 		 * An array of the column widths in characters.  Each one will be the longest width of that column in any individual
@@ -376,9 +376,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: CountOf
-		 * Returns the number of columns in the passed <ParsedPrototype.ParameterStyle>.
+		 * Returns the number of columns in the passed <ParameterStyle>.
 		 */
-		public static int CountOf (ParsedPrototype.ParameterStyles parameterStyle)
+		public static int CountOf (ParameterStyle parameterStyle)
 			{
 			return OrderOf(parameterStyle).Length;
 			}
@@ -387,17 +387,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		/* Function: OrderOf
 		 * Returns the order of column types for the passed parameter style.  Do not change the data.
 		 */
-		public static PrototypeColumnType[] OrderOf (ParsedPrototype.ParameterStyles parameterStyle)
+		public static PrototypeColumnType[] OrderOf (ParameterStyle parameterStyle)
 			{
 			switch (parameterStyle)
 				{
-				case ParsedPrototype.ParameterStyles.C:
+				case Prototypes.ParameterStyle.C:
 					return PrototypeStyles.C.ColumnOrder;
-				case ParsedPrototype.ParameterStyles.Pascal:
+				case Prototypes.ParameterStyle.Pascal:
 					return PrototypeStyles.Pascal.ColumnOrder;
-				case ParsedPrototype.ParameterStyles.SystemVerilog:
+				case Prototypes.ParameterStyle.SystemVerilog:
 					return PrototypeStyles.SystemVerilog.ColumnOrder;
-				case ParsedPrototype.ParameterStyles.Null:
+				case Prototypes.ParameterStyle.Unknown:
 					return EmptyColumnList;
 				default:
 					throw new NotSupportedException();
@@ -408,17 +408,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		/* Function: ColumnsAlwaysSpacedOf
 		 * Returns an array of the <PrototypeColumnTypes> that should always be formatted with spaces on both sides of the content.
 		 */
-		public static PrototypeColumnType[] ColumnsAlwaysSpacedOf (ParsedPrototype.ParameterStyles parameterStyle)
+		public static PrototypeColumnType[] ColumnsAlwaysSpacedOf (ParameterStyle parameterStyle)
 			{
 			switch (parameterStyle)
 				{
-				case ParsedPrototype.ParameterStyles.C:
+				case Prototypes.ParameterStyle.C:
 					return PrototypeStyles.C.ColumnsAlwaysSpaced;
-				case ParsedPrototype.ParameterStyles.Pascal:
+				case Prototypes.ParameterStyle.Pascal:
 					return PrototypeStyles.Pascal.ColumnsAlwaysSpaced;
-				case ParsedPrototype.ParameterStyles.SystemVerilog:
+				case Prototypes.ParameterStyle.SystemVerilog:
 					return PrototypeStyles.SystemVerilog.ColumnsAlwaysSpaced;
-				case ParsedPrototype.ParameterStyles.Null:
+				case Prototypes.ParameterStyle.Unknown:
 					return EmptyColumnList;
 				default:
 					throw new NotSupportedException();
@@ -430,17 +430,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * Returns an array of the <PrototypeColumnTypes> that should always be formatted with spaces on both sides of the content,
 		 * unless the content is a colon, in which case it should only be on the right.
 		 */
-		public static PrototypeColumnType[] ColumnsSpacedUnlessColonOf (ParsedPrototype.ParameterStyles parameterStyle)
+		public static PrototypeColumnType[] ColumnsSpacedUnlessColonOf (ParameterStyle parameterStyle)
 			{
 			switch (parameterStyle)
 				{
-				case ParsedPrototype.ParameterStyles.C:
+				case Prototypes.ParameterStyle.C:
 					return PrototypeStyles.C.ColumnsSpacedUnlessColon;
-				case ParsedPrototype.ParameterStyles.Pascal:
+				case Prototypes.ParameterStyle.Pascal:
 					return PrototypeStyles.Pascal.ColumnsSpacedUnlessColon;
-				case ParsedPrototype.ParameterStyles.SystemVerilog:
+				case Prototypes.ParameterStyle.SystemVerilog:
 					return PrototypeStyles.SystemVerilog.ColumnsSpacedUnlessColon;
-				case ParsedPrototype.ParameterStyles.Null:
+				case Prototypes.ParameterStyle.Unknown:
 					return EmptyColumnList;
 				default:
 					throw new NotSupportedException();
