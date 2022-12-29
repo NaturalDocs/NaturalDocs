@@ -1,5 +1,5 @@
 <div class="NDPrototype WideForm">
-   <div class="PSection PParameterSection CStyle">
+   <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters RightSpaceOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow RightSpaceOnNarrow" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2"><span class="SHMetadata">(*</span></div>
          <div class="PName InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/1/2/2" style="grid-area:1/2/2/3"><span class="SHMetadata">optimize_power</span></div>
@@ -18,7 +18,7 @@
 </div>
 -----
 <div class="NDPrototype WideForm">
-   <div class="PSection PParameterSection CStyle">
+   <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters RightSpaceOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow RightSpaceOnNarrow" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2"><span class="SHMetadata">(*</span></div>
          <div class="PName InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/1/2/2" style="grid-area:1/2/2/3"><span class="SHMetadata">mode</span></div>
@@ -37,7 +37,7 @@
 </div>
 -----
 <div class="NDPrototype WideForm">
-   <div class="PSection PParameterSection CStyle">
+   <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters RightSpaceOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow RightSpaceOnNarrow" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2"><span class="SHMetadata">(*</span></div>
          <div class="PName InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/1/2/2" style="grid-area:1/2/2/3"><span class="SHMetadata">optimize_power</span></div>
@@ -58,7 +58,7 @@
 </div>
 -----
 <div class="NDPrototype WideForm">
-   <div class="PSection PParameterSection CStyle">
+   <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters RightSpaceOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow RightSpaceOnNarrow" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2"><span class="SHMetadata">(*</span></div>
          <div class="PName InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/1/2/2" style="grid-area:1/2/2/3"><span class="SHMetadata">mode</span></div>
@@ -79,7 +79,7 @@
 </div>
 -----
 <div class="NDPrototype WideForm">
-   <div class="PSection PParameterSection CStyle">
+   <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters RightSpaceOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow RightSpaceOnNarrow" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2"><span class="SHMetadata">(*</span></div>
          <div class="PName InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/1/2/2" style="grid-area:1/2/2/3"><span class="SHMetadata">optimize_power</span></div>
@@ -100,7 +100,7 @@
 </div>
 -----
 <div class="NDPrototype WideForm">
-   <div class="PSection PParameterSection CStyle">
+   <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters RightSpaceOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow RightSpaceOnNarrow" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2"><span class="SHMetadata">(*</span></div>
          <div class="PName InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/1/2/2" style="grid-area:1/2/2/3"><span class="SHMetadata">mode</span></div>
