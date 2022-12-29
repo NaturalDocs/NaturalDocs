@@ -310,6 +310,25 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 			}
 
 
+		/* Function: ColumnSpacingOf
+		 * Returns the spacing of the passed column type.
+		 */
+		override public ColumnSpacing ColumnSpacingOf (PrototypeColumnType columnType)
+			{
+			switch (columnType)
+				{
+				case PrototypeColumnType.DefaultValueSeparator:
+					return ColumnSpacing.AlwaysSpaced;
+
+				case PrototypeColumnType.PropertyValueSeparator:
+					return ColumnSpacing.SpacedUnlessColon;
+
+				default:
+					return ColumnSpacing.Normal;
+				}
+			}
+
+
 
 		// Group: Properties
 		// __________________________________________________________________________
@@ -321,29 +340,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 		override public PrototypeColumnType[] ColumnOrder
 			{
 			get
-				{  return ColumnOrderArray;  }
-			}
-
-
-		/* Property: ColumnsAlwaysSpaced
-		 * An array of <PrototypeColumnTypes> representing the columns that should always be formatted with spaces on both
-		 * sides of the content.
-		 */
-		override public PrototypeColumnType[] ColumnsAlwaysSpaced
-			{
-			get
-				{  return ColumnsAlwaysSpacedArray;  }
-			}
-
-
-		/* Property: ColumnsSpacedUnlessColon
-		 * An array of <PrototypeColumnTypes> representing the columns that should always be formatted with spaces on both
-		 * sides of the content, unless the content is a colon, in which case it should only be on the right.
-		 */
-		override public PrototypeColumnType[] ColumnsSpacedUnlessColon
-			{
-			get
-				{  return ColumnsSpacedUnlessColonArray;  }
+				{  return ColumnOrderValues;  }
 			}
 
 
@@ -352,29 +349,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 		// __________________________________________________________________________
 
 
-		/* var: ColumnOrderArray
+		/* var: ColumnOrderValues
 		 * An array of <PrototypeColumnTypes> representing the order in which columns should appear for C-style prototypes.
 		 */
-		readonly static private PrototypeColumnType[] ColumnOrderArray = { PrototypeColumnType.ModifierQualifier,
-																											PrototypeColumnType.Type,
-																											PrototypeColumnType.Symbols,
-																											PrototypeColumnType.Name,
-																											PrototypeColumnType.PropertyValueSeparator,
-																											PrototypeColumnType.PropertyValue,
-																											PrototypeColumnType.DefaultValueSeparator,
-																											PrototypeColumnType.DefaultValue };
-
-		/* var: ColumnsAlwaysSpacedArray
-		 * An array of <PrototypeColumnTypes> representing the columns that should always be formatted with spaces on both
-		 * sides of the content.
-		 */
-		readonly static private PrototypeColumnType[] ColumnsAlwaysSpacedArray = { PrototypeColumnType.DefaultValueSeparator };
-
-		/* var: ColumnsSpacedUnlessColonArray
-		 * An array of <PrototypeColumnTypes> representing the columns that should always be formatted with spaces on both
-		 * sides of the content, unless the content is a colon, in which case it should only be on the right.
-		 */
-		readonly static private PrototypeColumnType[] ColumnsSpacedUnlessColonArray = { PrototypeColumnType.PropertyValueSeparator };
-
+		readonly static private PrototypeColumnType[] ColumnOrderValues = { PrototypeColumnType.ModifierQualifier,
+																											   PrototypeColumnType.Type,
+																											   PrototypeColumnType.Symbols,
+																											   PrototypeColumnType.Name,
+																											   PrototypeColumnType.PropertyValueSeparator,
+																											   PrototypeColumnType.PropertyValue,
+																											   PrototypeColumnType.DefaultValueSeparator,
+																											   PrototypeColumnType.DefaultValue };
 		}
 	}

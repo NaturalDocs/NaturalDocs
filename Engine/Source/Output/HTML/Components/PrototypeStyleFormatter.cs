@@ -21,6 +21,24 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 	abstract public class PrototypeStyleFormatter
 		{
 
+		// Group: Types
+		// __________________________________________________________________________
+
+
+		/* Enum: ColumnSpacing
+		 *
+		 * Any spacing rules that should be applied to a column to make it consistent.
+		 *
+		 * Normal - No spacing changes should be made.
+		 * AlwaysSpaced - There should always be a space on both sides of the column's content.
+		 * SpacedUnlessColon - There should be a space on both sides of the column's content, unless the content is a colon, in which
+		 *								   case there should only be a space on the right side.
+		 */
+		public enum ColumnSpacing
+			{  Normal, AlwaysSpaced, SpacedUnlessColon  }
+
+
+
 		// Group: Functions
 		// __________________________________________________________________________
 
@@ -30,6 +48,24 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * cell is a column in <ColumnOrder>.
 		 */
 		abstract public PrototypeCellLayout[,] CalculateCells (ParameterSection parameters);
+
+
+		/* Function: ColumnSpacingOf
+		 * Returns the spacing of the passed column type.
+		 */
+		virtual public ColumnSpacing ColumnSpacingOf (PrototypeColumnType columnType)
+			{
+			return ColumnSpacing.Normal;
+			}
+
+
+		/* Function: ColumnSpacingOf
+		 * Returns the spacing of the column at the passed index.
+		 */
+		public ColumnSpacing ColumnSpacingOf (int index)
+			{
+			return ColumnSpacingOf(ColumnOrder[index]);
+			}
 
 
 
@@ -109,38 +145,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			get
 				{  return ColumnOrder.Length;  }
 			}
-
-
-		/* Property: ColumnsAlwaysSpaced
-		 * An array of <PrototypeColumnTypes> representing the columns that should always be formatted with spaces on both
-		 * sides of the content.
-		 */
-		virtual public PrototypeColumnType[] ColumnsAlwaysSpaced
-			{
-			get
-				{  return EmptyColumnTypeArray;  }
-			}
-
-
-		/* Property: ColumnsSpacedUnlessColon
-		 * An array of <PrototypeColumnTypes> representing the columns that should always be formatted with spaces on both
-		 * sides of the content, unless the content is a colon, in which case it should only be on the right.
-		 */
-		virtual public PrototypeColumnType[] ColumnsSpacedUnlessColon
-			{
-			get
-				{  return EmptyColumnTypeArray;  }
-			}
-
-
-
-		// Group: Static Variables
-		// __________________________________________________________________________
-
-
-		/* var: EmptyColumnTypeArray
-		 */
-		readonly static protected PrototypeColumnType[] EmptyColumnTypeArray = { };
 
 		}
 	}

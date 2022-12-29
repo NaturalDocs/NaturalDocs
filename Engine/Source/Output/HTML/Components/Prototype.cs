@@ -465,15 +465,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			int firstUsedColumnIndex = columnLayout.FirstUsed;
 			int lastUsedColumnIndex = columnLayout.LastUsed;
 
-			var columnsAlwaysSpaced = columnLayout.Formatter.ColumnsAlwaysSpaced;
-			var columnsSpacedUnlessColon = columnLayout.Formatter.ColumnsSpacedUnlessColon;
-
-			// Make a merged array from the two above
-			var columnsWithAdjustedSpacing = new PrototypeColumnType[ columnsAlwaysSpaced.Length + columnsSpacedUnlessColon.Length ];
-			columnsAlwaysSpaced.CopyTo(columnsWithAdjustedSpacing, 0);
-			columnsSpacedUnlessColon.CopyTo(columnsWithAdjustedSpacing, columnsAlwaysSpaced.Length);
-
-
 
 			//
 			// Normalize column spacing, such as default value separators always having spaces before and after them
@@ -493,35 +484,26 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					// The last used column always gets trailing spaces removed
 					sectionLayout.SetTrailingSpace(parameterIndex, lastUsedColumnIndex, false);
 
-					// Apply columns that should always have both leading and trailing spaces
-					foreach (var columnType in columnsAlwaysSpaced)
+					for (var columnIndex = 0; columnIndex < columnLayout.Count; columnIndex++)
 						{
-						int columnIndex = columnLayout.IndexOf(columnType);
+						if (!columnLayout.IsUsed(columnIndex))
+							{  continue;  }
 
-						if (columnLayout.IsUsed(columnIndex))
+						var columnSpacing = columnLayout.Formatter.ColumnSpacingOf(columnIndex);
+
+						// Update columns that should always have both leading and trailing spaces
+						if (columnSpacing == PrototypeStyleFormatter.ColumnSpacing.AlwaysSpaced)
 							{
 							if (sectionLayout.HasContent(parameterIndex, columnIndex))
 								{
 								sectionLayout.SetLeadingSpace(parameterIndex, columnIndex, true);
 								sectionLayout.SetTrailingSpace(parameterIndex, columnIndex, true);
 								}
-
-							// Also remove the trailing space of the column before it.  It doesn't matter if the cell has content in this
-							// particular parameter, just that the column exists at all.
-							int beforeColumnIndex = columnLayout.PreviousUsed(columnIndex);
-
-							if (beforeColumnIndex != -1)
-								{  sectionLayout.SetTrailingSpace(parameterIndex, beforeColumnIndex, false);  }
 							}
-						}
 
-					// Apply columns that should always have both leading and trailing spaces, unless it's a colon.  Make sure to check that
-					// it's not ":=" though.
-					foreach (var columnType in columnsSpacedUnlessColon)
-						{
-						int columnIndex = columnLayout.IndexOf(columnType);
-
-						if (columnLayout.IsUsed(columnIndex))
+						// Update columns that should always have both leading and trailing spaces, unless it's a colon.  Make sure to
+						// check that it's not ":=" though.
+						else if (columnSpacing == PrototypeStyleFormatter.ColumnSpacing.SpacedUnlessColon)
 							{
 							if (sectionLayout.GetContent(parameterIndex, columnIndex, out start, out end))
 								{
@@ -530,7 +512,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 								sectionLayout.SetLeadingSpace(parameterIndex, columnIndex, leadingSpace);
 								sectionLayout.SetTrailingSpace(parameterIndex, columnIndex, true);
 								}
+							}
 
+						// Also remove the trailing space of the column before spaced ones.  It doesn't matter if the cell has content in this
+						// particular parameter, just that the column exists at all.
+						if (columnSpacing == PrototypeStyleFormatter.ColumnSpacing.AlwaysSpaced ||
+							columnSpacing == PrototypeStyleFormatter.ColumnSpacing.SpacedUnlessColon)
+							{
 							int beforeColumnIndex = columnLayout.PreviousUsed(columnIndex);
 
 							if (beforeColumnIndex != -1)
@@ -560,60 +548,63 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			bool changedSpacing = false;
 
-			foreach (var columnType in columnsWithAdjustedSpacing)
+			for (int columnIndex = 0; columnIndex < columnLayout.Count; columnIndex++)
 				{
-				int columnIndex = columnLayout.IndexOf(columnType);
+				if (!columnLayout.IsUsed(columnIndex))
+					{  continue;  }
 
-				if (columnLayout.IsUsed(columnIndex))
+				var columnSpacing = columnLayout.Formatter.ColumnSpacingOf(columnIndex);
+
+				if (columnSpacing != PrototypeStyleFormatter.ColumnSpacing.AlwaysSpaced &&
+					columnSpacing != PrototypeStyleFormatter.ColumnSpacing.SpacedUnlessColon)
+					{  continue;  }
+
+				int beforeColumnIndex = columnLayout.PreviousUsed(columnIndex);
+				bool canRemoveLeadingSpace = true;
+
+				if (beforeColumnIndex == -1)
+					{  canRemoveLeadingSpace = false;  }
+				else
 					{
-					bool canRemoveLeadingSpace = true;
+					int beforeColumnWidth = columnLayout.WidthOf(beforeColumnIndex);
 
-					int beforeColumnIndex = columnLayout.PreviousUsed(columnIndex);
-
-					if (beforeColumnIndex == -1)
-						{  canRemoveLeadingSpace = false;  }
-					else
+					for (int i = sectionIndex; i < sectionIndex + sectionCount && canRemoveLeadingSpace; i++)
 						{
-						int beforeColumnWidth = columnLayout.WidthOf(beforeColumnIndex);
+						var sectionLayout = parameterLayouts[i];
 
-						for (int i = sectionIndex; i < sectionIndex + sectionCount && canRemoveLeadingSpace; i++)
+						for (int parameterIndex = 0; parameterIndex < sectionLayout.NumberOfParameters && canRemoveLeadingSpace; parameterIndex++)
+							{
+							// Don't apply this tweak when both columns have content and the left one uses the full column width,
+							// since then they'll be right next to each other with no implied space so we need the extra one.
+							if (sectionLayout.HasContent(parameterIndex, columnIndex) &&
+								sectionLayout.HasContent(parameterIndex, beforeColumnIndex) &&
+								sectionLayout.GetContentWidth(parameterIndex, beforeColumnIndex) >= beforeColumnWidth)
+								{
+								canRemoveLeadingSpace = false;
+								break;
+								}
+
+							// Also don't apply this tweak when the separator is text based, like SQL's "DEFAULT".  Doesn't look as good.
+							if (sectionLayout.GetContent(parameterIndex, columnIndex, out start, out end) &&
+								start.FundamentalType == FundamentalType.Text)
+								{
+								canRemoveLeadingSpace = false;
+								break;
+								}
+							}
+						}
+
+					if (canRemoveLeadingSpace)
+						{
+						for (int i = sectionIndex; i < sectionIndex + sectionCount; i++)
 							{
 							var sectionLayout = parameterLayouts[i];
 
-							for (int parameterIndex = 0; parameterIndex < sectionLayout.NumberOfParameters && canRemoveLeadingSpace; parameterIndex++)
-								{
-								// Don't apply this tweak when both columns have content and the left one uses the full column width,
-								// since then they'll be right next to each other with no implied space so we need the extra one.
-								if (sectionLayout.HasContent(parameterIndex, columnIndex) &&
-									sectionLayout.HasContent(parameterIndex, beforeColumnIndex) &&
-									sectionLayout.GetContentWidth(parameterIndex, beforeColumnIndex) >= beforeColumnWidth)
-									{
-									canRemoveLeadingSpace = false;
-									break;
-									}
-
-								// Also don't apply this tweak when the separator is text based, like SQL's "DEFAULT".  Doesn't look as good.
-								if (sectionLayout.GetContent(parameterIndex, columnIndex, out start, out end) &&
-									start.FundamentalType == FundamentalType.Text)
-									{
-									canRemoveLeadingSpace = false;
-									break;
-									}
-								}
+							for (int parameterIndex = 0; parameterIndex < sectionLayout.NumberOfParameters; parameterIndex++)
+								{  sectionLayout.SetLeadingSpace(parameterIndex, columnIndex, false);  }
 							}
 
-						if (canRemoveLeadingSpace)
-							{
-							for (int i = sectionIndex; i < sectionIndex + sectionCount; i++)
-								{
-								var sectionLayout = parameterLayouts[i];
-
-								for (int parameterIndex = 0; parameterIndex < sectionLayout.NumberOfParameters; parameterIndex++)
-									{  sectionLayout.SetLeadingSpace(parameterIndex, columnIndex, false);  }
-								}
-
-							changedSpacing = true;
-							}
+						changedSpacing = true;
 						}
 					}
 				}

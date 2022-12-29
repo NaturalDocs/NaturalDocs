@@ -280,6 +280,25 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 			}
 
 
+		/* Function: ColumnSpacingOf
+		 * Returns the spacing of the passed column type.
+		 */
+		override public ColumnSpacing ColumnSpacingOf (PrototypeColumnType columnType)
+			{
+			switch (columnType)
+				{
+				case PrototypeColumnType.TypeDimension:
+				case PrototypeColumnType.ParameterDimension:
+				case PrototypeColumnType.PropertyValueSeparator:
+				case PrototypeColumnType.DefaultValueSeparator:
+					return ColumnSpacing.AlwaysSpaced;
+
+				default:
+					return ColumnSpacing.Normal;
+				}
+			}
+
+
 
 		// Group: Properties
 		// __________________________________________________________________________
@@ -291,18 +310,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 		override public PrototypeColumnType[] ColumnOrder
 			{
 			get
-				{  return ColumnOrderArray;  }
-			}
-
-
-		/* Property: ColumnsAlwaysSpaced
-		 * An array of <PrototypeColumnTypes> representing the columns that should always be formatted with spaces on both
-		 * sides of the content.
-		 */
-		override public PrototypeColumnType[] ColumnsAlwaysSpaced
-			{
-			get
-				{  return ColumnsAlwaysSpacedArray;  }
+				{  return ColumnOrderValues;  }
 			}
 
 
@@ -311,28 +319,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 		// __________________________________________________________________________
 
 
-		/* var: ColumnOrderArray
+		/* var: ColumnOrderValues
 		 * An array of <PrototypeColumnTypes> representing the order in which columns should appear for SystemVerilog prototypes.
 		 */
-		readonly static public PrototypeColumnType[] ColumnOrderArray = { PrototypeColumnType.ParameterKeywords,
-																										  PrototypeColumnType.Type,
-																										  PrototypeColumnType.Signed,
-																										  PrototypeColumnType.TypeDimension,
-																										  PrototypeColumnType.Name,
-																										  PrototypeColumnType.ParameterDimension,
-																										  PrototypeColumnType.PropertyValueSeparator,
-																										  PrototypeColumnType.PropertyValue,
-																										  PrototypeColumnType.DefaultValueSeparator,
-																										  PrototypeColumnType.DefaultValue };
-
-		/* var: ColumnsAlwaysSpacedArray
-		 * An array of <PrototypeColumnTypes> representing the columns that should always be formatted with spaces on both
-		 * sides of the content.
-		 */
-		readonly static public PrototypeColumnType[] ColumnsAlwaysSpacedArray = { PrototypeColumnType.TypeDimension,
-																														PrototypeColumnType.ParameterDimension,
-																														PrototypeColumnType.PropertyValueSeparator,
-																														PrototypeColumnType.DefaultValueSeparator };
-
+		readonly static public PrototypeColumnType[] ColumnOrderValues = { PrototypeColumnType.ParameterKeywords,
+																											  PrototypeColumnType.Type,
+																											  PrototypeColumnType.Signed,
+																											  PrototypeColumnType.TypeDimension,
+																											  PrototypeColumnType.Name,
+																											  PrototypeColumnType.ParameterDimension,
+																											  PrototypeColumnType.PropertyValueSeparator,
+																											  PrototypeColumnType.PropertyValue,
+																											  PrototypeColumnType.DefaultValueSeparator,
+																											  PrototypeColumnType.DefaultValue };
 		}
 	}

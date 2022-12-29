@@ -43,8 +43,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 		override public PrototypeColumnType[] ColumnOrder
 			{
 			get
-				{  return EmptyColumnTypeArray;  }
+				{  return ColumnOrderValues;  }
 			}
+
+
+
+		// Group: Static Variables
+		// __________________________________________________________________________
+
+
+		/* var: ColumnOrderValues
+		 */
+		readonly static protected PrototypeColumnType[] ColumnOrderValues = { };
 
 		}
 	}
