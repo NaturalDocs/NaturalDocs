@@ -454,7 +454,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 			// Otherwise continue with a single layout
-
 			PrototypeColumnLayout columnLayout;
 
 			if (sectionCount > 1 && alignment == ParameterGroupAlignment.AlignAllColumns)
@@ -465,6 +464,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			int firstUsedColumnIndex = columnLayout.FirstUsed;
 			int lastUsedColumnIndex = columnLayout.LastUsed;
 
+			if (firstUsedColumnIndex == -1)
+				{
+				if (alignment == ParameterGroupAlignment.AlignAllColumns)
+					{  return columnLayout;  }
+				else
+					{  return null;  }
+				}
+
 
 			//
 			// Normalize column spacing, such as default value separators always having spaces before and after them
@@ -472,32 +479,23 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			TokenIterator start, end;
 
-			for (int i = sectionIndex; i < sectionIndex + sectionCount; i++)
+			for (var columnIndex = firstUsedColumnIndex; columnIndex != -1; columnIndex = columnLayout.NextUsed(columnIndex))
 				{
-				var sectionLayout = parameterLayouts[i];
+				var columnSpacing = columnLayout.Formatter.ColumnSpacingOf(columnIndex);
 
-				for (int parameterIndex = 0; parameterIndex < sectionLayout.NumberOfParameters; parameterIndex++)
+				for (int i = sectionIndex; i < sectionIndex + sectionCount; i++)
 					{
-					// The first used column always gets leading spaces removed
-					sectionLayout.SetLeadingSpace(parameterIndex, firstUsedColumnIndex, false);
+					var parameterSection = parameterLayouts[i];
 
-					// The last used column always gets trailing spaces removed
-					sectionLayout.SetTrailingSpace(parameterIndex, lastUsedColumnIndex, false);
-
-					for (var columnIndex = 0; columnIndex < columnLayout.Count; columnIndex++)
+					for (int parameterIndex = 0; parameterIndex < parameterSection.NumberOfParameters; parameterIndex++)
 						{
-						if (!columnLayout.IsUsed(columnIndex))
-							{  continue;  }
-
-						var columnSpacing = columnLayout.Formatter.ColumnSpacingOf(columnIndex);
-
 						// Update columns that should always have both leading and trailing spaces
 						if (columnSpacing == PrototypeStyleFormatter.ColumnSpacing.AlwaysSpaced)
 							{
-							if (sectionLayout.HasContent(parameterIndex, columnIndex))
+							if (parameterSection.HasContent(parameterIndex, columnIndex))
 								{
-								sectionLayout.SetLeadingSpace(parameterIndex, columnIndex, true);
-								sectionLayout.SetTrailingSpace(parameterIndex, columnIndex, true);
+								parameterSection.SetLeadingSpace(parameterIndex, columnIndex, true);
+								parameterSection.SetTrailingSpace(parameterIndex, columnIndex, true);
 								}
 							}
 
@@ -505,25 +503,36 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						// check that it's not ":=" though.
 						else if (columnSpacing == PrototypeStyleFormatter.ColumnSpacing.SpacedUnlessColon)
 							{
-							if (sectionLayout.GetContent(parameterIndex, columnIndex, out start, out end))
+							if (parameterSection.GetContent(parameterIndex, columnIndex, out start, out end))
 								{
 								bool leadingSpace = (start.Character != ':' || start.MatchesAcrossTokens(":=") || start.MatchesAcrossTokens("::="));
 
-								sectionLayout.SetLeadingSpace(parameterIndex, columnIndex, leadingSpace);
-								sectionLayout.SetTrailingSpace(parameterIndex, columnIndex, true);
+								parameterSection.SetLeadingSpace(parameterIndex, columnIndex, leadingSpace);
+								parameterSection.SetTrailingSpace(parameterIndex, columnIndex, true);
 								}
 							}
 
-						// Also remove the trailing space of the column before spaced ones.  It doesn't matter if the cell has content in this
-						// particular parameter, just that the column exists at all.
+						// Also remove the spaces of the columns surrounding it.  It doesn't matter if the cell has content in the parameter,
+						// do it if the column exists at all.
 						if (columnSpacing == PrototypeStyleFormatter.ColumnSpacing.AlwaysSpaced ||
 							columnSpacing == PrototypeStyleFormatter.ColumnSpacing.SpacedUnlessColon)
 							{
-							int beforeColumnIndex = columnLayout.PreviousUsed(columnIndex);
+							int previousColumnIndex = columnLayout.PreviousUsed(columnIndex);
 
-							if (beforeColumnIndex != -1)
-								{  sectionLayout.SetTrailingSpace(parameterIndex, beforeColumnIndex, false);  }
+							if (previousColumnIndex != -1)
+								{  parameterSection.SetTrailingSpace(parameterIndex, previousColumnIndex, false);  }
+
+							int nextColumnIndex = columnLayout.NextUsed(columnIndex);
+
+							if (nextColumnIndex != -1)
+								{  parameterSection.SetLeadingSpace(parameterIndex, nextColumnIndex, false);  }
 							}
+
+						// Regardless of the above, the first used column always gets leading spaces removed.
+						parameterSection.SetLeadingSpace(parameterIndex, firstUsedColumnIndex, false);
+
+						// The last used column always gets trailing spaces removed as well.
+						parameterSection.SetTrailingSpace(parameterIndex, lastUsedColumnIndex, false);
 						}
 					}
 				}
@@ -548,45 +557,49 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			bool changedSpacing = false;
 
-			for (int columnIndex = 0; columnIndex < columnLayout.Count; columnIndex++)
+			for (var columnIndex = firstUsedColumnIndex; columnIndex != -1; columnIndex = columnLayout.NextUsed(columnIndex))
 				{
-				if (!columnLayout.IsUsed(columnIndex))
-					{  continue;  }
-
 				var columnSpacing = columnLayout.Formatter.ColumnSpacingOf(columnIndex);
 
 				if (columnSpacing != PrototypeStyleFormatter.ColumnSpacing.AlwaysSpaced &&
 					columnSpacing != PrototypeStyleFormatter.ColumnSpacing.SpacedUnlessColon)
 					{  continue;  }
 
-				int beforeColumnIndex = columnLayout.PreviousUsed(columnIndex);
+				int previousColumnIndex = columnLayout.PreviousUsed(columnIndex);
 				bool canRemoveLeadingSpace = true;
 
-				if (beforeColumnIndex == -1)
+				if (previousColumnIndex == -1)
 					{  canRemoveLeadingSpace = false;  }
 				else
 					{
-					int beforeColumnWidth = columnLayout.WidthOf(beforeColumnIndex);
+					int previousColumnWidth = columnLayout.WidthOf(previousColumnIndex);
 
 					for (int i = sectionIndex; i < sectionIndex + sectionCount && canRemoveLeadingSpace; i++)
 						{
-						var sectionLayout = parameterLayouts[i];
+						var parameterSection = parameterLayouts[i];
 
-						for (int parameterIndex = 0; parameterIndex < sectionLayout.NumberOfParameters && canRemoveLeadingSpace; parameterIndex++)
+						for (int parameterIndex = 0; parameterIndex < parameterSection.NumberOfParameters; parameterIndex++)
 							{
-							// Don't apply this tweak when both columns have content and the left one uses the full column width,
-							// since then they'll be right next to each other with no implied space so we need the extra one.
-							if (sectionLayout.HasContent(parameterIndex, columnIndex) &&
-								sectionLayout.HasContent(parameterIndex, beforeColumnIndex) &&
-								sectionLayout.GetContentWidth(parameterIndex, beforeColumnIndex) >= beforeColumnWidth)
+							// Don't remove the leading space if both columns have content and the left one uses the full column width
+							// or is right-aligned, since then they'll be right next to each other with no implied space so we need to keep
+							// the extra one.
+							if (parameterSection.HasContent(parameterIndex, columnIndex) &&
+								parameterSection.HasContent(parameterIndex, previousColumnIndex) &&
+								(columnLayout.TypeOf(previousColumnIndex) == PrototypeColumnType.ModifierQualifier ||
+								 columnLayout.TypeOf(previousColumnIndex) == PrototypeColumnType.Signed ||
+								 parameterSection.GetContentWidth(parameterIndex, previousColumnIndex) >= previousColumnWidth))
 								{
 								canRemoveLeadingSpace = false;
 								break;
 								}
 
-							// Also don't apply this tweak when the separator is text based, like SQL's "DEFAULT".  Doesn't look as good.
-							if (sectionLayout.GetContent(parameterIndex, columnIndex, out start, out end) &&
-								start.FundamentalType == FundamentalType.Text)
+							// Also don't remove the leading space when the content is text based, like SQL's "DEFAULT".  It doesn't look
+							// as good without it.  Also don't remove it if it starts with a opening bracket like SystemVerilog's "[8:0]",
+							// though we'll make an exception for the last parameter column since then it would only be combining with
+							// the comma parameter separator.
+							if (parameterSection.GetContent(parameterIndex, columnIndex, out start, out end) &&
+								(start.FundamentalType == FundamentalType.Text ||
+								 (start.Character == '[' && columnIndex != lastUsedColumnIndex)))
 								{
 								canRemoveLeadingSpace = false;
 								break;
@@ -598,10 +611,80 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						{
 						for (int i = sectionIndex; i < sectionIndex + sectionCount; i++)
 							{
-							var sectionLayout = parameterLayouts[i];
+							var parameterSection = parameterLayouts[i];
 
-							for (int parameterIndex = 0; parameterIndex < sectionLayout.NumberOfParameters; parameterIndex++)
-								{  sectionLayout.SetLeadingSpace(parameterIndex, columnIndex, false);  }
+							for (int parameterIndex = 0; parameterIndex < parameterSection.NumberOfParameters; parameterIndex++)
+								{  parameterSection.SetLeadingSpace(parameterIndex, columnIndex, false);  }
+							}
+
+						changedSpacing = true;
+						}
+					}
+				}
+
+			// Recalculate the columns since their widths may have changed again
+			if (changedSpacing)
+				{
+				if (sectionCount > 1 && alignment == ParameterGroupAlignment.AlignAllColumns)
+					{
+					RecalculateColumns(sectionIndex, sectionCount);
+					columnLayout = GetSharedColumnLayout(sectionIndex, sectionCount);
+					}
+				else
+					{  parameterLayouts[sectionIndex].RecalculateColumns();  }
+				}
+
+
+			//
+			// Now look for trailing spaces we can remove because the next column is right aligned and is empty or the
+			// two cells' content don't use the whole column widths.  Like before, this has to be applicable to EVERY cell
+			// in the column for us to apply it or else it won't look good.
+			//
+
+			changedSpacing = false;
+
+			for (var columnIndex = firstUsedColumnIndex; columnIndex != -1; columnIndex = columnLayout.NextUsed(columnIndex))
+				{
+				if (columnLayout.TypeOf(columnIndex) != PrototypeColumnType.ModifierQualifier &&
+					columnLayout.TypeOf(columnIndex) != PrototypeColumnType.Signed)
+					{  continue;  }
+
+				int previousColumnIndex = columnLayout.PreviousUsed(columnIndex);
+				bool canRemovePreviousTrailingSpace = true;
+
+				if (previousColumnIndex == -1)
+					{  canRemovePreviousTrailingSpace = false;  }
+				else
+					{
+					int columnWidth = columnLayout.WidthOf(columnIndex);
+					int previousColumnWidth = columnLayout.WidthOf(previousColumnIndex);
+
+					for (int i = sectionIndex; i < sectionIndex + sectionCount && canRemovePreviousTrailingSpace; i++)
+						{
+						var parameterSection = parameterLayouts[i];
+
+						for (int parameterIndex = 0; parameterIndex < parameterSection.NumberOfParameters; parameterIndex++)
+							{
+							// Don't remove the trailing space when both columns have content and both use their full column widths.
+							if (parameterSection.HasContent(parameterIndex, columnIndex) &&
+								parameterSection.HasContent(parameterIndex, previousColumnIndex) &&
+								parameterSection.GetContentWidth(parameterIndex, columnIndex) >= columnWidth &&
+								parameterSection.GetContentWidth(parameterIndex, previousColumnIndex) >= previousColumnWidth)
+								{
+								canRemovePreviousTrailingSpace = false;
+								break;
+								}
+							}
+						}
+
+					if (canRemovePreviousTrailingSpace)
+						{
+						for (int i = sectionIndex; i < sectionIndex + sectionCount; i++)
+							{
+							var parameterSection = parameterLayouts[i];
+
+							for (int parameterIndex = 0; parameterIndex < parameterSection.NumberOfParameters; parameterIndex++)
+								{  parameterSection.SetTrailingSpace(parameterIndex, previousColumnIndex, false);  }
 							}
 
 						changedSpacing = true;
@@ -629,7 +712,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			for (int i = sectionIndex; i < sectionIndex + sectionCount; i++)
 				{
-				var sectionLayout = parameterLayouts[i];
+				var parameterSection = parameterLayouts[i];
 
 				(parsedPrototype.Sections[i] as Prototypes.ParameterSection).GetBeforeParameters(out start, out end);
 
@@ -638,7 +721,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				// otherwise.
 				if (end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start))
 					{
-					sectionLayout.HasSpaceBeforeParameters = true;
+					parameterSection.HasSpaceBeforeParameters = true;
 					}
 
 				// Also add one if the BeforeParameters section doesn't end with a nice symbol like (.  If it ends with something
@@ -653,7 +736,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 															beforeEnd.Character != '[' &&
 															beforeEnd.Character != '<');
 
-					sectionLayout.HasSpaceBeforeParameters = spaceBeforeParams;
+					parameterSection.HasSpaceBeforeParameters = spaceBeforeParams;
 					}
 
 				// Not every prototype with parameters will have an AfterParameters section, mainly Microsoft SQL functions
@@ -665,7 +748,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					// excluded otherwise.
 					if (start.NextPastWhitespace(end))
 						{
-						sectionLayout.HasSpaceAfterParameters = true;
+						parameterSection.HasSpaceAfterParameters = true;
 						}
 
 					// Also add it if the AfterParameters section doesn't start with a nice symbol like ).  If it starts with something
@@ -677,7 +760,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 															  start.Character != ']' &&
 															  start.Character != '>');
 
-						sectionLayout.HasSpaceAfterParameters = spaceAfterParams;
+						parameterSection.HasSpaceAfterParameters = spaceAfterParams;
 						}
 					}
 				}
