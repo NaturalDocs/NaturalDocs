@@ -179,9 +179,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 					{
 					PrototypeParsingType type = iterator.PrototypeParsingType;
 
+					// Include the parameter separator because there may not be a default value.
 					if (type == PrototypeParsingType.OpeningParamModifier)
 						{  SkipModifierBlock(ref iterator, endOfParam);  }
-					else if (type == PrototypeParsingType.Null)
+					else if (type == PrototypeParsingType.ParamSeparator ||
+							   type == PrototypeParsingType.Null)
 						{  iterator.Next();   }
 					else
 						{  break;  }
