@@ -1868,7 +1868,8 @@ td {
 			}
 
 	.PSymbols,
-	.PModifierQualifier {
+	.PModifierQualifier,
+	.PSigned {
 		text-align: right;
 		}
 
