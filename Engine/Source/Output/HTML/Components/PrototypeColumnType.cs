@@ -27,7 +27,6 @@
  *										port direction keyword, like "input" or "inout".
  *		Signed - The data type signing, like "signed" or "unsigned".
  *		TypeDimension - The dimensions after the type name.
- *		ParameterDimension - The dimensions after the parameter name.
  *
  */
 
@@ -48,7 +47,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		DefaultValueSeparator, DefaultValue,
 		PropertyValueSeparator, PropertyValue,
 
-		ParameterKeywords, Signed,
-		TypeDimension, ParameterDimension
+		ParameterKeywords, Signed, TypeDimension
 		}
 	}

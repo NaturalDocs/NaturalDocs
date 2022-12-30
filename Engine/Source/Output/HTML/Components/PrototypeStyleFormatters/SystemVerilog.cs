@@ -144,7 +144,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 				cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
 
 
-				// Name
+				// Name and Parameter Dimension
 
 				currentColumn++;
 				startOfCell = iterator;
@@ -159,32 +159,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 						type == PrototypeParsingType.ParamSeparator ||
 						type == PrototypeParsingType.Null)
 						{  iterator.Next();   }
-					else
-						{  break;  }
-					}
-
-				endOfCell = iterator;
-
-				cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
-				cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
-				cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
-
-
-				// Parameter Dimension
-
-				currentColumn++;
-				startOfCell = iterator;
-
-				while (iterator < endOfParam)
-					{
-					PrototypeParsingType type = iterator.PrototypeParsingType;
-
-					// Include the parameter separator because there may not be a default value.
-					if (type == PrototypeParsingType.OpeningParamModifier)
+					else if (type == PrototypeParsingType.OpeningParamModifier)
 						{  SkipModifierBlock(ref iterator, endOfParam);  }
-					else if (type == PrototypeParsingType.ParamSeparator ||
-							   type == PrototypeParsingType.Null)
-						{  iterator.Next();   }
 					else
 						{  break;  }
 					}
@@ -290,7 +266,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 			switch (columnType)
 				{
 				case PrototypeColumnType.TypeDimension:
-				case PrototypeColumnType.ParameterDimension:
 				case PrototypeColumnType.PropertyValueSeparator:
 				case PrototypeColumnType.DefaultValueSeparator:
 					return ColumnSpacing.AlwaysSpaced;
@@ -329,7 +304,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 																											  PrototypeColumnType.Signed,
 																											  PrototypeColumnType.TypeDimension,
 																											  PrototypeColumnType.Name,
-																											  PrototypeColumnType.ParameterDimension,
 																											  PrototypeColumnType.PropertyValueSeparator,
 																											  PrototypeColumnType.PropertyValue,
 																											  PrototypeColumnType.DefaultValueSeparator,
