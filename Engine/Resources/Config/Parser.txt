@@ -88,6 +88,14 @@ Table: Special Headings
 	args -> parameters
 	arg -> parameters
 
+	# For documenting SystemVerilog ports
+	ports -> parameters
+	port -> parameters
+	parameter ports -> parameters
+	parameter port -> parameters
+	param ports -> parameters
+	param port -> parameters
+
 
 Table: Access Level
 # Can be Public, Private, Protected, Internal, ProtectedInternal
