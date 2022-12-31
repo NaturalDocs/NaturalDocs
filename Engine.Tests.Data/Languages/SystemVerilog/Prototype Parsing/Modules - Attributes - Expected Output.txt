@@ -1,0 +1,210 @@
+- Parameter Section:
+  - Before Parameters: (*
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: optimize_power
+    - Name: optimize_power
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: *)
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: module NoValue (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: (*
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: optimize_power=1
+    - Name: optimize_power
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: *)
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: module WithValue (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: (*
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: expr_value = (12 + 9) % 2
+    - Name: expr_value
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: *)
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: module WithExpression (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: (*
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: optimize_power = 0,
+    - Name: optimize_power
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: mode = "cla",
+    - Name: mode
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: no_value,
+    - Name: no_value
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 4: expr_value = (12 + 9) % 2,
+    - Name: expr_value
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 5: cond_value = x ? 1 : 0
+    - Name: cond_value
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: *)
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: module MultipleAttributeBlock (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: (*
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: optimize_power = 0
+    - Name: optimize_power
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: *)
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: (*
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: mode = "cla"
+    - Name: mode
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: *)
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: (*
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: no_value
+    - Name: no_value
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: *)
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: (*
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: expr_value = (12 + 9) % 2
+    - Name: expr_value
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: *)
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: (*
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: cond_value = x ? 1 : 0
+    - Name: cond_value
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: *)
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: module MultipleAttributeStatements (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)

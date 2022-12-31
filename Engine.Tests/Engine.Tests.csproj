@@ -125,6 +125,7 @@
     <Compile Include="Source\Languages\SQL\CommentTypeDetection.cs" />
     <Compile Include="Source\Languages\SQL\PrototypeDetection.cs" />
     <Compile Include="Source\Languages\SQL\PrototypeParsing.cs" />
+    <Compile Include="Source\Languages\SystemVerilog\PrototypeParsing.cs" />
     <Compile Include="Source\Output\HTML\Anchors.cs" />
     <Compile Include="Source\Output\HTML\ClassPrototypes\BasicSupport.cs" />
     <Compile Include="Source\Output\HTML\ClassPrototypes\Python.cs" />
@@ -134,6 +135,7 @@
     <Compile Include="Source\Output\HTML\ParameterLists.cs" />
     <Compile Include="Source\Output\HTML\Prototypes\SpacingTweaks.cs" />
     <Compile Include="Source\Output\HTML\Prototypes\BasicSupport.cs" />
+    <Compile Include="Source\Output\HTML\Prototypes\SystemVerilog.cs" />
     <Compile Include="Source\Output\HTML\Prototypes\Python.cs" />
     <Compile Include="Source\Output\HTML\Prototypes\Java.cs" />
     <Compile Include="Source\Output\HTML\Prototypes\SQL.cs" />

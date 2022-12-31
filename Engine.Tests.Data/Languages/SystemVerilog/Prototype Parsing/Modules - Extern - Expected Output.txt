@@ -1,0 +1,65 @@
+- Parameter Section:
+  - Before Parameters: extern module Extern (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: extern
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: (*
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: optimize_power=1
+    - Name: optimize_power
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: *)
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: module ExternWithAttributes1 (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: extern
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: (*
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: optimize_power=1
+    - Name: optimize_power
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: *)
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: module ExternWithAttributes2 (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
