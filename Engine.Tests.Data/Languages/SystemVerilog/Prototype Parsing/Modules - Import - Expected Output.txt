@@ -1,0 +1,165 @@
+- Plain Section: module ImportPackage
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: import 
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: PackageName::*;
+    - Name: PackageName::*
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+- Parameter Section:
+  - Before Parameters: (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: module ImportMember
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: import 
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: PackageName::MemberName;
+    - Name: PackageName::MemberName
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+- Parameter Section:
+  - Before Parameters: (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: module ImportMultiple1
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: import 
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: PackageA::*,
+    - Name: PackageA::*
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: PackageB::MemberName;
+    - Name: PackageB::MemberName
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+- Parameter Section:
+  - Before Parameters: (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: module ImportMultiple2
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: import 
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: PackageA::*;
+    - Name: PackageA::*
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+- Parameter Section:
+  - Before Parameters: import 
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: PackageB::MemberName;
+    - Name: PackageB::MemberName
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+- Parameter Section:
+  - Before Parameters: (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: module ImportMultiple3
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: import 
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: PackageA::*,
+    - Name: PackageA::*
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: PackageB::MemberName;
+    - Name: PackageB::MemberName
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+- Parameter Section:
+  - Before Parameters: import 
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: PackageC::*;
+    - Name: PackageC::*
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+- Parameter Section:
+  - Before Parameters: (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
