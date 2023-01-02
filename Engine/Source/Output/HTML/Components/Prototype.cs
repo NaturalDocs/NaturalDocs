@@ -586,7 +586,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 							if (parameterSection.HasContent(parameterIndex, columnIndex) &&
 								parameterSection.HasContent(parameterIndex, previousColumnIndex) &&
 								(columnLayout.TypeOf(previousColumnIndex) == PrototypeColumnType.ModifierQualifier ||
-								 columnLayout.TypeOf(previousColumnIndex) == PrototypeColumnType.Signed ||
 								 parameterSection.GetContentWidth(parameterIndex, previousColumnIndex) >= previousColumnWidth))
 								{
 								canRemoveLeadingSpace = false;
@@ -645,8 +644,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			for (var columnIndex = firstUsedColumnIndex; columnIndex != -1; columnIndex = columnLayout.NextUsed(columnIndex))
 				{
-				if (columnLayout.TypeOf(columnIndex) != PrototypeColumnType.ModifierQualifier &&
-					columnLayout.TypeOf(columnIndex) != PrototypeColumnType.Signed)
+				if (columnLayout.TypeOf(columnIndex) != PrototypeColumnType.ModifierQualifier)
 					{  continue;  }
 
 				int previousColumnIndex = columnLayout.PreviousUsed(columnIndex);
