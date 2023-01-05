@@ -447,7 +447,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 				// Skip dimensions.  Both types and parameters can have them, such as "bit[8] paramA[2]", so their presence
 				// doesn't tell us anything.
-				while (TryToSkipDimension(ref lookahead, ParseMode.IterateOnly))
+				if (TryToSkipDimensions(ref lookahead, ParseMode.IterateOnly))
 					{  TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);  }
 
 				if (lookahead.Character == '=' ||
@@ -488,7 +488,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Param Dimensions.  Both types and parameters can have them, such as "bit[8] paramA[2]"
 
-			while (TryToSkipDimension(ref lookahead, mode, PrototypeParsingType.ParamModifier))
+			if (TryToSkipDimensions(ref lookahead, mode, PrototypeParsingType.ParamModifier))
 				{  TryToSkipWhitespace(ref lookahead, mode);  }
 
 
@@ -619,7 +619,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// There can be additional dimensions after the enum body, not just after the enum's type
 			TryToSkipWhitespace(ref lookahead, mode);
 
-			while (TryToSkipDimension(ref lookahead, mode, PrototypeParsingType.TypeModifier))
+			if (TryToSkipDimensions(ref lookahead, mode, PrototypeParsingType.TypeModifier))
 				{
 				iterator = lookahead;
 				TryToSkipWhitespace(ref lookahead, mode);
@@ -702,7 +702,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// Types can have dimensions such as "bit[8]", or implied types can be just a dimension like "[8]",
 			// so not finding an identifier prior to this point doesn't mean we failed.
 
-			while (TryToSkipDimension(ref lookahead, mode, PrototypeParsingType.TypeModifier))
+			if (TryToSkipDimensions(ref lookahead, mode, PrototypeParsingType.TypeModifier))
 				{
 				iterator = lookahead;
 				foundType = true;
@@ -723,9 +723,41 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
+		/* Function: TryToSkipDimensions
+		 *
+		 * Tries to move the iterator past one or more consecutive dimensions, such as "[8:0][]".
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.TypeModifier>
+		 *			  or <PrototypeParsingType.ParamModifier>.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipDimensions (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
+															  PrototypeParsingType prototypeParsingType = PrototypeParsingType.TypeModifier)
+			{
+			if (!TryToSkipDimension(ref iterator, mode, prototypeParsingType))
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+			TryToSkipWhitespace(ref lookahead, mode);
+
+			while (TryToSkipDimension(ref lookahead, mode, prototypeParsingType))
+				{
+				iterator = lookahead;
+				TryToSkipWhitespace(ref lookahead, mode);
+				}
+
+			ResetTokensBetween(iterator, lookahead, mode);
+			return true;
+			}
+
+
 		/* Function: TryToSkipDimension
 		 *
-		 * Tries to move the iterator past a dimension, such as "[8:0]".
+		 * Tries to move the iterator past a single dimension, such as "[8:0]".
 		 *
 		 * Supported Modes:
 		 *
