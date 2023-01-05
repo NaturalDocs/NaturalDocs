@@ -440,7 +440,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			bool hasType = true;
 			TokenIterator startOfType = lookahead;
 
-			if (TryToSkipIdentifier(ref lookahead, ParseMode.IterateOnly))
+			if (!IsBuiltInType(lookahead.String) &&
+				TryToSkipIdentifier(ref lookahead, ParseMode.IterateOnly))
 				{
 				TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
 
@@ -458,10 +459,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 				// Reset back to start for parsing now that we know what it is
 				lookahead = startOfType;
-				}
-			else if (lookahead.Character == '[')
-				{
-				hasType = true;
 				}
 
 
@@ -548,7 +545,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			bool foundType = false;
 
 
-			// Name and Sign
+			// Type Name and Sign
 
 			// First check for a standalone "signed" or "unsigned" because implied types can be just that and we
 			// don't want to mistake them for the type name.
