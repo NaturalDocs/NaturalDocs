@@ -1852,16 +1852,19 @@ td {
 
 	.PNameModifier,
 	.PModifierQualifier,
+	.PTypeBody,
 	.PDefaultValue,
 	.PDefaultValueSeparator {
 		opacity: 0.5;
 		}
 		.DarkTheme .PNameModifier,
 		.DarkTheme .PModifierQualifier,
+		.DarkTheme .PTypeBody,
 		.DarkTheme .PDefaultValue,
 		.DarkTheme .PDefaultValueSeparator,
 		.BlackTheme .PNameModifier,
 		.BlackTheme .PModifierQualifier,
+		.BlackTheme .PTypeBody,
 		.BlackTheme .PDefaultValue,
 		.BlackTheme .PDefaultValueSeparator {
 			opacity: 0.66;

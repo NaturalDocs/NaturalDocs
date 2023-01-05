@@ -528,6 +528,114 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
+		/* Function: TryToSkipEnum
+		 *
+		 * Tries to move the iterator past an enum.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipEnum (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+
+			// Enum Keyword
+
+			if (!iterator.MatchesToken("enum"))
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+
+			if (mode == ParseMode.ParsePrototype)
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.Type;  }
+
+			lookahead.Next();
+			TryToSkipWhitespace(ref lookahead, mode);
+
+
+			// Type
+
+			// Type is optional, so skip this if we're at the beginning of the body
+			if (lookahead.Character != '{')
+				{
+				TokenIterator beginningOfType = lookahead;
+
+				if (!TryToSkipType(ref lookahead, mode))
+					{
+					ResetTokensBetween(iterator, lookahead, mode);
+					return false;
+					}
+
+				// We want the type to be "enum" and not something like "enum int", so change any type tokens that were
+				// set by TryToSkipType().  We do want the signing and dimensions tokens it marked, so we can't use
+				// IterateOnly instead.
+				if (mode == ParseMode.ParsePrototype)
+					{
+					while (beginningOfType < lookahead)
+						{
+						if (beginningOfType.PrototypeParsingType == PrototypeParsingType.Type ||
+							beginningOfType.PrototypeParsingType == PrototypeParsingType.TypeQualifier)
+							{  beginningOfType.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
+
+						beginningOfType.Next();
+						}
+					}
+
+				TryToSkipWhitespace(ref lookahead, mode);
+				}
+
+
+			// Body
+
+			// The body is not optional, so fail if we didn't find it.
+			if (lookahead.Character != '{')
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+
+			if (mode == ParseMode.ParsePrototype)
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.OpeningTypeModifier;  }
+
+			GenericSkip(ref lookahead);
+
+			if (mode == ParseMode.ParsePrototype)
+				{
+				TokenIterator closingBrace = lookahead;
+				closingBrace.Previous();
+
+				if (closingBrace.Character == '}')
+					{  closingBrace.PrototypeParsingType = PrototypeParsingType.ClosingTypeModifier;  }
+				}
+
+			// We're successful at this point, so update the iterator
+			iterator = lookahead;
+
+
+			// Dimensions
+
+			// There can be additional dimensions after the enum body, not just after the enum's type
+			TryToSkipWhitespace(ref lookahead, mode);
+
+			while (TryToSkipDimension(ref lookahead, mode, PrototypeParsingType.TypeModifier))
+				{
+				iterator = lookahead;
+				TryToSkipWhitespace(ref lookahead, mode);
+				}
+
+
+			// We've been updating iterator whenever we found part of the enum and continuing with lookahead
+			// to see if we could extend it, so we need to reset anything between iterator and lookahead since that
+			// part wasn't accepted.
+			if (lookahead > iterator)
+				{  ResetTokensBetween(iterator, lookahead, mode);  }
+
+			return true;
+			}
+
+
 		/* Function: TryToSkipType
 		 *
 		 * Tries to move the iterator past a type, such as "string".  This can handle partially-implied types like "unsigned" and
@@ -541,6 +649,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		protected bool TryToSkipType (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
+			if (TryToSkipEnum(ref iterator, mode))
+				{  return true;  }
+
 			TokenIterator lookahead = iterator;
 			bool foundType = false;
 
@@ -1567,6 +1678,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			"bit", "logic", "reg",
 			"byte", "shortint", "int", "longint", "integer", "time",
 			"shortreal", "real", "realtime",
+			"enum",
 			"string", "chandle", "event"
 
 			});

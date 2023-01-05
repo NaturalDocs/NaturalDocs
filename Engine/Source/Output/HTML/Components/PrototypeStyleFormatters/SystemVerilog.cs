@@ -84,6 +84,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 					PrototypeParsingType type = iterator.PrototypeParsingType;
 
 					if (type == PrototypeParsingType.Type ||
+						type == PrototypeParsingType.TypeModifier ||
 						type == PrototypeParsingType.Null)
 						{  iterator.Next();   }
 					else
@@ -121,6 +122,33 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 
 
 				// Type Dimension
+
+				currentColumn++;
+				startOfCell = iterator;
+
+				while (iterator < endOfParam)
+					{
+					PrototypeParsingType type = iterator.PrototypeParsingType;
+
+					if (type == PrototypeParsingType.OpeningTypeModifier &&
+						iterator.Character == '[')
+						{  SkipModifierBlock(ref iterator, endOfParam);  }
+					else if (type == PrototypeParsingType.Null)
+						{  iterator.Next();   }
+					else
+						{  break;  }
+					}
+
+				endOfCell = iterator;
+
+				cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
+				cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
+				cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
+
+
+				// Type Body
+
+				// This is for things like enum bodies defined inline.
 
 				currentColumn++;
 				startOfCell = iterator;
@@ -266,6 +294,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 			switch (columnType)
 				{
 				case PrototypeColumnType.TypeDimension:
+				case PrototypeColumnType.TypeBody:
 				case PrototypeColumnType.PropertyValueSeparator:
 				case PrototypeColumnType.DefaultValueSeparator:
 					return ColumnSpacing.AlwaysSpaced;
@@ -303,6 +332,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 																											  PrototypeColumnType.Type,
 																											  PrototypeColumnType.Signed,
 																											  PrototypeColumnType.TypeDimension,
+																											  PrototypeColumnType.TypeBody,
 																											  PrototypeColumnType.Name,
 																											  PrototypeColumnType.PropertyValueSeparator,
 																											  PrototypeColumnType.PropertyValue,
