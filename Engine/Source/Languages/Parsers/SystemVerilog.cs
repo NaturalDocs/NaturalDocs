@@ -306,6 +306,116 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
+		/* Function: TryToSkipStruct
+		 *
+		 * Tries to move the iterator past a struct or union.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipStruct (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+
+			// Keyword
+
+			if (!iterator.MatchesToken("struct") &&
+				!iterator.MatchesToken("union"))
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+
+			string keyword = iterator.String;
+
+			if (mode == ParseMode.ParsePrototype)
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.Type;  }
+
+			lookahead.Next();
+			TryToSkipWhitespace(ref lookahead, mode);
+
+
+			// Modifiers
+
+			if (lookahead.MatchesToken("tagged"))
+				{
+				if (mode == ParseMode.ParsePrototype)
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
+
+				lookahead.Next();
+				TryToSkipWhitespace(ref lookahead, mode);
+				}
+
+			if (lookahead.MatchesToken("packed"))
+				{
+				if (mode == ParseMode.ParsePrototype)
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
+
+				lookahead.Next();
+				TryToSkipWhitespace(ref lookahead, mode);
+
+				if (lookahead.MatchesToken("signed") ||
+					lookahead.MatchesToken("unsigned"))
+					{
+					if (mode == ParseMode.ParsePrototype)
+						{  lookahead.PrototypeParsingType = PrototypeParsingType.Signed;  }
+
+					lookahead.Next();
+					TryToSkipWhitespace(ref lookahead, mode);
+					}
+				}
+
+
+			// Body
+
+			// The body is not optional, so fail if we didn't find it.
+			if (lookahead.Character != '{')
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+
+			if (mode == ParseMode.ParsePrototype)
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.OpeningTypeModifier;  }
+
+			GenericSkip(ref lookahead);
+
+			if (mode == ParseMode.ParsePrototype)
+				{
+				TokenIterator closingBrace = lookahead;
+				closingBrace.Previous();
+
+				if (closingBrace.Character == '}')
+					{  closingBrace.PrototypeParsingType = PrototypeParsingType.ClosingTypeModifier;  }
+				}
+
+			// We're successful at this point, so update the iterator
+			iterator = lookahead;
+
+
+			// Dimensions
+
+			// There can be additional dimensions after the body
+			TryToSkipWhitespace(ref lookahead, mode);
+
+			if (TryToSkipDimensions(ref lookahead, mode, PrototypeParsingType.TypeModifier))
+				{
+				iterator = lookahead;
+				TryToSkipWhitespace(ref lookahead, mode);
+				}
+
+
+			// We've been updating iterator whenever we found part of the enum and continuing with lookahead
+			// to see if we could extend it, so we need to reset anything between iterator and lookahead since that
+			// part wasn't accepted.
+			if (lookahead > iterator)
+				{  ResetTokensBetween(iterator, lookahead, mode);  }
+
+			return true;
+			}
+
+
 		/* Function: TryToSkipParameters
 		 *
 		 * Tries to move the iterator past a comma-separated list of parameters in parentheses.  This supports both (
@@ -649,7 +759,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		protected bool TryToSkipType (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
-			if (TryToSkipEnum(ref iterator, mode))
+			if (TryToSkipEnum(ref iterator, mode) ||
+				TryToSkipStruct(ref iterator, mode))
 				{  return true;  }
 
 			TokenIterator lookahead = iterator;
