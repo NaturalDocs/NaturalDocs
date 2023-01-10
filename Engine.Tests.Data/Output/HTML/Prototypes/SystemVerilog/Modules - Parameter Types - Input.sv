@@ -10,6 +10,20 @@ module IntegerAtomTypes (byte a, shortint signed b, int c, longint unsigned d, i
 // Module: NonIntegerTypes
 module NonIntegerTypes (shortreal a, real b, realtime c);
 
+// Module: StructTypes
+module StructTypes (
+	struct { int aa } a,
+	struct tagged { int bb } b,
+	struct tagged packed { int cc } [7:0] c,
+	struct tagged packed unsigned { int dd } d [7:0],
+	struct packed { int ee } e,
+	union { int ff } f,
+	union tagged { int gg } g,
+	union tagged packed { int hh } [12:0] h,
+	union tagged packed signed { int ii } i [12:0],
+	union packed { int jj } j
+	);
+
 // Module: EnumTypes
 module EnumTypes (
 	enum { a1, a2[1], a3[2:3], a4 = 3, a5[2] = 1 } a,
