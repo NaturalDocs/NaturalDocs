@@ -359,7 +359,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					lookahead.MatchesToken("unsigned"))
 					{
 					if (mode == ParseMode.ParsePrototype)
-						{  lookahead.PrototypeParsingType = PrototypeParsingType.Signed;  }
+						{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
 
 					lookahead.Next();
 					TryToSkipWhitespace(ref lookahead, mode);
@@ -775,7 +775,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				lookahead.MatchesToken("unsigned"))
 				{
 				if (mode == ParseMode.ParsePrototype)
-					{  lookahead.PrototypeParsingType = PrototypeParsingType.Signed;  }
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
 
 				lookahead.Next();
 				iterator = lookahead;
@@ -797,7 +797,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					lookahead.MatchesToken("unsigned"))
 					{
 					if (mode == ParseMode.ParsePrototype)
-						{  lookahead.PrototypeParsingType = PrototypeParsingType.Signed;  }
+						{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
 
 					lookahead.Next();
 					iterator = lookahead;

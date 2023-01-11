@@ -98,29 +98,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 				cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
 
 
-				// Signed
-
-				currentColumn++;
-				startOfCell = iterator;
-
-				while (iterator < endOfParam)
-					{
-					PrototypeParsingType type = iterator.PrototypeParsingType;
-
-					if (type == PrototypeParsingType.Signed ||
-						type == PrototypeParsingType.Null)
-						{  iterator.Next();   }
-					else
-						{  break;  }
-					}
-
-				endOfCell = iterator;
-
-				cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
-				cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
-				cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
-
-
 				// Type Dimension
 
 				currentColumn++;
@@ -330,7 +307,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 		 */
 		readonly static public PrototypeColumnType[] ColumnOrderValues = { PrototypeColumnType.ParameterKeywords,
 																											  PrototypeColumnType.Type,
-																											  PrototypeColumnType.Signed,
 																											  PrototypeColumnType.TypeDimension,
 																											  PrototypeColumnType.TypeBody,
 																											  PrototypeColumnType.Name,

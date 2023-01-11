@@ -178,7 +178,6 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	 *
 	 *		ParamKeyword - The keyword defining a parameter type, like "localparam" in SystemVerilog.
 	 *		InOut - The direction of the parameter, like "input" or "inout".
-	 *		Signed - The data type signing keyword, like "signed" or "unsigned".
 	 *
 	 *
 	 * Default Values:
@@ -227,7 +226,7 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 
 		ParamModifier, OpeningParamModifier, ClosingParamModifier,
 
-		ParamKeyword, InOut, Signed,
+		ParamKeyword, InOut,
 
 		DefaultValueSeparator, DefaultValue,
 
