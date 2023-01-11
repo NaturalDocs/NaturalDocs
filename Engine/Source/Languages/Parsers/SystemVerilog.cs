@@ -527,7 +527,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (lookahead.MatchesToken("input") ||
 				lookahead.MatchesToken("output") ||
-				lookahead.MatchesToken("inout"))
+				lookahead.MatchesToken("inout") ||
+				lookahead.MatchesToken("ref"))
 				{
 				if (mode == ParseMode.ParsePrototype)
 					{  lookahead.PrototypeParsingType = PrototypeParsingType.InOut;  }
