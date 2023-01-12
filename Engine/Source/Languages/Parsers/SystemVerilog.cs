@@ -1298,8 +1298,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			{
 			if (iterator.MatchesAcrossTokens("(*"))
 				{
-				iterator.Next();
+				iterator.Next(2);
 				GenericSkipUntilAfter(ref iterator, "*)");
+				}
+			else if (iterator.MatchesAcrossTokens("#("))
+				{
+				iterator.Next(2);
+				GenericSkipUntilAfter(ref iterator, ')');
 				}
 			else if (iterator.Character == '(')
 				{
