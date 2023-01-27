@@ -128,11 +128,11 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 			}
 
 
-		/* Function: LastToken
+		/* Function: EndOfTokens
 		 * Returns a <TokenIterator> at the end of the current line.  If the iterator is out of bounds it will be
 		 * set to one past the last token, regardless of which edge it has gone off.
 		 */
-		public TokenIterator LastToken (LineBoundsMode boundsMode)
+		public TokenIterator EndOfTokens (LineBoundsMode boundsMode)
 			{
 			if (!IsInBounds)
 				{

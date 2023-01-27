@@ -130,7 +130,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				parsedPrototype = new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID,
 																		  parameterStyle: ParameterStyle.C, supportsImpliedTypes: false);
 				TokenIterator start = tokenizedPrototype.FirstToken;
-				TokenIterator end = tokenizedPrototype.LastToken;
+				TokenIterator end = tokenizedPrototype.EndOfTokens;
 
 				MarkParameter(start, end);
 				}

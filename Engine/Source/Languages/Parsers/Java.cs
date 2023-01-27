@@ -204,7 +204,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				parsedPrototype = new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID,
 																		  parameterStyle: ParameterStyle.C, supportsImpliedTypes: true);
 				TokenIterator start = tokenizedPrototype.FirstToken;
-				TokenIterator end = tokenizedPrototype.LastToken;
+				TokenIterator end = tokenizedPrototype.EndOfTokens;
 
 				MarkCParameter(start, end);
 				}

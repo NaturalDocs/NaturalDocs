@@ -735,10 +735,10 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 				{  return new TokenIterator(this, 0, 0, StartingLineNumber);  }
 			}
 
-		/* Function: LastToken
+		/* Function: EndOfTokens
 		 * A <TokenIterator> set to one past the last token of this object.
 		 */
-		public TokenIterator LastToken
+		public TokenIterator EndOfTokens
 			{
 			get
 				{  return new TokenIterator(this, tokenLengths.Count, rawText.Length, StartingLineNumber + Lines.Count);  }
@@ -762,10 +762,10 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 				{  return new LineIterator(this, 0, 0, 0);  }
 			}
 
-		/* Function: LastLine
+		/* Function: EndOfLines
 		 * A <LineIterator> set to the one past the last line in this object.
 		 */
-		public LineIterator LastLine
+		public LineIterator EndOfLines
 			{
 			get
 				{  return new LineIterator(this, Lines.Count, tokenLengths.Count, rawText.Length);  }

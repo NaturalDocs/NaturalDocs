@@ -81,7 +81,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			else
 				{
 				beforeParametersStart = tokenizer.FirstToken;
-				beforeParametersEnd = tokenizer.LastToken;
+				beforeParametersEnd = tokenizer.EndOfTokens;
 				return true;
 				}
 			}
@@ -99,8 +99,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				}
 			else
 				{
-				parameterStart = tokenizer.LastToken;
-				parameterEnd = tokenizer.LastToken;
+				parameterStart = tokenizer.EndOfTokens;
+				parameterEnd = tokenizer.EndOfTokens;
 				return false;
 				}
 			}
@@ -117,8 +117,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				}
 			else
 				{
-				parameterNameStart = tokenizer.LastToken;
-				parameterNameEnd = tokenizer.LastToken;
+				parameterNameStart = tokenizer.EndOfTokens;
+				parameterNameEnd = tokenizer.EndOfTokens;
 				return false;
 				}
 			}
@@ -147,8 +147,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				}
 			else
 				{
-				fullTypeStart = tokenizer.LastToken;
-				fullTypeEnd = tokenizer.LastToken;
+				fullTypeStart = tokenizer.EndOfTokens;
+				fullTypeEnd = tokenizer.EndOfTokens;
 				return false;
 				}
 			}
@@ -171,8 +171,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				}
 			else
 				{
-				start = tokenizer.LastToken;
-				end = tokenizer.LastToken;
+				start = tokenizer.EndOfTokens;
+				end = tokenizer.EndOfTokens;
 				return false;
 				}
 			}
@@ -189,8 +189,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				}
 			else
 				{
-				defaultValueStart = tokenizer.LastToken;
-				defaultValueEnd = tokenizer.LastToken;
+				defaultValueStart = tokenizer.EndOfTokens;
+				defaultValueEnd = tokenizer.EndOfTokens;
 				return false;
 				}
 			}
@@ -208,8 +208,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				}
 			else
 				{
-				afterParametersStart = tokenizer.LastToken;
-				afterParametersEnd = tokenizer.LastToken;
+				afterParametersStart = tokenizer.EndOfTokens;
+				afterParametersEnd = tokenizer.EndOfTokens;
 				return false;
 				}
 			}
@@ -326,7 +326,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			// suppose could with a manual prototype.
 
 			if (sections.Count < 1)
-				{  sections.Add( new Section(tokenizer.FirstToken, tokenizer.LastToken) );  }
+				{  sections.Add( new Section(tokenizer.FirstToken, tokenizer.EndOfTokens) );  }
 
 
 			// Determine main section
@@ -361,7 +361,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 */
 		public static bool GetEndOfBlock (TokenIterator openingSymbol, out TokenIterator closingSymbol, out TokenIterator endOfBlock)
 			{
-			return GetEndOfBlock(openingSymbol, openingSymbol.Tokenizer.LastToken, out closingSymbol, out endOfBlock);
+			return GetEndOfBlock(openingSymbol, openingSymbol.Tokenizer.EndOfTokens, out closingSymbol, out endOfBlock);
 			}
 
 
@@ -447,7 +447,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 */
 		public static bool TryToSkipBlock (ref TokenIterator iterator)
 			{
-			return TryToSkipBlock(ref iterator, iterator.Tokenizer.LastToken);
+			return TryToSkipBlock(ref iterator, iterator.Tokenizer.EndOfTokens);
 			}
 
 

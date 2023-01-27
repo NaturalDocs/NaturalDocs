@@ -281,7 +281,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TokenIterator iterator = source.FirstToken;
 
 			if (!TryToSkipFunction(ref iterator, ParseMode.SyntaxHighlight))
-				{  SimpleSyntaxHighlightBetween(source.FirstToken, source.LastToken);  }
+				{  SimpleSyntaxHighlightBetween(source.FirstToken, source.EndOfTokens);  }
 			}
 
 
@@ -320,7 +320,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					   commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("database column", language.ID) ||
 					   commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("database cursor", language.ID))
 				{
-				ParseVariable(tokenizedPrototype.FirstToken, tokenizedPrototype.LastToken, ParseMode.ParsePrototype);
+				ParseVariable(tokenizedPrototype.FirstToken, tokenizedPrototype.EndOfTokens, ParseMode.ParsePrototype);
 				}
 
 			return new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID,
@@ -1201,7 +1201,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		protected bool TryToSkipBuiltInType (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
-			return TryToSkipBuiltInType(ref iterator, iterator.Tokenizer.LastToken, mode);
+			return TryToSkipBuiltInType(ref iterator, iterator.Tokenizer.EndOfTokens, mode);
 			}
 
 

@@ -456,7 +456,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 					Tokenizer fullTypeTokenizer = typeBuilder.ToTokenizer();
 					fullTypeStart = fullTypeTokenizer.FirstToken;
-					fullTypeEnd = fullTypeTokenizer.LastToken;
+					fullTypeEnd = fullTypeTokenizer.EndOfTokens;
 					return true;
 					}
 				}

@@ -245,7 +245,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			{
 			TokenIterator iterator = source.FirstToken;
 
-			TokenIterator lastCodeToken = iterator.Tokenizer.LastToken;  // Default to out of bounds
+			TokenIterator lastCodeToken = iterator.Tokenizer.EndOfTokens;  // Default to out of bounds
 
 			while (iterator.IsInBounds)
 				{

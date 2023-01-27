@@ -410,7 +410,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 			if (section == null)
 				{
-				start = tokenizer.LastToken;
+				start = tokenizer.EndOfTokens;
 				end = start;
 				return false;
 				}

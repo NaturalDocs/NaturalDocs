@@ -58,7 +58,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 						string propertyName = findPropertyMatch.Groups[1].ToString();
 						Tokenizer xmlTag = new Tokenizer( findPropertyMatch.Groups[2].ToString() );
 
-						Engine.Comments.Components.XMLIterator iterator = new Engine.Comments.Components.XMLIterator(xmlTag.FirstToken, xmlTag.LastToken);
+						Engine.Comments.Components.XMLIterator iterator = new Engine.Comments.Components.XMLIterator(xmlTag.FirstToken, xmlTag.EndOfTokens);
 
 						if (iterator.Type != XMLElementType.Tag)
 							{  output.AppendLine("- Not an XML tag");  }
@@ -75,7 +75,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 					else
 						{
 						Tokenizer xml = new Tokenizer(command.Trim());
-						Engine.Comments.Components.XMLIterator iterator = new Engine.Comments.Components.XMLIterator(xml.FirstToken, xml.LastToken);
+						Engine.Comments.Components.XMLIterator iterator = new Engine.Comments.Components.XMLIterator(xml.FirstToken, xml.EndOfTokens);
 
 						while (iterator.IsInBounds)
 							{

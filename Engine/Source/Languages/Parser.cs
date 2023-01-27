@@ -602,7 +602,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{
 				parsedPrototype = new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID);
 				TokenIterator start = tokenizedPrototype.FirstToken;
-				TokenIterator end = tokenizedPrototype.LastToken;
+				TokenIterator end = tokenizedPrototype.EndOfTokens;
 
 				parsedPrototype.ParameterStyle = DetectParameterStyle(start, end);
 
@@ -1140,7 +1140,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 				PossibleDocumentationComment comment = new PossibleDocumentationComment();
 				comment.Start = source.FirstLine;
-				comment.End = source.LastLine;
+				comment.End = source.EndOfLines;
 
 				possibleDocumentationComments.Add(comment);
 				return possibleDocumentationComments;
@@ -1687,7 +1687,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				if (commentIndex + 1 < possibleDocumentationComments.Count)
 					{  endCode = possibleDocumentationComments[commentIndex + 1].Start;  }
 				else
-					{  endCode = source.LastLine;  }
+					{  endCode = source.EndOfLines;  }
 
 				TokenIterator prototypeStart, prototypeEnd;
 				if (TryToFindBasicPrototype(elements[elementIndex].Topic, startCode, endCode, out prototypeStart, out prototypeEnd))
@@ -1949,7 +1949,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			TokenIterator start = input.FirstToken;
 			TokenIterator iterator = start;
-			TokenIterator end = input.LastToken;
+			TokenIterator end = input.EndOfTokens;
 
 			bool lastWasWhitespace = true;
 			string openingSymbol, closingSymbol;
@@ -5077,7 +5077,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * separated by a space, so modifiers like unsigned and const have to be handled separately.
 		 *
 		 * A limit is required since this will swallow a block following an identifier and that may not be desired or expected.  If you
-		 * genuinely don't need a limit, set it to <Tokenizer.LastToken>.
+		 * genuinely don't need a limit, set it to <Tokenizer.EndOfTokens>.
 		 */
 		protected bool TryToSkipTypeOrVarName (ref TokenIterator iterator, TokenIterator limit)
 			{

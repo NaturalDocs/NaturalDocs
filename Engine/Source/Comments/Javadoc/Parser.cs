@@ -596,7 +596,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 					string symbol = GetJavadocLinkSymbol(ref linkIterator);
 					linkIterator.NextPastWhitespace();
 
-					string description = GetSimpleText(linkIterator, linkContent.LastToken);
+					string description = GetSimpleText(linkIterator, linkContent.EndOfTokens);
 					description = Normalize(description);
 
 					if (description == null || description == "")
@@ -717,7 +717,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 					string symbol = GetJavadocLinkSymbol(ref linkIterator);
 					linkIterator.NextPastWhitespace();
 
-					string description = GetSimpleText(linkIterator, linkContent.LastToken);
+					string description = GetSimpleText(linkIterator, linkContent.EndOfTokens);
 					description = Normalize(description);
 
 					if (description == null || description == "")

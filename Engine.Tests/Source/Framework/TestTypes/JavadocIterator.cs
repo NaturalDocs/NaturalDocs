@@ -58,7 +58,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 						string propertyName = findPropertyMatch.Groups[1].ToString();
 						Tokenizer htmlTag = new Tokenizer( findPropertyMatch.Groups[2].ToString() );
 
-						Engine.Comments.Components.JavadocIterator iterator = new Engine.Comments.Components.JavadocIterator(htmlTag.FirstToken, htmlTag.LastToken);
+						Engine.Comments.Components.JavadocIterator iterator = new Engine.Comments.Components.JavadocIterator(htmlTag.FirstToken, htmlTag.EndOfTokens);
 
 						if (iterator.Type != JavadocElementType.HTMLTag)
 							{  output.AppendLine("- Not a HTML tag");  }
@@ -75,7 +75,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 					else
 						{
 						Tokenizer javadoc = new Tokenizer(command.Trim());
-						Engine.Comments.Components.JavadocIterator iterator = new Engine.Comments.Components.JavadocIterator(javadoc.FirstToken, javadoc.LastToken);
+						Engine.Comments.Components.JavadocIterator iterator = new Engine.Comments.Components.JavadocIterator(javadoc.FirstToken, javadoc.EndOfTokens);
 
 						while (iterator.IsInBounds)
 							{
