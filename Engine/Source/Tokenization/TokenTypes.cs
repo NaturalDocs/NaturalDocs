@@ -107,8 +107,10 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	 *		Type - The type excluding all modifiers and qualifiers, such as "int" in "unsigned int" or "Class" in "PkgA.PkgB.Class".
 	 *		TypeModifier - A separate word modifying a type, such as "const" in "const int".
 	 *		TypeQualifier - Everything prior to the ending word in a qualified type, such as "PkgA.PkgB." in "PkgA.PkgB.Class".
-	 *		OpeningTypeModifier - An opening symbol modifying a type, such as "[" in "int[]" or "<" in "List<int>".
-	 *		ClosingTypeModifier - A closing symbol modifying a type, such as "]" in "int[]" or ">" in "List<int>".
+	 *		OpeningTypeModifier - An opening symbol modifying a type, such as "[" in "int[]" or "<" in "List<int>".  Can be followed
+	 *										 by <OpeningExtensionSymbols> for multi-token symbols.
+	 *		ClosingTypeModifier - A closing symbol modifying a type, such as "]" in "int[]" or ">" in "List<int>".  Can be followed by
+	 *										<ClosingExtensionSymbols> for multi-token symbols.
 	 *
 	 *
 	 *	Tuples:
@@ -128,8 +130,10 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	 *		public (string m, (int i, float j) n) varD;
 	 *		---
 	 *
-	 *		StartOfTuple - The start of a tuple, such as an opening parenthesis.
-	 *		EndOfTuple - The end of a tuple, such as a closing parenthesis.
+	 *		StartOfTuple - The start of a tuple, such as an opening parenthesis.  Can be followed by <OpeningExtensionSymbols> for
+	 *							 multi-token symbols.
+	 *		EndOfTuple - The end of a tuple, such as a closing parenthesis.  Can be followed by <ClosingExtensionSymbols> for
+	 *							multi-token symbols.
 	 *		TupleMemberSeparator - A separator between tuple members, such as a comma.
 	 *		TupleMemberName - The name of a tuple member.
 	 *
@@ -165,9 +169,11 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	 *		ParamModifier - Any parameter modifiers.  These usually appear with the name but are part of the type, and aren't
 	 *							    shared with other parameters inheriting the type, such as "*" in "int *x" in C++.
 	 *		OpeningParamModifier - An opening symbol modifying a parameter.  These usually appear with the name but are part
-	 *											of the type, such as "[" in "int x[5]".
+	 *											of the type, such as "[" in "int x[5]".  Can be followed by <OpeningExtensionSymbols> for
+	 *											multi-token symbols.
 	 *		ClosingParamModifier - A closing symbol modifying a parameter.  These usually appear with the name but are part of
-	 *										   the type, such as "]" in "int x[5]".
+	 *										   the type, such as "]" in "int x[5]".  Can be followed by <ClosingExtensionSymbols> for
+	 *										   multi-token symbols.
 	 *
 	 *
 	 * Specific Modifier Types:
@@ -209,6 +215,19 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	 *		PropertyValueSeparator - The symbol separating a property name from its value, such as "=" or ":".
 	 *		PropertyValue - The value of a property, such as "12" in "@RequestForEnhancement(id = 12)" in Java annotations.
 	 *
+	 *
+	 *	Extension Symbols:
+	 *
+	 *		Some functions may need to skip blocks marked with opening and closing tokens like <OpeningTypeModifier> and
+	 *		<ClosingTypeModifier>.  They would need to skip nested blocks as well.  This could be a problem when using unbalanced
+	 *		symbol pairs like #( and ) since there would be two opening symbols and one closing one, leading the code to think there
+	 *		was a nested modifier that wasn't closed.  If you use extension symbols it would be able to see that they are not two
+	 *		separate opening symbols.
+	 *
+	 *		OpeningExtensionSymbol - Symbols following an opening symbol which are considered part of it, such as the asterisk in (*.
+	 *		ClosingExtensionSymbol - Symbols following a closing symbol which are considered part of it, such as the closing parenthesis
+	 *											   in *).
+	 *
 	 */
 	public enum PrototypeParsingType :  byte
 		{
@@ -230,7 +249,9 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 
 		DefaultValueSeparator, DefaultValue,
 
-		PropertyValueSeparator, PropertyValue
+		PropertyValueSeparator, PropertyValue,
+
+		OpeningExtensionSymbol, ClosingExtensionSymbol
 		}
 
 

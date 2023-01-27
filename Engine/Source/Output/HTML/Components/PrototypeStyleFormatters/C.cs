@@ -127,7 +127,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 					if (lookbehind.FundamentalType == FundamentalType.Symbol &&
 						lookbehind.Character != '_' &&
 						lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingTypeModifier &&
-						lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingParamModifier)
+						lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingParamModifier &&
+						lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingExtensionSymbol)
 						{
 						cells[parameterIndex, currentColumn].StartingTextIndex = lookbehind.RawTextIndex;
 						lookbehind.Previous();
@@ -137,7 +138,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 							if (lookbehind.FundamentalType == FundamentalType.Symbol &&
 								lookbehind.Character != '_' &&
 								lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingTypeModifier &&
-								lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingParamModifier)
+								lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingParamModifier &&
+								lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingExtensionSymbol)
 								{
 								cells[parameterIndex, currentColumn].StartingTextIndex = lookbehind.RawTextIndex;
 								lookbehind.Previous();

@@ -199,16 +199,18 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					}
 				else if (iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier ||
 						  iterator.PrototypeParsingType == PrototypeParsingType.TypeQualifier ||
-						  iterator.PrototypeParsingType == PrototypeParsingType.ParamModifier ||
-						  iterator.PrototypeParsingType == PrototypeParsingType.StartOfTuple ||
-						  iterator.PrototypeParsingType == PrototypeParsingType.EndOfTuple ||
-						  iterator.PrototypeParsingType == PrototypeParsingType.TupleMemberSeparator ||
-						  iterator.PrototypeParsingType == PrototypeParsingType.TupleMemberName)
+						  iterator.PrototypeParsingType == PrototypeParsingType.ParamModifier)
 					{
 					iterator.Next();
 					}
-				else if (TryToSkipModifierBlock(ref iterator))
+				else if (iterator.PrototypeParsingType == PrototypeParsingType.StartOfTuple &&
+						   ParsedPrototype.TryToSkipBlock(ref iterator, end))
 					{
+					foundType = true;
+					}
+				else if (ParsedPrototype.TryToSkipBlock(ref iterator, end))
+					{
+					// Other non-tuple blocks like OpeningTypeModifier and OpeningParamModifier
 					}
 				else if (iterator.FundamentalType == FundamentalType.Whitespace)
 					{
@@ -222,10 +224,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 						lookahead.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier ||
 						lookahead.PrototypeParsingType == PrototypeParsingType.ParamModifier ||
 						lookahead.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier ||
-						lookahead.PrototypeParsingType == PrototypeParsingType.StartOfTuple ||
-						lookahead.PrototypeParsingType == PrototypeParsingType.EndOfTuple ||
-						lookahead.PrototypeParsingType == PrototypeParsingType.TupleMemberSeparator ||
-						lookahead.PrototypeParsingType == PrototypeParsingType.TupleMemberName)
+						lookahead.PrototypeParsingType == PrototypeParsingType.StartOfTuple)
 						{
 						iterator = lookahead;
 						}
@@ -245,7 +244,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 			while (iterator < end)
 				{
-				if (iterator.PrototypeParsingType == PrototypeParsingType.Type)
+				if (iterator.PrototypeParsingType == PrototypeParsingType.Type ||
+					iterator.PrototypeParsingType == PrototypeParsingType.StartOfTuple)
 					{
 					foundType = true;
 					continuous = false;
@@ -254,11 +254,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 						  iterator.PrototypeParsingType == PrototypeParsingType.TypeQualifier ||
 						  iterator.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier ||
 						  iterator.PrototypeParsingType == PrototypeParsingType.ParamModifier ||
-						  iterator.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier ||
-						  iterator.PrototypeParsingType == PrototypeParsingType.StartOfTuple ||
-						  iterator.PrototypeParsingType == PrototypeParsingType.EndOfTuple ||
-						  iterator.PrototypeParsingType == PrototypeParsingType.TupleMemberSeparator ||
-						  iterator.PrototypeParsingType == PrototypeParsingType.TupleMemberName)
+						  iterator.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier)
 					{
 					continuous = false;
 					}
@@ -376,71 +372,6 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			}
 
 
-		/* Function: GetClosingModifier
-		 * If the iterator is on a <PrototypeParsingType.OpeningTypeModifier> or <PrototypeParsingType.OpeningParamModifier>
-		 * token, returns a reference to the closing token.  It will handle any nested blocks.  If the iterator isn't on an appropriate
-		 * token or it couldn't find the end of the block, returns false.
-		 */
-		protected bool GetClosingModifier (TokenIterator openingModifier, out TokenIterator closingModifier)
-			{
-			if (openingModifier.PrototypeParsingType != PrototypeParsingType.OpeningTypeModifier &&
-				openingModifier.PrototypeParsingType != PrototypeParsingType.OpeningParamModifier)
-				{
-				closingModifier = openingModifier;
-				return false;
-				}
-
-			closingModifier = openingModifier;
-			closingModifier.Next();
-			int level = 1;
-
-			// We're going to cheat and assume all blocks are balanced and nested in a way that makes sense. This lets us handle
-			// both in a simple loop.
-			for (;;)
-				{
-				if (closingModifier >= end)
-					{
-					closingModifier = openingModifier;
-					return false;
-					}
-				else if (closingModifier.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier ||
-						  closingModifier.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier)
-					{
-					level++;
-					}
-				else if (closingModifier.PrototypeParsingType == PrototypeParsingType.ClosingTypeModifier ||
-						  closingModifier.PrototypeParsingType == PrototypeParsingType.ClosingParamModifier)
-					{
-					level--;
-
-					if (level == 0)
-						{  return true;  }
-					}
-
-				closingModifier.Next();
-				}
-			}
-
-
-		/* Function: TryToSkipModifierBlock
-		 * If the iterator is on a <PrototypeParsingType.OpeningTypeModifier> or <PrototypeParsingType.OpeningParamModifier>
-		 * token, moves the iterator past the entire block including any nested blocks.
-		 */
-		protected bool TryToSkipModifierBlock (ref TokenIterator iterator)
-			{
-			TokenIterator closingModifier;
-
-			if (GetClosingModifier(iterator, out closingModifier))
-				{
-				iterator = closingModifier;
-				iterator.Next();
-				return true;
-				}
-			else
-				{  return false;  }
-			}
-
-
 		/* Function: BuildFullType
 		 * Creates a new <Tokenizer> for the variable type, including all modifiers, even if they are not continuous.  This is a support
 		 * function for <BuildFullType(TokenIterator, TokenIterator, Tokenizer)> and it always builds a new <Tokenizer>.
@@ -455,26 +386,26 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				if (iterator.PrototypeParsingType == PrototypeParsingType.Type ||
 					iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier ||
 					iterator.PrototypeParsingType == PrototypeParsingType.TypeQualifier ||
-					iterator.PrototypeParsingType == PrototypeParsingType.ParamModifier ||
-					iterator.PrototypeParsingType == PrototypeParsingType.StartOfTuple ||
-					iterator.PrototypeParsingType == PrototypeParsingType.EndOfTuple ||
-					iterator.PrototypeParsingType == PrototypeParsingType.TupleMemberSeparator ||
-					iterator.PrototypeParsingType == PrototypeParsingType.TupleMemberName)
+					iterator.PrototypeParsingType == PrototypeParsingType.ParamModifier)
 					{
 					typeBuilder.AddToken(iterator);
+					iterator.Next();
 					}
 				else if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier ||
-						  iterator.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier)
+						   iterator.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier ||
+						   iterator.PrototypeParsingType == PrototypeParsingType.StartOfTuple)
 					{
-					TokenIterator closingModifier;
-					GetClosingModifier(iterator, out closingModifier);
+					TokenIterator closingToken, endOfBlock;
+					ParsedPrototype.GetEndOfBlock(iterator, end, out closingToken, out endOfBlock);
 
-					typeBuilder.AddModifierBlock(iterator, closingModifier);
+					typeBuilder.AddBlock(iterator, closingToken, endOfBlock);
 
-					iterator = closingModifier;
+					iterator = endOfBlock;
 					}
-
-				iterator.Next();
+				else
+					{
+					iterator.Next();
+					}
 				}
 
 			return typeBuilder.ToTokenizer();
@@ -514,7 +445,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 
 		/* Property: HasType
-		 * Whether the section defines a type by containing a <PrototypeParsingType.Type> token.
+		 * Whether the section defines a type.
 		 */
 		public bool HasType
 			{
@@ -524,7 +455,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 				while (iterator < end)
 					{
-					if (iterator.PrototypeParsingType == PrototypeParsingType.Type)
+					if (iterator.PrototypeParsingType == PrototypeParsingType.Type ||
+						iterator.PrototypeParsingType == PrototypeParsingType.StartOfTuple)
 						{  return true;  }
 
 					iterator.Next();

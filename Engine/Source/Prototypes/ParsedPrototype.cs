@@ -343,6 +343,140 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 
 
+		// Group: Static Functions
+		// __________________________________________________________________________
+
+
+		/* Function: GetEndOfBlock
+		 *
+		 * If the iterator is on one of the following opening token types, returns a reference to the closing token and to the end of
+		 * the block, which is after the last symbol of the closing token.  It will handle any nested blocks.  If the iterator isn't on an
+		 * appropriate token or it couldn't find the end of the block it will return false.
+		 *
+		 * Supported Block Types:
+		 *
+		 *		- <PrototypeParsingType.OpeningTypeModifier>
+		 *		- <PrototypeParsingType.OpeningParamModifier>
+		 *		- <PrototypeParsingType.StartOfTuple>
+		 */
+		public static bool GetEndOfBlock (TokenIterator openingSymbol, out TokenIterator closingSymbol, out TokenIterator endOfBlock)
+			{
+			return GetEndOfBlock(openingSymbol, openingSymbol.Tokenizer.LastToken, out closingSymbol, out endOfBlock);
+			}
+
+
+		/* Function: GetEndOfBlock
+		 *
+		 * If the iterator is on one of the following opening token types, returns a reference to the closing token and to the end of
+		 * the block, which is after the last symbol of the closing token.  It will handle any nested blocks.  If the iterator isn't on an
+		 * appropriate token or it couldn't find the end of the block it will return false.
+		 *
+		 * Supported Block Types:
+		 *
+		 *		- <PrototypeParsingType.OpeningTypeModifier>
+		 *		- <PrototypeParsingType.OpeningParamModifier>
+		 *		- <PrototypeParsingType.StartOfTuple>
+		 */
+		public static bool GetEndOfBlock (TokenIterator openingSymbol, TokenIterator limit, out TokenIterator closingSymbol,
+														 out TokenIterator endOfBlock)
+			{
+			if (openingSymbol.PrototypeParsingType != PrototypeParsingType.OpeningTypeModifier &&
+				openingSymbol.PrototypeParsingType != PrototypeParsingType.OpeningParamModifier &&
+				openingSymbol.PrototypeParsingType != PrototypeParsingType.StartOfTuple)
+				{
+				closingSymbol = openingSymbol;
+				endOfBlock = openingSymbol;
+				return false;
+				}
+
+			TokenIterator iterator = openingSymbol;
+			iterator.Next();
+			int level = 1;
+
+			// We're going to cheat and assume all blocks are balanced and nested in a valid way. This lets us handle them all
+			// with a simple level count.
+			for (;;)
+				{
+				if (iterator >= limit)
+					{
+					closingSymbol = openingSymbol;
+					endOfBlock = openingSymbol;
+					return false;
+					}
+				else if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier ||
+						   iterator.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier ||
+						   iterator.PrototypeParsingType == PrototypeParsingType.StartOfTuple)
+					{
+					level++;
+					}
+				else if (iterator.PrototypeParsingType == PrototypeParsingType.ClosingTypeModifier ||
+						   iterator.PrototypeParsingType == PrototypeParsingType.ClosingParamModifier ||
+						   iterator.PrototypeParsingType == PrototypeParsingType.EndOfTuple)
+					{
+					level--;
+
+					if (level == 0)
+						{  break;  }
+					}
+
+				iterator.Next();
+				}
+
+			closingSymbol = iterator;
+			iterator.Next();
+
+			while (iterator.PrototypeParsingType == PrototypeParsingType.ClosingExtensionSymbol)
+				{  iterator.Next();  }
+
+			endOfBlock = iterator;
+
+			return true;
+			}
+
+
+		/* Function: TryToSkipModifierBlock
+		 *
+		 * If the iterator is on one of the following opening token types, moves the iterator past the entire block including
+		 * any nested blocks and returns true.
+		 *
+		 * Supported Block Types:
+		 *
+		 *		- <PrototypeParsingType.OpeningTypeModifier>
+		 *		- <PrototypeParsingType.OpeningParamModifier>
+		 *		- <PrototypeParsingType.StartOfTuple>
+		 */
+		public static bool TryToSkipBlock (ref TokenIterator iterator)
+			{
+			return TryToSkipBlock(ref iterator, iterator.Tokenizer.LastToken);
+			}
+
+
+		/* Function: TryToSkipModifierBlock
+		 *
+		 * If the iterator is on one of the following opening token types, moves the iterator past the entire block including
+		 * any nested blocks and returns true.
+		 *
+		 * Supported Block Types:
+		 *
+		 *		- <PrototypeParsingType.OpeningTypeModifier>
+		 *		- <PrototypeParsingType.OpeningParamModifier>
+		 *		- <PrototypeParsingType.StartOfTuple>
+		 */
+		public static bool TryToSkipBlock (ref TokenIterator iterator, TokenIterator limit)
+			{
+			TokenIterator closingSymbol, endOfBlock;
+
+			if (GetEndOfBlock(iterator, limit, out closingSymbol, out endOfBlock))
+				{
+				iterator = endOfBlock;
+				return true;
+				}
+			else
+				{  return false;  }
+			}
+
+
+
 		// Group: Properties
 		// __________________________________________________________________________
 

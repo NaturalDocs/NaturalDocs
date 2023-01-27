@@ -57,10 +57,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 
 		/* Function: AddToken
-		 * Adds a single token to the type builder.  You must use <AddBlock()> for blocks.
+		 * Adds a single token to the type builder.  You must use <AddBlock()>, <AddModifierBlock()>, or <AddTuple()> for blocks.
 		 */
 		public void AddToken (TokenIterator iterator)
 			{
+			// Allow Start/EndOfTuple because AddTuple() will add them using this function
 			if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier ||
 				iterator.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier)
 				{  throw new InvalidOperationException();  }
@@ -108,18 +109,39 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 							{  dontAddSpaceAfterSymbol = false;  }
 						}
 
-					iterator.AppendTokenTo(rawText);
-					prototypeParsingTypes.Add(iterator.PrototypeParsingType);
-					syntaxHighlightingTypes.Add(iterator.SyntaxHighlightingType);
+					do
+						{
+						iterator.AppendTokenTo(rawText);
+						prototypeParsingTypes.Add(iterator.PrototypeParsingType);
+						syntaxHighlightingTypes.Add(iterator.SyntaxHighlightingType);
 
-					lastTokenIterator = iterator;
-					lastTokenType = thisTokenType;
-					lastSymbolWasBlock = false;
+						lastTokenIterator = iterator;
+						lastTokenType = thisTokenType;
+						lastSymbolWasBlock = false;
 
-					if (thisTokenType == FundamentalType.Text)
-						{  pastFirstText = true;  }
+						if (thisTokenType == FundamentalType.Text)
+							{  pastFirstText = true;  }
+
+						iterator.Next();
+						thisTokenType = (iterator.Character == '_' ? FundamentalType.Text : iterator.FundamentalType);
+						}
+					while (iterator.PrototypeParsingType == PrototypeParsingType.OpeningExtensionSymbol ||
+							  iterator.PrototypeParsingType == PrototypeParsingType.ClosingExtensionSymbol);
 					}
 				}
+			}
+
+
+		/* Function: AddBlock
+		 * Adds a full block marked with <PrototypeParsingType.OpeningTypeModifier>, <PrototypeParsingType.OpeningParamModifier>,
+		 * or <PrototypeParsingType.StartOfTuple> to the type builder.
+		 */
+		public void AddBlock (TokenIterator openingToken, TokenIterator closingToken, TokenIterator endOfBlock)
+			{
+			if (openingToken.PrototypeParsingType == PrototypeParsingType.StartOfTuple)
+				{  AddTuple(openingToken, closingToken, endOfBlock);  }
+			else
+				{  AddModifierBlock(openingToken, closingToken, endOfBlock);  }
 			}
 
 
@@ -127,7 +149,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * Adds a full modifier block marked with <PrototypeParsingType.OpeningTypeModifier> or <PrototypeParsingType.OpeningParamModifier>
 		 * to the type builder.
 		 */
-		public void AddModifierBlock (TokenIterator openingToken, TokenIterator closingToken)
+		public void AddModifierBlock (TokenIterator openingToken, TokenIterator closingToken, TokenIterator endOfBlock)
 			{
 			if ( (openingToken.PrototypeParsingType != PrototypeParsingType.OpeningTypeModifier &&
 				  openingToken.PrototypeParsingType != PrototypeParsingType.OpeningParamModifier) ||
@@ -136,10 +158,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				{  throw new InvalidOperationException();  }
 
 			TokenIterator iterator = openingToken;
-			TokenIterator end = closingToken;
-			end.Next();
 
-			while (iterator < end)
+			while (iterator < endOfBlock)
 				{
 				FundamentalType thisTokenType = (iterator.Character == '_' ? FundamentalType.Text : iterator.FundamentalType);
 
@@ -155,7 +175,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					syntaxHighlightingTypes.Add(SyntaxHighlightingType.Null);
 					}
 
-				while (iterator < end)
+				while (iterator < endOfBlock)
 					{
 					iterator.AppendTokenTo(rawText);
 					prototypeParsingTypes.Add(iterator.PrototypeParsingType);
@@ -171,6 +191,42 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 				if (thisTokenType == FundamentalType.Text)
 					{  pastFirstText = true;  }
+				}
+			}
+
+
+		/* Function: AddTuple
+		 * Adds a full tuple marked with <PrototypeParsingType.StartOfTuple> to the type builder.
+		 */
+		public void AddTuple (TokenIterator startOfTuple, TokenIterator endOfTuple, TokenIterator endOfBlock)
+			{
+			if (startOfTuple.PrototypeParsingType != PrototypeParsingType.StartOfTuple ||
+				endOfTuple.PrototypeParsingType != PrototypeParsingType.EndOfTuple)
+				{  throw new InvalidOperationException();  }
+
+			TokenIterator iterator = startOfTuple;
+
+			while (iterator < endOfBlock)
+				{
+				// Types appearing in tuples may have modifier blocks
+				if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier ||
+					iterator.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier)
+					{
+					TokenIterator closingModifier, endOfModifierBlock;
+					ParsedPrototype.GetEndOfBlock(iterator, endOfBlock, out closingModifier, out endOfModifierBlock);
+
+					AddModifierBlock(iterator, closingModifier, endOfModifierBlock);
+
+					iterator = endOfModifierBlock;
+					}
+				else if (iterator.FundamentalType != FundamentalType.Whitespace)
+					{
+					// Let AddToken() handle the formatting for everything else so it's uniform
+					AddToken(iterator);
+					iterator.Next();
+					}
+				else
+					{  iterator.Next();  }
 				}
 			}
 
@@ -223,7 +279,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 						pastFirstText = true;
 						lastTokenType = FundamentalType.Text;
 
-						if (!TryToSkipModifierBlock(ref iterator))
+						if (!ParsedPrototype.TryToSkipBlock(ref iterator))
 							{  iterator.Next();  }
 						}
 					else
@@ -258,7 +314,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 							dontAddSpaceAfterSymbol = true;
 							iterator.Next();
 							}
-						else if (TryToSkipModifierBlock(ref iterator))
+						else if (ParsedPrototype.TryToSkipBlock(ref iterator))
 							{
 							lastSymbolWasBlock = true;
 							dontAddSpaceAfterSymbol = false;
@@ -291,54 +347,6 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				}
 
 			return true;
-			}
-
-
-
-		// Group: Protected Functions
-		// __________________________________________________________________________
-
-
-		/* Function: TryToSkipModifierBlock
-		 * If the iterator is on a <PrototypeParsingType.OpeningTypeModifier> or <PrototypeParsingType.OpeningParamModifier>
-		 * token, moves it past the entire block including any nested blocks.
-		 */
-		protected static bool TryToSkipModifierBlock(ref TokenIterator iterator)
-			{
-			if (iterator.PrototypeParsingType != PrototypeParsingType.OpeningTypeModifier &&
-				iterator.PrototypeParsingType != PrototypeParsingType.OpeningParamModifier)
-				{  return false;  }
-
-			TokenIterator lookahead = iterator;
-			lookahead.Next();
-			int level = 1;
-
-			// We're going to cheat and assume all blocks are balanced and nested in a way that makes sense. This lets us handle
-			// both in a simple loop.
-			while (lookahead.IsInBounds)
-				{
-				if (lookahead.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier ||
-					lookahead.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier)
-					{
-					level++;
-					}
-				else if (lookahead.PrototypeParsingType == PrototypeParsingType.ClosingTypeModifier ||
-						  lookahead.PrototypeParsingType == PrototypeParsingType.ClosingParamModifier)
-					{
-					level--;
-
-					if (level == 0)
-						{
-						lookahead.Next();
-						iterator = lookahead;
-						return true;
-						}
-					}
-
-				lookahead.Next();
-				}
-
-			return false;
 			}
 
 

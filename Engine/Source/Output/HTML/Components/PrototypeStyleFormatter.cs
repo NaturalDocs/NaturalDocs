@@ -97,6 +97,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 					iterator.Next();
 					}
+
+				while (iterator < limit &&
+						  iterator.PrototypeParsingType == PrototypeParsingType.ClosingExtensionSymbol)
+					{  iterator.Next();  }
 				}
 			}
 
@@ -122,6 +126,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 					iterator.Next();
 					}
+
+				while (iterator < limit &&
+						  iterator.PrototypeParsingType == PrototypeParsingType.ClosingExtensionSymbol)
+					{  iterator.Next();  }
 				}
 			}
 
