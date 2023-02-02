@@ -29,7 +29,18 @@ module EnumTypes (
 	enum { a1, a2[1], a3[2:3], a4 = 3, a5[2] = 1 } a,
 	enum byte { b1 } b,
 	enum int signed { c1 = 0 }[4:0] c, 
-	enum bit unsigned [7:0] { d1 }[][] d);
+	enum bit unsigned [7:0] { d1 }[][] d
+	);
+
+// Module: VirtualInterfaceTypes
+module VirtualInterfaceTypes (
+	virtual VIT a,
+	virtual VIT #(35) b,
+	virtual VIT #(16).phy c,
+	virtual interface VIT d,
+	virtual interface VIT #(35) e,
+	virtual interface VIT #(16).phy f
+	);
 
 // Module: OtherTypes
 module OtherTypes (string a, chandle b, event c);
