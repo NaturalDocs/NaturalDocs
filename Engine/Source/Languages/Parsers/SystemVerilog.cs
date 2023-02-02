@@ -416,6 +416,113 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
+		/* Function: TryToSkipVirtualInterface
+		 *
+		 * Tries to move the iterator past a virtual interface type.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipVirtualInterface (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+
+			// Keywords
+
+			if (!iterator.MatchesToken("virtual"))
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+
+			if (mode == ParseMode.ParsePrototype)
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
+
+			lookahead.Next();
+			TryToSkipWhitespace(ref lookahead, mode);
+
+			if (lookahead.MatchesToken("interface"))
+				{
+				if (mode == ParseMode.ParsePrototype)
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
+
+				lookahead.Next();
+				TryToSkipWhitespace(ref lookahead, mode);
+				}
+
+
+			// Type
+
+			// The type is a simple identifier, no hierarchies
+			if (!TryToSkipUnqualifiedIdentifier(ref lookahead, mode, PrototypeParsingType.Type))
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+
+			// We're successful if we've made it this far.  Everything else is optional.
+			iterator = lookahead;
+
+			TryToSkipWhitespace(ref lookahead, mode);
+
+
+			// Parameters
+
+			if (lookahead.MatchesAcrossTokens("#("))
+				{
+				if (mode == ParseMode.ParsePrototype)
+					{
+					lookahead.PrototypeParsingType = PrototypeParsingType.OpeningTypeModifier;
+
+					TokenIterator secondCharacter = lookahead;
+					secondCharacter.Next();
+					secondCharacter.PrototypeParsingType = PrototypeParsingType.OpeningExtensionSymbol;
+					}
+
+				GenericSkip(ref lookahead);
+
+				if (mode == ParseMode.ParsePrototype)
+					{
+					TokenIterator endOfParameters = lookahead;
+					endOfParameters.Previous();
+
+					endOfParameters.PrototypeParsingType = PrototypeParsingType.ClosingTypeModifier;
+					}
+
+				iterator = lookahead;
+
+				TryToSkipWhitespace(ref lookahead, mode);
+				}
+
+
+			// Modport identifier
+
+			if (lookahead.Character == '.')
+				{
+				if (mode == ParseMode.ParsePrototype)
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
+
+				lookahead.Next();
+
+				// This is a simple identifier, no hierarchies
+				if (TryToSkipUnqualifiedIdentifier(ref lookahead, mode, PrototypeParsingType.TypeModifier))
+					{
+					iterator = lookahead;
+					}
+				}
+
+
+			// We've been updating iterator whenever we found part of the enum and continuing with lookahead
+			// to see if we could extend it, so we need to reset anything between iterator and lookahead since that
+			// part wasn't accepted.
+			if (lookahead > iterator)
+				{  ResetTokensBetween(iterator, lookahead, mode);  }
+
+			return true;
+			}
+
+
 		/* Function: TryToSkipParameters
 		 *
 		 * Tries to move the iterator past a comma-separated list of parameters in parentheses.  This supports both (
@@ -761,7 +868,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		protected bool TryToSkipType (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
 			if (TryToSkipEnum(ref iterator, mode) ||
-				TryToSkipStruct(ref iterator, mode))
+				TryToSkipStruct(ref iterator, mode) ||
+				TryToSkipVirtualInterface(ref iterator, mode))
 				{  return true;  }
 
 			TokenIterator lookahead = iterator;
