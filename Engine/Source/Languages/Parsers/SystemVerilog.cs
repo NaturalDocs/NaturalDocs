@@ -124,7 +124,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					}
 
 				// Backslash identifiers.  Don't want them to mess up parsing other things since they can contain symbols.
-				else if (iterator.Character == '\\' && TryToSkipIdentifier(ref iterator, ParseMode.SyntaxHighlight))
+				else if (iterator.Character == '\\' && TryToSkipUnqualifiedIdentifier(ref iterator, ParseMode.SyntaxHighlight))
 					{
 					}
 
@@ -262,7 +262,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			string name = null;
 
-			if (TryToSkipIdentifier(ref lookahead, out name, mode))
+			if (TryToSkipUnqualifiedIdentifier(ref lookahead, out name, mode))
 				{
 				TryToSkipWhitespace(ref lookahead, mode);
 				}
@@ -552,7 +552,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TokenIterator startOfType = lookahead;
 
 			if (!IsBuiltInType(lookahead.String) &&
-				TryToSkipIdentifier(ref lookahead, ParseMode.IterateOnly))
+				TryToSkipUnqualifiedIdentifier(ref lookahead, ParseMode.IterateOnly))
 				{
 				TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
 
@@ -588,7 +588,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Name
 
-			if (TryToSkipIdentifier(ref lookahead, mode, PrototypeParsingType.Name) == false)
+			if (TryToSkipUnqualifiedIdentifier(ref lookahead, mode, PrototypeParsingType.Name) == false)
 				{
 				ResetTokensBetween(iterator, lookahead, mode);
 				return false;
@@ -786,7 +786,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 			// All other identifiers are treated as a type name
-			else if (TryToSkipIdentifier(ref lookahead, mode, PrototypeParsingType.Type))
+			else if (TryToSkipUnqualifiedIdentifier(ref lookahead, mode, PrototypeParsingType.Type))
 				{
 				iterator = lookahead;
 				foundType = true;
@@ -1131,7 +1131,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{
 				TokenIterator startOfName = lookahead;
 
-				if (TryToSkipIdentifier(ref lookahead, mode))
+				if (TryToSkipUnqualifiedIdentifier(ref lookahead, mode))
 					{  }
 				else
 					{
@@ -1153,7 +1153,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					{
 					lookahead.Next();
 					}
-				else if (TryToSkipIdentifier(ref lookahead, mode))
+				else if (TryToSkipUnqualifiedIdentifier(ref lookahead, mode))
 					{  }
 				else
 					{
@@ -1192,9 +1192,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
-		/* Function: TryToSkipIdentifier
+		/* Function: TryToSkipUnqualifiedIdentifier
 		 *
-		 * Tries to move past and retrieve an identifier.
+		 * Tries to move past and retrieve a single unqualified identifier, which means only "X" in "X::Y::Z".
 		 *
 		 * Supported Modes:
 		 *
@@ -1204,12 +1204,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *			  or <PrototypeParsingType.Type>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipIdentifier (ref TokenIterator iterator, out string identifier, ParseMode mode = ParseMode.IterateOnly,
-														  PrototypeParsingType prototypeParsingType = PrototypeParsingType.Name)
+		protected bool TryToSkipUnqualifiedIdentifier (ref TokenIterator iterator, out string identifier, ParseMode mode = ParseMode.IterateOnly,
+																		  PrototypeParsingType prototypeParsingType = PrototypeParsingType.Name)
 			{
 			TokenIterator start = iterator;
 
-			if (TryToSkipIdentifier(ref iterator, mode))
+			if (TryToSkipUnqualifiedIdentifier(ref iterator, mode))
 				{
 				identifier = start.TextBetween(iterator);
 				return true;
@@ -1222,9 +1222,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
-		/* Function: TryToSkipIdentifier
+		/* Function: TryToSkipUnqualifiedIdentifier
 		 *
-		 * Tries to move the iterator past an identifier.
+		 * Tries to move the iterator past a single unqualified identifier, which means only "X" in "X::Y::Z".
 		 *
 		 * Supported Modes:
 		 *
@@ -1234,8 +1234,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *			  or <PrototypeParsingType.Type>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipIdentifier (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
-														  PrototypeParsingType prototypeParsingType = PrototypeParsingType.Name)
+		protected bool TryToSkipUnqualifiedIdentifier (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
+																		  PrototypeParsingType prototypeParsingType = PrototypeParsingType.Name)
 			{
 			// Simple identifiers start with letters or underscores.  They can also contain numbers and $ but cannot start with
 			// them.
