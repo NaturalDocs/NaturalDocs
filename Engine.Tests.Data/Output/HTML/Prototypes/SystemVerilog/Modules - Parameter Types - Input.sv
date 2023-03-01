@@ -42,5 +42,18 @@ module VirtualInterfaceTypes (
 	virtual interface VIT #(16).phy f
 	);
 
+// Module: TypeIdentifiers
+module TypeIdentifiers (
+	TypeA a,
+	ClassB::TypeB b,
+	PackageC::ClassC::TypeC c,
+	$unit::TypeD d,
+	$unit::ClassE::TypeE e,
+	ClassF #(x, 12)::TypeF f,
+	ClassG#($)::TypeG g,
+	$unit::ClassH#(12)::TypeH h[12:0],
+	$unit::ClassI #(12)::TypeI i [12:0]
+	);
+
 // Module: OtherTypes
 module OtherTypes (string a, chandle b, event c);
