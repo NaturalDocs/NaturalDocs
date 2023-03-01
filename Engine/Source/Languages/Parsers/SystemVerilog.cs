@@ -139,8 +139,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					while (endOfIdentifier.FundamentalType == FundamentalType.Text ||
 							  endOfIdentifier.Character == '_' || endOfIdentifier.Character == '$');
 
-					// All SV keywords start with a lowercase letter
-					if (iterator.Character >= 'a' && iterator.Character <= 'z')
+					// All SV keywords start with a lowercase letter or $
+					if ((iterator.Character >= 'a' && iterator.Character <= 'z') || iterator.Character == '$')
 						{
 						string identifier = source.TextBetween(iterator, endOfIdentifier);
 
@@ -1924,7 +1924,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			"table", "tagged", "task", "this", "throughout", "time", "timeprecision", "timeunit", "tran", "tranif0", "tranif1", "tri", "tri0",
 			"tri1", "triand", "trior", "trireg", "type", "typedef", "union", "unique", "unique0", "unsigned", "until", "until_with", "untyped",
 			"use", "uwire", "var", "vectored", "virtual", "void", "wait", "wait_order", "wand", "weak", "weak0", "weak1", "while",
-			"wildcard", "wire", "with", "within", "wor", "xnor", "xor"
+			"wildcard", "wire", "with", "within", "wor", "xnor", "xor",
+
+			// Others found in syntax
+
+			"$unit", "$root"
+
 			});
 
 
