@@ -74,6 +74,33 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 				cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
 
 
+				// Modifier/Qualifier
+
+				currentColumn++;
+				startOfCell = iterator;
+
+				while (iterator < endOfParam)
+					{
+					PrototypeParsingType type = iterator.PrototypeParsingType;
+
+					if (type == PrototypeParsingType.TypeModifier ||
+						type == PrototypeParsingType.TypeQualifier ||
+						type == PrototypeParsingType.Null)
+						{  iterator.Next();   }
+					else if (type == PrototypeParsingType.OpeningTypeModifier &&
+							   iterator.MatchesAcrossTokens("#("))
+						{  SkipModifierBlock(ref iterator, endOfParam);  }
+					else
+						{  break;  }
+					}
+
+				endOfCell = iterator;
+
+				cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
+				cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
+				cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
+
+
 				// Type
 
 				currentColumn++;
@@ -309,6 +336,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 		 * An array of <PrototypeColumnTypes> representing the order in which columns should appear for SystemVerilog prototypes.
 		 */
 		readonly static public PrototypeColumnType[] ColumnOrderValues = { PrototypeColumnType.ParameterKeywords,
+																											  PrototypeColumnType.ModifierQualifier,
 																											  PrototypeColumnType.Type,
 																											  PrototypeColumnType.TypeDimension,
 																											  PrototypeColumnType.TypeBody,

@@ -894,7 +894,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 			// All other identifiers are treated as a type name
-			else if (TryToSkipUnqualifiedIdentifier(ref lookahead, mode, PrototypeParsingType.Type))
+			else if (TryToSkipIdentifier(ref lookahead, mode, PrototypeParsingType.Type))
 				{
 				iterator = lookahead;
 				foundType = true;
@@ -1297,6 +1297,123 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					return false;
 					}
 				}
+			}
+
+
+		/* Function: TryToSkipIdentifier
+		 *
+		 * Tries to move past and retrieve a qualified identifier, such as "X.Y.Z".  Use <TryToSkipUnqualifiedIdentifier()> if you only want
+		 * to retrieve a single segment.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.Name>
+		 *			  or <PrototypeParsingType.Type>.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipIdentifier (ref TokenIterator iterator, out string identifier, ParseMode mode = ParseMode.IterateOnly,
+														  PrototypeParsingType prototypeParsingType = PrototypeParsingType.Name)
+			{
+			TokenIterator start = iterator;
+
+			if (TryToSkipIdentifier(ref iterator, mode))
+				{
+				identifier = start.TextBetween(iterator);
+				return true;
+				}
+			else
+				{
+				identifier = null;
+				return false;
+				}
+			}
+
+
+		/* Function: TryToSkipIdentifier
+		 *
+		 * Tries to move the iterator past a qualified identifier, such as "X::Y::Z".  Use <TryToSkipUnqualifiedIdentifier()> if you only
+		 * want to skip a single segment.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.Name>
+		 *			  or <PrototypeParsingType.Type>.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipIdentifier (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
+														  PrototypeParsingType prototypeParsingType = PrototypeParsingType.Name)
+			{
+			TokenIterator startOfIdentifier = iterator;
+			TokenIterator endOfIdentifier = iterator;
+			TokenIterator endOfQualifier = iterator;
+
+			// Can start with "$unit::".  Normal identifiers can't start with $ so we need to handle it separately.
+			if (iterator.MatchesAcrossTokens("$unit"))
+				{
+				iterator.NextByCharacters(5);
+				TryToSkipWhitespace(ref iterator, ParseMode.IterateOnly);
+
+				if (iterator.MatchesAcrossTokens("::") == false)
+					{
+					iterator = startOfIdentifier;
+					return false;
+					}
+
+				iterator.NextByCharacters(2);
+				TryToSkipWhitespace(ref iterator, ParseMode.IterateOnly);
+
+				endOfQualifier = iterator;
+				}
+
+			for (;;)
+				{
+				if (!TryToSkipUnqualifiedIdentifier(ref iterator, ParseMode.IterateOnly))
+					{
+					iterator = startOfIdentifier;
+					return false;
+					}
+
+				endOfIdentifier = iterator;
+				TryToSkipWhitespace(ref iterator, ParseMode.IterateOnly);
+
+				if (iterator.MatchesAcrossTokens("#("))
+					{
+					GenericSkip(ref iterator);
+					TryToSkipWhitespace(ref iterator, ParseMode.IterateOnly);
+					}
+
+				if (iterator.MatchesAcrossTokens("::"))
+					{
+					iterator.NextByCharacters(2);
+					endOfQualifier = iterator;
+
+					TryToSkipWhitespace(ref iterator, ParseMode.IterateOnly);
+					}
+				else
+					{  break;  }
+				}
+
+			if (mode == ParseMode.ParsePrototype)
+				{
+				if (prototypeParsingType == PrototypeParsingType.Type)
+					{
+					if (startOfIdentifier < endOfQualifier)
+						{  startOfIdentifier.SetPrototypeParsingTypeBetween(endOfQualifier, PrototypeParsingType.TypeQualifier);  }
+
+					endOfQualifier.SetPrototypeParsingTypeBetween(endOfIdentifier, PrototypeParsingType.Type);
+					}
+				else
+					{
+					startOfIdentifier.SetPrototypeParsingTypeBetween(endOfIdentifier, prototypeParsingType);
+					}
+				}
+
+			iterator = endOfIdentifier;
+			return true;
 			}
 
 
