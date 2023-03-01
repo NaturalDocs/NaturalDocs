@@ -2045,7 +2045,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Others found in syntax
 
-			"$unit", "$root"
+			"$unit", "$root",
+
+			"$fatal", "$error", "$warning", "$info",
+
+			"$setup", "$hold", "$setuphold", "$recovery", "$removal", "$recrem", "$skew", "$timeskew", "$fullskew",
+			"$period", "$width", "$nochange"
 
 			});
 
