@@ -57,3 +57,11 @@ module TypeIdentifiers (
 
 // Module: OtherTypes
 module OtherTypes (string a, chandle b, event c);
+
+// Module: TypeReferences
+module TypeReferences (
+	type(string) a, 
+	type (string) b,
+	type ($unit::ClassC #(12)::TypeC) c
+	);
+
