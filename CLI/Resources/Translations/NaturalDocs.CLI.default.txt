@@ -107,7 +107,7 @@ CommandLine.NoLongerSupported.AutoGroup(param): {0} is no longer supported.  Use
 
 CommandLine.SyntaxReference(version).multiline {{{
 Natural Docs, version {0}
-http://www.naturaldocs.org
+https://www.naturaldocs.org
 This program is licensed under the AGPL
 ---------------------------------------
 
