@@ -477,6 +477,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					{  lookahead.PrototypeParsingType = PrototypeParsingType.DefaultValueSeparator;  }
 
 				lookahead.Next();
+				TryToSkipWhitespace(ref lookahead, mode);
+
 				TokenIterator startOfDefaultValue = lookahead;
 
 				while (lookahead.IsInBounds &&
@@ -700,6 +702,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					{  lookahead.PrototypeParsingType = PrototypeParsingType.DefaultValueSeparator;  }
 
 				lookahead.Next();
+				TryToSkipWhitespace(ref lookahead, mode);
+
 				TokenIterator startOfDefaultValue = lookahead;
 
 				while (lookahead.IsInBounds &&
