@@ -283,8 +283,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Parameter port list
 
-			if (lookahead.MatchesAcrossTokens("#(") &&
-				TryToSkipParameters(ref lookahead, mode))
+			if (TryToSkipParameterPortList(ref lookahead, mode))
 				{
 				TryToSkipWhitespace(ref lookahead, mode);
 				}
@@ -303,6 +302,206 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			lookahead.Previous();  // Don't want to include semicolon
 			iterator = lookahead;
 			return true;
+			}
+
+
+		/* Function: TryToSkipParameterPortList
+		 *
+		 * Tries to move the iterator past a comma-separated list of parameters in #( ) parentheses.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipParameterPortList (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+
+			// Opening paren
+
+			if (!iterator.MatchesAcrossTokens("#("))
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+			lookahead.Next(2);
+
+			if (mode == ParseMode.ParsePrototype)
+				{  iterator.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.StartOfParams);  }
+
+			TryToSkipWhitespace(ref lookahead, mode);
+
+
+			// Parameter list
+
+			while (lookahead.IsInBounds && lookahead.Character != ')')
+				{
+				if (lookahead.Character == ',')
+					{
+					if (mode == ParseMode.ParsePrototype)
+						{  lookahead.PrototypeParsingType = PrototypeParsingType.ParamSeparator;  }
+
+					lookahead.Next();
+					TryToSkipWhitespace(ref lookahead, mode);
+					}
+				else if (TryToSkipParameterPortDeclaration(ref lookahead, mode))
+					{
+					TryToSkipWhitespace(ref lookahead, mode);
+					}
+				else
+					{  break;  }
+				}
+
+
+			// Closing paren
+
+			if (lookahead.Character == ')')
+				{
+				if (mode == ParseMode.ParsePrototype)
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.EndOfParams;  }
+
+				lookahead.Next();
+				iterator = lookahead;
+				return true;
+				}
+			else
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+			}
+
+
+		/* Function: TryToSkipParameterPortDeclaration
+		 *
+		 * Tries to move the iterator past a parameter port declaration, such as "string x".  The parameter ends at a comma or
+		 * a closing parenthesis.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipParameterPortDeclaration (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			TokenIterator lookahead = iterator;
+
+
+			// Parameter Keyword
+
+			if (lookahead.MatchesToken("parameter") ||
+				lookahead.MatchesToken("localparam"))
+				{
+				if (mode == ParseMode.ParsePrototype)
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.ParamKeyword;  }
+
+				lookahead.Next();
+				TryToSkipWhitespace(ref lookahead, mode);
+				}
+
+
+			// Type vs. Name
+
+			// Types can be implied, such as "bit paramA, paramB", so we have to check to see what comes after the first
+			// identifier to see if that identifier is a type or a parameter name.  If the next thing is a comma (parameter
+			// separator) an equals sign (default value separator) or a closing parenthesis (end of the last parameter) the
+			// identifier is definitely a parameter name.
+
+			// Also note that an implied type can just be a dimension, such as "bit paramA, [8] paramB", so if it's not on
+			// an identifier at all we can assume it's a type.
+
+			bool hasType = true;
+			TokenIterator startOfType = lookahead;
+
+			// We treat the keyword "type" as a type as well for the purposes of formatting.  The SV ParsedPrototype class
+			// will detect this and return the default value column as the real type.
+			if (!lookahead.MatchesToken("type") &&
+				!IsBuiltInType(lookahead.String) &&
+				TryToSkipUnqualifiedIdentifier(ref lookahead, ParseMode.IterateOnly))
+				{
+				TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
+
+				// Skip dimensions.  Both types and parameters can have them, such as "bit[8] paramA[2]", so their presence
+				// doesn't tell us anything.
+				if (TryToSkipDimensions(ref lookahead, ParseMode.IterateOnly))
+					{  TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);  }
+
+				if (lookahead.Character == '=' ||
+					lookahead.Character == ',' ||
+					lookahead.Character == ')')
+					{
+					hasType = false;
+					}
+
+				// Reset back to start for parsing now that we know what it is
+				lookahead = startOfType;
+				}
+
+
+			// Type
+
+			// TryToSkipType covers signing and type dimensions
+			if (hasType &&
+				TryToSkipType(ref lookahead, mode) == false)
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+
+			TryToSkipWhitespace(ref lookahead, mode);
+
+
+			// Name
+
+			if (TryToSkipUnqualifiedIdentifier(ref lookahead, mode, PrototypeParsingType.Name) == false)
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+
+			TryToSkipWhitespace(ref lookahead, mode);
+
+
+			// Param Dimensions.  Both types and parameters can have them, such as "bit[8] paramA[2]"
+
+			if (TryToSkipDimensions(ref lookahead, mode, PrototypeParsingType.ParamModifier))
+				{  TryToSkipWhitespace(ref lookahead, mode);  }
+
+
+			// Default Value
+
+			if (lookahead.Character == '=')
+				{
+				if (mode == ParseMode.ParsePrototype)
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.DefaultValueSeparator;  }
+
+				lookahead.Next();
+				TokenIterator startOfDefaultValue = lookahead;
+
+				while (lookahead.IsInBounds &&
+						 lookahead.Character != ',' &&
+						 lookahead.Character != ')')
+					{  GenericSkip(ref lookahead);  }
+
+				if (mode == ParseMode.ParsePrototype)
+					{  startOfDefaultValue.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.DefaultValue);  }
+				}
+
+
+			// End of Parameter
+
+			if (lookahead.Character == ',' ||
+				lookahead.Character == ')')
+				{
+				iterator = lookahead;
+				return true;
+				}
+			else
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
 			}
 
 
