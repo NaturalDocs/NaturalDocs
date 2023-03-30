@@ -98,94 +98,94 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 		// __________________________________________________________________________
 
 
-		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private Result sqlite3_initialize ();
 
-		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private Result sqlite3_shutdown ();
 
-		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private Result sqlite3_open_v2 ([MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef=typeof(UTF8Marshaller))] string filename,
 																		 out IntPtr connectionHandle, OpenOption options, IntPtr vfs);
 
-		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private Result sqlite3_close_v2 (IntPtr connectionHandle);
 
-		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private int sqlite3_limit(IntPtr connectionHandle, LimitID id, int newValue);
 
-		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private Result sqlite3_extended_result_codes(IntPtr connectionHandle, int onoff);
 
-		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private Result sqlite3_busy_timeout(IntPtr connectionHandle, int milliseconds);
 
 		#if SQLITE_UTF16
-		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private Result sqlite3_prepare16_v2 (IntPtr connectionHandle,
 																				 [MarshalAs(UnmanagedType.LPWStr)] string statementText,
 																				 int statementTextByteLength, out IntPtr statementHandle, out IntPtr unusedStatementText);
 		#elif SQLITE_UTF8
-		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private Result sqlite3_prepare_v2 (IntPtr connectionHandle,
 																			 [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef=typeof(UTF8Marshaller))] string statementText,
 																			 int statementTextByteLength, out IntPtr statementHandle, out IntPtr unusedStatementText);
 		#endif
 
-		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private Result sqlite3_bind_int (IntPtr statementHandle, int index, int value);
 
-		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private Result sqlite3_bind_int64 (IntPtr statementHandle, int index, long value);
 
 		#if SQLITE_UTF16
-		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private Result sqlite3_bind_text16 (IntPtr statementHandle, int index,
 																			  [MarshalAs(UnmanagedType.LPWStr)] string value,
 																			  int valueByteLength, DestructorOption destructor);
 		#elif SQLITE_UTF8
-		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private Result sqlite3_bind_text (IntPtr statementHandle, int index,
 																		  [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef=typeof(UTF8Marshaller))] string value,
 																		  int valueByteLength, DestructorOption destructor);
 		#endif
 
-		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private Result sqlite3_bind_double (IntPtr statementHandle, int index, double value);
 
-		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private Result sqlite3_bind_null (IntPtr  statementHandle, int index);
 
-		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private Result sqlite3_step (IntPtr statementHandle);
 
-		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private int sqlite3_column_int (IntPtr statementHandle, int column);
 
-		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private long sqlite3_column_int64 (IntPtr statementHandle, int column);
 
 		#if SQLITE_UTF16
-		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private IntPtr sqlite3_column_text16 (IntPtr statementHandle, int column);
 		#elif SQLITE_UTF8
-		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private IntPtr sqlite3_column_text (IntPtr statementHandle, int column);
 		#endif
 
-		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private double sqlite3_column_double (IntPtr statementHandle, int column);
 
-		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private Result sqlite3_reset (IntPtr statementHandle);
 
-		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private Result sqlite3_clear_bindings (IntPtr statementHandle);
 
-		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private Result sqlite3_finalize (IntPtr statementHandle);
 
-		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private IntPtr sqlite3_libversion ();
 
 
