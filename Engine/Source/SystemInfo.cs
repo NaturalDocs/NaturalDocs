@@ -67,6 +67,20 @@ namespace CodeClear.NaturalDocs.Engine
 			}
 
 
+		/* Property: Is64Bit
+		 * Whether the program is running in 64-bit mode.  This is not the same as whether the processor or the operating system
+		 * is 64-bit, it is whether .NET or Mono is executing the program as 64-bit.
+		 */
+		static public bool Is64Bit
+			{
+			get
+				{
+				// There's also Environment.Is64BitProcess but that wasn't introduced until .NET 4.
+				return (IntPtr.Size == 8);
+				}
+			}
+
+
 		/* Property: PathSeparatorCharacter
 		 * The path separator character for the current platform, such as slash or backslash.
 		 */
