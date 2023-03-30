@@ -88,6 +88,8 @@
     <Compile Include="Source\Output\HTML\Paths\Class.cs" />
     <Compile Include="Source\Output\HTML\ConfigFiles\BinarySearchIndexParser.cs" />
     <Compile Include="Source\AbsolutePath.cs" />
+    <Compile Include="Source\SQLite\DLLImport\x86.cs" />
+    <Compile Include="Source\SQLite\DLLImport\x64.cs" />
     <Compile Include="Source\StartupIssues.cs" />
     <Compile Include="Source\Config\Targets\ImageFolder.cs" />
     <Compile Include="Source\Files\FileSources\Folder.cs" />

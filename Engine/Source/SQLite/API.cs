@@ -94,205 +94,239 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 
 
 
-		// Group: Native Functions
-		// __________________________________________________________________________
-
-
-		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
-		extern static private Result sqlite3_initialize ();
-
-		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
-		extern static private Result sqlite3_shutdown ();
-
-		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
-		extern static private Result sqlite3_open_v2 ([MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef=typeof(UTF8Marshaller))] string filename,
-																		 out IntPtr connectionHandle, OpenOption options, IntPtr vfs);
-
-		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
-		extern static private Result sqlite3_close_v2 (IntPtr connectionHandle);
-
-		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
-		extern static private int sqlite3_limit(IntPtr connectionHandle, LimitID id, int newValue);
-
-		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
-		extern static private Result sqlite3_extended_result_codes(IntPtr connectionHandle, int onoff);
-
-		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
-		extern static private Result sqlite3_busy_timeout(IntPtr connectionHandle, int milliseconds);
-
-		#if SQLITE_UTF16
-		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
-		extern static private Result sqlite3_prepare16_v2 (IntPtr connectionHandle,
-																				 [MarshalAs(UnmanagedType.LPWStr)] string statementText,
-																				 int statementTextByteLength, out IntPtr statementHandle, out IntPtr unusedStatementText);
-		#elif SQLITE_UTF8
-		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
-		extern static private Result sqlite3_prepare_v2 (IntPtr connectionHandle,
-																			 [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef=typeof(UTF8Marshaller))] string statementText,
-																			 int statementTextByteLength, out IntPtr statementHandle, out IntPtr unusedStatementText);
-		#endif
-
-		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
-		extern static private Result sqlite3_bind_int (IntPtr statementHandle, int index, int value);
-
-		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
-		extern static private Result sqlite3_bind_int64 (IntPtr statementHandle, int index, long value);
-
-		#if SQLITE_UTF16
-		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
-		extern static private Result sqlite3_bind_text16 (IntPtr statementHandle, int index,
-																			  [MarshalAs(UnmanagedType.LPWStr)] string value,
-																			  int valueByteLength, DestructorOption destructor);
-		#elif SQLITE_UTF8
-		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
-		extern static private Result sqlite3_bind_text (IntPtr statementHandle, int index,
-																		  [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef=typeof(UTF8Marshaller))] string value,
-																		  int valueByteLength, DestructorOption destructor);
-		#endif
-
-		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
-		extern static private Result sqlite3_bind_double (IntPtr statementHandle, int index, double value);
-
-		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
-		extern static private Result sqlite3_bind_null (IntPtr  statementHandle, int index);
-
-		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
-		extern static private Result sqlite3_step (IntPtr statementHandle);
-
-		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
-		extern static private int sqlite3_column_int (IntPtr statementHandle, int column);
-
-		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
-		extern static private long sqlite3_column_int64 (IntPtr statementHandle, int column);
-
-		#if SQLITE_UTF16
-		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
-		extern static private IntPtr sqlite3_column_text16 (IntPtr statementHandle, int column);
-		#elif SQLITE_UTF8
-		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
-		extern static private IntPtr sqlite3_column_text (IntPtr statementHandle, int column);
-		#endif
-
-		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
-		extern static private double sqlite3_column_double (IntPtr statementHandle, int column);
-
-		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
-		extern static private Result sqlite3_reset (IntPtr statementHandle);
-
-		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
-		extern static private Result sqlite3_clear_bindings (IntPtr statementHandle);
-
-		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
-		extern static private Result sqlite3_finalize (IntPtr statementHandle);
-
-		[DllImport ("SQLite.Win.x86.dll", CallingConvention = CallingConvention.Cdecl)]
-		extern static private IntPtr sqlite3_libversion ();
-
-
-
-		// Group: Public Aliases
+		// Group: Functions
 		// __________________________________________________________________________
 
 
 		static public Result Initialize ()
-			{  return sqlite3_initialize();  }
+			{
+			if (SystemInfo.Is64Bit)
+				{  return DLLImport.x64.sqlite3_initialize();  }
+			else
+				{  return DLLImport.x86.sqlite3_initialize();  }
+			}
 
 		static public Result ShutDown ()
-			{  return sqlite3_shutdown();  }
+			{
+			if (SystemInfo.Is64Bit)
+				{  return DLLImport.x64.sqlite3_shutdown();  }
+			else
+				{  return DLLImport.x86.sqlite3_shutdown();  }
+			}
 
 		static public Result OpenV2 (string filename, out IntPtr connectionHandle, OpenOption options)
-			{  return sqlite3_open_v2(filename, out connectionHandle, options, IntPtr.Zero);  }
+			{
+			if (SystemInfo.Is64Bit)
+				{  return DLLImport.x64.sqlite3_open_v2(filename, out connectionHandle, options, IntPtr.Zero);  }
+			else
+				{  return DLLImport.x86.sqlite3_open_v2(filename, out connectionHandle, options, IntPtr.Zero);  }
+			}
 
 		static public Result CloseV2 (IntPtr connectionHandle)
-			{  return sqlite3_close_v2(connectionHandle);  }
+			{
+			if (SystemInfo.Is64Bit)
+				{  return DLLImport.x64.sqlite3_close_v2(connectionHandle);  }
+			else
+				{  return DLLImport.x86.sqlite3_close_v2(connectionHandle);  }
+			}
 
 		static public int Limit (IntPtr connectionHandle, LimitID id, int newLimit)
-			{  return sqlite3_limit(connectionHandle, id, newLimit);  }
+			{
+			if (SystemInfo.Is64Bit)
+				{  return DLLImport.x64.sqlite3_limit(connectionHandle, id, newLimit);  }
+			else
+				{  return DLLImport.x86.sqlite3_limit(connectionHandle, id, newLimit);  }
+			}
 
 		static public Result ExtendedResultCodes (IntPtr connectionHandle, bool onoff)
-			{  return sqlite3_extended_result_codes (connectionHandle, (onoff ? 1 : 0));  }
+			{
+			if (SystemInfo.Is64Bit)
+				{  return DLLImport.x64.sqlite3_extended_result_codes (connectionHandle, (onoff ? 1 : 0));  }
+			else
+				{  return DLLImport.x86.sqlite3_extended_result_codes (connectionHandle, (onoff ? 1 : 0));  }
+			}
 
 		static public Result BusyTimeout (IntPtr connectionHandle, int milliseconds)
-			{  return sqlite3_busy_timeout(connectionHandle, milliseconds);  }
+			{
+			if (SystemInfo.Is64Bit)
+				{  return DLLImport.x64.sqlite3_busy_timeout(connectionHandle, milliseconds);  }
+			else
+				{  return DLLImport.x86.sqlite3_busy_timeout(connectionHandle, milliseconds);  }
+			}
 
 		static public Result PrepareV2 (IntPtr connectionHandle, string statementText, out IntPtr statementHandle)
 			{
 			IntPtr ignore;
 
 			#if SQLITE_UTF16
+
 				// It wants the length in bytes, not in characters
-				return sqlite3_prepare16_v2(connectionHandle, statementText, Encoding.Unicode.GetByteCount(statementText), out statementHandle, out ignore);
+				if (SystemInfo.Is64Bit)
+					{  return DLLImport.x64.sqlite3_prepare16_v2(connectionHandle, statementText, Encoding.Unicode.GetByteCount(statementText), out statementHandle, out ignore);  }
+				else
+					{  return DLLImport.x86.sqlite3_prepare16_v2(connectionHandle, statementText, Encoding.Unicode.GetByteCount(statementText), out statementHandle, out ignore);  }
+
 			#elif SQLITE_UTF8
-				return sqlite3_prepare_v2(connectionHandle, statementText, Encoding.UTF8.GetByteCount(statementText), out statementHandle, out ignore);
+
+				if (SystemInfo.Is64Bit)
+					{  return DLLImport.x64.sqlite3_prepare_v2(connectionHandle, statementText, Encoding.UTF8.GetByteCount(statementText), out statementHandle, out ignore);  }
+				else
+					{  return DLLImport.x86.sqlite3_prepare_v2(connectionHandle, statementText, Encoding.UTF8.GetByteCount(statementText), out statementHandle, out ignore);  }
+
 			#else
 				throw new Exception("Did not define SQLITE_UTF8 or SQLITE_UTF16");
 			#endif
 			}
 
 		static public Result BindInt (IntPtr statementHandle, int index, int value)
-			{  return sqlite3_bind_int(statementHandle, index, value);  }
+			{
+			if (SystemInfo.Is64Bit)
+				{  return DLLImport.x64.sqlite3_bind_int(statementHandle, index, value);  }
+			else
+				{  return DLLImport.x86.sqlite3_bind_int(statementHandle, index, value);  }
+			}
 
 		static public Result BindInt64 (IntPtr statementHandle, int index, long value)
-			{  return sqlite3_bind_int64(statementHandle, index, value);  }
+			{
+			if (SystemInfo.Is64Bit)
+				{  return DLLImport.x64.sqlite3_bind_int64(statementHandle, index, value);  }
+			else
+				{  return DLLImport.x86.sqlite3_bind_int64(statementHandle, index, value);  }
+			}
 
 		static public Result BindText (IntPtr statementHandle, int index, string value)
 			{
 			#if SQLITE_UTF16
+
 				// It wants the length in bytes, not in characters
-				return sqlite3_bind_text16(statementHandle, index, value, Encoding.Unicode.GetByteCount(value), DestructorOption.Transient);
+				if (SystemInfo.Is64Bit)
+					{  return DLLImport.x64.sqlite3_bind_text16(statementHandle, index, value, Encoding.Unicode.GetByteCount(value), DestructorOption.Transient);  }
+				else
+					{  return DLLImport.x86.sqlite3_bind_text16(statementHandle, index, value, Encoding.Unicode.GetByteCount(value), DestructorOption.Transient);  }
+
 			#elif SQLITE_UTF8
-				return sqlite3_bind_text(statementHandle, index, value, Encoding.UTF8.GetByteCount(value), DestructorOption.Transient);
+
+				if (SystemInfo.Is64Bit)
+					{  return DLLImport.x64.sqlite3_bind_text(statementHandle, index, value, Encoding.UTF8.GetByteCount(value), DestructorOption.Transient);  }
+				else
+					{  return DLLImport.x86.sqlite3_bind_text(statementHandle, index, value, Encoding.UTF8.GetByteCount(value), DestructorOption.Transient);  }
+
 			#else
 				throw new Exception("Did not define SQLITE_UTF8 or SQLITE_UTF16");
 			#endif
 			}
 
 		static public Result BindDouble (IntPtr statementHandle, int index, double value)
-			{  return sqlite3_bind_double (statementHandle, index, value);  }
+			{
+			if (SystemInfo.Is64Bit)
+				{  return DLLImport.x64.sqlite3_bind_double (statementHandle, index, value);  }
+			else
+				{  return DLLImport.x86.sqlite3_bind_double (statementHandle, index, value);  }
+			}
 
 		static public Result BindNull (IntPtr statementHandle, int index)
-			{  return sqlite3_bind_null (statementHandle, index);  }
+			{
+			if (SystemInfo.Is64Bit)
+				{  return DLLImport.x64.sqlite3_bind_null (statementHandle, index);  }
+			else
+				{  return DLLImport.x86.sqlite3_bind_null (statementHandle, index);  }
+			}
 
 		static public Result Step (IntPtr statementHandle)
-			{  return sqlite3_step(statementHandle);  }
+			{
+			if (SystemInfo.Is64Bit)
+				{  return DLLImport.x64.sqlite3_step(statementHandle);  }
+			else
+				{  return DLLImport.x86.sqlite3_step(statementHandle);  }
+			}
 
 		static public int ColumnInt (IntPtr statementHandle, int column)
-			{  return sqlite3_column_int (statementHandle, column);  }
+			{
+			if (SystemInfo.Is64Bit)
+				{  return DLLImport.x64.sqlite3_column_int (statementHandle, column);  }
+			else
+				{  return DLLImport.x86.sqlite3_column_int (statementHandle, column);  }
+			}
 
 		static public long ColumnInt64 (IntPtr statementHandle, int column)
-			{  return sqlite3_column_int64 (statementHandle, column);  }
+			{
+			if (SystemInfo.Is64Bit)
+				{  return DLLImport.x64.sqlite3_column_int64 (statementHandle, column);  }
+			else
+				{  return DLLImport.x86.sqlite3_column_int64 (statementHandle, column);  }
+			}
 
 		static public string ColumnText (IntPtr statementHandle, int column)
 			{
 			// We can't use the string type as a return value for the API call or else C# will try to deallocate it, which
 			// it shouldn't.  It may not crash on .NET but it definitely does in Mono.
 
+			IntPtr nativeResult;
+
 			#if SQLITE_UTF16
-				IntPtr nativeResult = sqlite3_column_text16 (statementHandle, column);
+
+				if (SystemInfo.Is64Bit)
+					{  nativeResult = DLLImport.x64.sqlite3_column_text16 (statementHandle, column);  }
+				else
+					{  nativeResult = DLLImport.x86.sqlite3_column_text16 (statementHandle, column);  }
+
 				return Marshal.PtrToStringUni(nativeResult);
+
 			#elif SQLITE_UTF8
-				IntPtr nativeResult = sqlite3_column_text (statementHandle, column);
+
+				if (SystemInfo.Is64Bit)
+					{  nativeResult = DLLImport.x64.sqlite3_column_text (statementHandle, column);  }
+				else
+					{  nativeResult = DLLImport.x86.sqlite3_column_text (statementHandle, column);  }
+
 				return (string)UTF8Marshaller.GetInstance().MarshalNativeToManaged(nativeResult);
+
 			#else
 				throw new Exception("Did not define SQLITE_UTF8 or SQLITE_UTF16");
 			#endif
 			}
 
 		static public double ColumnDouble (IntPtr statementHandle, int column)
-			{  return sqlite3_column_double(statementHandle, column);  }
+			{
+			if (SystemInfo.Is64Bit)
+				{  return DLLImport.x64.sqlite3_column_double(statementHandle, column);  }
+			else
+				{  return DLLImport.x86.sqlite3_column_double(statementHandle, column);  }
+			}
 
 		static public Result Reset (IntPtr statementHandle)
-			{  return sqlite3_reset(statementHandle);  }
+			{
+			if (SystemInfo.Is64Bit)
+				{  return DLLImport.x64.sqlite3_reset(statementHandle);  }
+			else
+				{  return DLLImport.x86.sqlite3_reset(statementHandle);  }
+			}
 
 		static public Result ClearBindings (IntPtr statementHandle)
-			{  return sqlite3_clear_bindings(statementHandle);  }
+			{
+			if (SystemInfo.Is64Bit)
+				{  return DLLImport.x64.sqlite3_clear_bindings(statementHandle);  }
+			else
+				{  return DLLImport.x86.sqlite3_clear_bindings(statementHandle);  }
+			}
 
 		static public Result Finalize (IntPtr statementHandle)
-			{  return sqlite3_finalize(statementHandle);  }
+			{
+			if (SystemInfo.Is64Bit)
+				{  return DLLImport.x64.sqlite3_finalize(statementHandle);  }
+			else
+				{  return DLLImport.x86.sqlite3_finalize(statementHandle);  }
+			}
 
 		static public string LibVersion ()
 			{
-			IntPtr nativeResult = sqlite3_libversion();
+			IntPtr nativeResult;
+
+			if (SystemInfo.Is64Bit)
+				{  nativeResult = DLLImport.x64.sqlite3_libversion();  }
+			else
+				{  nativeResult = DLLImport.x86.sqlite3_libversion();  }
+
 			return (string)UTF8Marshaller.GetInstance().MarshalNativeToManaged(nativeResult);
 			}
 

@@ -158,6 +158,11 @@
 				DestinationFolder="$(TargetDir)"
 				/>
 			<Copy
+				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Windows'"
+				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\SQLite.Win.x64.dll"
+				DestinationFolder="$(TargetDir)"
+				/>
+			<Copy
 				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Unix'"
 				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libNaturalDocs.Engine.SQLite.Linux32.so"
 				DestinationFolder="$(TargetDir)"
@@ -194,6 +199,10 @@
 			<Delete
 				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Windows'"
 				Files="$(TargetDir)SQLite.Win.x86.dll"
+				/>
+			<Delete
+				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Windows'"
+				Files="$(TargetDir)SQLite.Win.x64.dll"
 				/>
 			<Delete
 				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Unix'"
