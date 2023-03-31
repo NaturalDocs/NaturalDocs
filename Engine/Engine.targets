@@ -225,6 +225,15 @@
 				Files="$(TargetDir)NaturalDocs.Engine.dll.config"
 				/>
 
+
+			<!-- Old file names, not in use anymore -->
+
+			<Delete Files="$(TargetDir)NaturalDocs.Engine.SQLite.dll" />
+			<Delete Files="$(TargetDir)libNaturalDocs.Engine.SQLite.Mac32.so" />
+			<Delete Files="$(TargetDir)libNaturalDocs.Engine.SQLite.Mac64.so" />
+			<Delete Files="$(TargetDir)libNaturalDocs.Engine.SQLite.Linux32.so" />
+			<Delete Files="$(TargetDir)libNaturalDocs.Engine.SQLite.Linux64.so" />
+
 		</Target>
 
 
