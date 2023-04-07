@@ -117,6 +117,14 @@
 				DestinationFolder="$(TargetDir)"
 				/>
 			<Copy
+				SourceFiles="$(NaturalDocsSourceDir)Engine.Tests.Runner\Resources\NUnit\nunit-agent.exe"
+				DestinationFolder="$(TargetDir)"
+				/>
+			<Copy
+				SourceFiles="$(NaturalDocsSourceDir)Engine.Tests.Runner\Resources\NUnit\nunit-agent.exe.config"
+				DestinationFolder="$(TargetDir)"
+				/>
+			<Copy
 				SourceFiles="$(NaturalDocsSourceDir)Engine.Tests.Runner\Resources\NUnit\nunit-agent-x86.exe"
 				DestinationFolder="$(TargetDir)"
 				/>
