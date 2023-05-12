@@ -29,7 +29,7 @@ module BareParams #(int a, b, int c = 12) ();
 
 // Module: KeywordParams
 module KeywordParams #(parameter int a,
-									 localparam int b = 12);
+									 localparam int b = 12) ();
 
 // Module: MixedParams
 module MixedParams #(int a, b, parameter int c, d = 12, localparam int e = 9) ();
