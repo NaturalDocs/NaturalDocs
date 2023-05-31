@@ -773,7 +773,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 			// All other identifiers are treated as a type name
-			else if (TryToSkipIdentifier(ref lookahead, mode, PrototypeParsingType.Type))
+			else if (TryToSkipTypeIdentifier(ref lookahead, mode, PrototypeParsingType.Type))
 				{
 				iterator = lookahead;
 				foundType = true;
@@ -1541,10 +1541,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
-		/* Function: TryToSkipIdentifier
+		/* Function: TryToSkipTypeIdentifier
 		 *
-		 * Tries to move past and retrieve a qualified identifier, such as "X.Y.Z".  Use <TryToSkipUnqualifiedIdentifier()> if you only want
-		 * to retrieve a single segment.
+		 * Tries to move past and retrieve a type identifier, which can be qualified such as "X::Y::Z".  It also supports parameter ports
+		 * such as "X#(2)::Y".  Use <TryToSkipUnqualifiedIdentifier()> if you only want to retrieve a single segment.
 		 *
 		 * Supported Modes:
 		 *
@@ -1554,12 +1554,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *			  or <PrototypeParsingType.Type>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipIdentifier (ref TokenIterator iterator, out string identifier, ParseMode mode = ParseMode.IterateOnly,
-														  PrototypeParsingType prototypeParsingType = PrototypeParsingType.Name)
+		protected bool TryToSkipTypeIdentifier (ref TokenIterator iterator, out string identifier, ParseMode mode = ParseMode.IterateOnly,
+																 PrototypeParsingType prototypeParsingType = PrototypeParsingType.Name)
 			{
 			TokenIterator start = iterator;
 
-			if (TryToSkipIdentifier(ref iterator, mode))
+			if (TryToSkipTypeIdentifier(ref iterator, mode))
 				{
 				identifier = start.TextBetween(iterator);
 				return true;
@@ -1572,10 +1572,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
-		/* Function: TryToSkipIdentifier
+		/* Function: TryToSkipTypeIdentifier
 		 *
-		 * Tries to move the iterator past a qualified identifier, such as "X::Y::Z".  Use <TryToSkipUnqualifiedIdentifier()> if you only
-		 * want to skip a single segment.
+		 * Tries to move the iterator past a type identifier, which can be qualified such as "X::Y::Z".  It also supports parameter ports
+		 * such as "X#(2)::Y".  Use <TryToSkipUnqualifiedIdentifier()> if you only want to retrieve a single segment.
 		 *
 		 * Supported Modes:
 		 *
@@ -1585,8 +1585,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *			  or <PrototypeParsingType.Type>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipIdentifier (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
-														  PrototypeParsingType prototypeParsingType = PrototypeParsingType.Name)
+		protected bool TryToSkipTypeIdentifier (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
+																 PrototypeParsingType prototypeParsingType = PrototypeParsingType.Name)
 			{
 			TokenIterator startOfIdentifier = iterator;
 			TokenIterator endOfIdentifier = iterator;
@@ -1660,7 +1660,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToSkipUnqualifiedIdentifier
 		 *
-		 * Tries to move past and retrieve a single unqualified identifier, which means only "X" in "X::Y::Z".
+		 * Tries to move past and retrieve a single unqualified identifier, which means only "X" in "X.Y.Z" or "X::Y::Z".
 		 *
 		 * Supported Modes:
 		 *
@@ -1690,7 +1690,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToSkipUnqualifiedIdentifier
 		 *
-		 * Tries to move the iterator past a single unqualified identifier, which means only "X" in "X::Y::Z".
+		 * Tries to move the iterator past a single unqualified identifier, which means only "X" in "X.Y.Z" or "X::Y::Z".
 		 *
 		 * Supported Modes:
 		 *
