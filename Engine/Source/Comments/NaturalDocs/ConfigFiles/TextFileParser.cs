@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.Regex;
 using CodeClear.NaturalDocs.Engine.Regex.Comments.NaturalDocs;
@@ -304,8 +305,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 								{
 								string[] split = arrowSeparatorRegex.Split(value, 2);
 
-								string left = split[0].ToLower().Normalize(System.Text.NormalizationForm.FormC);
-								string right = (String.IsNullOrEmpty(split[1]) ? null : split[1].ToLower().Normalize(System.Text.NormalizationForm.FormC));
+								string left = split[0].ToLower(CultureInfo.InvariantCulture).Normalize(System.Text.NormalizationForm.FormC);
+								string right = (String.IsNullOrEmpty(split[1]) ? null : split[1].ToLower(CultureInfo.InvariantCulture).Normalize(System.Text.NormalizationForm.FormC));
 
 								list.Add( new KeyValuePair<string, string>(left, right) );
 								}

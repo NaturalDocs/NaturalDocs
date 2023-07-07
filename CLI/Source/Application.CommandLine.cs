@@ -8,7 +8,7 @@
 
 
 using System;
-using System.Collections.Generic;
+using System.Globalization;
 using CodeClear.NaturalDocs.Engine;
 using CodeClear.NaturalDocs.Engine.Config;
 using CodeClear.NaturalDocs.Engine.Errors;
@@ -190,7 +190,7 @@ namespace CodeClear.NaturalDocs.CLI
 						}
 					else
 						{
-						format = format.ToLower();
+						format = format.ToLower(CultureInfo.InvariantCulture);
 
 						if (folder.IsRelative)
 							{  folder = System.Environment.CurrentDirectory + "/" + folder;  }
@@ -237,7 +237,7 @@ namespace CodeClear.NaturalDocs.CLI
 							{  folder = System.Environment.CurrentDirectory + "/" + folder;  }
 
 						// Accept the parameter being set to Project.txt instead of the folder.
-						if (folder.NameWithoutPath.ToLower() == "project.txt")
+						if (folder.NameWithoutPath.ToLower(CultureInfo.InvariantCulture) == "project.txt")
 							{  folder = folder.ParentFolder;  }
 
 						if (commandLineConfig.ProjectConfigFolderPropertyLocation.IsDefined)

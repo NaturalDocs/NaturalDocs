@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using CodeClear.NaturalDocs.Engine.Languages;
 using CodeClear.NaturalDocs.Engine.Symbols;
@@ -615,7 +616,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 					int hierarchyID = topic.ClassString.HierarchyID;
 					var hierarchy = (hierarchyID == 0 ? null : engineInstance.Hierarchies.FromID(hierarchyID));
-					string hierarchyName = (hierarchy == null ? "hierarchy " +  hierarchyID : hierarchy.Name.ToLower());
+					string hierarchyName = (hierarchy == null ? "hierarchy " +  hierarchyID : hierarchy.Name.ToLower(CultureInfo.InvariantCulture));
 
 					bool includeLanguage = (hierarchy == null ? true : hierarchy.IsLanguageSpecific);
 

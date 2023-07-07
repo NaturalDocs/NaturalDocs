@@ -12,6 +12,7 @@
 
 
 using System;
+using System.Globalization;
 using System.Text;
 using CodeClear.NaturalDocs.Engine.Collections;
 
@@ -40,10 +41,10 @@ namespace CodeClear.NaturalDocs.Engine
 		 */
 		public void AddAliases (string parameter, params string[] aliases)
 			{
-			string lcParameter = parameter.ToLower();
+			string lcParameter = parameter.ToLower(CultureInfo.InvariantCulture);
 
 			foreach (string alias in aliases)
-				{  this.aliases[alias.ToLower()] = lcParameter;  }
+				{  this.aliases[alias.ToLower(CultureInfo.InvariantCulture)] = lcParameter;  }
 			}
 
 
@@ -71,7 +72,7 @@ namespace CodeClear.NaturalDocs.Engine
 				}
 
 			parameterAsEntered = segments[index];
-			string lcParameterAsEntered = parameterAsEntered.ToLower();
+			string lcParameterAsEntered = parameterAsEntered.ToLower(CultureInfo.InvariantCulture);
 			parameter = aliases[lcParameterAsEntered] ?? lcParameterAsEntered;
 
 			index++;

@@ -11,7 +11,7 @@
 
 
 using System;
-using System.Text;
+using System.Globalization;
 
 
 namespace CodeClear.NaturalDocs.Engine.Styles
@@ -44,7 +44,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		 */
 		public static PageType? FromName (string value)
 			{
-			value = value.ToLower();
+			value = value.ToLower(CultureInfo.InvariantCulture);
 
 			if (value == "all")
 				{  return PageType.All;  }

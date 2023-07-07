@@ -17,6 +17,7 @@
 
 
 using System;
+using System.Globalization;
 
 
 namespace CodeClear.NaturalDocs.Engine.Styles.ConfigFiles
@@ -94,7 +95,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles.ConfigFiles
 							file.AddError( Locale.Get("NaturalDocs.Engine", "Style.txt.CantLinkFileWithExtension(extension)",
 																 linkedFile.Extension) );
 							}
-						else if (linkedFile.Extension.ToLower() == "css" && pageType != PageType.All)
+						else if (linkedFile.Extension.ToLower(CultureInfo.InvariantCulture) == "css" && pageType != PageType.All)
 							{
 							file.AddError( Locale.Get("NaturalDocs.Engine", "Style.txt.CantLinkCSSFileToSpecificPageTypes(pageType)",
 																 PageTypes.NameOf(pageType)) );
@@ -142,7 +143,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles.ConfigFiles
 					if (homePageRegex.IsMatch(lcIdentifier))
 						{
 						Path homePageFile = value;
-						string lcExtension = homePageFile.Extension.ToLower();
+						string lcExtension = homePageFile.Extension.ToLower(CultureInfo.InvariantCulture);
 
 						if (lcExtension != "html" && lcExtension != "htm")
 							{

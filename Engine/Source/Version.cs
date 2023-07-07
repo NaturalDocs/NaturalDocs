@@ -97,9 +97,9 @@
 // Refer to License.txt for the complete details
 
 using System;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
-using CodeClear.NaturalDocs.Engine;
 
 
 namespace CodeClear.NaturalDocs.Engine
@@ -239,7 +239,7 @@ namespace CodeClear.NaturalDocs.Engine
 					{  bugfixVersion = byte.Parse( bugfixVersionString );  }
 
 				ReleaseType type = ReleaseType.Development;
-				string typeString = match.Groups[4].ToString().ToLower();
+				string typeString = match.Groups[4].ToString().ToLower(CultureInfo.InvariantCulture);
 
 				if (typeString == "release candidate" || typeString == "rc")
 					{  type = ReleaseType.ReleaseCanditate;  }
@@ -275,7 +275,7 @@ namespace CodeClear.NaturalDocs.Engine
 					{  bugfixVersion = byte.Parse( bugfixVersionString );  }
 
 				ReleaseType type = ReleaseType.Development;
-				string typeString = match.Groups[4].ToString().ToLower();
+				string typeString = match.Groups[4].ToString().ToLower(CultureInfo.InvariantCulture);
 
 				if (typeString == "release candidate" || typeString == "rc")
 					{  type = ReleaseType.ReleaseCanditate;  }

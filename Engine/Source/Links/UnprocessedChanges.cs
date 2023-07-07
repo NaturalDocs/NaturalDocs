@@ -20,6 +20,7 @@
 
 
 using System;
+using System.Globalization;
 using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.Files;
 using CodeClear.NaturalDocs.Engine.Symbols;
@@ -147,7 +148,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				if (allLinksAreNew)
 					{  return;  }
 
-				string lcFileName = imageFile.FileName.NameWithoutPath.ToLower();
+				string lcFileName = imageFile.FileName.NameWithoutPath.ToLower(CultureInfo.InvariantCulture);
 				var newImageFileIDs = newImageFileIDsByLCFileName[lcFileName];
 
 				if (newImageFileIDs == null)
@@ -174,7 +175,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 				// Remove topic from newImageFileIDsByLCFileName
 
-				string lcFileName = imageFile.FileName.NameWithoutPath.ToLower();
+				string lcFileName = imageFile.FileName.NameWithoutPath.ToLower(CultureInfo.InvariantCulture);
 				var newImageFileIDs = newImageFileIDsByLCFileName[lcFileName];
 
 				if (newImageFileIDs != null)

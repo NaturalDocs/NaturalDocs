@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.Errors;
 using CodeClear.NaturalDocs.Engine.Links;
@@ -217,16 +218,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 
 							char keywordCase, keywordEntryCase;
 
-							if (keyword == keyword.ToLower())
+							if (keyword == keyword.ToLower(CultureInfo.InvariantCulture))
 								{  keywordCase = 'l';  }
-							else if (keyword == keyword.ToUpper())
+							else if (keyword == keyword.ToUpper(CultureInfo.InvariantCulture))
 								{  keywordCase = 'u';  }
 							else
 								{  keywordCase = 'm';  }
 
-							if (keywordEntry.DisplayName == keywordEntry.DisplayName.ToLower())
+							if (keywordEntry.DisplayName == keywordEntry.DisplayName.ToLower(CultureInfo.InvariantCulture))
 								{  keywordEntryCase = 'l';  }
-							else if (keywordEntry.DisplayName == keywordEntry.DisplayName.ToUpper())
+							else if (keywordEntry.DisplayName == keywordEntry.DisplayName.ToUpper(CultureInfo.InvariantCulture))
 								{  keywordEntryCase = 'u';  }
 							else
 								{  keywordEntryCase = 'm';  }
@@ -293,7 +294,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 			if (keyword.Length > 3)
 				{  keyword = keyword.Substring(0, 3);  }
 
-			return keyword.ToLower();
+			return keyword.ToLower(CultureInfo.InvariantCulture);
 			}
 
 		/* Function: KeywordMatchesPrefix

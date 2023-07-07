@@ -24,6 +24,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using CodeClear.NaturalDocs.Engine.CommentTypes;
 
@@ -454,7 +455,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			output.StringEscapeAndAppend(keywordHTMLName);
 			output.Append("\",");
 
-			if (keywordSearchText != keywordHTMLName.ToLower())
+			if (keywordSearchText != keywordHTMLName.ToLower(CultureInfo.InvariantCulture))
 				{
 				output.Append('"');
 				output.StringEscapeAndAppend(keywordSearchText);
@@ -560,7 +561,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			output.Append(',');
 
-			if (topicSearchText != topicHTMLName.ToLower())
+			if (topicSearchText != topicHTMLName.ToLower(CultureInfo.InvariantCulture))
 				{
 				output.Append('"');
 				output.StringEscapeAndAppend(topicSearchText);

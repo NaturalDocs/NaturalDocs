@@ -63,13 +63,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
-using NUnit.Framework;
-using CodeClear.NaturalDocs.Engine;
 using CodeClear.NaturalDocs.Engine.Links;
 using CodeClear.NaturalDocs.Engine.Symbols;
-using CodeClear.NaturalDocs.Engine.Tests.Framework;
 using CodeClear.NaturalDocs.Engine.Topics;
 
 
@@ -108,8 +106,8 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 
 				if (match.Success)
 					{
-					target = match.Groups[1].ToString().ToLower();
-					property = match.Groups[2].ToString().ToLower();
+					target = match.Groups[1].ToString().ToLower(CultureInfo.InvariantCulture);
+					property = match.Groups[2].ToString().ToLower(CultureInfo.InvariantCulture);
 					value = match.Groups[3].ToString();
 
 					if (value.Length >= 2 && value[0] == '"' && value[value.Length - 1] == '"')
@@ -118,7 +116,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 						}
 					else
 						{
-						value = value.ToLower();
+						value = value.ToLower(CultureInfo.InvariantCulture);
 						valueString = null;
 						}
 					}
@@ -143,7 +141,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 						}
 					}
 
-				var lcCommand = command.ToLower();
+				var lcCommand = command.ToLower(CultureInfo.InvariantCulture);
 
 				try
 					{
@@ -262,7 +260,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 							if (valueString == null)
 								{  throw new Exception("Link.Type must be set to a string value.");  }
 
-							string lcValueString = valueString.ToLower();
+							string lcValueString = valueString.ToLower(CultureInfo.InvariantCulture);
 
 							if (lcValueString == "naturaldocs" || lcValueString == "natural docs")
 								{  link.Type = LinkType.NaturalDocs;  }

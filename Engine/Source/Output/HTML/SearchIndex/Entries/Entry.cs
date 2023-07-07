@@ -12,6 +12,7 @@
 
 
 using System;
+using System.Globalization;
 
 
 namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.Entries
@@ -42,7 +43,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.Entries
 			{
 			// DEPENDENCY: If this changes NDSearch.GetSearchText() must be updated to match.
 
-			text = text.ToLower();
+			text = text.ToLower(CultureInfo.InvariantCulture);
 			text = text.CondenseWhitespace().Trim();
 
 

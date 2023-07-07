@@ -15,8 +15,8 @@
 
 
 using System;
+using System.Globalization;
 using System.Text;
-using CodeClear.NaturalDocs.Engine.Hierarchies;
 
 
 namespace CodeClear.NaturalDocs.Engine.Symbols
@@ -82,7 +82,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			else
 				{
 				stringBuilder.Remove(stringBuilder.Length - symbolString.Length, symbolString.Length);
-				stringBuilder.Append(symbolString.ToLower());
+				stringBuilder.Append(symbolString.ToLower(CultureInfo.InvariantCulture));
 				lookupKey = stringBuilder.ToString();
 				}
 
@@ -119,7 +119,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 
 				// Turning the entire thing to lowercase requires one allocation and only adds a few extra characters of work.
 				// If we extracted a substring then turned that into lowercase it would require two allocations.
-				string lowercaseClassString = classString.ToLower();
+				string lowercaseClassString = classString.ToLower(CultureInfo.InvariantCulture);
 				stringBuilder.Append(lowercaseClassString, separator2Index + 1, lowercaseClassString.Length - (separator2Index + 1));
 
 				lookupKey = stringBuilder.ToString();

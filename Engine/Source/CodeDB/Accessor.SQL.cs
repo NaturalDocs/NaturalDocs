@@ -9,6 +9,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.Links;
@@ -1983,7 +1984,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			RequireAtLeast(LockType.ReadOnly);
 
 			object[] parameters = new object[1];
-			parameters[0] = fileName.ToLower();
+			parameters[0] = fileName.ToLower(CultureInfo.InvariantCulture);
 
 			return GetImageLinks("ImageLinks.FileName=?", parameters, cancelled, getImageLinkFlags);
 			}
@@ -2168,7 +2169,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 				connection.Execute("INSERT INTO ImageLinks (ImageLinkID, OriginalText, Path, FileName, FileID, ClassID, TargetFileID, TargetScore) " +
 												"VALUES (?, ?, ?, ?, ?, ?, 0, 0)",
-												imageLink.ImageLinkID, imageLink.OriginalText, imageLink.Path, imageLink.FileName.ToString().ToLower(),
+												imageLink.ImageLinkID, imageLink.OriginalText, imageLink.Path, imageLink.FileName.ToString().ToLower(CultureInfo.InvariantCulture),
 												imageLink.FileID, imageLink.ClassID
 												);
 

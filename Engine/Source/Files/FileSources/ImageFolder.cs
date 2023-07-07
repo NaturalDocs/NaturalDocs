@@ -12,6 +12,7 @@
 
 
 using System;
+using System.Globalization;
 
 
 namespace CodeClear.NaturalDocs.Engine.Files.FileSources
@@ -58,7 +59,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 			get
 				{
 				if (SystemInfo.IgnoreCaseInPaths)
-					{  return "ImageFolder:" + config.Folder.ToString().ToLower();  }
+					{  return "ImageFolder:" + config.Folder.ToString().ToLower(CultureInfo.InvariantCulture);  }
 				else
 					{  return "ImageFolder:" + config.Folder;  }
 				}

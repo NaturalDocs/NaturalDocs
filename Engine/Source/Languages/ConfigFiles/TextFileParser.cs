@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using CodeClear.NaturalDocs.Engine.Collections;
 
 
@@ -490,7 +491,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 							{  AddNeedsLanguageError(file, identifier);  }
 						else
 							{
-							string lcValue = value.ToLower();
+							string lcValue = value.ToLower(CultureInfo.InvariantCulture);
 
 							if (lcValue == "global")
 								{  currentLanguage.SetEnumValues(Language.EnumValues.Global, file.PropertyLocation);  }
@@ -518,7 +519,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 							{  AddNeedsLanguageError(file, identifier);  }
 						else
 							{
-							string lcValue = value.ToLower();
+							string lcValue = value.ToLower(CultureInfo.InvariantCulture);
 
 							if (yesRegex.IsMatch(lcValue))
 								{  currentLanguage.SetCaseSensitive(true, file.PropertyLocation);  }

@@ -12,6 +12,7 @@
 
 
 using System;
+using System.Globalization;
 
 
 namespace CodeClear.NaturalDocs.Engine.Files.FileSources
@@ -40,7 +41,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 			else
 				{
 				errors.Add(
-					Locale.Get("NaturalDocs.Engine", "Error.FolderDoesntExist(type, name)", Type.ToString().ToLower(), Path)
+					Locale.Get("NaturalDocs.Engine", "Error.FolderDoesntExist(type, name)", Type.ToString().ToLower(CultureInfo.InvariantCulture), Path)
 					);
 
 				return false;

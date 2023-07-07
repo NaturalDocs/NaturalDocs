@@ -56,6 +56,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using CodeClear.NaturalDocs.Engine.Errors;
 
@@ -173,7 +174,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 			string identifier, valueString;
 
-			if (!Get(out identifier, out valueString) || identifier.ToLower() != "format")
+			if (!Get(out identifier, out valueString) || identifier.ToLower(CultureInfo.InvariantCulture) != "format")
 				{
 				AddError( Locale.Get("NaturalDocs.Engine", "ConfigFile.DidntStartWithFormat(name)", fileName) );
 				}
@@ -314,7 +315,7 @@ namespace CodeClear.NaturalDocs.Engine
 								}
 
 							if ( (fileFormatFlags & FileFormatFlags.MakeIdentifiersLowercase) != 0 )
-								{  tempIdentifier = tempIdentifier.ToLower();  }
+								{  tempIdentifier = tempIdentifier.ToLower(CultureInfo.InvariantCulture);  }
 
 							identifier = tempIdentifier;
 							value = tempValue;

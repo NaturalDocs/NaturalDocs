@@ -11,6 +11,7 @@
 
 
 using System;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -80,7 +81,7 @@ namespace CodeClear.NaturalDocs.Engine
 		public static string NormalizeKey (this string key, Collections.KeySettings keySettings)
 			{
 			if ((keySettings & Collections.KeySettings.IgnoreCase) != 0)
-				{  key = key.ToLower();  }
+				{  key = key.ToLower(CultureInfo.InvariantCulture);  }
 			if ((keySettings & Collections.KeySettings.NormalizeUnicode) != 0)
 				{  key = key.Normalize(System.Text.NormalizationForm.FormKC);  }
 
@@ -127,7 +128,7 @@ namespace CodeClear.NaturalDocs.Engine
 			return CopyrightAndTrademarkRegex.Replace(input,
 				delegate (Match match)
 					{
-					string lcMatch = match.Value.ToLower();
+					string lcMatch = match.Value.ToLower(CultureInfo.InvariantCulture);
 
 					if (lcMatch == "(c)")
 						{  return "©";  }

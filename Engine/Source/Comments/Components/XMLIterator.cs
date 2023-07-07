@@ -15,7 +15,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using CodeClear.NaturalDocs.Engine.Tokenization;
 
@@ -219,7 +219,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 					if (tagMatch.Success)
 						{
 						found = true;
-						tagType = tagMatch.Groups[1].ToString().ToLower();
+						tagType = tagMatch.Groups[1].ToString().ToLower(CultureInfo.InvariantCulture);
 						}
 					}
 				}

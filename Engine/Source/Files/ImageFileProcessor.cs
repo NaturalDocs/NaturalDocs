@@ -11,6 +11,7 @@
 
 
 using System;
+using System.Globalization;
 using System.IO;
 
 
@@ -46,7 +47,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		public static Result GetDimensions (Path imageFile, out uint width, out uint height)
 			{
-			string extension = imageFile.Extension.ToLower();
+			string extension = imageFile.Extension.ToLower(CultureInfo.InvariantCulture);
 
 			if (extension == "gif")
 				{  return GetGIFDimensions(imageFile, out width, out height);  }

@@ -13,6 +13,7 @@
 
 
 using System;
+using System.Globalization;
 
 
 namespace CodeClear.NaturalDocs.Engine.Symbols
@@ -55,7 +56,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 		   {
 			// The only difference in normalization between this and SymbolString is that EndingStrings are case-insensitive.
 		   if (symbolStringSegment != null)
-				{  symbolStringSegment = symbolStringSegment.ToLower();  }
+				{  symbolStringSegment = symbolStringSegment.ToLower(CultureInfo.InvariantCulture);  }
 
 			return new EndingSymbol(symbolStringSegment);
 		   }

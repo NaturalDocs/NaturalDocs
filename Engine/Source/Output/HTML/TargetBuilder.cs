@@ -20,8 +20,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
-using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.Files;
 using CodeClear.NaturalDocs.Engine.IDObjects;
 using CodeClear.NaturalDocs.Engine.Symbols;
@@ -1214,7 +1214,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					foreach (var link in style.Links)
 						{
 						// We don't care about filters for CSS files.
-						if (link.File.Extension.ToLower() == "css")
+						if (link.File.Extension.ToLower(CultureInfo.InvariantCulture) == "css")
 							{
 							Path relativeLinkPath = style.MakeRelative(link.File);
 							Path outputPath = Paths.Style.OutputFile(Target.OutputFolder, style.Name, relativeLinkPath);
@@ -1240,7 +1240,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					{
 					foreach (var link in style.Links)
 						{
-						string extension = link.File.Extension.ToLower();
+						string extension = link.File.Extension.ToLower(CultureInfo.InvariantCulture);
 
 						if (extension == "js" || extension == "json")
 							{
@@ -1395,7 +1395,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				{  DeleteOutputFileIfExists(outputFile);  }
 			else // file new or changed
 				{
-				string extension = outputFile.Extension.ToLower();
+				string extension = outputFile.Extension.ToLower(CultureInfo.InvariantCulture);
 
 				if (extension == "js" || extension == "json")
 					{

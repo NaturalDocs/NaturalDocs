@@ -93,6 +93,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using CodeClear.NaturalDocs.Engine.Collections;
 
 
@@ -113,7 +114,7 @@ namespace CodeClear.NaturalDocs.Engine
 			if (String.IsNullOrEmpty(localeCode))  // Will be empty for the invariant culture
 				{  localeCode = "default";  }
 			else
-				{  localeCode = localeCode.ToLower();  }
+				{  localeCode = localeCode.ToLower(CultureInfo.InvariantCulture);  }
 
 			translationFolders = new List<Path>(1);
 			translationFolders.Add(
@@ -241,7 +242,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 				try
 					{
-					localeCode = value.ToLower();
+					localeCode = value.ToLower(CultureInfo.InvariantCulture);
 					ClearTranslations();
 					}
 				finally

@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 
 namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
@@ -440,7 +441,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 							{  AddNeedsCommentTypeError(file, identifier);  }
 						else
 							{
-							value = value.ToLower();
+							value = value.ToLower(CultureInfo.InvariantCulture);
 
 							if (value == "normal")
 								{  currentCommentType.SetScope(CommentType.ScopeValue.Normal, file.PropertyLocation);  }
@@ -470,7 +471,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 							{  AddNeedsCommentTypeError(file, identifier);  }
 						else
 							{
-							value = value.ToLower();
+							value = value.ToLower(CultureInfo.InvariantCulture);
 
 							if (!string.IsNullOrEmpty(value))
 								{
@@ -524,14 +525,14 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 							{  AddNeedsCommentTypeError(file, identifier);  }
 						else
 							{
-							value = value.ToLower();
+							value = value.ToLower(CultureInfo.InvariantCulture);
 
 							if (yesRegex.IsMatch(value))
 								{  currentCommentType.SetHierarchyName("Class", file.PropertyLocation);  }
 							else if (noRegex.IsMatch(value))
 								{
 								if (currentCommentType.HierarchyName != null &&
-									currentCommentType.HierarchyName.ToLower() == "class")
+									currentCommentType.HierarchyName.ToLower(CultureInfo.InvariantCulture) == "class")
 									{  currentCommentType.SetHierarchyName(null, file.PropertyLocation);  }
 								}
 							else

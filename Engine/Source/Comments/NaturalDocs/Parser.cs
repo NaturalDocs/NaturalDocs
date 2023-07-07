@@ -13,9 +13,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
-using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.Languages;
 using CodeClear.NaturalDocs.Engine.Links;
 using CodeClear.NaturalDocs.Engine.Regex.Comments;
@@ -430,7 +430,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 			if ((flags & LinkInterpretationFlags.AllowPluralsAndPossessives) != 0)
 				{
 				string nInput = input.Normalize(System.Text.NormalizationForm.FormC);
-				string lcnInput = nInput.ToLower();
+				string lcnInput = nInput.ToLower(CultureInfo.InvariantCulture);
 
 				// We use -1 to signify none, since we also want to test each plural conversion without any possessive conversion applied.
 				for (int possessiveIndex = -1; possessiveIndex < config.PossessiveConversions.Count; possessiveIndex++)
