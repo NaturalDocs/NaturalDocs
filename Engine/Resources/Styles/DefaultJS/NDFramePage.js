@@ -459,7 +459,7 @@ var NDFramePage = new function ()
 		if (event == undefined)
 			{  event = window.event;  }
 
-		var target = event.target || event.srcElement;
+		var target = event.target;
 
 		if (NDSearch.SearchFieldIsActive())
 			{

@@ -270,13 +270,11 @@ var NDContentPage = new function ()
 	*/
 	this.OnLinkMouseOver = function (event, toolTipID)
 		{
-		var domLink = event.target || event.srcElement;
-
 		if (this.showingToolTip != toolTipID)
 			{
 			this.ResetToolTip();
 			this.showingToolTip = toolTipID;
-			this.domLinkShowingToolTip = domLink;
+			this.domLinkShowingToolTip = event.target;
 
 			if (this.toolTips == undefined)
 				{
@@ -300,9 +298,7 @@ var NDContentPage = new function ()
 	*/
 	this.OnLinkMouseOut = function (event)
 		{
-		var domLink = event.target || event.srcElement;
-
-		if (this.domLinkShowingToolTip == domLink)
+		if (this.domLinkShowingToolTip == event.target)
 			{  this.ResetToolTip();  }
 		};
 

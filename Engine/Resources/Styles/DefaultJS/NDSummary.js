@@ -250,7 +250,7 @@ var NDSummary = new function ()
 		if (event == undefined)
 			{  event = window.event;  }
 
-		var entry = event.target || event.srcElement;
+		var entry = event.target;
 
 		if (NDCore.HasClass(entry, "Qualifier"))
 			{  entry = entry.parentNode;  }
@@ -299,7 +299,7 @@ var NDSummary = new function ()
 		if (event == undefined)
 			{  event = window.event;  }
 
-		var entry = event.target || event.srcElement;
+		var entry = event.target;
 
 		if (NDCore.HasClass(entry, "Qualifier"))
 			{  entry = entry.parentNode;  }
