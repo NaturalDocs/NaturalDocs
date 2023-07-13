@@ -52,6 +52,16 @@ var NDFramePage = new function ()
 	this.Start = function ()
 		{
 
+		// Create event handlers
+
+		this.resizeEventHandler = NDFramePage.OnResize.bind(NDFramePage);
+		this.blurEventHandler = NDFramePage.OnBlur.bind(NDFramePage);
+		this.hashChangeEventHandler = NDFramePage.OnHashChange.bind(NDFramePage);
+		this.mouseDownEventHandler = NDFramePage.OnMouseDown.bind(NDFramePage);
+		this.sizerMouseMoveEventHandler = NDFramePage.OnSizerMouseMove.bind(NDFramePage);
+		this.sizerMouseUpEventHandler = NDFramePage.OnSizerMouseUp.bind(NDFramePage);
+
+
 		// The default title of the page is the project title.  Save a copy before we mess with it.
 
 		this.projectTitle = document.title;
@@ -99,15 +109,15 @@ var NDFramePage = new function ()
 		// Attach event handlers.  All browsers Natural Docs supports support onhashchange now, including IE 11 and
 		// EdgeHTML.
 
-		window.onresize = function () {  NDFramePage.OnResize();  };
-		// window.onhashchange = function () {  NDFramePage.OnHashChange();  };  // Wait until OnLocationsLoaded
-		document.onmousedown = function (e) {  return NDFramePage.OnMouseDown(e);  };
+		window.addEventListener("resize", this.resizeEventHandler);
+		// window.addEventListener("hashchange", this.hashChangeEventHandler);  // Wait until OnLocationsLoaded
+		document.addEventListener("mousedown", this.mouseDownEventHandler);
 
 
 		// We want to close the search results when we click anywhere else.  OnMouseDown handles clicks on most of the
 		// page but not inside the content iframe.  window.onblur will fire for IE 10, Firefox, and Chrome.  document.onblur
 		// will only fire for Firefox.  IE 8 and earlier won't fire either, oh well.
-		window.onblur = function () {  NDFramePage.OnBlur();  };
+		window.addEventListener("blur", this.blurEventHandler);
 
 
 		// Start panels
@@ -125,7 +135,7 @@ var NDFramePage = new function ()
 
 	/* Function: OnBlur
 	*/
-	this.OnBlur = function ()
+	this.OnBlur = function (event)
 		{
 		if (NDSearch.SearchFieldIsActive())
 			{
@@ -145,7 +155,7 @@ var NDFramePage = new function ()
 
 	/* Function: OnHashChange
 	*/
-	this.OnHashChange = function ()
+	this.OnHashChange = function (event)
 		{
 		var oldLocation = this.currentLocation;
 		this.currentLocation = new NDLocation(location.hash);
@@ -223,7 +233,7 @@ var NDFramePage = new function ()
 		this.sourceFileHomePageHashPath = sourceFileHomePageHashPath;
 
 		// Now we can interpret the initial hash path and set the event handler for future ones.
-		window.onhashchange = function () {  NDFramePage.OnHashChange();  };
+		window.addEventListener("hashchange", this.hashChangeEventHandler);
 		this.OnHashChange();
 		};
 
@@ -264,7 +274,7 @@ var NDFramePage = new function ()
 
 	/* Function: OnResize
 	*/
-	this.OnResize = function ()
+	this.OnResize = function (event)
 		{
 		this.UpdateLayout();
 		};
@@ -456,9 +466,6 @@ var NDFramePage = new function ()
 	*/
 	this.OnMouseDown = function (event)
 		{
-		if (event == undefined)
-			{  event = window.event;  }
-
 		var target = event.target;
 
 		if (NDSearch.SearchFieldIsActive())
@@ -522,9 +529,8 @@ var NDFramePage = new function ()
 
 			NDCore.AddClass(target, "Dragging");
 
-			document.onmousemove = function (e) {  return NDFramePage.OnSizerMouseMove(e);  };
-			document.onmouseup = function (e) {  return NDFramePage.OnSizerMouseUp(e);  };
-			document.onselectstart = function () {  return false;  };  // Helps IE
+			document.addEventListener("mousemove", this.sizerMouseMoveEventHandler);
+			document.addEventListener("mouseup", this.sizerMouseUpEventHandler);
 
 			// We need a div to cover the content iframe or else some messages will be sent there instead and you'll have
 			// difficulty dragging the sizer over it.  The z-index is set in CSS to be between the sizers and everything else.
@@ -538,7 +544,7 @@ var NDFramePage = new function ()
 
 			document.body.appendChild(contentCover);
 
-			return false;
+			event.preventDefault();
 			}
 
 		// If we click a link in the summary, then scroll away, then click the same link, the view won't move back to the
@@ -547,12 +553,9 @@ var NDFramePage = new function ()
 		else if (target.tagName == "A" && 
 				  target.href == window.location)
 			{  
-			this.OnHashChange();
-			return false;
+			this.OnHashChange(event);
+			event.preventDefault();
 			}
-
-		else
-			{  return true;  }
 		};
 
 
@@ -560,9 +563,6 @@ var NDFramePage = new function ()
 	*/
 	this.OnSizerMouseMove = function (event)
 		{
-		if (event == undefined)
-			{  event = window.event;  }
-
 		var offset = event.clientX - this.sizerDragging.originalClientX;
 		var windowClientWidth = window.innerWidth;
 
@@ -601,10 +601,8 @@ var NDFramePage = new function ()
 	*/
 	this.OnSizerMouseUp = function (event)
 		{
-		// Doesn't work if you use undefined.  Must be null.
-		document.onmousemove = null;
-		document.onmouseup = null;
-		document.onselectstart = null;
+		document.removeEventListener("mousemove", this.sizerMouseMoveEventHandler);
+		document.removeEventListener("mouseup", this.sizerMouseUpEventHandler);
 
 		document.body.removeChild(document.getElementById("NDContentCover"));
 
@@ -791,6 +789,35 @@ var NDFramePage = new function ()
 
 
 
+	// Group: Event Handler Variables
+	// ________________________________________________________________________
+
+	/* var: resizeEventHandler
+		A bound function to call <OnResize()> with NDFramePage always as "this".
+	*/
+
+	/* var: blurEventHandler
+		A bound function to call <OnBlue()> with NDFramePage always as "this".
+	*/
+
+	/* var: hashChangeEventHandler
+		A bound function to call <OnHashChange()> with NDFramePage always as "this".
+	*/
+
+	/* var: mouseDownEventHandler
+		A bound function to call <OnMouseDown()> with NDFramePage always as "this".
+	*/
+
+	/* var: sizerMouseMoveEventHandler
+		A bound function to call <OnSizerMouseMove()> with NDFramePage always as "this".
+	*/
+
+	/* var: sizerMouseUpEventHandler
+		A bound function to call <OnSizerMouseUp()> with NDFramePage always as "this".
+	*/
+
+	
+	
 	// Group: Variables
 	// ________________________________________________________________________
 
