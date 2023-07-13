@@ -220,7 +220,13 @@ var NDThemeSwitcher = new function ()
 	this.Start = function (onThemeChange)
 		{
 
-		// Add the event handler
+		// Create event handlers
+
+		this.switcherClickEventHandler = NDThemeSwitcher.OnSwitcherClick.bind(NDThemeSwitcher);
+		this.keyDownEventHandler = NDThemeSwitcher.OnKeyDown.bind(NDThemeSwitcher);
+
+
+		// Add the passed external event handler
 
 		this.onThemeChange = onThemeChange;
 
@@ -230,7 +236,7 @@ var NDThemeSwitcher = new function ()
 		this.domSwitcher = document.getElementById("NDThemeSwitcher");
 
 		var domSwitcherLink = document.createElement("a");
-		domSwitcherLink.onclick = function () {  NDThemeSwitcher.OnSwitcherClick();  };
+		domSwitcherLink.addEventListener("click", this.switcherClickEventHandler);
 
 		this.domSwitcher.appendChild(domSwitcherLink);
 
@@ -243,11 +249,6 @@ var NDThemeSwitcher = new function ()
 		this.domMenu.style.position = "fixed";
 
 		document.body.appendChild(this.domMenu);
-
-
-		// Register our own event handlers
-
-		window.addEventListener("keydown", function (event) { NDThemeSwitcher.OnKeyDown(event); });
 		};
 
 
@@ -312,6 +313,8 @@ var NDThemeSwitcher = new function ()
 			this.domMenu.style.visibility = "visible";
 
 			NDCore.AddClass(this.domSwitcher, "Active");
+
+			window.addEventListener("keydown", this.keyDownEventHandler);
 			}
 		};
 
@@ -325,6 +328,8 @@ var NDThemeSwitcher = new function ()
 			{  
 			this.domMenu.style.display = "none";
 			NDCore.RemoveClass(this.domSwitcher, "Active");
+
+			window.removeEventListener("keydown", this.keyDownEventHandler);
 			}
 		};
 
@@ -410,12 +415,14 @@ var NDThemeSwitcher = new function ()
 
 	/* Function: OnSwitcherClick
 	*/
-	this.OnSwitcherClick = function ()
+	this.OnSwitcherClick = function (event)
 		{
 		if (this.MenuIsOpen())
 			{  this.CloseMenu();  }
 		else
 			{  this.OpenMenu();  }
+
+		event.preventDefault();
 		};
 
 
@@ -439,13 +446,13 @@ var NDThemeSwitcher = new function ()
 	*/
 	this.OnKeyDown = function (event)
 		{
-		if (event === undefined)
-			{  event = window.event;  }
-
 		if (event.keyCode == $KeyCode_Escape)
 			{
 			if (this.MenuIsOpen())
-				{  this.CloseMenu();  }
+				{  
+				this.CloseMenu();
+				event.preventDefault();
+				}
 			}
 		};
 
@@ -461,6 +468,18 @@ var NDThemeSwitcher = new function ()
 			}
 		};
 
+
+
+	// Group: Event Handler Variables
+	// ________________________________________________________________________
+
+	/* var: switcherClickEventHandler
+		A bound function to call <OnSwitcherClick()> with NDThemeSwitcher always as "this".
+	*/
+
+	/* var: keyDownEventHandler
+		A bound function to call <OnKeyDown()> with NDThemeSwitcher always as "this".
+	*/
 
 
 	// Group: Variables
