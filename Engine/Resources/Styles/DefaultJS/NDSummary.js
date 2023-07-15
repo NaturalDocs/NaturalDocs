@@ -213,6 +213,7 @@ var NDSummary = new function ()
 					entryHTML.id = "SuEntry" + entry[$Entry_TopicID];
 					entryHTML.className = classString;
 					entryHTML.setAttribute("href", href);
+					entryHTML.dataset.ndTopicID = entry[$Entry_TopicID];
 					entryHTML.innerHTML = "<div class=\"SuEntryIcon\"></div>" + entry[$Entry_NameHTML];
 
 					entryHTML.addEventListener("mouseover", this.entryMouseOverEventHandler);
@@ -249,7 +250,7 @@ var NDSummary = new function ()
 			NDCore.HasClass(entry, "SuEntryIcon"))
 			{  entry = entry.parentNode;  }
 
-		var id = this.GetTopicIDFromDOMID(entry.id);
+		var id = entry.dataset.ndTopicID;
 
 		if (this.showingToolTip != id)
 			{
@@ -296,26 +297,10 @@ var NDSummary = new function ()
 			NDCore.HasClass(entry, "SuEntryIcon"))
 			{  entry = entry.parentNode;  }
 
-		var id = this.GetTopicIDFromDOMID(entry.id);
+		var id = entry.dataset.ndTopicID;
 
 		if (this.showingToolTip == id)
 			{  this.ResetToolTip();  }
-		};
-
-
-	/* Function: GetTopicIDFromDOMID
-		Extracts the topic ID from the DOM ID, such as SuEntry123, and returns it as a number.  Returns -1 if it
-		couldn't find it.
-	*/
-	this.GetTopicIDFromDOMID = function (domID)
-		{
-		// Extract from "SuEntry123".
-		var id = parseInt(domID.substr(7), 10);
-
-		if (id != NaN && id > 0)
-			{  return id;  }
-		else
-			{  return -1;  }
 		};
 
 
