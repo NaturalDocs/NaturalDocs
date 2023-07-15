@@ -212,7 +212,7 @@ var NDSummary = new function ()
 
 					entryHTML.id = "SuEntry" + entry[$Entry_TopicID];
 					entryHTML.className = classString;
-					entryHTML.setAttribute("href", href);
+					entryHTML.href = href;
 					entryHTML.dataset.ndTopicID = entry[$Entry_TopicID];
 					entryHTML.innerHTML = "<div class=\"SuEntryIcon\"></div>" + entry[$Entry_NameHTML];
 
