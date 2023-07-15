@@ -55,6 +55,14 @@ var NDSummary = new function ()
 	*/
 	this.Start = function ()
 		{
+		// Create event handlers
+
+		this.entryMouseOverEventHandler = NDSummary.OnEntryMouseOver.bind(NDSummary);
+		this.entryMouseOutEventHandler = NDSummary.OnEntryMouseOut.bind(NDSummary);
+
+		
+		// Create tooltip DOM element
+		
 		this.toolTipHolder = document.createElement("div");
 		this.toolTipHolder.style.display = "none";
 		this.toolTipHolder.style.position = "fixed";
@@ -185,9 +193,6 @@ var NDSummary = new function ()
 			}
 		else
 			{
-			var mouseOverHandler = function (e) {  NDSummary.OnEntryMouseOver(e);  };
-			var mouseOutHandler = function (e) {  NDSummary.OnEntryMouseOut(e);  };
-
 			for (var i = 0; i < this.summaryEntries.length; i++)
 				{
 				var entry = this.summaryEntries[i];
@@ -209,18 +214,9 @@ var NDSummary = new function ()
 					entryHTML.className = classString;
 					entryHTML.setAttribute("href", href);
 					entryHTML.innerHTML = "<div class=\"SuEntryIcon\"></div>" + entry[$Entry_NameHTML];
-					entryHTML.onmouseover = mouseOverHandler;
-					entryHTML.onmouseout = mouseOutHandler;
 
-					// Unfortunately, hovering over the qualifier span in the title counts as moving off the underlying entry.
-					// We need to add the event handlers to the qualifier as well.
-					var entryHTMLChild = entryHTML.firstChild;
-
-					if (entryHTMLChild != undefined && NDCore.HasClass(entryHTMLChild, "Qualifier"))
-						{
-						entryHTMLChild.onmouseover = mouseOverHandler;
-						entryHTMLChild.onmouseout = mouseOutHandler;
-						}
+					entryHTML.addEventListener("mouseover", this.entryMouseOverEventHandler);
+					entryHTML.addEventListener("mouseout", this.entryMouseOutEventHandler);
 
 					newContent.appendChild(entryHTML);
 					}
@@ -247,12 +243,10 @@ var NDSummary = new function ()
 	*/
 	this.OnEntryMouseOver = function (event)
 		{
-		if (event == undefined)
-			{  event = window.event;  }
-
 		var entry = event.target;
 
-		if (NDCore.HasClass(entry, "Qualifier"))
+		if (NDCore.HasClass(entry, "Qualifier") ||
+			NDCore.HasClass(entry, "SuEntryIcon"))
 			{  entry = entry.parentNode;  }
 
 		var id = this.GetTopicIDFromDOMID(entry.id);
@@ -296,12 +290,10 @@ var NDSummary = new function ()
 	*/
 	this.OnEntryMouseOut = function (event)
 		{
-		if (event == undefined)
-			{  event = window.event;  }
-
 		var entry = event.target;
 
-		if (NDCore.HasClass(entry, "Qualifier"))
+		if (NDCore.HasClass(entry, "Qualifier") ||
+			NDCore.HasClass(entry, "SuEntryIcon"))
 			{  entry = entry.parentNode;  }
 
 		var id = this.GetTopicIDFromDOMID(entry.id);
@@ -403,6 +395,19 @@ var NDSummary = new function ()
 			this.toolTipTimeout = undefined;
 			}
 		};
+
+
+
+	// Group: Event Handler Variables
+	// ________________________________________________________________________
+
+	/* var: entryMouseOverEventHandler
+		A bound function to call <OnEntryMouseOver()> with NDSummary always as "this".
+	*/
+
+	/* var: entrymouseOutEventHandler
+		A bound function to call <OnEntryMouseOut()> with NDSummary always as "this".
+	*/
 
 
 
