@@ -57,8 +57,8 @@ var NDSummary = new function ()
 		{
 		// Create event handlers
 
-		this.entryMouseOverEventHandler = NDSummary.OnEntryMouseOver.bind(NDSummary);
-		this.entryMouseOutEventHandler = NDSummary.OnEntryMouseOut.bind(NDSummary);
+		this.entryMouseEnterEventHandler = NDSummary.OnEntryMouseEnter.bind(NDSummary);
+		this.entryMouseLeaveEventHandler = NDSummary.OnEntryMouseLeave.bind(NDSummary);
 
 		
 		// Create tooltip DOM element
@@ -216,8 +216,8 @@ var NDSummary = new function ()
 					entryHTML.dataset.ndTopicID = entry[$Entry_TopicID];
 					entryHTML.innerHTML = "<div class=\"SuEntryIcon\"></div>" + entry[$Entry_NameHTML];
 
-					entryHTML.addEventListener("mouseover", this.entryMouseOverEventHandler);
-					entryHTML.addEventListener("mouseout", this.entryMouseOutEventHandler);
+					entryHTML.addEventListener("mouseenter", this.entryMouseEnterEventHandler);
+					entryHTML.addEventListener("mouseleave", this.entryMouseLeaveEventHandler);
 
 					newContent.appendChild(entryHTML);
 					}
@@ -240,16 +240,11 @@ var NDSummary = new function ()
 		};
 
 
-	/* Function: OnEntryMouseOver
+	/* Function: OnEntryMouseEnter
 	*/
-	this.OnEntryMouseOver = function (event)
+	this.OnEntryMouseEnter = function (event)
 		{
 		var entry = event.target;
-
-		if (NDCore.HasClass(entry, "Qualifier") ||
-			NDCore.HasClass(entry, "SuEntryIcon"))
-			{  entry = entry.parentNode;  }
-
 		var id = entry.dataset.ndTopicID;
 
 		if (this.showingToolTip != id)
@@ -263,40 +258,25 @@ var NDSummary = new function ()
 				}
 			else if (this.summaryToolTips[id] != undefined)
 				{
-				// If we're going to display the same tooltip we previously did, skip the delay.  This prevents the
-				// tooltip from (visibly) flickering when moving between the qualifier of an entry and the rest of it.
-				if (id == this.lastToolTip)
+				// Show the tooltip on a delay.  This prevents a lot of visual noise when moving the mouse quickly
+				// over a summary as tooltips don't pop in and out of existence for split seconds.
+				this.toolTipTimeout = setTimeout(function ()
 					{
-					this.ShowToolTip();
-					}
+					clearTimeout(this.toolTipTimeout);
+					this.toolTipTimeout = undefined;
 
-				// Otherwise only show the tooltip on a delay.  This prevents a lot of visual noise when moving the
-				// mouse quickly over a summary as tooltips don't pop in and out of existence for split seconds.
-				else
-					{
-					this.toolTipTimeout = setTimeout(function ()
-						{
-						clearTimeout(this.toolTipTimeout);
-						this.toolTipTimeout = undefined;
-
-						NDSummary.ShowToolTip();
-						}, $ToolTipDelay);
-					}
+					NDSummary.ShowToolTip();
+					}, $ToolTipDelay);
 				}
 			}
 		};
 
 
-	/* Function: OnEntryMouseOut
+	/* Function: OnEntryMouseLeave
 	*/
-	this.OnEntryMouseOut = function (event)
+	this.OnEntryMouseLeave = function (event)
 		{
 		var entry = event.target;
-
-		if (NDCore.HasClass(entry, "Qualifier") ||
-			NDCore.HasClass(entry, "SuEntryIcon"))
-			{  entry = entry.parentNode;  }
-
 		var id = entry.dataset.ndTopicID;
 
 		if (this.showingToolTip == id)
@@ -370,7 +350,6 @@ var NDSummary = new function ()
 			// We want to allow it to get bigger if the window has more room again.
 			this.toolTipHolder.style.width = null;
 
-			this.lastToolTip = this.showingToolTip;
 			this.showingToolTip = undefined;
 			}
 
@@ -386,12 +365,12 @@ var NDSummary = new function ()
 	// Group: Event Handler Variables
 	// ________________________________________________________________________
 
-	/* var: entryMouseOverEventHandler
-		A bound function to call <OnEntryMouseOver()> with NDSummary always as "this".
+	/* var: entryMouseEnterEventHandler
+		A bound function to call <OnEntryMouseEnter()> with NDSummary always as "this".
 	*/
 
-	/* var: entrymouseOutEventHandler
-		A bound function to call <OnEntryMouseOut()> with NDSummary always as "this".
+	/* var: entrymouseLeaveEventHandler
+		A bound function to call <OnEntryMouseLeave()> with NDSummary always as "this".
 	*/
 
 
@@ -415,10 +394,6 @@ var NDSummary = new function ()
 
 	/* var: showingToolTip
 		The topic ID of the tooltip being displayed, or undefined if none.
-	*/
-
-	/* var: lastToolTip
-		The topic ID of the tooltip that was last shown.  Only relevant when <showingToolTip> is undefined.
 	*/
 
 	/* var: toolTipHolder
