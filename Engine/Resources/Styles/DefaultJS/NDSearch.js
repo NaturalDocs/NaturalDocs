@@ -65,7 +65,13 @@ var NDSearch = new function ()
 	*/
 	this.Start = function ()
 		{
+		// Create event handlers
 
+		this.searchFieldFocusEventHandler = NDSearch.OnSearchFieldFocus.bind(NDSearch);
+		this.searchFieldKeyEventHandler = NDSearch.OnSearchFieldKey.bind(NDSearch);
+		this.searchFieldChangeEventHandler = NDSearch.OnSearchFieldChange.bind(NDSearch);
+
+		
 		// DOM elements
 
 		this.domSearchField = document.getElementById("NDSearchField");
@@ -107,10 +113,9 @@ var NDSearch = new function ()
 
 		// Attach event handlers
 
-		this.domSearchField.onfocus = function () {  NDSearch.OnSearchFieldFocus();  };
-		this.domSearchField.onkeydown = function (event) {  NDSearch.OnSearchFieldKey(event);  };
-		this.domSearchField.oninput = function (event) {  NDSearch.OnSearchFieldChange(event);  };
-		this.domResults.onfocus = function () {  NDSearch.OnResultsFocus();  };
+		this.domSearchField.addEventListener("focus", this.searchFieldFocusEventHandler);
+		this.domSearchField.addEventListener("keydown", this.searchFieldKeyEventHandler);
+		this.domSearchField.addEventListener("input", this.searchFieldChangeEventHandler);
 
 
 		// Initialization
@@ -327,7 +332,7 @@ var NDSearch = new function ()
 
 	/* Function: OnSearchFieldFocus
 	*/
-	this.OnSearchFieldFocus = function ()
+	this.OnSearchFieldFocus = function (event)
 		{
 		// Check if it's already active because it might be receiving focus back from the search results
 		if (!this.SearchFieldIsActive())
@@ -349,9 +354,6 @@ var NDSearch = new function ()
 	*/
 	this.OnSearchFieldKey = function (event)
 		{
-		if (event === undefined)
-			{  event = window.event;  }
-
 		if (event.keyCode == $KeyCode_Escape)
 			{
 			this.ClearResults();
@@ -362,6 +364,8 @@ var NDSearch = new function ()
 			// search field too so at least it loses the caret and doesn't appear broken or create other problems.
 			this.domSearchField.blur();
 			document.getElementById("CFrame").contentWindow.focus();
+
+			event.preventDefault();
 			}
 
 		else if (event.keyCode == $KeyCode_UpArrow)
@@ -376,6 +380,7 @@ var NDSearch = new function ()
 				{  this.keyboardSelectionIndex--;  }
 
 			this.UpdateSelection();
+			event.preventDefault();
 			}
 
 		else if (event.keyCode == $KeyCode_DownArrow)
@@ -391,6 +396,7 @@ var NDSearch = new function ()
 				}
 
 			this.UpdateSelection();
+			event.preventDefault();
 			}
 
 		else if (event.keyCode == $KeyCode_LeftArrow)
@@ -401,7 +407,10 @@ var NDSearch = new function ()
 				var domSelectedEntry = document.getElementById("SeSelectedEntry");
 
 				if (NDCore.HasClass(domSelectedEntry, "SeParent") && NDCore.HasClass(domSelectedEntry, "open"))
-					{  this.ActivateLinkFromKeyboard(domSelectedEntry);  }
+					{  
+					this.ActivateLinkFromKeyboard(domSelectedEntry);
+					event.preventDefault();
+					}
 				}
 			}
 
@@ -413,7 +422,10 @@ var NDSearch = new function ()
 				var domSelectedEntry = document.getElementById("SeSelectedEntry");
 
 				if (NDCore.HasClass(domSelectedEntry, "SeParent") && NDCore.HasClass(domSelectedEntry, "closed"))
-					{  this.ActivateLinkFromKeyboard(domSelectedEntry);  }
+					{  
+					this.ActivateLinkFromKeyboard(domSelectedEntry);
+					event.preventDefault();
+					}
 				}
 			}
 
@@ -450,6 +462,8 @@ var NDSearch = new function ()
 				this.keyboardSelectionIndex = 0;
 				this.UpdateSelection();
 				}
+
+			event.preventDefault();
 			}
 		};
 
@@ -458,9 +472,6 @@ var NDSearch = new function ()
 	*/
 	this.OnSearchFieldChange = function (event)
 		{
-		if (event === undefined)
-			{  event = window.event;  }
-
 		this.keyboardSelectionIndex = -1;
 
 		// If we've already done the initial timeout, we can use the faster update timeout.
@@ -528,15 +539,6 @@ var NDSearch = new function ()
 			// else (this.initialTimeoutStatus == $InitialTimeoutStatus_Waiting)
 				// Do nothing.
 			}
-		};
-
-
-	/* Function: OnResultsFocus
-	*/
-	this.OnResultsFocus = function ()
-		{
-		// Internet Explorer will transfer focus to the results window if you click on the scroll bar.
-		this.domSearchField.focus();
 		};
 
 
@@ -1430,6 +1432,23 @@ var NDSearch = new function ()
 
 
 
+	// Group: Event Handler Variables
+	// ________________________________________________________________________
+
+	/* var: searchFieldFocusEventHandler
+		A bound function to call <OnSearchFieldFocus()> with NDSearch always as "this".
+	*/
+
+	/* var: searchFieldKeyEventHandler
+		A bound function to call <OnSearchFieldKey()> with NDSearch always as "this".
+	*/
+
+	/* var: searchFieldChangeEventHandler
+		A bound function to call <OnSearchFieldChange()> with NDSearch always as "this".
+	*/
+
+	
+	
 	// Group: UI Variables
 	// ________________________________________________________________________
 
