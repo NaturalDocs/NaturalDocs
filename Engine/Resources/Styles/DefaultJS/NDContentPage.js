@@ -38,6 +38,12 @@ var NDContentPage = new function ()
 	this.Start = function ()
 		{
 
+		// Create event handlers
+
+		this.resizeEventHandler = NDContentPage.OnResize.bind(NDContentPage);
+		this.messageEventHandler = NDContentPage.OnMessage.bind(NDContentPage);
+
+
 		// Apply the theme
 
 		var themeID = NDCore.GetQueryParam('Theme');
@@ -48,7 +54,8 @@ var NDContentPage = new function ()
 
 		// Set up event listener
 
-		window.addEventListener("message", this.OnMessage);
+		window.addEventListener("message", this.messageEventHandler);
+		// wait on resize event handler until after reformatting the prototypes the first time
 
 
 		// Resize prototypes to better fit the window.
@@ -68,7 +75,7 @@ var NDContentPage = new function ()
 
 		this.ReformatPrototypes();
 
-		window.onresize = function () {  NDContentPage.OnResize();  };
+		window.addEventListener("resize", this.resizeEventHandler);
 
 
 		// Create the tooltip holder.
@@ -103,7 +110,7 @@ var NDContentPage = new function ()
 
 	/* Function: OnResize
 	*/
-	this.OnResize = function ()
+	this.OnResize = function (event)
 		{
 		// Limit reformatting to avoid unnecessary CPU usage.  Some pages may have a lot of prototypes.  However, don't reset
 		// the timeout on each event because otherwise we have to wait until the user completely stops dragging.
@@ -402,6 +409,19 @@ var NDContentPage = new function ()
 
 
 
+	// Group: Event Handler Variables
+	// ________________________________________________________________________
+
+	/* var: resizeEventHandler
+		A bound function to call <OnResize()> with NDContentPage always as "this".
+	*/
+
+	/* var: messageEventHandler
+		A bound function to call <OnMessage()> with NDContentPage always as "this".
+	*/
+
+
+	
 	// Group: Variables
 	// ________________________________________________________________________
 
