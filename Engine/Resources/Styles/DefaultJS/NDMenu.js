@@ -392,7 +392,7 @@ var NDMenu = new function ()
 					{
 					var htmlEntry = document.createElement("a");
 					htmlEntry.className = "MEntry MFolder Parent";
-					htmlEntry.setAttribute("href", "javascript:NDMenu.GoToOffsets([" + pathSoFar.join(",") + "])");
+					htmlEntry.href = "javascript:NDMenu.GoToOffsets([" + pathSoFar.join(",") + "])";
 					htmlEntry.innerHTML = title;
 
 					htmlMenu.appendChild(htmlEntry);
@@ -422,7 +422,7 @@ var NDMenu = new function ()
 				var htmlEntry = document.createElement("a");
 				htmlEntry.className = "MEntry MTabAsFolder";
 				htmlEntry.id = "M" + this.tabs[i][$Tab_Type] + "Tab";
-				htmlEntry.setAttribute("href", "javascript:NDMenu.GoToTab(\"" + this.tabs[i][$Tab_Type] + "\")");
+				htmlEntry.href = "javascript:NDMenu.GoToTab(\"" + this.tabs[i][$Tab_Type] + "\")";
 
 				var tabTitle = this.tabs[i][$Tab_HTMLTitle];
 				if (typeof(tabTitle) == "object")
@@ -464,7 +464,7 @@ var NDMenu = new function ()
 
 						var htmlEntry = document.createElement("a");
 						htmlEntry.className = "MEntry MFile" + (hasParentFolders ? "" : " TopLevel");
-						htmlEntry.setAttribute("href", "#" + hashPath);
+						htmlEntry.href = "#" + hashPath;
 						htmlEntry.innerHTML = member[$Entry_HTMLTitle];
 
 						htmlMenu.appendChild(htmlEntry);
@@ -483,7 +483,7 @@ var NDMenu = new function ()
 
 					var htmlEntry = document.createElement("a");
 					htmlEntry.className = "MEntry MFolder Child" + (hasParentFolders ? "" : " TopLevel");
-					htmlEntry.setAttribute("href", "javascript:NDMenu.GoToOffsets([" + targetPath + "])");
+					htmlEntry.href = "javascript:NDMenu.GoToOffsets([" + targetPath + "])";
 					htmlEntry.innerHTML = title;
 
 					htmlMenu.appendChild(htmlEntry);
@@ -636,7 +636,7 @@ var NDMenu = new function ()
 			var tab = document.createElement("a");
 			tab.id = "M" + tabs[i][$Tab_Type] + "Tab";
 			tab.className = "MTab Wide";
-			tab.setAttribute("href", "javascript:NDMenu.GoToTab(\"" + tabs[i][$Tab_Type] + "\");");
+			tab.href = "javascript:NDMenu.GoToTab(\"" + tabs[i][$Tab_Type] + "\");";
 
 			var tabTitle = tabs[i][$Tab_HTMLTitle];
 			if (typeof(tabTitle) == "object")
