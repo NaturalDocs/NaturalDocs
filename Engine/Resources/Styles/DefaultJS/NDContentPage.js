@@ -60,17 +60,12 @@ var NDContentPage = new function ()
 
 		// Resize prototypes to better fit the window.
 
-		this.CalculateWideFormPrototypeWidths();
-
-		// Firefox will sometimes execute Start() too early and all the prototype widths will be zero.
-		// Check the widths, and if any of them are zero quit and retry a little later.
-		for (var key in this.wideFormPrototypeWidths)
+		if (!this.CalculateWideFormPrototypeWidths())
 			{
-			if (this.wideFormPrototypeWidths[key] == 0)
-				{
-				setTimeout("NDContentPage.Start();", 200);
-				return;
-				}
+			// If CalculateWideFormPrototypeWidths() failed quit and retry a little later.  Still occurs in Firefox 
+			// 114.0.2.
+			setTimeout("NDContentPage.Start();", 200);
+			return;
 			}
 
 		this.ReformatPrototypes();
@@ -168,7 +163,9 @@ var NDContentPage = new function ()
 
 
 	/* Function: CalculateWideFormPrototypeWidths
-		Goes through all the wide form prototypes and records their widths into <wideFormPrototypeWidths>.
+		Goes through all the wide form prototypes and records their widths into each DOM element's dataset as
+		ndWideFormPrototypeWidth.  The browser might not have the measurements yet so it's possible for this 
+		function to fail.  It returns whether it was successful or not.
 	*/
 	this.CalculateWideFormPrototypeWidths = function ()
 		{
@@ -178,25 +175,26 @@ var NDContentPage = new function ()
 			{
 			if (NDCore.HasClass(prototypes[prototypeIndex], "WideForm"))
 				{
-				var prototypeID = this.GetPrototypeIDNumber(prototypes[prototypeIndex]);
+				var parameterSections = prototypes[prototypeIndex].getElementsByClassName("PParameterCells");
+				var maxWidth = 0;
 
-				if (prototypeID != -1)
+				for (var parameterSectionIndex = 0; parameterSectionIndex < parameterSections.length; parameterSectionIndex++)
 					{
-					var parameterSections = prototypes[prototypeIndex].getElementsByClassName("PParameterCells");
-					var maxWidth = 0;
+					var sectionWidth = parameterSections[parameterSectionIndex].offsetWidth;
 
-					for (var parameterSectionIndex = 0; parameterSectionIndex < parameterSections.length; parameterSectionIndex++)
-						{
-						var sectionWidth = parameterSections[parameterSectionIndex].offsetWidth;
-
-						if (sectionWidth > maxWidth)
-							{  maxWidth = sectionWidth;  }
-						}
-
-					this.wideFormPrototypeWidths[prototypeID] = maxWidth;
+					if (sectionWidth > maxWidth)
+						{  maxWidth = sectionWidth;  }
 					}
+
+				// This can still occur in Firefox 114.0.2.
+				if (maxWidth == 0)
+					{  return false;  }
+
+				prototypes[prototypeIndex].dataset.ndWideFormPrototypeWidth = maxWidth;
 				}
 			}
+
+		return true;
 		};
 
 
@@ -214,7 +212,7 @@ var NDContentPage = new function ()
 			if (id == -1)
 				{  continue;  }
 
-			var wideFormWidth = this.wideFormPrototypeWidths[id];
+			var wideFormWidth = prototypes[i].dataset.ndWideFormPrototypeWidth;
 
 			if (wideFormWidth == null || wideFormWidth <= 0)
 				{  continue;  }
@@ -425,11 +423,6 @@ var NDContentPage = new function ()
 	// Group: Variables
 	// ________________________________________________________________________
 
-
-	/* var: wideFormPrototypeWidths
-		Maps prototype ID numbers to the pixel widths of their wide form.
-	*/
-	this.wideFormPrototypeWidths = { };
 
 	/* var: reformatPrototypesTimeout
 		The ID of the prototype reflow timeout if one is running.
