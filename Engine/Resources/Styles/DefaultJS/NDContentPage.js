@@ -35,27 +35,31 @@ var NDContentPage = new function ()
 
 	/* Function: Start
 	*/
-	this.Start = function ()
+	this.Start = function (retrying)
 		{
+		// Only do these on the first pass since we may retry the function again
+		if (!retrying)
+			{
 
-		// Create event handlers
+			// Create event handlers
 
-		this.resizeEventHandler = NDContentPage.OnResize.bind(NDContentPage);
-		this.messageEventHandler = NDContentPage.OnMessage.bind(NDContentPage);
-
-
-		// Apply the theme
-
-		var themeID = NDCore.GetQueryParam('Theme');
-
-		if (themeID != undefined)
-			{  NDThemes.Apply(themeID);  }
+			this.resizeEventHandler = NDContentPage.OnResize.bind(NDContentPage);
+			this.messageEventHandler = NDContentPage.OnMessage.bind(NDContentPage);
 
 
-		// Set up event listener
+			// Apply the theme
 
-		window.addEventListener("message", this.messageEventHandler);
-		// wait on resize event handler until after reformatting the prototypes the first time
+			var themeID = NDCore.GetQueryParam('Theme');
+
+			if (themeID != undefined)
+				{  NDThemes.Apply(themeID);  }
+
+
+			// Set up event listener
+
+			window.addEventListener("message", this.messageEventHandler);
+			// wait on resize event handler until after reformatting the prototypes the first time
+			}
 
 
 		// Resize prototypes to better fit the window.
@@ -64,7 +68,7 @@ var NDContentPage = new function ()
 			{
 			// If CalculateWideFormPrototypeWidths() failed quit and retry a little later.  Still occurs in Firefox 
 			// 114.0.2.
-			setTimeout("NDContentPage.Start();", 200);
+			setTimeout("NDContentPage.Start(true);", 200);
 			return;
 			}
 
