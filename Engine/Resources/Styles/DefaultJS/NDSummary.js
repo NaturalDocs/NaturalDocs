@@ -316,7 +316,7 @@ var NDSummary = new function ()
 
 		// Switch prototype styles if it's getting clipped.
 		var prototypes = this.toolTipHolder.getElementsByClassName("NDPrototype");
-		if (prototypes.length > 0 && NDCore.HasClass(prototypes[0], "WideForm") &&
+		if (prototypes.length > 0 && prototypes[0].classList.contains("WideForm") &&
 			prototypes[0].scrollWidth > prototypes[0].offsetWidth)
 			{
 			NDCore.ChangePrototypeToNarrowForm(prototypes[0]);

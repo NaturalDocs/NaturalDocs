@@ -75,12 +75,12 @@ var NDThemes = new function ()
 		if (newEffectiveThemeID != currentEffectiveThemeID)
 			{
 			if (currentEffectiveThemeID != undefined)
-				{  NDCore.RemoveClass(document.documentElement, currentEffectiveThemeID + "Theme");  }
+				{  document.documentElement.classList.remove(currentEffectiveThemeID + "Theme");  }
 
 			// Note that the embedded script in each page may have already set the CSS class early.  That should be fine 
 			// and this line will have no effect if that's the case.
 			if (newEffectiveThemeID != undefined)
-				{  NDCore.AddClass(document.documentElement, newEffectiveThemeID + "Theme");  }
+				{  document.documentElement.classList.add(newEffectiveThemeID + "Theme");  }
 			}
 
 
@@ -312,7 +312,7 @@ var NDThemeSwitcher = new function ()
 			this.PositionMenu();
 			this.domMenu.style.visibility = "visible";
 
-			NDCore.AddClass(this.domSwitcher, "Active");
+			this.domSwitcher.classList.add("Active");
 
 			window.addEventListener("keydown", this.keyDownEventHandler);
 			}
@@ -327,7 +327,7 @@ var NDThemeSwitcher = new function ()
 		if (this.MenuIsOpen())
 			{  
 			this.domMenu.style.display = "none";
-			NDCore.RemoveClass(this.domSwitcher, "Active");
+			this.domSwitcher.classList.remove("Active");
 
 			window.removeEventListener("keydown", this.keyDownEventHandler);
 			}

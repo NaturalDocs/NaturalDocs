@@ -266,7 +266,7 @@ var NDSearch = new function ()
 
 			for (var i = 0; i < children.length; i++)
 				{
-				if (NDCore.HasClass(children[i], "SeEntry"))
+				if (children[i].classList.contains("SeEntry"))
 					{
 					if (topLevelCount == topLevelIndex)
 						{
@@ -406,7 +406,7 @@ var NDSearch = new function ()
 				{
 				var domSelectedEntry = document.getElementById("SeSelectedEntry");
 
-				if (NDCore.HasClass(domSelectedEntry, "SeParent") && NDCore.HasClass(domSelectedEntry, "open"))
+				if (domSelectedEntry.classList.contains("SeParent") && domSelectedEntry.classList.contains("open"))
 					{  
 					this.ActivateLinkFromKeyboard(domSelectedEntry);
 					event.preventDefault();
@@ -421,7 +421,7 @@ var NDSearch = new function ()
 				{
 				var domSelectedEntry = document.getElementById("SeSelectedEntry");
 
-				if (NDCore.HasClass(domSelectedEntry, "SeParent") && NDCore.HasClass(domSelectedEntry, "closed"))
+				if (domSelectedEntry.classList.contains("SeParent") && domSelectedEntry.classList.contains("closed"))
 					{  
 					this.ActivateLinkFromKeyboard(domSelectedEntry);
 					event.preventDefault();
@@ -448,7 +448,7 @@ var NDSearch = new function ()
 			// Search: [CSS]
 			// > CSS
 			//     [] CSS Structure
-			else if (this.visibleEntryCount == 2 && NDCore.HasClass(this.domResultsContent.firstChild, "SeParent"))
+			else if (this.visibleEntryCount == 2 && this.domResultsContent.firstChild.classList.contains("SeParent"))
 				{  domSelectedEntry = this.domResultsContent.childNodes[1].firstChild;  }
 
 			// If we found something we can activate it.
@@ -1123,7 +1123,7 @@ var NDSearch = new function ()
 	this.ActivateSearchField = function ()
 		{
 		this.domSearchField.value = "";
-		NDCore.RemoveClass(this.domSearchField, "DefaultText");
+		this.domSearchField.classList.remove("DefaultText");
 		};
 
 
@@ -1131,7 +1131,7 @@ var NDSearch = new function ()
 	*/
 	this.DeactivateSearchField = function ()
 		{
-		NDCore.AddClass(this.domSearchField, "DefaultText");
+		this.domSearchField.classList.add("DefaultText");
 		this.domSearchField.value = $Locale{HTML.DefaultSearchText};
 		};
 
@@ -1140,7 +1140,7 @@ var NDSearch = new function ()
 	*/
 	this.SearchFieldIsActive = function ()
 		{
-		return (NDCore.HasClass(this.domSearchField, "DefaultText") == false);
+		return (this.domSearchField.classList.contains("DefaultText") == false);
 		};
 
 
@@ -1248,7 +1248,7 @@ var NDSearch = new function ()
 		var itemTop = domEntry.offsetTop;
 		var itemBottom;
 
-		if (includeChildren && NDCore.HasClass(domEntry, "open"))
+		if (includeChildren && domEntry.classList.contains("open"))
 			{
 			var domSelectedChildren = domEntry.nextSibling;
 			itemBottom = domSelectedChildren.offsetTop + domSelectedChildren.offsetHeight;

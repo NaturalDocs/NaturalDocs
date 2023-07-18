@@ -40,94 +40,6 @@ var NDCore = new function ()
 	{
 
 
-	// Group: Class Functions
-	// ____________________________________________________________________________
-
-
-	/* Function: HasClass
-		Returns whether the passed HTML element uses the passed class.
-	*/
-	this.HasClass = function (element, targetClassName)
-		{
-		if (element.className == undefined)
-			{  return false;  }
-
-		var index = element.className.indexOf(targetClassName);
-
-		if (index != -1)
-			{
-			if ( (index == 0 || element.className.charAt(index - 1) == ' ') &&
-				 (index + targetClassName.length == element.className.length ||
-				  element.className.charAt(index + targetClassName.length) == ' ') )
-				{  return true;  }
-			}
-
-		return false;
-		};
-
-
-	/* Function: AddClass
-		Adds a class to the passed HTML element.
-	*/
-	this.AddClass = function (element, newClassName)
-		{
-		if (element.className == undefined)
-			{
-			element.className = newClassName;
-			return;
-			}
-
-		var index = element.className.indexOf(newClassName);
-
-		if (index != -1)
-			{
-			if ( (index == 0 || element.className.charAt(index - 1) == ' ') &&
-				 (index + newClassName.length == element.className.length ||
-				  element.className.charAt(index + newClassName.length) == ' ') )
-				{  return;  }
-			}
-
-		if (element.className.length == 0)
-			{  element.className = newClassName;  }
-		else
-			{  element.className += " " + newClassName;  }
-		};
-
-
-	/* Function: RemoveClass
-		Removes a class from the passed HTML element.
-	*/
-	this.RemoveClass = function (element, targetClassName)
-		{
-		if (element.className == undefined)
-			{  return;  }
-
-		var index = element.className.indexOf(targetClassName);
-
-		while (index != -1)
-			{
-			if ( (index == 0 || element.className.charAt(index - 1) == ' ') &&
-				 (index + targetClassName.length == element.className.length ||
-				  element.className.charAt(index + targetClassName.length) == ' ') )
-				{
-				var newClassName = "";
-
-				// We'll leave surrounding spaces alone.
-				if (index > 0)
-					{  newClassName += element.className.substr(0, index);  }
-				if (index + targetClassName.length != element.className.length)
-					{  newClassName += element.className.substr(index + targetClassName.length);  }
-
-				element.className = newClassName;
-				return;
-				}
-
-			index = element.className.indexOf(targetClassName, index + 1);
-			}
-		};
-
-
-
 	// Group: JavaScript Loading Functions
 	// ________________________________________________________________________
 
@@ -279,8 +191,8 @@ var NDCore = new function ()
 	*/
 	this.ChangePrototypeToNarrowForm = function (prototype)
 		{
-		this.RemoveClass(prototype, "WideForm");
-		this.AddClass(prototype, "NarrowForm");
+		prototype.classList.remove("WideForm");
+		prototype.classList.add("NarrowForm");
 
 		var divs = prototype.getElementsByTagName("div");
 
@@ -297,8 +209,8 @@ var NDCore = new function ()
 	*/
 	this.ChangePrototypeToWideForm = function (prototype)
 		{
-		this.RemoveClass(prototype, "NarrowForm");
-		this.AddClass(prototype, "WideForm");
+		prototype.classList.remove("NarrowForm");
+		prototype.classList.add("WideForm");
 
 		var divs = prototype.getElementsByTagName("div");
 

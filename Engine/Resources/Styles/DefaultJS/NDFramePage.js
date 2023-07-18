@@ -527,7 +527,7 @@ var NDFramePage = new function ()
 				"originalClientX": event.clientX
 				};
 
-			NDCore.AddClass(target, "Dragging");
+			target.classList.add("Dragging");
 
 			document.addEventListener("mousemove", this.sizerMouseMoveEventHandler);
 			document.addEventListener("mouseup", this.sizerMouseUpEventHandler);
@@ -606,7 +606,7 @@ var NDFramePage = new function ()
 
 		document.body.removeChild(document.getElementById("NDContentCover"));
 
-		NDCore.RemoveClass(this.sizerDragging.sizer, "Dragging");
+		this.sizerDragging.sizer.classList.remove("Dragging");
 		this.sizerDragging = undefined;
 		};
 

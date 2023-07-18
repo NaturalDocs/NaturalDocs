@@ -177,7 +177,7 @@ var NDContentPage = new function ()
 
 		for (var prototypeIndex = 0; prototypeIndex < prototypes.length; prototypeIndex++)
 			{
-			if (NDCore.HasClass(prototypes[prototypeIndex], "WideForm"))
+			if (prototypes[prototypeIndex].classList.contains("WideForm"))
 				{
 				var parameterSections = prototypes[prototypeIndex].getElementsByClassName("PParameterCells");
 				var maxWidth = 0;
@@ -230,9 +230,9 @@ var NDContentPage = new function ()
 			// Remove an extra pixel since some browsers add the scrollbar when they're exactly equal.
 			availableWidth--;
 
-			if (availableWidth >= wideFormWidth && NDCore.HasClass(prototypes[i], "NarrowForm"))
+			if (availableWidth >= wideFormWidth && prototypes[i].classList.contains("NarrowForm"))
 				{  NDCore.ChangePrototypeToWideForm(prototypes[i]);  }
-			else if (availableWidth < wideFormWidth && NDCore.HasClass(prototypes[i], "WideForm"))
+			else if (availableWidth < wideFormWidth && prototypes[i].classList.contains("WideForm"))
 				{  NDCore.ChangePrototypeToNarrowForm(prototypes[i]);  }
 			}
 
@@ -363,7 +363,7 @@ var NDContentPage = new function ()
 
 		// Switch prototype styles if it's getting clipped.
 		var prototypes = this.toolTipHolder.getElementsByClassName("NDPrototype");
-		if (prototypes.length > 0 && NDCore.HasClass(prototypes[0], "WideForm") &&
+		if (prototypes.length > 0 && prototypes[0].classList.contains("WideForm") &&
 			prototypes[0].scrollWidth > prototypes[0].offsetWidth)
 			{
 			NDCore.ChangePrototypeToNarrowForm(prototypes[0]);

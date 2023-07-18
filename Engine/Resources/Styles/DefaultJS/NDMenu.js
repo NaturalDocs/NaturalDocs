@@ -699,7 +699,7 @@ var NDMenu = new function ()
 				// Have to check if tab is undefined because it could be migrating off a path that doesn't have a corresponding tab,
 				// like "Home".
 				if (tab != undefined)
-					{  NDCore.RemoveClass(tab, "Selected");  }
+					{  tab.classList.remove("Selected");  }
 				}
 
 			if (newTabType != undefined)
@@ -707,7 +707,7 @@ var NDMenu = new function ()
 				var tab = this.GetTabElement(newTabType);
 
 				if (tab != undefined)
-					{  NDCore.AddClass(tab, "Selected");  }
+					{  tab.classList.add("Selected");  }
 				}
 			}
 
@@ -772,18 +772,18 @@ var NDMenu = new function ()
 
 			if (makeWide)
 				{
-				if (NDCore.HasClass(tab, "Narrow"))
+				if (tab.classList.contains("Narrow"))
 					{
-					NDCore.RemoveClass(tab, "Narrow");
-					NDCore.AddClass(tab, "Wide");
+					tab.classList.remove("Narrow");
+					tab.classList.add("Wide");
 					}
 				}
 			else
 				{
-				if (NDCore.HasClass(tab, "Wide"))
+				if (tab.classList.contains("Wide"))
 					{
-					NDCore.RemoveClass(tab, "Wide");
-					NDCore.AddClass(tab, "Narrow");
+					tab.classList.remove("Wide");
+					tab.classList.add("Narrow");
 					}
 				}
 			}
