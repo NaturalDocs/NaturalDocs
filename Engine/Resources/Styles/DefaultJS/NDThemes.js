@@ -111,7 +111,7 @@ var NDThemes = new function ()
 	*/
 	this.SetThemes = function (themes)
 		{
-		this.allThemes = themes;
+		this.availableThemes = themes;
 		};
 
 
@@ -159,7 +159,7 @@ var NDThemes = new function ()
 	// ________________________________________________________________________
 
 
-	/* var: allThemes
+	/* var: availableThemes
 
 		An array of all the themes the documentation supports.  Each theme entry is itself an array, with the first
 		value being its display name and the second value its ID.  The array will be undefined if none have been set.
@@ -177,7 +177,7 @@ var NDThemes = new function ()
 			]
 			-------------
 		*/
-	// this.allThemes = undefined;
+	// this.availableThemes = undefined;
 
 
 	/* var: selectedThemeID
@@ -258,8 +258,8 @@ var NDThemeSwitcher = new function ()
 	*/
 	this.IsNeeded = function ()
 		{
-		return (NDThemes.allThemes != undefined &&
-				   NDThemes.allThemes.length > 1);
+		return (NDThemes.availableThemes != undefined &&
+				   NDThemes.availableThemes.length > 1);
 		};
 
 
@@ -348,18 +348,18 @@ var NDThemeSwitcher = new function ()
 
 
 	/* Function: BuildMenu
-		Creates the HTML pop-up menu from <NDThemes.allThemes> and applies it to <domMenu>.  It does not
+		Creates the HTML pop-up menu from <NDThemes.availableThemes> and applies it to <domMenu>.  It does not
 		affect its visibility or position.
 	*/
 	this.BuildMenu = function ()
 		{
 		var html = "";
 
-		if (NDThemes.allThemes != undefined)
+		if (NDThemes.availableThemes != undefined)
 			{
-			for (var i = 0; i < NDThemes.allThemes.length; i++)
+			for (var i = 0; i < NDThemes.availableThemes.length; i++)
 				{
-				var theme = NDThemes.allThemes[i];
+				var theme = NDThemes.availableThemes[i];
 
 				html += "<a class=\"TSEntry TSEntry_" + theme[$Theme_ID] + "Theme\"";
 
