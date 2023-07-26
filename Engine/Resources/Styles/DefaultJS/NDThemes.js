@@ -48,7 +48,7 @@ var NDThemes = new function ()
 
 		var newThemeID = themeID;
 		var newEffectiveThemeID = themeID;
-		var currentThemeID = this.selectedThemeID;
+		var currentThemeID = this.userSelectedThemeID;
 		var currentEffectiveThemeID = this.effectiveThemeID;
 
 		
@@ -86,7 +86,7 @@ var NDThemes = new function ()
 
 		// Update the theme state
 
-		this.selectedThemeID = newThemeID;
+		this.userSelectedThemeID = newThemeID;
 		this.effectiveThemeID = newEffectiveThemeID;
 		};
 
@@ -180,15 +180,15 @@ var NDThemes = new function ()
 	// this.availableThemes = undefined;
 
 
-	/* var: selectedThemeID
+	/* var: userSelectedThemeID
 		The ID of the user-selected theme, which includes the auto values.  It will be undefined if one hasn't been set.
 	*/
-	// this.selectedThemeID = undefined;
+	// this.userSelectedThemeID = undefined;
 
 	
 	/* var: effectiveThemeID
-		The ID of the effective theme, which translates any auto values from <selectedThemeID> to their result based 
-		on the system theme.  Otherwise it will be the same as <selectedThemeID>.  It will be undefined if a theme 
+		The ID of the effective theme, which translates any auto values from <userSelectedThemeID> to their result based 
+		on the system theme.  Otherwise it will be the same as <userSelectedThemeID>.  It will be undefined if a theme 
 		hasn't been set.
 	*/
 	// this.effectiveThemeID = undefined;
@@ -363,7 +363,7 @@ var NDThemeSwitcher = new function ()
 
 				html += "<a class=\"TSEntry TSEntry_" + theme[$Theme_ID] + "Theme\"";
 
-				if (theme[$Theme_ID] == NDThemes.selectedThemeID)
+				if (theme[$Theme_ID] == NDThemes.userSelectedThemeID)
 					{  html += " id=\"TSSelectedEntry\"";  }
 
 				html += " href=\"javascript:NDThemeSwitcher.OnMenuEntryClick('" + theme[$Theme_ID] + "');\">" +
@@ -430,7 +430,7 @@ var NDThemeSwitcher = new function ()
 	*/
 	this.OnMenuEntryClick = function (themeID)
 		{
-		if (themeID != NDThemes.selectedThemeID)
+		if (themeID != NDThemes.userSelectedThemeID)
 			{
 			NDThemes.Apply(themeID);
 
