@@ -32,6 +32,27 @@
 
     A class to manage and apply the available themes.
 
+
+	Topic: Auto-Theme
+
+		Auto-themes are user-selectable themes where the actual effective theme depends on what the operating 
+		system setting is.  So "Auto Light/Dark" will switch between the Light and Dark themes based on what the
+		system is set to, or Light if that feature isn't supported.
+
+	
+	Topic: Theme ID
+
+		A theme ID is just a string representing a theme which only uses the characters A-Z.  This makes it safe to 
+		include in CSS identifiers and other places.  So the light theme's ID is just "Light".
+
+		For <auto-themes>, the theme ID is a string in the format "Auto:[Light Theme ID]/[Dark Theme ID]".  So
+		for an auto-theme that switches between Light and Black depending on the operating system setting, the ID
+		would be "Auto:Light/Black".
+
+		This is the difference between <userSelectedThemeID> and <effectiveThemeID>.  For <auto-themes> the
+		user selected theme ID would be "Auto:Light/Black" but the effective theme ID would be "Light" or "Black".
+		For regular themes the IDs would be the same.
+
 */
 var NDThemes = new function ()
 	{
@@ -41,7 +62,7 @@ var NDThemes = new function ()
 
 
 	/* Function: Apply
-		Applies the passed theme ID, which includes changing the CSS class of the root html element.
+		Applies the passed <theme ID>, which includes changing the CSS class of the root html element.
 	*/
 	this.Apply = function (themeID)
 		{
@@ -94,7 +115,7 @@ var NDThemes = new function ()
 	/* Function: SetThemes
 
 		Sets the list of themes the documentation supports.  The parameter is an array of themes, and each theme entry
-		is itself an array, the first value being its display name and the second value its ID.
+		is itself an array, the first value being its display name and the second value its <theme ID>.
 		
 		The ID should only contain characters that are valid for CSS class names.  When applied, it will be added to the
 		root html element as a CSS class with "Theme" appended, so "Light" would be added as "LightTheme".
@@ -161,8 +182,8 @@ var NDThemes = new function ()
 
 	/* var: availableThemes
 
-		An array of all the themes the documentation supports.  Each theme entry is itself an array, with the first
-		value being its display name and the second value its ID.  The array will be undefined if none have been set.
+		An array of all the themes the documentation supports.  Each theme entry is itself an array, with the first value
+		being its display name and the second value its <theme ID>.  The array will be undefined if none have been set.
 		
 		The ID should only contain characters that are valid for CSS class names.  When applied, it will be added to the
 		root html element as a CSS class with "Theme" appended, so "Light" would be added as "LightTheme".
@@ -181,15 +202,20 @@ var NDThemes = new function ()
 
 
 	/* var: userSelectedThemeID
-		The ID of the user-selected theme, which includes the auto values.  It will be undefined if one hasn't been set.
+
+		The <theme ID> of the user-selected theme, which could include <auto-themes>.  It will be undefined if one 
+		hasn't been set.
+
+		When applying themes you always use <effectiveThemeID> instead as that translates auto-theme IDs into the
+		one which should be applied.
 	*/
 	// this.userSelectedThemeID = undefined;
 
 	
 	/* var: effectiveThemeID
-		The ID of the effective theme, which translates any auto values from <userSelectedThemeID> to their result based 
-		on the system theme.  Otherwise it will be the same as <userSelectedThemeID>.  It will be undefined if a theme 
-		hasn't been set.
+		The <theme ID> of the effective theme.  If <userSelectedThemeID> is an <auto-theme> such as "Auto:Light/Dark",
+		this will be the theme ID which should actually be applied, such as "Light" or "Dark".  For non-auto-themes it will be
+		the same as <userSelectedThemeID>.  It will be undefined if a theme hasn't been set.
 	*/
 	// this.effectiveThemeID = undefined;
 
