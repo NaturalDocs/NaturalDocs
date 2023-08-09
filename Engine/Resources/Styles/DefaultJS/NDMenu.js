@@ -1328,7 +1328,7 @@ function NDMenuHashPath (type, hashPath)
 			{  return new NDMenuOffsetPath(offsets);  }
 
 		// If the tab has a hash path associated with it, it must match or we're done.
-		if (tab[$Tab_HashPath] != undefined && this.hashPathString.StartsWith(tab[$Tab_HashPath]) == false)
+		if (tab[$Tab_HashPath] != undefined && this.hashPathString.startsWith(tab[$Tab_HashPath]) == false)
 			{  return new NDMenuOffsetPath(offsets);  }
 
 		// Get the root container associated with the tab.
@@ -1373,7 +1373,7 @@ function NDMenuHashPath (type, hashPath)
 						offsets.push(i);
 						return new NDMenuOffsetPath(offsets);
 						}
-					else if (this.hashPathString.StartsWith(member[$Entry_HashPath]))
+					else if (this.hashPathString.startsWith(member[$Entry_HashPath]))
 						{
 						offsets.push(i);
 

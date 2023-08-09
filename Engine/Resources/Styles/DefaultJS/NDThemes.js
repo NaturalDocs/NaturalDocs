@@ -79,7 +79,7 @@ var NDThemes = new function ()
 
 		// Apply auto-themes
 
-//		if (newUserSelectedThemeID.StartsWith("Auto:"))
+//		if (newUserSelectedThemeID.startsWith("Auto:"))
 //			{
 //			var systemTheme = this.GetSystemTheme();
 //

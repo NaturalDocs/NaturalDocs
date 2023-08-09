@@ -69,7 +69,7 @@ var NDHomePage = new function ()
 
 		if (message == "NoTheme")
 			{  NDThemes.SetCurrentTheme(undefined);  }
-		else if (message.StartsWith("Theme="))
+		else if (message.startsWith("Theme="))
 			{
 			var theme = message.slice(6);
 			NDThemes.SetCurrentTheme(theme);

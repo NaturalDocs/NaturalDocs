@@ -149,7 +149,7 @@ var NDCore = new function ()
 
 
 	/* Function: GetQueryParam
-		
+
 		Returns the value of a query parameter if it appears in the current URL, or undefined if not.
 
 		This function works similarly to URLSearchParams, but is our own implementation because IE11 and some
@@ -286,18 +286,6 @@ var NDCore = new function ()
 
 // Section: Extension Functions
 // ____________________________________________________________________________
-
-
-/* Function: String.StartsWith
-	Returns whether the string starts with or is equal to the passed string.
-*/
-String.prototype.StartsWith = function (other)
-	{
-	if (other === undefined)
-		{  return false;  }
-
-	return (this.length >= other.length && this.substr(0, other.length) == other);
-	};
 
 
 /* Function: String.EntityDecode
