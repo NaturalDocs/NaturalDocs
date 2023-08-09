@@ -96,7 +96,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						// q = query
 						"var q = window.location.search;" +
 
-						"if (q.indexOf(\"?Theme=\") == 0)" +
+						"if (q.startsWith(\"?Theme=\"))" +
 							"{" +
 							// t = theme ID
 							"var t = q.slice(7);" +
@@ -106,10 +106,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 							"if (e != -1)" +
 								"{  t = t.slice(0, e);  }" +
 
-							"if (document.documentElement.className == undefined)" +
-								"{ document.documentElement.className = t + \"Theme\"; }" +
-							"else" +
-								"{ document.documentElement.className += \" \" + t + \"Theme\"; }" +
+							"document.documentElement.classList.add(t + \"Theme\")" +
 							"}" +
 						"</script>" +
 
