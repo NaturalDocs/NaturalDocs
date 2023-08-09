@@ -45,18 +45,18 @@ var NDContentPage = new function ()
 
 			this.resizeEventHandler = NDContentPage.OnResize.bind(NDContentPage);
 			this.messageEventHandler = NDContentPage.OnMessage.bind(NDContentPage);
+			this.effectiveThemeChangeEventHandler = NDContentPage.OnEffectiveThemeChange.bind(NDContentPage);
 
 
-			// Apply the theme
+			// Make sure NDThemes reflects any theme that was set via query parameter
 
 			var themeID = NDCore.GetQueryParam('Theme');
-
-			if (themeID != undefined)
-				{  NDThemes.Apply(themeID);  }
+			NDThemes.SetCurrentTheme(themeID);
 
 
 			// Set up event listener
 
+			document.addEventListener("NDEffectiveThemeChange", this.effectiveThemeChangeEventHandler);
 			window.addEventListener("message", this.messageEventHandler);
 			// wait on resize event handler until after reformatting the prototypes the first time
 			}
@@ -66,7 +66,7 @@ var NDContentPage = new function ()
 
 		if (!this.CalculateWideFormPrototypeWidths())
 			{
-			// If CalculateWideFormPrototypeWidths() failed quit and retry a little later.  Still occurs in Firefox 
+			// If CalculateWideFormPrototypeWidths() failed quit and retry a little later.  Still occurs in Firefox
 			// 114.0.2.
 			setTimeout("NDContentPage.Start(true);", 200);
 			return;
@@ -134,12 +134,25 @@ var NDContentPage = new function ()
 		var message = event.data;
 
 		if (message == "NoTheme")
-			{  NDThemes.Apply(undefined);  }
+			{  NDThemes.SetCurrentTheme(undefined);  }
 		else if (message.StartsWith("Theme="))
 			{
 			var theme = message.slice(6);
-			NDThemes.Apply(theme);
+			NDThemes.SetCurrentTheme(theme);
 			}
+		};
+
+
+	/* Function: OnEffectiveThemeChange
+		Called whenever the effective theme changes.
+	*/
+	this.OnEffectiveThemeChange = function (event)
+		{
+		if (event.detail.oldEffectiveThemeID != undefined)
+			{  document.documentElement.classList.remove(event.detail.oldEffectiveThemeID + "Theme");  }
+
+		if (event.detail.newEffectiveThemeID != undefined)
+			{  document.documentElement.classList.add(event.detail.newEffectiveThemeID + "Theme");  }
 		};
 
 
@@ -168,7 +181,7 @@ var NDContentPage = new function ()
 
 	/* Function: CalculateWideFormPrototypeWidths
 		Goes through all the wide form prototypes and records their widths into each DOM element's dataset as
-		ndWideFormPrototypeWidth.  The browser might not have the measurements yet so it's possible for this 
+		ndWideFormPrototypeWidth.  The browser might not have the measurements yet so it's possible for this
 		function to fail.  It returns whether it was successful or not.
 	*/
 	this.CalculateWideFormPrototypeWidths = function ()
@@ -422,8 +435,12 @@ var NDContentPage = new function ()
 		A bound function to call <OnMessage()> with NDContentPage always as "this".
 	*/
 
+	/* var: effectiveThemeChangeEventHandler
+		A bound function to call <OnEffectiveThemeChange()> with NDContentPage always as "this".
+	*/
 
-	
+
+
 	// Group: Variables
 	// ________________________________________________________________________
 

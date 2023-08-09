@@ -47,7 +47,7 @@ Inherit: Default
 # OnLoad
 # ------------------------------------------------------------------------
 
-Frame OnLoad: NDFramePage.ForceTheme("Light");
+Frame OnLoad: NDThemes.ForceTheme("Light");
 
 # You can add code to the page's OnLoad handler like this:
 #

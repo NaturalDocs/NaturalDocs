@@ -35,14 +35,14 @@
 
 	Topic: Auto-Theme
 
-		Auto-themes are user-selectable themes where the actual effective theme depends on what the operating 
+		Auto-themes are user-selectable themes where the actual effective theme depends on what the operating
 		system setting is.  So "Auto Light/Dark" will switch between the Light and Dark themes based on what the
 		system is set to, or Light if that feature isn't supported.
 
-	
+
 	Topic: Theme ID
 
-		A theme ID is just a string representing a theme which only uses the characters A-Z.  This makes it safe to 
+		A theme ID is just a string representing a theme which only uses the characters A-Z.  This makes it safe to
 		include in CSS identifiers and other places.  So the light theme's ID is just "Light".
 
 		For <auto-themes>, the theme ID is a string in the format "Auto:[Light Theme ID]/[Dark Theme ID]".  So
@@ -61,21 +61,25 @@ var NDThemes = new function ()
 	// ________________________________________________________________________
 
 
-	/* Function: Apply
-		Applies the passed <theme ID>, which includes changing the CSS class of the root html element.
+	/* Function: SetCurrentTheme
+
+		Sets the passed <theme ID> as the current user selected one.  If it's an <auto-theme> the effective theme
+		ID may be different.  You may pass undefined for none.
+
+		If this results in a change to <effectiveThemeID> a <NDEffectiveThemeChange> event will be dispatched.
 	*/
-	this.Apply = function (themeID)
+	this.SetCurrentTheme = function (themeID)
 		{
+		var oldUserSelectedThemeID = this.userSelectedThemeID;
+		var oldEffectiveThemeID = this.effectiveThemeID;
 
-		var newThemeID = themeID;
+		var newUserSelectedThemeID = themeID;
 		var newEffectiveThemeID = themeID;
-		var currentThemeID = this.userSelectedThemeID;
-		var currentEffectiveThemeID = this.effectiveThemeID;
 
-		
-		// Determine if the effective theme ID is different
 
-//		if (theme.StartsWith("Auto-"))
+		// Apply auto-themes
+
+//		if (newUserSelectedThemeID.StartsWith("Auto:"))
 //			{
 //			var systemTheme = this.GetSystemTheme();
 //
@@ -90,51 +94,79 @@ var NDThemes = new function ()
 //				}
 //			}
 
-		
-		// Replace the CSS class
-
-		if (newEffectiveThemeID != currentEffectiveThemeID)
-			{
-			if (currentEffectiveThemeID != undefined)
-				{  document.documentElement.classList.remove(currentEffectiveThemeID + "Theme");  }
-
-			// Note that the embedded script in each page may have already set the CSS class early.  That should be fine 
-			// and this line will have no effect if that's the case.
-			if (newEffectiveThemeID != undefined)
-				{  document.documentElement.classList.add(newEffectiveThemeID + "Theme");  }
-			}
-
 
 		// Update the theme state
 
-		this.userSelectedThemeID = newThemeID;
+		this.userSelectedThemeID = newUserSelectedThemeID;
 		this.effectiveThemeID = newEffectiveThemeID;
+
+
+		// Dispact a NDEffectiveThemeChange event if necessary
+
+		if (newEffectiveThemeID != oldEffectiveThemeID)
+			{
+			document.dispatchEvent(
+				new CustomEvent("NDEffectiveThemeChange", {
+					detail: {
+						oldUserSelectedThemeID: oldUserSelectedThemeID,
+						oldEffectiveThemeID: oldEffectiveThemeID,
+						newUserSelectedThemeID: newUserSelectedThemeID,
+						newEffectiveThemeID: newEffectiveThemeID
+						}
+					})
+				);
+			}
 		};
 
-	
-	/* Function: SetThemes
+
+	/* Function: SetAvailableThemes
 
 		Sets the list of themes the documentation supports.  The parameter is an array of themes, and each theme entry
 		is itself an array, the first value being its display name and the second value its <theme ID>.
-		
-		The ID should only contain characters that are valid for CSS class names.  When applied, it will be added to the
-		root html element as a CSS class with "Theme" appended, so "Light" would be added as "LightTheme".
+
+		Calling this function will cause a <NDAvailableThemesChange> event to be dispatched.
 
 		Example:
 
 			--- Code ---
-			NDThemes.Set([
+			NDThemes.SetAvailableThemes([
 			   [ "Light Theme", "Light" ],
 			   [ "Dark Theme", "Dark" ],
 			   [ "Black Theme", "Black" ]
 			]);
 			--------------
 	*/
-	this.SetThemes = function (themes)
+	this.SetAvailableThemes = function (themes)
 		{
 		this.availableThemes = themes;
+		document.dispatchEvent( new Event("NDAvailableThemesChange") );
 		};
 
+
+	/* Function: ForceTheme
+		Sets the passed <theme ID> as the current user selected one and disables all other themes.  This is equivalent
+		to calling <SetCurrentTheme()> and then <SetAvailableThemes()> with only this one available.
+
+		If it's an <auto-theme> the effective theme ID may be different.  You may pass undefined for none.
+	*/
+	this.ForceTheme = function (themeID)
+		{
+		this.SetCurrentTheme(themeID);
+
+		if (themeID == undefined)
+			{  this.SetAvailableThemes(undefined);  }
+		else
+			{  this.SetAvailableThemes( [[themeID, themeID]] );  }
+		};
+
+
+	/* Function: DisableThemes
+		Disables all themes.  This is eqivalent to calling <ForceTheme()> with undefined.
+	*/
+	this.DisableThemes = function ()
+		{
+		this.ForceTheme(undefined);
+		};
 
 
 
@@ -147,14 +179,14 @@ var NDThemes = new function ()
 	*/
 	this.GetSystemTheme = function ()
 		{
-		if (window.matchMedia && 
+		if (window.matchMedia &&
 			window.matchMedia('(prefers-color-scheme: dark)').matches)
 			{  return "Dark";  }
 		else
 			{  return "Light";  }
 		};
 
-	
+
 	/* Function: AddSystemThemeChangeWatcher
 		Sets a function to be called whenever the system theme changes.  The function will receive one parameter, the
 		string "Light" or "Dark".
@@ -174,8 +206,34 @@ var NDThemes = new function ()
 			}
 		};
 
-	
-	
+
+
+	// Group: Custom DOM Events
+	// ________________________________________________________________________
+
+
+	/* Event: NDEffectiveThemeChange
+
+		This event is dispatched from the DOM Document object whenever the <effectiveThemeID> changes.
+
+		Detail Properties:
+
+			The event will have a "detail" property which is an object with the following values:
+
+			oldUserSelectedThemeID - The previous value of <userSelectedThemeID>.
+			oldEffectiveThemeID - The previous value of <effectiveThemeID>.
+
+			newUserSelectedThemeID - The new value of <userSelectedThemeID>.
+			newEffectiveThemeID - The new value of <effectiveThemeID>.
+
+	*/
+
+	/* Event: NDAvailableThemesChange
+		This event is dispatched from the DOM Document object whenever <availableThemes> changes.
+	*/
+
+
+
 	// Group: Variables
 	// ________________________________________________________________________
 
@@ -184,9 +242,6 @@ var NDThemes = new function ()
 
 		An array of all the themes the documentation supports.  Each theme entry is itself an array, with the first value
 		being its display name and the second value its <theme ID>.  The array will be undefined if none have been set.
-		
-		The ID should only contain characters that are valid for CSS class names.  When applied, it will be added to the
-		root html element as a CSS class with "Theme" appended, so "Light" would be added as "LightTheme".
 
 		Example:
 
@@ -203,7 +258,7 @@ var NDThemes = new function ()
 
 	/* var: userSelectedThemeID
 
-		The <theme ID> of the user-selected theme, which could include <auto-themes>.  It will be undefined if one 
+		The <theme ID> of the user-selected theme, which could include <auto-themes>.  It will be undefined if one
 		hasn't been set.
 
 		When applying themes you always use <effectiveThemeID> instead as that translates auto-theme IDs into the
@@ -211,7 +266,7 @@ var NDThemes = new function ()
 	*/
 	// this.userSelectedThemeID = undefined;
 
-	
+
 	/* var: effectiveThemeID
 		The <theme ID> of the effective theme.  If <userSelectedThemeID> is an <auto-theme> such as "Auto:Light/Dark",
 		this will be the theme ID which should actually be applied, such as "Light" or "Dark".  For non-auto-themes it will be
@@ -241,20 +296,15 @@ var NDThemeSwitcher = new function ()
 	/* Function: Start
 
 		Sets up the theme switcher.  It expects there to be an empty HTML element with ID NDThemeSwitcher
-		in the document.  You can pass a function to it to be called whenever the theme changes.
+		in the document.
 	 */
-	this.Start = function (onThemeChange)
+	this.Start = function ()
 		{
 
 		// Create event handlers
 
 		this.switcherClickEventHandler = NDThemeSwitcher.OnSwitcherClick.bind(NDThemeSwitcher);
 		this.keyDownEventHandler = NDThemeSwitcher.OnKeyDown.bind(NDThemeSwitcher);
-
-
-		// Add the passed external event handler
-
-		this.onThemeChange = onThemeChange;
 
 
 		// Prepare the switcher HTML
@@ -291,11 +341,11 @@ var NDThemeSwitcher = new function ()
 
 	/* Function: UpdateVisibility
 
-		Creates or hides the theme switcher HTML elements depending on the results of <IsNeeded()>.  It returns whether
-		the visibility changed.
-		
-		This should be called once to create it while setting up the page and again whenever the list of themes in <NDThemes>
-		changes.
+		Creates or hides the theme switcher HTML elements depending on the results of <IsNeeded()>.  It returns
+		whether the visibility changed.
+
+		This should be called once to create it while setting up the page and again whenever the list of themes in
+		<NDThemes> changes.
 	*/
 	this.UpdateVisibility = function ()
 		{
@@ -351,7 +401,7 @@ var NDThemeSwitcher = new function ()
 	this.CloseMenu = function ()
 		{
 		if (this.MenuIsOpen())
-			{  
+			{
 			this.domMenu.style.display = "none";
 			this.domSwitcher.classList.remove("Active");
 
@@ -402,7 +452,7 @@ var NDThemeSwitcher = new function ()
 		this.domMenu.innerHTML = html;
 		};
 
-	
+
 	/* Function: PositionMenu
 		Moves the pop-up menu into position relative to the button.
 	*/
@@ -426,7 +476,7 @@ var NDThemeSwitcher = new function ()
 			x -= entryIcon.offsetLeft + this.domMenu.clientLeft;
 			}
 
-		
+
 		// Apply the position
 
 		this.domMenu.style.left = x + "px";
@@ -456,14 +506,7 @@ var NDThemeSwitcher = new function ()
 	*/
 	this.OnMenuEntryClick = function (themeID)
 		{
-		if (themeID != NDThemes.userSelectedThemeID)
-			{
-			NDThemes.Apply(themeID);
-
-			if (this.onThemeChange != undefined)
-				{  this.onThemeChange();  }
-			}
-
+		NDThemes.SetCurrentTheme(themeID);
 		this.CloseMenu();
 		};
 
@@ -475,7 +518,7 @@ var NDThemeSwitcher = new function ()
 		if (event.keyCode == $KeyCode_Escape)
 			{
 			if (this.MenuIsOpen())
-				{  
+				{
 				this.CloseMenu();
 				event.preventDefault();
 				}
@@ -521,10 +564,5 @@ var NDThemeSwitcher = new function ()
 		The DOM element of the pop-up theme menu.
 	*/
 	// var domMenu = undefined;
-
-	/* var: onThemeChange
-		An event handler that will be called whenever the theme changes.
-	*/
-	// var onThemeChange = undefined;
 
 	};

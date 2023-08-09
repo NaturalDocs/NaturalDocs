@@ -60,6 +60,8 @@ var NDFramePage = new function ()
 		this.mouseDownEventHandler = NDFramePage.OnMouseDown.bind(NDFramePage);
 		this.sizerMouseMoveEventHandler = NDFramePage.OnSizerMouseMove.bind(NDFramePage);
 		this.sizerMouseUpEventHandler = NDFramePage.OnSizerMouseUp.bind(NDFramePage);
+		this.effectiveThemeChangeEventHandler = NDFramePage.OnEffectiveThemeChange.bind(NDFramePage);
+		this.availableThemesChangeEventHandler = NDFramePage.OnAvailableThemesChange.bind(NDFramePage);
 
 
 		// The default title of the page is the project title.  Save a copy before we mess with it.
@@ -75,7 +77,7 @@ var NDFramePage = new function ()
 		// True or false determines whether it will be made visible.
 		var pageElements = {
 			NDHeader: true,
-			NDThemeSwitcher: false, // Will be handled by NDThemeSwitcher.UpdateVisibility()
+			NDThemeSwitcher: NDThemeSwitcher.IsNeeded(),
 			NDSearchField: true,
 			NDFooter: true,
 			NDMenu: true,
@@ -99,20 +101,17 @@ var NDFramePage = new function ()
 		// this.desiredMenuWidth = undefined;
 		// this.desiredSummaryWidth = undefined;
 
-		// Better to do this here because it affects the layout
-		NDThemeSwitcher.Start(this.OnThemeChange);
-		NDThemeSwitcher.UpdateVisibility();
-
 		this.UpdateLayout();
 
 
-		// Attach event handlers.  All browsers Natural Docs supports support onhashchange now, including IE 11 and
-		// EdgeHTML.
+		// Attach event handlers.
 
 		window.addEventListener("resize", this.resizeEventHandler);
 		// window.addEventListener("hashchange", this.hashChangeEventHandler);  // Wait until OnLocationsLoaded
 		document.addEventListener("mousedown", this.mouseDownEventHandler);
 
+		document.addEventListener("NDEffectiveThemeChange", this.effectiveThemeChangeEventHandler);
+		document.addEventListener("NDAvailableThemesChange", this.availableThemesChangeEventHandler);
 
 		// We want to close the search results when we click anywhere else.  OnMouseDown handles clicks on most of the
 		// page but not inside the content iframe.  window.onblur will fire for IE 10, Firefox, and Chrome.  document.onblur
@@ -125,6 +124,7 @@ var NDFramePage = new function ()
 		NDMenu.Start();
 		NDSummary.Start();
 		NDSearch.Start();
+		NDThemeSwitcher.Start();
 
 
 		// We have to wait for OnLocationsLoaded() to interpret the hash path, so we don't call OnHashChange() here.  It
@@ -360,7 +360,7 @@ var NDFramePage = new function ()
 		if (NDThemeSwitcher.IsNeeded())
 			{
 			// Have to use searchField.offsetWidth instead of searchWidth to include the padding
-			themeSwitcher.style.left = (fullWidth - searchField.offsetWidth - searchMargin - 
+			themeSwitcher.style.left = (fullWidth - searchField.offsetWidth - searchMargin -
 															  themeSwitcherSize - Math.floor(searchMargin / 2)) + "px";
 			themeSwitcher.style.top = searchMargin + "px";
 			themeSwitcher.style.width = themeSwitcherSize + "px";
@@ -548,11 +548,11 @@ var NDFramePage = new function ()
 			}
 
 		// If we click a link in the summary, then scroll away, then click the same link, the view won't move back to the
-		// topic that was clicked on because the URL didn't change and therefore there's no onhashchange event.  Since 
+		// topic that was clicked on because the URL didn't change and therefore there's no onhashchange event.  Since
 		// we already have an onmousedown handler we can check for this and manually call it.
-		else if (target.tagName == "A" && 
+		else if (target.tagName == "A" &&
 				  target.href == window.location)
-			{  
+			{
 			this.OnHashChange(event);
 			event.preventDefault();
 			}
@@ -705,73 +705,9 @@ var NDFramePage = new function ()
 		};
 
 
-	
+
 	// Group: Theme Functions
 	// ________________________________________________________________________
-
-
-	/* Function: SetThemes
-
-		Pass this function an array of all the themes the documentation supports.  It will apply the first one as the default 
-		theme, and if there is more than one the theme switcher will become available.  If you pass it undefined it will
-		disable theming.
-		
-		Each theme is represented by an array, with the first value being its display name and the second value its ID.
-		The ID should only contain characters that are valid for CSS class names.  When a theme is selected the ID will
-		be added to the root html element as a CSS class with "Theme" appended, so "Light" will add "LightTheme".
-
-		Example:
-
-			--- Code ---
-			NDFramePage.SetThemes ([
-			   [ "Light Theme", "Light" ],
-			   [ "Dark Theme", "Dark" ],
-			   [ "Black Theme", "Black" ]
-			   ]);
-			-------------
-		*/
-	this.SetThemes = function (themes)
-		{
-		NDThemes.SetThemes(themes);
-
-		if (themes == undefined ||
-			themes.length == 0)
-			{  NDThemes.Apply(undefined);  }
-		else
-			{  NDThemes.Apply(themes[0][$Theme_ID]);  }
-
-		if (NDThemeSwitcher.MenuIsOpen())
-			{  NDThemeSwitcher.CloseMenu();  }
-
-		if (NDThemeSwitcher.UpdateVisibility())
-			{  this.UpdateLayout();  }
-		};
-
-	
-	/* Function: ForceTheme
-
-		Sets the theme to a particular one and makes it not changeable by the user.  You only need to pass the ID, not 
-		the name, since there will be no theme switcher.
-
-		Example:
-
-			--- Code ---
-			NDFramePage.ForceTheme("Dark");
-			--------------
-	*/
-	this.ForceTheme = function (forcedThemeID)
-		{
-		this.SetThemes([ [ "", forcedThemeID ] ]);
-		};
-
-
-	/* Function: DisableThemes
-		Disables all theming.
-	*/
-	this.DisableThemes = function ()
-		{
-		this.SetThemes(undefined);
-		};
 
 
 	/* Function: OnThemeChange
@@ -785,6 +721,41 @@ var NDFramePage = new function ()
 			{  frame.contentWindow.postMessage("Theme=" + NDThemes.effectiveThemeID, "*");  }
 		else
 			{  frame.contentWindow.postMessage("NoTheme", "*");  }
+		};
+
+
+	/* Function: OnEffectiveThemeChange
+		Called whenever the effective theme changes.
+	*/
+	this.OnEffectiveThemeChange = function (event)
+		{
+		// Set theme for NDFramePage
+
+		if (event.detail.oldEffectiveThemeID != undefined)
+			{  document.documentElement.classList.remove(event.detail.oldEffectiveThemeID + "Theme");  }
+
+		if (event.detail.newEffectiveThemeID != undefined)
+			{  document.documentElement.classList.add(event.detail.newEffectiveThemeID + "Theme");  }
+
+
+		// Set theme for content panel via postMessage
+
+		var frame = document.getElementById("CFrame");
+
+		if (NDThemes.effectiveThemeID != undefined)
+			{  frame.contentWindow.postMessage("Theme=" + NDThemes.effectiveThemeID, "*");  }
+		else
+			{  frame.contentWindow.postMessage("NoTheme", "*");  }
+		};
+
+
+	/* Function: OnAvailableThemesChange
+		Called whenever the list of available themes changes.
+	*/
+	this.OnAvailableThemesChange = function (event)
+		{
+		if (NDThemeSwitcher.UpdateVisibility())
+			{  this.UpdateLayout();  }
 		};
 
 
@@ -816,8 +787,16 @@ var NDFramePage = new function ()
 		A bound function to call <OnSizerMouseUp()> with NDFramePage always as "this".
 	*/
 
-	
-	
+	/* var: effectiveThemeChangeEventHandler
+		A bound function to call <OnEffectiveThemeChange()> with NDFramePage always as "this".
+	*/
+
+	/* var: availableThemesChangeEventHandler
+		A bound function to call <OnAvailableThemesChange()> with NDFramePage always as "this".
+	*/
+
+
+
 	// Group: Variables
 	// ________________________________________________________________________
 
@@ -826,7 +805,7 @@ var NDFramePage = new function ()
 	*/
 
 	/* var: locationInfo
-		An array of location information objects as documented in <Location Information>, or undefined if 
+		An array of location information objects as documented in <Location Information>, or undefined if
 		<OnLocationsLoaded()> hasn't been called yet.
 	*/
 
@@ -835,7 +814,7 @@ var NDFramePage = new function ()
 	*/
 
 	/* var: sourceFileHomePageHashPath
-		The hash path of the source file serving as a custom home page, or undefined if none.  This will be 
+		The hash path of the source file serving as a custom home page, or undefined if none.  This will be
 		undefined if there is no custom home page or if there is a custom home page but it is a HTML file.
 	*/
 

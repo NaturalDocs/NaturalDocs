@@ -29,15 +29,29 @@ var NDHomePage = new function ()
 	*/
 	this.Start = function ()
 		{
-		// Apply the theme
+
+		// Create event handlers
+
+		this.messageEventHandler = NDHomePage.OnMessage.bind(NDHomePage);
+		this.effectiveThemeChangeEventHandler = NDHomePage.OnEffectiveThemeChange.bind(NDHomePage);
+
+
+		// Make sure NDThemes reflects any theme that was set via query parameter
+
 		var themeID = NDCore.GetQueryParam('Theme');
+		NDThemes.SetCurrentTheme(themeID);
 
-		if (themeID != undefined)
-			{  NDThemes.Apply(themeID);  }
 
-		// Set up event listener
-		window.addEventListener("message", this.OnMessage);
+		// Set up event listeners
+
+		document.addEventListener("NDEffectiveThemeChange", this.effectiveThemeChangeEventHandler);
+		window.addEventListener("message", this.messageEventHandler);
 		};
+
+
+
+	// Group: Event Handlers
+	// ________________________________________________________________________
 
 
 	/* Function: OnMessage
@@ -54,12 +68,37 @@ var NDHomePage = new function ()
 		var message = event.data;
 
 		if (message == "NoTheme")
-			{  NDThemes.Apply(undefined);  }
+			{  NDThemes.SetCurrentTheme(undefined);  }
 		else if (message.StartsWith("Theme="))
 			{
 			var theme = message.slice(6);
-			NDThemes.Apply(theme);
+			NDThemes.SetCurrentTheme(theme);
 			}
 		};
+
+
+	/* Function: OnEffectiveThemeChange
+		Called whenever the effective theme changes.
+	*/
+	this.OnEffectiveThemeChange = function (event)
+		{
+		if (event.detail.oldEffectiveThemeID != undefined)
+			{  document.documentElement.classList.remove(event.detail.oldEffectiveThemeID + "Theme");  }
+
+		if (event.detail.newEffectiveThemeID != undefined)
+			{  document.documentElement.classList.add(event.detail.newEffectiveThemeID + "Theme");  }
+		};
+
+
+	// Group: Event Handler Variables
+	// ________________________________________________________________________
+
+	/* var: messageEventHandler
+		A bound function to call <OnMessage()> with NDHomePage always as "this".
+	*/
+
+	/* var: effectiveThemeChangeEventHandler
+		A bound function to call <OnEffectiveThemeChange()> with NDHomePage always as "this".
+	*/
 
 	};
