@@ -710,20 +710,6 @@ var NDFramePage = new function ()
 	// ________________________________________________________________________
 
 
-	/* Function: OnThemeChange
-		Called whenever the theme changes.
-	*/
-	this.OnThemeChange = function ()
-		{
-		var frame = document.getElementById("CFrame");
-
-		if (NDThemes.effectiveThemeID != undefined)
-			{  frame.contentWindow.postMessage("Theme=" + NDThemes.effectiveThemeID, "*");  }
-		else
-			{  frame.contentWindow.postMessage("NoTheme", "*");  }
-		};
-
-
 	/* Function: OnEffectiveThemeChange
 		Called whenever the effective theme changes.
 	*/
