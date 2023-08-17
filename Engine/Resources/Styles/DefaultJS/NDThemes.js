@@ -66,9 +66,19 @@ var NDThemes = new function ()
 		Sets the passed <theme ID> as the current user selected one.  If it's an <auto-theme> the effective theme
 		ID may be different.  You may pass undefined for none.
 
-		If this results in a change to <effectiveThemeID> a <NDEffectiveThemeChange> event will be dispatched.
+		Parameters:
+
+			themeID - The <theme ID> to apply, which may be an <auto-theme>.
+
+			userSelected - Set to true to indicate the end user actively chose this theme as opposed to it being set
+								 automatically.
+
+		Events:
+
+			- <NDEffectiveThemeChange> will be dispatched if this results in a change to <effectiveThemeID>.
+
 	*/
-	this.SetCurrentTheme = function (themeID)
+	this.SetCurrentTheme = function (themeID, userSelected)
 		{
 		var oldUserSelectedThemeID = this.userSelectedThemeID;
 		var oldEffectiveThemeID = this.effectiveThemeID;
@@ -101,7 +111,7 @@ var NDThemes = new function ()
 		this.effectiveThemeID = newEffectiveThemeID;
 
 
-		// Dispact a NDEffectiveThemeChange event if necessary
+		// Dispach a NDEffectiveThemeChange event if necessary
 
 		if (newEffectiveThemeID != oldEffectiveThemeID)
 			{
@@ -110,8 +120,11 @@ var NDThemes = new function ()
 					detail: {
 						oldUserSelectedThemeID: oldUserSelectedThemeID,
 						oldEffectiveThemeID: oldEffectiveThemeID,
+
 						newUserSelectedThemeID: newUserSelectedThemeID,
-						newEffectiveThemeID: newEffectiveThemeID
+						newEffectiveThemeID: newEffectiveThemeID,
+
+						userSelected: userSelected
 						}
 					})
 				);
@@ -151,7 +164,7 @@ var NDThemes = new function ()
 	*/
 	this.ForceTheme = function (themeID)
 		{
-		this.SetCurrentTheme(themeID);
+		this.SetCurrentTheme(themeID, false);
 
 		if (themeID == undefined)
 			{  this.SetAvailableThemes(undefined);  }
@@ -226,6 +239,7 @@ var NDThemes = new function ()
 			newUserSelectedThemeID - The new value of <userSelectedThemeID>.
 			newEffectiveThemeID - The new value of <effectiveThemeID>.
 
+			userSelected - Whether the theme was actively chosen by the user as opposed to being set automatically.
 	*/
 
 	/* Event: NDAvailableThemesChange
@@ -506,7 +520,7 @@ var NDThemeSwitcher = new function ()
 	*/
 	this.OnMenuEntryClick = function (themeID)
 		{
-		NDThemes.SetCurrentTheme(themeID);
+		NDThemes.SetCurrentTheme(themeID, true);
 		this.CloseMenu();
 		};
 

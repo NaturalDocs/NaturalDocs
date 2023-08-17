@@ -51,7 +51,7 @@ var NDContentPage = new function ()
 			// Make sure NDThemes reflects any theme that was set via query parameter
 
 			var themeID = NDCore.GetQueryParam('Theme');
-			NDThemes.SetCurrentTheme(themeID);
+			NDThemes.SetCurrentTheme(themeID, false);
 
 
 			// Set up event listener
@@ -134,11 +134,11 @@ var NDContentPage = new function ()
 		var message = event.data;
 
 		if (message == "NoTheme")
-			{  NDThemes.SetCurrentTheme(undefined);  }
+			{  NDThemes.SetCurrentTheme(undefined, false);  }
 		else if (message.startsWith("Theme="))
 			{
 			var theme = message.slice(6);
-			NDThemes.SetCurrentTheme(theme);
+			NDThemes.SetCurrentTheme(theme, false);
 			}
 		};
 
