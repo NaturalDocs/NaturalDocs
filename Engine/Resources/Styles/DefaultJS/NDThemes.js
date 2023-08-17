@@ -132,6 +132,19 @@ var NDThemes = new function ()
 		this.effectiveThemeID = newEffectiveThemeID;
 
 
+		// Save the user selection
+
+		if (userSelected)
+			{
+			if (this.userSelectedThemeHistory == undefined)
+				{  this.LoadUserSelectedThemeHistory();  }
+
+			this.AddToUserSelectedThemeHistory(newUserSelectedThemeID);
+
+			this.SaveUserSelectedThemeHistory();
+			}
+
+
 		// Dispach a NDEffectiveThemeChange event if necessary
 
 		if (newEffectiveThemeID != oldEffectiveThemeID)
@@ -160,6 +173,12 @@ var NDThemes = new function ()
 
 		Calling this function will cause a <NDAvailableThemesChange> event to be dispatched.
 
+		If there is no user-selected theme, or the user-selected theme does not exist in the list of available themes, this
+		function will change the theme to one of the available ones.  It will first attempt to find one in the <theme history>,
+		but if it can't it will just use the first one on the list.
+
+		Thus calling this function could also cause a <NDEffectiveThemeChange> event to be dispatched.
+
 		Example:
 
 			--- Code ---
@@ -172,8 +191,69 @@ var NDThemes = new function ()
 	*/
 	this.SetAvailableThemes = function (themes)
 		{
+		// Set the available themes
+
 		this.availableThemes = themes;
 		document.dispatchEvent( new Event("NDAvailableThemesChange") );
+
+
+		// Make sure the current theme appears in the available themes
+
+		if (this.availableThemes == undefined)
+			{  this.SetCurrentThemeID(undefined, false);  }
+		else
+			{
+			var currentThemeIsInAvailableThemes = false;
+
+			if (this.userSelectedThemeID != undefined)
+				{
+				for (var i = 0; i < this.availableThemes.length; i++)
+					{
+					if (this.userSelectedThemeID == this.availableThemes[i][$Theme_ID])
+						{
+						currentThemeIsInAvailableThemes = true;
+						break;
+						}
+					}
+				}
+
+
+			// If the current theme isn't in the available themes, choose one from the history
+
+			if (!currentThemeIsInAvailableThemes)
+				{
+				if (this.userSelectedThemeHistory == undefined)
+					{  this.LoadUserSelectedThemeHistory();  }
+
+				var newThemeID;
+
+				if (this.userSelectedThemeHistory != undefined)
+					{
+					for (var ui = 0; ui < this.userSelectedThemeHistory.length; ui++)
+						{
+						for (var ai = 0; ai < this.availableThemes.length; ai++)
+							{
+							if (this.availableThemes[ai][$Theme_ID] == this.userSelectedThemeHistory[ui])
+								{
+								newThemeID = this.userSelectedThemeHistory[ui];
+								break;
+								}
+							}
+
+						if (newThemeID != undefined)
+							{  break;  }
+						}
+					}
+
+
+				// If there wasn't one in the history, just use the first
+
+				if (newThemeID == undefined)
+					{  newThemeID = this.availableThemes[0][$Theme_ID];  }
+
+				this.SetCurrentTheme(newThemeID, false);
+				}
+			}
 		};
 
 
