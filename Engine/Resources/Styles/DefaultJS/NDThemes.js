@@ -20,6 +20,11 @@
 	$Theme_Name = 0;
 	$Theme_ID = 1;
 
+// Theme History
+
+	$ThemeHistory_Count = 10;
+	$ThemeHistory_Key = "NDThemes.UserSelectedThemeHistory";
+
 // Keycodes
 
 	$KeyCode_Escape = 27;
@@ -52,6 +57,22 @@
 		This is the difference between <userSelectedThemeID> and <effectiveThemeID>.  For <auto-themes> the
 		user selected theme ID would be "Auto:Light/Black" but the effective theme ID would be "Light" or "Black".
 		For regular themes the IDs would be the same.
+
+
+	Topic: Theme History
+
+		A history of which themes the user has selected is stored in the web browser so that they can be applied
+		automatically the next time the documentation is opened.  This is also necessary just to have the theme
+		persist when opening new windows or tabs.
+
+		It is stored as a most-recently-used list of <theme IDs> the user has selected.  Themes which were applied
+		automatically or which were forced by the documentation's author are not added.  This allows the list to apply
+		across documentation sets: if a user selects Dark for documentation that has Light, Dark, and Black, and then
+		selects Red for documentation that only has Red and Blue, the list will contain both Dark and Red so that
+		whichever one is available in the current documentation can be applied.
+
+		It is stored in window.localStorage with $ThemeHistory_Key as the key.  The value is a comma-separated
+		list of <theme IDs>.
 
 */
 var NDThemes = new function ()
@@ -187,6 +208,62 @@ var NDThemes = new function ()
 	// ________________________________________________________________________
 
 
+	/* Function: LoadUserSelectedThemeHistory
+		Loads <userSelectedThemeHistory> from the web browser's local storage.  It will be set to undefined if there
+		are none.
+	*/
+	this.LoadUserSelectedThemeHistory = function ()
+		{
+		var joinedString = window.localStorage.getItem($ThemeHistory_Key);
+
+		if (joinedString == null)
+			{  this.userSelectedThemeHistory = undefined;  }
+		else
+			{  this.userSelectedThemeHistory = joinedString.split(",");  }
+		};
+
+
+	/* Function: SaveUserSelectedThemeHistory
+		Saves <userSelectedThemeIDHistry> into the web browser's local storage.
+	*/
+	this.SaveUserSelectedThemeHistory = function ()
+		{
+		if (this.userSelectedThemeHistory == undefined)
+			{  window.localStorage.removeItem($ThemeHistory_Key);  }
+		else
+			{
+			var joinedString = this.userSelectedThemeHistory.join(",");
+			window.localStorage.setItem($ThemeHistory_Key, joinedString);
+			}
+		};
+
+
+	/* Function: AddToUserSelectedThemeHistory
+		Adds an entry to <userSelectedThemeIDHistry>.
+	*/
+	this.AddToUserSelectedThemeHistory = function (themeID)
+		{
+		if (this.userSelectedThemeHistory == undefined)
+			{  this.userSelectedThemeHistory = [ themeID ];  }
+		else
+			{
+			var index = this.userSelectedThemeHistory.indexOf(themeID);
+
+			// Remove the existing entry if it exists and isn't already at the start
+			if (index > 0)
+				{  this.userSelectedThemeHistory.splice(index, 1);  }
+
+			// Add the entry at start if it's not already there
+			if (index != 0)
+				{  this.userSelectedThemeHistory.unshift(themeID);  }
+
+			// Trim the list
+			if (this.userSelectedThemeHistory.length > $ThemeHistory_Count)
+				{  this.userSelectedThemeHistory.splice($ThemeHistory_Count);  }
+			}
+		};
+
+
 	/* Function: GetSystemTheme
 		Returns the operating system theme as the string "Light" or "Dark".  It defaults to "Light" if this isn't supported.
 	*/
@@ -279,6 +356,13 @@ var NDThemes = new function ()
 		one which should be applied.
 	*/
 	// this.userSelectedThemeID = undefined;
+
+
+	/* var: userSelectedThemeHistory
+		An array of <theme IDs> chosen by the user in a most-recently-used order.  Will be undefined if there are none
+		or it hasn't been loaded yet.
+	*/
+	// this.userSelectedThemeHistory = undefined;
 
 
 	/* var: effectiveThemeID
