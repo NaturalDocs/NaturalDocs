@@ -25,6 +25,11 @@
 	$ThemeHistory_Count = 10;
 	$ThemeHistory_Key = "NDThemes.UserSelectedThemeHistory";
 
+// System Themes
+
+	$SystemTheme_Light = 0;
+	$SystemTheme_Dark = 1;
+
 // Keycodes
 
 	$KeyCode_Escape = 27;
@@ -110,20 +115,24 @@ var NDThemes = new function ()
 
 		// Apply auto-themes
 
-//		if (newUserSelectedThemeID.startsWith("Auto:"))
-//			{
-//			var systemTheme = this.GetSystemTheme();
-//
-//			if (systemTheme == "Light")
-//				{  this.effectiveTheme = "Light";  }
-//			else
-//				{
-//				if (theme == "Auto-Light/Dark")
-//					{  this.effectiveTheme = "Dark";  }
-//				else
-//					{  this.effectiveTheme = "Black";  }
-//				}
-//			}
+		if (newUserSelectedThemeID.startsWith("Auto:"))
+			{
+			var slashIndex = newUserSelectedThemeID.indexOf("/", 5);
+
+			if (slashIndex != -1)
+				{
+				var systemTheme = this.GetSystemTheme();
+
+				if (systemTheme == $SystemTheme_Light)
+					{
+					newEffectiveThemeID = newUserSelectedThemeID.substring(5, slashIndex);
+					}
+				else if (systemTheme = $SystemTheme_Dark)
+					{
+					newEffectiveThemeID = newUserSelectedThemeID.substring(slashIndex + 1);
+					}
+				}
+			}
 
 
 		// Update the theme state
@@ -345,15 +354,16 @@ var NDThemes = new function ()
 
 
 	/* Function: GetSystemTheme
-		Returns the operating system theme as the string "Light" or "Dark".  It defaults to "Light" if this isn't supported.
+		Returns the operating system theme as $SystemTheme_Light or $SystemTheme_Dark.  It defaults to light if this
+		isn't supported by the operating system or browser.
 	*/
 	this.GetSystemTheme = function ()
 		{
 		if (window.matchMedia &&
 			window.matchMedia('(prefers-color-scheme: dark)').matches)
-			{  return "Dark";  }
+			{  return $SystemTheme_Dark;  }
 		else
-			{  return "Light";  }
+			{  return $SystemTheme_Light;  }
 		};
 
 
@@ -615,7 +625,10 @@ var NDThemeSwitcher = new function ()
 				{
 				var theme = NDThemes.availableThemes[i];
 
-				html += "<a class=\"TSEntry TSEntry_" + theme[$Theme_ID] + "Theme\"";
+				// Remove : and / to convert "Auto:Light/Dark" to "AutoLightDark"
+				var safeThemeID = theme[$Theme_ID].replace(/[:\/]/g, "");
+
+				html += "<a class=\"TSEntry TSEntry_" + safeThemeID + "Theme\"";
 
 				if (theme[$Theme_ID] == NDThemes.userSelectedThemeID)
 					{  html += " id=\"TSSelectedEntry\"";  }
