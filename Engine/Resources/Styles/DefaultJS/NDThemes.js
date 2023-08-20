@@ -132,6 +132,18 @@ var NDThemes = new function ()
 					newEffectiveThemeID = newUserSelectedThemeID.substring(slashIndex + 1);
 					}
 				}
+
+
+			// Add change watcher.  Since it's not being added to a normal element, we'll just add it the
+			// first time an auto-theme is selected and leave it on indefinitely.
+
+			if (this.systemThemeChangeEventHandler == undefined)
+				{
+				this.systemThemeChangeEventHandler = this.OnSystemThemeChange.bind(NDThemes);
+
+				window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",
+																												  this.systemThemeChangeEventHandler);
+				}
 			}
 
 
@@ -367,23 +379,14 @@ var NDThemes = new function ()
 		};
 
 
-	/* Function: AddSystemThemeChangeWatcher
-		Sets a function to be called whenever the system theme changes.  The function will receive one parameter, the
-		string "Light" or "Dark".
+	/* Function: OnSystemThemeChange
+		A function called whenever the system theme changes.
 	*/
-	this.AddSystemThemeChangeWatcher = function (changeWatcher)
+	this.OnSystemThemeChange = function (event)
 		{
-		if (window.matchMedia)
-			{
-			window.matchMedia('(prefers-color-scheme: dark)').addEventListener(
-				'change',
-				function (event)
-					{
-					var theme = event.matches ? "Dark" : "Light";
-					changeWatcher(theme);
-					}
-				);
-			}
+		// This event handler may still be active when not using an auto-theme, so check every time
+		if (this.userSelectedThemeID.startsWith("Auto:"))
+			{  this.SetCurrentTheme(this.userSelectedThemeID, false);  }
 		};
 
 
@@ -411,6 +414,15 @@ var NDThemes = new function ()
 
 	/* Event: NDAvailableThemesChange
 		This event is dispatched from the DOM Document object whenever <availableThemes> changes.
+	*/
+
+
+
+	// Group: Event Handler Variables
+	// ________________________________________________________________________
+
+	/* var: systemThemeChangeEventHandler
+		A bound function to call <OnSystemThemeChange()> with NDThemes always as "this".
 	*/
 
 
