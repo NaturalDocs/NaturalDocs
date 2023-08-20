@@ -37,7 +37,7 @@
 	$ContentScrollbarThumbColor_Black: #343434;
 	$ContentScrollbarTrackColor_Black: #040404;
 
-	
+
 	$SummaryContentBorderColor: #E8E8E8;
 		$SummaryContentBorderColor_Dark: #363636;
 		$SummaryContentBorderColor_Black: $MenuLineColor_Black;
@@ -219,36 +219,36 @@ html {
 		width: 18px;
 		}
 	html::-webkit-scrollbar-track,
-	html::-webkit-scrollbar-corner {  
-		background-color: $ContentBackgroundColor; 
+	html::-webkit-scrollbar-corner {
+		background-color: $ContentBackgroundColor;
 		}
-	html::-webkit-scrollbar-thumb {  
-		background-color: $ContentScrollbarThumbColor; 
+	html::-webkit-scrollbar-thumb {
+		background-color: $ContentScrollbarThumbColor;
 		border: 4px solid $ContentBackgroundColor;
 		border-radius: 10px;
 		}
 
-	html.DarkTheme { 
+	html.DarkTheme {
 		scrollbar-color: $ContentScrollbarThumbColor_Dark $ContentScrollbarTrackColor_Dark;
 		}
 	html.DarkTheme::-webkit-scrollbar-track,
-	html.DarkTheme::-webkit-scrollbar-corner {  
-		background-color: $ContentBackgroundColor_Dark; 
+	html.DarkTheme::-webkit-scrollbar-corner {
+		background-color: $ContentBackgroundColor_Dark;
 		}
-	html.DarkTheme::-webkit-scrollbar-thumb {  
-		background-color: $ContentScrollbarThumbColor_Dark; 
+	html.DarkTheme::-webkit-scrollbar-thumb {
+		background-color: $ContentScrollbarThumbColor_Dark;
 		border-color: $ContentBackgroundColor_Dark;
 		}
 
-	html.BlackTheme { 
+	html.BlackTheme {
 		scrollbar-color: $ContentScrollbarThumbColor_Black $ContentScrollbarTrackColor_Black;
 		}
 	html.BlackTheme::-webkit-scrollbar-track,
-	html.BlackTheme::-webkit-scrollbar-corner {  
-		background-color: $ContentBackgroundColor_Black; 
+	html.BlackTheme::-webkit-scrollbar-corner {
+		background-color: $ContentBackgroundColor_Black;
 		}
-	html.BlackTheme::-webkit-scrollbar-thumb {  
-		background-color: $ContentScrollbarThumbColor_Black; 
+	html.BlackTheme::-webkit-scrollbar-thumb {
+		background-color: $ContentScrollbarThumbColor_Black;
 		border-color: $ContentBackgroundColor_Black;
 		}
 
@@ -500,7 +500,7 @@ td {
 		height: 25px;
 		}
 
-	
+
 	/* If you change the colors, make sure you update the SVG files to match */
 	.TSEntry_LightTheme {
 		color: $ContentTextColor;
@@ -628,11 +628,11 @@ td {
 		width: 15px;
 		}
 	#NDSearchResults::-webkit-scrollbar-track,
-	#NDSearchResults::-webkit-scrollbar-corner {  
-		background-color: $ContentBackgroundColor; 
+	#NDSearchResults::-webkit-scrollbar-corner {
+		background-color: $ContentBackgroundColor;
 		}
-	#NDSearchResults::-webkit-scrollbar-thumb {  
-		background-color: $ContentScrollbarThumbColor; 
+	#NDSearchResults::-webkit-scrollbar-thumb {
+		background-color: $ContentScrollbarThumbColor;
 		border: 4px solid $ContentBackgroundColor;
 		border-radius: 8px;
 		}
@@ -647,11 +647,11 @@ td {
 		scrollbar-color: $ContentScrollbarThumbColor_Dark $SummaryScrollbarTrackColor_Dark;
 		}
 		.DarkTheme #NDSearchResults::-webkit-scrollbar-track,
-		.DarkTheme #NDSearchResults::-webkit-scrollbar-corner {  
-			background-color: $SummaryBackgroundColor_Dark; 
+		.DarkTheme #NDSearchResults::-webkit-scrollbar-corner {
+			background-color: $SummaryBackgroundColor_Dark;
 			}
-		.DarkTheme #NDSearchResults::-webkit-scrollbar-thumb {  
-			background-color: $ContentScrollbarThumbColor_Dark; 
+		.DarkTheme #NDSearchResults::-webkit-scrollbar-thumb {
+			background-color: $ContentScrollbarThumbColor_Dark;
 			border-color: $SummaryBackgroundColor_Dark;
 			}
 
@@ -663,11 +663,11 @@ td {
 		scrollbar-color: $ContentScrollbarThumbColor_Black $ContentScrollbarTrackColor_Black;
 		}
 		.BlackTheme #NDSearchResults::-webkit-scrollbar-track,
-		.BlackTheme #NDSearchResults::-webkit-scrollbar-corner {  
-			background-color: $ContentBackgroundColor_Black; 
+		.BlackTheme #NDSearchResults::-webkit-scrollbar-corner {
+			background-color: $ContentBackgroundColor_Black;
 			}
-		.BlackTheme #NDSearchResults::-webkit-scrollbar-thumb {  
-			background-color: $ContentScrollbarThumbColor_Black; 
+		.BlackTheme #NDSearchResults::-webkit-scrollbar-thumb {
+			background-color: $ContentScrollbarThumbColor_Black;
 			border-color: $ContentBackgroundColor_Black;
 			}
 
@@ -874,41 +874,41 @@ td {
 	scrollbar-color: $MenuScrollbarThumbColor $MenuScrollbarTrackColor;
 	}
 	#NDMenu::-webkit-scrollbar {
-		width: 15px;  
+		width: 15px;
 		}
 	#NDMenu::-webkit-scrollbar-track,
-	#NDMenu::-webkit-scrollbar-corner {  
-		background-color: $MenuBackgroundColor; 
+	#NDMenu::-webkit-scrollbar-corner {
+		background-color: $MenuBackgroundColor;
 		}
-	#NDMenu::-webkit-scrollbar-thumb {  
-		background-color: $MenuScrollbarThumbColor; 
+	#NDMenu::-webkit-scrollbar-thumb {
+		background-color: $MenuScrollbarThumbColor;
 		border: 3px solid $MenuBackgroundColor;
 		border-radius: 8px;
 		}
 
-	.DarkTheme #NDMenu { 
-		background-color: $MenuBackgroundColor_Dark; 
+	.DarkTheme #NDMenu {
+		background-color: $MenuBackgroundColor_Dark;
 		scrollbar-color: $MenuScrollbarThumbColor_Dark $MenuScrollbarTrackColor_Dark;
 		}
 		.DarkTheme #NDMenu::-webkit-scrollbar-track,
-		.DarkTheme #NDMenu::-webkit-scrollbar-corner {  
-			background-color: $MenuBackgroundColor_Dark; 
+		.DarkTheme #NDMenu::-webkit-scrollbar-corner {
+			background-color: $MenuBackgroundColor_Dark;
 			}
-		.DarkTheme #NDMenu::-webkit-scrollbar-thumb {  
-			background-color: $MenuScrollbarThumbColor_Dark; 
+		.DarkTheme #NDMenu::-webkit-scrollbar-thumb {
+			background-color: $MenuScrollbarThumbColor_Dark;
 			border-color: $MenuBackgroundColor_Dark;
 			}
 
-	.BlackTheme #NDMenu { 
-		background-color: $MenuBackgroundColor_Black; 
+	.BlackTheme #NDMenu {
+		background-color: $MenuBackgroundColor_Black;
 		scrollbar-color: $MenuScrollbarThumbColor_Black $MenuScrollbarTrackColor_Black;
 		}
 		.BlackTheme #NDMenu::-webkit-scrollbar-track,
-		.BlackTheme #NDMenu::-webkit-scrollbar-corner {  
-			background-color: $MenuBackgroundColor_Black; 
+		.BlackTheme #NDMenu::-webkit-scrollbar-corner {
+			background-color: $MenuBackgroundColor_Black;
 			}
-		.BlackTheme #NDMenu::-webkit-scrollbar-thumb {  
-			background-color: $MenuScrollbarThumbColor_Black; 
+		.BlackTheme #NDMenu::-webkit-scrollbar-thumb {
+			background-color: $MenuScrollbarThumbColor_Black;
 			border-color: $MenuBackgroundColor_Black;
 			}
 
@@ -935,15 +935,15 @@ td {
 	#MTabBar {
 		background-color: $MenuLineColor;
 		}
-		.DarkTheme #MTabBar { 
+		.DarkTheme #MTabBar {
 			background-color: $MenuBackgroundColor_Dark;
 
 			/* Use an inset box shadow to add a horizontal line behind the tabs.
 				Not needed for light theme because it uses the line color as the background. */
 			box-shadow: 0 -1px 0 0 $MenuLineColor_Dark inset;
 			}
-		.BlackTheme #MTabBar { 
-			background-color: $MenuBackgroundColor_Black; 
+		.BlackTheme #MTabBar {
+			background-color: $MenuBackgroundColor_Black;
 			box-shadow: 0 -1px 0 0 $MenuLineColor_Black inset;
 			}
 
@@ -1233,12 +1233,12 @@ td {
 		background-color: $MenuSelectedColor;
 		border-bottom: 2px solid $MenuFadedTextColor;
 		}
-		.DarkTheme .MFolder.Selected { 
-			background-color: $MenuSelectedColor_Dark; 
+		.DarkTheme .MFolder.Selected {
+			background-color: $MenuSelectedColor_Dark;
 			border-bottom-color: #707070;
 			}
-		.BlackTheme .MFolder.Selected { 
-			background-color: $MenuSelectedColor_Black; 
+		.BlackTheme .MFolder.Selected {
+			background-color: $MenuSelectedColor_Black;
 			border-bottom-color: #909090;
 			}
 
@@ -1277,44 +1277,44 @@ td {
 		width: 15px;
 		}
 	#NDSummary::-webkit-scrollbar-track,
-	#NDSummary::-webkit-scrollbar-corner {  
-		background-color: $SummaryBackgroundColor; 
+	#NDSummary::-webkit-scrollbar-corner {
+		background-color: $SummaryBackgroundColor;
 		}
-	#NDSummary::-webkit-scrollbar-thumb {  
-		background-color: $SummaryScrollbarThumbColor; 
+	#NDSummary::-webkit-scrollbar-thumb {
+		background-color: $SummaryScrollbarThumbColor;
 		border: 3px solid $SummaryBackgroundColor;
 		border-radius: 8px;
 		}
 
-	.DarkTheme #NDSummary { 
-		background-color: $SummaryBackgroundColor_Dark; 
+	.DarkTheme #NDSummary {
+		background-color: $SummaryBackgroundColor_Dark;
 		border-right-color: $SummaryContentBorderColor_Dark;
 		border-left-color: $MenuSummaryBorderColor_Dark;
 
 		scrollbar-color: $SummaryScrollbarThumbColor_Dark $SummaryScrollbarTrackColor_Dark;
 		}
 		.DarkTheme #NDSummary::-webkit-scrollbar-track,
-		.DarkTheme #NDSummary::-webkit-scrollbar-corner {  
-			background-color: $SummaryBackgroundColor_Dark; 
+		.DarkTheme #NDSummary::-webkit-scrollbar-corner {
+			background-color: $SummaryBackgroundColor_Dark;
 			}
-		.DarkTheme #NDSummary::-webkit-scrollbar-thumb {  
-			background-color: $SummaryScrollbarThumbColor_Dark; 
+		.DarkTheme #NDSummary::-webkit-scrollbar-thumb {
+			background-color: $SummaryScrollbarThumbColor_Dark;
 			border-color: $SummaryBackgroundColor_Dark;
 			}
 
-	.BlackTheme #NDSummary { 
-		background-color: $SummaryBackgroundColor_Black; 
+	.BlackTheme #NDSummary {
+		background-color: $SummaryBackgroundColor_Black;
 		border-right-color: $SummaryContentBorderColor_Black;
 		border-left-color: $MenuSummaryBorderColor_Black;
 
 		scrollbar-color: $SummaryScrollbarThumbColor_Black $SummaryScrollbarTrackColor_Black;
 		}
 		.BlackTheme #NDSummary::-webkit-scrollbar-track,
-		.BlackTheme #NDSummary::-webkit-scrollbar-corner {  
-			background-color: $SummaryBackgroundColor_Black; 
+		.BlackTheme #NDSummary::-webkit-scrollbar-corner {
+			background-color: $SummaryBackgroundColor_Black;
 			}
-		.BlackTheme #NDSummary::-webkit-scrollbar-thumb {  
-			background-color: $SummaryScrollbarThumbColor_Black; 
+		.BlackTheme #NDSummary::-webkit-scrollbar-thumb {
+			background-color: $SummaryScrollbarThumbColor_Black;
 			border-color: $SummaryBackgroundColor_Black;
 			}
 
@@ -1636,8 +1636,8 @@ td {
 			margin-top: .15em;
 			}
 			.DarkTheme .CDLParameterType,
-			.BlackTheme .CDLParameterType { 
-				opacity: 0.75; 
+			.BlackTheme .CDLParameterType {
+				opacity: 0.75;
 				}
 		td.CDLDefinition p {
 			text-indent: 0;
@@ -1766,7 +1766,7 @@ td {
 			.BlackTheme .NDPrototype::-webkit-scrollbar-track {  background-color: $ContentBackgroundColor_Black;  }
 			.BlackTheme .NDPrototype::-webkit-scrollbar-thumb {  background-color: #686868;  }
 
-	
+
 	.PParameterCells {
 		display: inline-grid;
 		}
@@ -1835,7 +1835,7 @@ td {
 				}
 
 		.WideForm .RightAlignOnWide,
-		.NarrowForm .RightAlignOnNarrow { 
+		.NarrowForm .RightAlignOnNarrow {
 			text-align: right;
 			padding-left: 0 !important;
 			text-indent: 0 !important;
@@ -2080,7 +2080,7 @@ td {
 
 $FunctionPrototypeBackground: #F4F4F4;
 $FunctionPrototypeBorder: #C9C9C9;
- 
+
 .TFunction .NDPrototype,
 .TOperator .NDPrototype {
 	background-color: $FunctionPrototypeBackground;
