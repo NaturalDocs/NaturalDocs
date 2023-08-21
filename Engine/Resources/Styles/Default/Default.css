@@ -476,7 +476,7 @@ td {
 
 	.TSEntry {
 		display: block;
-		padding: 6px 12px 6px 10px;
+		padding: 6px 12px 6px 6px;
 		min-height: 25px;
 		}
 
@@ -540,25 +540,25 @@ td {
 
 	.TSEntry_AutoLightDarkTheme {
 		color: $ContentTextColor_Dark;
-		background-image: linear-gradient(135deg, $ContentBackgroundColor 23px, $ContentBackgroundColor_Dark 37px);
+		background-image: linear-gradient(135deg, $ContentBackgroundColor 25px, $ContentBackgroundColor_Dark 27px);
 		}
 		.TSEntry_AutoLightDarkTheme:hover {
-			background-image: linear-gradient(135deg, $ContentBackgroundColor 23px, #4E4E4E 37px);
+			background-image: linear-gradient(135deg, $ContentBackgroundColor 25px, #4E4E4E 27px);
 			}
 		.TSEntry_AutoLightDarkTheme .TSEntryIcon {
-			background: url("images/theme-menu-light.svg") center center no-repeat;
+			background: url("images/theme-menu-auto.svg") center center no-repeat;
 			border-color: #A0A0A0;
 			}
 
 	.TSEntry_AutoLightBlackTheme {
 		color: $ContentTextColor_Black;
-		background-image: linear-gradient(135deg, $ContentBackgroundColor 23px, $ContentBackgroundColor_Black 37px);
+		background-image: linear-gradient(135deg, $ContentBackgroundColor 25px, $ContentBackgroundColor_Black 27px);
 		}
 		.TSEntry_AutoLightBlackTheme:hover {
-			background-image: linear-gradient(135deg, $ContentBackgroundColor 23px, #3E3E3E 37px);
+			background-image: linear-gradient(135deg, $ContentBackgroundColor 25px, #3E3E3E 27px);
 			}
 		.TSEntry_AutoLightBlackTheme .TSEntryIcon {
-			background: url("images/theme-menu-light.svg") center center no-repeat;
+			background: url("images/theme-menu-auto.svg") center center no-repeat;
 			border-color: #A0A0A0;
 			}
 
