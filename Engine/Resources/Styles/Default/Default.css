@@ -546,8 +546,8 @@ td {
 			background-image: linear-gradient(135deg, $ContentBackgroundColor 25px, #4E4E4E 27px);
 			}
 		.TSEntry_AutoLightDarkTheme .TSEntryIcon {
-			background: url("images/theme-menu-auto.svg") center center no-repeat;
-			border-color: #A0A0A0;
+			background: url("images/theme-menu-autolightdark.svg") center center no-repeat;
+			border-color: #A0A0A0 #DCDCDC #DCDCDC #A0A0A0;
 			}
 
 	.TSEntry_AutoLightBlackTheme {
@@ -558,8 +558,8 @@ td {
 			background-image: linear-gradient(135deg, $ContentBackgroundColor 25px, #3E3E3E 27px);
 			}
 		.TSEntry_AutoLightBlackTheme .TSEntryIcon {
-			background: url("images/theme-menu-auto.svg") center center no-repeat;
-			border-color: #A0A0A0;
+			background: url("images/theme-menu-autolightblack.svg") center center no-repeat;
+			border-color: #A0A0A0 #F4F4F4 #F4F4F4 #A0A0A0;
 			}
 
 
