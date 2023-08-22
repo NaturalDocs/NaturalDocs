@@ -1270,7 +1270,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 							}
 
 						onLoadStatementsForType.Append("      ");
-						onLoadStatementsForType.Append(onLoadStatement.Statement);
+						onLoadStatementsForType.Append(onLoadStatement.StatementAfterSubstitutions);
 
 						if (onLoadStatementsForType[ onLoadStatementsForType.Length - 1 ] != ';')
 							{  onLoadStatementsForType.Append(';');  }

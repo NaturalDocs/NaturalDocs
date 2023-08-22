@@ -27,6 +27,10 @@ _______________________________________________________________________________
 		to certain page types or applied to all of them.  If you have a non-trivial amount of code to run you should define
 		a function to be called from here instead.
 
+		OnLoad values can contain "$Locale{identifier}" strings, where the identifier is one from the Engine.NaturalDocs
+		locale file ([ND Dir]/Translations/NaturalDocs.Engine.[locale].txt).  It will be replaced with the value from that file,
+		allowing substitutions from the user's native language.
+
 
 	Topic: Link
 

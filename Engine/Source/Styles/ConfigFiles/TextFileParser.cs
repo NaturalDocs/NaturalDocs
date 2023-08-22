@@ -37,6 +37,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles.ConfigFiles
 			linkRegex = new Regex.Styles.Link();
 			onLoadRegex = new Regex.Styles.OnLoad();
 			homePageRegex = new Regex.Styles.HomePage();
+			localeSubstitutionRegex = new Regex.Styles.LocaleSubstitution();
 			}
 
 
@@ -133,7 +134,14 @@ namespace CodeClear.NaturalDocs.Engine.Styles.ConfigFiles
 								{  pageType = pageTypeTemp.Value;  }
 							}
 
-						style.AddOnLoad(value, file.PropertyLocation, pageType);
+						string valueWithSubstitutions = localeSubstitutionRegex.Replace(value,
+							delegate (System.Text.RegularExpressions.Match match)
+								{
+								return Engine.Locale.SafeGet("NaturalDocs.Engine", match.Groups[1].ToString(), match.ToString());
+								}
+							);
+
+						style.AddOnLoad(value, valueWithSubstitutions, file.PropertyLocation, pageType);
 						continue;
 						}
 
@@ -332,6 +340,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles.ConfigFiles
 		protected Regex.Styles.Link linkRegex;
 		protected Regex.Styles.OnLoad onLoadRegex;
 		protected Regex.Styles.HomePage homePageRegex;
+		protected Regex.Styles.LocaleSubstitution localeSubstitutionRegex;
 
 		}
 	}

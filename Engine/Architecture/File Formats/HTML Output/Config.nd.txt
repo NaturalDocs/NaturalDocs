@@ -33,7 +33,7 @@ _______________________________________________________________________________
 
 		> [String: Style Path]
 		>    [String: Inherit] ... [String: null]
-		>    [String: OnLoad] [Byte: Page Type] ... [String: null]
+		>    [String: OnLoad] [String: OnLoad After Substitutions] [Byte: Page Type] ... [String: null]
 		>    [String: Link] [Byte: Page Type] ... [String: null]
 		>    [String: Home Page Path (absolute) or null]
 		>
@@ -70,6 +70,9 @@ _______________________________________________________________________________
 
 Group: Revisions
 _______________________________________________________________________________
+
+	Topic: 2.3
+		- Added OnLoad After Substitutions
 
 	Topic: 2.2
 		- Added the project title, subtitle, copyright, timestamp code, and home page.

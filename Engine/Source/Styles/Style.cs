@@ -91,7 +91,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 		/* Function: AddOnLoad
 		 */
-		public void AddOnLoad (string onLoadString, Config.PropertyLocation propertyLocation, PageType type = PageType.All)
+		public void AddOnLoad (string onLoadString, string onLoadStringAfterSubstitutions, Config.PropertyLocation propertyLocation, PageType type = PageType.All)
 			{
 			if (onLoad == null)
 				{  onLoad = new List<OnLoadStatement>();  }
@@ -99,6 +99,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 			OnLoadStatement entry = new OnLoadStatement();
 			entry.Type = type;
 			entry.Statement = onLoadString;
+			entry.StatementAfterSubstitutions = onLoadStringAfterSubstitutions;
 			entry.PropertyLocation = propertyLocation;
 
 			onLoad.Add(entry);
@@ -107,9 +108,9 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 		/* Function: AddOnLoad
 		 */
-		public void AddOnLoad (string onLoadString, Config.PropertySource propertySource, PageType type = PageType.All)
+		public void AddOnLoad (string onLoadString, string onLoadStringAfterSubstitutions, Config.PropertySource propertySource, PageType type = PageType.All)
 			{
-			AddOnLoad(onLoadString, new Config.PropertyLocation(propertySource), type);
+			AddOnLoad(onLoadString, onLoadStringAfterSubstitutions, new Config.PropertyLocation(propertySource), type);
 			}
 
 
@@ -428,10 +429,11 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		{
 		public PageType Type;
 		public string Statement;
+		public string StatementAfterSubstitutions;
 		public Config.PropertyLocation PropertyLocation;
 
 		public bool HasSameProperties (OnLoadStatement other)
-			{  return (Type == other.Type && Statement == other.Statement);  }
+			{  return (Type == other.Type && Statement == other.Statement && StatementAfterSubstitutions == other.StatementAfterSubstitutions);  }
 		}
 
 

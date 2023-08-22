@@ -134,14 +134,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 							}
 
 
-						// [String: OnLoad] [Byte: Page Type] ... [String: null]
+						// [String: OnLoad] [String: OnLoad After Substitutions] [Byte: Page Type] ... [String: null]
 
 						string onLoadStatement = binaryFile.ReadString();
 
 						while (onLoadStatement != null)
 							{
+							string onLoadAfterSubstitutions = binaryFile.ReadString();
 							Engine.Styles.PageType pageType = (Engine.Styles.PageType)binaryFile.ReadByte();
-							style.AddOnLoad(onLoadStatement, Config.PropertySource.PreviousRun, pageType);
+
+							style.AddOnLoad(onLoadStatement, onLoadAfterSubstitutions, Config.PropertySource.PreviousRun, pageType);
 
 							onLoadStatement = binaryFile.ReadString();
 							}
@@ -285,13 +287,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 					binaryFile.WriteString(null);
 
 
-					// [String: OnLoad] [Byte: Page Type] ... [String: null]
+					// [String: OnLoad] [String: OnLoad After Substitutions] [Byte: Page Type] ... [String: null]
 
 					if (style.OnLoad != null)
 						{
 						foreach (var onLoadStatement in style.OnLoad)
 							{
 							binaryFile.WriteString(onLoadStatement.Statement);
+							binaryFile.WriteString(onLoadStatement.StatementAfterSubstitutions);
 							binaryFile.WriteByte((byte)onLoadStatement.Type);
 							}
 						}
