@@ -12,7 +12,8 @@
 
 
 using System;
-
+using System.Runtime.InteropServices;
+using System.Text;
 
 namespace CodeClear.NaturalDocs.Engine
 	{
@@ -30,6 +31,52 @@ namespace CodeClear.NaturalDocs.Engine
 			// These two values are used so often that they're calculated here and cached instead of calculated on each use.
 			ignoreCaseInPaths = OnWindows;
 			pathSeparator = (OnWindows ? '\\' : '/');
+			}
+
+
+
+		// Group: Native Functions
+		// __________________________________________________________________________
+
+
+		/* Function: sysctlbyname
+		 * Used to get OS properties on macOS and Linux.  The library will only be loaded on the first usage attempt,
+		 * so it's safe to have this in Windows as long as it's not called.
+		 */
+		[DllImport ("libc")]
+		static private extern int sysctlbyname ( [MarshalAs(UnmanagedType.LPStr)] string property, byte[] valueBuffer, ref Int64 valueBufferLength, IntPtr newValueBuffer, uint newValueBufferLength);
+
+
+		/* Function: SysCtlByName
+		 * A version of <sysctlbyname> that encapsulates all the native conversions.  It will return null if it can't retrieve
+		 * a value or you're not on macOS or Linux.
+		 */
+		static private string SysCtlByName (string property)
+			{
+			if (!OnUnix)
+				{  return null;  }
+
+		    try
+				{
+				byte[] valueBuffer;
+				Int64 valueBufferLength = 0;
+
+				// First pass with valueBuffer as null just retrieves the value length
+				if (sysctlbyname(property, null, ref valueBufferLength, IntPtr.Zero, 0) == 0)
+					{
+					valueBuffer = new byte[valueBufferLength];
+
+					// Second pass gets the actual value
+					if (sysctlbyname(property, valueBuffer, ref valueBufferLength, IntPtr.Zero, 0) == 0)
+						{
+						return Encoding.UTF8.GetString(valueBuffer);
+						}
+					}
+				}
+			catch
+				{  	}
+
+			return null;
 			}
 
 
@@ -331,7 +378,47 @@ namespace CodeClear.NaturalDocs.Engine
 				if (!OnUnix)
 					{  return null;  }
 
-				return Environment.OSVersion.VersionString;
+				string result = null;
+
+		        try
+					{
+					// Are we on a Mac?
+					if (SysCtlByName("kern.ostype").Contains("Darwin"))
+						{
+						string osVersion = SysCtlByName("kern.osproductversion");  // may be null
+						string compatOSVersion = SysCtlByName("kern.osproductversioncompat");  // if osVersion is the same, we may be getting a fake compatibility value
+						string darwinVersion = SysCtlByName("kern.osrelease");
+						string cpu = SysCtlByName("machdep.cpu.brand_string");
+
+						if (cpu.Contains("Intel"))
+							{  cpu = "Intel " + (Is64Bit ? "x64" : "x86");  }
+						// Apple silicon already returns a clean value so we can use it unedited
+
+						result = "macOS";
+
+						if (osVersion != null && (compatOSVersion == null || osVersion != compatOSVersion))
+							{
+							result += " " + osVersion;
+
+							if (cpu != null)
+								{  result += " (" + cpu + ")";  }
+							}
+						else // no osVersion
+							{
+							result += " (Darwin " + darwinVersion;
+
+							if (cpu != null)
+								{  result += ", " + cpu;  }
+
+							result += ")";
+							}
+						}
+					}
+				catch
+					{  	result = null; }
+
+				// Fallback value
+				return result ?? Environment.OSVersion.VersionString;
 				}
 			}
 
