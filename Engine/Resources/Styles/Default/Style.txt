@@ -50,7 +50,7 @@ Link: Default.css
 # OnLoad
 # ------------------------------------------------------------------------
 
-Frame OnLoad: NDThemes.SetAvailableThemes([ ["Light Theme", "Light"], ["Dark Theme", "Dark"], ["Black Theme", "Black"], ["Auto Light/Dark", "Auto:Light/Dark"], ["Auto Light/Black", "Auto:Light/Black"] ]);
+Frame OnLoad: NDThemes.SetAvailableThemes([ ["$Locale{Theme.Light}", "Light"], ["$Locale{Theme.Dark}", "Dark"], ["$Locale{Theme.Black}", "Black"], ["$Locale{Theme.AutoLightDark}", "Auto:Light/Dark"], ["$Locale{Theme.AutoLightBlack}", "Auto:Light/Black"] ]);
 
 
 # You can add code to the page's OnLoad handler like this:

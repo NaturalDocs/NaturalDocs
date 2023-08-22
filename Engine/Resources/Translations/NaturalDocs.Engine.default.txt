@@ -40,6 +40,12 @@ HTML.JavaScriptRequiredNotice: Please enable JavaScript to view this documentati
 
 HTML.Close: Close
 
+Theme.Light: Light Theme
+Theme.Dark: Dark Theme
+Theme.Black: Black Theme
+Theme.AutoLightDark: Auto Light/Dark
+Theme.AutoLightBlack: Auto Light/Black
+
 Menu.Files: Files
 Menu.Classes: Classes
 Menu.Database: Database
