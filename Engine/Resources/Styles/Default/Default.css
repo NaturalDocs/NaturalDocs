@@ -172,6 +172,11 @@
 	$DefinitionSpacing: .5rem;
 	$DiagramSpacing: 1rem;
 
+	$MaxParagraphWidth: 65rem;
+	$MaxParagraphWidthMinusIndent: 62.75rem;
+	$MaxParagraphWidthMinus50pctIndent: 63.875rem;
+	$MaxParagraphWidthMinus150pctIndent: 61.625rem;
+
 	$CodePadding: .55rem .85rem .6rem .85rem;
 
 	$ClassPrototypeIndent: 1.75rem;
@@ -1580,6 +1585,7 @@ td {
 	.CTopic p {
 		margin: 0 0 $ParagraphSpacing 0;
 		text-indent: $Indent;
+		max-width: $MaxParagraphWidth;
 		}
 
 	.CTopic a:link,
@@ -1619,10 +1625,12 @@ td {
 		}
 	.CTopic li p {
 		text-indent: 0;
+		max-width: $MaxParagraphWidthMinus150pctIndent;
 		}
 
 	table.CDefinitionList {
 		margin: 0 0 0 $Indent;
+		max-width: $MaxParagraphWidthMinusIndent;
 		}
 		td.CDLEntry {
 			font-weight: $semibold;
