@@ -2736,6 +2736,9 @@ $FadedInterfacePrototypeBorderB_Black: #4C4C65;
 	.DarkTheme .SHKeyword { color: #F0B0B0; }
 	.BlackTheme .SHKeyword { color: #FFB8B8; }
 
+	/* Soften the colors a bit when they're on a white background */
+	.LightTheme .CCode .SHKeyword { color: #983030; }
+
 .SHNumber,
 .SHString {
 	color: #000088;
@@ -2744,6 +2747,9 @@ $FadedInterfacePrototypeBorderB_Black: #4C4C65;
 	.DarkTheme .SHString { color: #B0B0F0; }
 	.BlackTheme .SHNumber,
 	.BlackTheme .SHString { color: #B8B8FF; }
+
+	.LightTheme .CCode .SHNumber,
+	.LightTheme .CCode .SHString { color: #3030A0; }
 
 .SHPreprocessingDirective {
 	color: $ContentTextColor;
@@ -2757,6 +2763,8 @@ $FadedInterfacePrototypeBorderB_Black: #4C4C65;
 	}
 	.DarkTheme .SHMetadata { color: #C0C080; }
 	.BlackTheme .SHMetadata { color: #C8C888; }
+
+	.LightTheme .CCode .SHMetadata { color: #989830; }
 
 	/* The normal color is too light to easily read at .5 opacity */
 	/* The dark and black theme colors are fine at .7 opacity, so only apply this to light */
