@@ -115,7 +115,8 @@ var NDThemes = new function ()
 
 		// Apply auto-themes
 
-		if (newUserSelectedThemeID.startsWith("Auto:"))
+		if (newUserSelectedThemeID != undefined &&
+			newUserSelectedThemeID.startsWith("Auto:"))
 			{
 			var slashIndex = newUserSelectedThemeID.indexOf("/", 5);
 
@@ -385,7 +386,8 @@ var NDThemes = new function ()
 	this.OnSystemThemeChange = function (event)
 		{
 		// This event handler may still be active when not using an auto-theme, so check every time
-		if (this.userSelectedThemeID.startsWith("Auto:"))
+		if (this.userSelectedThemeID != undefined &&
+			this.userSelectedThemeID.startsWith("Auto:"))
 			{  this.SetCurrentTheme(this.userSelectedThemeID, false);  }
 		};
 
