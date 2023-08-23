@@ -1,7 +1,7 @@
 ﻿/*
 	Include in output:
 
-	This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
+	This file is part of Natural Docs, which is Copyright © 2003-2023 Code Clear LLC.
 	Natural Docs is licensed under version 3 of the GNU Affero General Public
 	License (AGPL).  Refer to License.txt or www.naturaldocs.org for the
 	complete details.
@@ -71,7 +71,7 @@ var NDSearch = new function ()
 		this.searchFieldKeyEventHandler = NDSearch.OnSearchFieldKey.bind(NDSearch);
 		this.searchFieldChangeEventHandler = NDSearch.OnSearchFieldChange.bind(NDSearch);
 
-		
+
 		// DOM elements
 
 		this.domSearchField = document.getElementById("NDSearchField");
@@ -407,7 +407,7 @@ var NDSearch = new function ()
 				var domSelectedEntry = document.getElementById("SeSelectedEntry");
 
 				if (domSelectedEntry.classList.contains("SeParent") && domSelectedEntry.classList.contains("open"))
-					{  
+					{
 					this.ActivateLinkFromKeyboard(domSelectedEntry);
 					event.preventDefault();
 					}
@@ -422,7 +422,7 @@ var NDSearch = new function ()
 				var domSelectedEntry = document.getElementById("SeSelectedEntry");
 
 				if (domSelectedEntry.classList.contains("SeParent") && domSelectedEntry.classList.contains("closed"))
-					{  
+					{
 					this.ActivateLinkFromKeyboard(domSelectedEntry);
 					event.preventDefault();
 					}
@@ -1447,8 +1447,8 @@ var NDSearch = new function ()
 		A bound function to call <OnSearchFieldChange()> with NDSearch always as "this".
 	*/
 
-	
-	
+
+
 	// Group: UI Variables
 	// ________________________________________________________________________
 

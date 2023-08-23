@@ -1,7 +1,7 @@
 ﻿/*
 	Include in output:
 
-	This file is part of Natural Docs, which is Copyright © 2003-2022 Code Clear LLC.
+	This file is part of Natural Docs, which is Copyright © 2003-2023 Code Clear LLC.
 	Natural Docs is licensed under version 3 of the GNU Affero General Public
 	License (AGPL).  Refer to License.txt or www.naturaldocs.org for the
 	complete details.
@@ -60,9 +60,9 @@ var NDSummary = new function ()
 		this.entryMouseEnterEventHandler = NDSummary.OnEntryMouseEnter.bind(NDSummary);
 		this.entryMouseLeaveEventHandler = NDSummary.OnEntryMouseLeave.bind(NDSummary);
 
-		
+
 		// Create tooltip DOM element
-		
+
 		this.toolTipHolder = document.createElement("div");
 		this.toolTipHolder.style.display = "none";
 		this.toolTipHolder.style.position = "fixed";
