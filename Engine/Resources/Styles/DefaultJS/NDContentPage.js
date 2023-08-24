@@ -92,16 +92,16 @@ var NDContentPage = new function ()
 
 		var queryIndex = ttLocation.indexOf('?');
 		if (queryIndex != -1)
-			{  ttLocation = ttLocation.substr(0, queryIndex);  }
+			{  ttLocation = ttLocation.substring(0, queryIndex);  }
 		else
 			{
 			var hashIndex = ttLocation.indexOf('#');
 			if (hashIndex != -1)
-				{  ttLocation = ttLocation.substr(0, hashIndex);  }
+				{  ttLocation = ttLocation.substring(0, hashIndex);  }
 			}
 
 		// Replace .html with -ToolTips.js
-		ttLocation = ttLocation.substr(0, ttLocation.length - 5) + "-ToolTips.js";
+		ttLocation = ttLocation.substring(0, ttLocation.length - 5) + "-ToolTips.js";
 
 		NDCore.LoadJavaScript(ttLocation);
 		};
@@ -169,7 +169,7 @@ var NDContentPage = new function ()
 		if (element.id.indexOf("NDPrototype") == 0)
 			{
 			// Extract 234 from "NDPrototype234".
-			var id = parseInt(element.id.substr(11), 10);
+			var id = parseInt(element.id.substring(11), 10);
 
 			if (id != NaN && id > 0)
 				{  return id;  }

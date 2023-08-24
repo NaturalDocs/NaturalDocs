@@ -310,9 +310,9 @@ var NDSearch = new function ()
 		{
 		var address = domLink.getAttribute("href");
 
-		if (address.substr(0, 11) == "javascript:")
+		if (address.substring(0, 11) == "javascript:")
 			{
-			address = address.substr(11);
+			address = address.substring(11);
 
 			// Change false to true to let ToggleParent() know we're doing it from the keyboard.
 			// DEPENDENCY: This depends on the exact JavaScript BuildKeyword() generates for parents.
@@ -607,7 +607,7 @@ var NDSearch = new function ()
 		var lastChar = normalizedSearchText.charAt(normalizedSearchText.length - 1);
 
 		if (lastChar == ":" || lastChar == "-")
-			{  interpretations.push(normalizedSearchText.substr(0, normalizedSearchText.length - 1) + ".");  }
+			{  interpretations.push(normalizedSearchText.substring(0, normalizedSearchText.length - 1) + ".");  }
 
 
 		return interpretations;
@@ -639,7 +639,7 @@ var NDSearch = new function ()
 				while (prefixIndex < this.allPrefixes.length)
 					{
 					if (this.allPrefixes[prefixIndex].length >= searchPrefix.length &&
-						this.allPrefixes[prefixIndex].substr(0, searchPrefix.length) == searchPrefix)
+						this.allPrefixes[prefixIndex].substring(0, searchPrefix.length) == searchPrefix)
 						{
 						matchingPrefixes.push(this.allPrefixes[prefixIndex]);
 						prefixIndex++;
@@ -1098,7 +1098,7 @@ var NDSearch = new function ()
 		for (var i = 0; i < prefix.length; i++)
 			{
 			var charValue = "0000" + prefix.charCodeAt(i).toString(16);
-			hex += charValue.substr(charValue.length - 4, 4);
+			hex += charValue.substring(charValue.length - 4, charValue.length);
 			}
 
 		return hex;

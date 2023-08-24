@@ -120,7 +120,7 @@ var NDCore = new function ()
 			{  return "";  }
 
 		if (hashString.charAt(0) == "#")
-			{  hashString = hashString.substr(1);  }
+			{  hashString = hashString.substring(1);  }
 
 		hashString = decodeURI(hashString);
 		return hashString;
@@ -352,7 +352,7 @@ function NDLocation (hashString)
 			}
 		else
 			{
-			this.prefix = this.hashString.substr(0, prefixSeparator);
+			this.prefix = this.hashString.substring(0, prefixSeparator);
 
 			// The second colon, which separates the path from the member.  This may not exist if the path just goes
 			// to a file or class and not one of its members.
@@ -366,8 +366,8 @@ function NDLocation (hashString)
 				}
 			else
 				{
-				this.path = this.hashString.substr(0, memberSeparator);
-				this.member = this.hashString.substr(memberSeparator + 1);
+				this.path = this.hashString.substring(0, memberSeparator);
+				this.member = this.hashString.substring(memberSeparator + 1);
 
 				if (this.member == "")
 					{  this.member = undefined;  }
@@ -434,13 +434,13 @@ function NDLocation (hashString)
 			else if (locationInfo[$LocationInfo_Type] == $LocationInfoType_LanguageSpecificHierarchy)
 				{  path += '/' + prefixParam;  }  // classes/CSharp
 
-			path += '/' + this.path.substr(prefixSeparator + 1);
+			path += '/' + this.path.substring(prefixSeparator + 1);
 
 			if (locationInfo[$LocationInfo_Type] == $LocationInfoType_File)
 				{
 				var lastSeparator = path.lastIndexOf('/');
-				var folder = path.substr(0, lastSeparator + 1);
-				var file = path.substr(lastSeparator + 1);
+				var folder = path.substring(0, lastSeparator + 1);
+				var file = path.substring(lastSeparator + 1);
 
 				// Need to use replace() with a regex because older versions of Safari don't have replaceAll()
 				file = file.replace(/\./g, '-');
