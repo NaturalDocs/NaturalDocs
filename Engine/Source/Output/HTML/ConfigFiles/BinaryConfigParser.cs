@@ -56,8 +56,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 					{
 					result = false;
 					}
-				else if (binaryFile.Version.IsAtLeastRelease("2.2") == false &&
-						   binaryFile.Version.IsSamePreRelease(Engine.Instance.Version) == false)
+				else if (!binaryFile.Version.IsAtLeastRelease("2.2") &&  // we can support the change in 2.3
+						  !binaryFile.Version.IsSamePreRelease(Engine.Instance.Version))
 					{
 					binaryFile.Close();
 					result = false;
@@ -140,7 +140,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 
 						while (onLoadStatement != null)
 							{
-							string onLoadAfterSubstitutions = binaryFile.ReadString();
+							string onLoadAfterSubstitutions;
+
+							// OnLoad After Substitutions is new for 2.3.  Since there were no substitutions in earlier versions, use
+							// the same value for them.
+							if (binaryFile.Version.IsAtLeastRelease("2.3"))
+								{  onLoadAfterSubstitutions = binaryFile.ReadString();  }
+							else
+								{  onLoadAfterSubstitutions = onLoadStatement;  }
+
 							Engine.Styles.PageType pageType = (Engine.Styles.PageType)binaryFile.ReadByte();
 
 							style.AddOnLoad(onLoadStatement, onLoadAfterSubstitutions, Config.PropertySource.PreviousRun, pageType);
