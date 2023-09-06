@@ -315,6 +315,15 @@ Language: Lua
    Variable Prototype Enders: ; \n =
 
 
+Language: PowerShell
+
+	Extensions: ps1 psm1
+
+	Line Comment: #
+
+	Function Prototype Ender: {
+
+
 # These settings define the languages Natural Docs knows how to parse.  Note
 # that all lists are space separated so that commas can be used as values.
 #
