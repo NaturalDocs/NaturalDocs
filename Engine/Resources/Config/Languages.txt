@@ -324,6 +324,17 @@ Language: PowerShell
 	Function Prototype Ender: {
 
 
+Language: PowerBuilder
+
+	Extensions: sra srd srf srm srq srp srs sru srw
+
+	Line Comment: //
+	Block Comment: /* */
+
+	Line Extender: &
+	Case Sensitive: No
+
+
 # These settings define the languages Natural Docs knows how to parse.  Note
 # that all lists are space separated so that commas can be used as values.
 #

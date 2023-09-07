@@ -97,7 +97,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			Language powershell = new Language("PowerShell");
 				powershell.Parser = new Parsers.PowerShell(engineInstance, powershell);
 
-			predefinedLanguages = new Language[] { textFile, shebangScript, cSharp, systemVerilog, perl, python, ruby, sql, java, lua, php, powershell };
+			Language powerbuilder = new Language("PowerBuilder");
+				powerbuilder.Parser = new Parsers.PowerBuilder(engineInstance, powerbuilder);
+
+			predefinedLanguages = new Language[] { textFile, shebangScript, cSharp, systemVerilog, perl, python, ruby, sql,
+																		  java, lua, php, powershell, powerbuilder };
 			}
 
 
