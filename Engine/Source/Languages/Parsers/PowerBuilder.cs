@@ -12,6 +12,7 @@
 
 
 using System;
+using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.Tokenization;
 
 
@@ -28,6 +29,69 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		public PowerBuilder (Engine.Instance engineInstance, Language language) : base (engineInstance, language)
 			{
+			}
+
+
+		/* Function: SyntaxHighlight
+		 */
+		override public void SyntaxHighlight (Tokenizer source)
+			{
+			TokenIterator iterator = source.FirstToken;
+
+			while (iterator.IsInBounds)
+				{
+				if (TryToSkipKeyword(ref iterator, ParseMode.SyntaxHighlight) ||
+					TryToSkipComment(ref iterator, ParseMode.SyntaxHighlight) ||
+					TryToSkipString(ref iterator, ParseMode.SyntaxHighlight) ||
+					TryToSkipNumber(ref iterator, ParseMode.SyntaxHighlight))
+					{
+					}
+				else
+					{  iterator.Next();  }
+				}
+			}
+
+
+
+		// Group: Parsing Functions
+		// __________________________________________________________________________
+
+
+		/* Function: TryToSkipKeyword
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipKeyword (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			if (iterator.FundamentalType == FundamentalType.Text &&
+				powerbuilderKeywords.Contains(iterator.String))
+				{
+				if (mode == ParseMode.SyntaxHighlight)
+					{  iterator.SyntaxHighlightingType = SyntaxHighlightingType.Keyword;  }
+
+				iterator.Next();
+				return true;
+				}
+
+			// "_debug" is the only keyword with an underscore anywhere in it
+			else if (iterator.MatchesAcrossTokens("_debug"))
+				{
+				TokenIterator lookahead = iterator;
+				lookahead.Next(2);
+
+				if (mode == ParseMode.SyntaxHighlight)
+					{  iterator.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.Keyword);  }
+
+				iterator = lookahead;
+				return true;
+				}
+
+			else
+				{  return false;  }
 			}
 
 
@@ -71,5 +135,25 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			return true;
 			}
 
-		}
+
+
+		// Group: Static Variables
+		// __________________________________________________________________________
+
+		/* var: powerbuliderKeywords
+		 */
+		static protected StringSet powerbuilderKeywords = new StringSet (KeySettings.Literal, new string[] {
+
+			"alias", "and", "autoinstantiate", "call", "case", "catch", "choose", "close", "commit", "connect", "constant", "continue", "create",
+			"cursor", "declare", "delete", "describe", "descriptor", "destroy", "disconnect", "do", "dynamic", "else", "elseif", "end", "enumerated",
+			"event", "execute", "exit", "external", "false", "fetch", "finally", "first", "for", "forward", "from", "function", "global", "goto", "halt",
+			"if", "immediate", "indirect", "insert", "into", "intrinsic", "is", "last", "library", "loop", "namespace", "native", "next", "not", "of", "on",
+			"open", "or", "parent", "post", "prepare", "prior", "private", "privateread", "privatewrite", "procedure", "protected", "protectedread",
+			"protectedwrite", "prototypes", "public", "readonly", "ref", "return", "rollback", "rpcfunc", "select", "selectblob", "shared", "static",
+			"step", "subroutine", "super", "system", "systemread", "systemwrite", "then", "this", "throw", "throws", "to", "trigger", "true", "try",
+			"type", "until", "update", "updateblob", "using", "variables", "while", "with", "within", "xor", "_debug"
+
+			});
+
+	}
 	}
