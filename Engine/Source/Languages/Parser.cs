@@ -1364,7 +1364,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 */
 		virtual public bool IsBuiltInType (string type)
 			{
-			return IsKeyword(type);
+			return typeKeywords.Contains(type);
 			}
 
 
@@ -4474,15 +4474,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		// __________________________________________________________________________
 
 
-		/* Function: IsKeyword
-		 * Returns whether the string is a keyword such as "class".
-		 */
-		protected bool IsKeyword (string text)
-			{
-			return defaultKeywords.Contains(text);
-			}
-
-
 		/* Function: TryToGetBlockComment
 		 *
 		 * If the iterator is on a line that starts with the opening symbol of a block comment, this function moves the iterator
@@ -5470,6 +5461,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			"try", "catch", "throw", "finally", "throws", "lock", "eval",
 
 			"new", "delete", "sizeof", "typeof"
+			});
+
+
+		/* var: typeKeywords
+		 * A set of the default keywords used as types across all languages.
+		 */
+		static protected StringSet typeKeywords = new StringSet (KeySettings.Literal, new string[] {
+			"int", "int8", "int16", "int32", "int64", "uint", "uint8", "uint16", "uint32", "uint64",
+			"signed", "unsigned", "integer", "long", "ulong", "short", "ushort", "real", "float", "double", "decimal",
+			"float32", "float64", "float80", "void", "char", "string", "wchar", "wchar_t", "byte", "ubyte", "sbyte",
+			"bool", "boolean"
 			});
 
 
