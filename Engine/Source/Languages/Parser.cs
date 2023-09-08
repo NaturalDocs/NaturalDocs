@@ -1029,24 +1029,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{
 				if (TryToSkipComment(ref iterator, ParseMode.SyntaxHighlight) ||
 					TryToSkipString(ref iterator, ParseMode.SyntaxHighlight) ||
-					TryToSkipNumber(ref iterator, ParseMode.SyntaxHighlight))
+					TryToSkipNumber(ref iterator, ParseMode.SyntaxHighlight) ||
+					TryToSkipKeyword(ref iterator, ParseMode.SyntaxHighlight))
 					{
-					}
-				else if (iterator.FundamentalType == FundamentalType.Text || iterator.Character == '_')
-					{
-					TokenIterator endOfIdentifier = iterator;
-
-					do
-						{  endOfIdentifier.Next();  }
-					while (endOfIdentifier.FundamentalType == FundamentalType.Text ||
-							 endOfIdentifier.Character == '_');
-
-					string identifier = source.TextBetween(iterator, endOfIdentifier);
-
-					if (IsKeyword(identifier))
-						{  iterator.SetSyntaxHighlightingTypeByCharacters(SyntaxHighlightingType.Keyword, identifier.Length);  }
-
-					iterator = endOfIdentifier;
 					}
 				else
 					{  iterator.Next();  }
@@ -5005,6 +4990,33 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{  startOfNumber.SetSyntaxHighlightingTypeBetween(iterator, SyntaxHighlightingType.Number);  }
 
 			return true;
+			}
+
+
+		/* Function: TryToSkipKeyword
+		 *
+		 * If the iterator is on a keyword, moves the iterator past it and returns true.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		virtual protected bool TryToSkipKeyword (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			// All the default keywords are a single text token, no underscores or other symbols
+			if (iterator.FundamentalType == FundamentalType.Text &&
+				defaultKeywords.Contains(iterator.String))
+				{
+				if (mode == ParseMode.SyntaxHighlight)
+					{  iterator.SyntaxHighlightingType = SyntaxHighlightingType.Keyword;  }
+
+				iterator.Next();
+				return true;
+				}
+			else
+				{  return false;  }
 			}
 
 
