@@ -42,20 +42,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				if (TryToSkipComment(ref iterator, ParseMode.SyntaxHighlight) ||
 					TryToSkipString(ref iterator, ParseMode.SyntaxHighlight) ||
 					TryToSkipNumber(ref iterator, ParseMode.SyntaxHighlight) ||
+					TryToSkipKeyword(ref iterator, ParseMode.SyntaxHighlight) ||
 					TryToSkipAnnotation(ref iterator, ParseMode.SyntaxHighlight))
 					{
-					}
-				else if (iterator.FundamentalType == FundamentalType.Text || iterator.Character == '_')
-					{
-					TokenIterator endOfIdentifier = iterator;
-
-					TryToSkipUnqualifiedIdentifier(ref endOfIdentifier);
-					string identifier = source.TextBetween(iterator, endOfIdentifier);
-
-					if (defaultKeywords.Contains(identifier))
-						{  iterator.SetSyntaxHighlightingTypeByCharacters(SyntaxHighlightingType.Keyword, identifier.Length);  }
-
-					iterator = endOfIdentifier;
 					}
 				else
 					{  iterator.Next();  }

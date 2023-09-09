@@ -32,31 +32,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
-		/* Function: SyntaxHighlight
-		 */
-		override public void SyntaxHighlight (Tokenizer source)
-			{
-			TokenIterator iterator = source.FirstToken;
-
-			while (iterator.IsInBounds)
-				{
-				if (TryToSkipKeyword(ref iterator, ParseMode.SyntaxHighlight) ||
-					TryToSkipComment(ref iterator, ParseMode.SyntaxHighlight) ||
-					TryToSkipString(ref iterator, ParseMode.SyntaxHighlight) ||
-					TryToSkipNumber(ref iterator, ParseMode.SyntaxHighlight))
-					{
-					}
-				else
-					{  iterator.Next();  }
-				}
-			}
-
-
-
-		// Group: Parsing Functions
-		// __________________________________________________________________________
-
-
 		/* Function: TryToSkipKeyword
 		 *
 		 * Supported Modes:
@@ -65,7 +40,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipKeyword (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+		override protected bool TryToSkipKeyword (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
 			if (iterator.FundamentalType == FundamentalType.Text &&
 				powerbuilderKeywords.Contains(iterator.String))

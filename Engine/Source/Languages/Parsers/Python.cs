@@ -44,20 +44,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				if (TryToSkipComment(ref iterator, ParseMode.SyntaxHighlight) ||
 					TryToSkipString(ref iterator, ParseMode.SyntaxHighlight) ||
 					TryToSkipNumber(ref iterator, ParseMode.SyntaxHighlight) ||
+					TryToSkipKeyword(ref iterator, ParseMode.SyntaxHighlight) ||
 					TryToSkipDecorator(ref iterator, ParseMode.SyntaxHighlight))
 					{
-					}
-				else if (iterator.FundamentalType == FundamentalType.Text || iterator.Character == '_')
-					{
-					TokenIterator endOfIdentifier = iterator;
-
-					TryToSkipUnqualifiedIdentifier(ref endOfIdentifier);
-					string identifier = source.TextBetween(iterator, endOfIdentifier);
-
-					if (pythonKeywords.Contains(identifier))
-						{  iterator.SetSyntaxHighlightingTypeByCharacters(SyntaxHighlightingType.Keyword, identifier.Length);  }
-
-					iterator = endOfIdentifier;
 					}
 				else
 					{  iterator.Next();  }
@@ -610,6 +599,31 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			iterator = lookahead;
 			return true;
+			}
+
+
+		/* Function: TryToSkipKeyword
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		override protected bool TryToSkipKeyword (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			// All python keywords are a single text token
+			if (iterator.FundamentalType == FundamentalType.Text &&
+				pythonKeywords.Contains(iterator.String))
+				{
+				if (mode == ParseMode.SyntaxHighlight)
+					{  iterator.SyntaxHighlightingType = SyntaxHighlightingType.Keyword;  }
+
+				iterator.Next();
+				return true;
+				}
+			else
+				{  return false;  }
 			}
 
 

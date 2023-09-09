@@ -2174,6 +2174,49 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
+		/* Function: TryToSkipKeyword
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		override protected bool TryToSkipKeyword (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			// All keywords start with text or a $
+			if (iterator.FundamentalType == FundamentalType.Text ||
+				iterator.Character == '$')
+				{
+				TokenIterator lookahead = iterator;
+
+				if (lookahead.Character == '$')
+					{  lookahead.Next();  }
+
+				if (lookahead.Character < 'a' || iterator.Character > 'z')
+					{  return false;  }
+
+				do
+					{  lookahead.Next();  }
+				while (lookahead.FundamentalType == FundamentalType.Text ||
+						 lookahead.Character == '_');
+
+				string identifier = iterator.TextBetween(lookahead);
+
+				if (!Keywords.Contains(identifier))
+					{  return false;  }
+
+				if (mode == ParseMode.SyntaxHighlight)
+					{  iterator.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.Keyword);  }
+
+				iterator = lookahead;
+				return true;
+				}
+			else
+				{  return false;  }
+			}
+
+
 
 		// Group: Static Variables
 		// __________________________________________________________________________
