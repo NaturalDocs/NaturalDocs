@@ -207,7 +207,9 @@ var NDThemes = new function ()
 			NDThemes.SetAvailableThemes([
 			   [ "Light Theme", "Light" ],
 			   [ "Dark Theme", "Dark" ],
-			   [ "Black Theme", "Black" ]
+			   [ "Black Theme", "Black" ],
+			   [ "Auto Light/Dark", "Auto:Light/Dark" ],
+			   [ "Auto Light/Black", "Auto:Light/Black" ]
 			]);
 			--------------
 	*/
