@@ -117,7 +117,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* var: powerbuliderKeywords
 		 */
-		static protected StringSet powerbuilderKeywords = new StringSet (KeySettings.Literal, new string[] {
+		static protected StringSet powerbuilderKeywords = new StringSet (KeySettings.IgnoreCase, new string[] {
 
 			"alias", "and", "autoinstantiate", "call", "case", "catch", "choose", "close", "commit", "connect", "constant", "continue", "create",
 			"cursor", "declare", "delete", "describe", "descriptor", "destroy", "disconnect", "do", "dynamic", "else", "elseif", "end", "enumerated",
@@ -130,5 +130,5 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			});
 
-	}
+		}
 	}
