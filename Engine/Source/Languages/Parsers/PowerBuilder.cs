@@ -126,7 +126,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			"open", "or", "parent", "post", "prepare", "prior", "private", "privateread", "privatewrite", "procedure", "protected", "protectedread",
 			"protectedwrite", "prototypes", "public", "readonly", "ref", "return", "rollback", "rpcfunc", "select", "selectblob", "shared", "static",
 			"step", "subroutine", "super", "system", "systemread", "systemwrite", "then", "this", "throw", "throws", "to", "trigger", "true", "try",
-			"type", "until", "update", "updateblob", "using", "variables", "while", "with", "within", "xor", "_debug"
+			"type", "until", "update", "updateblob", "using", "variables", "while", "with", "within", "xor", "_debug",
+
+			"any", "blob", "boolean", "byte", "char", "character", "date", "datetime", "dec", "decimal", "double", "int", "integer", "long", "longlong",
+			"longptr", "real", "string", "time", "uint", "ulong", "unsignedint", "unsignedinteger", "unsignedlong"
 
 			});
 
