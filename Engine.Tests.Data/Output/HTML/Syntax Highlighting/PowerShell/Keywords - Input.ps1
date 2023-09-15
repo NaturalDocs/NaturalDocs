@@ -9,3 +9,13 @@
 #       { ... }
 #
 # ---
+
+# Topic: Traps
+#
+# --- Code
+#
+#    true $true $$true true_ $true_
+#
+#    eq -eq --eq eq_ -eq_ $eq $-eq
+#
+# ---

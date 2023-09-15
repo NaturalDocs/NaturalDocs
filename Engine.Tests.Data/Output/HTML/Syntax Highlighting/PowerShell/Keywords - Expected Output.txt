@@ -1,0 +1,3 @@
+<pre class="CCode"><span class="SHKeyword">if</span> (Do-Something <span class="SHKeyword">-eq $true -and</span> Do-SomethingElse <span class="SHKeyword">-ne $null</span>)<br />   { ... }</pre>
+-----
+<pre class="CCode">true <span class="SHKeyword">$true</span> $$true true_ $true_<br /><br />eq <span class="SHKeyword">-eq</span> --eq eq_ -eq_ $eq $-eq</pre>

@@ -2,8 +2,7 @@
 /*
 	Topic: Keywords
 
-		(code)
-
+		--- Code
 		async bool Function (string x)
 			{
 			if (x == null)
@@ -11,16 +10,21 @@
 			else
 				{  return false;  }
 			}
+		---
 
-		(end)
+
+	Topic: Traps
+
+		--- Code
+		string my_string = "string value";
+		---
 
 
 	Topic: @Identifiers
 
 		Should not be highlighted as keywords.
 
-		(code)
-
+		--- Code
 		int Function (string x)
 			{
 			int @true = 1;
@@ -32,7 +36,6 @@
 			else
 				{  return @false;  }
 			}
-
-		(end)
+		---
 
 */

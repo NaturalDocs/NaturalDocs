@@ -1,0 +1,1 @@
+<pre class="CCode"><span class="SHKeyword">string</span> my_string = <span class="SHString">&quot;string value&quot;</span><br /><br />debug <span class="SHKeyword">_debug</span> x_debug</pre>

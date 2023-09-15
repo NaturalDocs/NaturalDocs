@@ -30,5 +30,17 @@
 
 		module_  // identifier
 
+		$error  // keyword
+
+		error // identifier
+
+		$error_  // identifier
+
+		$$error  // identifier
+
+		x$error  // identifier
+
+		_$error  // identifier
+
 		---
 */

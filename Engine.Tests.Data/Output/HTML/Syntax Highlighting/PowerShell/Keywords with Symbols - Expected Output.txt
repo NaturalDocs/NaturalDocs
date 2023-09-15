@@ -1,1 +1,0 @@
-<pre class="CCode"><span class="SHKeyword">if</span> (Do-Something <span class="SHKeyword">-eq $true -and</span> Do-SomethingElse <span class="SHKeyword">-ne $null</span>)<br />   { ... }</pre>

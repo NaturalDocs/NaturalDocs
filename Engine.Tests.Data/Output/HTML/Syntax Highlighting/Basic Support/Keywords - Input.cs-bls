@@ -2,8 +2,7 @@
 /*
 	Topic: Keywords
 
-		(code)
-
+		--- Code
 		bool Function (string x)
 			{
 			if (x == null)
@@ -11,7 +10,13 @@
 			else
 				{  return false;  }
 			}
+		---
 
-		(end)
+
+	Topic: Traps
+
+		--- Code
+		string my_string = "string value";
+		---
 
 */
