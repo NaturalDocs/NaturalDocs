@@ -4997,17 +4997,32 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		virtual protected bool TryToSkipKeyword (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
 			// All the default keywords are a single text token, no underscores or other symbols
-			if (iterator.FundamentalType == FundamentalType.Text &&
-				defaultKeywords.Contains(iterator.String))
-				{
-				if (mode == ParseMode.SyntaxHighlight)
-					{  iterator.SyntaxHighlightingType = SyntaxHighlightingType.Keyword;  }
 
-				iterator.Next();
-				return true;
-				}
-			else
+			if (iterator.FundamentalType != FundamentalType.Text)
 				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+			lookahead.Next();
+
+			if (lookahead.Character == '_' ||
+				lookahead.FundamentalType == FundamentalType.Text)
+				{  return false;  }
+
+			TokenIterator lookbehind = iterator;
+			lookbehind.Previous();
+
+			if (lookbehind.Character == '_' ||
+				lookbehind.FundamentalType == FundamentalType.Text)
+				{  return false;  }
+
+			if (!defaultKeywords.Contains(iterator.String))
+				{  return false;  }
+
+			if (mode == ParseMode.SyntaxHighlight)
+				{  iterator.SyntaxHighlightingType = SyntaxHighlightingType.Keyword;  }
+
+			iterator.Next();
+			return true;
 			}
 
 

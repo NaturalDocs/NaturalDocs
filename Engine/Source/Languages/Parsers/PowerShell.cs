@@ -71,33 +71,44 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		override protected bool TryToSkipKeyword (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
-			if (iterator.FundamentalType == FundamentalType.Text ||
-				iterator.Character == '-' ||
-				iterator.Character == '$')
-				{
-				TokenIterator lookahead = iterator;
-
-				if (lookahead.Character == '-' || lookahead.Character == '$')
-					{  lookahead.Next();  }
-
-				if (lookahead.FundamentalType != FundamentalType.Text)
-					{  return false;  }
-
-				lookahead.Next();
-
-				string keyword = iterator.TextBetween(lookahead);
-
-				if (!powershellKeywords.Contains(keyword))
-					{  return false;  }
-
-				if (mode == ParseMode.SyntaxHighlight)
-					{  iterator.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.Keyword);  }
-
-				iterator = lookahead;
-				return true;
-				}
-			else
+			if (iterator.FundamentalType != FundamentalType.Text &&
+				iterator.Character != '-' &&
+				iterator.Character != '$')
 				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+
+			if (lookahead.Character == '-' || lookahead.Character == '$')
+				{  lookahead.Next();  }
+
+			if (lookahead.FundamentalType != FundamentalType.Text)
+				{  return false;  }
+
+			lookahead.Next();
+
+			if (lookahead.FundamentalType == FundamentalType.Text ||
+				lookahead.Character == '_')
+				{  return false;  }
+
+			TokenIterator lookbehind = iterator;
+			lookbehind.Previous();
+
+			if (lookbehind.FundamentalType == FundamentalType.Text ||
+				lookbehind.Character == '-' ||
+				lookbehind.Character == '$' ||
+				lookbehind.Character == '_')
+				{  return false;  }
+
+			string keyword = iterator.TextBetween(lookahead);
+
+			if (!powershellKeywords.Contains(keyword))
+				{  return false;  }
+
+			if (mode == ParseMode.SyntaxHighlight)
+				{  iterator.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.Keyword);  }
+
+			iterator = lookahead;
+			return true;
 			}
 
 

@@ -2184,36 +2184,39 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		override protected bool TryToSkipKeyword (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
-			// All keywords start with text or a $
-			if (iterator.FundamentalType == FundamentalType.Text ||
-				iterator.Character == '$')
-				{
-				TokenIterator lookahead = iterator;
+			// All keywords start with text or a $.  They may contain underscores.
 
-				if (lookahead.Character == '$')
-					{  lookahead.Next();  }
-
-				if (lookahead.Character < 'a' || iterator.Character > 'z')
-					{  return false;  }
-
-				do
-					{  lookahead.Next();  }
-				while (lookahead.FundamentalType == FundamentalType.Text ||
-						 lookahead.Character == '_');
-
-				string identifier = iterator.TextBetween(lookahead);
-
-				if (!Keywords.Contains(identifier))
-					{  return false;  }
-
-				if (mode == ParseMode.SyntaxHighlight)
-					{  iterator.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.Keyword);  }
-
-				iterator = lookahead;
-				return true;
-				}
-			else
+			if (iterator.FundamentalType != FundamentalType.Text &&
+				iterator.Character != '$')
 				{  return false;  }
+
+			TokenIterator lookbehind = iterator;
+			lookbehind.Previous();
+
+			if (lookbehind.FundamentalType == FundamentalType.Text ||
+				lookbehind.Character == '_' ||
+				lookbehind.Character == '$')
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+
+			if (lookahead.Character == '$')
+				{  lookahead.Next();  }
+
+			while (lookahead.FundamentalType == FundamentalType.Text ||
+					  lookahead.Character == '_')
+				{  lookahead.Next();  }
+
+			string identifier = iterator.TextBetween(lookahead);
+
+			if (!Keywords.Contains(identifier))
+				{  return false;  }
+
+			if (mode == ParseMode.SyntaxHighlight)
+				{  iterator.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.Keyword);  }
+
+			iterator = lookahead;
+			return true;
 			}
 
 

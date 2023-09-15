@@ -42,31 +42,59 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		override protected bool TryToSkipKeyword (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
-			if (iterator.FundamentalType == FundamentalType.Text &&
-				powerbuilderKeywords.Contains(iterator.String))
+			// Handle "_debug" separately since it's the only one that starts with an underscore
+			if (iterator.MatchesAcrossTokens("_debug", true))
 				{
+				TokenIterator lookahead = iterator;
+				lookahead.Next(2);
+
+				if (lookahead.Character == '_' ||
+					lookahead.FundamentalType == FundamentalType.Text)
+					{  return false;  }
+
+				TokenIterator lookbehind = iterator;
+				lookbehind.Previous();
+
+				if (lookbehind.Character == '_' ||
+					lookbehind.FundamentalType == FundamentalType.Text)
+					{  return false;  }
+
+				if (mode == ParseMode.SyntaxHighlight)
+					{  iterator.SetSyntaxHighlightingTypeByCharacters(SyntaxHighlightingType.Keyword, 6);  }
+
+				iterator.Next(2);
+				return true;
+				}
+
+			// All other keywords are a single text token
+			else
+				{
+				if (iterator.FundamentalType != FundamentalType.Text)
+					{  return false;  }
+
+				TokenIterator lookahead = iterator;
+				lookahead.Next();
+
+				if (lookahead.Character == '_' ||
+					lookahead.FundamentalType == FundamentalType.Text)
+					{  return false;  }
+
+				TokenIterator lookbehind = iterator;
+				lookbehind.Previous();
+
+				if (lookbehind.Character == '_' ||
+					lookbehind.FundamentalType == FundamentalType.Text)
+					{  return false;  }
+
+				if (!defaultKeywords.Contains(iterator.String))
+					{  return false;  }
+
 				if (mode == ParseMode.SyntaxHighlight)
 					{  iterator.SyntaxHighlightingType = SyntaxHighlightingType.Keyword;  }
 
 				iterator.Next();
 				return true;
 				}
-
-			// "_debug" is the only keyword with an underscore anywhere in it
-			else if (iterator.MatchesAcrossTokens("_debug"))
-				{
-				TokenIterator lookahead = iterator;
-				lookahead.Next(2);
-
-				if (mode == ParseMode.SyntaxHighlight)
-					{  iterator.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.Keyword);  }
-
-				iterator = lookahead;
-				return true;
-				}
-
-			else
-				{  return false;  }
 			}
 
 

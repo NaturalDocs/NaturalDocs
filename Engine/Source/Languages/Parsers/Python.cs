@@ -613,17 +613,32 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		override protected bool TryToSkipKeyword (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
 			// All python keywords are a single text token
-			if (iterator.FundamentalType == FundamentalType.Text &&
-				pythonKeywords.Contains(iterator.String))
-				{
-				if (mode == ParseMode.SyntaxHighlight)
-					{  iterator.SyntaxHighlightingType = SyntaxHighlightingType.Keyword;  }
 
-				iterator.Next();
-				return true;
-				}
-			else
+			if (iterator.FundamentalType != FundamentalType.Text)
 				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+			lookahead.Next();
+
+			if (lookahead.FundamentalType == FundamentalType.Text ||
+				lookahead.Character == '_')
+				{  return false;  }
+
+			TokenIterator lookbehind = iterator;
+			lookbehind.Previous();
+
+			if (lookbehind.FundamentalType == FundamentalType.Text ||
+				lookbehind.Character == '_')
+				{  return false;  }
+
+			if (!pythonKeywords.Contains(iterator.String))
+				{  return false;  }
+
+			if (mode == ParseMode.SyntaxHighlight)
+				{  iterator.SyntaxHighlightingType = SyntaxHighlightingType.Keyword;  }
+
+			iterator.Next();
+			return true;
 			}
 
 
