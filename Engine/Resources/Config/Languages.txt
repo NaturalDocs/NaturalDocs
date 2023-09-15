@@ -321,6 +321,8 @@ Language: PowerShell
 
 	Line Comment: #
 
+	Case Sensitive: No
+
 	Function Prototype Ender: {
 
 

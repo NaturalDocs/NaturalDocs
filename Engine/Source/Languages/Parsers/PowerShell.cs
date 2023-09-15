@@ -159,7 +159,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* var: powershellKeywords
 		 */
-		static protected StringSet powershellKeywords = new StringSet (KeySettings.Literal, new string[] {
+		static protected StringSet powershellKeywords = new StringSet (KeySettings.IgnoreCase, new string[] {
 
 			"function", "if", "else", "elseif", "switch", "try", "catch", "throw", "for", "foreach", "in", "while", "break",
 
