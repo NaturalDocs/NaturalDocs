@@ -84,6 +84,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			lineExtender = null;
 			enumValue = EnumValues.UnderType;
 			caseSensitive = true;
+			blockCommentsNest = false;
 			}
 
 		/* Function: HasPrototypeEndersFor
@@ -449,6 +450,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{  caseSensitive = value;  }
 			}
 
+		/* Property: BlockCommentsNest
+		 * Whether the language's block comments can nest.
+		 */
+		public bool BlockCommentsNest
+			{
+			get
+				{  return blockCommentsNest;  }
+			set
+				{  blockCommentsNest = value;  }
+			}
+
 
 
 		// Group: Operators
@@ -475,7 +487,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				// do prototype enders later
 				language1.lineExtender != language2.lineExtender ||
 				language1.enumValue != language2.enumValue ||
-				language1.caseSensitive != language2.caseSensitive)
+				language1.caseSensitive != language2.caseSensitive ||
+				language1.blockCommentsNest != language2.blockCommentsNest)
 				{  return false;  }
 
 			int lineCommentSymbols1Count = (language1.lineCommentSymbols != null ? language1.lineCommentSymbols.Count : 0);
@@ -658,6 +671,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 */
 		protected bool caseSensitive;
 
-		}
+		/* var: blockCommentsNest
+		 * Whether the language's block comments can nest.
+		 */
+		protected bool blockCommentsNest;
 
+		}
 	}
