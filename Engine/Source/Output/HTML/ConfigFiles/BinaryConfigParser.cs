@@ -144,7 +144,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 
 							// OnLoad After Substitutions is new for 2.3.  Since there were no substitutions in earlier versions, use
 							// the same value for them.
-							if (binaryFile.Version.IsAtLeastRelease("2.3"))
+							if (binaryFile.Version.IsAtLeastRelease("2.3") ||
+								binaryFile.Version.IsSamePreRelease(Engine.Instance.Version))
 								{  onLoadAfterSubstitutions = binaryFile.ReadString();  }
 							else
 								{  onLoadAfterSubstitutions = onLoadStatement;  }
