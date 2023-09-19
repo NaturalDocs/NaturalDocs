@@ -23,6 +23,46 @@ Language: Shebang Script
    Extension: cgi
 
 
+Language: ActionScript
+
+   Extensions: as mxml
+
+   Alias: AS
+
+   Line Comment: //
+   Block Comment: /* */
+   Case Sensitive: Yes
+
+   Class Prototype Ender: {
+   Interface Prototype Ender: {
+   Function Prototype Enders: ; {
+   Variable Prototype Enders: ; =
+
+
+Language: Ada
+
+   Extensions: ada ads adb
+
+   Line Comment: --
+   Case Sensitive: No
+
+   Function Prototype Enders: ; IS
+   Variable Prototype Enders: ; :=
+
+
+Language: Assembly
+
+   Extension: asm
+
+   Alias: ASM
+
+   Line Comment: ;
+   Line Extender: \
+   Case Sensitive: No
+
+   Variable Prototype Ender: \n
+
+
 Language: C/C++
 
    Extensions: c cc cpp cxx c++ h hh hpp hxx h++
@@ -49,23 +89,26 @@ Language: C#
    Simple Identifier: CSharp
 
 
-Language: SystemVerilog
+Language: ColdFusion
 
-   Extensions: sv svh
-
-   Aliases: SV Verilog
+   Extensions: cfm cfml cfc
 
    Line Comment: //
-   Block Comment: /* */
-   Enum Values: Global
-   Case Sensitive: Yes
+   Block Comment: <!--- ---> /* */
 
-   Class Prototype Ender: ;
-   Interface Prototype Ender: ;
-   Function Prototype Ender: ;
-   Variable Prototype Ender: ;
-   Module Prototype Ender: ;
-   Package Prototype Ender: ;
+   Function Prototype Enders: { <
+
+
+Language: Fortran
+
+   Extensions: f90 f95 f03
+
+   Line Comment: !
+   Line Extender: &
+   Case Sensitive: No
+
+   Function Prototype Ender: \n
+   Variable Prototype Enders: \n = =>
 
 
 Language: Java
@@ -98,145 +141,14 @@ Language: JavaScript
    Variable Prototype Enders: ; =
 
 
-Language: Perl
+Language: Lua
 
-   Extensions: pl pm
-   Shebang String: perl
-
-   Line Comment: #
-   Case Sensitive: Yes
-
-   Function Prototype Ender: {
-   Variable Prototype Enders: ; =
-
-
-Language: Python
-
-   Extension: py
-   Shebang String: python
-
-   Line Comment: #
-   Block Comment: ''' ''' """ """
-   Line Extender: \
-   Case Sensitive: Yes
-
-   Class Prototype Ender: :
-   Function Prototype Ender: :
-   Variable Prototype Ender: =
-
-
-Language: PHP
-
-   Extensions: inc php php3 php4 phtml
-   Shebang String: php
-
-   Line Comment: // #
-   Block Comment: /* */
-   Case Sensitive: Yes
-
-   Class Prototype Ender: {
-   Interface Prototype Ender: {
-   Function Prototype Enders: ; {
-   Variable Prototype Enders: ; =
-
-
-Language: SQL
-
-   Extension: sql
-
-   Aliases: PL/SQL PLSQL T-SQL TSQL Transact-SQL TransactSQL
+   Extension: lua
 
    Line Comment: --
-   Block Comment: /* */
-   Enum Values: Global
-   Case Sensitive: No
-
-   Function Prototype Enders: ; , AS IS BEGIN
-   Variable Prototype Enders: ; , = := DEFAULT
-
-
-Language: Visual Basic
-
-   Extensions: vb vbs bas cls frm
-
-   Alias: VB
-
-   Line Comment: '
-   Line Extender: _
-   Enum Values: Under Type
-   Case Sensitive: No
-
-   Class Prototype Ender: \n
-   Interface Prototype Ender: \n
-   Function Prototype Ender: \n
-   Variable Prototype Enders: \n =
-
-
-Language: Pascal
-
-   Extension: pas
-
-   Line Comment: //
-   Block Comment: { } (* *)
-   Case Sensitive: No
-   Block Comments Nest: Yes
-
-   Function Prototype Ender: ;
-   Variable Prototype Enders: ; =
-   Type Prototype Ender: ;
-   Event Prototype Enders: ; read write
-   Property Prototype Enders: ; read write
-
-
-Language: Assembly
-
-   Extension: asm
-
-   Alias: ASM
-
-   Line Comment: ;
-   Line Extender: \
-   Case Sensitive: No
-
-   Variable Prototype Ender: \n
-
-
-Language: Ada
-
-   Extensions: ada ads adb
-
-   Line Comment: --
-   Case Sensitive: No
-
-   Function Prototype Enders: ; IS
-   Variable Prototype Enders: ; :=
-
-
-Language: Tcl
-
-   Extensions: tcl exp
-   Shebang Strings: tclsh wish expect
-
-   Line Comment: #
-   Member Operator: ::
-   Line Extender: \
+   Block Comment: --[[ ]]
    Case Sensitive: Yes
 
-   Function Prototype Enders: ; {
-   Variable Prototype Enders: ; \n
-
-
-Language: Ruby
-
-   Extension: rb
-   Shebang String: ruby
-
-   Line Comment: #
-   Line Extender: \
-   Enum Values: Under Parent
-   Case Sensitive: Yes
-
-   Class Prototype Ender: \n
    Function Prototype Enders: ; \n
    Variable Prototype Enders: ; \n =
 
@@ -255,13 +167,40 @@ Language: MSBuild
    Block Comment: <!-- -->
 
 
-Language: ActionScript
+Language: Pascal
 
-   Extensions: as mxml
-
-   Alias: AS
+   Extension: pas
 
    Line Comment: //
+   Block Comment: { } (* *)
+   Case Sensitive: No
+   Block Comments Nest: Yes
+
+   Function Prototype Ender: ;
+   Variable Prototype Enders: ; =
+   Type Prototype Ender: ;
+   Event Prototype Enders: ; read write
+   Property Prototype Enders: ; read write
+
+
+Language: Perl
+
+   Extensions: pl pm
+   Shebang String: perl
+
+   Line Comment: #
+   Case Sensitive: Yes
+
+   Function Prototype Ender: {
+   Variable Prototype Enders: ; =
+
+
+Language: PHP
+
+   Extensions: inc php php3 php4 phtml
+   Shebang String: php
+
+   Line Comment: // #
    Block Comment: /* */
    Case Sensitive: Yes
 
@@ -269,61 +208,6 @@ Language: ActionScript
    Interface Prototype Ender: {
    Function Prototype Enders: ; {
    Variable Prototype Enders: ; =
-
-
-Language: ColdFusion
-
-   Extensions: cfm cfml cfc
-
-   Line Comment: //
-   Block Comment: <!--- ---> /* */
-
-   Function Prototype Enders: { <
-
-
-Language: R
-
-   Extension: r
-
-   Line Comment: #
-   Case Sensitive: Yes
-
-   Function Prototype Enders: { ;
-   Variable Prototype Enders: <- = ; \n
-
-
-Language: Fortran
-
-   Extensions: f90 f95 f03
-
-   Line Comment: !
-   Line Extender: &
-   Case Sensitive: No
-
-   Function Prototype Ender: \n
-   Variable Prototype Enders: \n = =>
-
-
-Language: Lua
-
-   Extension: lua
-
-   Line Comment: --
-   Block Comment: --[[ ]]
-   Case Sensitive: Yes
-
-   Function Prototype Enders: ; \n
-   Variable Prototype Enders: ; \n =
-
-
-Language: PowerShell
-
-   Extensions: ps1 psm1
-
-   Line Comment: #
-   Case Sensitive: No
-
-   Function Prototype Ender: {
 
 
 Language: PowerBuilder
@@ -339,6 +223,122 @@ Language: PowerBuilder
    Function Prototype Ender: \n
    Variable Prototype Enders: \n =
    Constant Prototype Enders: \n =
+
+
+Language: PowerShell
+
+   Extensions: ps1 psm1
+
+   Line Comment: #
+   Case Sensitive: No
+
+   Function Prototype Ender: {
+
+
+Language: Python
+
+   Extension: py
+   Shebang String: python
+
+   Line Comment: #
+   Block Comment: ''' ''' """ """
+   Line Extender: \
+   Case Sensitive: Yes
+
+   Class Prototype Ender: :
+   Function Prototype Ender: :
+   Variable Prototype Ender: =
+
+
+Language: R
+
+   Extension: r
+
+   Line Comment: #
+   Case Sensitive: Yes
+
+   Function Prototype Enders: { ;
+   Variable Prototype Enders: <- = ; \n
+
+
+Language: Ruby
+
+   Extension: rb
+   Shebang String: ruby
+
+   Line Comment: #
+   Line Extender: \
+   Enum Values: Under Parent
+   Case Sensitive: Yes
+
+   Class Prototype Ender: \n
+   Function Prototype Enders: ; \n
+   Variable Prototype Enders: ; \n =
+
+
+Language: SQL
+
+   Extension: sql
+
+   Aliases: PL/SQL PLSQL T-SQL TSQL Transact-SQL TransactSQL
+
+   Line Comment: --
+   Block Comment: /* */
+   Enum Values: Global
+   Case Sensitive: No
+
+   Function Prototype Enders: ; , AS IS BEGIN
+   Variable Prototype Enders: ; , = := DEFAULT
+
+
+Language: SystemVerilog
+
+   Extensions: sv svh
+
+   Aliases: SV Verilog
+
+   Line Comment: //
+   Block Comment: /* */
+   Enum Values: Global
+   Case Sensitive: Yes
+
+   Class Prototype Ender: ;
+   Interface Prototype Ender: ;
+   Function Prototype Ender: ;
+   Variable Prototype Ender: ;
+   Module Prototype Ender: ;
+   Package Prototype Ender: ;
+
+
+Language: Tcl
+
+   Extensions: tcl exp
+   Shebang Strings: tclsh wish expect
+
+   Line Comment: #
+   Member Operator: ::
+   Line Extender: \
+   Case Sensitive: Yes
+
+   Function Prototype Enders: ; {
+   Variable Prototype Enders: ; \n
+
+
+Language: Visual Basic
+
+   Extensions: vb vbs bas cls frm
+
+   Alias: VB
+
+   Line Comment: '
+   Line Extender: _
+   Enum Values: Under Type
+   Case Sensitive: No
+
+   Class Prototype Ender: \n
+   Interface Prototype Ender: \n
+   Function Prototype Ender: \n
+   Variable Prototype Enders: \n =
 
 
 # These settings define the languages Natural Docs knows how to parse.  Note
