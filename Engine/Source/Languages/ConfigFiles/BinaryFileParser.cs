@@ -56,7 +56,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					config = null;
 					return false;
 					}
-				else if (binaryFile.Version.IsAtLeastRelease("2.2") == false &&
+				else if (binaryFile.Version.IsAtLeastRelease("2.2") == false &&  // can handle changes in 2.4
 						   binaryFile.Version.IsSamePreRelease(Engine.Instance.Version) == false)
 					{
 					binaryFile.Close();
@@ -83,6 +83,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 						// [String: Simple Identifier]
 						// [Byte: Enum Values]
 						// [Byte: Case Sensitive (1 or 0)]
+						// [Byte: Block Comments Nest (1 or 0)]
 						// [String: Member Operator Symbol]
 						// [String: Line Extender Symbol]
 
@@ -109,6 +110,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 							}
 
 						language.CaseSensitive = (binaryFile.ReadByte() == 1);
+
+						if (binaryFile.Version.IsAtLeastRelease("2.4") ||
+							binaryFile.Version.IsSamePreRelease(Engine.Instance.Version))
+							{
+							language.BlockCommentsNest = (binaryFile.ReadByte() == 1);
+							}
+						else
+							{
+							language.BlockCommentsNest = false;
+							}
 
 						language.MemberOperator = binaryFile.ReadString();
 						language.LineExtender = binaryFile.ReadString();
@@ -320,6 +331,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// [String: Simple Identifier]
 					// [Byte: Enum Values]
 					// [Byte: Case Sensitive (1 or 0)]
+					// [Byte: Block Comments Nest (1 or 0)]
 					// [String: Member Operator Symbol]
 					// [String: Line Extender Symbol]
 
@@ -328,6 +340,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					binaryFile.WriteString( language.SimpleIdentifier );
 					binaryFile.WriteByte( (byte)language.EnumValue );
 					binaryFile.WriteByte( (byte)(language.CaseSensitive ? 1 : 0) );
+					binaryFile.WriteByte( (byte)(language.BlockCommentsNest ? 1 : 0) );
 					binaryFile.WriteString( language.MemberOperator );
 					binaryFile.WriteString( language.LineExtender );
 

@@ -140,6 +140,13 @@ _______________________________________________________________________________
 		Whether the language's identifiers are case sensitive.  Defaults to yes.
 
 
+		Block Comments Nest:
+
+		> Block Comments Nest: [yes|no]
+
+		Whether the language's block comments can nest.  Defaults to no.
+
+
 	Topic: Deprecated Language Properties
 
 		These properties are no longer supported.  They will be silently ignored if they appear in the configuration files.
@@ -162,8 +169,13 @@ _______________________________________________________________________________
 		Specifies the Perl package that has the parsing routines necessary for full language support.
 
 
+
 Group: Revisions
 _______________________________________________________________________________
+
+	Topic: 2.4
+
+		- Added Block Comments Nest property.
 
 	Topic: 2.0
 

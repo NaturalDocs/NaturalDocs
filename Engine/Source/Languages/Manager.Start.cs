@@ -475,6 +475,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				baseLanguage.SetCaseSensitive(overridingLanguage.CaseSensitive,
 																overridingLanguage.CaseSensitivePropertyLocation);
 				}
+
+			if (overridingLanguage.HasBlockCommentsNest)
+				{
+				baseLanguage.SetBlockCommentsNest(overridingLanguage.BlockCommentsNest,
+																		overridingLanguage.BlockCommentsNestPropertyLocation);
+				}
 			}
 
 
@@ -610,6 +616,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 																 overridingLanguage.CaseSensitivePropertyLocation, errorList) ))
 				{
 				baseLanguage.CaseSensitive = (bool)overridingLanguage.CaseSensitive;
+				}
+
+			if (overridingLanguage.HasBlockCommentsNest &&
+				( baseLanguage.Type == Language.LanguageType.TextFile ||
+				  CheckForBasicLanguageSupport(baseLanguage, "Block Comments Nest",
+																 overridingLanguage.BlockCommentsNestPropertyLocation, errorList) ))
+				{
+				baseLanguage.BlockCommentsNest = (bool)overridingLanguage.BlockCommentsNest;
 				}
 
 			return (errorList.Count == originalErrorCount);

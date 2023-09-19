@@ -795,6 +795,10 @@ Languages.txt.SystemLanguagesReference.multiline {{{
 #    Defines whether the language's identifiers are case sensitive.  The
 #    default is yes.
 #
+# Block Comments Nest: [yes|no]
+#    Defines whether the language's block comments can nest.  The default is
+#    no.
+#
 # [Comment Type] Prototype Enders: [symbol] [symbol] ...
 #    When defined, Natural Docs will attempt to get a prototype from the code
 #    immediately following the comment type.  It stops when it reaches one of
@@ -872,6 +876,10 @@ Languages.txt.ProjectLanguagesReference.multiline {{{
 # Case Sensitive: [yes|no]
 #    Defines whether the language's identifiers are case sensitive.  The
 #    default is yes.
+#
+# Block Comments Nest: [yes|no]
+#    Defines whether the language's block comments can nest.  The default is
+#    no.
 #
 # [Comment Type] Prototype Enders: [symbol] [symbol] ...
 #    When defined, Natural Docs will attempt to get a prototype from the code

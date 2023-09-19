@@ -77,6 +77,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			enumValuesPropertyLocation = default;
 			caseSensitive = null;
 			caseSensitivePropertyLocation = default;
+			blockCommentsNest = null;
+			blockCommentsNestPropertyLocation = default;
 			}
 
 
@@ -148,6 +150,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			copy.enumValuesPropertyLocation = enumValuesPropertyLocation;
 			copy.caseSensitive = caseSensitive;
 			copy.caseSensitivePropertyLocation = caseSensitivePropertyLocation;
+			copy.blockCommentsNest = blockCommentsNest;
+			copy.blockCommentsNestPropertyLocation = blockCommentsNestPropertyLocation;
 
 			return copy;
 			}
@@ -374,6 +378,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			{
 			this.caseSensitive = caseSensitive;
 			this.caseSensitivePropertyLocation = propertyLocation;
+			}
+
+		/* Function: SetBlockCommentsNest
+		 * Sets whether the language's block comments can nest.
+		 */
+		public void SetBlockCommentsNest (bool? blockCommentsNest, PropertyLocation propertyLocation)
+			{
+			this.blockCommentsNest = blockCommentsNest;
+			this.blockCommentsNestPropertyLocation = propertyLocation;
 			}
 
 
@@ -737,6 +750,33 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 				{  return caseSensitivePropertyLocation;  }
 			}
 
+		/* Property: HasBlockCommentsNest
+		 * Whether <BlockCommentsNest> is defined.
+		 */
+		public bool HasBlockCommentsNest
+			{
+			get
+				{  return (blockCommentsNest != null);  }
+			}
+
+		/* Property: BlockCommentsNest
+		 * Whether the language's block comments can nest, or null if not set.
+		 */
+		public bool? BlockCommentsNest
+			{
+			get
+				{  return blockCommentsNest;  }
+			}
+
+		/* Property: BlockCommentsNestPropertyLocation
+		 * The <PropertyLocation> where <BlockCommentsNest> is defined.
+		 */
+		public PropertyLocation BlockCommentsNestPropertyLocation
+			{
+			get
+				{  return blockCommentsNestPropertyLocation;  }
+			}
+
 
 
 		// Group: Variables
@@ -877,6 +917,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		 * The <PropertyLocation> where <caseSensitive> is defined.
 		 */
 		protected PropertyLocation caseSensitivePropertyLocation;
+
+		/* var: blockCommentsNest
+		 * Whether the language's block comments can nest, or null if not set.
+		 */
+		protected bool? blockCommentsNest;
+
+		/* var: blockCommentsNestPropertyLocation
+		 * The <PropertyLocation> where <blockCommentsNest> is defined.
+		 */
+		protected PropertyLocation blockCommentsNestPropertyLocation;
 
 		}
 	}

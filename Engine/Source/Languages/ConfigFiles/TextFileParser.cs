@@ -55,6 +55,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			shebangStringsRegex = new Regex.Languages.ShebangStrings();
 			memberOperatorRegex = new Regex.Languages.MemberOperator();
 			caseSensitiveRegex = new Regex.Languages.CaseSensitive();
+			blockCommentsNestRegex = new Regex.Languages.BlockCommentsNest();
 			}
 
 
@@ -536,6 +537,32 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 
 
 					//
+					// Block Comments Nest
+					//
+
+					else if (blockCommentsNestRegex.IsMatch(identifier))
+						{
+						if (currentLanguage == null)
+							{  AddNeedsLanguageError(file, identifier);  }
+						else
+							{
+							string lcValue = value.ToLower(CultureInfo.InvariantCulture);
+
+							if (yesRegex.IsMatch(lcValue))
+								{  currentLanguage.SetBlockCommentsNest(true, file.PropertyLocation);  }
+							else if (noRegex.IsMatch(lcValue))
+								{  currentLanguage.SetBlockCommentsNest(false, file.PropertyLocation);  }
+							else
+								{
+								file.AddError(
+									Locale.Get("NaturalDocs.Engine", "Languages.txt.UnrecognizedValue(keyword, value)", "Block Comments Nest", value)
+									);
+								}
+							}
+						}
+
+
+					//
 					// Prototype Enders
 					//
 
@@ -804,6 +831,23 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 								throw new NotImplementedException();
 							}
 						}
+					if (language.HasBlockCommentsNest)
+						{
+						AppendLineBreakOnGroupChange(3, ref oldGroupNumber, output);
+						output.Append("   Block Comments Nest: ");
+
+						switch (language.BlockCommentsNest)
+							{
+							case true:
+								output.AppendLine("Yes");
+								break;
+							case false:
+								output.AppendLine("No");
+								break;
+							default:
+								throw new NotImplementedException();
+							}
+						}
 
 					if (language.HasPrototypeEnders)
 						{
@@ -975,6 +1019,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		protected Regex.Languages.ShebangStrings shebangStringsRegex;
 		protected Regex.Languages.MemberOperator memberOperatorRegex;
 		protected Regex.Languages.CaseSensitive caseSensitiveRegex;
+		protected Regex.Languages.BlockCommentsNest blockCommentsNestRegex;
 
 		}
 	}
