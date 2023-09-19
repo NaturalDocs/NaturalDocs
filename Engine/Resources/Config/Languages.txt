@@ -1,4 +1,4 @@
-﻿Format: 2.2
+﻿Format: 2.4
 
 # This is the main Natural Docs languages file.  If you change anything here,
 # it will apply to EVERY PROJECT you use Natural Docs on.  It's recommended
@@ -179,6 +179,7 @@ Language: Pascal
    Line Comment: //
    Block Comment: { } (* *)
    Case Sensitive: No
+   Block Comments Nest: Yes
 
    Function Prototype Ender: ;
    Variable Prototype Enders: ; =
@@ -317,28 +318,27 @@ Language: Lua
 
 Language: PowerShell
 
-	Extensions: ps1 psm1
+   Extensions: ps1 psm1
 
-	Line Comment: #
+   Line Comment: #
+   Case Sensitive: No
 
-	Case Sensitive: No
-
-	Function Prototype Ender: {
+   Function Prototype Ender: {
 
 
 Language: PowerBuilder
 
-	Extensions: sra srd srf srm srq srp srs sru srw
+   Extensions: sra srd srf srm srq srp srs sru srw
 
-	Line Comment: //
-	Block Comment: /* */
+   Line Comment: //
+   Block Comment: /* */
+   Line Extender: &
+   Case Sensitive: No
+   Block Comments Nest: Yes
 
-	Line Extender: &
-	Case Sensitive: No
-
-	Function Prototype Ender: \n
-	Variable Prototype Enders: \n =
-	Constant Prototype Enders: \n =
+   Function Prototype Ender: \n
+   Variable Prototype Enders: \n =
+   Constant Prototype Enders: \n =
 
 
 # These settings define the languages Natural Docs knows how to parse.  Note
@@ -403,6 +403,10 @@ Language: PowerBuilder
 # Case Sensitive: [yes|no]
 #    Defines whether the language's identifiers are case sensitive.  The
 #    default is yes.
+#
+# Block Comments Nest: [yes|no]
+#    Defines whether the language's block comments can nest.  The default is
+#    no.
 #
 # [Comment Type] Prototype Enders: [symbol] [symbol] ...
 #    When defined, Natural Docs will attempt to get a prototype from the code
