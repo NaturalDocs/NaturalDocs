@@ -4764,10 +4764,34 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			}
 
 
+		/* Function: IsOpeningBlockCommentSymbol
+		 * Returns whether the iterator is on an opening block comment symbol, and if so, also returns the opening and closing symbols.
+		 */
+		protected bool IsOpeningBlockCommentSymbol (TokenIterator iterator, out string openingSymbol, out string closingSymbol)
+			{
+			if (language.HasBlockCommentSymbols)
+				{
+				foreach (var blockCommentSymbols in language.BlockCommentSymbols)
+					{
+					if (iterator.MatchesAcrossTokens(blockCommentSymbols.OpeningSymbol))
+						{
+						openingSymbol = blockCommentSymbols.OpeningSymbol;
+						closingSymbol = blockCommentSymbols.ClosingSymbol;
+						return true;
+						}
+					}
+				}
+
+			openingSymbol = null;
+			closingSymbol = null;
+			return false;
+			}
+
+
 		/* Function: TryToSkipBlockComment
 		 *
 		 * If the iterator is on an opening block comment symbol, moves it past the entire comment, provides the comment symbols that
-		 * were used, and returns true.
+		 * were used, and returns true.  If the language allows comments to nest it will only return the outermost symbols.
 		 *
 		 * Supported Modes:
 		 *
@@ -4778,38 +4802,54 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		protected bool TryToSkipBlockComment (ref TokenIterator iterator, out string openingSymbol, out string closingSymbol,
 																  ParseMode mode = ParseMode.IterateOnly)
 			{
-			openingSymbol = null;
-			closingSymbol = null;
-
-			if (!language.HasBlockCommentSymbols)
-				{  return false;  }
-
-			foreach (var blockCommentSymbols in language.BlockCommentSymbols)
+			if (!IsOpeningBlockCommentSymbol(iterator, out openingSymbol, out closingSymbol))
 				{
-				if (iterator.MatchesAcrossTokens(blockCommentSymbols.OpeningSymbol))
-					{
-					openingSymbol = blockCommentSymbols.OpeningSymbol;
-					closingSymbol = blockCommentSymbols.ClosingSymbol;
-					break;
-					}
+				openingSymbol = null;
+				closingSymbol = null;
+				return false;
 				}
 
-			if (openingSymbol == null)
-				{  return false;  }
+			TokenIterator lookahead = iterator;
+			lookahead.NextByCharacters(openingSymbol.Length);
 
-			TokenIterator startOfComment = iterator;
-			iterator.NextByCharacters(openingSymbol.Length);
+			// Since most languages don't allow block comments to nest we don't want to create a stack on every call.  Instead we create
+			// a stack of closing symbols that aren't the current one we're looking for and create the object on demand.
+			string currentClosingSymbol = closingSymbol;
+			SafeStack<string> closingSymbolStack = null;
 
-			while (iterator.IsInBounds && iterator.MatchesAcrossTokens(closingSymbol) == false)
-				{  iterator.Next();  }
+			string nestedOpeningSymbol, nestedClosingSymbol;
 
-			if (iterator.IsInBounds)
-				{  iterator.NextByCharacters(closingSymbol.Length);  }
+			while (lookahead.IsInBounds)
+				{
+				if (lookahead.MatchesAcrossTokens(currentClosingSymbol))
+					{
+					lookahead.NextByCharacters(currentClosingSymbol.Length);
+
+					if (closingSymbolStack == null || closingSymbolStack.Count == 0)
+						{  break;  }
+					else
+						{  currentClosingSymbol = closingSymbolStack.Pop();  }
+					}
+				else if (language.BlockCommentsNest &&
+						   IsOpeningBlockCommentSymbol(lookahead, out nestedOpeningSymbol, out nestedClosingSymbol))
+					{
+					lookahead.NextByCharacters(nestedOpeningSymbol.Length);
+
+					if (closingSymbolStack == null)
+						{  closingSymbolStack = new SafeStack<string>();  }
+
+					closingSymbolStack.Push(currentClosingSymbol);
+					currentClosingSymbol = nestedClosingSymbol;
+					}
+				else
+					{  lookahead.Next();  }
+				}
 
 			if (mode == ParseMode.SyntaxHighlight)
-				{  startOfComment.SetSyntaxHighlightingTypeBetween(iterator, SyntaxHighlightingType.Comment);  }
+				{  iterator.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.Comment);  }
 
 			// Return true even if the iterator reached the end of the content before finding a closing symbol.
+			iterator = lookahead;
 			return true;
 			}
 
