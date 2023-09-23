@@ -145,6 +145,7 @@
     <Compile Include="Source\Output\HTML\SyntaxHighlighting\Python.cs" />
     <Compile Include="Source\Output\HTML\SyntaxHighlighting\PowerBuilder.cs" />
     <Compile Include="Source\Output\HTML\SyntaxHighlighting\PowerShell.cs" />
+    <Compile Include="Source\Output\HTML\SyntaxHighlighting\Pascal.cs" />
     <Compile Include="Source\Output\HTML\SyntaxHighlighting\SystemVerilog.cs" />
     <Compile Include="Source\Output\HTML\SyntaxHighlighting\CSharp.cs" />
     <Compile Include="Source\Output\HTML\TopicTitles.cs" />
