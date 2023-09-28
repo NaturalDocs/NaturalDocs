@@ -221,8 +221,7 @@ namespace CodeClear.NaturalDocs.Engine
 				{
 				try
 					{
-					// First try getting the information from the registry, since that will let us make it a lot nicer.  Values are documented here:
-					// https://docs.microsoft.com/en-us/dotnet/framework/migration-guide/how-to-determine-which-versions-are-installed
+					// First try getting the information from the registry, since that will let us make it a lot nicer.
 					if (OnWindows)
 						{
 						// Check registry for .NET 4.5 and later
@@ -233,12 +232,16 @@ namespace CodeClear.NaturalDocs.Engine
 							string versionString = key.GetValue("Release")?.ToString();
 							int versionInt;
 
+							// Values are documented here:
+							// https://docs.microsoft.com/en-us/dotnet/framework/migration-guide/how-to-determine-which-versions-are-installed
 							if (versionString != null && Int32.TryParse(versionString, out versionInt))
 								{
-								if (versionInt == 528040 || versionInt == 528209 || versionInt == 528049 || versionInt == 528372)  // known versions of 4.8
+								if (versionInt > 533325)  // cover future versions
+									{  return "4.8.1 or later (" + versionInt + ")";  }
+								else if (versionInt >= 533320)
+									{  return "4.8.1";  }
+								else if (versionInt == 528040)
 									{  return "4.8";  }
-								else if (versionInt >= 528040)  // cover future versions
-									{  return "4.8 or later (" + versionInt + ")";  }
 								else if (versionInt >= 461808)
 									{  return "4.7.2";  }
 								else if (versionInt >= 461308)
