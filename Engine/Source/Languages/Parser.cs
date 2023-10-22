@@ -4942,6 +4942,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				   iterator.Character == '-' || iterator.Character == '+' || iterator.Character == '.') == false)
 				{  return false;  }
 
+			TokenIterator lookbehind = iterator;
+			lookbehind.Previous();
+
+			// Check that we're not following an underscore or letter.  This prevents "_12" from being seen as a number.  We
+			// also fail in the case of +, -, or . because if it's following a letter the symbols aren't part of the number.  For
+			// example, in "x+2", "x-2", and "x.2" the 2 would be a number but not the "+2", "-2", or ".2".
+			if (lookbehind.FundamentalType == FundamentalType.Text ||
+				lookbehind.Character == '_')
+				{  return false;  }
+
 			TokenIterator lookahead = iterator;
 			bool passedPeriod = false;
 			bool lastCharWasE = false;
@@ -4951,7 +4961,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{
 				// Distinguish between -1 and x-1
 
-				TokenIterator lookbehind = iterator;
+				lookbehind = iterator;
 				lookbehind.Previous();
 
 				lookbehind.PreviousPastWhitespace(PreviousPastWhitespaceMode.Iterator);
