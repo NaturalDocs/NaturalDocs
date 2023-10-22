@@ -3530,19 +3530,20 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TokenIterator startOfNumber = iterator;
 			iterator = lookahead;
 
-			if (lookahead.Character == '.' && !passedPeriod)
+			if (lookahead.Character == '.' && !passedPeriod && !isHex && !isBinary)
 				{
 				lookahead.Next();
 
-				if ( (lookahead.Character >= '0' && lookahead.Character <= '9') ||
-					 (isHex && lookahead.Character >= 'a' && lookahead.Character <= 'f') ||
-					 (isHex && lookahead.Character >= 'A' && lookahead.Character <= 'F') )
+				if (lookahead.Character >= '0' && lookahead.Character <= '9')
 					{
-					lookahead.Next();
 					passedPeriod = true;
 
-					while ( (lookahead.Character >= '0' && lookahead.Character <= '9') || lookahead.Character == '_')
+					do
 						{  lookahead.Next();  }
+					while ( (lookahead.Character >= '0' && lookahead.Character <= '9') ||
+							   lookahead.Character == '_');
+
+					iterator = lookahead;
 
 					char lastChar = iterator.Tokenizer.RawText[ lookahead.RawTextIndex - 1 ];
 					lastCharWasE = (lastChar == 'e' || lastChar == 'E');
@@ -3557,10 +3558,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 				if (lookahead.Character >= '0' && lookahead.Character <= '9')
 					{
-					lookahead.Next();
-
-					while ( (lookahead.Character >= '0' && lookahead.Character <= '9') || lookahead.Character == '_')
+					do
 						{  lookahead.Next();  }
+					while ( (lookahead.Character >= '0' && lookahead.Character <= '9') || lookahead.Character == '_');
 
 					iterator = lookahead;
 					}
