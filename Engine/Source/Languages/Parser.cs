@@ -5005,6 +5005,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				if (lookahead.Character >= '0' && lookahead.Character <= '9')
 					{
 					lookahead.Next();
+					iterator = lookahead;
+
 					passedPeriod = true;
 
 					char lastChar = iterator.Tokenizer.RawText[ lookahead.RawTextIndex - 1 ];
