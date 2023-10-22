@@ -225,6 +225,7 @@
 
 		---
 
+
 		- Digit separators can't start a number.
 
 		--- code ---
@@ -232,4 +233,13 @@
 			x = _12;
 
 		---
+
+
+		- Numbers appearing in other contexts shouldn't be mistaken for constants.
+
+		(code)
+
+			string a1_2_3 = "45";
+
+		(end)
 */

@@ -11,3 +11,5 @@
 <pre class="CCode"><span class="SHKeyword">int</span> x = <span class="SHNumber">-1</span>;<br /><br /><span class="SHKeyword">int</span> x = y-<span class="SHNumber">1</span>;<br /><br /><span class="SHKeyword">int</span> x = y -<span class="SHNumber">1</span>;<br /><br /><span class="SHKeyword">int</span> x = <span class="SHNumber">1</span>-<span class="SHNumber">1</span>;<br /><br /><span class="SHKeyword">int</span> x = <span class="SHNumber">1</span> -<span class="SHNumber">1</span>;<br /><br /><span class="SHKeyword">int</span> x = (<span class="SHNumber">-1</span>);<br /><br /><span class="SHKeyword">int</span> x = <span class="SHNumber">1</span> + <span class="SHNumber">-1</span>;</pre>
 -----
 <pre class="CCode"><span class="SHKeyword">int</span> x = _12;</pre>
+-----
+<pre class="CCode"><span class="SHKeyword">string</span> a1_2_3 = <span class="SHString">&quot;45&quot;</span>;</pre>

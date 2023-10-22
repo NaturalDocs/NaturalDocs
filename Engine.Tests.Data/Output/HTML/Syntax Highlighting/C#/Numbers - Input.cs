@@ -128,4 +128,13 @@
 			int x = _12;
 
 		(end)
+
+
+		Numbers appearing in other contexts shouldn't be mistaken for constants.
+
+		(code)
+
+			string a1_2_3 = "45";
+
+		(end)
 */

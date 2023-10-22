@@ -19,3 +19,5 @@
 <pre class="CCode">x = <span class="SHNumber">-1</span>;<br /><br />x = y-<span class="SHNumber">1</span>;<br /><br />x = y -<span class="SHNumber">1</span>;<br /><br />x = <span class="SHNumber">1</span>-<span class="SHNumber">1</span>;<br /><br />x = <span class="SHNumber">1</span> -<span class="SHNumber">1</span>;<br /><br />x = (<span class="SHNumber">-1</span>);<br /><br />x = <span class="SHNumber">1</span> + <span class="SHNumber">-1</span>;</pre>
 -----
 <pre class="CCode">x = _12;</pre>
+-----
+<pre class="CCode"><span class="SHKeyword">string</span> a1_2_3 = <span class="SHString">&quot;45&quot;</span>;</pre>
