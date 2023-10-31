@@ -4945,9 +4945,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			TokenIterator lookbehind = iterator;
 			lookbehind.Previous();
 
-			// Check that we're not following an underscore or letter.  This prevents "_12" from being seen as a number.  We
-			// also fail in the case of +, -, or . because if it's following a letter the symbols aren't part of the number.  For
-			// example, in "x+2", "x-2", and "x.2" the 2 would be a number but not the "+2", "-2", or ".2".
+			// Check that we're not following an underscore or letter.  This prevents "_12" from being seen as a number.
+
+			// We do this check before the tests for +, -, or . because if any of them are following a letter they aren't part of
+			// the number.  For example, in "x+2", "x-2", and "x.2" the symbols are not part of the number the way they are
+			// in "+2", "-2", or ".2".
+
 			if (lookbehind.FundamentalType == FundamentalType.Text ||
 				lookbehind.Character == '_')
 				{  return false;  }
