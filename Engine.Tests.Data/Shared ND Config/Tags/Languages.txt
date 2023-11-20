@@ -1,4 +1,4 @@
-﻿Format: 2.2 (Development Release 4)
+﻿Format: 2.4 (Development Release 1)
 
 # This is the Natural Docs languages file for this project.  If you change
 # anything here, it will apply to THIS PROJECT ONLY.  You can edit the version
@@ -88,6 +88,10 @@
 # Case Sensitive: [yes|no]
 #    Defines whether the language's identifiers are case sensitive.  The
 #    default is yes.
+#
+# Block Comments Nest: [yes|no]
+#    Defines whether the language's block comments can nest.  The default is
+#    no.
 #
 # [Comment Type] Prototype Enders: [symbol] [symbol] ...
 #    When defined, Natural Docs will attempt to get a prototype from the code
