@@ -6,6 +6,7 @@ Thumbs.db
 *.csproj.user
 bin/
 obj/
+.vs/
 
 # Ignore projects for packaging
 CLI.Package.MSI/
