@@ -1,0 +1,405 @@
+- Parameter Section:
+  - Before Parameters: proc EmptyParams1 {
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: }
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: proc EmptyParams2 {
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: }
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: proc SingleParam_Braces {
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a
+    - Name: a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: proc SingleParam_NoBraces 
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a
+    - Name: a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: proc SingleParam_BracesAndDefaultValue1 {
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: {a 12}
+    - Name: a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 12
+
+  - After Parameters: }
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: proc SingleParam_BracesAndDefaultValue2 {
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: {a "abc}def"}
+    - Name: a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: "abc}def"
+
+  - After Parameters: }
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: proc SingleParam_BracesAndDefaultValue3 {
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: {a [1 2 3]}
+    - Name: a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: [1 2 3]
+
+  - After Parameters: }
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: proc SingleParam_BracesAndDefaultValue4 {
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: {a {1 2 3}}
+    - Name: a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: {1 2 3}
+
+  - After Parameters: }
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: proc SingleParam_BracesAndDefaultValue5 {
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: {a {}}
+    - Name: a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: {}
+
+  - After Parameters: }
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: proc SingleParam_BracesAndDefaultValue6 {
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: {a { }}
+    - Name: a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: { }
+
+  - After Parameters: }
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: proc SingleParam_Args_Braces {
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: args
+    - Name: args
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: proc SingleParam_Args_NoBraces 
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: args
+    - Name: args
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: proc MultiParam1 {
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a 
+    - Name: a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: b 
+    - Name: b
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: c
+    - Name: c
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: proc MultiParam2 {
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: {a 12} 
+    - Name: a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 12
+
+  - Parameter 2: b 
+    - Name: b
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: c
+    - Name: c
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: proc MultiParam3 {
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a 
+    - Name: a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: {b 12} 
+    - Name: b
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 12
+
+  - Parameter 3: c
+    - Name: c
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: proc MultiParam4 {
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a 
+    - Name: a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: b 
+    - Name: b
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: {c 12}
+    - Name: c
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 12
+
+  - After Parameters: }
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: proc MultiParam5 {
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: {a 12} 
+    - Name: a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 12
+
+  - Parameter 2: b 
+    - Name: b
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: {c 15}
+    - Name: c
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 15
+
+  - After Parameters: }
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: proc MultiParam6 {
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: {a 12} 
+    - Name: a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 12
+
+  - Parameter 2: {b "abc}def"} 
+    - Name: b
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: "abc}def"
+
+  - Parameter 3: {c [1 2 3]}
+    - Name: c
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: [1 2 3]
+
+  - After Parameters: }
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: proc MultiParam7 {
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a 
+    - Name: a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: {b 12} 
+    - Name: b
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 12
+
+  - Parameter 3: c 
+    - Name: c
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 4: args
+    - Name: args
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
