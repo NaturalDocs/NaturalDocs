@@ -97,7 +97,8 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	 *
 	 * Parameters:
 	 *
-	 *		StartOfParams - The start of a parameter list, such as an opening parenthesis.
+	 *		StartOfParams - The start of a parameter list, such as an opening parenthesis.  It is possible for these to appear
+	 *								without a corresponding <EndOfParams>.
 	 *		EndOfParams - The end of a parameter list, such as a closing parenthesis.
 	 *		ParamSeparator - A separator between parameters, such as a comma.
 	 *
