@@ -310,7 +310,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 			switch (columnType)
 				{
 				case PrototypeColumnType.DefaultValueSeparator:
-					return ColumnSpacing.AlwaysSpaced;
+					return ColumnSpacing.AlwaysBoth;
 
 				case PrototypeColumnType.TypeNameSeparator:
 				case PrototypeColumnType.PropertyValueSeparator:

@@ -489,8 +489,24 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 					for (int parameterIndex = 0; parameterIndex < parameterSection.NumberOfParameters; parameterIndex++)
 						{
-						// Update columns that should always have both leading and trailing spaces
-						if (columnSpacing == PrototypeStyleFormatter.ColumnSpacing.AlwaysSpaced)
+						// Update columns that should always have leading and/or trailing spaces
+						if (columnSpacing == PrototypeStyleFormatter.ColumnSpacing.AlwaysLeading)
+							{
+							if (parameterSection.HasContent(parameterIndex, columnIndex))
+								{
+								parameterSection.SetLeadingSpace(parameterIndex, columnIndex, true);
+								parameterSection.SetTrailingSpace(parameterIndex, columnIndex, false);
+								}
+							}
+						else if (columnSpacing == PrototypeStyleFormatter.ColumnSpacing.AlwaysTrailing)
+							{
+							if (parameterSection.HasContent(parameterIndex, columnIndex))
+								{
+								parameterSection.SetLeadingSpace(parameterIndex, columnIndex, false);
+								parameterSection.SetTrailingSpace(parameterIndex, columnIndex, true);
+								}
+							}
+						else if (columnSpacing == PrototypeStyleFormatter.ColumnSpacing.AlwaysBoth)
 							{
 							if (parameterSection.HasContent(parameterIndex, columnIndex))
 								{
@@ -514,8 +530,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 						// Also remove the spaces of the columns surrounding it.  It doesn't matter if the cell has content in the parameter,
 						// do it if the column exists at all.
-						if (columnSpacing == PrototypeStyleFormatter.ColumnSpacing.AlwaysSpaced ||
-							columnSpacing == PrototypeStyleFormatter.ColumnSpacing.SpacedUnlessColon)
+						if (columnSpacing != PrototypeStyleFormatter.ColumnSpacing.Normal)
 							{
 							int previousColumnIndex = columnLayout.PreviousUsed(columnIndex);
 
@@ -561,7 +576,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				{
 				var columnSpacing = columnLayout.Formatter.ColumnSpacingOf(columnIndex);
 
-				if (columnSpacing != PrototypeStyleFormatter.ColumnSpacing.AlwaysSpaced &&
+				if (columnSpacing != PrototypeStyleFormatter.ColumnSpacing.AlwaysBoth &&
 					columnSpacing != PrototypeStyleFormatter.ColumnSpacing.SpacedUnlessColon)
 					{  continue;  }
 

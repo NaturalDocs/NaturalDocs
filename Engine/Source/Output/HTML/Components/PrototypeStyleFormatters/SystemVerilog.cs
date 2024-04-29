@@ -304,7 +304,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 				case PrototypeColumnType.TypeBody:
 				case PrototypeColumnType.PropertyValueSeparator:
 				case PrototypeColumnType.DefaultValueSeparator:
-					return ColumnSpacing.AlwaysSpaced;
+					return ColumnSpacing.AlwaysBoth;
 
 				default:
 					return ColumnSpacing.Normal;

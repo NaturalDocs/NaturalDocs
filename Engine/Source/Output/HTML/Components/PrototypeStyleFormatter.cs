@@ -30,12 +30,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * Any spacing rules that should be applied to a column to make it consistent.
 		 *
 		 * Normal - No spacing changes should be made.
-		 * AlwaysSpaced - There should always be a space on both sides of the column's content.
-		 * SpacedUnlessColon - There should be a space on both sides of the column's content, unless the content is a colon, in which
-		 *								   case there should only be a space on the right side.
+		 * AlwaysLeading - There should always be a space before the column's content.
+		 * AlwaysTrailing - There should always be a space after the column's content.
+		 * AlwaysBoth - There should always be a space on both sides of the column's content.
+		 * BothUnlessColon - There should be a space on both sides of the column's content, unless the content is a colon, in which
+		 *								case there should only be a space on the right side.
 		 */
 		public enum ColumnSpacing
-			{  Normal, AlwaysSpaced, SpacedUnlessColon  }
+			{  Normal, AlwaysLeading, AlwaysTrailing, AlwaysBoth, SpacedUnlessColon  }
 
 
 
