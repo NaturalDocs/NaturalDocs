@@ -100,8 +100,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			Language powerbuilder = new Language("PowerBuilder");
 				powerbuilder.Parser = new Parsers.PowerBuilder(engineInstance, powerbuilder);
 
+			Language tcl = new Language("Tcl");
+				tcl.Parser = new Parsers.Tcl(engineInstance, tcl);
+
 			predefinedLanguages = new Language[] { textFile, shebangScript, cSharp, systemVerilog, perl, python, ruby, sql,
-																		  java, lua, php, powershell, powerbuilder };
+																		  java, lua, php, powershell, powerbuilder, tcl };
 			}
 
 

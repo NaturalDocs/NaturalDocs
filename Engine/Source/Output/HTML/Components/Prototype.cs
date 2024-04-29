@@ -727,29 +727,39 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				{
 				var parameterSection = parameterLayouts[i];
 
-				(parsedPrototype.Sections[i] as Prototypes.ParameterSection).GetBeforeParameters(out start, out end);
-
-				// Add a space before the parameters if there was an ending whitespace character that was marked as part of
-				// the BeforeParameters section.  This should only happen if it was significant; it should have been excluded
-				// otherwise.
-				if (end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start))
+				if ((parsedPrototype.Sections[i] as Prototypes.ParameterSection).GetBeforeParameters(out start, out end))
 					{
-					parameterSection.HasSpaceBeforeParameters = true;
-					}
+					// Add a space before the parameters if there was an ending whitespace character that was marked as part of
+					// the BeforeParameters section.  This should only happen if it was significant; it should have been excluded
+					// otherwise.
+					if (end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start))
+						{
+						parameterSection.HasSpaceBeforeParameters = true;
+						}
 
-				// Also add one if the BeforeParameters section doesn't end with a nice symbol like (.  If it ends with something
-				// like (* we want to add it anyway for legibility.  Also for {.
-				else
-					{
-					TokenIterator beforeEnd = end;
-					beforeEnd.Previous();
+					// Also add one if the BeforeParameters section doesn't end with a nice symbol like (.  If it ends with something
+					// like (* we want to add it anyway for legibility.  Also for { unless there's a decorator like in Tcl.
+					else
+						{
+						TokenIterator beforeEnd = end;
+						beforeEnd.Previous();
 
-					bool spaceBeforeParams = (beforeEnd >= start &&
-															beforeEnd.Character != '(' &&
-															beforeEnd.Character != '[' &&
-															beforeEnd.Character != '<');
+						bool spaceBeforeParams;
 
-					parameterSection.HasSpaceBeforeParameters = spaceBeforeParams;
+						if (beforeEnd.Character == '{')
+							{
+							// Not all Tcl procedures will have decorators, so only apply it if they exist in this one.
+							spaceBeforeParams = !columnLayout.IsUsed(PrototypeColumnType.OpeningDecorator);
+							}
+						else
+							{
+							spaceBeforeParams = (beforeEnd.Character != '(' &&
+															 beforeEnd.Character != '[' &&
+															 beforeEnd.Character != '<');
+							}
+
+						parameterSection.HasSpaceBeforeParameters = spaceBeforeParams;
+						}
 					}
 
 				// Not every prototype with parameters will have an AfterParameters section, mainly Microsoft SQL functions
@@ -768,10 +778,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					// like *) we want to add it anyway for legibility.  Also for }.
 					else
 						{
-						bool spaceAfterParams = (start < end &&
-															  start.Character != ')' &&
-															  start.Character != ']' &&
-															  start.Character != '>');
+						bool spaceAfterParams;
+
+						if (start.Character == '}')
+							{
+							// Not all Tcl procedures will have decorators, so only apply it if they exist in this one.
+							spaceAfterParams = !columnLayout.IsUsed(PrototypeColumnType.ClosingDecorator);
+							}
+						else
+							{
+							spaceAfterParams = (start.Character != ')' &&
+														   start.Character != ']' &&
+														   start.Character != '>');
+							}
 
 						parameterSection.HasSpaceAfterParameters = spaceAfterParams;
 						}

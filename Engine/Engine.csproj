@@ -57,6 +57,7 @@
     <Compile Include="Source\Files\ChangeProcessorDetailedStatus.cs" />
     <Compile Include="Source\Languages\Parsers\PowerBuilder.cs" />
     <Compile Include="Source\Languages\Parsers\PowerShell.cs" />
+    <Compile Include="Source\Languages\Parsers\Tcl.cs" />
     <Compile Include="Source\Languages\Parsers\SystemVerilog.cs" />
     <Compile Include="Source\Output\HTML\Components\PrototypeCellLayout.cs" />
     <Compile Include="Source\Output\HTML\Components\PrototypeColumnType.cs" />
