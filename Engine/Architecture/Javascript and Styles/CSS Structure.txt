@@ -358,7 +358,9 @@ Parameter Section:
 		PAfterParameters - The section appearing after the last parameter, including the closing parameter symobl,
 									if any.
 
-		PModifierQualifier - For C-style prototypes, a separate column for modifiers and qualifiers.
+		POpeningDecorator - For Tcl prototypes, a separate column for opening parameter decorators, such as { in
+									   {a 12}.
+ 		PModifierQualifier - For C-style prototypes, a separate column for modifiers and qualifiers.
 		PType - The parameter type.  For C-style prototypes this will only be the last word.  For Pascal-style
 						prototypes this will be the entire symbol.
 		PTypeNameSeparator - For Pascal-style prototypes, the symbol separating the name from the type.
@@ -368,6 +370,8 @@ Parameter Section:
 		PDefaultValue - The default value.
 		PPropertyValueSeparator - If present, the symbol for assigning a value to a property like = or :.
 		PPropertyValue - The property value, such as could appear in Java annotations.
+		PClosingDecorator - For Tcl prototypes, a separate column for opening parameter decorators, such as } in
+									 {a 12}.
 
 	Formatting Properties:
 

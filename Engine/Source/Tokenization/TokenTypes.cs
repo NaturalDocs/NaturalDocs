@@ -102,6 +102,9 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	 *		EndOfParams - The end of a parameter list, such as a closing parenthesis.
 	 *		ParamSeparator - A separator between parameters, such as a comma.
 	 *
+	 *		OpeningParamDecorator - A symbol at the beginning of a parameter, such as "{" in Tcl's "{a 12}".
+	 *		ClosingParamDecorator - A symbol at the end of a parameter, such as "}" in Tcl's "{a 12}".
+	 *
 	 *
 	 *	Types:
 	 *
@@ -236,7 +239,7 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 
 		StartOfPrototypeSection, EndOfPrototypeSection,
 
-		StartOfParams, EndOfParams, ParamSeparator,
+		StartOfParams, EndOfParams, ParamSeparator, OpeningParamDecorator, ClosingParamDecorator,
 
 		Type, TypeModifier, TypeQualifier, OpeningTypeModifier, ClosingTypeModifier,
 

@@ -999,7 +999,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						// On the other hand, if there's not supposed to be a space and the last parameter ends with one anyway
 						// we can bleed the ending part an extra character into it.  This lets closing parentheses line up with the
 						// commas in between parameters.
-						extraCSSClass = (allLastCellsEndWithSpace ? " NegativeLeftSpaceOnWide" : "") +
+						bool hasClosingDecorator = parameterLayout.Columns.IsUsed(PrototypeColumnType.ClosingDecorator);
+
+						extraCSSClass = (allLastCellsEndWithSpace && !hasClosingDecorator ? " NegativeLeftSpaceOnWide" : "") +
 												 (allBeforeAndAfterParametersSectionsAreShort ? " FitIntoRightIndentOnNarrow" : "");
 						}
 
@@ -1266,6 +1268,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 							{  extraCSSClass = "InFirstParameterColumn";  }
 						else if (columnIndex == lastUsedColumn)
 							{  extraCSSClass = "InLastParameterColumn";  }
+
+						if (columnIndex == firstUsedColumn &&
+							columnLayout.TypeOf(firstUsedColumn) == PrototypeColumnType.OpeningDecorator)
+							{
+							// Need the extra indent.  It looks weird being aligned with the closing brace.
+							extraCSSClass = (extraCSSClass == null ? "LeftSpaceOnNarrow" : extraCSSClass + " LeftSpaceOnNarrow");
+							}
 
 						if (parameters.HasContent(parameterIndex, columnIndex))
 							{

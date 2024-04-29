@@ -5,6 +5,8 @@
  * A prototype's parameter column type.  Note that the prototype CSS classes are directly mapped to these
  * names.
  *
+ *		OpeningDecorator - For Tcl prototypes, a separate column for opening parameter decorators, such as { in
+ *									 {a 12}.
  *		ModifierQualifier - For C-style prototypes, a separate column for modifiers and qualifiers.  For Pascal-style
  *								  prototypes, any modifiers that appear before the name.
  *		Type - The parameter type.  For C-style prototypes this will only be the last word.  For Pascal-style
@@ -17,6 +19,8 @@
  *		DefaultValue - The default value.
  *		PropertyValueSeparator - If present, the symbol for assigning a value to a property like = or :.
  *		PropertyValue - The property value, such as could appear in Java annotations.
+ *		ClosingDecorator - For Tcl prototypes, a separate column for opening parameter decorators, such as } in
+ *									{a 12}.
  *
  *
  *	SystemVerilog-Specific:
@@ -43,10 +47,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 	{
 	public enum PrototypeColumnType : byte
 		{
+		OpeningDecorator,
 		ModifierQualifier, Type, TypeNameSeparator,
 		Symbols, Name,
 		DefaultValueSeparator, DefaultValue,
 		PropertyValueSeparator, PropertyValue,
+		ClosingDecorator,
 
 		ParameterKeywords, Signed, TypeBody, TypeDimension
 		}
