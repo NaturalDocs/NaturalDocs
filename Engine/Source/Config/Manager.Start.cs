@@ -390,10 +390,12 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			documentedOnly = combinedConfig.DocumentedOnly;
 			autoGroup = combinedConfig.AutoGroup;
 			shrinkFiles = combinedConfig.ShrinkFiles;
+			documentPrivates = combinedConfig.DocumentPrivates;
 
 			if (previousConfig == null ||
 				tabWidth != previousConfig.TabWidth ||
 				documentedOnly != previousConfig.DocumentedOnly ||
+				documentPrivates != previousConfig.DocumentPrivates ||
 				autoGroup != previousConfig.AutoGroup)
 				{
 				newStartupIssues |= StartupIssues.NeedToReparseAllFiles;
@@ -858,6 +860,12 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{
 				primaryConfig.DocumentedOnly = secondaryConfig.DocumentedOnly;
 				primaryConfig.DocumentedOnlyPropertyLocation = secondaryConfig.DocumentedOnlyPropertyLocation;
+				}
+
+			if (!primaryConfig.DocumentPrivatesPropertyLocation.IsDefined)
+				{
+				primaryConfig.DocumentPrivates = secondaryConfig.DocumentPrivates;
+				primaryConfig.DocumentPrivatesPropertyLocation = secondaryConfig.DocumentPrivatesPropertyLocation;
 				}
 
 			if (!primaryConfig.AutoGroupPropertyLocation.IsDefined)

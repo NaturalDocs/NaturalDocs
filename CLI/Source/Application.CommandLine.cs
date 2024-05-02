@@ -506,6 +506,23 @@ namespace CodeClear.NaturalDocs.CLI
 						}
 					}
 
+				// Document privates:
+				else if (parameter == "--document-privates")
+					{
+					if (!commandLine.NoValue())
+						{
+						errorList.Add(
+							Locale.Get("NaturalDocs.CLI", "CommandLine.ExpectedNoValue(param)", parameterAsEntered)
+						);
+						commandLine.SkipToNextParameter();
+						}
+					else
+						{
+						commandLineConfig.DocumentPrivates = true;
+						commandLineConfig.DocumentPrivatesPropertyLocation = PropertySource.CommandLine;
+						}
+				}
+
 
 
 				// No Auto-Group

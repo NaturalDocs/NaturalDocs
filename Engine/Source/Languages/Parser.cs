@@ -272,8 +272,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 							{  element.Topic = null;  }
 						}
 					}
-				}
 
+				// Remove code topics if --document-privates is on.  We do this after merging and keep all the original elements so that the
+				// code's effects still apply.
+				if(!EngineInstance.Config.DocumentPrivates) {
+					foreach(var element in elements)
+						if(element.Topic!=null && element.Topic.DeclaredAccessLevel==AccessLevel.Private)
+							element.Topic = null;
+					}
+
+				}
 
 			// If we have basic language support...
 

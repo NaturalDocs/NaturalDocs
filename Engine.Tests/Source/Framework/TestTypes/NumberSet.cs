@@ -143,11 +143,11 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 			return output.ToString();
 			}
 
-		protected static Regex GetBracesRegex = new Regex(@"{.*?}",
+		protected static System.Text.RegularExpressions.Regex GetBracesRegex = new System.Text.RegularExpressions.Regex(@"{.*?}",
 																					 RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant);
-		protected static Regex GetNumberRegex = new Regex("[0-9]+",
+		protected static System.Text.RegularExpressions.Regex GetNumberRegex = new System.Text.RegularExpressions.Regex("[0-9]+",
 																					   RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant);
-		protected static Regex ExtractRangeRegex = new Regex("Extract ([0-9]+), ?([0-9]+)",
+		protected static System.Text.RegularExpressions.Regex ExtractRangeRegex = new System.Text.RegularExpressions.Regex("Extract ([0-9]+), ?([0-9]+)",
 																						 RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
 		}

@@ -117,7 +117,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 			return output.ToString();
 			}
 
-		static private Regex FindPropertyRegex = new Regex(" *Property ([a-z\\-_]+) in (.*)$",
+		static private System.Text.RegularExpressions.Regex FindPropertyRegex = new System.Text.RegularExpressions.Regex(" *Property ([a-z\\-_]+) in (.*)$",
 																					 RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
 		}

@@ -85,6 +85,8 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 					projectConfig.ShrinkFiles = (binaryFile.ReadByte() == 1);
 					projectConfig.ShrinkFilesPropertyLocation = PropertySource.PreviousRun;
 
+					projectConfig.DocumentPrivates = (binaryFile.ReadByte() == 1);
+					projectConfig.DocumentPrivatesPropertyLocation = PropertySource.PreviousRun;
 					// [String: Identifier]
 					// [[Properties]]
 					// ...
@@ -211,6 +213,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 		        binaryFile.WriteByte( (byte)((bool)projectConfig.DocumentedOnly == false ? 0 : 1) );
 		        binaryFile.WriteByte( (byte)((bool)projectConfig.AutoGroup == false ? 0 : 1) );
 		        binaryFile.WriteByte( (byte)((bool)projectConfig.ShrinkFiles == false ? 0 : 1) );
+		        binaryFile.WriteByte( (byte)((bool)projectConfig.DocumentPrivates == false ? 0 : 1) );
 
 		        // [String: Identifier]
 		        // [[Properties]]

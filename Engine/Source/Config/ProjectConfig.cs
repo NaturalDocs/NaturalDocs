@@ -181,7 +181,11 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{  shrinkFiles = value;  }
 			}
 
-
+		public bool DocumentPrivates
+		{
+			get => documentPrivates;
+			set => documentPrivates = value;  
+		}
 
 		// Group: Property Locations
 		// __________________________________________________________________________
@@ -256,6 +260,8 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{  shrinkFilesPropertyLocation = value;  }
 			}
 
+		public PropertyLocation DocumentPrivatesPropertyLocation {get; set; }
+
 
 
 		// Group: Variables
@@ -277,6 +283,8 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		protected bool documentedOnly;
 		protected bool autoGroup;
 		protected bool shrinkFiles;
+		protected bool documentPrivates;
+
 
 		protected PropertyLocation projectConfigFolderPropertyLocation;
 		protected PropertyLocation workingDataFolderPropertyLocation;

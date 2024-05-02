@@ -116,7 +116,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests
 
 				int foundFailures = 0;
 				StringBuilder failures = new StringBuilder();
-				MatchCollection failureMatches = Regex.Matches(xmlContent, @"<failure>.*?<message><!\[CDATA\[(.*?)\]\]>.*?</message>.*?</failure>", RegexOptions.Singleline);
+				MatchCollection failureMatches = System.Text.RegularExpressions.Regex.Matches(xmlContent, @"<failure>.*?<message><!\[CDATA\[(.*?)\]\]>.*?</message>.*?</failure>", RegexOptions.Singleline);
 
 				foreach (Match failureMatch in failureMatches)
 					{
