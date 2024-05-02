@@ -22,3 +22,6 @@ You can also join the community:
 
 Natural Docs is licensed under the GNU Affero General Public License, version 3.  See 
 [this page for the full details.](https://www.naturaldocs.org/license/)
+
+Fork-features:
+- Document Privates as option (Config file or parameter)
