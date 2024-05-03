@@ -277,7 +277,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				// code's effects still apply.
 				if(!EngineInstance.Config.DocumentPrivates) {
 					foreach(var element in elements)
-						if(element.Topic!=null && element.Topic.DeclaredAccessLevel==AccessLevel.Private)
+						if(element.Topic!=null && 
+							(element.Topic.DeclaredAccessLevel==AccessLevel.Private || element.Topic.DeclaredAccessLevel==AccessLevel.Internal ||
+							element.Topic.DeclaredAccessLevel==AccessLevel.PrivateProtected || element.Topic.DeclaredAccessLevel==AccessLevel.ProtectedInternal ||
+							element.Topic.DeclaredAccessLevel==AccessLevel.Protected))
 							element.Topic = null;
 					}
 
