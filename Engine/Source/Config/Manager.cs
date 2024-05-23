@@ -57,6 +57,9 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			systemDefaultConfig.ShrinkFiles = true;
 			systemDefaultConfig.ShrinkFilesPropertyLocation = PropertySource.SystemDefault;
 
+			systemDefaultConfig.DocumentPrivates = true;
+			systemDefaultConfig.DocumentPrivatesPropertyLocation = PropertySource.SystemDefault;
+
 			systemDefaultConfig.OutputSettings.StyleName = "Default";
 			systemDefaultConfig.OutputSettings.StyleNamePropertyLocation = PropertySource.SystemDefault;
 			}
@@ -71,6 +74,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 			tabWidth = DefaultTabWidth;
 			documentedOnly = false;
+			documentPrivates = true;
 			autoGroup = true;
 			shrinkFiles = true;
 
@@ -210,6 +214,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{  return documentedOnly;  }
 			}
 
+		public bool DocumentPrivates => documentPrivates; 
 
 		/* Property: AutoGroup
 		 * Whether automatic grouping should be applied.
@@ -309,6 +314,11 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		 * Whether only documented code elements should appear in the output.
 		 */
 		protected bool documentedOnly;
+
+		/* var: documentPrivates
+		 * Whether only public code elements should appear in the output.
+		 */
+		protected bool documentPrivates;
 
 		/* var: autoGroup
 		 * Whether automatic grouping should be applied.

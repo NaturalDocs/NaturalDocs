@@ -47,6 +47,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			tabWidthRegex = new Regex.Config.TabWidth();
 			documentedOnlyRegex = new Regex.Config.DocumentedOnly();
 			autoGroupRegex = new Regex.Config.AutoGroup();
+			documentPrivatesRegex = new Regex.Config.DocumentPrivates();
 
 			sourceFolderRegex = new Regex.Config.SourceFolder();
 			imageFolderRegex = new Regex.Config.ImageFolder();
@@ -629,6 +630,25 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 				return true;
 				}
+
+			// Document Privates
+			else if (documentPrivatesRegex.IsMatch(lcIdentifier))
+			{
+				if (yesRegex.IsMatch(value))
+				{
+					projectConfig.DocumentPrivates = true;
+					projectConfig.DocumentPrivatesPropertyLocation = propertyLocation;
+				}
+				else if (noRegex.IsMatch(value))
+				{
+					projectConfig.DocumentPrivates = false;
+					projectConfig.DocumentPrivatesPropertyLocation = propertyLocation;
+				}
+				else errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.UnrecognizedValue(keyword, value)", "Document Privates", value),
+									   propertyLocation.FileName, propertyLocation.LineNumber );
+
+				return true;
+			}
 
 
 			// Auto-group
@@ -1271,6 +1291,9 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			bool hasAutoGroup = (projectConfig.AutoGroupPropertyLocation.IsDefined &&
 										  projectConfig.AutoGroupPropertyLocation.Source != PropertySource.SystemDefault &&
 										  projectConfig.AutoGroupPropertyLocation.Source != PropertySource.CommandLine);
+			bool hasDocumentPrivates = (projectConfig.DocumentPrivatesPropertyLocation.IsDefined &&
+													projectConfig.DocumentPrivatesPropertyLocation.Source != PropertySource.SystemDefault &&
+													projectConfig.DocumentPrivatesPropertyLocation.Source != PropertySource.CommandLine);
 
 			if (hasTabWidth)
 				{
@@ -1281,6 +1304,12 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			if (hasDocumentedOnly)
 				{
 				output.Append("Documented Only: " + (projectConfig.DocumentedOnly ? "Yes" : "No"));
+				output.AppendLine();
+				}
+
+			if (hasDocumentPrivates)
+				{
+				output.Append("Document Privates: " + (projectConfig.DocumentPrivates ? "Yes" : "No"));
 				output.AppendLine();
 				}
 
@@ -1339,6 +1368,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 		protected Regex.Config.TabWidth tabWidthRegex;
 		protected Regex.Config.DocumentedOnly documentedOnlyRegex;
 		protected Regex.Config.AutoGroup autoGroupRegex;
+		protected Regex.Config.DocumentPrivates documentPrivatesRegex;
 
 		protected Regex.Config.SourceFolder sourceFolderRegex;
 		protected Regex.Config.ImageFolder imageFolderRegex;

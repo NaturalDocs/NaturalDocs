@@ -378,9 +378,9 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 		// Group: Static Variables
 		// __________________________________________________________________________
 
-		static protected Regex TagsToFormatRegex = new Regex("(?:</?div[^>]*>|-----\r\n)",
+		static protected System.Text.RegularExpressions.Regex TagsToFormatRegex = new System.Text.RegularExpressions.Regex("(?:</?div[^>]*>|-----\r\n)",
 																						 RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant);
-		static protected Regex IDNumbersRegex = new Regex(" id=\"ND(?:Class)?Prototype[0-9]+\"",
+		static protected System.Text.RegularExpressions.Regex IDNumbersRegex = new System.Text.RegularExpressions.Regex(" id=\"ND(?:Class)?Prototype[0-9]+\"",
 																					   RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant);
 
 		}

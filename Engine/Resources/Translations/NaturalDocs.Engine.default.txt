@@ -415,6 +415,12 @@ Project.txt.DocumentedOnlySyntax.multiline {{{
 #    Defaults to no.
 }}}
 
+Project.txt.DocumentPrivatesSyntax.multiline {{{
+# Document Privates: [yes|no]
+#    Whether only public code elements should appear in the output.
+#    Defaults to yes.
+}}}
+
 Project.txt.AutoGroupSyntax.multiline {{{
 # Auto Group: [yes|no]
 #    Whether groups should automatically apply to you code.  Defaults to yes.
