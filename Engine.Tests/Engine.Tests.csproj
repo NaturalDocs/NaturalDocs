@@ -88,7 +88,7 @@
     <Compile Include="Source\Languages\C#\ClassPrototypeParsing.cs" />
     <Compile Include="Source\Languages\C#\CommentTypeDetection.cs" />
     <Compile Include="Source\Languages\C#\LanguageParsing.cs" />
-    <Compile Include="Source\Framework\SourceToClassTopics.cs" />
+    <Compile Include="Source\Framework\BaseTestTypes\SourceToClassTopics.cs" />
     <Compile Include="Source\Framework\TestList.cs" />
     <Compile Include="Source\Framework\TestTypes\LinkScoring.cs" />
     <Compile Include="Source\Framework\TestTypes\Symbols.cs" />

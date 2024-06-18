@@ -1,22 +1,28 @@
 ﻿/*
- * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.SourceToClassTopics
+ * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.BaseTestTypes.SourceToClassTopics
  * ____________________________________________________________________________
  *
  * A base class for automated tests where sample source files are run through Natural Docs normally and then the
- * <Topics> are extracted by class and combined.  The portions of those <Topics> being tested are saved to files
- * and compared to other files containing the  expected result.
+ * <Topics> of each class are extracted and combined.  The results of <OutputOf()> for each class are saved to files
+ * and compared to other files containing the expected result.
  *
- *	 The benefit of this approach is that you never have to hand code the output.  You can run the tests without
- *	 an expected output file, look over the actual output file, and if it's acceptable rename it to become the
- *	 expected output file.
+ *	The benefit of this approach is that you never have to hand code the output.  You can run the tests without an
+ *	expected output file, look over the actual output file, and if it's acceptable rename it to become the expected
+ *	output file.
  *
- * Usage:
  *
- *		- Derive a class that has the [TestFixture] attribute.
- *		- Create a function with the [Test] attribute that calls <TestFolder()>, pointing it to the input files.
+ * Deriving a Test Type:
+ *
+ *		- Derive a class in the TestTypes namespace.
+ *
  *		- Define <OutputOf()> to convert some facet of the <Topic> list to string output.
- *		- Since the input files and output files will not match 1:1, the generated result files will be similar to
- *		   [Class Name] - Actual Output.txt.
+ *
+ *
+ * Input and Output Files:
+ *
+ *		- Since the input files and output files will not match 1:1, the generated output files will be in the format
+ *		  "[Class Name] - Actual Output.txt".
+ *
  *		- If it matches the contents of the file "[Class Name] - Expected Output.txt", the test will pass.  If it doesn't,
  *		  that file doesn't exist, or an exception was thrown, the test will fail.
  *
@@ -29,14 +35,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 using CodeClear.NaturalDocs.Engine.Collections;
-using CodeClear.NaturalDocs.Engine.Symbols;
 using CodeClear.NaturalDocs.Engine.Topics;
 
 
-namespace CodeClear.NaturalDocs.Engine.Tests.Framework
+namespace CodeClear.NaturalDocs.Engine.Tests.Framework.BaseTestTypes
 	{
 	public abstract class SourceToClassTopics
 		{
@@ -54,9 +58,8 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 		/* Function: OutputOf
 		 *
-		 * Override this function to generate the output for the passed <Topics>.  The output should be whatever you're
-		 * testing, so if you want to test prototype detection, return the prototype.  You have to account for the possibility
-		 * of there being more than one topic in an input file, or none at all.
+		 * Override this function to generate the output for the passed <Topics>.  The function will be called once per class, and it
+		 * will include all the detected topics in that class.  The output should be whatever you're testing.
 		 *
 		 * You do not need to worry about catching exceptions unless the test is supposed to trigger them.  Uncaught exceptions
 		 * will be handled automatically and cause the test to fail.  If the exception was intended as part of correct operation then
@@ -65,7 +68,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 		 * This function should not return null or an empty string as part of a successful test.  Doing so will cause the test to fail.
 		 * If a test is supposed to generated no output, return a string such as "test successful" instead.
 		 */
-		public abstract string OutputOf (IList<Topic> topics);
+		public abstract string OutputOf (int classID, IList<Topic> topics);
 
 
 		/* Function: TestFolder
@@ -113,7 +116,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 							try
 								{
-								test.SetActualOutput( OutputOf(classTopics) );
+								test.SetActualOutput( OutputOf(classID, classTopics) );
 								}
 							catch (Exception e)
 								{  test.TestException = e;  }
