@@ -1,22 +1,29 @@
 ﻿/*
- * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.SourceToCommentsAndTopics
+ * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.BaseTestTypes.SourceToCommentsAndTopics
  * ____________________________________________________________________________
  *
- * A base class for automated tests where sample source files are loaded from a folder, converted to
- * <PossibleDocumentationComments> and <Topics>, and the portions of them being tested are saved to files and
+ * A base class for automated tests where sample source files are loaded from a folder and converted to
+ * <PossibleDocumentationComments> and <Topics>.  The results of <OutputOf()> are saved to files and
  * compared to other files containing the expected result.
  *
- *	 The benefit of this approach is that you never have to hand code the output.  You can run the tests without
- *	 an expected output file, look over the actual output file, and if it's acceptable rename it to become the
+ *	The benefit of this approach is that you never have to hand code the output.  You can run the tests without
+ *	an expected output file, look over the actual output file, and if it's acceptable rename it to become the
  * expected output file.
  *
- * Usage:
+ * Deriving a Test Type:
  *
- *		- Derive a class that has the [TestFixture] attribute.
- *		- Create a function with the [Test] attribute that calls <TestFolder()>, pointing it to the input files.
- *		- Define <OutputOf()> to convert some facet of the data to string output.
+ *		- Derive a class in the TestTypes namespace.
+ *
+ *		- Define <OutputOf()> to convert some facet of the <Topics> and <PossibleDocumentationComments> to
+ *		  string output.
+ *
+ *
+ * Input and Output Files:
+ *
  *		- All files in the test folder in the format "[Test Name] - Input.[extension]" will be tested when NUnit runs.
+ *
  *		- A corresponding file "[Test Name] - Actual Output.txt" will be created for each one.
+ *
  *		- If it matches the contents of the file "[Test Name] - Expected Output.txt", the test will pass.  If it doesn't,
  *		  that file doesn't exist, or an exception was thrown, the test will fail.
  *
@@ -29,16 +36,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
-using CodeClear.NaturalDocs.Engine;
 using CodeClear.NaturalDocs.Engine.Comments;
 using CodeClear.NaturalDocs.Engine.Languages;
 using CodeClear.NaturalDocs.Engine.Links;
 using CodeClear.NaturalDocs.Engine.Topics;
 
 
-namespace CodeClear.NaturalDocs.Engine.Tests.Framework
+namespace CodeClear.NaturalDocs.Engine.Tests.Framework.BaseTestTypes
 	{
 	public abstract class SourceToCommentsAndTopics
 		{
@@ -57,15 +62,15 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 		/* Function: OutputOf
 		 *
 		 * Override this function to generate the output for the passed data.  The output should be whatever you're
-		 * testing, so if you want to test prototype detection, return the prototype.  You have to account for the possibility
-		 * of there being more than one topic in an input file, or none at all.
+		 * testing, so if you want to test prototype detection, return the prototype.  You have to account for the
+		 * possibility of there being more than one topic in an input file, or none at all.
 		 *
-		 * You do not need to worry about catching exceptions unless the test is supposed to trigger them.  Uncaught exceptions
-		 * will be handled automatically and cause the test to fail.  If the exception was intended as part of correct operation then
-		 * you must catch it to prevent this.
+		 * You do not need to worry about catching exceptions unless the test is supposed to trigger them.  Uncaught
+		 * exceptions will be handled automatically and cause the test to fail.  If the exception was intended as part
+		 * of correct operation then you must catch it to prevent this.
 		 *
-		 * This function should not return null or an empty string as part of a successful test.  Doing so will cause the test to fail.
-		 * If a test is supposed to generated no output, return a string such as "test successful" instead.
+		 * This function should not return null or an empty string as part of a successful test.  Doing so will cause the
+		 * test to fail.  If a test is supposed to generated no output, return a string such as "test successful" instead.
 		 */
 		public abstract string OutputOf (IList<PossibleDocumentationComment> comments, IList<Topic> topics);
 

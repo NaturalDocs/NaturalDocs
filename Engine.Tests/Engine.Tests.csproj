@@ -97,7 +97,7 @@
     <Compile Include="Source\Framework\TestTypes\NDMarkup.cs" />
     <Compile Include="Source\Framework\TestTypes\NumberSet.cs" />
     <Compile Include="Source\Framework\TestTypes\PrototypeParsing.cs" />
-    <Compile Include="Source\Framework\SourceToCommentsAndTopics.cs" />
+    <Compile Include="Source\Framework\BaseTestTypes\SourceToCommentsAndTopics.cs" />
     <Compile Include="Source\Framework\SourceToHTML.cs" />
     <Compile Include="Source\Framework\Test.cs" />
     <Compile Include="Source\Framework\EngineInstanceWrapper.cs" />
