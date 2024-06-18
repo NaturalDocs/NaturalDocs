@@ -4,7 +4,7 @@ _______________________________________________________________________________
 
 
 Topic: Simple lists with different symbols
-	
+
 	- Dash
 	- Dash
 	- Dash
@@ -26,3 +26,14 @@ Topic: Simple lists with different symbols
 	o Letter O
 	o Letter O
 	o Letter O
+
+
+Topic: Traps
+
+	- This is a bullet list - not a definition list.
+
+	* This is a bullet list - not a definition list.
+
+	+ This is a bullet list - not a definition list.
+
+	o This is a bullet list - not a definition list.

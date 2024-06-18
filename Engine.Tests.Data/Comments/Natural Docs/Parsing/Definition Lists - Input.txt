@@ -4,7 +4,7 @@ _______________________________________________________________________________
 
 
 Topic: Single lines, no separation
-	
+
 	A - aaa aaa aaa.
 	B - bbb bbb bbb.
 	C - ccc ccc ccc.
@@ -46,3 +46,8 @@ Topic: Blank line above list is required
 
 	zzz zzz zzz.
 	A - aaa aaa aaa.
+
+
+Topic: Traps
+
+	-i - This is a definition list, not a bullet list.

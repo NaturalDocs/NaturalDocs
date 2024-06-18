@@ -1,3 +1,5 @@
 (No body detected)
 -----
 <ul><li><p>Dash</p></li><li><p>Dash</p></li><li><p>Dash</p></li></ul><p>Plain text.</p><ul><li><p>Asterisk</p></li><li><p>Asterisk</p></li><li><p>Asterisk</p></li></ul><p>Plain text.</p><ul><li><p>Plus</p></li><li><p>Plus</p></li><li><p>Plus</p></li></ul><p>Plain text.</p><ul><li><p>Letter O</p></li><li><p>Letter O</p></li><li><p>Letter O</p></li></ul>
+-----
+<ul><li><p>This is a bullet list - not a definition list.</p></li><li><p>This is a bullet list - not a definition list.</p></li><li><p>This is a bullet list - not a definition list.</p></li><li><p>This is a bullet list - not a definition list.</p></li></ul>

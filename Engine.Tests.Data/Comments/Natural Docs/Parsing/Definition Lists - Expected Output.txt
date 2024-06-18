@@ -9,3 +9,5 @@
 <dl><de>A</de><dd><p>aaa aaa aaa aaa aaa aaa.</p></dd><de>B</de><dd><p>bbb bbb bbb bbb bbb bbb.</p><p>bbb bbb bbb bbb bbb bbb.</p></dd></dl><p>zzz zzz zzz.</p>
 -----
 <p>zzz zzz zzz.  A - aaa aaa aaa.</p>
+-----
+<dl><de>-i</de><dd><p>This is a definition list, not a bullet list.</p></dd></dl>
