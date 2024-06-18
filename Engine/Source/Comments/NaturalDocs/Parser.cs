@@ -1737,51 +1737,6 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 					}
 
 
-				// Definition Lists
-				// item - definition
-
-				else if ( (prevLineBlank || definitionIndent != -1) &&
-						   IsDefinitionLine(line, out tempString, out tempString2, out indent) )
-					{
-					if (definitionIndent == -1)
-						{
-						CloseAllBlocks(ref paragraph, ref definitionIndent, ref bulletIndents, body);
-						definitionIndent = indent;
-						body.Append("<dl>");
-						}
-					else
-						{
-						CloseParagraph(ref paragraph, body);
-						body.Append("</dd>");
-						}
-
-					bool isSymbol = ( (topic.IsList || topic.IsEnum) && lastHeadingType != HeadingType.Parameters);
-
-					if (isSymbol)
-						{  body.Append("<ds>");  }
-					else
-						{  body.Append("<de>");  }
-
-					ParseTextBlock(tempString, body);
-
-					if (isSymbol)
-						{  body.Append("</ds>");  }
-					else
-						{  body.Append("</de>");  }
-
-					body.Append("<dd><p>");
-
-					if (paragraph == null)
-						{  paragraph = new StringBuilder();  }
-
-					paragraph.Append(tempString2);
-					prevParagraphLineEndsSentence = LineEndProbablyEndsSentenceRegex.IsMatch(tempString2);
-
-					prevLineBlank = false;
-					line.Next();
-					}
-
-
 				// Bullet lists
 				// - bullet
 
@@ -1838,6 +1793,51 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 
 					paragraph.Append(tempString);
 					prevParagraphLineEndsSentence = LineEndProbablyEndsSentenceRegex.IsMatch(tempString);
+
+					prevLineBlank = false;
+					line.Next();
+					}
+
+
+				// Definition Lists
+				// item - definition
+
+				else if ( (prevLineBlank || definitionIndent != -1) &&
+						   IsDefinitionLine(line, out tempString, out tempString2, out indent) )
+					{
+					if (definitionIndent == -1)
+						{
+						CloseAllBlocks(ref paragraph, ref definitionIndent, ref bulletIndents, body);
+						definitionIndent = indent;
+						body.Append("<dl>");
+						}
+					else
+						{
+						CloseParagraph(ref paragraph, body);
+						body.Append("</dd>");
+						}
+
+					bool isSymbol = ( (topic.IsList || topic.IsEnum) && lastHeadingType != HeadingType.Parameters);
+
+					if (isSymbol)
+						{  body.Append("<ds>");  }
+					else
+						{  body.Append("<de>");  }
+
+					ParseTextBlock(tempString, body);
+
+					if (isSymbol)
+						{  body.Append("</ds>");  }
+					else
+						{  body.Append("</de>");  }
+
+					body.Append("<dd><p>");
+
+					if (paragraph == null)
+						{  paragraph = new StringBuilder();  }
+
+					paragraph.Append(tempString2);
+					prevParagraphLineEndsSentence = LineEndProbablyEndsSentenceRegex.IsMatch(tempString2);
 
 					prevLineBlank = false;
 					line.Next();
