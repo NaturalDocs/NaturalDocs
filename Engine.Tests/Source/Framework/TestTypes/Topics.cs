@@ -1,5 +1,5 @@
 ﻿/*
- * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes.Summaries
+ * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes.Topics
  * ____________________________________________________________________________
  *
  * File-based tests to make sure Natural Docs can extract topics from a file.
