@@ -4,6 +4,23 @@
  *
  * File-based tests to make sure Natural Docs can convert comments to <NDMarkup> correctly.
  *
+ *
+ * Deriving a Test Class:
+ *
+ *		- Derive a class and add the [TestFixture] attribute.
+ *
+ *		- Create a function with the [Test] attribute that calls TestFolder(), pointing it to the input files.
+ *
+ *
+ * Input and Output Files:
+ *
+ *		- All files in the test folder in the format "[Test Name] - Input.[extension]" will be tested when NUnit runs.
+ *
+ *		- A corresponding file "[Test Name] - Actual Output.txt" will be created for each one.
+ *
+ *		- If it matches the contents of the file "[Test Name] - Expected Output.txt", the test will pass.  If it doesn't,
+ *		  that file doesn't exist, or an exception was thrown, the test will fail.
+ *
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2024 Code Clear LLC.
@@ -14,15 +31,12 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using NUnit.Framework;
-using CodeClear.NaturalDocs.Engine;
-using CodeClear.NaturalDocs.Engine.Tests.Framework;
 using CodeClear.NaturalDocs.Engine.Topics;
 
 
 namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 	{
-	public class NDMarkup : Framework.SourceToTopics
+	public class NDMarkup : Framework.BaseTestTypes.SourceToTopics
 		{
 
 		public override string OutputOf (IList<Topic> topics)
