@@ -18,7 +18,12 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Output.HTML
 		[Test]
 		public void All ()
 			{
-			TestFolder("Output/HTML/Code Sections", null, "pre", outputTitle: "Code Section Tests");
+			TestFolder("Output/HTML/Code Sections", null,
+
+							tagName: "pre",
+
+							outputTitle: "Code Section Tests"
+							);
 			}
 
 		}

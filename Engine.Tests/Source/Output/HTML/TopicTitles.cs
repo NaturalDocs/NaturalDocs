@@ -18,8 +18,13 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Output.HTML
 		[Test]
 		public void All ()
 			{
-			TestFolder("Output/HTML/Topic Titles", null, "div", "CTitle",
-							outputTitle: "Topic Title Tests");
+			TestFolder("Output/HTML/Topic Titles", null,
+
+							tagName: "div",
+							className: "CTitle",
+
+							outputTitle: "Topic Title Tests"
+							);
 			}
 
 		}

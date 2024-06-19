@@ -18,8 +18,13 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Output.HTML.SyntaxHighlighting
 		[Test]
 		public void All ()
 			{
-			TestFolder("Output/HTML/Syntax Highlighting/C#", "Shared ND Config/Basic Language Support", "pre",
-							outputTitle: "C# Syntax Highlighting Tests", outputStyle: "Prominent Syntax Highlighting");
+			TestFolder("Output/HTML/Syntax Highlighting/C#", "Shared ND Config/Basic Language Support",
+
+							tagName: "pre",
+
+							outputTitle: "C# Syntax Highlighting Tests",
+							outputStyle: "Prominent Syntax Highlighting"
+							);
 			}
 
 		}

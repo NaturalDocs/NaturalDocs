@@ -18,8 +18,14 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Output.HTML.Prototypes
 		[Test]
 		public void All ()
 			{
-			TestFolder("Output/HTML/Prototypes/Tcl", null, "div", "NDPrototype", true,
-							outputTitle: "Tcl Prototype Tests");
+			TestFolder("Output/HTML/Prototypes/Tcl", null,
+
+							tagName: "div",
+							className: "NDPrototype",
+
+							outputTitle: "Tcl Prototype Tests",
+							reformatHTML: true
+							);
 			}
 
 		}

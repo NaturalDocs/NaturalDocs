@@ -18,8 +18,13 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Output.HTML.SyntaxHighlighting
 		[Test]
 		public void All ()
 			{
-			TestFolder("Output/HTML/Syntax Highlighting/SystemVerilog", "Shared ND Config/Basic Language Support", "pre",
-							outputTitle: "SystemVerilog Syntax Highlighting Tests", outputStyle: "Prominent Syntax Highlighting");
+			TestFolder("Output/HTML/Syntax Highlighting/SystemVerilog", "Shared ND Config/Basic Language Support",
+
+							tagName: "pre",
+
+							outputTitle: "SystemVerilog Syntax Highlighting Tests",
+							outputStyle: "Prominent Syntax Highlighting"
+							);
 			}
 
 		}

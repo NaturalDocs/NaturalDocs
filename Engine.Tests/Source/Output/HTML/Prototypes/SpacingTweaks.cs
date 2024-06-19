@@ -18,8 +18,14 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Output.HTML.Prototypes
 		[Test]
 		public void All ()
 			{
-			TestFolder("Output/HTML/Prototypes/Spacing Tweaks", "Shared ND Config/Basic Language Support", "div",
-						   "NDPrototype", true, outputTitle: "Spacing Tweaks for Prototypes");
+			TestFolder("Output/HTML/Prototypes/Spacing Tweaks", "Shared ND Config/Basic Language Support",
+
+							tagName: "div",
+							className: "NDPrototype",
+
+							outputTitle: "Spacing Tweaks for Prototypes",
+							reformatHTML: true
+							);
 			}
 
 		}

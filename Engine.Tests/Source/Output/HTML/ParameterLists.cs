@@ -18,8 +18,13 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Output.HTML
 		[Test]
 		public void All ()
 			{
-			TestFolder("Output/HTML/Parameter Lists", "Shared ND Config/Basic Language Support", "div", "CBody",
-						   outputTitle: "Parameter List Tests");
+			TestFolder("Output/HTML/Parameter Lists", "Shared ND Config/Basic Language Support",
+
+							tagName: "div",
+							className: "CBody",
+
+						    outputTitle: "Parameter List Tests"
+							);
 			}
 
 		}

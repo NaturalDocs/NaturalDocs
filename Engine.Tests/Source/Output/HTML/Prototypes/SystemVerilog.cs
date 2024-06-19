@@ -18,8 +18,14 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Output.HTML.Prototypes
 		[Test]
 		public void All ()
 			{
-			TestFolder("Output/HTML/Prototypes/SystemVerilog", null, "div", "NDPrototype", true,
-							outputTitle: "SystemVerilog Prototype Tests");
+			TestFolder("Output/HTML/Prototypes/SystemVerilog", null,
+
+							tagName: "div",
+							className: "NDPrototype",
+
+							outputTitle: "SystemVerilog Prototype Tests",
+							reformatHTML: true
+							);
 			}
 
 		}

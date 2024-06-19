@@ -18,8 +18,13 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Output.HTML.SyntaxHighlighting
 		[Test]
 		public void All ()
 			{
-			TestFolder("Output/HTML/Syntax Highlighting/Python", "Shared ND Config/Basic Language Support", "pre",
-							outputTitle: "Python Syntax Highlighting Tests", outputStyle: "Prominent Syntax Highlighting");
+			TestFolder("Output/HTML/Syntax Highlighting/Python", "Shared ND Config/Basic Language Support",
+
+							tagName: "pre",
+
+							outputTitle: "Python Syntax Highlighting Tests",
+							outputStyle: "Prominent Syntax Highlighting"
+							);
 			}
 
 		}
