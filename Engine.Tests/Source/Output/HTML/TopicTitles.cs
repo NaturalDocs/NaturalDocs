@@ -12,7 +12,7 @@ using CodeClear.NaturalDocs.Engine.Tests.Framework;
 namespace CodeClear.NaturalDocs.Engine.Tests.Output.HTML
 	{
 	[TestFixture]
-	public class TopicTitles : Framework.SourceToHTML
+	public class TopicTitles : Framework.TestTypes.HTML
 		{
 
 		[Test]

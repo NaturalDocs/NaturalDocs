@@ -12,7 +12,7 @@ using CodeClear.NaturalDocs.Engine.Tests.Framework;
 namespace CodeClear.NaturalDocs.Engine.Tests.Output.HTML.ClassPrototypes
 	{
 	[TestFixture]
-	public class Python : Framework.SourceToHTML
+	public class Python : Framework.TestTypes.HTML
 		{
 
 		[Test]

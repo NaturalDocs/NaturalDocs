@@ -12,7 +12,7 @@ using CodeClear.NaturalDocs.Engine.Tests.Framework;
 namespace CodeClear.NaturalDocs.Engine.Tests.Output.HTML.Prototypes
 	{
 	[TestFixture]
-	public class Tcl : Framework.SourceToHTML
+	public class Tcl : Framework.TestTypes.HTML
 		{
 
 		[Test]

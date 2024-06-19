@@ -12,7 +12,7 @@ using CodeClear.NaturalDocs.Engine.Tests.Framework;
 namespace CodeClear.NaturalDocs.Engine.Tests.Output.HTML.SyntaxHighlighting
 	{
 	[TestFixture]
-	public class Pascal : Framework.SourceToHTML
+	public class Pascal : Framework.TestTypes.HTML
 		{
 
 		[Test]

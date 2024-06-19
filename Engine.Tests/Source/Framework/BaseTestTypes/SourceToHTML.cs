@@ -1,26 +1,33 @@
 ﻿/*
- * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.SourceToHTML
+ * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.BaseTestTypes.SourceToHTML
  * ____________________________________________________________________________
  *
  * A base class for automated tests where sample source files are run through Natural Docs normally, generating
- * HTML output, and then portions of the HTML are extracted, saved to files, and compared to other files containing
- * the expected output.
+ * HTML output.  The portions of the HTML extracted by <OutputOf()> are saved to files and compared to other files
+ * containing the expected result.
  *
- *	 The benefit of this approach is that you never have to hand code the output.  You can run the tests without
- *	 an expected output file, look over the actual output file, and if it's acceptable rename it to become the
- *	 expected output file.
+ *	The benefit of this approach is that you never have to hand code the output.  You can run the tests without
+ *	an expected output file, look over the actual output file, and if it's acceptable rename it to become the
+ *	expected output file.
  *
- * Usage:
+ * Deriving a Test Type:
  *
- *		- Derive a class that has the [TestFixture] attribute.
- *		- Create a function with the [Test] attribute that calls <TestFolder()>, pointing it to the input files and
- *		   specifying which parts of the generated HTML should be extracted.
+ *		- Derive a class in the TestTypes namespace.
+ *
+ *		- Define <OutputOf()> to convert some facet of the HTML to string output.
+ *
+ *
+ * Input and Output Files:
+ *
  *		- All files in the test folder in the format "[Test Name] - Input.[extension]" will have portions of its HTML
  *		  extracted when NUnit runs.
+ *
  *		- A corresponding file "[Test Name] - Actual Output.txt" will be created for each one.
+ *
  *		- If it matches the contents of the file "[Test Name] - Expected Output.txt", the test will pass.  If it doesn't or
  *		  that file doesn't exist, the test will fail.
- *		- The full generated output will remain in a folder called "HTML Output" if you want to look at it.
+ *
+ *		- The full generated output will remain in a folder called "HTML Output" if you want to look at it in a browser.
  *
  */
 
@@ -30,15 +37,12 @@
 
 
 using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
-using CodeClear.NaturalDocs.Engine;
-using CodeClear.NaturalDocs.Engine.Collections;
 
 
-namespace CodeClear.NaturalDocs.Engine.Tests.Framework
+namespace CodeClear.NaturalDocs.Engine.Tests.Framework.BaseTestTypes
 	{
 	public abstract class SourceToHTML
 		{
@@ -54,38 +58,19 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 			}
 
 
-		/* Function: ExtractHTML
-		 * Takes the HTML output data and returns the parts of it being tested.  The default implementation extracts all tags matching the
-		 * passed tag name and, if specified, the passed class name.  You can also override this to provide your own implementation.
+		/* Function: OutputOf
+		 *
+		 * Override this function extract the part of the HTML being tested.  The tag name and class name are what was
+		 * passed to <TestFolder()>.
+		 *
+		 * You do not need to worry about catching exceptions unless the test is supposed to trigger them.  Uncaught
+		 * exceptions will be handled automatically and cause the test to fail.  If the exception was intended as part
+		 * of correct operation then you must catch it to prevent this.
+		 *
+		 * This function should not return null or an empty string as part of a successful test.  Doing so will cause the
+		 * test to fail.  If a test is supposed to generated no output, return a string such as "test successful" instead.
 		 */
-		virtual public string ExtractHTML (string html, string tagName, string className = null)
-			{
-			StringBuilder output = new StringBuilder();
-			int tagIndex = FindNextTag(html, 0, tagName, className);
-
-			while (tagIndex != -1)
-				{
-				int endOfClosingTag = FindEndOfClosingTag(html, tagIndex, tagName);
-				string tag = html.Substring(tagIndex, endOfClosingTag - tagIndex);
-
-				// Filter out Topic# tags.
-				if (tag.StartsWith("<a name=\"Topic"))
-					{
-					// Ignore
-					}
-				else
-					{
-					if (output.Length != 0)
-						{  output.Append("\r\n-----\r\n");  }
-
-					output.Append(tag);
-					}
-
-				tagIndex = FindNextTag(html, endOfClosingTag, tagName, className);
-				}
-
-			return output.ToString();
-			}
+		abstract public string OutputOf (string html, string tagName, string className = null);
 
 
 		/* Function: TestFolder
@@ -132,7 +117,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 							Path htmlFile = fileContext.OutputFile;
 
 							string html = System.IO.File.ReadAllText(htmlFile);
-							html = ExtractHTML(html, tagName, className);
+							html = OutputOf(html, tagName, className);
 
 							if (reformatHTML)
 								{  html = ReformatHTML(html);  }

@@ -70,6 +70,7 @@
     <Compile Include="Source\Framework\TestTypes\CommentMerging.cs" />
     <Compile Include="Source\Framework\BaseTestTypes\SourceToElements.cs" />
     <Compile Include="Source\Framework\TestTypes\CommentTypeDetection.cs" />
+    <Compile Include="Source\Framework\TestTypes\HTML.cs" />
     <Compile Include="Source\Framework\TestTypes\Topics.cs" />
     <Compile Include="Source\Framework\TestTypes\VersionStrings.cs" />
     <Compile Include="Source\Framework\TestTypes\LinkInterpretations.cs" />
@@ -99,7 +100,7 @@
     <Compile Include="Source\Framework\TestTypes\NumberSet.cs" />
     <Compile Include="Source\Framework\TestTypes\PrototypeParsing.cs" />
     <Compile Include="Source\Framework\BaseTestTypes\SourceToCommentsAndTopics.cs" />
-    <Compile Include="Source\Framework\SourceToHTML.cs" />
+    <Compile Include="Source\Framework\BaseTestTypes\SourceToHTML.cs" />
     <Compile Include="Source\Framework\Test.cs" />
     <Compile Include="Source\Framework\EngineInstanceWrapper.cs" />
     <Compile Include="Source\Framework\BaseTestTypes\SourceToTopics.cs" />

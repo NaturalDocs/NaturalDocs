@@ -12,7 +12,7 @@ using CodeClear.NaturalDocs.Engine.Tests.Framework;
 namespace CodeClear.NaturalDocs.Engine.Tests.Output.HTML.SyntaxHighlighting
 	{
 	[TestFixture]
-	public class PowerShell : Framework.SourceToHTML
+	public class PowerShell : Framework.TestTypes.HTML
 		{
 
 		[Test]

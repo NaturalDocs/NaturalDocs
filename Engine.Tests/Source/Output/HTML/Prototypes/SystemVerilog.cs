@@ -12,7 +12,7 @@ using CodeClear.NaturalDocs.Engine.Tests.Framework;
 namespace CodeClear.NaturalDocs.Engine.Tests.Output.HTML.Prototypes
 	{
 	[TestFixture]
-	public class SystemVerilog : Framework.SourceToHTML
+	public class SystemVerilog : Framework.TestTypes.HTML
 		{
 
 		[Test]
