@@ -4,6 +4,24 @@
  *
  * A class to test <Engine.Comments.Components.JavadocIterator's> ability to parse Javadoc content.
  *
+ *
+ * Deriving a Test Class:
+ *
+ *		- Derive a class and add the [TestFixture] attribute.
+ *
+ *		- Create a function with the [Test] attribute that calls TestFolder(), pointing it to the input files.
+ *
+ *
+ * Input and Output Files:
+ *
+ *		- All files in the test folder in the format "[Test Name] - Input.[extension]" will be tested when NUnit runs.
+ *
+ *		- A corresponding file "[Test Name] - Actual Output.txt" will be created for each one.
+ *
+ *		- If it matches the contents of the file "[Test Name] - Expected Output.txt", the test will pass.  If it doesn't,
+ *		  that file doesn't exist, or an exception was thrown, the test will fail.
+ *
+ *
  * Commands:
  *
  *		> // text
@@ -26,16 +44,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-using NUnit.Framework;
-using CodeClear.NaturalDocs.Engine;
 using CodeClear.NaturalDocs.Engine.Comments.Components;
-using CodeClear.NaturalDocs.Engine.Tests.Framework;
 using CodeClear.NaturalDocs.Engine.Tokenization;
 
 
 namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 	{
-	public class JavadocIterator : Framework.TextCommands
+	public class JavadocIterator : Framework.BaseTestTypes.TextCommands
 		{
 
 		public override string OutputOf (IList<string> commands)

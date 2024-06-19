@@ -1,22 +1,28 @@
 ﻿/*
- * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.TextCommands
+ * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.BaseTestTypes.TextCommands
  * ____________________________________________________________________________
  *
- * A base class for automated tests where the input files are text files interpreted line by line as commands.  They're
- * loaded from a folder, interpreted by the derived class, and the output is saved to files and compared to other files
- * containing the expected result.
+ * A base class for automated tests where the input files are text files interpreted line by line as commands.
+ * The results of <OutputOf()> are saved to files and compared to other files containing the expected result.
  *
  * The benefit of this approach is that you never have to hand code the output.  You can run the tests without
- *	 an expected output file, look over the actual output file, and if it's acceptable rename it to become the
- *	 expected output file.
+ *	an expected output file, look over the actual output file, and if it's acceptable rename it to become the
+ *	expected output file.
  *
- * Usage:
  *
- *		- Derive a class that has the [TestFixture] attribute.
- *		- Create a function with the [Test] attribute that calls <TestFolder()>, pointing it to the input files.
- *		- Define <OutputOf()> to convert the data to string output.
+ * Deriving a Test Type:
+ *
+ *		- Derive a class in the TestTypes namespace.
+ *
+ *		- Define <OutputOf()> to convert some facet of the <Topic> list to string output.
+ *
+ *
+ * Input and Output Files:
+ *
  *		- All files in the test folder in the format "[Test Name] - Input.[extension]" will be tested when NUnit runs.
+ *
  *		- A corresponding file "[Test Name] - Actual Output.txt" will be created for each one.
+ *
  *		- If it matches the contents of the file "[Test Name] - Expected Output.txt", the test will pass.  If it doesn't,
  *		  that file doesn't exist, or an exception was thrown, the test will fail.
  *
@@ -29,12 +35,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
-using CodeClear.NaturalDocs.Engine;
 
 
-namespace CodeClear.NaturalDocs.Engine.Tests.Framework
+namespace CodeClear.NaturalDocs.Engine.Tests.Framework.BaseTestTypes
 	{
 	public abstract class TextCommands
 		{
