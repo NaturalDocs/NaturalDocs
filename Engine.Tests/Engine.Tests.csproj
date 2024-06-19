@@ -62,12 +62,13 @@
     <Compile Include="Source\Comments\NaturalDocs\Summaries.cs" />
     <Compile Include="Source\Comments\XML\Iterator.cs" />
     <Compile Include="Source\Comments\XML\Parsing.cs" />
+    <Compile Include="Source\Framework\TestTypes\Elements.cs" />
     <Compile Include="Source\Framework\TestTypes\ClassCombining.cs" />
     <Compile Include="Source\Framework\TestTypes\CommentDetection.cs" />
     <Compile Include="Source\Framework\TestTypes\ClassPrototypeParsing.cs" />
     <Compile Include="Source\Framework\TestTypes\AttributeInheritance.cs" />
     <Compile Include="Source\Framework\TestTypes\CommentMerging.cs" />
-    <Compile Include="Source\Framework\SourceToElements.cs" />
+    <Compile Include="Source\Framework\BaseTestTypes\SourceToElements.cs" />
     <Compile Include="Source\Framework\TestTypes\CommentTypeDetection.cs" />
     <Compile Include="Source\Framework\TestTypes\Topics.cs" />
     <Compile Include="Source\Framework\TestTypes\VersionStrings.cs" />

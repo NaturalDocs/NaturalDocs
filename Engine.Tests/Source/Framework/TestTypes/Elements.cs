@@ -1,20 +1,23 @@
 ﻿/*
- * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.SourceToElements
+ * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes.Elements
  * ____________________________________________________________________________
  *
- * A base class for automated tests where sample source files are loaded from a folder, converted to <Elements>,
- * and the properties of those elements are saved to files and compared to other files containing the expected result.
+ * File-based tests to make sure Natural Docs can correctly extract <Elements> from a file.
  *
- * The benefit of this approach is that you never have to hand code the output.  You can run the tests without
- *	an expected output file, look over the actual output file, and if it's acceptable rename it to become the
- *	expected output file.
  *
- * Usage:
+ * Deriving a Test Class:
  *
- *		- Derive a class that has the [TestFixture] attribute.
- *		- Create a function with the [Test] attribute that calls <TestFolder()>, pointing it to the input files.
+ *		- Derive a class and add the [TestFixture] attribute.
+ *
+ *		- Create a function with the [Test] attribute that calls TestFolder(), pointing it to the input files.
+ *
+ *
+ * Input and Output Files:
+ *
  *		- All files in the test folder in the format "[Test Name] - Input.[extension]" will be tested when NUnit runs.
+ *
  *		- A corresponding file "[Test Name] - Actual Output.txt" will be created for each one.
+ *
  *		- If it matches the contents of the file "[Test Name] - Expected Output.txt", the test will pass.  If it doesn't,
  *		  that file doesn't exist, or an exception was thrown, the test will fail.
  *
@@ -28,34 +31,18 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using NUnit.Framework;
-using CodeClear.NaturalDocs.Engine;
 using CodeClear.NaturalDocs.Engine.Languages;
-using CodeClear.NaturalDocs.Engine.Links;
 using CodeClear.NaturalDocs.Engine.Symbols;
-using CodeClear.NaturalDocs.Engine.Tokenization;
-using CodeClear.NaturalDocs.Engine.Topics;
 
 
-namespace CodeClear.NaturalDocs.Engine.Tests.Framework
+namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 	{
-	public class SourceToElements
+	public class Elements : Framework.BaseTestTypes.SourceToElements
 		{
-
-		// Group: Functions
-		// __________________________________________________________________________
-
-		/* Constructor: SourceToElements
-		 */
-		public SourceToElements ()
-			{
-			engineInstanceManager = null;
-			}
-
 
 		/* Function: OutputOf
 		 */
-		public string OutputOf (List<Element> elements)
+		override public string OutputOf (List<Element> elements)
 			{
 			StringBuilder output = new StringBuilder();
 
@@ -199,90 +186,6 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 			return output.ToString();
 			}
-
-
-		/* Function: TestFolder
-		 * Tests all the input files contained in this folder.  See <EngineInstanceManager.Start()> for how relative paths are handled.
-		 */
-		public void TestFolder (Path testDataFolder, Path projectConfigFolder = default(Path))
-			{
-			TestList allTests = new TestList();
-
-			engineInstanceManager = new EngineInstanceManager();
-			engineInstanceManager.Start(testDataFolder, projectConfigFolder);
-
-			// Store this so we can still use it for error messages after the engine is disposed of.
-			Path inputFolder = engineInstanceManager.InputFolder;
-
-			try
-				{
-				// Build a test for each input file we find
-				string[] files = System.IO.Directory.GetFiles(inputFolder);
-
-				foreach (string file in files)
-					{
-					if (Test.IsInputFile(file))
-						{
-						Test test = Test.FromInputFile(file);
-
-						try
-							{
-							Language language = EngineInstance.Languages.FromFileExtension(test.InputFile.Extension);
-
-							if (language == null)
-								{  throw new Exception("Extension " + test.InputFile.Extension + " did not resolve to a language.");  }
-
-							string code = System.IO.File.ReadAllText(test.InputFile);
-							Tokenizer tokenizedCode = new Tokenizer(code);
-							List<Element> codeElements = language.Parser.GetCodeElements(tokenizedCode);
-
-							if (codeElements == null)
-								{  throw new Exception("GetCodeElements() returned null.");  }
-
-							test.SetActualOutput( OutputOf(codeElements) );
-							}
-						catch (Exception e)
-							{  test.TestException = e;  }
-
-						test.Run();
-						allTests.Add(test);
-						}
-					}
-				}
-
-			finally
-				{
-				engineInstanceManager.Dispose();
-				engineInstanceManager = null;
-				}
-
-
-			if (allTests.Count == 0)
-				{  Assert.Fail("There were no tests found in " + inputFolder);  }
-			else if (allTests.Passed == false)
-				{  Assert.Fail(allTests.BuildFailureMessage());  }
-			}
-
-
-		// Group: Properties
-		// __________________________________________________________________________
-
-		public NaturalDocs.Engine.Instance EngineInstance
-			{
-			get
-				{
-				if (engineInstanceManager != null)
-					{  return engineInstanceManager.EngineInstance;  }
-				else
-					{  return null;  }
-				}
-			}
-
-
-		// Group: Variables
-		// __________________________________________________________________________
-
-		protected EngineInstanceManager engineInstanceManager;
 
 		}
 	}

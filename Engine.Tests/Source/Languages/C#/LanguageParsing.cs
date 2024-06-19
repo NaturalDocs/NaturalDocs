@@ -11,7 +11,7 @@ using NUnit.Framework;
 namespace CodeClear.NaturalDocs.Engine.Tests.Languages.CSharp
 	{
 	[TestFixture]
-	public class LanguageParsing : Framework.SourceToElements
+	public class LanguageParsing : Framework.TestTypes.Elements
 		{
 
 		[Test]
