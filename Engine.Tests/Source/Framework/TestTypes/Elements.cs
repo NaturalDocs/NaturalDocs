@@ -93,13 +93,13 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 					if (element.Topic.Symbol != null)
 						{
 						output.Append(' ', indent);
-						output.AppendLine(element.Topic.Symbol.FormatWithSeparator('.'));
+						output.AppendLine("Symbol: " + element.Topic.Symbol.FormatWithSeparator('.'));
 						}
 
 					if (element.Topic.Prototype != null)
 						{
 						output.Append(' ', indent);
-						output.AppendLine(element.Topic.Prototype);
+						output.AppendLine("Prototype: " + element.Topic.Prototype);
 						}
 					}
 
