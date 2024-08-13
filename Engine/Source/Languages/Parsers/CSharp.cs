@@ -491,7 +491,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			TryToSkipWhitespace(ref lookahead);
 
-			if (lookahead.Character != '{')
+			bool hasBody;
+
+			if (lookahead.Character == '{')
+				{  hasBody = true;  }
+			else if (lookahead.Character == ';')
+				{  hasBody = false;  }
+			else
 				{  return false;  }
 
 			lookahead.Next();
@@ -517,7 +523,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				elements.Add(namespaceElement);
 
 				iterator = lookahead;
-				GetCodeElements(ref iterator, elements, symbol, '}');
+				GetCodeElements(ref iterator, elements, symbol, (hasBody ? '}' : '\0'));
 
 				namespaceElement.EndingLineNumber = iterator.LineNumber;
 				namespaceElement.EndingCharNumber = iterator.CharNumber;
@@ -528,7 +534,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			else // not ParseMode.CreateElements
 				{
 				iterator = lookahead;
-				GenericSkipUntilAfter(ref iterator, '}');
+
+				if (hasBody)
+					{  GenericSkipUntilAfter(ref iterator, '}');  }
+
 				return true;
 				}
 			}
