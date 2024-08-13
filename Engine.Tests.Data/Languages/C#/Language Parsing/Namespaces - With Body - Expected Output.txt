@@ -1,0 +1,201 @@
+[Root Element]
+- Child Language: C#
+- Maximum Effective Child Access Level: Public
+- Default Declared Child Access Level: Internal
+- Child Scope: (global)
+  ---------------
+  (no topic)
+  (line 2, char 1)
+  - Child Language: C#
+  - Maximum Effective Child Access Level: Public
+  - Default Declared Child Access Level: Internal
+  - Child Scope: Namespace1
+    ---------------
+    Class: Namespace1.Class1InNamespace1
+    Symbol: Namespace1.Class1InNamespace1
+    Prototype: class Class1InNamespace1
+    (line 4, char 2, child of line 2)
+    - Child Language: C#
+    - Default Declared Child Access Level: Private
+    - Child Scope: Namespace1.Class1InNamespace1
+    ---------------
+    Interface: Namespace1.Interface1InNamespace1
+    Symbol: Namespace1.Interface1InNamespace1
+    Prototype: interface Interface1InNamespace1
+    (line 8, char 2, child of line 2)
+    - Child Language: C#
+    - Default Declared Child Access Level: Public
+    - Child Scope: Namespace1.Interface1InNamespace1
+    ---------------
+    (no topic)
+    (line 12, char 2, child of line 2)
+    - Child Language: C#
+    - Maximum Effective Child Access Level: Public
+    - Default Declared Child Access Level: Internal
+    - Child Scope: Namespace1.EmbeddedNamespace1
+      ---------------
+      Struct: Namespace1.EmbeddedNamespace1.Struct1InEmbeddedNamespace1
+      Symbol: Namespace1.EmbeddedNamespace1.Struct1InEmbeddedNamespace1
+      Prototype: struct Struct1InEmbeddedNamespace1
+      (line 14, char 3, child of line 12)
+      - Child Language: C#
+      - Default Declared Child Access Level: Private
+      - Child Scope: Namespace1.EmbeddedNamespace1.Struct1InEmbeddedNamespace1
+      ---------------
+      Enumeration: Enum1InEmbeddedNamespace1
+      Symbol: Namespace1.EmbeddedNamespace1.Enum1InEmbeddedNamespace1
+      Prototype: enum Enum1InEmbeddedNamespace1
+      (line 18, char 3, child of line 12)
+      - Child Scope: Namespace1.EmbeddedNamespace1.Enum1InEmbeddedNamespace1
+      ---------------
+      Delegate: Delegate1InEmbeddedNamespace1
+      Symbol: Namespace1.EmbeddedNamespace1.Delegate1InEmbeddedNamespace1
+      Prototype: delegate void Delegate1InEmbeddedNamespace1 ()
+      (line 22, char 3, child of line 12)
+  ---------------
+  (no topic)
+  (line 28, char 1)
+  - Child Language: C#
+  - Maximum Effective Child Access Level: Public
+  - Default Declared Child Access Level: Internal
+  - Child Scope: Namespace1
+    ---------------
+    Class: Namespace1.Class2InNamespace1
+    Symbol: Namespace1.Class2InNamespace1
+    Prototype: class Class2InNamespace1
+    (line 30, char 2, child of line 28)
+    - Child Language: C#
+    - Default Declared Child Access Level: Private
+    - Child Scope: Namespace1.Class2InNamespace1
+    ---------------
+    Interface: Namespace1.Interface2InNamespace1
+    Symbol: Namespace1.Interface2InNamespace1
+    Prototype: interface Interface2InNamespace1
+    (line 34, char 2, child of line 28)
+    - Child Language: C#
+    - Default Declared Child Access Level: Public
+    - Child Scope: Namespace1.Interface2InNamespace1
+    ---------------
+    (no topic)
+    (line 38, char 2, child of line 28)
+    - Child Language: C#
+    - Maximum Effective Child Access Level: Public
+    - Default Declared Child Access Level: Internal
+    - Child Scope: Namespace1.EmbeddedNamespace1
+      ---------------
+      Struct: Namespace1.EmbeddedNamespace1.Struct2InEmbeddedNamespace1
+      Symbol: Namespace1.EmbeddedNamespace1.Struct2InEmbeddedNamespace1
+      Prototype: struct Struct2InEmbeddedNamespace1
+      (line 40, char 3, child of line 38)
+      - Child Language: C#
+      - Default Declared Child Access Level: Private
+      - Child Scope: Namespace1.EmbeddedNamespace1.Struct2InEmbeddedNamespace1
+      ---------------
+      Enumeration: Enum2InEmbeddedNamespace1
+      Symbol: Namespace1.EmbeddedNamespace1.Enum2InEmbeddedNamespace1
+      Prototype: enum Enum2InEmbeddedNamespace1
+      (line 44, char 3, child of line 38)
+      - Child Scope: Namespace1.EmbeddedNamespace1.Enum2InEmbeddedNamespace1
+      ---------------
+      Delegate: Delegate2InEmbeddedNamespace1
+      Symbol: Namespace1.EmbeddedNamespace1.Delegate2InEmbeddedNamespace1
+      Prototype: delegate void Delegate2InEmbeddedNamespace1 ()
+      (line 48, char 3, child of line 38)
+  ---------------
+  (no topic)
+  (line 53, char 1)
+  - Child Language: C#
+  - Maximum Effective Child Access Level: Public
+  - Default Declared Child Access Level: Internal
+  - Child Scope: A.B.C.Namespace2
+    ---------------
+    Class: A.B.C.Namespace2.Class1InNamespace2
+    Symbol: A.B.C.Namespace2.Class1InNamespace2
+    Prototype: class Class1InNamespace2
+    (line 55, char 2, child of line 53)
+    - Child Language: C#
+    - Default Declared Child Access Level: Private
+    - Child Scope: A.B.C.Namespace2.Class1InNamespace2
+    ---------------
+    Interface: A.B.C.Namespace2.Interface1InNamespace2
+    Symbol: A.B.C.Namespace2.Interface1InNamespace2
+    Prototype: interface Interface1InNamespace2
+    (line 59, char 2, child of line 53)
+    - Child Language: C#
+    - Default Declared Child Access Level: Public
+    - Child Scope: A.B.C.Namespace2.Interface1InNamespace2
+    ---------------
+    (no topic)
+    (line 63, char 2, child of line 53)
+    - Child Language: C#
+    - Maximum Effective Child Access Level: Public
+    - Default Declared Child Access Level: Internal
+    - Child Scope: A.B.C.Namespace2.EmbeddedNamespace2
+      ---------------
+      Struct: A.B.C.Namespace2.EmbeddedNamespace2.Struct1InEmbeddedNamespace2
+      Symbol: A.B.C.Namespace2.EmbeddedNamespace2.Struct1InEmbeddedNamespace2
+      Prototype: struct Struct1InEmbeddedNamespace2
+      (line 65, char 3, child of line 63)
+      - Child Language: C#
+      - Default Declared Child Access Level: Private
+      - Child Scope: A.B.C.Namespace2.EmbeddedNamespace2.Struct1InEmbeddedNamespace2
+      ---------------
+      Enumeration: Enum1InEmbeddedNamespace2
+      Symbol: A.B.C.Namespace2.EmbeddedNamespace2.Enum1InEmbeddedNamespace2
+      Prototype: enum Enum1InEmbeddedNamespace2
+      (line 69, char 3, child of line 63)
+      - Child Scope: A.B.C.Namespace2.EmbeddedNamespace2.Enum1InEmbeddedNamespace2
+      ---------------
+      Delegate: Delegate1InEmbeddedNamespace2
+      Symbol: A.B.C.Namespace2.EmbeddedNamespace2.Delegate1InEmbeddedNamespace2
+      Prototype: delegate void Delegate1InEmbeddedNamespace2 ()
+      (line 73, char 3, child of line 63)
+  ---------------
+  (no topic)
+  (line 78, char 1)
+  - Child Language: C#
+  - Maximum Effective Child Access Level: Public
+  - Default Declared Child Access Level: Internal
+  - Child Scope: A.B.C.Namespace2
+    ---------------
+    Class: A.B.C.Namespace2.Class2InNamespace2
+    Symbol: A.B.C.Namespace2.Class2InNamespace2
+    Prototype: class Class2InNamespace2
+    (line 80, char 2, child of line 78)
+    - Child Language: C#
+    - Default Declared Child Access Level: Private
+    - Child Scope: A.B.C.Namespace2.Class2InNamespace2
+    ---------------
+    Interface: A.B.C.Namespace2.Interface2InNamespace2
+    Symbol: A.B.C.Namespace2.Interface2InNamespace2
+    Prototype: interface Interface2InNamespace2
+    (line 84, char 2, child of line 78)
+    - Child Language: C#
+    - Default Declared Child Access Level: Public
+    - Child Scope: A.B.C.Namespace2.Interface2InNamespace2
+    ---------------
+    (no topic)
+    (line 88, char 2, child of line 78)
+    - Child Language: C#
+    - Maximum Effective Child Access Level: Public
+    - Default Declared Child Access Level: Internal
+    - Child Scope: A.B.C.Namespace2.EmbeddedNamespace2
+      ---------------
+      Struct: A.B.C.Namespace2.EmbeddedNamespace2.Struct2InEmbeddedNamespace2
+      Symbol: A.B.C.Namespace2.EmbeddedNamespace2.Struct2InEmbeddedNamespace2
+      Prototype: struct Struct2InEmbeddedNamespace2
+      (line 90, char 3, child of line 88)
+      - Child Language: C#
+      - Default Declared Child Access Level: Private
+      - Child Scope: A.B.C.Namespace2.EmbeddedNamespace2.Struct2InEmbeddedNamespace2
+      ---------------
+      Enumeration: Enum2InEmbeddedNamespace2
+      Symbol: A.B.C.Namespace2.EmbeddedNamespace2.Enum2InEmbeddedNamespace2
+      Prototype: enum Enum2InEmbeddedNamespace2
+      (line 94, char 3, child of line 88)
+      - Child Scope: A.B.C.Namespace2.EmbeddedNamespace2.Enum2InEmbeddedNamespace2
+      ---------------
+      Delegate: Delegate2InEmbeddedNamespace2
+      Symbol: A.B.C.Namespace2.EmbeddedNamespace2.Delegate2InEmbeddedNamespace2
+      Prototype: delegate void Delegate2InEmbeddedNamespace2 ()
+      (line 98, char 3, child of line 88)

@@ -1,0 +1,55 @@
+[Root Element]
+- Child Language: C#
+- Maximum Effective Child Access Level: Public
+- Default Declared Child Access Level: Internal
+- Child Scope: (global)
+  ---------------
+  (no topic)
+  (line 5, char 1)
+  - Child Language: C#
+  - Maximum Effective Child Access Level: Public
+  - Default Declared Child Access Level: Internal
+  - Child Scope: A.B.C.Namespace2
+    ---------------
+    Class: A.B.C.Namespace2.ClassInNamespace2
+    Symbol: A.B.C.Namespace2.ClassInNamespace2
+    Prototype: class ClassInNamespace2
+    (line 7, char 1, child of line 5)
+    - Child Language: C#
+    - Default Declared Child Access Level: Private
+    - Child Scope: A.B.C.Namespace2.ClassInNamespace2
+      ---------------
+      Class: A.B.C.Namespace2.ClassInNamespace2.ChildClassInNamespace2
+      Symbol: A.B.C.Namespace2.ClassInNamespace2.ChildClassInNamespace2
+      Prototype: class ChildClassInNamespace2
+      (line 9, char 2, child of A.B.C.Namespace2.ClassInNamespace2)
+      - Child Language: C#
+      - Default Declared Child Access Level: Private
+      - Child Scope: A.B.C.Namespace2.ClassInNamespace2.ChildClassInNamespace2
+    ---------------
+    Interface: A.B.C.Namespace2.InterfaceInNamespace2
+    Symbol: A.B.C.Namespace2.InterfaceInNamespace2
+    Prototype: interface InterfaceInNamespace2
+    (line 14, char 1, child of line 5)
+    - Child Language: C#
+    - Default Declared Child Access Level: Public
+    - Child Scope: A.B.C.Namespace2.InterfaceInNamespace2
+    ---------------
+    Enumeration: EnumInNamespace2
+    Symbol: A.B.C.Namespace2.EnumInNamespace2
+    Prototype: enum EnumInNamespace2
+    (line 18, char 1, child of line 5)
+    - Child Scope: A.B.C.Namespace2.EnumInNamespace2
+    ---------------
+    Struct: A.B.C.Namespace2.StructInNamespace2
+    Symbol: A.B.C.Namespace2.StructInNamespace2
+    Prototype: struct StructInNamespace2
+    (line 22, char 1, child of line 5)
+    - Child Language: C#
+    - Default Declared Child Access Level: Private
+    - Child Scope: A.B.C.Namespace2.StructInNamespace2
+    ---------------
+    Delegate: DelegateInNamespace2
+    Symbol: A.B.C.Namespace2.DelegateInNamespace2
+    Prototype: delegate void DelegateInNamespace2 ()
+    (line 26, char 1, child of line 5)

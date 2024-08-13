@@ -1,0 +1,55 @@
+[Root Element]
+- Child Language: C#
+- Maximum Effective Child Access Level: Public
+- Default Declared Child Access Level: Internal
+- Child Scope: (global)
+  ---------------
+  (no topic)
+  (line 5, char 1)
+  - Child Language: C#
+  - Maximum Effective Child Access Level: Public
+  - Default Declared Child Access Level: Internal
+  - Child Scope: Namespace1
+    ---------------
+    Class: Namespace1.ClassInNamespace1
+    Symbol: Namespace1.ClassInNamespace1
+    Prototype: class ClassInNamespace1
+    (line 7, char 1, child of line 5)
+    - Child Language: C#
+    - Default Declared Child Access Level: Private
+    - Child Scope: Namespace1.ClassInNamespace1
+      ---------------
+      Class: Namespace1.ClassInNamespace1.ChildClassInNamespace1
+      Symbol: Namespace1.ClassInNamespace1.ChildClassInNamespace1
+      Prototype: class ChildClassInNamespace1
+      (line 9, char 2, child of Namespace1.ClassInNamespace1)
+      - Child Language: C#
+      - Default Declared Child Access Level: Private
+      - Child Scope: Namespace1.ClassInNamespace1.ChildClassInNamespace1
+    ---------------
+    Interface: Namespace1.InterfaceInNamespace1
+    Symbol: Namespace1.InterfaceInNamespace1
+    Prototype: interface InterfaceInNamespace1
+    (line 14, char 1, child of line 5)
+    - Child Language: C#
+    - Default Declared Child Access Level: Public
+    - Child Scope: Namespace1.InterfaceInNamespace1
+    ---------------
+    Enumeration: EnumInNamespace1
+    Symbol: Namespace1.EnumInNamespace1
+    Prototype: enum EnumInNamespace1
+    (line 18, char 1, child of line 5)
+    - Child Scope: Namespace1.EnumInNamespace1
+    ---------------
+    Struct: Namespace1.StructInNamespace1
+    Symbol: Namespace1.StructInNamespace1
+    Prototype: struct StructInNamespace1
+    (line 22, char 1, child of line 5)
+    - Child Language: C#
+    - Default Declared Child Access Level: Private
+    - Child Scope: Namespace1.StructInNamespace1
+    ---------------
+    Delegate: DelegateInNamespace1
+    Symbol: Namespace1.DelegateInNamespace1
+    Prototype: delegate void DelegateInNamespace1 ()
+    (line 26, char 1, child of line 5)
