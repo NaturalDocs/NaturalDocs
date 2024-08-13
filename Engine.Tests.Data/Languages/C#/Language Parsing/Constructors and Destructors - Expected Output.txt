@@ -5,54 +5,54 @@
 - Child Scope: (global)
   ---------------
   Class: TestClass
-  TestClass
-  class TestClass
+  Symbol: TestClass
+  Prototype: class TestClass
   (line 2, char 1)
   - Child Language: C#
   - Default Declared Child Access Level: Private
   - Child Scope: TestClass
     ---------------
     Function: TestClass
-    TestClass.TestClass
-    public TestClass ()
+    Symbol: TestClass.TestClass
+    Prototype: public TestClass ()
     (line 4, char 2, child of TestClass)
     ---------------
     Function: TestClass
-    TestClass.TestClass
-    private TestClass (int x)
+    Symbol: TestClass.TestClass
+    Prototype: private TestClass (int x)
     (line 7, char 2, child of TestClass)
     ---------------
     Function: TestClass
-    TestClass.TestClass
-    private TestClass (int x, int y)
+    Symbol: TestClass.TestClass
+    Prototype: private TestClass (int x, int y)
     (line 10, char 2, child of TestClass)
     ---------------
     Function: TestClass
-    TestClass.TestClass
-    unsafe public TestClass (int* x, void* y)
+    Symbol: TestClass.TestClass
+    Prototype: unsafe public TestClass (int* x, void* y)
     (line 13, char 2, child of TestClass)
     ---------------
     Function: ~TestClass
-    TestClass.~TestClass
-    ~TestClass ()
+    Symbol: TestClass.~TestClass
+    Prototype: ~TestClass ()
     (line 16, char 2, child of TestClass)
     ---------------
     Function: TestClass
-    TestClass.TestClass
-    extern static TestClass (float x)
+    Symbol: TestClass.TestClass
+    Prototype: extern static TestClass (float x)
     (line 19, char 2, child of TestClass)
     ---------------
     Function: ~TestClass
-    TestClass.~TestClass
-    extern ~TestClass ()
+    Symbol: TestClass.~TestClass
+    Prototype: extern ~TestClass ()
     (line 21, char 2, child of TestClass)
     ---------------
     Function: TestClass
-    TestClass.TestClass
-    public TestClass (int x)
+    Symbol: TestClass.TestClass
+    Prototype: public TestClass (int x)
     (line 23, char 5, child of TestClass)
     ---------------
     Function: ~TestClass
-    TestClass.~TestClass
-    ~TestClass ()
+    Symbol: TestClass.~TestClass
+    Prototype: ~TestClass ()
     (line 25, char 5, child of TestClass)

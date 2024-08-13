@@ -5,8 +5,8 @@
 - Child Scope: (global)
   ---------------
   Class: WithInheritance
-  WithInheritance
-  public record WithInheritance : Parent, Interface, Interface2
+  Symbol: WithInheritance
+  Prototype: public record WithInheritance : Parent, Interface, Interface2
   (line 2, char 1)
   - Child Language: C#
   - Maximum Effective Child Access Level: Public
@@ -14,8 +14,8 @@
   - Child Scope: WithInheritance
   ---------------
   Class: WithModifiers
-  WithModifiers
-  internal sealed partial record WithModifiers
+  Symbol: WithModifiers
+  Prototype: internal sealed partial record WithModifiers
   (line 6, char 1)
   - Child Language: C#
   - Maximum Effective Child Access Level: Internal
@@ -30,8 +30,8 @@
   - Child Scope: Namespace
     ---------------
     Class: Namespace.WithAttributesAndNamespace
-    Namespace.WithAttributesAndNamespace
-    [Attibute] internal protected record WithAttributesAndNamespace
+    Symbol: Namespace.WithAttributesAndNamespace
+    Prototype: [Attibute] internal protected record WithAttributesAndNamespace
     (line 12, char 2, child of line 10)
     - Child Language: C#
     - Maximum Effective Child Access Level: ProtectedInternal
@@ -39,8 +39,8 @@
     - Child Scope: Namespace.WithAttributesAndNamespace
   ---------------
   Class: AsTemplate
-  AsTemplate
-  public record AsTemplate<T>
+  Symbol: AsTemplate
+  Prototype: public record AsTemplate<T>
   (line 18, char 1)
   - Child Language: C#
   - Maximum Effective Child Access Level: Public
@@ -48,8 +48,8 @@
   - Child Scope: AsTemplate
   ---------------
   Class: AsTemplateWithInheritance
-  AsTemplateWithInheritance
-  public record AsTemplateWithInheritance<X,Y> : System.Collections.List<Y>, Interface
+  Symbol: AsTemplateWithInheritance
+  Prototype: public record AsTemplateWithInheritance<X,Y> : System.Collections.List<Y>, Interface
   (line 22, char 1)
   - Child Language: C#
   - Maximum Effective Child Access Level: Public
@@ -57,8 +57,8 @@
   - Child Scope: AsTemplateWithInheritance
   ---------------
   Class: AsTemplateWithConditions
-  AsTemplateWithConditions
-  public record AsTemplateWithConditions<in X, out Y, out Z> where X: class, Interface, new () where Y: System.Collections.IEnumerable<Y> where Z: class?, unmanaged, notnull
+  Symbol: AsTemplateWithConditions
+  Prototype: public record AsTemplateWithConditions<in X, out Y, out Z> where X: class, Interface, new () where Y: System.Collections.IEnumerable<Y> where Z: class?, unmanaged, notnull
   (line 26, char 1)
   - Child Language: C#
   - Maximum Effective Child Access Level: Public

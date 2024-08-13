@@ -5,32 +5,32 @@
 - Child Scope: (global)
   ---------------
   Class: TestClass
-  TestClass
-  class TestClass
+  Symbol: TestClass
+  Prototype: class TestClass
   (line 2, char 1)
   - Child Language: C#
   - Default Declared Child Access Level: Private
   - Child Scope: TestClass
   ---------------
   Struct: TestStruct
-  TestStruct
-  struct TestStruct
+  Symbol: TestStruct
+  Prototype: struct TestStruct
   (line 6, char 1)
   - Child Language: C#
   - Default Declared Child Access Level: Private
   - Child Scope: TestStruct
   ---------------
   Interface: TestInterface
-  TestInterface
-  interface TestInterface
+  Symbol: TestInterface
+  Prototype: interface TestInterface
   (line 10, char 1)
   - Child Language: C#
   - Default Declared Child Access Level: Public
   - Child Scope: TestInterface
   ---------------
   Class: TestRecord
-  TestRecord
-  record TestRecord
+  Symbol: TestRecord
+  Prototype: record TestRecord
   (line 14, char 1)
   - Child Language: C#
   - Default Declared Child Access Level: Public

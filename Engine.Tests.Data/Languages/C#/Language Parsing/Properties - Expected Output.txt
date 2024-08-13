@@ -5,66 +5,66 @@
 - Child Scope: (global)
   ---------------
   Property: PropertyA
-  PropertyA
-  int PropertyA { get }
+  Symbol: PropertyA
+  Prototype: int PropertyA { get }
   (line 2, char 1)
   ---------------
   Property: PropertyB
-  PropertyB
-  protected int PropertyB { get; private set }
+  Symbol: PropertyB
+  Prototype: protected int PropertyB { get; private set }
   (line 8, char 1)
   ---------------
   Property: PropertyC
-  PropertyC
-  [Attribute] internal System.Text.StringBuilder PropertyC { [SetAttribute] protected internal set; [GetAttribute] internal get }
+  Symbol: PropertyC
+  Prototype: [Attribute] internal System.Text.StringBuilder PropertyC { [SetAttribute] protected internal set; [GetAttribute] internal get }
   (line 16, char 1)
   ---------------
   Property: PropertyD
-  PropertyD
-  abstract int PropertyD { get; set }
+  Symbol: PropertyD
+  Prototype: abstract int PropertyD { get; set }
   (line 28, char 1)
   ---------------
   Property: PropertyE
-  PropertyE
-  unsafe abstract void* PropertyE { get; set }
+  Symbol: PropertyE
+  Prototype: unsafe abstract void* PropertyE { get; set }
   (line 31, char 1)
   ---------------
   Property: PropertyF
-  PropertyF
-  public int PropertyF { get }
+  Symbol: PropertyF
+  Prototype: public int PropertyF { get }
   (line 37, char 1)
   ---------------
   Property: PropertyG
-  PropertyG
-  public string PropertyG { get }
+  Symbol: PropertyG
+  Prototype: public string PropertyG { get }
   (line 39, char 1)
   ---------------
   Property: PropertyH
-  PropertyH
-  public int PropertyH { readonly get; set }
+  Symbol: PropertyH
+  Prototype: public int PropertyH { readonly get; set }
   (line 41, char 1)
   ---------------
   Property: PropertyI
-  PropertyI
-  public string PropertyI { get; set }
+  Symbol: PropertyI
+  Prototype: public string PropertyI { get; set }
   (line 50, char 1)
   ---------------
   Property: PropertyJ
-  PropertyJ
-  public string PropertyJ { get }
+  Symbol: PropertyJ
+  Prototype: public string PropertyJ { get }
   (line 52, char 1)
   ---------------
   Property: PropertyK
-  PropertyK
-  public string PropertyK { get; init }
+  Symbol: PropertyK
+  Prototype: public string PropertyK { get; init }
   (line 60, char 1)
   ---------------
   Property: ProperyL
-  ProperyL
-  public string ProperyL { get; init }
+  Symbol: ProperyL
+  Prototype: public string ProperyL { get; init }
   (line 62, char 1)
   ---------------
   Property: PropertyM
-  PropertyM
-  public string PropertyM { get; init }
+  Symbol: PropertyM
+  Prototype: public string PropertyM { get; init }
   (line 70, char 1)

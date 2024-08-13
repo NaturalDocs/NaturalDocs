@@ -5,64 +5,64 @@
 - Child Scope: (global)
   ---------------
   Class: TestClass
-  TestClass
-  class TestClass
+  Symbol: TestClass
+  Prototype: class TestClass
   (line 2, char 1)
   - Child Language: C#
   - Default Declared Child Access Level: Private
   - Child Scope: TestClass
     ---------------
     Function: FunctionA
-    TestClass.FunctionA
-    public void FunctionA ()
+    Symbol: TestClass.FunctionA
+    Prototype: public void FunctionA ()
     (line 4, char 2, child of TestClass)
     ---------------
     Function: FunctionB
-    TestClass.FunctionB
-    abstract int FunctionB (int a)
+    Symbol: TestClass.FunctionB
+    Prototype: abstract int FunctionB (int a)
     (line 7, char 2, child of TestClass)
     ---------------
     Function: FunctionC
-    TestClass.FunctionC
-    [Attribute] protected internal IList<T> FunctionC<T> () where T: System.Collections.IEnumerable
+    Symbol: TestClass.FunctionC
+    Prototype: [Attribute] protected internal IList<T> FunctionC<T> () where T: System.Collections.IEnumerable
     (line 9, char 2, child of TestClass)
     ---------------
     Function: FunctionD
-    TestClass.FunctionD
-    static int FunctionD (this string a, int b, params object[] c)
+    Symbol: TestClass.FunctionD
+    Prototype: static int FunctionD (this string a, int b, params object[] c)
     (line 13, char 2, child of TestClass)
     ---------------
     Function: Interface.Interface.FunctionE
-    TestClass.Interface.Interface.FunctionE
-    internal partial void Interface.Interface.FunctionE<T> () where T: new()
+    Symbol: TestClass.Interface.Interface.FunctionE
+    Prototype: internal partial void Interface.Interface.FunctionE<T> () where T: new()
     (line 16, char 2, child of TestClass)
     ---------------
     Function: FunctionF
-    TestClass.FunctionF
-    unsafe void* FunctionF (int* x)
+    Symbol: TestClass.FunctionF
+    Prototype: unsafe void* FunctionF (int* x)
     (line 18, char 2, child of TestClass)
     ---------------
     Function: FunctionG
-    TestClass.FunctionG
-    public async int FunctionG ()
+    Symbol: TestClass.FunctionG
+    Prototype: public async int FunctionG ()
     (line 21, char 2, child of TestClass)
     ---------------
     Function: FunctionH
-    TestClass.FunctionH
-    public int FunctionH (bool x)
+    Symbol: TestClass.FunctionH
+    Prototype: public int FunctionH (bool x)
     (line 24, char 2, child of TestClass)
     ---------------
     Function: FunctionI
-    TestClass.FunctionI
-    public static RgbColor FunctionI (RgbColor color)
+    Symbol: TestClass.FunctionI
+    Prototype: public static RgbColor FunctionI (RgbColor color)
     (line 26, char 2, child of TestClass)
     ---------------
     Function: FunctionJ
-    TestClass.FunctionJ
-    public static ref readonly ReturnStruct FunctionJ ()
+    Symbol: TestClass.FunctionJ
+    Prototype: public static ref readonly ReturnStruct FunctionJ ()
     (line 33, char 2, child of TestClass)
     ---------------
     Function: FunctionK
-    TestClass.FunctionK
-    static ref int FunctionK<T>(this ref int x, T y) where T:unmanaged, Enum
+    Symbol: TestClass.FunctionK
+    Prototype: static ref int FunctionK<T>(this ref int x, T y) where T:unmanaged, Enum
     (line 36, char 2, child of TestClass)

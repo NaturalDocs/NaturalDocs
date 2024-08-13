@@ -5,8 +5,8 @@
 - Child Scope: (global)
   ---------------
   Class: Template
-  Template
-  public class Template<T>
+  Symbol: Template
+  Prototype: public class Template<T>
   (line 2, char 1)
   - Child Language: C#
   - Maximum Effective Child Access Level: Public
@@ -14,8 +14,8 @@
   - Child Scope: Template
   ---------------
   Struct: TemplateWithInheritance
-  TemplateWithInheritance
-  public struct TemplateWithInheritance<X,Y> : System.Collections.List<Y>, Interface
+  Symbol: TemplateWithInheritance
+  Prototype: public struct TemplateWithInheritance<X,Y> : System.Collections.List<Y>, Interface
   (line 6, char 1)
   - Child Language: C#
   - Maximum Effective Child Access Level: Public
@@ -23,8 +23,8 @@
   - Child Scope: TemplateWithInheritance
   ---------------
   Interface: TemplateWithConditions
-  TemplateWithConditions
-  public interface TemplateWithConditions<in X, out Y, out Z> where X: class, Interface, new () where Y: System.Collections.IEnumerable<Y> where Z: class?, unmanaged, notnull
+  Symbol: TemplateWithConditions
+  Prototype: public interface TemplateWithConditions<in X, out Y, out Z> where X: class, Interface, new () where Y: System.Collections.IEnumerable<Y> where Z: class?, unmanaged, notnull
   (line 10, char 1)
   - Child Language: C#
   - Maximum Effective Child Access Level: Public
@@ -32,8 +32,8 @@
   - Child Scope: TemplateWithConditions
   ---------------
   Class: TemplateWithEmbeddedTemplates
-  TemplateWithEmbeddedTemplates
-  public class TemplateWithEmbeddedTemplates<X,Y,Z> : Base<KeyValuePair<X,Y>, int> where Z: IEnumerable<KeyValuePair<X,Y>>
+  Symbol: TemplateWithEmbeddedTemplates
+  Prototype: public class TemplateWithEmbeddedTemplates<X,Y,Z> : Base<KeyValuePair<X,Y>, int> where Z: IEnumerable<KeyValuePair<X,Y>>
   (line 17, char 1)
   - Child Language: C#
   - Maximum Effective Child Access Level: Public

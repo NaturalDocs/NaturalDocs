@@ -5,99 +5,99 @@
 - Child Scope: (global)
   ---------------
   Class: TestClass
-  TestClass
-  class TestClass
+  Symbol: TestClass
+  Prototype: class TestClass
   (line 2, char 1)
   - Child Language: C#
   - Default Declared Child Access Level: Private
   - Child Scope: TestClass
     ---------------
     Variable: varA
-    TestClass.varA
-    int varA
+    Symbol: TestClass.varA
+    Prototype: int varA
     (line 4, char 2, child of TestClass)
     ---------------
     Variable: varB
-    TestClass.varB
-    public int varB
+    Symbol: TestClass.varB
+    Prototype: public int varB
     (line 6, char 2, child of TestClass)
     ---------------
     Variable: varC
-    TestClass.varC
-    private static List<int> varC
+    Symbol: TestClass.varC
+    Prototype: private static List<int> varC
     (line 8, char 2, child of TestClass)
     ---------------
     Variable: varD
-    TestClass.varD
-    volatile string[] varD
+    Symbol: TestClass.varD
+    Prototype: volatile string[] varD
     (line 10, char 2, child of TestClass)
     ---------------
     Variable: varE
-    TestClass.varE
-    [Attribute: Something("value")] int* varE
+    Symbol: TestClass.varE
+    Prototype: [Attribute: Something("value")] int* varE
     (line 12, char 2, child of TestClass)
     ---------------
     Variable: varF
-    TestClass.varF
-    [AttributeA][AttributeB(12)] protected internal System.Text.StringBuilder varF
+    Symbol: TestClass.varF
+    Prototype: [AttributeA][AttributeB(12)] protected internal System.Text.StringBuilder varF
     (line 15, char 2, child of TestClass)
     ---------------
     Variable: varG
-    TestClass.varG
-    [AttributeA][AttributeB(12)] protected internal System.Text.StringBuilder varG
+    Symbol: TestClass.varG
+    Prototype: [AttributeA][AttributeB(12)] protected internal System.Text.StringBuilder varG
     (line 16, char 53, child of TestClass)
     ---------------
     Variable: varH
-    TestClass.varH
-    [AttributeA][AttributeB(12)] protected internal System.Text.StringBuilder varH
+    Symbol: TestClass.varH
+    Prototype: [AttributeA][AttributeB(12)] protected internal System.Text.StringBuilder varH
     (line 16, char 66, child of TestClass)
     ---------------
     Variable: varI
-    TestClass.varI
-    int* varI
+    Symbol: TestClass.varI
+    Prototype: int* varI
     (line 18, char 2, child of TestClass)
     ---------------
     Variable: varJ
-    TestClass.varJ
-    int* varJ
+    Symbol: TestClass.varJ
+    Prototype: int* varJ
     (line 18, char 13, child of TestClass)
     ---------------
     Variable: varK
-    TestClass.varK
-    void* varK
+    Symbol: TestClass.varK
+    Prototype: void* varK
     (line 20, char 2, child of TestClass)
     ---------------
     Variable: varL
-    TestClass.varL
-    void* varL
+    Symbol: TestClass.varL
+    Prototype: void* varL
     (line 20, char 14, child of TestClass)
     ---------------
     Variable: varM
-    TestClass.varM
-    delegate*<int, int> varM
+    Symbol: TestClass.varM
+    Prototype: delegate*<int, int> varM
     (line 22, char 2, child of TestClass)
     ---------------
     Variable: varN
-    TestClass.varN
-    delegate* managed<float> varN
+    Symbol: TestClass.varN
+    Prototype: delegate* managed<float> varN
     (line 24, char 2, child of TestClass)
     ---------------
     Variable: varO
-    TestClass.varO
-    delegate* unmanaged<int> varO
+    Symbol: TestClass.varO
+    Prototype: delegate* unmanaged<int> varO
     (line 26, char 2, child of TestClass)
     ---------------
     Variable: varP
-    TestClass.varP
-    delegate* unmanaged[Cdecl] <int, float> varP
+    Symbol: TestClass.varP
+    Prototype: delegate* unmanaged[Cdecl] <int, float> varP
     (line 28, char 2, child of TestClass)
     ---------------
     Property: PropertyNotVariableA
-    TestClass.PropertyNotVariableA
-    public int PropertyNotVariableA { get }
+    Symbol: TestClass.PropertyNotVariableA
+    Prototype: public int PropertyNotVariableA { get }
     (line 30, char 2, child of TestClass)
     ---------------
     Property: PropertyNotVariableB
-    TestClass.PropertyNotVariableB
-    public int PropertyNotVariableB { get }
+    Symbol: TestClass.PropertyNotVariableB
+    Prototype: public int PropertyNotVariableB { get }
     (line 32, char 2, child of TestClass)

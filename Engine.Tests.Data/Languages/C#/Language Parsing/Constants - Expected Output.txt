@@ -5,24 +5,24 @@
 - Child Scope: (global)
   ---------------
   Class: TestClass
-  TestClass
-  class TestClass
+  Symbol: TestClass
+  Prototype: class TestClass
   (line 2, char 1)
   - Child Language: C#
   - Default Declared Child Access Level: Private
   - Child Scope: TestClass
     ---------------
     Constant: ConstA
-    TestClass.ConstA
-    public const int ConstA
+    Symbol: TestClass.ConstA
+    Prototype: public const int ConstA
     (line 4, char 2, child of TestClass)
     ---------------
     Constant: ConstB
-    TestClass.ConstB
-    [Attribute] private const string ConstB
+    Symbol: TestClass.ConstB
+    Prototype: [Attribute] private const string ConstB
     (line 6, char 2, child of TestClass)
     ---------------
     Constant: ConstC
-    TestClass.ConstC
-    [Attribute] private const string ConstC
+    Symbol: TestClass.ConstC
+    Prototype: [Attribute] private const string ConstC
     (line 7, char 37, child of TestClass)

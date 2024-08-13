@@ -5,64 +5,64 @@
 - Child Scope: (global)
   ---------------
   Class: TestClass
-  TestClass
-  class TestClass
+  Symbol: TestClass
+  Prototype: class TestClass
   (line 2, char 1)
   - Child Language: C#
   - Default Declared Child Access Level: Private
   - Child Scope: TestClass
     ---------------
     Operator: operator !
-    TestClass.operator!
-    public static TestClass operator ! (TestClass input)
+    Symbol: TestClass.operator!
+    Prototype: public static TestClass operator ! (TestClass input)
     (line 4, char 2, child of TestClass)
     ---------------
     Operator: operator ++
-    TestClass.operator++
-    public static TestClass operator++ (TestClass input)
+    Symbol: TestClass.operator++
+    Prototype: public static TestClass operator++ (TestClass input)
     (line 7, char 2, child of TestClass)
     ---------------
     Operator: operator true
-    TestClass.operator true
-    public static extern bool operator true (TestClass input)
+    Symbol: TestClass.operator true
+    Prototype: public static extern bool operator true (TestClass input)
     (line 10, char 2, child of TestClass)
     ---------------
     Operator: operator +
-    TestClass.operator+
-    public static TestClass operator+ (TestClass a, TestClass b)
+    Symbol: TestClass.operator+
+    Prototype: public static TestClass operator+ (TestClass a, TestClass b)
     (line 12, char 2, child of TestClass)
     ---------------
     Operator: operator <<
-    TestClass.operator<<
-    [Attribute] public static TestClass<T> operator<< (TestClass<T> a, TestClass<T> b)
+    Symbol: TestClass.operator<<
+    Prototype: [Attribute] public static TestClass<T> operator<< (TestClass<T> a, TestClass<T> b)
     (line 15, char 2, child of TestClass)
     ---------------
     Operator: operator ^
-    TestClass.operator^
-    public System.Index operator ^(int fromEnd)
+    Symbol: TestClass.operator^
+    Prototype: public System.Index operator ^(int fromEnd)
     (line 19, char 5, child of TestClass)
     ---------------
     Operator: operator ..
-    TestClass.operator
-    public System.Range operator ..(Index start = 0, Index end = ^0)
+    Symbol: TestClass.operator
+    Prototype: public System.Range operator ..(Index start = 0, Index end = ^0)
     (line 21, char 5, child of TestClass)
     ---------------
     Operator: operator string
-    TestClass.operator string
-    public static extern implicit operator string (TestClass input)
+    Symbol: TestClass.operator string
+    Prototype: public static extern implicit operator string (TestClass input)
     (line 23, char 2, child of TestClass)
     ---------------
     Operator: operator List<string>
-    TestClass.operator List<string>
-    public static explicit operator List<string> (TestClass input)
+    Symbol: TestClass.operator List<string>
+    Prototype: public static explicit operator List<string> (TestClass input)
     (line 25, char 2, child of TestClass)
     ---------------
     Operator: operator true
-    TestClass.operator true
-    public static bool operator true (TestClass input)
+    Symbol: TestClass.operator true
+    Prototype: public static bool operator true (TestClass input)
     (line 28, char 2, child of TestClass)
     ---------------
     Operator: operator string
-    TestClass.operator string
-    public implicit operator string (TestClass input)
+    Symbol: TestClass.operator string
+    Prototype: public implicit operator string (TestClass input)
     (line 30, char 2, child of TestClass)

@@ -5,19 +5,19 @@
 - Child Scope: (global)
   ---------------
   Class: TestClass
-  TestClass
-  class TestClass
+  Symbol: TestClass
+  Prototype: class TestClass
   (line 2, char 1)
   - Child Language: C#
   - Default Declared Child Access Level: Private
   - Child Scope: TestClass
     ---------------
     Delegate: DelegateA
-    TestClass.DelegateA
-    public delegate void DelegateA (int a)
+    Symbol: TestClass.DelegateA
+    Prototype: public delegate void DelegateA (int a)
     (line 4, char 2, child of TestClass)
     ---------------
     Delegate: DelegateB
-    TestClass.DelegateB
-    [Attribute] protected internal delegate IList<T> DelegateB<in T> (params object[] x) where T: System.Collections.IEnumerable, new()
+    Symbol: TestClass.DelegateB
+    Prototype: [Attribute] protected internal delegate IList<T> DelegateB<in T> (params object[] x) where T: System.Collections.IEnumerable, new()
     (line 6, char 2, child of TestClass)

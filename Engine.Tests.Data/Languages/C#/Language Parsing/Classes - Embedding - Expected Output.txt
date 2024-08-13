@@ -5,8 +5,8 @@
 - Child Scope: (global)
   ---------------
   Class: OutsideOfNamespace
-  OutsideOfNamespace
-  class OutsideOfNamespace
+  Symbol: OutsideOfNamespace
+  Prototype: class OutsideOfNamespace
   (line 2, char 1)
   - Child Language: C#
   - Default Declared Child Access Level: Private
@@ -20,16 +20,16 @@
   - Child Scope: TestNamespace
     ---------------
     Class: TestNamespace.InsideOfNamespace
-    TestNamespace.InsideOfNamespace
-    class InsideOfNamespace
+    Symbol: TestNamespace.InsideOfNamespace
+    Prototype: class InsideOfNamespace
     (line 8, char 2, child of line 6)
     - Child Language: C#
     - Default Declared Child Access Level: Private
     - Child Scope: TestNamespace.InsideOfNamespace
       ---------------
       Class: TestNamespace.InsideOfNamespace.InsideOfClass
-      TestNamespace.InsideOfNamespace.InsideOfClass
-      class InsideOfClass
+      Symbol: TestNamespace.InsideOfNamespace.InsideOfClass
+      Prototype: class InsideOfClass
       (line 10, char 3, child of TestNamespace.InsideOfNamespace)
       - Child Language: C#
       - Default Declared Child Access Level: Private
@@ -43,8 +43,8 @@
     - Child Scope: TestNamespace.EmbeddedNamespace1.EmbeddedNamespace2
       ---------------
       Class: TestNamespace.EmbeddedNamespace1.EmbeddedNamespace2.InsideOfEmbeddedNamespaces
-      TestNamespace.EmbeddedNamespace1.EmbeddedNamespace2.InsideOfEmbeddedNamespaces
-      class InsideOfEmbeddedNamespaces
+      Symbol: TestNamespace.EmbeddedNamespace1.EmbeddedNamespace2.InsideOfEmbeddedNamespaces
+      Prototype: class InsideOfEmbeddedNamespaces
       (line 17, char 3, child of line 15)
       - Child Language: C#
       - Default Declared Child Access Level: Private

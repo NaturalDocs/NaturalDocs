@@ -5,16 +5,16 @@
 - Child Scope: (global)
   ---------------
   Struct: TestStruct1
-  TestStruct1
-  struct TestStruct1
+  Symbol: TestStruct1
+  Prototype: struct TestStruct1
   (line 2, char 1)
   - Child Language: C#
   - Default Declared Child Access Level: Private
   - Child Scope: TestStruct1
   ---------------
   Struct: TestStruct2
-  TestStruct2
-  unsafe public readonly ref struct TestStruct2
+  Symbol: TestStruct2
+  Prototype: unsafe public readonly ref struct TestStruct2
   (line 6, char 1)
   - Child Language: C#
   - Maximum Effective Child Access Level: Public
@@ -22,6 +22,6 @@
   - Child Scope: TestStruct2
     ---------------
     Variable: x
-    TestStruct2.x
-    public fixed int x[100]
+    Symbol: TestStruct2.x
+    Prototype: public fixed int x[100]
     (line 8, char 2, child of TestStruct2)

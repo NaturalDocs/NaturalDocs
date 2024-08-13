@@ -5,23 +5,23 @@
 - Child Scope: (global)
   ---------------
   Class: TestClass
-  TestClass
-  class TestClass
+  Symbol: TestClass
+  Prototype: class TestClass
   (line 2, char 1)
   - Child Language: C#
   - Default Declared Child Access Level: Private
   - Child Scope: TestClass
     ---------------
     Enumeration: EnumA
-    TestClass.EnumA
-    public enum EnumA
+    Symbol: TestClass.EnumA
+    Prototype: public enum EnumA
     (line 4, char 2, child of TestClass)
     - Maximum Effective Child Access Level: Public
     - Child Scope: TestClass.EnumA
     ---------------
     Enumeration: EnumB
-    TestClass.EnumB
-    [Attribute] public enum EnumB : byte
+    Symbol: TestClass.EnumB
+    Prototype: [Attribute] public enum EnumB : byte
     (line 7, char 2, child of TestClass)
     - Maximum Effective Child Access Level: Public
     - Child Scope: TestClass.EnumB

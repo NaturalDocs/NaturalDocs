@@ -5,8 +5,8 @@
 - Child Scope: (global)
   ---------------
   Class: TestClass
-  TestClass
-  public static partial class TestClass
+  Symbol: TestClass
+  Prototype: public static partial class TestClass
   (line 2, char 1)
   - Child Language: C#
   - Maximum Effective Child Access Level: Public
@@ -14,8 +14,8 @@
   - Child Scope: TestClass
   ---------------
   Class: TestClass2
-  TestClass2
-  internal sealed class TestClass2
+  Symbol: TestClass2
+  Prototype: internal sealed class TestClass2
   (line 6, char 1)
   - Child Language: C#
   - Maximum Effective Child Access Level: Internal
@@ -30,8 +30,8 @@
   - Child Scope: TestNamespace
     ---------------
     Class: TestNamespace.TestClass3
-    TestNamespace.TestClass3
-    [Attibute] internal protected class TestClass3
+    Symbol: TestNamespace.TestClass3
+    Prototype: [Attibute] internal protected class TestClass3
     (line 12, char 2, child of line 10)
     - Child Language: C#
     - Maximum Effective Child Access Level: ProtectedInternal
