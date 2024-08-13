@@ -390,9 +390,6 @@
     <Content Include="Source\Languages\Parsers\CSharp Notes.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\.editorconfig">
-      <Link>.editorconfig</Link>
-    </None>
     <None Include="app.config" />
     <None Include="Engine.targets" />
     <None Include="Resources\License\License.rtf" />
