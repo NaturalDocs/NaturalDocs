@@ -1,0 +1,93 @@
+<div class="NDPrototype WideForm">
+   <div class="PSection PPlainSection"><span class="SHKeyword">module</span> ImportPackage</div>
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHMetadata">import</span></div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="3" data-NarrowColumnCount="2">
+            <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHMetadata">PackageName::*;</span></div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PPlainSection"><span class="SHKeyword">module</span> ImportMember</div>
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHMetadata">import</span></div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="3" data-NarrowColumnCount="2">
+            <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHMetadata">PackageName::MemberName;</span></div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PPlainSection"><span class="SHKeyword">module</span> ImportMultiple1</div>
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHMetadata">import</span></div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="3" data-NarrowColumnCount="2">
+            <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHMetadata">PackageA::*,</span></div>
+            <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/1/3/2" data-NarrowGridArea="2/1/3/2" style="grid-area:2/1/3/2"><span class="SHMetadata">PackageB::MemberName;</span></div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PPlainSection"><span class="SHKeyword">module</span> ImportMultiple2</div>
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
+         <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/2/2"><span class="SHMetadata">import</span></div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHMetadata">PackageA::*;</span></div>
+      </div>
+   </div>
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHMetadata">import</span></div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="3" data-NarrowColumnCount="2">
+            <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHMetadata">PackageB::MemberName;</span></div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PPlainSection"><span class="SHKeyword">module</span> ImportMultiple3</div>
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
+         <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/3/2"><span class="SHMetadata">import</span></div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHMetadata">PackageA::*,</span></div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHMetadata">PackageB::MemberName;</span></div>
+      </div>
+   </div>
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHMetadata">import</span></div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="3" data-NarrowColumnCount="2">
+            <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHMetadata">PackageC::*;</span></div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
