@@ -117,6 +117,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			while (iterator.IsInBounds)
 				{
 				if (TryToSkipAttributes(ref iterator, ParseMode.SyntaxHighlight) ||
+					TryToSkipImportDeclarations(ref iterator, ParseMode.SyntaxHighlight) ||
 					TryToSkipComment(ref iterator, ParseMode.SyntaxHighlight) ||
 					TryToSkipString(ref iterator, ParseMode.SyntaxHighlight) ||
 					TryToSkipNumber(ref iterator, ParseMode.SyntaxHighlight))
@@ -1422,6 +1423,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 * Supported Modes:
 		 *
 		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- <ParseMode.SyntaxHighlight>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		protected bool TryToSkipImportDeclarations (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
@@ -1457,6 +1460,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 * Supported Modes:
 		 *
 		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- <ParseMode.SyntaxHighlight>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		protected bool TryToSkipImportDeclaration (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
@@ -1521,6 +1526,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					// to its own line on narrow prototypes.
 
 					lookahead.Next();
+
+					if (mode == ParseMode.SyntaxHighlight)
+						{  iterator.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.Metadata);  }
+
 					iterator = lookahead;
 					return true;
 					}
