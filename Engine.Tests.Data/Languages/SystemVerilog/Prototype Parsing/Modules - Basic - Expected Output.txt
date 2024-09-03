@@ -1,0 +1,67 @@
+- Parameter Section:
+  - Before Parameters: module ModuleKeyword (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: macromodule MacroModuleKeyword (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module static StaticLifetime (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module automatic AutomaticLifetime (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module Complex_Identifier$ (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module NamedEnd (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module NamedEnd_Complex_Identifier$ (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
