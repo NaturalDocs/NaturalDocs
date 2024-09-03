@@ -39,7 +39,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		/* Function: ParsePrototype
 		 * Converts a raw text prototype into a <ParsedPrototype>.
 		 */
-/*		override public ParsedPrototype ParsePrototype (string stringPrototype, int commentTypeID)
+		override public ParsedPrototype ParsePrototype (string stringPrototype, int commentTypeID)
 			{
 			Tokenizer tokenizedPrototype = new Tokenizer(stringPrototype, tabWidth: EngineInstance.Config.TabWidth);
 			TokenIterator startOfPrototype = tokenizedPrototype.FirstToken;
@@ -47,32 +47,32 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("module", language.ID) ||
 				commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("systemverilog module", language.ID))
-			    {
+				{
 				parsed = TryToSkipModule(ref startOfPrototype, ParseMode.ParsePrototype);
-			    }
+				}
 
 			if (parsed)
 				{  return new Prototypes.ParsedPrototypes.SystemVerilog(tokenizedPrototype, this.Language.ID, commentTypeID);  }
 			else
-			    {  return base.ParsePrototype(stringPrototype, commentTypeID);  }
+				{  return base.ParsePrototype(stringPrototype, commentTypeID);  }
 			}
-*/
+
 
 		/* Function: GetCodeElements
 		 */
-/*		override public List<Element> GetCodeElements (Tokenizer source)
+		override public List<Element> GetCodeElements(Tokenizer source)
 			{
 			List<Element> elements = new List<Element>();
 
 			return elements;
 			}
-*/
+
 
 		/* Function: TryToFindBasicPrototype
 		 * A temporary implementation to allow SystemVerilog to use the full language support functions to find prototypes following
 		 * comments.  Natural Docs will still otherwise behave as if SystemVerilog has basic language support.
 		 */
-/*		override protected bool TryToFindBasicPrototype (Topic topic, LineIterator startCode, LineIterator endCode,
+		override protected bool TryToFindBasicPrototype (Topic topic, LineIterator startCode, LineIterator endCode,
 																			   out TokenIterator prototypeStart, out TokenIterator prototypeEnd)
 			{
 			if (topic.CommentTypeID != 0 &&
@@ -106,7 +106,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				return base.TryToFindBasicPrototype(topic, startCode, endCode, out prototypeStart, out prototypeEnd);
 				}
 			}
-*/
+
 
 		/* Function: SyntaxHighlight
 		 */
