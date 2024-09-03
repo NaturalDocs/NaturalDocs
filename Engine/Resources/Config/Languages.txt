@@ -339,6 +339,7 @@ Language: Visual Basic
    Interface Prototype Ender: \n
    Function Prototype Ender: \n
    Variable Prototype Enders: \n =
+   Property Prototype Enders: \n
 
 
 # These settings define the languages Natural Docs knows how to parse.  Note
