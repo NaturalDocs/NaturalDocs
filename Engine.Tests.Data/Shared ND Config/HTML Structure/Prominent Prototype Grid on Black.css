@@ -1,0 +1,22 @@
+
+/* Shows grid lines on black theme.  Light and dark themes will display normally. */
+
+	.BlackTheme .NDPrototype.WideForm {
+		border: 1px solid green !important;
+		}
+	.BlackTheme .NDPrototype.NarrowForm {
+		border: 1px solid red !important;
+		}
+
+	.BlackTheme .NDPrototype .PParameterCells div {
+		border: 1px dotted #C0C000 !important;
+		}
+
+	.BlackTheme .NDPrototype .PParameterCells.Nested {
+		padding: 4px !important;
+		}
+	.BlackTheme .PParameterSection + .PParameterSection {
+		margin-top: 5px !important;
+		border-top: 1px dashed #C0C000 !important;
+		padding-top: 5px !important;
+		}
