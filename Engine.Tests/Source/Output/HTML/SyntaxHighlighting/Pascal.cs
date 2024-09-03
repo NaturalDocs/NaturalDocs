@@ -18,7 +18,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Output.HTML.SyntaxHighlighting
 		[Test]
 		public void All ()
 			{
-			TestFolder("Output/HTML/Syntax Highlighting/Pascal", "Shared ND Config/Basic Language Support",
+			TestFolder("Output/HTML/Syntax Highlighting/Pascal", "Shared ND Config/HTML Structure",
 
 							tagName: "pre",
 
