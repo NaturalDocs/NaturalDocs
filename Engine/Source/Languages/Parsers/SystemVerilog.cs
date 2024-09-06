@@ -823,6 +823,43 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
+		/* Function: TryToSkipTypeReference
+		 *
+		 * Tries to move the iterator past a type reference, such as "type(string)".
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipTypeReference (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			if (iterator.MatchesToken("type") == false)
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+			lookahead.Next();
+
+			TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
+
+			if (lookahead.Character != '(')
+				{  return false;  }
+
+			lookahead.Next();
+			GenericSkipUntilAfter(ref lookahead, ')');
+
+			if (mode == ParseMode.ParsePrototype)
+				{
+				// Kind of ugly but there's no good way to format it
+				iterator.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.Type);
+				}
+
+			iterator = lookahead;
+			return true;
+			}
+
+
 		/* Function: TryToSkipStruct
 		 *
 		 * Tries to move the iterator past a struct or union.
@@ -1144,43 +1181,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			if (lookahead > iterator)
 				{  ResetTokensBetween(iterator, lookahead, mode);  }
 
-			return true;
-			}
-
-
-		/* Function: TryToSkipTypeReference
-		 *
-		 * Tries to move the iterator past a type reference, such as "type(string)".
-		 *
-		 * Supported Modes:
-		 *
-		 *		- <ParseMode.IterateOnly>
-		 *		- <ParseMode.ParsePrototype>
-		 *		- Everything else is treated as <ParseMode.IterateOnly>.
-		 */
-		protected bool TryToSkipTypeReference (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
-			{
-			if (iterator.MatchesToken("type") == false)
-				{  return false;  }
-
-			TokenIterator lookahead = iterator;
-			lookahead.Next();
-
-			TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
-
-			if (lookahead.Character != '(')
-				{  return false;  }
-
-			lookahead.Next();
-			GenericSkipUntilAfter(ref lookahead, ')');
-
-			if (mode == ParseMode.ParsePrototype)
-				{
-				// Kind of ugly but there's no good way to format it
-				iterator.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.Type);
-				}
-
-			iterator = lookahead;
 			return true;
 			}
 
