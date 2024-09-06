@@ -1552,8 +1552,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToSkipTypeIdentifier
 		 *
-		 * Tries to move past and retrieve a type identifier, which can be qualified such as "X::Y::Z".  It also supports parameter ports
-		 * such as "X#(2)::Y".  Use <TryToSkipUnqualifiedIdentifier()> if you only want to retrieve a single segment.
+		 * Tries to move past and retrieve a type identifier, which can be qualified such as "X::Y::Z".  It also supports parameterized types
+		 * such as "X #(2)::Y".  Use <TryToSkipUnqualifiedIdentifier()> if you only want to retrieve a single segment.
 		 *
 		 * Supported Modes:
 		 *
@@ -1583,8 +1583,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToSkipTypeIdentifier
 		 *
-		 * Tries to move the iterator past a type identifier, which can be qualified such as "X::Y::Z".  It also supports parameter ports
-		 * such as "X#(2)::Y".  Use <TryToSkipUnqualifiedIdentifier()> if you only want to retrieve a single segment.
+		 * Tries to move the iterator past a type identifier, which can be qualified such as "X::Y::Z".  It also supports parameterized types
+		 * such as "X #(2)::Y".  Use <TryToSkipUnqualifiedIdentifier()> if you only want to retrieve a single segment.
 		 *
 		 * Supported Modes:
 		 *
@@ -1597,51 +1597,51 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		protected bool TryToSkipTypeIdentifier (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
 																 PrototypeParsingType prototypeParsingType = PrototypeParsingType.Name)
 			{
-			TokenIterator startOfIdentifier = iterator;
-			TokenIterator endOfIdentifier = iterator;
-			TokenIterator endOfQualifier = iterator;
+			TokenIterator lookahead = iterator;
+
+			TokenIterator startOfIdentifier = lookahead;
+			TokenIterator endOfIdentifier = lookahead;
+			TokenIterator endOfQualifier = lookahead;
+			TokenIterator startOfParameters = lookahead;
+			TokenIterator endOfParameters = lookahead;
 
 			// Can start with "$unit::".  Normal identifiers can't start with $ so we need to handle it separately.
-			if (iterator.MatchesAcrossTokens("$unit"))
+			if (lookahead.MatchesAcrossTokens("$unit"))
 				{
-				iterator.NextByCharacters(5);
-				TryToSkipWhitespace(ref iterator, ParseMode.IterateOnly);
+				lookahead.NextByCharacters(5);
+				TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
 
-				if (iterator.MatchesAcrossTokens("::") == false)
-					{
-					iterator = startOfIdentifier;
-					return false;
-					}
+				if (lookahead.MatchesAcrossTokens("::") == false)
+					{  return false;  }
 
-				iterator.NextByCharacters(2);
-				TryToSkipWhitespace(ref iterator, ParseMode.IterateOnly);
+				lookahead.NextByCharacters(2);
+				TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
 
-				endOfQualifier = iterator;
+				endOfQualifier = lookahead;
 				}
 
 			for (;;)
 				{
-				if (!TryToSkipUnqualifiedIdentifier(ref iterator, ParseMode.IterateOnly))
+				if (!TryToSkipUnqualifiedIdentifier(ref lookahead, ParseMode.IterateOnly))
+					{  return false;  }
+
+				endOfIdentifier = lookahead;
+				TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
+
+				if (lookahead.MatchesAcrossTokens("#("))
 					{
-					iterator = startOfIdentifier;
-					return false;
+					startOfParameters = lookahead;
+					GenericSkip(ref lookahead);
+					TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
+					endOfParameters = lookahead;
 					}
 
-				endOfIdentifier = iterator;
-				TryToSkipWhitespace(ref iterator, ParseMode.IterateOnly);
-
-				if (iterator.MatchesAcrossTokens("#("))
+				if (lookahead.MatchesAcrossTokens("::"))
 					{
-					GenericSkip(ref iterator);
-					TryToSkipWhitespace(ref iterator, ParseMode.IterateOnly);
-					}
+					lookahead.NextByCharacters(2);
+					endOfQualifier = lookahead;
 
-				if (iterator.MatchesAcrossTokens("::"))
-					{
-					iterator.NextByCharacters(2);
-					endOfQualifier = iterator;
-
-					TryToSkipWhitespace(ref iterator, ParseMode.IterateOnly);
+					TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
 					}
 				else
 					{  break;  }
@@ -1649,20 +1649,54 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (mode == ParseMode.ParsePrototype)
 				{
+				PrototypeParsingType openingParameterType, closingParameterType;
+
+
+				// Mark the identifier and qualifier
+
 				if (prototypeParsingType == PrototypeParsingType.Type)
 					{
 					if (startOfIdentifier < endOfQualifier)
 						{  startOfIdentifier.SetPrototypeParsingTypeBetween(endOfQualifier, PrototypeParsingType.TypeQualifier);  }
 
 					endOfQualifier.SetPrototypeParsingTypeBetween(endOfIdentifier, PrototypeParsingType.Type);
+
+					openingParameterType = PrototypeParsingType.OpeningTypeModifier;
+					closingParameterType = PrototypeParsingType.ClosingTypeModifier;
+					}
+				else if (prototypeParsingType == PrototypeParsingType.Name)
+					{
+					startOfIdentifier.SetPrototypeParsingTypeBetween(endOfIdentifier, PrototypeParsingType.Name);
+
+					openingParameterType = PrototypeParsingType.OpeningParamModifier;
+					closingParameterType = PrototypeParsingType.ClosingParamModifier;
 					}
 				else
+					{  throw new NotImplementedException();  }
+
+
+				// Mark the parameter if there is one
+
+				if (startOfParameters > endOfIdentifier)
 					{
-					startOfIdentifier.SetPrototypeParsingTypeBetween(endOfIdentifier, prototypeParsingType);
+					// There can only be one, and it can only be #( )
+					lookahead = startOfParameters;
+
+					lookahead.PrototypeParsingType = openingParameterType;
+					lookahead.Next();
+					lookahead.PrototypeParsingType = PrototypeParsingType.OpeningExtensionSymbol;
+
+					lookahead = endOfParameters;
+					lookahead.Previous();
+					lookahead.PrototypeParsingType = closingParameterType;
 					}
 				}
 
-			iterator = endOfIdentifier;
+			if (endOfParameters > endOfIdentifier)
+				{  iterator = endOfParameters;  }
+			else
+				{  iterator = endOfIdentifier;  }
+
 			return true;
 			}
 
