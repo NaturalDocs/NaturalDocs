@@ -746,20 +746,30 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		protected bool TryToSkipType (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
-			if (TryToSkipEnum(ref iterator, mode) ||
-				TryToSkipStruct(ref iterator, mode) ||
-				TryToSkipVirtualInterface(ref iterator, mode) ||
-				TryToSkipTypeReference(ref iterator, mode))
+			if (TryToSkipTypeReference(ref iterator, mode))
 				{  return true;  }
 
 			TokenIterator lookahead = iterator;
 			bool foundType = false;
 
 
-			// Type Name and Sign
+			// Type Name
 
-			// First check for a standalone "signed" or "unsigned" because implied types can be just that and we
-			// don't want to mistake them for the type name.
+			// Check for "signed" or "unsigned" because implied types can be just that and we don't want to mistake them for
+			// the type name.
+			if (!lookahead.MatchesToken("signed") &&
+				!lookahead.MatchesToken("unsigned") &&
+				TryToSkipTypeIdentifier(ref lookahead, mode, PrototypeParsingType.Type))
+				{
+				iterator = lookahead;
+				foundType = true;
+
+				TryToSkipWhitespace(ref lookahead, mode);
+				}
+
+
+			// Signing
+
 			if (lookahead.MatchesToken("signed") ||
 				lookahead.MatchesToken("unsigned"))
 				{
@@ -771,29 +781,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				foundType = true;
 
 				TryToSkipWhitespace(ref lookahead, mode);
-				}
-
-			// All other identifiers are treated as a type name
-			else if (TryToSkipTypeIdentifier(ref lookahead, mode, PrototypeParsingType.Type))
-				{
-				iterator = lookahead;
-				foundType = true;
-
-				TryToSkipWhitespace(ref lookahead, mode);
-
-				// Now check again for "signed" or "unsigned" since they can follow some built-in types.
-				if (lookahead.MatchesToken("signed") ||
-					lookahead.MatchesToken("unsigned"))
-					{
-					if (mode == ParseMode.ParsePrototype)
-						{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
-
-					lookahead.Next();
-					iterator = lookahead;
-					// foundType is already true
-
-					TryToSkipWhitespace(ref lookahead, mode);
-					}
 				}
 
 
