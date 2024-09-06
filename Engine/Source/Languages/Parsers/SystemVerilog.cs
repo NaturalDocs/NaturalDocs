@@ -442,9 +442,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Type
 
-			// TryToSkipType covers signing and type (packed) dimensions
+			// TryToSkipTypeName covers signing and type (packed) dimensions
 			if (hasType &&
-				TryToSkipType(ref lookahead, mode) == false)
+				TryToSkipTypeName(ref lookahead, mode) == false)
 				{
 				ResetTokensBetween(iterator, lookahead, mode);
 				return false;
@@ -733,10 +733,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
-		/* Function: TryToSkipType
+		/* Function: TryToSkipTypeName
 		 *
-		 * Tries to move the iterator past a type, such as "string".  This can handle partially-implied types like "unsigned" and
-		 * "[7:0]".
+		 * Tries to move the iterator past a type name, such as "string".  This can handle partially-implied types like "unsigned" and
+		 * "[7:0]".  It can also handle type references like "type(varName)".
 		 *
 		 * Supported Modes:
 		 *
@@ -744,7 +744,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *		- <ParseMode.ParsePrototype>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipType (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+		protected bool TryToSkipTypeName (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
 			if (TryToSkipTypeReference(ref iterator, mode))
 				{  return true;  }
@@ -812,7 +812,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToSkipTypeReference
 		 *
-		 * Tries to move the iterator past a type reference, such as "type(string)".
+		 * Tries to move the iterator past a type reference, such as "type(varName)".
 		 *
 		 * Supported Modes:
 		 *
@@ -1098,14 +1098,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{
 				TokenIterator beginningOfType = lookahead;
 
-				if (!TryToSkipType(ref lookahead, mode))
+				if (!TryToSkipTypeName(ref lookahead, mode))
 					{
 					ResetTokensBetween(iterator, lookahead, mode);
 					return false;
 					}
 
 				// We want the type to be "enum" and not something like "enum int", so change any type tokens that were
-				// set by TryToSkipType().  We do want the signing and dimensions tokens it marked, so we can't use
+				// set by TryToSkipTypeName().  We do want the signing and dimensions tokens it marked, so we can't use
 				// IterateOnly instead.
 				if (mode == ParseMode.ParsePrototype)
 					{
