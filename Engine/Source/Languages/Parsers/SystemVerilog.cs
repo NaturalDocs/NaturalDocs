@@ -409,7 +409,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// separator) an equals sign (default value separator) or a closing parenthesis (end of the last parameter) the
 			// identifier is definitely a parameter name.
 
-			// Also note that an implied type can just be a dimension, such as "bit paramA, [8] paramB", so if it's not on
+			// Also note that an implied type can just be a dimension, such as "bit paramA, [7:0] paramB", so if it's not on
 			// an identifier at all we can assume it's a type.
 
 			bool hasType = true;
@@ -423,7 +423,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{
 				TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
 
-				// Skip dimensions.  Both types and parameters can have them, such as "bit[8] paramA[2]", so their presence
+				// Skip dimensions.  Both types and parameters can have them, such as "bit[7:0] paramA[2]", so their presence
 				// doesn't tell us anything.
 				if (TryToSkipDimensions(ref lookahead, ParseMode.IterateOnly))
 					{  TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);  }
@@ -442,7 +442,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Type
 
-			// TryToSkipType covers signing and type dimensions
+			// TryToSkipType covers signing and type (packed) dimensions
 			if (hasType &&
 				TryToSkipType(ref lookahead, mode) == false)
 				{
@@ -464,7 +464,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TryToSkipWhitespace(ref lookahead, mode);
 
 
-			// Param Dimensions.  Both types and parameters can have them, such as "bit[8] paramA[2]"
+			// Param (Unpacked) Dimensions.  Both types and parameters can have dimensions, such as "bit[7:0] paramA[2]"
 
 			if (TryToSkipDimensions(ref lookahead, mode, PrototypeParsingType.ParamModifier))
 				{  TryToSkipWhitespace(ref lookahead, mode);  }
@@ -736,7 +736,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		/* Function: TryToSkipType
 		 *
 		 * Tries to move the iterator past a type, such as "string".  This can handle partially-implied types like "unsigned" and
-		 * "[8:0]".
+		 * "[7:0]".
 		 *
 		 * Supported Modes:
 		 *
@@ -797,9 +797,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 
-			// Dimensions
+			// Packed Dimensions
 
-			// Types can have dimensions such as "bit[8]", or implied types can be just a dimension like "[8]",
+			// Types can have dimensions such as "bit [7:0]", or implied types can be just a dimension like "[7:0]",
 			// so not finding an identifier prior to this point doesn't mean we failed.
 
 			if (TryToSkipDimensions(ref lookahead, mode, PrototypeParsingType.TypeModifier))
@@ -1187,7 +1187,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToSkipDimensions
 		 *
-		 * Tries to move the iterator past one or more consecutive dimensions, such as "[8:0][]".
+		 * Tries to move the iterator past one or more consecutive dimensions, such as "[7:0][]".
 		 *
 		 * Supported Modes:
 		 *
@@ -1219,7 +1219,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToSkipDimension
 		 *
-		 * Tries to move the iterator past a single dimension, such as "[8:0]".
+		 * Tries to move the iterator past a single dimension, such as "[7:0]".
 		 *
 		 * Supported Modes:
 		 *
