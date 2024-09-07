@@ -418,6 +418,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// We treat the keyword "type" as a type as well for the purposes of formatting.  The SV ParsedPrototype class
 			// will detect this and return the default value column as the real type.
 			if (!lookahead.MatchesToken("type") &&
+				!lookahead.MatchesToken("signed") &&
+				!lookahead.MatchesToken("unsigned") &&
 				!IsBuiltInType(lookahead.String) &&
 				TryToSkipUnqualifiedIdentifier(ref lookahead, ParseMode.IterateOnly))
 				{
