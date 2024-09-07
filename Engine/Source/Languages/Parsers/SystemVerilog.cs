@@ -345,7 +345,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					lookahead.Next();
 					TryToSkipWhitespace(ref lookahead, mode);
 					}
-				else if (TryToSkipParameterPortDeclaration(ref lookahead, mode))
+				else if (TryToSkipParameterPort(ref lookahead, mode))
 					{
 					TryToSkipWhitespace(ref lookahead, mode);
 					}
@@ -373,10 +373,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
-		/* Function: TryToSkipParameterPortDeclaration
+		/* Function: TryToSkipParameterPort
 		 *
-		 * Tries to move the iterator past a parameter port declaration, such as "string x".  The parameter ends at a comma or
-		 * a closing parenthesis.
+		 * Tries to move the iterator past a parameter port declaration, such as "string x", or assignment, such as "x = 12".  The
+		 * parameter port ends at a comma or a closing parenthesis.
 		 *
 		 * Supported Modes:
 		 *
@@ -384,12 +384,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *		- <ParseMode.ParsePrototype>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipParameterPortDeclaration (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+		protected bool TryToSkipParameterPort (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
 			TokenIterator lookahead = iterator;
 
 
 			// Parameter Keyword
+			// This isn't required because parameter assignments can appear in the list
 
 			if (lookahead.MatchesToken("parameter") ||
 				lookahead.MatchesToken("localparam"))
