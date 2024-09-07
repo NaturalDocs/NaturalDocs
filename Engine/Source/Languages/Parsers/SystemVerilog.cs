@@ -488,7 +488,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					{  GenericSkip(ref lookahead);  }
 
 				if (mode == ParseMode.ParsePrototype)
-					{  startOfDefaultValue.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.DefaultValue);  }
+					{
+					TokenIterator endOfDefaultValue = lookahead;
+					endOfDefaultValue.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfDefaultValue);
+
+					startOfDefaultValue.SetPrototypeParsingTypeBetween(endOfDefaultValue, PrototypeParsingType.DefaultValue);
+					}
 				}
 
 
