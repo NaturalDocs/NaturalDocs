@@ -1,20 +1,23 @@
 ﻿/*
- * Class: CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes.SystemVerilog
+ * Class: CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes.SystemVerilogModule
  * ____________________________________________________________________________
  *
- * A specialized <ParsedPrototype> for SystemVerilog.  It differs from <ParsedPrototype> in that multiple parameter
- * sections will be used for things like <GetParameterName()> and <NumberOfParameters>.  This is because modules
- * can have both #() and () parameters and we want to include them both.
+ * A specialized <ParsedPrototype> for SystemVerilog modules.  It differs from <ParsedPrototype> in the following ways:
  *
- * This class treats them as if they are one continuous set of parameters, so in:
+ * Multiple Parameter Sections:
  *
- * --- SV Code ---
- * module MyModule #(int A, int B) (int C)
- * ---
+ *		Multiple parameter sections will be used for things like <GetParameterName()> and <NumberOfParameters>.  This
+ *		is because modules can have both #() and () parameters and we want to include them both.
  *
- * it behaves as if there are three parameters, with int B at parameter index 1 and int C at parameter index 2.  The
- * benefit of this is it allows types to be automatically retrieved from both sets of parameters when documenting them
- * in definition lists.
+ *		This class treats them as if they are one continuous set of parameters, so in:
+ *
+ *		--- SV Code ---
+ *		module MyModule #(int A, int B) (int C)
+ *		---
+ *
+ *		it behaves as if there are three parameters, with int B at parameter index 1 and int C at parameter index 2.  The
+ *		benefit of this is it allows types to be automatically retrieved from both sets of parameters when documenting them
+ *		in definition lists.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2024 Code Clear LLC.
@@ -28,16 +31,16 @@ using CodeClear.NaturalDocs.Engine.Tokenization;
 
 namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 	{
-	public class SystemVerilog : ParsedPrototype
+	public class SystemVerilogModule : ParsedPrototype
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 
 
-		/* Constructor: SystemVerilog
+		/* Constructor: SystemVerilogModule
 		 */
-		public SystemVerilog (Tokenizer prototype, int languageID, int commentTypeID)
+		public SystemVerilogModule (Tokenizer prototype, int languageID, int commentTypeID)
 			: base (prototype, languageID, commentTypeID, parameterStyle: ParameterStyle.SystemVerilog, supportsImpliedTypes: true)
 			{
 			// The base constructor will call RecalculateSections() and the overridden version will set secondarySectionIndex.

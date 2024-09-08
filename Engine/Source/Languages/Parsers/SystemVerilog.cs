@@ -44,15 +44,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			Tokenizer tokenizedPrototype = new Tokenizer(stringPrototype, tabWidth: EngineInstance.Config.TabWidth);
 			TokenIterator startOfPrototype = tokenizedPrototype.FirstToken;
 			bool parsed = false;
+			bool isModule = false;
 
 			if (commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("module", language.ID) ||
 				commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("systemverilog module", language.ID))
 				{
 				parsed = TryToSkipModule(ref startOfPrototype, ParseMode.ParsePrototype);
+				isModule = parsed;
 				}
 
-			if (parsed)
-				{  return new Prototypes.ParsedPrototypes.SystemVerilog(tokenizedPrototype, this.Language.ID, commentTypeID);  }
+			if (parsed && isModule)
+				{  return new Prototypes.ParsedPrototypes.SystemVerilogModule(tokenizedPrototype, this.Language.ID, commentTypeID);  }
 			else
 				{  return base.ParsePrototype(stringPrototype, commentTypeID);  }
 			}
