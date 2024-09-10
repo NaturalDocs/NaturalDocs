@@ -4,6 +4,7 @@
  *
  * A specialized <ParsedPrototype> for SystemVerilog modules.  It differs from <ParsedPrototype> in the following ways:
  *
+ *
  * Multiple Parameter Sections:
  *
  *		Multiple parameter sections will be used for things like <GetParameterName()> and <NumberOfParameters>.  This
@@ -12,12 +13,13 @@
  *		This class treats them as if they are one continuous set of parameters, so in:
  *
  *		--- SV Code ---
- *		module MyModule #(int A, int B) (int C)
+ *		module MyModule #(int A, int B) (int C);
  *		---
  *
- *		it behaves as if there are three parameters, with int B at parameter index 1 and int C at parameter index 2.  The
- *		benefit of this is it allows types to be automatically retrieved from both sets of parameters when documenting them
- *		in definition lists.
+ *		it behaves as if there are three parameters, with B at parameter index 1 and C at parameter index 2.  The benefit
+ *		of this is it allows types to be automatically retrieved from both sets of parameters when documenting them in
+ *		definition lists.
+ *
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2024 Code Clear LLC.
@@ -47,19 +49,61 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			}
 
 
+		/* Function: ConvertParameterIndex
+		 * Takes an index that applies across all parameter sections and finds the <ParameterSection> containing it.  Also
+		 * returns the index within that section that corresponds to it.  Returns whether it was successful.
+		 */
+		protected bool ConvertParameterIndex (int parameterIndex, out ParameterSection containingSection,
+																 out int containingSectionParameterIndex)
+			{
+			for (int i = mainSectionIndex; i < sections.Count; i++)
+				{
+				if (sections[i] is ParameterSection)
+					{
+					ParameterSection parameterSection = (sections[i] as ParameterSection);
+
+					if (parameterIndex < parameterSection.NumberOfParameters)
+						{
+						containingSection = parameterSection;
+						containingSectionParameterIndex = parameterIndex;
+						return true;
+						}
+					else
+						{
+						parameterIndex -= parameterSection.NumberOfParameters;
+						// Continue looking
+						}
+					}
+				}
+
+			containingSection = null;
+			containingSectionParameterIndex = -1;
+			return false;
+			}
+
+
+
+		// Group: Overridden Functions
+		// __________________________________________________________________________
+
+
 		/* Function: GetParameter
 		 */
 		override public bool GetParameter (int parameterIndex, out TokenIterator parameterStart, out TokenIterator parameterEnd)
 			{
-			if (secondarySectionIndex != -1 &&
-				parameterIndex >= NumberOfMainParameters)
+			ParameterSection containingSection;
+			int containingSectionParameterIndex;
+
+			if (ConvertParameterIndex(parameterIndex, out containingSection, out containingSectionParameterIndex))
 				{
-				return (sections[secondarySectionIndex] as ParameterSection).GetParameterBounds(
-					parameterIndex - NumberOfMainParameters, out parameterStart, out parameterEnd);
+				return containingSection.GetParameterBounds(containingSectionParameterIndex,
+																				   out parameterStart, out parameterEnd);
 				}
 			else
 				{
-				return base.GetParameter(parameterIndex, out parameterStart, out parameterEnd);
+				parameterStart = tokenizer.EndOfTokens;
+				parameterEnd = tokenizer.EndOfTokens;
+				return false;
 				}
 			}
 
@@ -67,17 +111,21 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		/* Function: GetParameterName
 		 */
 		override public bool GetParameterName (int parameterIndex, out TokenIterator parameterNameStart,
-																   out TokenIterator parameterNameEnd)
+																 out TokenIterator parameterNameEnd)
 			{
-			if (secondarySectionIndex != -1 &&
-				parameterIndex >= NumberOfMainParameters)
+			ParameterSection containingSection;
+			int containingSectionParameterIndex;
+
+			if (ConvertParameterIndex(parameterIndex, out containingSection, out containingSectionParameterIndex))
 				{
-				return (sections[secondarySectionIndex] as ParameterSection).GetParameterName(
-					parameterIndex - NumberOfMainParameters, out parameterNameStart, out parameterNameEnd);
+				return containingSection.GetParameterName(containingSectionParameterIndex,
+																				out parameterNameStart, out parameterNameEnd);
 				}
 			else
 				{
-				return base.GetParameterName(parameterIndex, out parameterNameStart, out parameterNameEnd);
+				parameterNameStart = tokenizer.EndOfTokens;
+				parameterNameEnd = tokenizer.EndOfTokens;
+				return false;
 				}
 			}
 
@@ -85,36 +133,45 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		/* Function: BuildFullParameterType
 		 */
 		override public bool BuildFullParameterType (int parameterIndex, out TokenIterator fullTypeStart,
-																		 out TokenIterator fullTypeEnd, bool impliedTypes = true)
+																	  out TokenIterator fullTypeEnd, bool impliedTypes = true)
 			{
-			if (secondarySectionIndex != -1 &&
-				parameterIndex >= NumberOfMainParameters)
+			ParameterSection containingSection;
+			int containingSectionParameterIndex;
+
+			if (ConvertParameterIndex(parameterIndex, out containingSection, out containingSectionParameterIndex))
 				{
-				return (sections[secondarySectionIndex] as ParameterSection).BuildFullParameterType(
-					parameterIndex - NumberOfMainParameters, out fullTypeStart, out fullTypeEnd,
-					(impliedTypes && supportsImpliedTypes));
+				return containingSection.BuildFullParameterType(containingSectionParameterIndex,
+																					 out fullTypeStart, out fullTypeEnd,
+																					(impliedTypes && supportsImpliedTypes));
 				}
 			else
 				{
-				return base.BuildFullParameterType(parameterIndex, out fullTypeStart, out fullTypeEnd, impliedTypes);
+				fullTypeStart = tokenizer.EndOfTokens;
+				fullTypeEnd = tokenizer.EndOfTokens;
+				return false;
 				}
 			}
 
 
 		/* Function: GetBaseParameterType
 		 */
-		override public bool GetBaseParameterType (int parameterIndex, out TokenIterator start, out TokenIterator end,
-																		bool impliedTypes = true)
+		override public bool GetBaseParameterType (int parameterIndex, out TokenIterator baseTypeStart,
+																		out TokenIterator baseTypeEnd, bool impliedTypes = true)
 			{
-			if (secondarySectionIndex != -1 &&
-				parameterIndex >= NumberOfMainParameters)
+			ParameterSection containingSection;
+			int containingSectionParameterIndex;
+
+			if (ConvertParameterIndex(parameterIndex, out containingSection, out containingSectionParameterIndex))
 				{
-				return (sections[secondarySectionIndex] as ParameterSection).GetBaseParameterType(
-					parameterIndex - NumberOfMainParameters, out start, out end, (impliedTypes && supportsImpliedTypes));
+				return containingSection.GetBaseParameterType(containingSectionParameterIndex,
+																					 out baseTypeStart, out baseTypeEnd,
+																					(impliedTypes && supportsImpliedTypes));
 				}
 			else
 				{
-				return base.GetBaseParameterType(parameterIndex, out start, out end, impliedTypes);
+				baseTypeStart = tokenizer.EndOfTokens;
+				baseTypeEnd = tokenizer.EndOfTokens;
+				return false;
 				}
 			}
 
@@ -124,15 +181,19 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		override public bool GetParameterDefaultValue (int parameterIndex, out TokenIterator defaultValueStart,
 																			 out TokenIterator defaultValueEnd)
 			{
-			if (secondarySectionIndex != -1 &&
-				parameterIndex >= NumberOfMainParameters)
+			ParameterSection containingSection;
+			int containingSectionParameterIndex;
+
+			if (ConvertParameterIndex(parameterIndex, out containingSection, out containingSectionParameterIndex))
 				{
-				return (sections[secondarySectionIndex] as ParameterSection).GetParameterDefaultValue(
-					parameterIndex - NumberOfMainParameters, out defaultValueStart, out defaultValueEnd);
+				return containingSection.GetParameterDefaultValue(containingSectionParameterIndex,
+																						 out defaultValueStart, out defaultValueEnd);
 				}
 			else
 				{
-				return base.GetParameterDefaultValue(parameterIndex, out defaultValueStart, out defaultValueEnd);
+				defaultValueStart = tokenizer.EndOfTokens;
+				defaultValueEnd = tokenizer.EndOfTokens;
+				return false;
 				}
 			}
 
@@ -142,36 +203,12 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		override public void RecalculateSections ()
 			{
 			base.RecalculateSections();
-
-			if (sections[mainSectionIndex] is ParameterSection &&
-				mainSectionIndex + 1 < sections.Count &&
-				sections[mainSectionIndex + 1] is ParameterSection)
-				{
-				secondarySectionIndex = mainSectionIndex + 1;
-				}
-			else
-				{
-				secondarySectionIndex = -1;
-				}
 			}
 
 
 
-		// Group: Properties
+		// Group: Overridden Properties
 		// __________________________________________________________________________
-
-
-		/* Property: SecondarySectionIndex
-		 * If the prototype contains two relevant sets of parameters, such as a module with #() and (), this is the index
-		 * into <ParsedPrototype.sections> for the second one.  It will be -1 if there isn't one.
-		 */
-		public int SecondarySectionIndex
-			{
-			get
-				{  return secondarySectionIndex;  }
-			set
-				{  secondarySectionIndex = value;  }
-			}
 
 
 		/* Property: NumberOfParameters
@@ -180,48 +217,17 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			{
 			get
 				{
-				return (NumberOfMainParameters + NumberOfSecondaryParameters);
+				int numberOfParameters = 0;
+
+				for (int i = mainSectionIndex; i < sections.Count; i++)
+					{
+					if (sections[i] is ParameterSection)
+						{  numberOfParameters += (sections[i] as ParameterSection).NumberOfParameters;  }
+					}
+
+				return numberOfParameters;
 				}
 			}
-
-
-		/* Property: NumberOfMainParameters
-		 */
-		public int NumberOfMainParameters
-			{
-			get
-				{
-				if (sections[mainSectionIndex] is ParameterSection)
-					{  return (sections[mainSectionIndex] as ParameterSection).NumberOfParameters;  }
-				else
-					{  return 0;  }
-				}
-			}
-
-
-		/* Property: NumberOfSecondaryParameters
-		 */
-		public int NumberOfSecondaryParameters
-			{
-			get
-				{
-				if (secondarySectionIndex != -1)
-					{  return (sections[secondarySectionIndex] as ParameterSection).NumberOfParameters;  }
-				else
-					{  return 0;  }
-				}
-			}
-
-
-
-		// Group: Variables
-		// __________________________________________________________________________
-
-		/* var: secondarySectionIndex
-		 * If the prototype contains two relevant sets of parameters, such as a module with #() and (), this is the index
-		 * into <ParsedPrototype.sections> for the second one.  It will be -1 if there isn't one.
-		 */
-		protected int secondarySectionIndex;
 
 		}
 	}
