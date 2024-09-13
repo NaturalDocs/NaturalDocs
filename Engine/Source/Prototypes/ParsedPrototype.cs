@@ -434,7 +434,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			}
 
 
-		/* Function: TryToSkipModifierBlock
+		/* Function: TryToSkipBlock
 		 *
 		 * If the iterator is on one of the following opening token types, moves the iterator past the entire block including
 		 * any nested blocks and returns true.
@@ -451,7 +451,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			}
 
 
-		/* Function: TryToSkipModifierBlock
+		/* Function: TryToSkipBlock
 		 *
 		 * If the iterator is on one of the following opening token types, moves the iterator past the entire block including
 		 * any nested blocks and returns true.
