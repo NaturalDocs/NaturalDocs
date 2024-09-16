@@ -63,6 +63,10 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 
 				var parsedPrototype = topics[topicIndex].ParsedPrototype;
 
+				// SystemVerilog modules can use multiple parameter sections to build types so we have to maintain a global parameter
+				// index which starts at zero and increments across the entire prototype's parameters regardless of section.
+				int globalParameterIndex = 0;
+
 				for (int sectionIndex = 0; sectionIndex < parsedPrototype.Sections.Count; sectionIndex++)
 					{
 					if (sectionIndex != 0)
@@ -93,12 +97,28 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 								{  output.AppendLine("    - Name: (not detected)");  }
 
 							string fullType = null;
-							if (section.BuildFullParameterType(paramIndex, out start, out end, false))
-								{  fullType = start.TextBetween(end);  }
+							if (parsedPrototype is Prototypes.ParsedPrototypes.SystemVerilogModule)
+								{
+								if (parsedPrototype.BuildFullParameterType(globalParameterIndex, out start, out end, false))
+									{  fullType = start.TextBetween(end);  }
+								}
+							else
+								{
+								if (section.BuildFullParameterType(paramIndex, out start, out end, false))
+									{  fullType = start.TextBetween(end);  }
+								}
 
 							string impliedType = null;
-							if (section.BuildFullParameterType(paramIndex, out start, out end, true))
-								{  impliedType = start.TextBetween(end);  }
+							if (parsedPrototype is Prototypes.ParsedPrototypes.SystemVerilogModule)
+								{
+								if (parsedPrototype.BuildFullParameterType(globalParameterIndex, out start, out end, true))
+									{  fullType = start.TextBetween(end);  }
+								}
+							else
+								{
+								if (section.BuildFullParameterType(paramIndex, out start, out end, true))
+									{  fullType = start.TextBetween(end);  }
+								}
 
 							if (fullType != null)
 								{  output.AppendLine("    - Full Type: " + fullType);  }
@@ -127,6 +147,8 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 								{  output.AppendLine("    - Default Value: " + start.TextBetween(end));  }
 							else
 								{  output.AppendLine("    - Default Value: (not detected)");  }
+
+							globalParameterIndex++;
 							}
 
 						if (section.GetAfterParameters(out start, out end))
