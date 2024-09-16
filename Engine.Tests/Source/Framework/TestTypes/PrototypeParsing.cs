@@ -112,12 +112,12 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 							if (parsedPrototype is Prototypes.ParsedPrototypes.SystemVerilogModule)
 								{
 								if (parsedPrototype.BuildFullParameterType(globalParameterIndex, out start, out end, true))
-									{  fullType = start.TextBetween(end);  }
+									{  impliedType = start.TextBetween(end);  }
 								}
 							else
 								{
 								if (section.BuildFullParameterType(paramIndex, out start, out end, true))
-									{  fullType = start.TextBetween(end);  }
+									{  impliedType = start.TextBetween(end);  }
 								}
 
 							if (fullType != null)
