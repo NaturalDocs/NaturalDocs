@@ -57,7 +57,11 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 
 				if (topics[topicIndex].Prototype == null)
 					{
-					output.AppendLine("(No prototype detected)");
+					if (topics[topicIndex].CommentTypeID == EngineInstance.CommentTypes.GroupCommentTypeID &&
+						topics[topicIndex].Title != null)
+						{  output.AppendLine("Group: " + topics[topicIndex].Title);  }
+					else
+						{  output.AppendLine("(No prototype detected)");  }
 					continue;
 					}
 
