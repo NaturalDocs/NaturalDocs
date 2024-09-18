@@ -132,12 +132,24 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 							if (fullType == null && impliedType == null)
 								{  output.AppendLine("    - Full Type: (not detected)");  }
 
-							if (section.GetBaseParameterType(paramIndex, out start, out end, false))
-								{  output.AppendLine("    - Base Type: " + start.TextBetween(end));  }
-							else if (section.GetBaseParameterType(paramIndex, out start, out end, true))
-								{  output.AppendLine("    - Base Type (implied): " + start.TextBetween(end));  }
+							if (parsedPrototype is Prototypes.ParsedPrototypes.SystemVerilogModule)
+								{
+								if (parsedPrototype.GetBaseParameterType(globalParameterIndex, out start, out end, false))
+									{  output.AppendLine("    - Base Type: " + start.TextBetween(end));  }
+								else if (parsedPrototype.GetBaseParameterType(globalParameterIndex, out start, out end, true))
+									{  output.AppendLine("    - Base Type (implied): " + start.TextBetween(end));  }
+								else
+									{  output.AppendLine("    - Base Type: (not detected)");  }
+								}
 							else
-								{  output.AppendLine("    - Base Type: (not detected)");  }
+								{
+								if (section.GetBaseParameterType(paramIndex, out start, out end, false))
+									{  output.AppendLine("    - Base Type: " + start.TextBetween(end));  }
+								else if (section.GetBaseParameterType(paramIndex, out start, out end, true))
+									{  output.AppendLine("    - Base Type (implied): " + start.TextBetween(end));  }
+								else
+									{  output.AppendLine("    - Base Type: (not detected)");  }
+								}
 
 							section.GetParameterBounds(paramIndex, out start, out end);
 							output.Append("    - Link Candidates: ");
