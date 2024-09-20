@@ -1,4 +1,5 @@
 
+
 // Group: Empty Parentheses
 // ___________________________________________________
 
@@ -26,39 +27,16 @@ module LeadingAssignmentsB #(x[2] = '{'0, '0}) ();
 endmodule
 
 // Module: LeadingAssignmentsC
-module LeadingAssignmentsC #(x[2][2] = '{'{'0,'0},'{'1,'1}}) ();
+module LeadingAssignmentsC #(x[0:1][2] = '{'{'0,'0},'{'1,'1}}) ();
 endmodule
 
 // Module: LeadingAssignmentsD
-module LeadingAssignmentsD #(a = 12, b[2] = '{'0,'0}, c[2][2] = '{'{'0,'0},'{'1,'1}}) ();
+module LeadingAssignmentsD #(a = 12, b[2] = '{'0,'0}, c[2][0:1] = '{'{'0,'0},'{'1,'1}}) ();
 endmodule
 
 
 
-// Group: Leading Assignments (unsupported)
-// This is explicitly mentioned as valid in the specification but most compilers don't support it
-// ___________________________________________________
-
-
-// Module: UnsupportedLeadingAssignmentsA
-module UnsupportedLeadingAssignmentsA #(x) ();
-endmodule
-
-// Module: UnsupportedLeadingAssignmentsB
-module UnsupportedLeadingAssignmentsB #(x[2]) ();
-endmodule
-
-// Module: UnsupportedLeadingAssignmentsC
-module UnsupportedLeadingAssignmentsC #(x[2][2]) ();
-endmodule
-
-// Module: UnsupportedLeadingAssignmentsD
-module UnsupportedLeadingAssignmentsD #(a, b[2], c[2][2]) ();
-endmodule
-
-
-
-// Group: Parameter Port Declarations
+// Group: Typed Declarations
 // ___________________________________________________
 
 
@@ -103,21 +81,37 @@ module TypeReferences #(
 	realtime c = 1.0ms,
 	string d = "ddd",
 	type(a) aa = '0,
-	type(b) bb = 9,
-	type(c) cc = 0.5s,
-	type(d) dd = "x")
+	type (b) bb = 9,
+	type( c ) cc = 0.5s,
+	type ( d ) dd = "x")
 	();
 endmodule
 
 
 
-// Group: Parameter Port Declarations (unsupported)
+// Group: Valueless Declarations
 // This is explicitly mentioned as valid in the specification but most compilers don't support it
 // ___________________________________________________
 
 
-// Module: UnsupportedIntegerVectorTypes
-module UnsupportedIntegerVectorTypes #(
+// Module: ValuelessDeclarationsA
+module ValuelessDeclarationsA #(x) ();
+endmodule
+
+// Module: ValuelessDeclarationsB
+module ValuelessDeclarationsB #(x[2]) ();
+endmodule
+
+// Module: ValuelessDeclarationsC
+module ValuelessDeclarationsC #(x[0:1][2]) ();
+endmodule
+
+// Module: ValuelessDeclarationsD
+module ValuelessDeclarationsD #(a, b[2], c[2][0:1]) ();
+endmodule
+
+// Module: ValuelessIntegerVectorTypes
+module ValuelessIntegerVectorTypes #(
 	bit a,
 	logic [7:0] b,
 	reg unsigned c,
@@ -125,8 +119,8 @@ module UnsupportedIntegerVectorTypes #(
 	();
 endmodule
 
-// Module: UnsupportedIntegerAtomTypes
-module UnsupportedIntegerAtomTypes #(
+// Module: ValuelessIntegerAtomTypes
+module ValuelessIntegerAtomTypes #(
 	byte a,
 	shortint unsigned b,
 	int signed c,
@@ -136,30 +130,30 @@ module UnsupportedIntegerAtomTypes #(
 	();
 endmodule
 
-// Module: UnsupportedNonIntegerTypes
-module UnsupportedNonIntegerTypes #(
+// Module: ValuelessNonIntegerTypes
+module ValuelessNonIntegerTypes #(
 	shortreal a,
 	real b,
 	realtime c)
 	();
 endmodule
 
-// Module: UnsupportedStringType
-module UnsupportedStringType #(
+// Module: ValuelessStringType
+module ValuelessStringType #(
 	string a)
 	();
 endmodule
 
-// Module: UnsupportedTypeReferences
-module UnsupportedTypeReferences #(
+// Module: ValuelessTypeReferences
+module ValuelessTypeReferences #(
 	bit [7:0] a,
 	int signed b,
 	realtime c,
 	string d,
 	type(a) aa,
-	type(b) bb,
-	type(c) cc,
-	type(d) dd)
+	type (b) bb,
+	type( c ) cc,
+	type ( d ) dd)
 	();
 endmodule
 
@@ -170,18 +164,75 @@ endmodule
 
 
 // Module: ImpliedTypesA
-// Note that the trailing [2] in C and E does *not* get inherited by CC and EE.
+// The full type should be inherited including the packed dimension and signing.
 module ImpliedTypesA #(
-	logic a = 1,
+	bit a = 1,
 	aa = 1,
 	logic [7:0] b = 2,
 	bb = 2,
-	logic c[2] = '{3,3},
+	int unsigned c = 3,
 	cc = 3,
-	logic unsigned d = 4,
-	dd = 4,
-	logic unsigned [3:0] e[2] = '{5,5},
-	ee = 5)
+	bit unsigned [3:0] d = 4,
+	dd = 4)
+	();
+endmodule
+
+
+// Module: ImpliedTypesB
+// Unpacked dimensions should *not* be inherited.
+module ImpliedTypesB #(
+	bit a[2] = '{1,1},
+	aa = 1,
+	logic b = 2,
+	bb[2] = '{2,2},
+	reg c[0:1] = '{3,3},
+	cc[3] = '{3,3,3})
+	();
+endmodule
+
+
+// Module: ImpliedTypesC
+// Signing and packed dimensions specified without a data type do *not* inherit the data type.
+// They revert to the default.  The default can be context-dependent and even changed by
+// preprocessor directives so we don't add it to the results.
+module ImpliedTypesC #(
+	bit a = 1,
+	unsigned aa = 1,
+	reg signed b = 2,
+	unsigned bb = 2,
+	bit c = 3,
+	[3:0] cc = 3,
+	reg [7:0] d = 4,
+	[3:0] dd = 4,
+	bit signed [7:0] e = 5,
+	unsigned ee = 5,
+	reg signed [7:0] f = 6,
+	[3:0] ff = 6,
+	bit signed [7:0] g = 7,
+	unsigned [3:0] gg = 7)
+	();
+endmodule
+
+
+// Module: ImpliedTypesD
+// Combinations of the above.
+module ImpliedTypesD #(
+	bit a[2] = '{1,1},
+	unsigned aa = 1,
+	logic [3:0] b = 2,
+	[7:0] bb[2] = '{2,2},
+	reg signed [7:0] c = 3,
+	cc[3] = '{3,3,3})
+	();
+endmodule
+
+
+// Module: ImpliedTypesE
+module ImpliedTypesE #(
+	reg a = 1,
+	aa = 2,
+	type(a) b = 2,
+	bb = 3)
 	();
 endmodule
 
@@ -203,6 +254,16 @@ endmodule
 
 // Module: PackedAndUnpackedArrays
 module PackedAndUnpackedArrays #(
-	bit [7:0] a[2] = '{'0, '0})
+	bit [7:0] a[2] = '{'0, '0},
+	bit [3:0] b[0:1] = '{'0, '0})
+	();
+endmodule
+
+// Module: TypeReferencesAndUnpackedDimensions
+module TypeReferencesAndUnpackedDimensions #(
+	logic a[2] = '{'0,'0},
+	reg b = 2,
+	type(a) aa = 3,
+	type(b) bb[2] = '{'0,'0})
 	();
 endmodule
