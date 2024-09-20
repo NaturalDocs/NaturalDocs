@@ -447,9 +447,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Type
 
-			// TryToSkipTypeName covers signing and type (packed) dimensions
+			// TryToSkipType covers signing and type (packed) dimensions
 			if (hasType &&
-				TryToSkipTypeName(ref lookahead, mode) == false)
+				TryToSkipType(ref lookahead, mode) == false)
 				{
 				ResetTokensBetween(iterator, lookahead, mode);
 				return false;
@@ -743,10 +743,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
-		/* Function: TryToSkipTypeName
+		/* Function: TryToSkipType
 		 *
-		 * Tries to move the iterator past a type name, such as "string".  This can handle partially-implied types like "unsigned" and
-		 * "[7:0]".  It can also handle type references like "type(varName)".
+		 * Tries to move the iterator past a type, such as "string" or "reg unsigned [7:0]".  This can handle partially-implied types like
+		 * "unsigned" and "[7:0]" appearing on their own.  It can also handle type references like "type(varName)".  It does *not*
+		 * handle type definitions like declaring a class or enum.
 		 *
 		 * Supported Modes:
 		 *
@@ -754,7 +755,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *		- <ParseMode.ParsePrototype>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipTypeName (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+		protected bool TryToSkipType (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
 			if (TryToSkipTypeReference(ref iterator, mode))
 				{  return true;  }
@@ -1108,7 +1109,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{
 				TokenIterator beginningOfType = lookahead;
 
-				if (!TryToSkipTypeName(ref lookahead, mode))
+				if (!TryToSkipType(ref lookahead, mode))
 					{
 					ResetTokensBetween(iterator, lookahead, mode);
 					return false;
