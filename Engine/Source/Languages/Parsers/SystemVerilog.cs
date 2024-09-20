@@ -837,20 +837,39 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{  return false;  }
 
 			TokenIterator lookahead = iterator;
-			lookahead.Next();
 
+			if (mode == ParseMode.ParsePrototype)
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.Type;  }
+
+			lookahead.Next();
 			TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
 
 			if (lookahead.Character != '(')
-				{  return false;  }
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+
+			if (mode == ParseMode.ParsePrototype)
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.OpeningTypeModifier;  }
 
 			lookahead.Next();
+
+			if (mode == ParseMode.ParsePrototype)
+				{
+				// See if we can mark the contents as a type identifier.  It can be other things as well, so we don't check whether
+				// this fails, we just keep going.
+				TryToSkipWhitespace(ref lookahead, mode);
+				TryToSkipTypeIdentifier(ref lookahead, mode, PrototypeParsingType.Type);
+				}
+
 			GenericSkipUntilAfter(ref lookahead, ')');
 
 			if (mode == ParseMode.ParsePrototype)
 				{
-				// Kind of ugly but there's no good way to format it
-				iterator.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.Type);
+				TokenIterator closingSymbol = lookahead;
+				closingSymbol.Previous();
+				closingSymbol.PrototypeParsingType = PrototypeParsingType.ClosingTypeModifier;
 				}
 
 			iterator = lookahead;
