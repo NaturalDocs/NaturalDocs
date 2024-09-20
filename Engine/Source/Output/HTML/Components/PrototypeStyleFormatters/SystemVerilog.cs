@@ -74,7 +74,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 				cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
 
 
-				// Modifier/Qualifier
+				// Qualifier
 
 				currentColumn++;
 				startOfCell = iterator;
@@ -83,13 +83,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 					{
 					PrototypeParsingType type = iterator.PrototypeParsingType;
 
-					if (type == PrototypeParsingType.TypeModifier ||
-						type == PrototypeParsingType.TypeQualifier ||
+					if (type == PrototypeParsingType.TypeQualifier ||
 						type == PrototypeParsingType.Null)
 						{  iterator.Next();   }
-					else if (type == PrototypeParsingType.OpeningTypeModifier &&
-							   iterator.MatchesAcrossTokens("#("))
-						{  SkipModifierBlock(ref iterator, endOfParam);  }
 					else
 						{  break;  }
 					}
