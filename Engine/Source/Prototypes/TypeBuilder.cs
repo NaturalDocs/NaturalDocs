@@ -351,6 +351,21 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 
 
+		// Group: Properties
+		// __________________________________________________________________________
+
+
+		/* Property: IsEmpty
+		 * Whether anything has been added to the type builder yet.
+		 */
+		public bool IsEmpty
+			{
+			get
+				{  return (rawText.Length == 0);  }
+			}
+
+
+
 		// Group: Data Variables
 		// __________________________________________________________________________
 
