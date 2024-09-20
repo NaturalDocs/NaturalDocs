@@ -1,0 +1,87 @@
+﻿
+Title: SystemVerilog Parser Notes
+_______________________________________________________________________________
+
+Topic: ANSI Port Attribute Inheritance Rules
+
+	According to the language reference these are the rules for attribute inheritance.  See Section 6 for the rules
+	for data types, and Section 23.2.2.3 for the rules for module ports.
+
+
+	Definitions:
+
+		--- SV Code ---
+		inout wire bit signed [7:0] varName[2]
+		---
+
+		- "inout" is the *direction*, which can also be input, output, etc.
+		- "wire" is the *kind*, which can be tri0, var, etc.
+			- It can be any of the *net types* (wire, tri0, etc.) or *var*
+		- "bit signed [7:0]" is the *data type*, which can also be reg, int, etc.
+			- "signed" is the *signing* and is considered part of the data type
+			- "[7:0]" is the *packed dimension* and is considered part of the data type
+		- "[2]" is the *unpacked dimension*
+
+
+	Directions are Inherited:
+
+		The direction of a port (input, output, inout, etc.) is always inherited if it's not specified.
+
+
+	Kind and Data Types are Only Inherited Together:
+
+		- If *neither* are specified, they inherit from the previous parameter.
+		- If *both* are specified there's nothing that needs to be inherited.
+		- If *one* of them is specified the other is the default rather than inherited.
+
+		--- SV Code ---
+		module MyModule (
+			wire bit signed [7:0] varA,
+			varB,
+			tri0 varC,
+			reg varD
+			);
+		---
+
+		- varA is "wire bit signed [7:0]" as specified.
+		- varB is "wire bit signed [7:0]" as it inherits both things from varA.  The packed dimension "[7:0]" and
+		  signing "signed" are part of the type so they inherit as well.
+		- varC is "tri0" because the kind is specified.  The type reverts to the default, which should be "logic" but
+		  we won't add that.
+		- varD is "reg" because the type is specified.  The kind reverts to the default, which depends on what the
+		  type is and can be changed with compiler directives so we won't assume what it is.
+
+
+	Signing and Packed Dimensions Don't Inherit Underlying Data Types:
+
+		If you declare signing and/or packed dimensions without a data type, it uses the default data type rather
+		than inheriting it.
+
+		--- SV Code ---
+		module MyModule (
+			int unsigned [7:0] varA,
+			signed varB,
+			[3:0] varC);
+		---
+
+		- varA is "int unsigned [7:0]" as specified.
+		- varB is just "signed" because the type and packed dimensions revert to the default, which can vary based
+		  on what the kind is.
+		- varC is "[3:0]" because the type and signing revert to the default, which can vary based on what the kind
+		  is.
+
+
+	Unpacked Dimensions Aren't Inherited:
+
+		Unpacked dimensions are not inherited even if the type otherwise is.
+
+		--- SV Code ---
+		module MyModule (
+			bit [7:0] varA[2],
+			varB,
+			varC[3])
+		---
+
+		- varA is "bit [7:0] varA[2]" as specified
+		- varB is "bit [7:0] varB" as it doesn't inherit the "[2]"
+		- varC is "bit [7:0] varC[3]" as it doesn't inherit the "[2]" and has its own "[3]".
