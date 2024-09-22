@@ -1,5 +1,5 @@
-Group: Empty Parentheses
-
+------------------------------
+Empty Parentheses:
 ------------------------------
 
 - Parameter Section:
@@ -37,9 +37,7 @@ Group: Empty Parentheses
     - Link Candidates: (none)
 
 ------------------------------
-
-Group: Leading Assignments
-
+Leading Assignments:
 ------------------------------
 
 - Parameter Section:
@@ -155,9 +153,7 @@ Group: Leading Assignments
     - Link Candidates: (none)
 
 ------------------------------
-
-Group: Typed Declarations
-
+Typed Declarations:
 ------------------------------
 
 - Parameter Section:
@@ -403,9 +399,7 @@ Group: Typed Declarations
     - Link Candidates: (none)
 
 ------------------------------
-
-Group: Valueless Declarations
-
+Valueless Declarations:
 ------------------------------
 
 - Parameter Section:
@@ -765,9 +759,7 @@ Group: Valueless Declarations
     - Link Candidates: (none)
 
 ------------------------------
-
-Group: Implied Types
-
+Implied Types:
 ------------------------------
 
 - Parameter Section:
@@ -1128,9 +1120,7 @@ Group: Implied Types
     - Link Candidates: (none)
 
 ------------------------------
-
-Group: Misc
-
+Misc:
 ------------------------------
 
 - Parameter Section:
