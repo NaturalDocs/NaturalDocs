@@ -409,7 +409,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			while (iterator < end)
 				{
 				if (iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier &&
-					iterator.MatchesAnyToken(DirectionKeywords) != -1)
+					Languages.Parsers.SystemVerilog.IsOnDirectionKeyword(iterator))
 					{
 					directionPosition = iterator;
 					return true;
@@ -437,7 +437,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			while (iterator < end)
 				{
 				if (iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier &&
-					iterator.MatchesAnyToken(KindKeywords) != -1)
+					Languages.Parsers.SystemVerilog.IsOnKindKeyword(iterator))
 					{
 					kindPosition = iterator;
 					return true;
@@ -494,7 +494,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			while (iterator < end)
 				{
 				if (iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier &&
-					iterator.MatchesAnyToken(SigningKeywords) != -1)
+					Languages.Parsers.SystemVerilog.IsOnSigningKeyword(iterator))
 					{
 					signingPosition = iterator;
 					return true;
@@ -1013,32 +1013,6 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		// Group: Static Variables
 		// __________________________________________________________________________
 
-
-		/* var: DirectionKeywords
-		 */
-		static protected string[] DirectionKeywords = {
-
-			"input", "output", "inout", "ref"
-
-			};
-
-		/* var: KindKeywords
-		 */
-		static protected string[] KindKeywords = {
-
-			"supply0", "supply1", "tri", "triand", "trior", "trireg", "tri0", "tri1", "uwire", "wire", "wand", "wor",
-
-			"var"
-
-			};
-
-		/* var: SigningKeywords
-		 */
-		static protected string[] SigningKeywords = {
-
-			"signed", "unsigned"
-
-			};
 
 		/* var: NameStandinToken
 		 * When building a full type that contains an unpacked dimension, this is the stand-in token to go in place of

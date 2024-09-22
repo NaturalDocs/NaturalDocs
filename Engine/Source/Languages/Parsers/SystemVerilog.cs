@@ -172,6 +172,103 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 
+		// Group: Static Keyword Functions
+		// __________________________________________________________________________
+
+
+		/* Function: IsDirectionKeyword
+		 * Returns whether the string is a direction keyword like "input" or "output".
+		 */
+		public static bool IsDirectionKeyword (string keyword)
+			{
+			return (keyword == "input" ||
+					   keyword == "output" ||
+					   keyword == "inout" ||
+					   keyword == "ref");
+			}
+
+
+		/* Function: IsOnDirectionKeyword
+		 * Returns whether the <TokenIterator> is on a direction keyword like "input" or "output".
+		 */
+		public static bool IsOnDirectionKeyword (TokenIterator iterator)
+			{
+			return (iterator.MatchesToken("input") ||
+					   iterator.MatchesToken("output") ||
+					   iterator.MatchesToken("inout") ||
+					   iterator.MatchesToken("ref"));
+			}
+
+
+		/* Function: IsParameterKeyword
+		 * Returns whether the string is a parameter keyword like "parameter" or "localparam".
+		 */
+		public static bool IsParameterKeyword (string keyword)
+			{
+			return (keyword == "parameter" ||
+					   keyword == "localparam");
+			}
+
+
+		/* Function: IsOnParameterKeyword
+		 * Returns whether the <TokenIterator> is on a parameter keyword like "parameter" or "localparam".
+		 */
+		public static bool IsOnParameterKeyword (TokenIterator iterator)
+			{
+			return (iterator.MatchesToken("parameter") ||
+					   iterator.MatchesToken("localparam"));
+			}
+
+
+		/* Function: IsSigningKeyword
+		 * Returns whether the string is a signing keyword like "signed" or "unsigned".
+		 */
+		public static bool IsSigningKeyword (string keyword)
+			{
+			return (keyword == "signed" ||
+					   keyword == "unsigned");
+			}
+
+
+		/* Function: IsOnSigningKeyword
+		 * Returns whether the <TokenIterator> is on a parameter keyword like "signed" or "unsigned".
+		 */
+		public static bool IsOnSigningKeyword (TokenIterator iterator)
+			{
+			return (iterator.MatchesToken("signed") ||
+					   iterator.MatchesToken("unsigned"));
+			}
+
+
+		/* Function: IsKindKeyword
+		 * Returns whether the string is a kind keyword like "tri0" or "var".  This encompasses all the net
+		 * data types and "var".
+		 */
+		public static bool IsKindKeyword (string keyword)
+			{
+			return KindKeywords.Contains(keyword);
+			}
+
+
+		/* Function: IsOnKindKeyword
+		 * Returns whether the <TokenIterator> is on a kind keyword like "tri0" or "var".  This encompasses
+		 * all the net data types and "var".
+		 */
+		public static bool IsOnKindKeyword (TokenIterator iterator)
+			{
+			// Doing this instead of KindKeywords.Contains(iterator.String) avoids a memory allocation.  I assume
+			// it's more efficient but I haven't tested it.
+			foreach (var keyword in KindKeywords)
+				{
+				if (iterator.MatchesToken(keyword))
+					{  return true;  }
+				}
+
+			return false;
+			}
+
+
+
 		// Group: Component Parsing Functions
 		// __________________________________________________________________________
 
@@ -2325,6 +2422,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			});
 
+		/* var: KindKeywords
+		 */
+		static protected StringSet KindKeywords = new StringSet (KeySettings.Literal, new string[] {
+
+			"supply0", "supply1", "tri", "triand", "trior", "trireg", "tri0", "tri1", "uwire", "wire", "wand", "wor",
+
+			"var"
+
+			});
 
 		/* var: BuiltInTypes
 		 */
@@ -2337,5 +2443,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			"string", "chandle", "event"
 
 			});
+
 		}
 	}
