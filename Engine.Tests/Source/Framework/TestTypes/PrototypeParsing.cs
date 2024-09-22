@@ -48,7 +48,20 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 
 			for (int topicIndex = 0; topicIndex < topics.Count; topicIndex++)
 				{
-				if (topicIndex != 0)
+				if (topics[topicIndex].CommentTypeID == EngineInstance.CommentTypes.GroupCommentTypeID &&
+					topics[topicIndex].Title != null)
+					{
+					if (topicIndex != 0)
+						{  output.AppendLine();  }
+
+					output.AppendLine("------------------------------");
+
+					// Leave off the line break so the next topic ends the line instead of adding a blank line
+					output.Append(topics[topicIndex].Title + ":");
+
+					continue;
+					}
+				else if (topicIndex != 0)
 					{
 					output.AppendLine();
 					output.AppendLine("------------------------------");
@@ -57,11 +70,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 
 				if (topics[topicIndex].Prototype == null)
 					{
-					if (topics[topicIndex].CommentTypeID == EngineInstance.CommentTypes.GroupCommentTypeID &&
-						topics[topicIndex].Title != null)
-						{  output.AppendLine("Group: " + topics[topicIndex].Title);  }
-					else
-						{  output.AppendLine("(No prototype detected)");  }
+					output.AppendLine("(No prototype detected)");
 					continue;
 					}
 
