@@ -487,7 +487,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				lookahead.MatchesToken("localparam"))
 				{
 				if (mode == ParseMode.ParsePrototype)
-					{  lookahead.PrototypeParsingType = PrototypeParsingType.ParamKeyword;  }
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
 
 				lookahead.Next();
 				TryToSkipWhitespace(ref lookahead, mode);

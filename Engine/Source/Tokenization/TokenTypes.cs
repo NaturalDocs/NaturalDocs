@@ -180,16 +180,6 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	 *										   multi-token symbols.
 	 *
 	 *
-	 * Specific Modifier Types:
-	 *
-	 *		In some languages, namely SystemVerilog, there are type and parameter modifiers you may want to break out into their own
-	 *		columns when formatting the output.  You can use these types to distinguish them.  For other languages this isn't necessary
-	 *		and you can use <TypeModifier> and <ParamModifier> instead.
-	 *
-	 *		ParamKeyword - The keyword defining a parameter type, like "localparam" in SystemVerilog.
-	 *		InOut - The direction of the parameter, like "input" or "inout".
-	 *
-	 *
 	 * Default Values:
 	 *
 	 *		DefaultValueSeparator - The symbol separating the name and type from its default value, such as "=" or ":=".
@@ -248,8 +238,6 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 		NameTypeSeparator, Name, KeywordName,
 
 		ParamModifier, OpeningParamModifier, ClosingParamModifier,
-
-		ParamKeyword, InOut,
 
 		DefaultValueSeparator, DefaultValue,
 

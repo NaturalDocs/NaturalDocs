@@ -59,8 +59,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 					// We merge parameter keywords ("localparam" etc) with in/out ("input") since there will usually only
 					// be one or the other, so they should share a column in the output.  Null covers whitespace if more than
 					// one exists.
-					if (type == PrototypeParsingType.ParamKeyword ||
-						type == PrototypeParsingType.InOut ||
+					if (type == PrototypeParsingType.TypeModifier ||
 						type == PrototypeParsingType.Null)
 						{  iterator.Next();   }
 					else
