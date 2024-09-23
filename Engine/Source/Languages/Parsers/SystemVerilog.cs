@@ -256,15 +256,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		public static bool IsOnKindKeyword (TokenIterator iterator)
 			{
-			// Doing this instead of KindKeywords.Contains(iterator.String) avoids a memory allocation.  I assume
-			// it's more efficient but I haven't tested it.
-			foreach (var keyword in KindKeywords)
-				{
-				if (iterator.MatchesToken(keyword))
-					{  return true;  }
-				}
-
-			return false;
+			return KindKeywords.Contains(iterator.String);
 			}
 
 
