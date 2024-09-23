@@ -11,7 +11,7 @@ Topic: ANSI Port Attribute Inheritance Rules
 	Definitions:
 
 		--- SV Code ---
-		inout wire bit signed [7:0] varName[2]
+		inout wire bit signed [7:0] portName[2]
 		---
 
 		- "inout" is the *direction*, which can also be input, output, etc.
@@ -21,6 +21,7 @@ Topic: ANSI Port Attribute Inheritance Rules
 			- "signed" is the *signing* and is considered part of the data type
 			- "[7:0]" is the *packed dimension* and is considered part of the data type
 		- "[2]" is the *unpacked dimension*
+			- It can also be a range similar to "[0:3]"
 
 
 	Directions are Inherited:
@@ -36,19 +37,18 @@ Topic: ANSI Port Attribute Inheritance Rules
 
 		--- SV Code ---
 		module MyModule (
-			wire bit signed [7:0] varA,
-			varB,
-			tri0 varC,
-			reg varD
-			);
+			wire bit signed [7:0] portA,
+			                      portB,
+			tri0                  portC,
+			     reg              portD);
 		---
 
-		- varA is "wire bit signed [7:0]" as specified.
-		- varB is "wire bit signed [7:0]" as it inherits both things from varA.  The packed dimension "[7:0]" and
+		- portA is "wire bit signed [7:0]" as specified.
+		- portB is "wire bit signed [7:0]" as it inherits both things from portA.  The packed dimension "[7:0]" and
 		  signing "signed" are part of the type so they inherit as well.
-		- varC is "tri0" because the kind is specified.  The type reverts to the default, which should be "logic" but
+		- portC is "tri0" because the kind is specified.  The type reverts to the default, which should be "logic" but
 		  we won't add that.
-		- varD is "reg" because the type is specified.  The kind reverts to the default, which depends on what the
+		- portD is "reg" because the type is specified.  The kind reverts to the default, which depends on what the
 		  type is and can be changed with compiler directives so we won't assume what it is.
 
 
@@ -59,15 +59,15 @@ Topic: ANSI Port Attribute Inheritance Rules
 
 		--- SV Code ---
 		module MyModule (
-			int unsigned [7:0] varA,
-			signed varB,
-			[3:0] varC);
+			int unsigned [7:0] portA,
+			    signed         portB,
+			             [3:0] portC);
 		---
 
-		- varA is "int unsigned [7:0]" as specified.
-		- varB is just "signed" because the type and packed dimensions revert to the default, which can vary based
+		- portA is "int unsigned [7:0]" as specified.
+		- portB is just "signed" because the type and packed dimensions revert to the default, which can vary based
 		  on what the kind is.
-		- varC is "[3:0]" because the type and signing revert to the default, which can vary based on what the kind
+		- portC is just "[3:0]" because the type and signing revert to the default, which can vary based on what the kind
 		  is.
 
 
@@ -77,11 +77,11 @@ Topic: ANSI Port Attribute Inheritance Rules
 
 		--- SV Code ---
 		module MyModule (
-			bit [7:0] varA[2],
-			varB,
-			varC[3])
+			bit [7:0] portA[2],
+			          portB,
+			          portC[0:3]);
 		---
 
-		- varA is "bit [7:0] varA[2]" as specified
-		- varB is "bit [7:0] varB" as it doesn't inherit the "[2]"
-		- varC is "bit [7:0] varC[3]" as it doesn't inherit the "[2]" and has its own "[3]".
+		- portA is "bit [7:0] portA[2]" as specified
+		- portB is "bit [7:0] portB" as it doesn't inherit the "[2]"
+		- portC is "bit [7:0] portC[0:3]" as it doesn't inherit the "[2]" and has its own "[0:3]".
