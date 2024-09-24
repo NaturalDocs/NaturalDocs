@@ -1120,6 +1120,280 @@ Implied Types:
     - Link Candidates: (none)
 
 ------------------------------
+Parameter Keywords:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module ParameterKeywordsA #(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a = 1,
+    - Name: a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 1
+
+  - Parameter 2: parameter b = 2,
+    - Name: b
+    - Full Type: parameter
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 2
+
+  - Parameter 3: localparam c = 3
+    - Name: c
+    - Full Type: localparam
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 3
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module ParameterKeywordsB #(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: bit a = 1,
+    - Name: a
+    - Full Type: bit
+    - Base Type: bit
+    - Link Candidates: bit
+    - Default Value: 1
+
+  - Parameter 2: parameter logic [7:0] b = 2,
+    - Name: b
+    - Full Type: parameter logic[7:0]
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: 2
+
+  - Parameter 3: localparam int unsigned c = 3
+    - Name: c
+    - Full Type: localparam int unsigned
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: 3
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module ParameterKeywordsC #(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a = 1,
+    - Name: a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 1
+
+  - Parameter 2: aa = 2,
+    - Name: aa
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 2
+
+  - Parameter 3: parameter b = 3,
+    - Name: b
+    - Full Type: parameter
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 3
+
+  - Parameter 4: bb = 4,
+    - Name: bb
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 4
+
+  - Parameter 5: localparam c = 5,
+    - Name: c
+    - Full Type: localparam
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 5
+
+  - Parameter 6: cc = 6
+    - Name: cc
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 6
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module ParameterKeywordsD #(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: bit a = 1,
+    - Name: a
+    - Full Type: bit
+    - Base Type: bit
+    - Link Candidates: bit
+    - Default Value: 1
+
+  - Parameter 2: aa = 2,
+    - Name: aa
+    - Full Type (implied): bit
+    - Base Type (implied): bit
+    - Link Candidates: (none)
+    - Default Value: 2
+
+  - Parameter 3: parameter logic b = 3,
+    - Name: b
+    - Full Type: parameter logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: 3
+
+  - Parameter 4: bb = 4,
+    - Name: bb
+    - Full Type (implied): logic
+    - Base Type (implied): logic
+    - Link Candidates: (none)
+    - Default Value: 4
+
+  - Parameter 5: localparam int unsigned c = 5,
+    - Name: c
+    - Full Type: localparam int unsigned
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: 5
+
+  - Parameter 6: cc = 6,
+    - Name: cc
+    - Full Type (implied): int unsigned
+    - Base Type (implied): int
+    - Link Candidates: (none)
+    - Default Value: 6
+
+  - Parameter 7: localparam reg signed [7:0] d = 7,
+    - Name: d
+    - Full Type: localparam reg signed[7:0]
+    - Base Type: reg
+    - Link Candidates: reg
+    - Default Value: 7
+
+  - Parameter 8: dd = 8
+    - Name: dd
+    - Full Type (implied): reg signed[7:0]
+    - Base Type (implied): reg
+    - Link Candidates: (none)
+    - Default Value: 8
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module ParameterKeywordsE #(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: bit a = 1,
+    - Name: a
+    - Full Type: bit
+    - Base Type: bit
+    - Link Candidates: bit
+    - Default Value: 1
+
+  - Parameter 2: int aa = 2,
+    - Name: aa
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: 2
+
+  - Parameter 3: parameter logic b = 3,
+    - Name: b
+    - Full Type: parameter logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: 3
+
+  - Parameter 4: [7:0] bb = 4,
+    - Name: bb
+    - Full Type: [7:0]
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 4
+
+  - Parameter 5: localparam int c = 5,
+    - Name: c
+    - Full Type: localparam int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: 5
+
+  - Parameter 6: signed cc = 6
+    - Name: cc
+    - Full Type: signed
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 6
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
 Misc:
 ------------------------------
 

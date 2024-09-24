@@ -238,6 +238,72 @@ endmodule
 
 
 
+// Group: Parameter Keywords
+// ___________________________________________________
+
+
+// Module: ParameterKeywordsA
+// Including a keyword is optional
+module ParameterKeywordsA #(
+	a = 1,
+	parameter b = 2,
+	localparam c = 3)
+	();
+endmodule
+
+
+// Module: ParameterKeywordsB
+// Including a keyword is optional
+module ParameterKeywordsB #(
+	bit a = 1,
+	parameter logic [7:0] b = 2,
+	localparam int unsigned c = 3)
+	();
+endmodule
+
+
+// Module: ParameterKeywordsC
+// Keywords should *not* be inherited
+module ParameterKeywordsC #(
+	a = 1,
+	aa = 2,
+	parameter b = 3,
+	bb = 4,
+	localparam c = 5,
+	cc = 6)
+	();
+endmodule
+
+
+// Module: ParameterKeywordsD
+// Keywords should *not* be inherited, but the type still should be
+module ParameterKeywordsD #(
+	bit a = 1,
+	aa = 2,
+	parameter logic b = 3,
+	bb = 4,
+	localparam int unsigned c = 5,
+	cc = 6,
+	localparam reg signed [7:0] d = 7,
+	dd = 8)
+	();
+endmodule
+
+
+// Module: ParameterKeywordsE
+// Keywords should *not* be inherited
+module ParameterKeywordsE #(
+	bit a = 1,
+	int aa = 2,
+	parameter logic b = 3,
+	[7:0] bb = 4,
+	localparam int c = 5,
+	signed cc = 6)
+	();
+endmodule
+
+
+
 // Group: Misc
 // ___________________________________________________
 
