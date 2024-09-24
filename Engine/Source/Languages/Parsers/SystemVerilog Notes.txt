@@ -15,6 +15,7 @@ Topic: ANSI Port Attribute Inheritance Rules
 		---
 
 		- "inout" is the *direction*, which can also be input, output, etc.
+			- For parameter ports this would instead be the *parameter keyword* (parameter, localparam)
 		- "wire" is the *kind*, which can be tri0, var, etc.
 			- It can be any of the *net types* (wire, tri0, etc.) or *var*
 		- "bit signed [7:0]" is the *data type*, which can also be reg, int, etc.
@@ -27,6 +28,27 @@ Topic: ANSI Port Attribute Inheritance Rules
 	Directions are Inherited:
 
 		The direction of a port (input, output, inout, etc.) is always inherited if it's not specified.
+
+
+	Parameter Keywords are Not Inherited:
+
+		A parameter keyword (parameter, localparam) is _not_ inherited.  The behavior of a keywordless parameter
+		that follows a localparam appears to be undefined.  In this example:
+
+		--- SystemVerilog ---
+		module ParameterKeywords #(
+			parameter  paramA = 1,
+			           paramB = 2,
+			localparam paramC = 3,
+			           paramD = 4) ();
+		---
+
+		- Aldec Riviera Pro 2023.04 treats paramD as "parameter"
+		- Cadence Xcelium 23.09 treats paramD as "localparam"
+		- Siemens Questa 2023.3 treats paramD as "parameter"
+		- Synopsys VCS 2023.03 treats paramD as "localparam"
+
+		Therefore we won't include it as an inherited property at all.
 
 
 	Kind and Data Types are Only Inherited Together:

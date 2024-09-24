@@ -62,6 +62,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 *		These can all be set individually.
 		 *
 		 *		HasDirection - Whether the port has a direction defined, such as "input".
+		 *		HasParameterkeyword - Whether the port has a parameter keyword defined, such as "localparam".
 		 *		HasKind - Whether the port's kind is defined, such as "wire".
 		 *		HasBaseDataType - Whether the port has a base data type defined, such as "logic".  This doesn't include
 		 *									 the signing or packed dimension parts, which are denoted separately, hence _base_
@@ -85,12 +86,13 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		protected enum PortFlags : byte
 			{
 			HasDirection = 0x01,
-			HasKind = 0x02,
-			HasBaseDataType = 0x04,
-			HasSigning = 0x08,
-			HasPackedDimensions = 0x10,
-			HasName = 0x20,
-			HasUnpackedDimensions = 0x40,
+			HasParameterKeyword = 0x02,
+			HasKind = 0x04,
+			HasBaseDataType = 0x08,
+			HasSigning = 0x10,
+			HasPackedDimensions = 0x20,
+			HasName = 0x40,
+			HasUnpackedDimensions = 0x80,
 
 			HasAnyDataType = HasBaseDataType | HasSigning | HasPackedDimensions,
 			HasKindOrAnyDataType = HasKind | HasAnyDataType
@@ -203,25 +205,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			PortFlags portFlags = 0;
 
 
-			// Direction
+			// Parameter Keyword
 
-			if (AppendDirection(parameterSection, parameterIndex, typeBuilder))
-				{  portFlags |= PortFlags.HasDirection;  }
-
-			// Direction always inherits if it's not specified
-			else if (impliedTypes)
-				{
-				for (int i = parameterIndex - 1; i >= 0; i--)
-					{
-					if (AppendDirection(parameterSection, i, typeBuilder))
-						{
-						portFlags |= PortFlags.HasDirection;
-						break;
-						}
-					}
-
-				// xxx inherit from non-ANSI too?
-				}
+			if (AppendParameterKeyword(parameterSection, parameterIndex, typeBuilder))
+				{  portFlags |= PortFlags.HasParameterKeyword;  }
+			// Parameter keywords are treated as if they don't inherit.  See SystemVerilog Notes.
 
 
 			// Kind and Data Type
@@ -327,13 +315,24 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 
 		/* Function: HasDirection
-		 * Returns whether the passed parameter contains a direction keyword (input, output, etc.)  Direction
-		 * keywords must be marked with <PrototypeParsingType.TypeModifier>.
+		 * Returns whether the passed parameter contains a direction keyword (input, output, etc.)  Direction keywords must be
+		 * marked with <PrototypeParsingType.TypeModifier>.
 		 */
 		protected bool HasDirection (ParameterSection parameterSection, int parameterIndex)
 			{
 			TokenIterator ignore;
 			return FindDirection(parameterSection, parameterIndex, out ignore);
+			}
+
+
+		/* Function: HasParameterKeyword
+		 * Returns whether the passed parameter contains a parameter keyword (parameter, localparam).  Parameter keywords
+		 * must be marked with <PrototypeParsingType.TypeModifier>.
+		 */
+		protected bool HasParameterKeyword (ParameterSection parameterSection, int parameterIndex)
+			{
+			TokenIterator ignore;
+			return FindParameterKeyword(parameterSection, parameterIndex, out ignore);
 			}
 
 
@@ -420,6 +419,34 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				}
 
 			directionPosition = tokenizer.EndOfTokens;
+			return false;
+			}
+
+
+		/* Function: FindParameterKeyword
+		 * If the passed parameter contains a parameter keyword (parameter, localparam) it will return a <TokenIterator> at
+		 * its position and return true.  Returns false otherwise.  Parameter keywords must be marked with
+		 * <PrototypeParsingType.TypeModifier>.
+		 */
+		protected bool FindParameterKeyword (ParameterSection parameterSection, int parameterIndex, out TokenIterator keywordPosition)
+			{
+			TokenIterator iterator, end;
+			parameterSection.GetParameterBounds(parameterIndex, out iterator, out end);
+
+			while (iterator < end)
+				{
+				if (iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier &&
+					Languages.Parsers.SystemVerilog.IsOnParameterKeyword(iterator))
+					{
+					keywordPosition = iterator;
+					return true;
+					}
+
+				if (!TryToSkipBlock(ref iterator, end))
+					{  iterator.Next();  }
+				}
+
+			keywordPosition = tokenizer.EndOfTokens;
 			return false;
 			}
 
@@ -611,6 +638,25 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			TokenIterator directionKeyword;
 
 			if (FindDirection(parameterSection, parameterIndex, out directionKeyword))
+				{
+				typeBuilder.AddToken(directionKeyword);
+				return true;
+				}
+			else
+				{  return false;  }
+			}
+
+
+		/* Function: AppendParameterKeyword
+		 * If the passed parameter contains a parameter keyword (parameter, localparam) it will append it to the <TypeBuilder>
+		 * and return true.  Returns false otherwise.  Direction keywords must be marked with
+		 * <PrototypeParsingType.TypeModifier>.
+		 */
+		protected bool AppendParameterKeyword (ParameterSection parameterSection, int parameterIndex, TypeBuilder typeBuilder)
+			{
+			TokenIterator directionKeyword;
+
+			if (FindParameterKeyword(parameterSection, parameterIndex, out directionKeyword))
 				{
 				typeBuilder.AddToken(directionKeyword);
 				return true;
