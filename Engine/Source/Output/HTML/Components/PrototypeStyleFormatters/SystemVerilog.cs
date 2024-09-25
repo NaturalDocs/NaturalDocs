@@ -56,11 +56,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 					{
 					PrototypeParsingType type = iterator.PrototypeParsingType;
 
-					// We merge parameter keywords ("localparam" etc) with in/out ("input") since there will usually only
-					// be one or the other, so they should share a column in the output.  Null covers whitespace if more than
-					// one exists.
-					if (type == PrototypeParsingType.TypeModifier ||
-						type == PrototypeParsingType.Null)
+					// We put both direction keywords ("inout" etc.) and parameter keywords ("localparam" etc) in the same column.
+					// We have to check for specific keywords because otherwise other type modifiers that appear without one of them
+					// ("signed portA") would fall into it.
+					if (type == PrototypeParsingType.TypeModifier &&
+						 (Languages.Parsers.SystemVerilog.IsOnDirectionKeyword(iterator) ||
+						  Languages.Parsers.SystemVerilog.IsOnParameterKeyword(iterator)) )
+						{  iterator.Next();   }
+					else if (type == PrototypeParsingType.Null)
 						{  iterator.Next();   }
 					else
 						{  break;  }
