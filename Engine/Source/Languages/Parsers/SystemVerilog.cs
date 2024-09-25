@@ -494,6 +494,24 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 
+			// Type Keyword
+
+			// Distinguish between whether the keyword represents a type assignment ("parameter type x = int") or a
+			// type reference ("parameter type(a) x = 12"), both of which use the "type" keyword.
+
+			bool isTypeAssignment = false;
+
+			if (lookahead.MatchesToken("type"))
+				{
+				TokenIterator typeLookahead = lookahead;
+				typeLookahead.Next();
+
+				TryToSkipWhitespace(ref typeLookahead, ParseMode.IterateOnly);
+
+				isTypeAssignment = (typeLookahead.Character != '(');
+				}
+
+
 			// Type vs. Name
 
 			// Types can be implied, such as "bit paramA, paramB", so we have to check to see what comes after the first
@@ -507,9 +525,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			bool hasType = true;
 			TokenIterator startOfType = lookahead;
 
-			// We treat the keyword "type" as a type as well for the purposes of formatting.  The SV ParsedPrototype class
-			// will detect this and return the default value column as the real type.
-			if (!lookahead.MatchesToken("type") &&
+			if (!isTypeAssignment &&
 				!lookahead.MatchesToken("signed") &&
 				!lookahead.MatchesToken("unsigned") &&
 				!IsBuiltInType(lookahead.String) &&
@@ -536,15 +552,25 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Type
 
-			// TryToSkipType covers signing and type (packed) dimensions
-			if (hasType &&
-				TryToSkipType(ref lookahead, mode) == false)
+			if (isTypeAssignment)
 				{
-				ResetTokensBetween(iterator, lookahead, mode);
-				return false;
-				}
+				if (mode == ParseMode.ParsePrototype)
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.Type;  }
 
-			TryToSkipWhitespace(ref lookahead, mode);
+				lookahead.Next();
+				TryToSkipWhitespace(ref lookahead, mode);
+				}
+			else if (hasType)
+				{
+				// TryToSkipType covers signing and type (packed) dimensions
+				if (!TryToSkipType(ref lookahead, mode))
+					{
+					ResetTokensBetween(iterator, lookahead, mode);
+					return false;
+					}
+
+				TryToSkipWhitespace(ref lookahead, mode);
+				}
 
 
 			// Name
@@ -560,7 +586,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Param (Unpacked) Dimensions.  Both types and parameters can have dimensions, such as "bit[7:0] paramA[2]"
 
-			if (TryToSkipDimensions(ref lookahead, mode, PrototypeParsingType.ParamModifier))
+			if (!isTypeAssignment &&
+				TryToSkipDimensions(ref lookahead, mode, PrototypeParsingType.ParamModifier))
 				{  TryToSkipWhitespace(ref lookahead, mode);  }
 
 
