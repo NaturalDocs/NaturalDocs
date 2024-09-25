@@ -1525,3 +1525,63 @@ Misc:
 
   - After Parameters: )
     - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module TypeAssignments #(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: type typeA = int,
+    - Name: typeA
+    - Full Type: type
+    - Base Type: type
+    - Link Candidates: type
+    - Default Value: int
+
+  - Parameter 2: parameter type typeB = reg unsigned,
+    - Name: typeB
+    - Full Type: parameter type
+    - Base Type: type
+    - Link Candidates: type
+    - Default Value: reg unsigned
+
+  - Parameter 3: localparam type typeC = bit signed [7:0],
+    - Name: typeC
+    - Full Type: localparam type
+    - Base Type: type
+    - Link Candidates: type
+    - Default Value: bit signed [7:0]
+
+  - Parameter 4: typeA paramX = 4,
+    - Name: paramX
+    - Full Type: typeA
+    - Base Type: typeA
+    - Link Candidates: typeA
+    - Default Value: 4
+
+  - Parameter 5: parameter typeB paramY = 5,
+    - Name: paramY
+    - Full Type: parameter typeB
+    - Base Type: typeB
+    - Link Candidates: typeB
+    - Default Value: 5
+
+  - Parameter 6: localparam typeC paramZ = 6
+    - Name: paramZ
+    - Full Type: localparam typeC
+    - Base Type: typeC
+    - Link Candidates: typeC
+    - Default Value: 6
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)

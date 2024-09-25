@@ -333,3 +333,14 @@ module TypeReferencesAndUnpackedDimensions #(
 	type(b) bb[2] = '{'0,'0})
 	();
 endmodule
+
+// Module: TypeAssignments
+module TypeAssignments #(
+	type typeA = int,
+	parameter type typeB = reg unsigned,
+	localparam type typeC = bit signed [7:0],
+	typeA paramX = 4,
+	parameter typeB paramY = 5,
+	localparam typeC paramZ = 6)
+	();
+endmodule
