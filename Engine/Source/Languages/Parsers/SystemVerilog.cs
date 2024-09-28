@@ -416,10 +416,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{  return false;  }
 
 			TokenIterator lookahead = iterator;
-			lookahead.Next(2);
 
 			if (mode == ParseMode.ParsePrototype)
-				{  iterator.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.StartOfParams);  }
+				{
+				lookahead.PrototypeParsingType = PrototypeParsingType.StartOfParams;
+				lookahead.Next();
+				lookahead.PrototypeParsingType = PrototypeParsingType.OpeningExtensionSymbol;
+				lookahead.Next();
+				}
+			else
+				{  lookahead.Next(2);  }
 
 			TryToSkipWhitespace(ref lookahead, mode);
 
@@ -1459,21 +1465,31 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{  return false;  }
 
 			bool success = false;
+			TokenIterator lookahead = iterator;
 
 			if (mode == ParseMode.ParsePrototype)
-				{  iterator.SetPrototypeParsingTypeByCharacters(PrototypeParsingType.StartOfParams, 2);  }
-
-			TokenIterator lookahead = iterator;
-			lookahead.NextByCharacters(2);
+				{
+				lookahead.PrototypeParsingType = PrototypeParsingType.StartOfParams;
+				lookahead.Next();
+				lookahead.PrototypeParsingType = PrototypeParsingType.OpeningExtensionSymbol;
+				lookahead.Next();
+				}
+			else
+				{  lookahead.Next(2);  }
 
 			while (lookahead.IsInBounds)
 				{
 				if (lookahead.MatchesAcrossTokens("*)"))
 					{
 					if (mode == ParseMode.ParsePrototype)
-						{  lookahead.SetPrototypeParsingTypeByCharacters(PrototypeParsingType.EndOfParams, 2);  }
-
-					lookahead.NextByCharacters(2);
+						{
+						lookahead.PrototypeParsingType = PrototypeParsingType.EndOfParams;
+						lookahead.Next();
+						lookahead.PrototypeParsingType = PrototypeParsingType.ClosingExtensionSymbol;
+						lookahead.Next();
+						}
+					else
+						{  lookahead.Next(2);  }
 
 					success = true;
 					break;

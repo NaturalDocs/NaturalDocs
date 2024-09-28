@@ -276,11 +276,6 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 						{
 						sectionHasParams = true;
 						endOfSection.Next();
-
-						// The start of params may span multiple tokens, so skip them all so they don't get interpreted as multiple
-						// parameter blocks
-						while (endOfSection.PrototypeParsingType == PrototypeParsingType.StartOfParams)
-							{  endOfSection.Next();  }
 						}
 					else if (endOfSection.PrototypeParsingType == PrototypeParsingType.EndOfPrototypeSection)
 						{

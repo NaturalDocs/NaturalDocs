@@ -567,6 +567,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				if (start.PrototypeParsingType == PrototypeParsingType.EndOfParams)
 					{
 					start.Next();
+
+					while (start.PrototypeParsingType == PrototypeParsingType.ClosingExtensionSymbol)
+						{  start.Next();  }
+
 					start.NextPastWhitespace(end);
 					}
 
