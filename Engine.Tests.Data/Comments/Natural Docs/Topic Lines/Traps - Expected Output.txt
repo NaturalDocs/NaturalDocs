@@ -1,0 +1,176 @@
+Topic: .LeadingDot
+
+   Location: Comment on line 2
+
+   Comment Type: Information
+   Symbol: LeadingDot
+
+-----
+
+Topic: ..LeadingDoubleDot
+
+   Location: Comment on line 4
+
+   Comment Type: Information
+   Symbol: LeadingDoubleDot
+
+-----
+
+Topic: Double..MiddleDot
+
+   Location: Comment on line 6
+
+   Comment Type: Information
+   Symbol: Double.MiddleDot
+
+-----
+
+Topic: EndingDot.
+
+   Location: Comment on line 8
+
+   Comment Type: Information
+   Symbol: EndingDot
+
+-----
+
+Topic: EndingDoubleDot..
+
+   Location: Comment on line 10
+
+   Comment Type: Information
+   Symbol: EndingDoubleDot
+
+-----
+
+Topic: .LeadingDotFunction
+
+   Location: Comment on line 16
+
+   Comment Type: Function
+   Symbol: LeadingDotFunction
+
+   Prototype: void LeadingDotFunction ()
+
+-----
+
+Topic: ..LeadingDoubleDotFunction
+
+   Location: Comment on line 19
+
+   Comment Type: Function
+   Symbol: LeadingDoubleDotFunction
+
+   Prototype: void LeadingDoubleDotFunction ()
+
+-----
+
+Topic: EndingDotFunction.
+
+   Location: Comment on line 22
+
+   Comment Type: Function
+   Symbol: EndingDotFunction
+
+-----
+
+Topic: EndingDoubleDotFunction..
+
+   Location: Comment on line 25
+
+   Comment Type: Function
+   Symbol: EndingDoubleDotFunction
+
+-----
+
+Topic: ::LeadingColons
+
+   Location: Comment on line 28
+
+   Comment Type: Information
+   Symbol: LeadingColons
+
+-----
+
+Topic: ::::LeadingDoubleColons
+
+   Location: Comment on line 30
+
+   Comment Type: Information
+   Symbol: LeadingDoubleColons
+
+-----
+
+Topic: Double::::MiddleColons
+
+   Location: Comment on line 32
+
+   Comment Type: Information
+   Symbol: Double.MiddleColons
+
+-----
+
+Topic: EndingColons::
+
+   Location: Comment on line 34
+
+   Comment Type: Information
+   Symbol: EndingColons
+
+-----
+
+Topic: EndingDoubleColons::::
+
+   Location: Comment on line 36
+
+   Comment Type: Information
+   Symbol: EndingDoubleColons
+
+-----
+
+Topic: ::::
+
+   Location: Comment on line 40
+
+   Comment Type: Information
+   Symbol: ::::
+
+-----
+
+Topic: ::LeadingColonsFunction
+
+   Location: Comment on line 42
+
+   Comment Type: Function
+   Symbol: LeadingColonsFunction
+
+   Prototype: void LeadingColonsFunction ()
+
+-----
+
+Topic: ::::LeadingDoubleColonsFunction
+
+   Location: Comment on line 45
+
+   Comment Type: Function
+   Symbol: LeadingDoubleColonsFunction
+
+   Prototype: void LeadingDoubleColonsFunction ()
+
+-----
+
+Topic: EndingColonsFunction::
+
+   Location: Comment on line 48
+
+   Comment Type: Function
+   Symbol: EndingColonsFunction
+
+-----
+
+Topic: EndingDoubleColonsFunction::::
+
+   Location: Comment on line 51
+
+   Comment Type: Function
+   Symbol: EndingDoubleColonsFunction
