@@ -1867,7 +1867,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						break;
 						}
 
-					lastIndex = undecoratedTitle.LastIndexOf(separator, 0, lastIndex);
+					if (lastIndex == 0)
+						{  break;  }
+
+					lastIndex = undecoratedTitle.LastIndexOf(separator, lastIndex - 1);
 					}
 				}
 
