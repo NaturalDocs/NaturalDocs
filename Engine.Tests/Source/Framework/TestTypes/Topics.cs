@@ -49,25 +49,44 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 			for (int i = 0; i < topics.Count; i++)
 				{
 				if (i != 0)
-					{  output.AppendLine("-----");  }
+					{
+					output.AppendLine();
+					output.AppendLine("-----");
+					output.AppendLine();
+					}
 
 				if (topics[i].Title == null)
-					{  output.Append("Topic ");  }
+					{  output.AppendLine("(untitled topic)");  }
 				else
-					{  output.Append("Topic: " + topics[i].Title + " ");  }
+					{  output.AppendLine("Topic: " + topics[i].Title);  }
 
-				if (topics[i].CommentLineNumber != 0)
-					{  output.AppendLine("on line " + topics[i].CommentLineNumber + " ");  }
+				output.AppendLine();
+
+				if (topics[i].CommentLineNumber != 0 && topics[i].CodeLineNumber != 0)
+					{  output.AppendLine("   Location: Comment on line " + topics[i].CommentLineNumber + ", code on line " + topics[i].CodeLineNumber);  }
+				else if (topics[i].CommentLineNumber != 0)
+					{  output.AppendLine("   Location: Comment on line " + topics[i].CommentLineNumber);  }
 				else if (topics[i].CodeLineNumber != 0)
-					{  output.AppendLine("on line " + topics[i].CodeLineNumber + " ");  }
-				else
-					{  output.AppendLine();  }
+					{  output.AppendLine("   Location: Code on line " + topics[i].CodeLineNumber);  }
+
+				output.AppendLine();
+
+				if (topics[i].CommentTypeID != 0)
+					{  output.AppendLine("   Comment Type: " + EngineInstance.CommentTypes.FromID(topics[i].CommentTypeID).DisplayName);  }
+				if (topics[i].Symbol != null)
+					{  output.AppendLine("   Symbol: " + topics[i].Symbol.FormatWithSeparator('.'));  }
 
 				if (topics[i].Prototype != null)
-					{  output.AppendLine("   " + topics[i].Prototype);  }
+					{
+					output.AppendLine();
+					output.AppendLine("   Prototype: " + topics[i].Prototype);
+					}
 
 				if (topics[i].Body != null)
-					{  output.AppendLine("   " + topics[i].Body);  }
+					{
+					output.AppendLine();
+					output.AppendLine("   Body: " + topics[i].Body);
+					}
 				}
 
 			return output.ToString();
