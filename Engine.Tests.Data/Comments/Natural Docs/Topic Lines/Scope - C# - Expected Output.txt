@@ -1,0 +1,224 @@
+Topic: TopicA
+
+   Location: Comment on line 2
+
+   Comment Type: Information
+   Symbol: TopicA
+
+   Body: <p>Should be global</p>
+
+-----
+
+Topic: ClassB
+
+   Location: Comment on line 5, code on line 7
+
+   Comment Type: Class
+   Symbol: ClassB
+
+   Prototype: class ClassB
+
+   Body: <p>Should start a scope</p>
+
+-----
+
+Topic: TopicB
+
+   Location: Comment on line 10
+
+   Comment Type: Information
+   Symbol: ClassB.TopicB
+
+   Body: <p>Should appear in ClassB</p>
+
+-----
+
+Topic: FunctionB
+
+   Location: Comment on line 13, code on line 15
+
+   Comment Type: Function
+   Symbol: ClassB.FunctionB
+
+   Prototype: public void FunctionB ()
+
+   Body: <p>Should appear in ClassB</p>
+
+-----
+
+Topic: VariableB
+
+   Location: Comment on line 19, code on line 21
+
+   Comment Type: Variable
+   Symbol: ClassB.VariableB
+
+   Prototype: private int VariableB
+
+   Body: <p>Should appear in ClassB</p>
+
+-----
+
+Topic: ClassB.ChildClassC
+
+   Location: Comment on line 24, code on line 26
+
+   Comment Type: Class
+   Symbol: ClassB.ChildClassC
+
+   Prototype: class ChildClassC
+
+   Body: <p>Should appear in ClassB</p>
+
+-----
+
+Topic: TopicC
+
+   Location: Comment on line 29
+
+   Comment Type: Information
+   Symbol: ClassB.ChildClassC.TopicC
+
+   Body: <p>Should appear in ClassB.ChildClassC</p>
+
+-----
+
+Topic: FunctionC
+
+   Location: Comment on line 32, code on line 34
+
+   Comment Type: Function
+   Symbol: ClassB.ChildClassC.FunctionC
+
+   Prototype: public void FunctionC ()
+
+   Body: <p>Should appear in ClassB.ChildClassC</p>
+
+-----
+
+Topic: VariableC
+
+   Location: Comment on line 38, code on line 40
+
+   Comment Type: Variable
+   Symbol: ClassB.ChildClassC.VariableC
+
+   Prototype: private int VariableC
+
+   Body: <p>Should appear in ClassB.ChildClassC</p>
+
+-----
+
+Topic: ChildClassD
+
+   Location: Comment on line 44, code on line 46
+
+   Comment Type: Class
+   Symbol: ClassB.ChildClassD
+
+   Prototype: class ChildClassD
+
+   Body: <p>Should appear in ClassB</p>
+
+-----
+
+Topic: TopicD
+
+   Location: Comment on line 49
+
+   Comment Type: Information
+   Symbol: ClassB.ChildClassD.TopicD
+
+   Body: <p>Should appear in ClassB.ChildClassD</p>
+
+-----
+
+Topic: FunctionD
+
+   Location: Comment on line 52, code on line 54
+
+   Comment Type: Function
+   Symbol: ClassB.ChildClassD.FunctionD
+
+   Prototype: public void FunctionD ()
+
+   Body: <p>Should appear in ClassB.ChildClassD</p>
+
+-----
+
+Topic: VariableD
+
+   Location: Comment on line 58, code on line 60
+
+   Comment Type: Variable
+   Symbol: ClassB.ChildClassD.VariableD
+
+   Prototype: private int VariableD
+
+   Body: <p>Should appear in ClassB.ChildClassD</p>
+
+-----
+
+Topic: ClassB.ChildClassE
+
+   Location: Code on line 64
+
+   Comment Type: Class
+   Symbol: ClassB.ChildClassE
+
+   Prototype: class ChildClassE
+
+-----
+
+Topic: TopicE
+
+   Location: Comment on line 67
+
+   Comment Type: Information
+   Symbol: ClassB.ChildClassE.TopicE
+
+   Body: <p>Should appear in ClassB.ChildClassE</p>
+
+-----
+
+Topic: FunctionE
+
+   Location: Code on line 70
+
+   Comment Type: Function
+   Symbol: ClassB.ChildClassE.FunctionE
+
+   Prototype: public void FunctionE ()
+
+-----
+
+Topic: VariableE
+
+   Location: Code on line 74
+
+   Comment Type: Variable
+   Symbol: ClassB.ChildClassE.VariableE
+
+   Prototype: private int VariableE
+
+-----
+
+Topic: TopicF
+
+   Location: Comment on line 78
+
+   Comment Type: Information
+   Symbol: ClassB.TopicF
+
+   Body: <p>Should appear in ClassB</p>
+
+-----
+
+Topic: TopicG
+
+   Location: Comment on line 83
+
+   Comment Type: Information
+   Symbol: TopicG
+
+   Body: <p>Should be global</p>

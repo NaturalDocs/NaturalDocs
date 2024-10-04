@@ -1,0 +1,195 @@
+Topic: FileA
+
+   Location: Comment on line 2
+
+   Comment Type: File
+   Symbol: FileA
+
+   Body: <p>Should be global scope</p>
+
+-----
+
+Topic: FunctionA
+
+   Location: Comment on line 5
+
+   Comment Type: Function
+   Symbol: FunctionA
+
+   Body: <p>Should be global scope</p>
+
+-----
+
+Topic: VariableA
+
+   Location: Comment on line 8
+
+   Comment Type: Variable
+   Symbol: VariableA
+
+   Body: <p>Should be global scope</p>
+
+-----
+
+Topic: ClassB
+
+   Location: Comment on line 11
+
+   Comment Type: Class
+   Symbol: ClassB
+
+   Body: <p>Should start a scope</p>
+
+-----
+
+Topic: FunctionB
+
+   Location: Comment on line 14
+
+   Comment Type: Function
+   Symbol: ClassB.FunctionB
+
+   Body: <p>Should appear in ClassB</p>
+
+-----
+
+Topic: VariableB
+
+   Location: Comment on line 17
+
+   Comment Type: Variable
+   Symbol: ClassB.VariableB
+
+   Body: <p>Should appear in ClassB</p>
+
+-----
+
+Topic: FileB
+
+   Location: Comment on line 20
+
+   Comment Type: File
+   Symbol: FileB
+
+   Body: <p>Should still be global scope</p>
+
+-----
+
+Topic: ClassB::ChildClassC
+
+   Location: Comment on line 23
+
+   Comment Type: Class
+   Symbol: ClassB.ChildClassC
+
+   Body: <p>Should appear in ClassB</p>
+
+-----
+
+Topic: FunctionC
+
+   Location: Comment on line 26
+
+   Comment Type: Function
+   Symbol: ClassB.ChildClassC.FunctionC
+
+   Body: <p>Should appear in ClassB::ChildClassC</p>
+
+-----
+
+Topic: VariableC
+
+   Location: Comment on line 29
+
+   Comment Type: Variable
+   Symbol: ClassB.ChildClassC.VariableC
+
+   Body: <p>Should appear in ClassB::ChildClassC</p>
+
+-----
+
+Topic: FileC
+
+   Location: Comment on line 32
+
+   Comment Type: File
+   Symbol: FileC
+
+   Body: <p>Should still be global scope</p>
+
+-----
+
+Topic: ClassB.ChildClassD
+
+   Location: Comment on line 35
+
+   Comment Type: Class
+   Symbol: ClassB.ChildClassD
+
+   Body: <p>Should appear in ClassB</p>
+
+-----
+
+Topic: FunctionD
+
+   Location: Comment on line 38
+
+   Comment Type: Function
+   Symbol: ClassB.ChildClassD.FunctionD
+
+   Body: <p>Should appear in ClassB.ChildClassD</p>
+
+-----
+
+Topic: VariableD
+
+   Location: Comment on line 41
+
+   Comment Type: Variable
+   Symbol: ClassB.ChildClassD.VariableD
+
+   Body: <p>Should appear in ClassB.ChildClassD</p>
+
+-----
+
+Topic: FileD
+
+   Location: Comment on line 44
+
+   Comment Type: File
+   Symbol: FileD
+
+   Body: <p>Should still be global scope</p>
+
+-----
+
+Topic: SectionE
+
+   Location: Comment on line 47
+
+   Comment Type: Section
+   Symbol: SectionE
+
+   Body: <p>Should reset back to global scope</p>
+
+-----
+
+Topic: FunctionE
+
+   Location: Comment on line 50
+
+   Comment Type: Function
+   Symbol: FunctionE
+
+   Body: <p>Should be global scope</p>
+
+-----
+
+Topic: VariableE
+
+   Location: Comment on line 53
+
+   Comment Type: Variable
+   Symbol: VariableE
+
+   Body: <p>Should be global scope</p>

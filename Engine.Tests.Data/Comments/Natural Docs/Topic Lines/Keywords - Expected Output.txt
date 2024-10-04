@@ -1,0 +1,114 @@
+Topic: MyFunctionA
+
+   Location: Comment on line 2
+
+   Comment Type: Function
+   Symbol: MyFunctionA
+
+-----
+
+Topic: MyFunctionB
+
+   Location: Comment on line 4
+
+   Comment Type: Function
+   Symbol: MyFunctionB
+
+-----
+
+Topic: MyFunctionC
+
+   Location: Comment on line 6
+
+   Comment Type: Function
+   Symbol: MyFunctionC
+
+-----
+
+Topic: MyFunctionD
+
+   Location: Comment on line 8
+
+   Comment Type: Function
+   Symbol: MyFunctionD
+
+-----
+
+Topic: MyClass
+
+   Location: Comment on line 10
+
+   Comment Type: Class
+   Symbol: MyClass
+
+-----
+
+Topic: MySection
+
+   Location: Comment on line 12
+
+   Comment Type: Section
+   Symbol: MySection
+
+-----
+
+Topic: MyTopicA
+
+   Location: Comment on line 14
+
+   Comment Type: Information
+   Symbol: MyTopicA
+
+-----
+
+Topic: MyTopicB
+
+   Location: Comment on line 16
+
+   Comment Type: Information
+   Symbol: MyTopicB
+
+-----
+
+Topic: MyGroup
+
+   Location: Comment on line 18
+
+   Comment Type: Group
+   Symbol: MyGroup
+
+-----
+
+Topic: MyFile
+
+   Location: Comment on line 20
+
+   Comment Type: File
+   Symbol: MyFile
+
+-----
+
+Topic: MyVariableA
+
+   Location: Comment on line 22
+
+   Comment Type: Variable
+   Symbol: MyVariableA
+
+-----
+
+Topic: MyVariableB
+
+   Location: Comment on line 24
+
+   Comment Type: Variable
+   Symbol: MyVariableB
+
+-----
+
+Topic: MyVariableC
+
+   Location: Comment on line 26
+
+   Comment Type: Variable
+   Symbol: MyVariableC

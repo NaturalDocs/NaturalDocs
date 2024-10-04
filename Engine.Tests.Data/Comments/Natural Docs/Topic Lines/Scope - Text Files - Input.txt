@@ -1,0 +1,54 @@
+
+File: FileA
+Should be global scope
+
+Function: FunctionA
+Should be global scope
+
+Variable: VariableA
+Should be global scope
+
+Class: ClassB
+Should start a scope
+
+	Function: FunctionB
+	Should appear in ClassB
+
+	Variable: VariableB
+	Should appear in ClassB
+
+	File: FileB
+	Should still be global scope
+
+	Class: ClassB::ChildClassC
+	Should appear in ClassB
+
+		Function: FunctionC
+		Should appear in ClassB::ChildClassC
+
+		Variable: VariableC
+		Should appear in ClassB::ChildClassC
+
+		File: FileC
+		Should still be global scope
+
+	Class: ClassB.ChildClassD
+	Should appear in ClassB
+
+		Function: FunctionD
+		Should appear in ClassB.ChildClassD
+
+		Variable: VariableD
+		Should appear in ClassB.ChildClassD
+
+		File: FileD
+		Should still be global scope
+
+Section: SectionE
+Should reset back to global scope
+
+Function: FunctionE
+Should be global scope
+
+Variable: VariableE
+Should be global scope
