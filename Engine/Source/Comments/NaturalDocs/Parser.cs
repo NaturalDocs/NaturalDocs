@@ -693,7 +693,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 							{
 							// We didn't find an interpretation for this tag canditate.  If it contains a space there are still other permutations
 							// we can try, so shave off the last word and try again.
-							candidateEndingIndex = keywordsAndTags.LastIndexOf(' ', candidateEndingIndex - 1, 																												  candidateEndingIndex - candidateStartingIndex);
+							candidateEndingIndex = keywordsAndTags.LastIndexOf(' ', candidateEndingIndex - 1,
+																												 candidateEndingIndex - candidateStartingIndex);
 
 							// If there aren't any more spaces then this entire tag section is invalid.
 							if (candidateEndingIndex == -1)
