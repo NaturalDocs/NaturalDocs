@@ -1,7 +1,23 @@
-Topic: Test on line 2 
-   public void Test (int x)
-   <p>Body</p>
+Topic: Test
+
+   Location: Comment on line 2
+
+   Comment Type: Function
+   Symbol: Test
+
+   Prototype: public void Test (int x)
+
+   Body: <p>Body</p>
+
 -----
-Topic: Test2 on line 9 
-   public bool Test2 ()
-   <p>Body</p>
+
+Topic: Test2
+
+   Location: Comment on line 9
+
+   Comment Type: Function
+   Symbol: Test2
+
+   Prototype: public bool Test2 ()
+
+   Body: <p>Body</p>

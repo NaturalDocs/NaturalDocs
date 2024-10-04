@@ -1,2 +1,8 @@
-Topic: File Encodings on line 1 
-   <p>Accented characters áéíóúñ</p>
+Topic: File Encodings
+
+   Location: Comment on line 1
+
+   Comment Type: Information
+   Symbol: File Encodings
+
+   Body: <p>Accented characters áéíóúñ</p>
