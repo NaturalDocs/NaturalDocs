@@ -1,4 +1,8 @@
+FileA
+   Comment Type: File
+   Symbol: FileA
 
+-----
 
 TopicA
    Comment Type: Information
@@ -30,7 +34,11 @@ VariableB
 
 -----
 
+FileB
+   Comment Type: File
+   Symbol: FileB
 
+-----
 
 ClassB.ChildClassC
    Comment Type: Class
@@ -56,7 +64,11 @@ VariableC
 
 -----
 
+FileC
+   Comment Type: File
+   Symbol: FileC
 
+-----
 
 ChildClassD
    Comment Type: Class
@@ -82,7 +94,11 @@ VariableD
 
 -----
 
+FileD
+   Comment Type: File
+   Symbol: FileD
 
+-----
 
 ClassB.ChildClassE
    Comment Type: Class
@@ -108,7 +124,11 @@ VariableE
 
 -----
 
+FileE
+   Comment Type: File
+   Symbol: FileE
 
+-----
 
 TopicF
    Comment Type: Information

@@ -1,4 +1,7 @@
 
+// File: FileA
+// Should be global
+
 // Topic: TopicA
 // Should be global
 
@@ -20,6 +23,9 @@ class ClassB
 	// Should appear in ClassB
 	private int VariableB;
 
+	// File: FileB
+	// Should be global
+
 
 	// Class: ClassB.ChildClassC
 	// Should appear in ClassB
@@ -38,6 +44,10 @@ class ClassB
 		// Variable: VariableC
 		// Should appear in ClassB.ChildClassC
 		private int VariableC;
+
+		// File: FileC
+		// Should be global
+
 		}
 
 
@@ -58,6 +68,10 @@ class ClassB
 		// Variable: VariableD
 		// Should appear in ClassB.ChildClassD
 		private int VariableD;
+
+		// File: FileD
+		// Should be global
+
 		}
 
 
@@ -72,6 +86,10 @@ class ClassB
 			}
 
 		private int VariableE;
+
+		// File: FileE
+		// Should be global
+
 		}
 
 
