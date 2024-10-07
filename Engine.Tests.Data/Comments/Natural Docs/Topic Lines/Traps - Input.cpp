@@ -9,9 +9,16 @@
 
 // Topic: EndingDoubleDot..
 
-// Topic: .
+// Topic: Dot. Space
 
-// Topic: ..
+// Topic: Space .Dot
+
+// Topic: Space . And . Dot
+
+// Topic: . LeadingDotSpace
+
+// Topic: EndingSpaceDot .
+// This second line prevents the dot from getting filtered out as a right comment symbol
 
 // Function: .LeadingDotFunction
 void LeadingDotFunction ();
@@ -35,9 +42,16 @@ void EndingDoubleDotFunction ();
 
 // Topic: EndingDoubleColons::::
 
-// Topic: ::
+// Topic: Colons:: Space
 
-// Topic: ::::
+// Topic: Space ::Colons
+
+// Topic: Space :: And :: Colons
+
+// Topic: :: LeadingColonsSpace
+
+// Topic: EndingSpaceColons ::
+// This second line prevents the colons from getting filtered out as right comment symbols
 
 // Function: ::LeadingColonsFunction
 void LeadingColonsFunction ();
@@ -50,3 +64,16 @@ void EndingColonsFunction ();
 
 // Function: EndingDoubleColonsFunction::::
 void EndingDoubleColonsFunction ();
+
+// Topic: .
+// This second line prevents the dot from getting filtered out as a right comment symbol
+
+// Topic: ..
+// This second line prevents the dots from getting filtered out as right comment symbols
+
+// Topic: ::
+// This second line prevents the colons from getting filtered out as right comment symbols
+
+// Topic: ::::
+// This second line prevents the colons from getting filtered out as right comment symbols
+

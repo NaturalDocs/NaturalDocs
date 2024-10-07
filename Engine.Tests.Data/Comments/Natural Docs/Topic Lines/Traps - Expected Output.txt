@@ -28,7 +28,35 @@ EndingDoubleDot..
 
 -----
 
+Dot. Space
+   Comment Type: Information
+   Symbol: Dot|Space
 
+-----
+
+Space .Dot
+   Comment Type: Information
+   Symbol: Space|Dot
+
+-----
+
+Space . And . Dot
+   Comment Type: Information
+   Symbol: Space|And|Dot
+
+-----
+
+. LeadingDotSpace
+   Comment Type: Information
+   Symbol: LeadingDotSpace
+
+-----
+
+EndingSpaceDot .
+   Comment Type: Information
+   Symbol: EndingSpaceDot
+
+-----
 
 .LeadingDotFunction
    Comment Type: Function
@@ -84,16 +112,35 @@ EndingDoubleColons::::
 
 -----
 
-Topic: ::::
-
-   Location: Comment on line 40
-
+Colons:: Space
    Comment Type: Information
-   Symbol: ::::
+   Symbol: Colons|Space
 
 -----
 
+Space ::Colons
+   Comment Type: Information
+   Symbol: Space|Colons
 
+-----
+
+Space :: And :: Colons
+   Comment Type: Information
+   Symbol: Space|And|Colons
+
+-----
+
+:: LeadingColonsSpace
+   Comment Type: Information
+   Symbol: LeadingColonsSpace
+
+-----
+
+EndingSpaceColons ::
+   Comment Type: Information
+   Symbol: EndingSpaceColons
+
+-----
 
 ::LeadingColonsFunction
    Comment Type: Function
@@ -116,3 +163,27 @@ EndingColonsFunction::
 EndingDoubleColonsFunction::::
    Comment Type: Function
    Symbol: EndingDoubleColonsFunction
+
+-----
+
+.
+   Comment Type: Information
+   Symbol: .
+
+-----
+
+..
+   Comment Type: Information
+   Symbol: ..
+
+-----
+
+::
+   Comment Type: Information
+   Symbol: ::
+
+-----
+
+::::
+   Comment Type: Information
+   Symbol: ::::
