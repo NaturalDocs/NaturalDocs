@@ -1,0 +1,81 @@
+Records
+   Comment Type: Section
+   Symbol: Records
+
+-----
+
+MyRecordB
+   Comment Type: Class
+   Symbol: MyRecordB
+
+-----
+
+Tables
+   Comment Type: Section
+   Symbol: Tables
+
+-----
+
+MyTableA
+   Comment Type: Database Table
+   Symbol: MyTableA
+
+-----
+
+MyTableB
+   Comment Type: Database Table
+   Symbol: MyTableB
+
+-----
+
+MyTableC
+   Comment Type: Database Table
+   Symbol: MyTableC
+
+-----
+
+MyTableD
+   Comment Type: Database Table
+   Symbol: MyTableD
+
+-----
+
+MyTableE
+   Comment Type: Database Table
+   Symbol: MyTableE
+
+-----
+
+MyTableF
+   Comment Type: Database Table
+   Symbol: MyTableF
+
+-----
+
+MyTableG
+   Comment Type: Database Table
+   Symbol: MyTableG
+
+-----
+
+Fields
+   Comment Type: Section
+   Symbol: Fields
+
+-----
+
+MyFieldA
+   Comment Type: Database Field
+   Symbol: MyFieldA
+
+-----
+
+MyFieldB
+   Comment Type: Database Field
+   Symbol: MyFieldB
+
+-----
+
+MyFieldC
+   Comment Type: Database Field
+   Symbol: MyFieldC
