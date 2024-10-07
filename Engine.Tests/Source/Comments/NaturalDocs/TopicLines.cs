@@ -11,7 +11,7 @@ using NUnit.Framework;
 namespace CodeClear.NaturalDocs.Engine.Tests.Comments.NaturalDocs
 	{
 	[TestFixture]
-	public class TopicLines : Framework.TestTypes.Topics
+	public class TopicLines : Framework.TestTypes.CommentTypesAndSymbols
 		{
 
 		[Test]
