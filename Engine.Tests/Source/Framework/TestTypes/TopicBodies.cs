@@ -1,8 +1,8 @@
 ﻿/*
- * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes.Topics
+ * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes.TopicBodies
  * ____________________________________________________________________________
  *
- * File-based tests to make sure Natural Docs can extract topics from a file.
+ * File-based tests to make sure Natural Docs can extract topic bodies from comments.
  *
  *
  * Deriving a Test Class:
@@ -36,7 +36,7 @@ using CodeClear.NaturalDocs.Engine.Topics;
 
 namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 	{
-	public class Topics : Framework.BaseTestTypes.SourceToTopics
+	public class TopicBodies : Framework.BaseTestTypes.SourceToTopics
 		{
 
 		public override string OutputOf (IList<Topic> topics)
@@ -58,35 +58,12 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 				if (topics[i].Title == null)
 					{  output.AppendLine("(untitled topic)");  }
 				else
-					{  output.AppendLine("Topic: " + topics[i].Title);  }
-
-				output.AppendLine();
-
-				if (topics[i].CommentLineNumber != 0 && topics[i].CodeLineNumber != 0)
-					{  output.AppendLine("   Location: Comment on line " + topics[i].CommentLineNumber + ", code on line " + topics[i].CodeLineNumber);  }
-				else if (topics[i].CommentLineNumber != 0)
-					{  output.AppendLine("   Location: Comment on line " + topics[i].CommentLineNumber);  }
-				else if (topics[i].CodeLineNumber != 0)
-					{  output.AppendLine("   Location: Code on line " + topics[i].CodeLineNumber);  }
-
-				output.AppendLine();
-
-				if (topics[i].CommentTypeID != 0)
-					{  output.AppendLine("   Comment Type: " + EngineInstance.CommentTypes.FromID(topics[i].CommentTypeID).DisplayName);  }
-				if (topics[i].Symbol != null)
-					{  output.AppendLine("   Symbol: " + topics[i].Symbol.FormatWithSeparator('.'));  }
-
-				if (topics[i].Prototype != null)
-					{
-					output.AppendLine();
-					output.AppendLine("   Prototype: " + topics[i].Prototype);
-					}
+					{  output.AppendLine(topics[i].Title);  }
 
 				if (topics[i].Body != null)
-					{
-					output.AppendLine();
-					output.AppendLine("   Body: " + topics[i].Body);
-					}
+					{  output.AppendLine("   Body: " + topics[i].Body);  }
+				else
+					{  output.AppendLine("   (no body)");  }
 				}
 
 			return output.ToString();

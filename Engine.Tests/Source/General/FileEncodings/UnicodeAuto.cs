@@ -11,7 +11,7 @@ using NUnit.Framework;
 namespace CodeClear.NaturalDocs.Engine.Tests.General.FileEncodings
 	{
 	[TestFixture]
-	public class UnicodeAuto : Framework.TestTypes.Topics
+	public class UnicodeAuto : Framework.TestTypes.TopicBodies
 		{
 
 		[Test]
