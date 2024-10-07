@@ -72,6 +72,7 @@
     <Compile Include="Source\Framework\BaseTestTypes\SourceToElements.cs" />
     <Compile Include="Source\Framework\TestTypes\CommentTypeDetection.cs" />
     <Compile Include="Source\Framework\TestTypes\HTML.cs" />
+    <Compile Include="Source\Framework\TestTypes\CommentTypesAndSymbols.cs" />
     <Compile Include="Source\Framework\TestTypes\Topics.cs" />
     <Compile Include="Source\Framework\TestTypes\VersionStrings.cs" />
     <Compile Include="Source\Framework\TestTypes\LinkInterpretations.cs" />
