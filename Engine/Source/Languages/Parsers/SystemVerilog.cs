@@ -240,23 +240,21 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
-		/* Function: IsKindKeyword
-		 * Returns whether the string is a kind keyword like "tri0" or "var".  This encompasses all the net
-		 * data types and "var".
+		/* Function: IsNetTypeKeyword
+		 * Returns whether the string is a net type keyword like "tri0" or "wire".
 		 */
-		public static bool IsKindKeyword (string keyword)
+		public static bool IsNetTypeKeyword (string keyword)
 			{
-			return KindKeywords.Contains(keyword);
+			return NetTypes.Contains(keyword);
 			}
 
 
-		/* Function: IsOnKindKeyword
-		 * Returns whether the <TokenIterator> is on a kind keyword like "tri0" or "var".  This encompasses
-		 * all the net data types and "var".
+		/* Function: IsOnNetTypeKeyword
+		 * Returns whether the <TokenIterator> is on a net type keyword like "tri0" or "wire".
 		 */
-		public static bool IsOnKindKeyword (TokenIterator iterator)
+		public static bool IsOnNetTypeKeyword (TokenIterator iterator)
 			{
-			return KindKeywords.Contains(iterator.String);
+			return NetTypes.Contains(iterator.String);
 			}
 
 
@@ -2457,16 +2455,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			});
 
-		/* var: KindKeywords
-		 */
-		static protected StringSet KindKeywords = new StringSet (KeySettings.Literal, new string[] {
-
-			"supply0", "supply1", "tri", "triand", "trior", "trireg", "tri0", "tri1", "uwire", "wire", "wand", "wor",
-
-			"var"
-
-			});
-
 		/* var: BuiltInTypes
 		 */
 		static protected StringSet BuiltInTypes = new StringSet (KeySettings.Literal, new string[] {
@@ -2476,6 +2464,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			"shortreal", "real", "realtime",
 			"enum",
 			"string", "chandle", "event"
+
+			});
+
+		/* var: NetTypes
+		 */
+		static protected StringSet NetTypes = new StringSet (KeySettings.Literal, new string[] {
+
+			"supply0", "supply1",
+			"tri", "triand", "trior", "trireg", "tri0", "tri1",
+			"uwire", "wire", "wand", "wor"
 
 			});
 
