@@ -57,7 +57,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 *
 		 *		--- C# Code --
 		 *		int Indexer [unsigned int x,
-		 *		                       int y ]
+		 *		                      int y ]
 		 *		           { get,
 		 *		             set  }
 		 */
