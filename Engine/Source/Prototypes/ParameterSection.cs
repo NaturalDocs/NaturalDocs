@@ -117,6 +117,61 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			}
 
 
+		/* Function: GetOpeningParameterSymbol
+		 * Returns the bounds of the opening parameter symbol, such as "(", "#(", or "{", and whether it exists.
+		 */
+		public bool GetOpeningParameterSymbol (out TokenIterator symbolStart, out TokenIterator symbolEnd)
+			{
+			if (beforeParameters != null)
+				{
+				symbolEnd = beforeParameters.End;
+
+
+				// Remove any trailing whitespace as long as it's insignifcant
+
+				TokenIterator lookbehind = symbolEnd;
+				lookbehind.Previous();
+
+				while (lookbehind >= beforeParameters.Start)
+					{
+					if (lookbehind.FundamentalType == FundamentalType.Whitespace &&
+						lookbehind.PrototypeParsingType == PrototypeParsingType.Null)
+						{
+						symbolEnd = lookbehind;
+						lookbehind.Previous();
+						}
+					else
+						{  break;  }
+					}
+
+
+				// Move past any opening symbols
+
+				symbolStart = symbolEnd;
+
+				while (lookbehind >= beforeParameters.Start)
+					{
+					if (lookbehind.PrototypeParsingType == PrototypeParsingType.StartOfParams ||
+						lookbehind.PrototypeParsingType == PrototypeParsingType.OpeningExtensionSymbol)
+						{
+						symbolStart = lookbehind;
+						lookbehind.Previous();
+						}
+					else
+						{  break;  }
+					}
+
+				return (symbolStart < symbolEnd);
+				}
+			else
+				{
+				symbolStart = end;
+				symbolEnd = end;
+				return false;
+				}
+			}
+
+
 
 		// Group: Parameter Functions
 		// __________________________________________________________________________
