@@ -176,6 +176,33 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		// __________________________________________________________________________
 
 
+		/* Function: IsOnBuiltInType
+		 * Returns whether the <TokenIterator> is on a built-in type such as "bit" as opposed to a user-defined
+		 * type.
+		 */
+		public static bool IsOnBuiltInType (TokenIterator iterator)
+			{
+			if (!BuiltInTypes.Contains(iterator.String))
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+			lookahead.Next();
+
+			if (lookahead.FundamentalType == FundamentalType.Text ||
+				lookahead.Character == '_')
+				{  return false;  }
+
+			TokenIterator lookbehind = iterator;
+			lookbehind.Previous();
+
+			if (lookbehind.FundamentalType == FundamentalType.Text ||
+				lookbehind.Character == '_')
+				{  return false;  }
+
+			return true;
+			}
+
+
 		/* Function: IsDirectionKeyword
 		 * Returns whether the string is a direction keyword like "input" or "output".
 		 */
