@@ -193,10 +193,27 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		public static bool IsOnDirectionKeyword (TokenIterator iterator)
 			{
-			return (iterator.MatchesToken("input") ||
-					   iterator.MatchesToken("output") ||
-					   iterator.MatchesToken("inout") ||
-					   iterator.MatchesToken("ref"));
+			if (!iterator.MatchesToken("input") &&
+			    !iterator.MatchesToken("output") &&
+			    !iterator.MatchesToken("inout") &&
+			    !iterator.MatchesToken("ref"))
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+			lookahead.Next();
+
+			if (lookahead.FundamentalType == FundamentalType.Text ||
+				lookahead.Character == '_')
+				{  return false;  }
+
+			TokenIterator lookbehind = iterator;
+			lookbehind.Previous();
+
+			if (lookbehind.FundamentalType == FundamentalType.Text ||
+				lookbehind.Character == '_')
+				{  return false;  }
+
+			return true;
 			}
 
 
@@ -215,8 +232,25 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		public static bool IsOnParameterKeyword (TokenIterator iterator)
 			{
-			return (iterator.MatchesToken("parameter") ||
-					   iterator.MatchesToken("localparam"));
+			if (!iterator.MatchesToken("parameter") &&
+			    !iterator.MatchesToken("localparam"))
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+			lookahead.Next();
+
+			if (lookahead.FundamentalType == FundamentalType.Text ||
+				lookahead.Character == '_')
+				{  return false;  }
+
+			TokenIterator lookbehind = iterator;
+			lookbehind.Previous();
+
+			if (lookbehind.FundamentalType == FundamentalType.Text ||
+				lookbehind.Character == '_')
+				{  return false;  }
+
+			return true;
 			}
 
 
@@ -235,8 +269,25 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		public static bool IsOnSigningKeyword (TokenIterator iterator)
 			{
-			return (iterator.MatchesToken("signed") ||
-					   iterator.MatchesToken("unsigned"));
+			if (!iterator.MatchesToken("signed") &&
+				!iterator.MatchesToken("unsigned"))
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+			lookahead.Next();
+
+			if (lookahead.FundamentalType == FundamentalType.Text ||
+				lookahead.Character == '_')
+				{  return false;  }
+
+			TokenIterator lookbehind = iterator;
+			lookbehind.Previous();
+
+			if (lookbehind.FundamentalType == FundamentalType.Text ||
+				lookbehind.Character == '_')
+				{  return false;  }
+
+			return true;
 			}
 
 
@@ -254,7 +305,24 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		public static bool IsOnNetTypeKeyword (TokenIterator iterator)
 			{
-			return NetTypes.Contains(iterator.String);
+			if (!NetTypes.Contains(iterator.String))
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+			lookahead.Next();
+
+			if (lookahead.FundamentalType == FundamentalType.Text ||
+				lookahead.Character == '_')
+				{  return false;  }
+
+			TokenIterator lookbehind = iterator;
+			lookbehind.Previous();
+
+			if (lookbehind.FundamentalType == FundamentalType.Text ||
+				lookbehind.Character == '_')
+				{  return false;  }
+
+			return true;
 			}
 
 
