@@ -350,15 +350,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				else
 					{
-					// The alignment defaults to AlignAllColumns.  The parameter sections can be one of three types, determined by
-					// the syntax highlighting of the variable name:
-					//
-					//    - Regular parameters, which should have no highlighting on the name
-					//    - Property members like get/set/init, which should be highlighted as keywords
-					//    - Metadata properties, which should be highlighted as metadata
-					//
-					// All sections must have the same type to keep using AlignAllColumns.  If any are different then we switch to
-					// AlignBeforeParameters.  Trying to align the columns of disparate parameter types will not look good.
+					// The alignment defaults to AlignAllColumns.  If there are subsequent parameter sections but they are too
+					// different then we switch to AlignBeforeParameters.  Trying to align the columns of disparate parameter types,
+					// such as functions and preceding metadata, or indexer parameters and their getter/setters, will not look good.
 
 					groupType = SectionType.Parameter;
 					groupCount = 1;
@@ -366,9 +360,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 					var parameterStyle = parameterLayouts[sectionIndex].ParameterStyle;
 
-					TokenIterator start, end;
-					(parsedPrototype.Sections[sectionIndex] as Prototypes.ParameterSection).GetParameterName(0, out start, out end);
-					var highlightType = start.SyntaxHighlightingType;
+					// We'll lazy-load the opening symbol to avoid an allocation since the vast majority of prototypes will only have
+					// one parameter section.
+					string openingSymbol = null;
 
 					for (int i = sectionIndex + 1; i < parsedPrototype.Sections.Count; i++)
 						{
@@ -378,10 +372,20 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						var nextParameterSection = (parsedPrototype.Sections[i] as Prototypes.ParameterSection);
 						var nextParameterLayout = parameterLayouts[i];
 
+						// Only share alignment with sections that have simple openings, like just "(".
 						if (nextParameterLayout.BeforeParametersWidth > 3)
 							{  break;  }
 
-						start = nextParameterSection.Start;
+						TokenIterator start, end;
+
+						// If we made it this far we're comparing opening symbols, so extract the original one if we still need to.
+						if (openingSymbol == null)
+							{
+							parameterSection.GetOpeningParameterSymbol(out start, out end);
+							openingSymbol = start.TextBetween(end);
+							}
+
+						nextParameterSection.GetOpeningParameterSymbol(out start, out end);
 
 						if (start.Character != '(' &&
 							start.Character != '[' &&
@@ -390,14 +394,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 							{  break;  }
 
 						if (nextParameterSection.NumberOfParameters == 0 ||
-							nextParameterSection.ParameterStyle != parameterStyle)
-							{  groupAlignment = ParameterGroupAlignment.AlignBeforeParameters;  }
-						else
+							nextParameterSection.ParameterStyle != parameterStyle ||
+							!start.MatchesAcrossTokens(openingSymbol) ||
+							end.RawTextIndex - start.RawTextIndex != openingSymbol.Length)
 							{
-							nextParameterSection.GetParameterName(0, out start, out end);
-
-							if (start.SyntaxHighlightingType != highlightType)
-								{  groupAlignment = ParameterGroupAlignment.AlignBeforeParameters;  }
+							groupAlignment = ParameterGroupAlignment.AlignBeforeParameters;
 							}
 
 						groupCount++;
