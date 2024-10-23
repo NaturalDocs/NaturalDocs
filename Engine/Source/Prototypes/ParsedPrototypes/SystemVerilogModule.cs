@@ -465,7 +465,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				{
 				if (iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier &&
 					(Languages.Parsers.SystemVerilog.IsOnNetTypeKeyword(iterator) ||
-					 iterator.MatchesToken("var")) )
+					 Languages.Parsers.SystemVerilog.IsOnKeyword(iterator, "var")) )
 					{
 					kindPosition = iterator;
 					return true;

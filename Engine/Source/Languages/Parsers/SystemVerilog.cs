@@ -676,9 +676,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TokenIterator startOfType = lookahead;
 
 			if (!isTypeAssignment &&
-				!lookahead.MatchesToken("signed") &&
-				!lookahead.MatchesToken("unsigned") &&
-				!IsBuiltInType(lookahead.String) &&
+				!IsOnSigningKeyword(lookahead) &&
+				!IsOnBuiltInType(lookahead) &&
 				TryToSkipUnqualifiedIdentifier(ref lookahead, ParseMode.IterateOnly))
 				{
 				TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
@@ -1047,8 +1046,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Signing
 
-			if (lookahead.MatchesToken("signed") ||
-				lookahead.MatchesToken("unsigned"))
+			if (IsOnSigningKeyword(lookahead))
 				{
 				if (mode == ParseMode.ParsePrototype)
 					{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
@@ -1192,8 +1190,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				lookahead.Next();
 				TryToSkipWhitespace(ref lookahead, mode);
 
-				if (lookahead.MatchesToken("signed") ||
-					lookahead.MatchesToken("unsigned"))
+				if (IsOnSigningKeyword(lookahead))
 					{
 					if (mode == ParseMode.ParsePrototype)
 						{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
