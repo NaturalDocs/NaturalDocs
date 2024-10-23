@@ -449,7 +449,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			bool hasAttributes = false;
 
-			if (TryToSkipAttributes(ref lookahead, mode))
+			if (TryToSkipAttributes(ref lookahead, mode, PrototypeParsingType.StartOfParams))
 				{
 				TryToSkipWhitespace(ref lookahead, mode);
 
@@ -1564,11 +1564,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- <ParseMode.ParsePrototype>
+		 *			- prototypeParsingType may be set to <PrototypeParsingType.StartOfParams> or
+		 *			  <PrototypeParsingType.OpeningTypeModifier> to determine how the attributes should be marked.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipAttributes (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+		protected bool TryToSkipAttributes (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
+															PrototypeParsingType prototypeParsingType = PrototypeParsingType.StartOfParams)
 			{
-			if (!TryToSkipAttributesBlock(ref iterator, mode))
+			if (!TryToSkipAttributesBlock(ref iterator, mode, prototypeParsingType))
 				{  return false;  }
 
 			TokenIterator lookahead = iterator;
@@ -1577,7 +1580,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{
 				TryToSkipWhitespace(ref lookahead, mode);
 
-				if (TryToSkipAttributesBlock(ref lookahead, mode))
+				if (TryToSkipAttributesBlock(ref lookahead, mode, prototypeParsingType))
 					{
 					iterator = lookahead;
 					}
@@ -1601,9 +1604,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- <ParseMode.ParsePrototype>
+		 *			- prototypeParsingType may be set to <PrototypeParsingType.StartOfParams> or
+		 *			  <PrototypeParsingType.OpeningTypeModifier> to determine how the attributes should be marked.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipAttributesBlock (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+		protected bool TryToSkipAttributesBlock (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
+																   PrototypeParsingType prototypeParsingType = PrototypeParsingType.StartOfParams)
 			{
 			if (iterator.MatchesAcrossTokens("(*") == false)
 				{  return false;  }
@@ -1613,7 +1619,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (mode == ParseMode.ParsePrototype)
 				{
-				lookahead.PrototypeParsingType = PrototypeParsingType.StartOfParams;
+				lookahead.PrototypeParsingType = prototypeParsingType;
 				lookahead.Next();
 				lookahead.PrototypeParsingType = PrototypeParsingType.OpeningExtensionSymbol;
 				lookahead.Next();
@@ -1627,7 +1633,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					{
 					if (mode == ParseMode.ParsePrototype)
 						{
-						lookahead.PrototypeParsingType = PrototypeParsingType.EndOfParams;
+						switch (prototypeParsingType)
+							{
+							case PrototypeParsingType.StartOfParams:
+								lookahead.PrototypeParsingType = PrototypeParsingType.EndOfParams;
+								break;
+							case PrototypeParsingType.OpeningTypeModifier:
+								lookahead.PrototypeParsingType = PrototypeParsingType.ClosingTypeModifier;
+								break;
+							default:
+								throw new NotImplementedException();
+							}
+
 						lookahead.Next();
 						lookahead.PrototypeParsingType = PrototypeParsingType.ClosingExtensionSymbol;
 						lookahead.Next();
@@ -1640,14 +1657,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					}
 				else if (lookahead.Character == '=')
 					{
-					if (mode == ParseMode.ParsePrototype)
+					if (mode == ParseMode.ParsePrototype &&
+						prototypeParsingType == PrototypeParsingType.StartOfParams)
 						{  lookahead.PrototypeParsingType = PrototypeParsingType.PropertyValueSeparator;  }
 
 					lookahead.Next();
 					}
 				else if (lookahead.Character == ',')
 					{
-					if (mode == ParseMode.ParsePrototype)
+					if (mode == ParseMode.ParsePrototype &&
+						prototypeParsingType == PrototypeParsingType.StartOfParams)
 						{  lookahead.PrototypeParsingType = PrototypeParsingType.ParamSeparator;  }
 
 					lookahead.Next();
@@ -1675,7 +1694,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{
 				iterator.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.Metadata);
 				}
-			else if (mode == ParseMode.ParsePrototype)
+			else if (mode == ParseMode.ParsePrototype &&
+					  prototypeParsingType == PrototypeParsingType.StartOfParams)
 				{
 				// We marked StartOfParams, EndOfParams, ParamSeparator, and PropertyValueSeparator.
 				// Find and mark tokens that should be Name and PropertyValue now.
