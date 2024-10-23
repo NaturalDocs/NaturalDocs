@@ -525,10 +525,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 
-			// Port declarations
+			// Port list
 
-			if (lookahead.Character == '(' &&
-				TryToSkipParameters(ref lookahead, mode))
+			if (TryToSkipPortList(ref lookahead, mode))
 				{
 				TryToSkipWhitespace(ref lookahead, mode);
 				}
@@ -783,10 +782,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
-		/* Function: TryToSkipParameters
+		/* Function: TryToSkipPortList
 		 *
-		 * Tries to move the iterator past a comma-separated list of parameters in parentheses.  This supports both (
-		 * and #( as the opening symbol.
+		 * Tries to move the iterator past a comma-separated list of ports in parentheses.
 		 *
 		 * Supported Modes:
 		 *
@@ -794,30 +792,20 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *		- <ParseMode.ParsePrototype>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipParameters (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+		protected bool TryToSkipPortList (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
 
 			// Opening paren
 
-			TokenIterator lookahead = iterator;
-
-			if (lookahead.Character == '(')
-				{
-				if (mode == ParseMode.ParsePrototype)
-					{  lookahead.PrototypeParsingType = PrototypeParsingType.StartOfParams;  }
-
-				lookahead.Next();
-				}
-			else if (lookahead.MatchesAcrossTokens("#("))
-				{
-				lookahead.Next(2);
-
-				if (mode == ParseMode.ParsePrototype)
-					{  iterator.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.StartOfParams);  }
-				}
-			else
+			if (iterator.Character != '(')
 				{  return false;  }
 
+			TokenIterator lookahead = iterator;
+
+			if (mode == ParseMode.ParsePrototype)
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.StartOfParams;  }
+
+			lookahead.Next();
 			TryToSkipWhitespace(ref lookahead, mode);
 
 
@@ -833,7 +821,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					lookahead.Next();
 					TryToSkipWhitespace(ref lookahead, mode);
 					}
-				else if (TryToSkipParameter(ref lookahead, mode))
+				else if (TryToSkipPort(ref lookahead, mode))
 					{
 					TryToSkipWhitespace(ref lookahead, mode);
 					}
@@ -861,9 +849,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
-		/* Function: TryToSkipParameter
+		/* Function: TryToSkipPort
 		 *
-		 * Tries to move the iterator past a parameter, such as "string x".  The parameter ends at a comma or a closing
+		 * Tries to move the iterator past a port declaration, such as "string x".  The declaration ends at a comma or a closing
 		 * parenthesis.
 		 *
 		 * Supported Modes:
@@ -872,33 +860,37 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *		- <ParseMode.ParsePrototype>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipParameter (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+		protected bool TryToSkipPort (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
 			TokenIterator lookahead = iterator;
 
 
-			// Parameter Keyword
+			// Attributes
 
-			if (lookahead.MatchesToken("parameter") ||
-				lookahead.MatchesToken("localparam"))
+			if (TryToSkipAttributes(ref lookahead, mode, PrototypeParsingType.OpeningTypeModifier))
+				{
+				TryToSkipWhitespace(ref lookahead, mode);
+				}
+
+
+			// Port Direction
+
+			if (IsOnDirectionKeyword(lookahead))
 				{
 				if (mode == ParseMode.ParsePrototype)
-					{  lookahead.PrototypeParsingType = PrototypeParsingType.ParamKeyword;  }
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
 
 				lookahead.Next();
 				TryToSkipWhitespace(ref lookahead, mode);
 				}
 
 
-			// Input/Output
+			// Net Type
 
-			if (lookahead.MatchesToken("input") ||
-				lookahead.MatchesToken("output") ||
-				lookahead.MatchesToken("inout") ||
-				lookahead.MatchesToken("ref"))
+			if (IsOnNetTypeKeyword(lookahead))
 				{
 				if (mode == ParseMode.ParsePrototype)
-					{  lookahead.PrototypeParsingType = PrototypeParsingType.InOut;  }
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
 
 				lookahead.Next();
 				TryToSkipWhitespace(ref lookahead, mode);
@@ -912,18 +904,19 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// separator) an equals sign (default value separator) or a closing parenthesis (end of the last parameter) the
 			// identifier is definitely a parameter name.
 
-			// Also note that an implied type can just be a dimension, such as "bit paramA, [8] paramB", so if it's not on
+			// Also note that an implied type can just be a dimension, such as "bit paramA, [7:0] paramB", so if it's not on
 			// an identifier at all we can assume it's a type.
 
 			bool hasType = true;
 			TokenIterator startOfType = lookahead;
 
-			if (!IsBuiltInType(lookahead.String) &&
+			if (!IsOnSigningKeyword(lookahead) &&
+				!IsOnBuiltInType(lookahead) &&
 				TryToSkipUnqualifiedIdentifier(ref lookahead, ParseMode.IterateOnly))
 				{
 				TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
 
-				// Skip dimensions.  Both types and parameters can have them, such as "bit[8] paramA[2]", so their presence
+				// Skip dimensions.  Both types and parameters can have them, such as "bit[7:0] paramA[2]", so their presence
 				// doesn't tell us anything.
 				if (TryToSkipDimensions(ref lookahead, ParseMode.IterateOnly))
 					{  TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);  }
@@ -942,15 +935,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Type
 
-			// TryToSkipType covers signing and type dimensions
-			if (hasType &&
-				TryToSkipType(ref lookahead, mode) == false)
+			if (hasType)
 				{
-				ResetTokensBetween(iterator, lookahead, mode);
-				return false;
-				}
+				// TryToSkipType covers signing and type (packed) dimensions
+				if (!TryToSkipType(ref lookahead, mode))
+					{
+					ResetTokensBetween(iterator, lookahead, mode);
+					return false;
+					}
 
-			TryToSkipWhitespace(ref lookahead, mode);
+				TryToSkipWhitespace(ref lookahead, mode);
+				}
 
 
 			// Name
@@ -964,7 +959,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TryToSkipWhitespace(ref lookahead, mode);
 
 
-			// Param Dimensions.  Both types and parameters can have them, such as "bit[8] paramA[2]"
+			// Param (Unpacked) Dimensions.  Both types and parameters can have dimensions, such as "bit[7:0] paramA[2]"
 
 			if (TryToSkipDimensions(ref lookahead, mode, PrototypeParsingType.ParamModifier))
 				{  TryToSkipWhitespace(ref lookahead, mode);  }
@@ -988,7 +983,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					{  GenericSkip(ref lookahead);  }
 
 				if (mode == ParseMode.ParsePrototype)
-					{  startOfDefaultValue.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.DefaultValue);  }
+					{
+					TokenIterator endOfDefaultValue = lookahead;
+					endOfDefaultValue.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfDefaultValue);
+
+					startOfDefaultValue.SetPrototypeParsingTypeBetween(endOfDefaultValue, PrototypeParsingType.DefaultValue);
+					}
 				}
 
 
@@ -1005,6 +1005,181 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				ResetTokensBetween(iterator, lookahead, mode);
 				return false;
 				}
+			}
+
+
+		/* Function: TryToSkipPortReference
+		 *
+		 * Tries to move past and retrieve a port reference, which can be qualified such as "X.Y.Z".  It also supports members and
+		 * constant selects such as "X[2].Y".  Use <TryToSkipUnqualifiedIdentifier()> if you only want to retrieve a single identifier
+		 * segment.
+		 *
+		 * This corresponds to "port_reference" in the IEEE SystemVerilog BNF.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.Name>
+		 *			  or <PrototypeParsingType.Type>.
+		 *			  - If set to <PrototypeParsingType.Name>, any ending port expressions will be marked with
+		 *			    <PrototypeParsingType.OpeningParamModifier> and <PrototypeParsingType.ClosingParamModifier>.
+		 *			  - If set to <PrototypeParsingType.Type>, any ending port expressions will be marked with
+		 *			    <PrototypeParsingType.OpeningTypeModifier> and <PrototypeParsingType.ClosingTypeModifier>.  It will also mark
+		 *			    qualifiers with <PrototypeParsingType.TypeQualifier>.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipPortReference (ref TokenIterator iterator, out string identifier, ParseMode mode = ParseMode.IterateOnly,
+																 PrototypeParsingType prototypeParsingType = PrototypeParsingType.Name)
+			{
+			TokenIterator start = iterator;
+
+			if (TryToSkipPortReference(ref iterator, mode))
+				{
+				identifier = start.TextBetween(iterator);
+				return true;
+				}
+			else
+				{
+				identifier = null;
+				return false;
+				}
+			}
+
+
+		/* Function: TryToSkipPortReference
+		 *
+		 * Tries to move the iterator past a port reference, which can be qualified such as "X.Y.Z".  It also supports members and
+		 * constant selects such as "X[2].Y".  Use <TryToSkipUnqualifiedIdentifier()> if you only want to retrieve a single identifier
+		 * segment.
+		 *
+		 * This corresponds to "port_reference" in the IEEE SystemVerilog BNF.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.Name>
+		 *			  or <PrototypeParsingType.Type>.
+		 *			  - If set to <PrototypeParsingType.Name>, any ending port expressions will be marked with
+		 *			    <PrototypeParsingType.OpeningParamModifier> and <PrototypeParsingType.ClosingParamModifier>.
+		 *			  - If set to <PrototypeParsingType.Type>, any ending port expressions will be marked with
+		 *			    <PrototypeParsingType.OpeningTypeModifier> and <PrototypeParsingType.ClosingTypeModifier>.  It will also mark
+		 *			    qualifiers with <PrototypeParsingType.TypeQualifier>.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipPortReference (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
+																 PrototypeParsingType prototypeParsingType = PrototypeParsingType.Name)
+			{
+			TokenIterator startOfIdentifier = iterator;
+			TokenIterator endOfQualifier = iterator;  // After the second dot in "X.Y.Z[12]".  Same as startOfIdentifier if there is none.
+			TokenIterator endOfLastIdentifierSegment = iterator;  // After the Z in "X.Y.Z[12]"
+			TokenIterator endOfIdentifier = iterator;  // After the ] in "X.Y.Z[12]"
+
+			for (;;)
+				{
+				if (!TryToSkipUnqualifiedIdentifier(ref iterator, ParseMode.IterateOnly))
+					{
+					iterator = startOfIdentifier;
+					return false;
+					}
+
+				endOfIdentifier = iterator;
+				endOfLastIdentifierSegment = iterator;
+				TryToSkipWhitespace(ref iterator, ParseMode.IterateOnly);
+
+				if (iterator.Character == '[')
+					{
+					do
+						{
+						GenericSkip(ref iterator);
+						TryToSkipWhitespace(ref iterator, ParseMode.IterateOnly);
+						}
+					while (iterator.Character == '[');
+
+					endOfIdentifier = iterator;
+					}
+
+				if (iterator.Character == '.')
+					{
+					iterator.Next();
+					endOfQualifier = iterator;
+
+					TryToSkipWhitespace(ref iterator, ParseMode.IterateOnly);
+					}
+				else
+					{  break;  }
+				}
+
+			if (mode == ParseMode.ParsePrototype)
+				{
+				// Determine how we're marking things
+
+				PrototypeParsingType nameType = prototypeParsingType;
+				PrototypeParsingType qualifierType, expressionOpenType, expressionCloseType;
+
+				if (prototypeParsingType == PrototypeParsingType.Name)
+					{
+					qualifierType = PrototypeParsingType.Name;
+					expressionOpenType = PrototypeParsingType.OpeningParamModifier;
+					expressionCloseType = PrototypeParsingType.ClosingParamModifier;
+					}
+				else if (prototypeParsingType == PrototypeParsingType.Type)
+					{
+					qualifierType = PrototypeParsingType.TypeQualifier;
+					expressionOpenType = PrototypeParsingType.OpeningTypeModifier;
+					expressionCloseType = PrototypeParsingType.ClosingTypeModifier;
+					}
+				else
+					{
+					qualifierType = nameType;
+					expressionOpenType = nameType;
+					expressionCloseType = nameType;
+					}
+
+				// Mark qualifier if there is one
+				if (endOfQualifier > startOfIdentifier)
+					{  startOfIdentifier.SetPrototypeParsingTypeBetween(endOfQualifier, qualifierType);  }
+
+				// Mark the name.  If there's no qualifier endOfQualifier will be the same as startOfIdentifier.
+				endOfQualifier.SetPrototypeParsingTypeBetween(endOfLastIdentifierSegment, nameType);
+
+				// Do we have expressions?
+				if (endOfLastIdentifierSegment < endOfIdentifier)
+					{
+					// Do we care about distinguishing them?  We can skip a bunch of parsing if we don't.
+					if (expressionOpenType == nameType)
+						{  endOfLastIdentifierSegment.SetPrototypeParsingTypeBetween(endOfIdentifier, nameType);  }
+					else
+						{
+						TokenIterator lookahead = endOfLastIdentifierSegment;
+						TokenIterator lookbehind;
+
+						TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
+
+						while (lookahead < endOfIdentifier)
+							{
+							if (lookahead.Character == '[')
+								{
+								lookahead.PrototypeParsingType = expressionOpenType;
+								GenericSkip(ref lookahead);
+
+								lookbehind = lookahead;
+								lookbehind.Previous();
+
+								lookbehind.PrototypeParsingType = expressionCloseType;
+
+								TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
+								}
+							else  // shouldn't happen, but just to avoid a potential infinite loop
+								{  lookahead.Next();  }
+							}
+						}
+					}
+				}
+
+			iterator = endOfIdentifier;
+			return true;
 			}
 
 
