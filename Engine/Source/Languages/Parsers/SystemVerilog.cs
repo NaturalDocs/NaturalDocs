@@ -1014,13 +1014,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 * "unsigned" and "[7:0]" appearing on their own.  It can also handle type references like "type(varName)".  It does *not*
 		 * handle type definitions like declaring a class or enum.
 		 *
+		 * If you set impliedOnly, then it will only look for signing and dimensions, not a type identifier.
+		 *
 		 * Supported Modes:
 		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParsePrototype>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipType (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+		protected bool TryToSkipType (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, bool impliedOnly = false)
 			{
 			if (TryToSkipTypeReference(ref iterator, mode))
 				{  return true;  }
@@ -1031,16 +1033,19 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Type Name
 
-			// Check for "signed" or "unsigned" because implied types can be just that and we don't want to mistake them for
-			// the type name.
-			if (!lookahead.MatchesToken("signed") &&
-				!lookahead.MatchesToken("unsigned") &&
-				TryToSkipTypeIdentifier(ref lookahead, mode, PrototypeParsingType.Type))
+			if (!impliedOnly)
 				{
-				iterator = lookahead;
-				foundType = true;
+				// Make sure "signed" or "unsigned" from an implied type doesn't get mistaken for the type name.
+				if (!IsOnSigningKeyword(lookahead))
+					{
+					if (TryToSkipTypeIdentifier(ref lookahead, mode, PrototypeParsingType.Type))
+						{
+						iterator = lookahead;
+						foundType = true;
 
-				TryToSkipWhitespace(ref lookahead, mode);
+						TryToSkipWhitespace(ref lookahead, mode);
+						}
+					}
 				}
 
 
