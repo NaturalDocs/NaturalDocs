@@ -27,11 +27,10 @@
  *
  *		SystemVerilog has its own prototype formatting and thus its own token types:
  *
- *		ParameterKeywords - The keyword defining a parameter type, like "localparam" or "parameter", and/or the
- *										port direction keyword, like "input" or "inout".
- *		Signed - The data type signing, like "signed" or "unsigned".
- *		TypeBody - The body of a type defined inline, such as an enum.
- *		TypeDimension - The dimensions after the type name.
+ *		PortAttributes - Attributes preceding a port declaration.
+ *		DirectionOrParameterKeyword - The keyword defining a parameter type, like "localparam" or "parameter",
+ *													  or the port direction keyword, like "input" or "inout".
+ *		PackedDimensions - Packed dimensions which appear after the type, not the port name.
  *
  */
 
@@ -54,6 +53,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		PropertyValueSeparator, PropertyValue,
 		ClosingDecorator,
 
-		ParameterKeywords, Signed, TypeBody, TypeDimension
+		PortAttributes, DirectionOrParameterKeyword, PackedDimensions
 		}
 	}

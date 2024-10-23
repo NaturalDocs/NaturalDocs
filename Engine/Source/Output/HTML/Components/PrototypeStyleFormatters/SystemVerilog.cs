@@ -46,11 +46,36 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 					{  iterator.Next();  }
 
 
-				// Parameter Keywords
+				// Port Attributes
 
 				int currentColumn = 0;
 				TokenIterator startOfCell = iterator;
 				TokenIterator startOfType = iterator;
+
+				while (iterator < endOfParam)
+					{
+					PrototypeParsingType type = iterator.PrototypeParsingType;
+
+					if (type == PrototypeParsingType.OpeningTypeModifier &&
+						iterator.MatchesAcrossTokens("(*"))
+						{  SkipModifierBlock(ref iterator, endOfParam);  }
+					else if (type == PrototypeParsingType.Null)
+						{  iterator.Next();   }
+					else
+						{  break;  }
+					}
+
+				TokenIterator endOfCell = iterator;
+
+				cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
+				cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
+				cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
+
+
+				// Direction or Parameter Keyword
+
+				currentColumn++;
+				startOfCell = iterator;
 
 				while (iterator < endOfParam)
 					{
@@ -69,29 +94,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 						{  break;  }
 					}
 
-				TokenIterator endOfCell = iterator;
-
-				cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
-				cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
-				cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
-
-
-				// Qualifier
-
-				currentColumn++;
-				startOfCell = iterator;
-
-				while (iterator < endOfParam)
-					{
-					PrototypeParsingType type = iterator.PrototypeParsingType;
-
-					if (type == PrototypeParsingType.TypeQualifier ||
-						type == PrototypeParsingType.Null)
-						{  iterator.Next();   }
-					else
-						{  break;  }
-					}
-
 				endOfCell = iterator;
 
 				cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
@@ -100,6 +102,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 
 
 				// Type
+				// Includes net type, qualifier, signing
+
+				// Why not a separate column for qualifier?  Because it appears between the net type and the data type, so you
+				// would need separate net type, qualifier, and data type columns.  It's more common for module prototypes to
+				// use a mix of ports declared as just "wire" and just "reg" than to use qualifiers, and if you put them in separate
+				// columns they appear staggered.  We have to make the more common case look the best.
 
 				currentColumn++;
 				startOfCell = iterator;
@@ -110,6 +118,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 
 					if (type == PrototypeParsingType.Type ||
 						type == PrototypeParsingType.TypeModifier ||
+						type == PrototypeParsingType.TypeQualifier ||
 						type == PrototypeParsingType.Null)
 						{  iterator.Next();   }
 					else if (type == PrototypeParsingType.OpeningTypeModifier &&
@@ -126,7 +135,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 				cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
 
 
-				// Type Dimension
+				// Packed Dimensions
 
 				currentColumn++;
 				startOfCell = iterator;
@@ -151,33 +160,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 				cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
 
 
-				// Type Body
-
-				// This is for things like enum bodies defined inline.
-
-				currentColumn++;
-				startOfCell = iterator;
-
-				while (iterator < endOfParam)
-					{
-					PrototypeParsingType type = iterator.PrototypeParsingType;
-
-					if (type == PrototypeParsingType.OpeningTypeModifier)
-						{  SkipModifierBlock(ref iterator, endOfParam);  }
-					else if (type == PrototypeParsingType.Null)
-						{  iterator.Next();   }
-					else
-						{  break;  }
-					}
-
-				endOfCell = iterator;
-
-				cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
-				cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
-				cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
-
-
-				// Name and Parameter Dimension
+				// Name
+				// Includes unpacked dimensions
 
 				currentColumn++;
 				startOfCell = iterator;
@@ -298,8 +282,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 			{
 			switch (columnType)
 				{
-				case PrototypeColumnType.TypeDimension:
-				case PrototypeColumnType.TypeBody:
+				case PrototypeColumnType.PortAttributes:
+				case PrototypeColumnType.DirectionOrParameterKeyword:
+				case PrototypeColumnType.PackedDimensions:
 				case PrototypeColumnType.PropertyValueSeparator:
 				case PrototypeColumnType.DefaultValueSeparator:
 					return ColumnSpacing.AlwaysBoth;
@@ -333,15 +318,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 		/* var: ColumnOrderValues
 		 * An array of <PrototypeColumnTypes> representing the order in which columns should appear for SystemVerilog prototypes.
 		 */
-		readonly static public PrototypeColumnType[] ColumnOrderValues = { PrototypeColumnType.ParameterKeywords,
-																											  PrototypeColumnType.ModifierQualifier,
-																											  PrototypeColumnType.Type,
-																											  PrototypeColumnType.TypeDimension,
-																											  PrototypeColumnType.TypeBody,
-																											  PrototypeColumnType.Name,
-																											  PrototypeColumnType.PropertyValueSeparator,
-																											  PrototypeColumnType.PropertyValue,
-																											  PrototypeColumnType.DefaultValueSeparator,
-																											  PrototypeColumnType.DefaultValue };
+		readonly static public PrototypeColumnType[] ColumnOrderValues = { PrototypeColumnType.PortAttributes,
+																											PrototypeColumnType.DirectionOrParameterKeyword,
+																											PrototypeColumnType.Type,
+																											PrototypeColumnType.PackedDimensions,
+																											PrototypeColumnType.Name,
+																											PrototypeColumnType.PropertyValueSeparator,
+																											PrototypeColumnType.PropertyValue,
+																											PrototypeColumnType.DefaultValueSeparator,
+																											PrototypeColumnType.DefaultValue };
 		}
 	}

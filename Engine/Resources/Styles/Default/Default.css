@@ -1883,6 +1883,7 @@ td {
 
 	.PNameModifier,
 	.PModifierQualifier,
+	.PPortAttributes,
 	.PTypeBody,
 	.PDefaultValue,
 	.PDefaultValueSeparator {
@@ -1890,11 +1891,13 @@ td {
 		}
 		.DarkTheme .PNameModifier,
 		.DarkTheme .PModifierQualifier,
+		.DarkTheme .PPortAttributes,
 		.DarkTheme .PTypeBody,
 		.DarkTheme .PDefaultValue,
 		.DarkTheme .PDefaultValueSeparator,
 		.BlackTheme .PNameModifier,
 		.BlackTheme .PModifierQualifier,
+		.BlackTheme .PPortAttributes,
 		.BlackTheme .PTypeBody,
 		.BlackTheme .PDefaultValue,
 		.BlackTheme .PDefaultValueSeparator {
@@ -1902,6 +1905,7 @@ td {
 			}
 
 	.PSymbols,
+	.PPortAttributes,
 	.PModifierQualifier {
 		text-align: right;
 		}
