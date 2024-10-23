@@ -176,30 +176,146 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		// __________________________________________________________________________
 
 
+		/* Function: IsOnKeyword
+		 *
+		 * Returns whether the <TokenIterator> is on the passed keyword, making sure there are no other identifier tokens
+		 * before or after it.  This allows us to be sure an iterator on "input" isn't actually on "_input" or similar.  This function
+		 * works with multi-token keywords like "wait_order".
+		 *
+		 * If you have multiple keywords to test against, it is more efficient to use one of the <IsOnAnyKeyword()> functions.
+		 */
+		public static bool IsOnKeyword (TokenIterator iterator, string keyword)
+			{
+			if (!iterator.MatchesAcrossTokens(keyword))
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+			lookahead.NextByCharacters(keyword.Length);
+
+			if (lookahead.FundamentalType == FundamentalType.Text ||
+				lookahead.Character == '_' ||
+				lookahead.Character == '$')
+				{  return false;  }
+
+			// Just use iterator as a lookbehind instead of creating another one
+			iterator.Previous();
+
+			if (iterator.FundamentalType == FundamentalType.Text ||
+				iterator.Character == '_' ||
+				iterator.Character == '$')
+				{  return false;  }
+
+			return true;
+			}
+
+
+		/* Function: IsOnAnyKeyword
+		 * Returns whether the <TokenIterator> is on any of the passed keywords, making sure there are no other identifier
+		 * tokens before or after it.  This allows us to be sure an iterator on "input" isn't actually on "_input" or similar.  This
+		 * function works with multi-token keywords like "wait_order".
+		 */
+		public static bool IsOnAnyKeyword (TokenIterator iterator, params string[] keywords)
+			{
+			string ignore;
+			return IsOnAnyKeyword(iterator, out ignore, keywords);
+			}
+
+
+		/* Function: IsOnAnyKeyword
+		 * Returns whether the <TokenIterator> is on any of the passed keywords, making sure there are no other identifier
+		 * tokens before or after it.  This allows us to be sure an iterator on "input" isn't actually on "_input" or similar.  This
+		 * function works with multi-token keywords like "wait_order".
+		 */
+		public static bool IsOnAnyKeyword (TokenIterator iterator, out string matchingKeyword, params string[] keywords)
+			{
+			int matchIndex = iterator.MatchesAnyAcrossTokens(keywords, true);
+
+			if (matchIndex == -1)
+				{
+				matchingKeyword = null;
+				return false;
+				}
+
+			matchingKeyword = keywords[matchIndex];
+
+			TokenIterator lookahead = iterator;
+			lookahead.NextByCharacters(matchingKeyword.Length);
+
+			if (lookahead.FundamentalType == FundamentalType.Text ||
+				lookahead.Character == '_' ||
+				lookahead.Character == '$')
+				{  return false;  }
+
+			// Just use iterator as a lookbehind instead of creating another one
+			iterator.Previous();
+
+			if (iterator.FundamentalType == FundamentalType.Text ||
+				iterator.Character == '_' ||
+				iterator.Character == '$')
+				{  return false;  }
+
+			return true;
+			}
+
+
+		/* Function: IsOnAnyKeyword
+		 * Returns whether the <TokenIterator> is on any of the passed keywords, making sure there are no other identifier
+		 * tokens before or after it.  This allows us to be sure an iterator on "input" isn't actually on "_input" or similar.  This
+		 * function works with multi-token keywords like "wait_order".
+		 */
+		public static bool IsOnAnyKeyword (TokenIterator iterator, StringSet keywords)
+			{
+			string ignore;
+			return IsOnAnyKeyword(iterator, out ignore, keywords);
+			}
+
+
+		/* Function: IsOnAnyKeyword
+		 * Returns whether the <TokenIterator> is on any of the passed keywords, making sure there are no other identifier
+		 * tokens before or after it.  This allows us to be sure an iterator on "input" isn't actually on "_input" or similar.  This
+		 * function works with multi-token keywords like "wait_order".
+		 */
+		public static bool IsOnAnyKeyword (TokenIterator iterator, out string matchingKeyword, StringSet keywords)
+			{
+			TokenIterator lookbehind = iterator;
+			lookbehind.Previous();
+
+			if (lookbehind.FundamentalType == FundamentalType.Text ||
+				lookbehind.Character == '_' ||
+				lookbehind.Character == '$')
+				{
+				matchingKeyword = null;
+				return false;
+				}
+
+			TokenIterator endOfIdentifier = iterator;
+
+			do
+				{  endOfIdentifier.Next();  }
+			while (endOfIdentifier.FundamentalType == FundamentalType.Text ||
+					 endOfIdentifier.Character == '_' ||
+					 endOfIdentifier.Character == '$');
+
+			string identifier = iterator.TextBetween(endOfIdentifier);
+
+			if (!keywords.Contains(identifier))
+				{
+				matchingKeyword = null;
+				return false;
+				}
+
+			matchingKeyword = identifier;
+			return true;
+			}
+
+
 		/* Function: IsOnBuiltInType
 		 * Returns whether the <TokenIterator> is on a built-in type such as "bit" as opposed to a user-defined
 		 * type.
 		 */
 		public static bool IsOnBuiltInType (TokenIterator iterator)
 			{
-			if (!BuiltInTypes.Contains(iterator.String))
-				{  return false;  }
-
-			TokenIterator lookahead = iterator;
-			lookahead.Next();
-
-			if (lookahead.FundamentalType == FundamentalType.Text ||
-				lookahead.Character == '_')
-				{  return false;  }
-
-			TokenIterator lookbehind = iterator;
-			lookbehind.Previous();
-
-			if (lookbehind.FundamentalType == FundamentalType.Text ||
-				lookbehind.Character == '_')
-				{  return false;  }
-
-			return true;
+			return IsOnAnyKeyword(iterator, BuiltInTypes);
 			}
 
 
@@ -220,27 +336,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		public static bool IsOnDirectionKeyword (TokenIterator iterator)
 			{
-			if (!iterator.MatchesToken("input") &&
-			    !iterator.MatchesToken("output") &&
-			    !iterator.MatchesToken("inout") &&
-			    !iterator.MatchesToken("ref"))
-				{  return false;  }
-
-			TokenIterator lookahead = iterator;
-			lookahead.Next();
-
-			if (lookahead.FundamentalType == FundamentalType.Text ||
-				lookahead.Character == '_')
-				{  return false;  }
-
-			TokenIterator lookbehind = iterator;
-			lookbehind.Previous();
-
-			if (lookbehind.FundamentalType == FundamentalType.Text ||
-				lookbehind.Character == '_')
-				{  return false;  }
-
-			return true;
+			return IsOnAnyKeyword(iterator,
+											   "input",
+											   "output",
+											   "inout",
+											   "ref");
 			}
 
 
@@ -259,25 +359,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		public static bool IsOnParameterKeyword (TokenIterator iterator)
 			{
-			if (!iterator.MatchesToken("parameter") &&
-			    !iterator.MatchesToken("localparam"))
-				{  return false;  }
-
-			TokenIterator lookahead = iterator;
-			lookahead.Next();
-
-			if (lookahead.FundamentalType == FundamentalType.Text ||
-				lookahead.Character == '_')
-				{  return false;  }
-
-			TokenIterator lookbehind = iterator;
-			lookbehind.Previous();
-
-			if (lookbehind.FundamentalType == FundamentalType.Text ||
-				lookbehind.Character == '_')
-				{  return false;  }
-
-			return true;
+			return IsOnAnyKeyword(iterator,
+											   "parameter",
+											   "localparam");
 			}
 
 
@@ -296,25 +380,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		public static bool IsOnSigningKeyword (TokenIterator iterator)
 			{
-			if (!iterator.MatchesToken("signed") &&
-				!iterator.MatchesToken("unsigned"))
-				{  return false;  }
-
-			TokenIterator lookahead = iterator;
-			lookahead.Next();
-
-			if (lookahead.FundamentalType == FundamentalType.Text ||
-				lookahead.Character == '_')
-				{  return false;  }
-
-			TokenIterator lookbehind = iterator;
-			lookbehind.Previous();
-
-			if (lookbehind.FundamentalType == FundamentalType.Text ||
-				lookbehind.Character == '_')
-				{  return false;  }
-
-			return true;
+			return IsOnAnyKeyword(iterator,
+											   "signed",
+											   "unsigned");
 			}
 
 
@@ -332,24 +400,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		public static bool IsOnNetTypeKeyword (TokenIterator iterator)
 			{
-			if (!NetTypes.Contains(iterator.String))
-				{  return false;  }
-
-			TokenIterator lookahead = iterator;
-			lookahead.Next();
-
-			if (lookahead.FundamentalType == FundamentalType.Text ||
-				lookahead.Character == '_')
-				{  return false;  }
-
-			TokenIterator lookbehind = iterator;
-			lookbehind.Previous();
-
-			if (lookbehind.FundamentalType == FundamentalType.Text ||
-				lookbehind.Character == '_')
-				{  return false;  }
-
-			return true;
+			return IsOnAnyKeyword(iterator, NetTypes);
 			}
 
 
@@ -2469,38 +2520,23 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		override protected bool TryToSkipKeyword (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
-			// All keywords start with text or a $.  They may contain underscores.
-
+			// All keywords start with text or a $.  They may contain underscores later.
 			if (iterator.FundamentalType != FundamentalType.Text &&
 				iterator.Character != '$')
 				{  return false;  }
 
-			TokenIterator lookbehind = iterator;
-			lookbehind.Previous();
+			string keyword;
 
-			if (lookbehind.FundamentalType == FundamentalType.Text ||
-				lookbehind.Character == '_' ||
-				lookbehind.Character == '$')
+			if (!IsOnAnyKeyword(iterator, out keyword, Keywords))
 				{  return false;  }
 
-			TokenIterator lookahead = iterator;
-
-			if (lookahead.Character == '$')
-				{  lookahead.Next();  }
-
-			while (lookahead.FundamentalType == FundamentalType.Text ||
-					  lookahead.Character == '_')
-				{  lookahead.Next();  }
-
-			string identifier = iterator.TextBetween(lookahead);
-
-			if (!Keywords.Contains(identifier))
-				{  return false;  }
+			TokenIterator endOfKeyword = iterator;
+			endOfKeyword.NextByCharacters(keyword.Length);
 
 			if (mode == ParseMode.SyntaxHighlight)
-				{  iterator.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.Keyword);  }
+				{  iterator.SetSyntaxHighlightingTypeBetween(endOfKeyword, SyntaxHighlightingType.Keyword);  }
 
-			iterator = lookahead;
+			iterator = endOfKeyword;
 			return true;
 			}
 
