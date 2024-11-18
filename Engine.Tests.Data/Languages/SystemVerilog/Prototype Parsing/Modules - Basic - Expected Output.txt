@@ -65,3 +65,165 @@
 
   - After Parameters: )
     - Link Candidates: (none)
+
+------------------------------
+Port Lists:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module PortListOnlyA (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module PortListOnlyB (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: logic portA
+    - Name: portA
+    - Full Type: logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module ParameterPortListOnlyA #(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module ParameterPortListOnlyB #(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: parameter paramA = 1
+    - Name: paramA
+    - Full Type: parameter
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 1
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module PortAndParameterPortListsA #(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module PortAndParameterPortListsB #(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: parameter paramA = 1
+    - Name: paramA
+    - Full Type: parameter
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 1
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: logic portA
+    - Name: portA
+    - Full Type: logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module PortAndParameterPortListsC #(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: logic portA
+    - Name: portA
+    - Full Type: logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module PortAndParameterPortListsD #(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: parameter paramA = 1
+    - Name: paramA
+    - Full Type: parameter
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 1
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: module NoPortLists
+  - Access Level: Unknown
+  - Link Candidates: (none)
