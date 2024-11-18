@@ -257,11 +257,137 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			}
 
 
+		/* Function: BuildFullANSIPortType
+		 */
+		protected TypeBuilder BuildFullANSIPortType (ParameterSection parameterSection, int parameterIndex,
+																		 bool impliedTypes = true)
+			{
+			TypeBuilder typeBuilder = new TypeBuilder();
+			PortFlags portFlags = 0;
+
+
+			// Direction
+
+			if (AppendDirection(parameterSection, parameterIndex, typeBuilder))
+				{  portFlags |= PortFlags.HasDirection;  }
+			else
+				{
+				// The direction is always inherited if it's not specified
+				for (int i = parameterIndex - 1; i >= 0; i--)
+					{
+					if (AppendDirection(parameterSection, i, typeBuilder))
+						{
+						portFlags |= PortFlags.HasDirection;
+						break;
+						}
+					}
+
+				// xxx inherit from non-ANSI too?
+				}
+
+
+			// Kind and Data Type
+
+			if (AppendKind(parameterSection, parameterIndex, typeBuilder))
+				{  portFlags |= PortFlags.HasKind;  }
+			if (AppendBaseDataType(parameterSection, parameterIndex, typeBuilder))
+				{  portFlags |= PortFlags.HasBaseDataType;  }
+			if (AppendSigning(parameterSection, parameterIndex, typeBuilder))
+				{  portFlags |= PortFlags.HasSigning;  }
+			if (AppendPackedDimensions(parameterSection, parameterIndex, typeBuilder))
+				{  portFlags |= PortFlags.HasPackedDimensions;  }
+
+			// Kind and data type only inherit if none of them are specified.  If any component is set the other ones do not
+			// inherit, they revert to a default data type.  This includes if signing or packed data types appear alone.
+			if (impliedTypes && (portFlags & PortFlags.HasKindOrAnyDataType) == 0)
+				{
+				for (int i = parameterIndex - 1; i >= 0; i--)
+					{
+					if (AppendKind(parameterSection, i, typeBuilder))
+						{  portFlags |= PortFlags.HasKind;  }
+					if (AppendBaseDataType(parameterSection, i, typeBuilder))
+						{  portFlags |= PortFlags.HasBaseDataType;  }
+					if (AppendSigning(parameterSection, i, typeBuilder))
+						{  portFlags |= PortFlags.HasSigning;  }
+					if (AppendPackedDimensions(parameterSection, i, typeBuilder))
+						{  portFlags |= PortFlags.HasPackedDimensions;  }
+
+					if (impliedTypes && (portFlags & PortFlags.HasKindOrAnyDataType) != 0)
+						{  break;  }
+					}
+
+				// xxx inherit from non-ANSI too?
+				}
+
+
+			// Unpacked Dimensions
+
+			if (AppendUnpackedDimensions(parameterSection, parameterIndex, typeBuilder, addStandInForName: true))
+				{  portFlags |= PortFlags.HasUnpackedDimensions;  }
+			// Unpacked dimensions don't inherit from previous parameters
+
+
+			return typeBuilder;
+			}
+
+
 		/* Function: GetBaseANSIParameterPortType
 		 */
 		protected bool GetBaseANSIParameterPortType (ParameterSection parameterSection, int parameterIndex,
 																			  out TokenIterator baseTypeStart, out TokenIterator baseTypeEnd,
 																			  bool impliedTypes = true)
+			{
+			if (HasBaseDataType(parameterSection, parameterIndex))
+				{
+				// If we know it has a base type we can rely on the generic function to return it.  It will work fine because it will rely on
+				// the prototype parsing types, and doing this skips allocating memory for a TypeBuilder and other work.
+				parameterSection.GetBaseParameterType(parameterIndex, out baseTypeStart, out baseTypeEnd, impliedTypes: false);
+				return true;
+				}
+
+			if (impliedTypes)
+				{
+				// If kind, signing, or packed dimensions are defined the parameter does not inherit the base data type from a previous
+				// parameter.  It reverts to a default.
+				if (HasDirection(parameterSection, parameterIndex) ||
+					HasSigning(parameterSection, parameterIndex) ||
+					HasPackedDimensions(parameterSection, parameterIndex))
+					{
+					baseTypeStart = tokenizer.EndOfTokens;
+					baseTypeEnd = tokenizer.EndOfTokens;
+					return false;
+					}
+
+				for (int i = parameterIndex - 1; i >= 0; i--)
+					{
+					if (HasBaseDataType(parameterSection, i))
+						{
+						parameterSection.GetBaseParameterType(i, out baseTypeStart, out baseTypeEnd, impliedTypes: false);
+						return true;
+						}
+
+					if (HasDirection(parameterSection, i) ||
+						HasSigning(parameterSection, i) ||
+						HasPackedDimensions(parameterSection, i))
+						{
+						baseTypeStart = tokenizer.EndOfTokens;
+						baseTypeEnd = tokenizer.EndOfTokens;
+						return false;
+						}
+					}
+				}
+
+			baseTypeStart = tokenizer.EndOfTokens;
+			baseTypeEnd = tokenizer.EndOfTokens;
+			return false;
+			}
+
+
+		/* Function: GetBaseANSIPortType
+		 */
+		protected bool GetBaseANSIPortType (ParameterSection parameterSection, int parameterIndex,
+															   out TokenIterator baseTypeStart, out TokenIterator baseTypeEnd,
+															   bool impliedTypes = true)
 			{
 			if (HasBaseDataType(parameterSection, parameterIndex))
 				{
@@ -948,8 +1074,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 					break;
 
 				case ParameterSectionType.ANSIPorts:
-					// xxx temporary
-					return base.BuildFullParameterType(parameterIndex, out fullTypeStart, out fullTypeEnd, impliedTypes);
+					typeBuilder = BuildFullANSIPortType(containingSection, containingSectionParameterIndex, impliedTypes);
+					break;
 
 				case ParameterSectionType.NonANSIPorts:
 					// xxx temporary
@@ -997,8 +1123,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 																			 out baseTypeStart, out baseTypeEnd, impliedTypes);
 
 				case ParameterSectionType.ANSIPorts:
-					// xxx temporary
-					return base.GetBaseParameterType(parameterIndex, out baseTypeStart, out baseTypeEnd, impliedTypes);
+					return GetBaseANSIPortType(containingSection, containingSectionParameterIndex,
+															  out baseTypeStart, out baseTypeEnd, impliedTypes);
 
 				case ParameterSectionType.NonANSIPorts:
 					// xxx temporary
