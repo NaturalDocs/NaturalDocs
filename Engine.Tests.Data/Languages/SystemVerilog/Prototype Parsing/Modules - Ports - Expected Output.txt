@@ -1,0 +1,204 @@
+------------------------------
+Empty Parentheses:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module EmptyA (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module EmptyB (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+Misc:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module Attributes (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: (*x*) logic portA,
+    - Name: portA
+    - Full Type: logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 2: (* x *) logic portB,
+    - Name: portB
+    - Full Type: logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 3: (*x,y*) logic portC,
+    - Name: portC
+    - Full Type: logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 4: (* x, y *) logic portD,
+    - Name: portD
+    - Full Type: logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 5: (*z=12*) logic portE,
+    - Name: portE
+    - Full Type: logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 6: (* z = 12 *) logic portF,
+    - Name: portF
+    - Full Type: logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 7: (*x,y,z=12*) logic portG,
+    - Name: portG
+    - Full Type: logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 8: (* x, y, z = 12 *) logic portH,
+    - Name: portH
+    - Full Type: logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 9: (*x*)(*y*)(*z=12*) logic portI,
+    - Name: portI
+    - Full Type: logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 10: (* x *) (* y *) (* z = 12 *) logic portJ,
+    - Name: portJ
+    - Full Type: logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 11: (* x, y *)(* z=12 *) logic portK,
+    - Name: portK
+    - Full Type: logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 12: (* x *) (* y, z=12 *) logic portL
+    - Name: portL
+    - Full Type: logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module NetTypes (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: supply0 portA,
+    - Name: portA
+    - Full Type: supply0
+    - Base Type: supply0
+    - Link Candidates: supply0
+    - Default Value: (not detected)
+
+  - Parameter 2: supply1 logic portB,
+    - Name: portB
+    - Full Type: supply1 logic
+    - Base Type: supply1 logic
+    - Link Candidates: supply1, logic
+    - Default Value: (not detected)
+
+  - Parameter 3: tri logic unsigned portC,
+    - Name: portC
+    - Full Type: tri logic unsigned
+    - Base Type: tri logic
+    - Link Candidates: tri, logic
+    - Default Value: (not detected)
+
+  - Parameter 4: triand logic unsigned [7:0] portD,
+    - Name: portD
+    - Full Type: triand logic unsigned[7:0]
+    - Base Type: triand logic
+    - Link Candidates: triand, logic
+    - Default Value: (not detected)
+
+  - Parameter 5: trior logic [7:0] portE,
+    - Name: portE
+    - Full Type: trior logic[7:0]
+    - Base Type: trior logic
+    - Link Candidates: trior, logic
+    - Default Value: (not detected)
+
+  - Parameter 6: tri0 [7:0] portF,
+    - Name: portF
+    - Full Type: tri0[7:0]
+    - Base Type: tri0
+    - Link Candidates: tri0
+    - Default Value: (not detected)
+
+  - Parameter 7: tri1 unsigned portG,
+    - Name: portG
+    - Full Type: tri1 unsigned
+    - Base Type: tri1
+    - Link Candidates: tri1
+    - Default Value: (not detected)
+
+  - Parameter 8: uwire unsigned [7:0] portH,
+    - Name: portH
+    - Full Type: uwire unsigned[7:0]
+    - Base Type: uwire
+    - Link Candidates: uwire
+    - Default Value: (not detected)
+
+  - Parameter 9: wire portI,
+    - Name: portI
+    - Full Type: wire
+    - Base Type: wire
+    - Link Candidates: wire
+    - Default Value: (not detected)
+
+  - Parameter 10: wand logic portJ,
+    - Name: portJ
+    - Full Type: wand logic
+    - Base Type: wand logic
+    - Link Candidates: wand, logic
+    - Default Value: (not detected)
+
+  - Parameter 11: wor logic unsigned portK
+    - Name: portK
+    - Full Type: wor logic unsigned
+    - Base Type: wor logic
+    - Link Candidates: wor, logic
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
