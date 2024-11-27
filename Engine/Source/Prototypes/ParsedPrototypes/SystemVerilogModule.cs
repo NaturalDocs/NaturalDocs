@@ -337,15 +337,16 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 																			  out TokenIterator baseTypeStart, out TokenIterator baseTypeEnd,
 																			  bool impliedTypes = true)
 			{
-			if (HasBaseDataType(parameterSection, parameterIndex))
+			// Find the start of the base type, and whether we have one
+
+			bool foundBaseType = false;
+
+			if (FindBaseDataType(parameterSection, parameterIndex, out baseTypeStart))
 				{
-				// If we know it has a base type we can rely on the generic function to return it.  It will work fine because it will rely on
-				// the prototype parsing types, and doing this skips allocating memory for a TypeBuilder and other work.
-				parameterSection.GetBaseParameterType(parameterIndex, out baseTypeStart, out baseTypeEnd, impliedTypes: false);
-				return true;
+				foundBaseType = true;
 				}
 
-			if (impliedTypes)
+			else if (impliedTypes)
 				{
 				// If kind, signing, or packed dimensions are defined the parameter does not inherit the base data type from a previous
 				// parameter.  It reverts to a default.
@@ -353,33 +354,62 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 					HasSigning(parameterSection, parameterIndex) ||
 					HasPackedDimensions(parameterSection, parameterIndex))
 					{
-					baseTypeStart = tokenizer.EndOfTokens;
-					baseTypeEnd = tokenizer.EndOfTokens;
-					return false;
+					foundBaseType = false;
 					}
-
-				for (int i = parameterIndex - 1; i >= 0; i--)
+				else
 					{
-					if (HasBaseDataType(parameterSection, i))
+					for (int i = parameterIndex - 1; i >= 0; i--)
 						{
-						parameterSection.GetBaseParameterType(i, out baseTypeStart, out baseTypeEnd, impliedTypes: false);
-						return true;
-						}
+						if (FindBaseDataType(parameterSection, i, out baseTypeStart))
+							{
+							foundBaseType = true;
+							break;
+							}
 
-					if (HasDirection(parameterSection, i) ||
-						HasSigning(parameterSection, i) ||
-						HasPackedDimensions(parameterSection, i))
-						{
-						baseTypeStart = tokenizer.EndOfTokens;
-						baseTypeEnd = tokenizer.EndOfTokens;
-						return false;
+						if (HasDirection(parameterSection, i) ||
+							HasSigning(parameterSection, i) ||
+							HasPackedDimensions(parameterSection, i))
+							{
+							foundBaseType = false;
+							break;
+							}
 						}
 					}
 				}
 
-			baseTypeStart = tokenizer.EndOfTokens;
-			baseTypeEnd = tokenizer.EndOfTokens;
-			return false;
+			if (!foundBaseType)
+				{
+				baseTypeStart = tokenizer.EndOfTokens;
+				baseTypeEnd = tokenizer.EndOfTokens;
+				return false;
+				}
+
+
+			// Since we have a base type, find its end.  It could contain multiple words ("tri0 logic") so we want look for additional type
+			// tokens after whitespace.
+
+			baseTypeEnd = baseTypeStart;
+			baseTypeEnd.Next();
+
+			TokenIterator lookahead = baseTypeEnd;
+
+			for (;;)
+				{
+				if (lookahead.PrototypeParsingType == PrototypeParsingType.Type ||
+					lookahead.PrototypeParsingType == PrototypeParsingType.TypeQualifier)
+					{
+					lookahead.Next();
+					baseTypeEnd = lookahead;
+					}
+				else if (lookahead.FundamentalType == FundamentalType.Whitespace)
+					{
+					lookahead.Next();
+					}
+				else
+					{  break;  }
+				}
+
+			return true;
 			}
 
 
@@ -389,15 +419,16 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 															   out TokenIterator baseTypeStart, out TokenIterator baseTypeEnd,
 															   bool impliedTypes = true)
 			{
-			if (HasBaseDataType(parameterSection, parameterIndex))
+			// Find the start of the base type, and whether we have one
+
+			bool foundBaseType = false;
+
+			if (FindBaseDataType(parameterSection, parameterIndex, out baseTypeStart))
 				{
-				// If we know it has a base type we can rely on the generic function to return it.  It will work fine because it will rely on
-				// the prototype parsing types, and doing this skips allocating memory for a TypeBuilder and other work.
-				parameterSection.GetBaseParameterType(parameterIndex, out baseTypeStart, out baseTypeEnd, impliedTypes: false);
-				return true;
+				foundBaseType = true;
 				}
 
-			if (impliedTypes)
+			else if (impliedTypes)
 				{
 				// If kind, signing, or packed dimensions are defined the parameter does not inherit the base data type from a previous
 				// parameter.  It reverts to a default.
@@ -405,33 +436,62 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 					HasSigning(parameterSection, parameterIndex) ||
 					HasPackedDimensions(parameterSection, parameterIndex))
 					{
-					baseTypeStart = tokenizer.EndOfTokens;
-					baseTypeEnd = tokenizer.EndOfTokens;
-					return false;
+					foundBaseType = false;
 					}
-
-				for (int i = parameterIndex - 1; i >= 0; i--)
+				else
 					{
-					if (HasBaseDataType(parameterSection, i))
+					for (int i = parameterIndex - 1; i >= 0; i--)
 						{
-						parameterSection.GetBaseParameterType(i, out baseTypeStart, out baseTypeEnd, impliedTypes: false);
-						return true;
-						}
+						if (FindBaseDataType(parameterSection, i, out baseTypeStart))
+							{
+							foundBaseType = true;
+							break;
+							}
 
-					if (HasDirection(parameterSection, i) ||
-						HasSigning(parameterSection, i) ||
-						HasPackedDimensions(parameterSection, i))
-						{
-						baseTypeStart = tokenizer.EndOfTokens;
-						baseTypeEnd = tokenizer.EndOfTokens;
-						return false;
+						if (HasDirection(parameterSection, i) ||
+							HasSigning(parameterSection, i) ||
+							HasPackedDimensions(parameterSection, i))
+							{
+							foundBaseType = false;
+							break;
+							}
 						}
 					}
 				}
 
-			baseTypeStart = tokenizer.EndOfTokens;
-			baseTypeEnd = tokenizer.EndOfTokens;
-			return false;
+			if (!foundBaseType)
+				{
+				baseTypeStart = tokenizer.EndOfTokens;
+				baseTypeEnd = tokenizer.EndOfTokens;
+				return false;
+				}
+
+
+			// Since we have a base type, find its end.  It could contain multiple words ("tri0 logic") so we want look for additional type
+			// tokens after whitespace.
+
+			baseTypeEnd = baseTypeStart;
+			baseTypeEnd.Next();
+
+			TokenIterator lookahead = baseTypeEnd;
+
+			for (;;)
+				{
+				if (lookahead.PrototypeParsingType == PrototypeParsingType.Type ||
+					lookahead.PrototypeParsingType == PrototypeParsingType.TypeQualifier)
+					{
+					lookahead.Next();
+					baseTypeEnd = lookahead;
+					}
+				if (lookahead.FundamentalType == FundamentalType.Whitespace)
+					{
+					lookahead.Next();
+					}
+				else
+					{  break;  }
+				}
+
+			return true;
 			}
 
 
