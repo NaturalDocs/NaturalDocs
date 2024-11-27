@@ -890,14 +890,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			if (IsOnNetTypeKeyword(lookahead))
 				{
 				if (mode == ParseMode.ParsePrototype)
-					{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.Type;  }
 
 				lookahead.Next();
 				TryToSkipWhitespace(ref lookahead, mode);
 				}
 
 
-			// Type vs. Name
+			// Data Type vs. Name
 
 			// Types can be implied, such as "bit paramA, paramB", so we have to check to see what comes after the first
 			// identifier to see if that identifier is a type or a parameter name.  If the next thing is a comma (parameter
@@ -907,7 +907,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// Also note that an implied type can just be a dimension, such as "bit paramA, [7:0] paramB", so if it's not on
 			// an identifier at all we can assume it's a type.
 
-			bool hasType = true;
+			bool hasDataType = true;
 			TokenIterator startOfType = lookahead;
 
 			if (!IsOnSigningKeyword(lookahead) &&
@@ -925,7 +925,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					lookahead.Character == ',' ||
 					lookahead.Character == ')')
 					{
-					hasType = false;
+					hasDataType = false;
 					}
 
 				// Reset back to start for parsing now that we know what it is
@@ -933,9 +933,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 
-			// Type
+			// Data Type
 
-			if (hasType)
+			if (hasDataType)
 				{
 				// TryToSkipType covers signing and type (packed) dimensions
 				if (!TryToSkipType(ref lookahead, mode))
