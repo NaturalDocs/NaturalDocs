@@ -102,7 +102,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 
 
 				// Type
-				// Includes net type, qualifier, signing
+				// Includes net type, qualifier, data type, signing
 
 				// Why not a separate column for qualifier?  Because it appears between the net type and the data type, so you
 				// would need separate net type, qualifier, and data type columns.  It's more common for module prototypes to
