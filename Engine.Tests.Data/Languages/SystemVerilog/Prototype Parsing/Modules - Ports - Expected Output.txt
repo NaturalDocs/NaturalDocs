@@ -119,6 +119,72 @@ Misc:
 ------------------------------
 
 - Parameter Section:
+  - Before Parameters: module Directions (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: input portA,
+    - Name: portA
+    - Full Type: input
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: output portB,
+    - Name: portB
+    - Full Type: output
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: inout portC,
+    - Name: portC
+    - Full Type: inout
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 4: ref portD,
+    - Name: portD
+    - Full Type: ref
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 5: input logic portAA,
+    - Name: portAA
+    - Full Type: input logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 6: output logic portBB,
+    - Name: portBB
+    - Full Type: output logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 7: inout logic portCC,
+    - Name: portCC
+    - Full Type: inout logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 8: ref logic portDD
+    - Name: portDD
+    - Full Type: ref logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
   - Before Parameters: module NetTypes (
     - Access Level: Unknown
     - Link Candidates: (none)

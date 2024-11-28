@@ -32,6 +32,19 @@ module Attributes (
 	(* x *) (* y, z=12 *) logic portL);
 endmodule
 
+// Module: Directions
+module Directions (
+	input portA,
+	output portB,
+	inout portC,
+	ref portD,
+	input logic portAA,
+	output logic portBB,
+	inout logic portCC,
+	ref logic portDD
+	);
+endmodule
+
 // Module: NetTypes
 module NetTypes (
 	supply0 portA,
