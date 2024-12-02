@@ -21,7 +21,7 @@ Empty Parentheses:
     - Link Candidates: (none)
 
 ------------------------------
-Misc:
+Port Definition Components:
 ------------------------------
 
 - Parameter Section:
@@ -264,6 +264,604 @@ Misc:
     - Full Type: wor logic unsigned
     - Base Type: wor logic
     - Link Candidates: wor, logic
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module UserDefinedNetTypes (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: NetTypeA portA,
+    - Name: portA
+    - Full Type: NetTypeA
+    - Base Type: NetTypeA
+    - Link Candidates: NetTypeA
+    - Default Value: (not detected)
+
+  - Parameter 2: NetTypeB logic portB,
+    - Name: portB
+    - Full Type: NetTypeB logic
+    - Base Type: NetTypeB logic
+    - Link Candidates: NetTypeB, logic
+    - Default Value: (not detected)
+
+  - Parameter 3: NetTypeC logic unsigned portC,
+    - Name: portC
+    - Full Type: NetTypeC logic unsigned
+    - Base Type: NetTypeC logic
+    - Link Candidates: NetTypeC, logic
+    - Default Value: (not detected)
+
+  - Parameter 4: NetTypeD logic unsigned [7:0] portD,
+    - Name: portD
+    - Full Type: NetTypeD logic unsigned[7:0]
+    - Base Type: NetTypeD logic
+    - Link Candidates: NetTypeD, logic
+    - Default Value: (not detected)
+
+  - Parameter 5: NetTypeE logic [7:0] portE,
+    - Name: portE
+    - Full Type: NetTypeE logic[7:0]
+    - Base Type: NetTypeE logic
+    - Link Candidates: NetTypeE, logic
+    - Default Value: (not detected)
+
+  - Parameter 6: NetTypeF [7:0] portF,
+    - Name: portF
+    - Full Type: NetTypeF[7:0]
+    - Base Type: NetTypeF
+    - Link Candidates: NetTypeF
+    - Default Value: (not detected)
+
+  - Parameter 7: NetTypeG unsigned portG,
+    - Name: portG
+    - Full Type: NetTypeG unsigned
+    - Base Type: NetTypeG
+    - Link Candidates: NetTypeG
+    - Default Value: (not detected)
+
+  - Parameter 8: NetTypeH unsigned [7:0] portH
+    - Name: portH
+    - Full Type: NetTypeH unsigned[7:0]
+    - Base Type: NetTypeH
+    - Link Candidates: NetTypeH
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+Net Types and Data Types:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module NetTypesAndDataTypes (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: supply0 netTypeOnlyA,
+    - Name: netTypeOnlyA
+    - Full Type: supply0
+    - Base Type: supply0
+    - Link Candidates: supply0
+    - Default Value: (not detected)
+
+  - Parameter 2: supply0 netTypeOnlyAA[2],
+    - Name: netTypeOnlyAA
+    - Full Type: supply0 _[2]
+    - Base Type: supply0
+    - Link Candidates: supply0
+    - Default Value: (not detected)
+
+  - Parameter 3: logic dataTypeOnlyA,
+    - Name: dataTypeOnlyA
+    - Full Type: logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 4: logic [7:0] dataTypeOnlyB,
+    - Name: dataTypeOnlyB
+    - Full Type: logic[7:0]
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 5: logic unsigned dataTypeOnlyC,
+    - Name: dataTypeOnlyC
+    - Full Type: logic unsigned
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 6: logic unsigned [7:0] dataTypeOnlyD,
+    - Name: dataTypeOnlyD
+    - Full Type: logic unsigned[7:0]
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 7: logic dataTypeOnlyAA[2],
+    - Name: dataTypeOnlyAA
+    - Full Type: logic _[2]
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 8: logic [7:0] dataTypeOnlyBB[2],
+    - Name: dataTypeOnlyBB
+    - Full Type: logic[7:0] _[2]
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 9: logic unsigned dataTypeOnlyCC[2],
+    - Name: dataTypeOnlyCC
+    - Full Type: logic unsigned _[2]
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 10: logic unsigned [7:0] dataTypeOnlyDD[2],
+    - Name: dataTypeOnlyDD
+    - Full Type: logic unsigned[7:0] _[2]
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 11: [7:0] implicitDataTypeOnlyA,
+    - Name: implicitDataTypeOnlyA
+    - Full Type: [7:0]
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 12: unsigned implicitDataTypeOnlyB,
+    - Name: implicitDataTypeOnlyB
+    - Full Type: unsigned
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 13: unsigned [7:0] implicitDataTypeOnlyC,
+    - Name: implicitDataTypeOnlyC
+    - Full Type: unsigned[7:0]
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 14: [7:0] implicitDataTypeOnlyAA[2],
+    - Name: implicitDataTypeOnlyAA
+    - Full Type: [7:0] _[2]
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 15: unsigned implicitDataTypeOnlyBB[2],
+    - Name: implicitDataTypeOnlyBB
+    - Full Type: unsigned _[2]
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 16: unsigned [7:0] implicitDataTypeOnlyCC[2],
+    - Name: implicitDataTypeOnlyCC
+    - Full Type: unsigned[7:0] _[2]
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 17: supply0 logic netTypeAndDataTypeA,
+    - Name: netTypeAndDataTypeA
+    - Full Type: supply0 logic
+    - Base Type: supply0 logic
+    - Link Candidates: supply0, logic
+    - Default Value: (not detected)
+
+  - Parameter 18: supply0 logic [7:0] netTypeAndDataTypeB,
+    - Name: netTypeAndDataTypeB
+    - Full Type: supply0 logic[7:0]
+    - Base Type: supply0 logic
+    - Link Candidates: supply0, logic
+    - Default Value: (not detected)
+
+  - Parameter 19: supply0 logic unsigned netTypeAndDataTypeC,
+    - Name: netTypeAndDataTypeC
+    - Full Type: supply0 logic unsigned
+    - Base Type: supply0 logic
+    - Link Candidates: supply0, logic
+    - Default Value: (not detected)
+
+  - Parameter 20: supply0 logic unsigned [7:0] netTypeAndDataTypeD,
+    - Name: netTypeAndDataTypeD
+    - Full Type: supply0 logic unsigned[7:0]
+    - Base Type: supply0 logic
+    - Link Candidates: supply0, logic
+    - Default Value: (not detected)
+
+  - Parameter 21: supply0 logic netTypeAndDataTypeAA[2],
+    - Name: netTypeAndDataTypeAA
+    - Full Type: supply0 logic _[2]
+    - Base Type: supply0 logic
+    - Link Candidates: supply0, logic
+    - Default Value: (not detected)
+
+  - Parameter 22: supply0 logic [7:0] netTypeAndDataTypeBB[2],
+    - Name: netTypeAndDataTypeBB
+    - Full Type: supply0 logic[7:0] _[2]
+    - Base Type: supply0 logic
+    - Link Candidates: supply0, logic
+    - Default Value: (not detected)
+
+  - Parameter 23: supply0 logic unsigned netTypeAndDataTypeCC[2],
+    - Name: netTypeAndDataTypeCC
+    - Full Type: supply0 logic unsigned _[2]
+    - Base Type: supply0 logic
+    - Link Candidates: supply0, logic
+    - Default Value: (not detected)
+
+  - Parameter 24: supply0 logic unsigned [7:0] netTypeAndDataTypeDD[2],
+    - Name: netTypeAndDataTypeDD
+    - Full Type: supply0 logic unsigned[7:0] _[2]
+    - Base Type: supply0 logic
+    - Link Candidates: supply0, logic
+    - Default Value: (not detected)
+
+  - Parameter 25: supply0 [7:0] netTypeAndImplicitDataTypeA,
+    - Name: netTypeAndImplicitDataTypeA
+    - Full Type: supply0[7:0]
+    - Base Type: supply0
+    - Link Candidates: supply0
+    - Default Value: (not detected)
+
+  - Parameter 26: supply0 unsigned netTypeAndImplicitDataTypeB,
+    - Name: netTypeAndImplicitDataTypeB
+    - Full Type: supply0 unsigned
+    - Base Type: supply0
+    - Link Candidates: supply0
+    - Default Value: (not detected)
+
+  - Parameter 27: supply0 unsigned [7:0] netTypeAndImplicitDataTypeC,
+    - Name: netTypeAndImplicitDataTypeC
+    - Full Type: supply0 unsigned[7:0]
+    - Base Type: supply0
+    - Link Candidates: supply0
+    - Default Value: (not detected)
+
+  - Parameter 28: supply0 [7:0] netTypeAndImplicitDataTypeAA[2],
+    - Name: netTypeAndImplicitDataTypeAA
+    - Full Type: supply0[7:0] _[2]
+    - Base Type: supply0
+    - Link Candidates: supply0
+    - Default Value: (not detected)
+
+  - Parameter 29: supply0 unsigned netTypeAndImplicitDataTypeBB[2],
+    - Name: netTypeAndImplicitDataTypeBB
+    - Full Type: supply0 unsigned _[2]
+    - Base Type: supply0
+    - Link Candidates: supply0
+    - Default Value: (not detected)
+
+  - Parameter 30: supply0 unsigned [7:0] netTypeAndImplicitDataTypeCC[2]
+    - Name: netTypeAndImplicitDataTypeCC
+    - Full Type: supply0 unsigned[7:0] _[2]
+    - Base Type: supply0
+    - Link Candidates: supply0
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module UserNetTypesAndDataTypes (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: UserNetType userNetTypeOnlyA,
+    - Name: userNetTypeOnlyA
+    - Full Type: UserNetType
+    - Base Type: UserNetType
+    - Link Candidates: UserNetType
+    - Default Value: (not detected)
+
+  - Parameter 2: UserNetType userNetTypeOnlyAA[2],
+    - Name: userNetTypeOnlyAA
+    - Full Type: UserNetType _[2]
+    - Base Type: UserNetType
+    - Link Candidates: UserNetType
+    - Default Value: (not detected)
+
+  - Parameter 3: UserNetType logic userNetTypeAndDataTypeA,
+    - Name: userNetTypeAndDataTypeA
+    - Full Type: UserNetType logic
+    - Base Type: UserNetType logic
+    - Link Candidates: UserNetType, logic
+    - Default Value: (not detected)
+
+  - Parameter 4: UserNetType logic [7:0] userNetTypeAndDataTypeB,
+    - Name: userNetTypeAndDataTypeB
+    - Full Type: UserNetType logic[7:0]
+    - Base Type: UserNetType logic
+    - Link Candidates: UserNetType, logic
+    - Default Value: (not detected)
+
+  - Parameter 5: UserNetType logic unsigned userNetTypeAndDataTypeC,
+    - Name: userNetTypeAndDataTypeC
+    - Full Type: UserNetType logic unsigned
+    - Base Type: UserNetType logic
+    - Link Candidates: UserNetType, logic
+    - Default Value: (not detected)
+
+  - Parameter 6: UserNetType logic unsigned [7:0] userNetTypeAndDataTypeD,
+    - Name: userNetTypeAndDataTypeD
+    - Full Type: UserNetType logic unsigned[7:0]
+    - Base Type: UserNetType logic
+    - Link Candidates: UserNetType, logic
+    - Default Value: (not detected)
+
+  - Parameter 7: UserNetType logic userNetTypeAndDataTypeAA[2],
+    - Name: userNetTypeAndDataTypeAA
+    - Full Type: UserNetType logic _[2]
+    - Base Type: UserNetType logic
+    - Link Candidates: UserNetType, logic
+    - Default Value: (not detected)
+
+  - Parameter 8: UserNetType logic [7:0] userNetTypeAndDataTypeBB[2],
+    - Name: userNetTypeAndDataTypeBB
+    - Full Type: UserNetType logic[7:0] _[2]
+    - Base Type: UserNetType logic
+    - Link Candidates: UserNetType, logic
+    - Default Value: (not detected)
+
+  - Parameter 9: UserNetType logic unsigned userNetTypeAndDataTypeCC[2],
+    - Name: userNetTypeAndDataTypeCC
+    - Full Type: UserNetType logic unsigned _[2]
+    - Base Type: UserNetType logic
+    - Link Candidates: UserNetType, logic
+    - Default Value: (not detected)
+
+  - Parameter 10: UserNetType logic unsigned [7:0] userNetTypeAndDataTypeDD[2],
+    - Name: userNetTypeAndDataTypeDD
+    - Full Type: UserNetType logic unsigned[7:0] _[2]
+    - Base Type: UserNetType logic
+    - Link Candidates: UserNetType, logic
+    - Default Value: (not detected)
+
+  - Parameter 11: UserNetType [7:0] userNetTypeAndImplicitDataTypeA,
+    - Name: userNetTypeAndImplicitDataTypeA
+    - Full Type: UserNetType[7:0]
+    - Base Type: UserNetType
+    - Link Candidates: UserNetType
+    - Default Value: (not detected)
+
+  - Parameter 12: UserNetType unsigned userNetTypeAndImplicitDataTypeB,
+    - Name: userNetTypeAndImplicitDataTypeB
+    - Full Type: UserNetType unsigned
+    - Base Type: UserNetType
+    - Link Candidates: UserNetType
+    - Default Value: (not detected)
+
+  - Parameter 13: UserNetType unsigned [7:0] userNetTypeAndImplicitDataTypeC,
+    - Name: userNetTypeAndImplicitDataTypeC
+    - Full Type: UserNetType unsigned[7:0]
+    - Base Type: UserNetType
+    - Link Candidates: UserNetType
+    - Default Value: (not detected)
+
+  - Parameter 14: UserNetType [7:0] userNetTypeAndImplicitDataTypeAA[2],
+    - Name: userNetTypeAndImplicitDataTypeAA
+    - Full Type: UserNetType[7:0] _[2]
+    - Base Type: UserNetType
+    - Link Candidates: UserNetType
+    - Default Value: (not detected)
+
+  - Parameter 15: UserNetType unsigned userNetTypeAndImplicitDataTypeBB[2],
+    - Name: userNetTypeAndImplicitDataTypeBB
+    - Full Type: UserNetType unsigned _[2]
+    - Base Type: UserNetType
+    - Link Candidates: UserNetType
+    - Default Value: (not detected)
+
+  - Parameter 16: UserNetType unsigned [7:0] userNetTypeAndImplicitDataTypeCC[2]
+    - Name: userNetTypeAndImplicitDataTypeCC
+    - Full Type: UserNetType unsigned[7:0] _[2]
+    - Base Type: UserNetType
+    - Link Candidates: UserNetType
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module NetTypesAndUserDataTypes (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: UserDataType userDataTypeOnlyA,
+    - Name: userDataTypeOnlyA
+    - Full Type: UserDataType
+    - Base Type: UserDataType
+    - Link Candidates: UserDataType
+    - Default Value: (not detected)
+
+  - Parameter 2: UserDataType [7:0] userDataTypeOnlyB,
+    - Name: userDataTypeOnlyB
+    - Full Type: UserDataType[7:0]
+    - Base Type: UserDataType
+    - Link Candidates: UserDataType
+    - Default Value: (not detected)
+
+  - Parameter 3: UserDataType unsigned userDataTypeOnlyC,
+    - Name: userDataTypeOnlyC
+    - Full Type: UserDataType unsigned
+    - Base Type: UserDataType
+    - Link Candidates: UserDataType
+    - Default Value: (not detected)
+
+  - Parameter 4: UserDataType unsigned [7:0] userDataTypeOnlyD,
+    - Name: userDataTypeOnlyD
+    - Full Type: UserDataType unsigned[7:0]
+    - Base Type: UserDataType
+    - Link Candidates: UserDataType
+    - Default Value: (not detected)
+
+  - Parameter 5: UserDataType userDataTypeOnlyAA[2],
+    - Name: userDataTypeOnlyAA
+    - Full Type: UserDataType _[2]
+    - Base Type: UserDataType
+    - Link Candidates: UserDataType
+    - Default Value: (not detected)
+
+  - Parameter 6: UserDataType [7:0] userDataTypeOnlyBB[2],
+    - Name: userDataTypeOnlyBB
+    - Full Type: UserDataType[7:0] _[2]
+    - Base Type: UserDataType
+    - Link Candidates: UserDataType
+    - Default Value: (not detected)
+
+  - Parameter 7: UserDataType unsigned userDataTypeOnlyCC[2],
+    - Name: userDataTypeOnlyCC
+    - Full Type: UserDataType unsigned _[2]
+    - Base Type: UserDataType
+    - Link Candidates: UserDataType
+    - Default Value: (not detected)
+
+  - Parameter 8: UserDataType unsigned [7:0] userDataTypeOnlyDD[2],
+    - Name: userDataTypeOnlyDD
+    - Full Type: UserDataType unsigned[7:0] _[2]
+    - Base Type: UserDataType
+    - Link Candidates: UserDataType
+    - Default Value: (not detected)
+
+  - Parameter 9: supply0 UserDataType netTypeAndUserDataTypeA,
+    - Name: netTypeAndUserDataTypeA
+    - Full Type: supply0 UserDataType
+    - Base Type: supply0 UserDataType
+    - Link Candidates: supply0, UserDataType
+    - Default Value: (not detected)
+
+  - Parameter 10: supply0 UserDataType [7:0] netTypeAndUserDataTypeB,
+    - Name: netTypeAndUserDataTypeB
+    - Full Type: supply0 UserDataType[7:0]
+    - Base Type: supply0 UserDataType
+    - Link Candidates: supply0, UserDataType
+    - Default Value: (not detected)
+
+  - Parameter 11: supply0 UserDataType unsigned netTypeAndUserDataTypeC,
+    - Name: netTypeAndUserDataTypeC
+    - Full Type: supply0 UserDataType unsigned
+    - Base Type: supply0 UserDataType
+    - Link Candidates: supply0, UserDataType
+    - Default Value: (not detected)
+
+  - Parameter 12: supply0 UserDataType unsigned [7:0] netTypeAndUserDataTypeD,
+    - Name: netTypeAndUserDataTypeD
+    - Full Type: supply0 UserDataType unsigned[7:0]
+    - Base Type: supply0 UserDataType
+    - Link Candidates: supply0, UserDataType
+    - Default Value: (not detected)
+
+  - Parameter 13: supply0 UserDataType netTypeAndUserDataTypeAA[2],
+    - Name: netTypeAndUserDataTypeAA
+    - Full Type: supply0 UserDataType _[2]
+    - Base Type: supply0 UserDataType
+    - Link Candidates: supply0, UserDataType
+    - Default Value: (not detected)
+
+  - Parameter 14: supply0 UserDataType [7:0] netTypeAndUserDataTypeBB[2],
+    - Name: netTypeAndUserDataTypeBB
+    - Full Type: supply0 UserDataType[7:0] _[2]
+    - Base Type: supply0 UserDataType
+    - Link Candidates: supply0, UserDataType
+    - Default Value: (not detected)
+
+  - Parameter 15: supply0 UserDataType unsigned netTypeAndUserDataTypeCC[2],
+    - Name: netTypeAndUserDataTypeCC
+    - Full Type: supply0 UserDataType unsigned _[2]
+    - Base Type: supply0 UserDataType
+    - Link Candidates: supply0, UserDataType
+    - Default Value: (not detected)
+
+  - Parameter 16: supply0 UserDataType unsigned [7:0] netTypeAndUserDataTypeDD[2]
+    - Name: netTypeAndUserDataTypeDD
+    - Full Type: supply0 UserDataType unsigned[7:0] _[2]
+    - Base Type: supply0 UserDataType
+    - Link Candidates: supply0, UserDataType
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module UserNetTypesAndUserDataTypes (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: UserNetType UserDataType userNetTypeAndUserDataTypeA,
+    - Name: userNetTypeAndUserDataTypeA
+    - Full Type: UserNetType UserDataType
+    - Base Type: UserNetType UserDataType
+    - Link Candidates: UserNetType, UserDataType
+    - Default Value: (not detected)
+
+  - Parameter 2: UserNetType UserDataType [7:0] userNetTypeAndUserDataTypeB,
+    - Name: userNetTypeAndUserDataTypeB
+    - Full Type: UserNetType UserDataType[7:0]
+    - Base Type: UserNetType UserDataType
+    - Link Candidates: UserNetType, UserDataType
+    - Default Value: (not detected)
+
+  - Parameter 3: UserNetType UserDataType unsigned userNetTypeAndUserDataTypeC,
+    - Name: userNetTypeAndUserDataTypeC
+    - Full Type: UserNetType UserDataType unsigned
+    - Base Type: UserNetType UserDataType
+    - Link Candidates: UserNetType, UserDataType
+    - Default Value: (not detected)
+
+  - Parameter 4: UserNetType UserDataType unsigned [7:0] userNetTypeAndUserDataTypeD,
+    - Name: userNetTypeAndUserDataTypeD
+    - Full Type: UserNetType UserDataType unsigned[7:0]
+    - Base Type: UserNetType UserDataType
+    - Link Candidates: UserNetType, UserDataType
+    - Default Value: (not detected)
+
+  - Parameter 5: UserNetType UserDataType userNetTypeAndUserDataTypeAA[2],
+    - Name: userNetTypeAndUserDataTypeAA
+    - Full Type: UserNetType UserDataType _[2]
+    - Base Type: UserNetType UserDataType
+    - Link Candidates: UserNetType, UserDataType
+    - Default Value: (not detected)
+
+  - Parameter 6: UserNetType UserDataType [7:0] userNetTypeAndUserDataTypeBB[2],
+    - Name: userNetTypeAndUserDataTypeBB
+    - Full Type: UserNetType UserDataType[7:0] _[2]
+    - Base Type: UserNetType UserDataType
+    - Link Candidates: UserNetType, UserDataType
+    - Default Value: (not detected)
+
+  - Parameter 7: UserNetType UserDataType unsigned userNetTypeAndUserDataTypeCC[2],
+    - Name: userNetTypeAndUserDataTypeCC
+    - Full Type: UserNetType UserDataType unsigned _[2]
+    - Base Type: UserNetType UserDataType
+    - Link Candidates: UserNetType, UserDataType
+    - Default Value: (not detected)
+
+  - Parameter 8: UserNetType UserDataType unsigned [7:0] userNetTypeAndUserDataTypeDD[2]
+    - Name: userNetTypeAndUserDataTypeDD
+    - Full Type: UserNetType UserDataType unsigned[7:0] _[2]
+    - Base Type: UserNetType UserDataType
+    - Link Candidates: UserNetType, UserDataType
     - Default Value: (not detected)
 
   - After Parameters: )
