@@ -885,60 +885,90 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 
-			// Net Type
+			// Type Detection
 
-			if (IsOnNetTypeKeyword(lookahead))
+			// Between the direction and the port name we can have any combination of:
+			//
+			// - Net type (supply0, wire, etc.) or a user-defined one
+			// - Base data type (logic, reg, etc.) or a user-defined one
+			// - Signing (signed, unsigned)
+			// - Packed dimensions ([7:0], etc.)
+			// - None of the above
+			//
+			// The net type and base data type are both considered the parameter's type, while signing and dimensions
+			// are treated as modifiers.  Code will usually have one or the other, although it can have both.
+			//
+			// Since both net types and data types can be user-defined we cannot rely on a keyword list to know which
+			// it is.  A single unrecognized identifier could be either, but since they're treated the same it doesn't matter.
+			//
+			// First we're going to count the number of identifiers before the first modifier (signing, packed dimension)
+			// or until we reach the end of the parameter, so basically all consecutive text identifiers except signing.
+
+			TokenIterator beginningOfType = lookahead;
+			int typeIdentifiers = 0;
+
+			while (!IsOnSigningKeyword(lookahead) &&
+					 TryToSkipUnqualifiedIdentifier(ref lookahead, ParseMode.IterateOnly))
 				{
-				if (mode == ParseMode.ParsePrototype)
-					{  lookahead.PrototypeParsingType = PrototypeParsingType.Type;  }
+				typeIdentifiers++;
+				TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
+				}
 
+			// Skip the signing if it's there
+			bool hasSigning = IsOnSigningKeyword(lookahead);
+
+			if (hasSigning)
+				{
 				lookahead.Next();
+				TryToSkipWhitespace(ref lookahead);
+				}
+
+			// Skip the dimension if it's there
+			bool hasPackedDimensions = TryToSkipDimensions(ref lookahead, ParseMode.IterateOnly);
+
+			if (hasPackedDimensions)
+				{
+				TryToSkipWhitespace(ref lookahead);
+				}
+
+			// Are there no more identifiers?  We're being a bit loose with the parsing at this stage since this is just a
+			// preliminary check.
+			if (lookahead.Character == '=' ||
+				lookahead.Character == ',' ||
+				lookahead.Character == ')')
+				{
+				if (typeIdentifiers > 0)
+					{
+					// If not, reduce the number of type identifiers by one, since the last one should be the parameter name
+					typeIdentifiers--;
+
+					// Also, if we found packed dimensions, they're actually unpacked dimensions appearing after the name
+					hasPackedDimensions = false;
+					}
+				}
+
+			// Reset back to the beginning for the proper parse
+			lookahead = beginningOfType;
+
+
+			// Type
+
+			while (typeIdentifiers > 0)
+				{
+				if (!TryToSkipUnqualifiedIdentifier(ref lookahead, mode, PrototypeParsingType.Type))
+					{
+					ResetTokensBetween(iterator, lookahead, mode);
+					return false;
+					}
+
+				typeIdentifiers--;
 				TryToSkipWhitespace(ref lookahead, mode);
 				}
 
-
-			// Data Type vs. Name
-
-			// Types can be implied, such as "bit paramA, paramB", so we have to check to see what comes after the first
-			// identifier to see if that identifier is a type or a parameter name.  If the next thing is a comma (parameter
-			// separator) an equals sign (default value separator) or a closing parenthesis (end of the last parameter) the
-			// identifier is definitely a parameter name.
-
-			// Also note that an implied type can just be a dimension, such as "bit paramA, [7:0] paramB", so if it's not on
-			// an identifier at all we can assume it's a type.
-
-			bool hasDataType = true;
-			TokenIterator startOfType = lookahead;
-
-			if (!IsOnSigningKeyword(lookahead) &&
-				!IsOnBuiltInType(lookahead) &&
-				TryToSkipUnqualifiedIdentifier(ref lookahead, ParseMode.IterateOnly))
+			if (hasSigning ||
+				hasPackedDimensions)
 				{
-				TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
-
-				// Skip dimensions.  Both types and parameters can have them, such as "bit[7:0] paramA[2]", so their presence
-				// doesn't tell us anything.
-				if (TryToSkipDimensions(ref lookahead, ParseMode.IterateOnly))
-					{  TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);  }
-
-				if (lookahead.Character == '=' ||
-					lookahead.Character == ',' ||
-					lookahead.Character == ')')
-					{
-					hasDataType = false;
-					}
-
-				// Reset back to start for parsing now that we know what it is
-				lookahead = startOfType;
-				}
-
-
-			// Data Type
-
-			if (hasDataType)
-				{
-				// TryToSkipType covers signing and type (packed) dimensions
-				if (!TryToSkipType(ref lookahead, mode))
+				if (!TryToSkipType(ref lookahead, mode, impliedOnly: true))
 					{
 					ResetTokensBetween(iterator, lookahead, mode);
 					return false;
@@ -950,7 +980,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Name
 
-			if (TryToSkipUnqualifiedIdentifier(ref lookahead, mode, PrototypeParsingType.Name) == false)
+			if (!TryToSkipUnqualifiedIdentifier(ref lookahead, mode, PrototypeParsingType.Name))
 				{
 				ResetTokensBetween(iterator, lookahead, mode);
 				return false;
@@ -959,7 +989,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TryToSkipWhitespace(ref lookahead, mode);
 
 
-			// Param (Unpacked) Dimensions.  Both types and parameters can have dimensions, such as "bit[7:0] paramA[2]"
+			// Unpacked Dimensions.  Both types and parameters can have dimensions, such as "bit[7:0] paramA[2]"
 
 			if (TryToSkipDimensions(ref lookahead, mode, PrototypeParsingType.ParamModifier))
 				{  TryToSkipWhitespace(ref lookahead, mode);  }
