@@ -911,6 +911,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					 TryToSkipUnqualifiedIdentifier(ref lookahead, ParseMode.IterateOnly))
 				{
 				typeIdentifiers++;
+
+				TryToSkipModPort(ref lookahead, ParseMode.IterateOnly);
 				TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
 				}
 
@@ -962,6 +964,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					}
 
 				typeIdentifiers--;
+
+				TryToSkipModPort(ref lookahead, mode);
 				TryToSkipWhitespace(ref lookahead, mode);
 				}
 
@@ -1671,6 +1675,36 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			if (lookahead > iterator)
 				{  ResetTokensBetween(iterator, lookahead, mode);  }
 
+			return true;
+			}
+
+
+		/* Function: TryToSkipModPort
+		 *
+		 * Tries to move the iterator past a modport, such as ".ModPortName".
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- The modport will be marked as <PrototypeParsingType.TypeModifier>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipModPort (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			if (iterator.Character != '.')
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+			lookahead.Next();
+
+			if (!TryToSkipUnqualifiedIdentifier(ref lookahead, ParseMode.IterateOnly))
+				{  return false;  }
+
+			if (mode == ParseMode.ParsePrototype)
+				{  iterator.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.TypeModifier);  }
+
+			iterator = lookahead;
 			return true;
 			}
 

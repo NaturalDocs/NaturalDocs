@@ -67,6 +67,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 *		HasBaseDataType - Whether the port has a base data type defined, such as "logic".  This doesn't include
 		 *									 the signing or packed dimension parts, which are denoted separately, hence _base_
 		 *									 data type.
+		 *		HasModPort - Whether the interface port has a modport defined, such as ".mymodport".
 		 *		HasSigning - Whether the port has signing defined, such as "unsigned".
 		 *		HasPackedDimensions - Whether the port has one or more packed dimensions defined, such as "[7:0]".
 		 *		HasName - Whether the port's name was defined.
@@ -83,16 +84,17 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 *
 		 */
 		[Flags]
-		protected enum PortFlags : byte
+		protected enum PortFlags : ushort
 			{
-			HasDirection = 0x01,
-			HasParameterKeyword = 0x02,
-			HasKind = 0x04,
-			HasBaseDataType = 0x08,
-			HasSigning = 0x10,
-			HasPackedDimensions = 0x20,
-			HasName = 0x40,
-			HasUnpackedDimensions = 0x80,
+			HasDirection = 0x0001,
+			HasParameterKeyword = 0x0002,
+			HasKind = 0x0004,
+			HasBaseDataType = 0x0008,
+			HasModPort = 0x0010,
+			HasSigning = 0x0020,
+			HasPackedDimensions = 0x0040,
+			HasName = 0x0080,
+			HasUnpackedDimensions = 0x0100,
 
 			HasAnyDataType = HasBaseDataType | HasSigning | HasPackedDimensions,
 			HasKindOrAnyDataType = HasKind | HasAnyDataType
@@ -291,7 +293,12 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			if (AppendKind(parameterSection, parameterIndex, typeBuilder))
 				{  portFlags |= PortFlags.HasKind;  }
 			if (AppendBaseDataType(parameterSection, parameterIndex, typeBuilder))
-				{  portFlags |= PortFlags.HasBaseDataType;  }
+				{
+				portFlags |= PortFlags.HasBaseDataType;
+
+				if (AppendModPort(parameterSection, parameterIndex, typeBuilder))
+					{  portFlags |= PortFlags.HasModPort;  }
+				}
 			if (AppendSigning(parameterSection, parameterIndex, typeBuilder))
 				{  portFlags |= PortFlags.HasSigning;  }
 			if (AppendPackedDimensions(parameterSection, parameterIndex, typeBuilder))
@@ -545,6 +552,17 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			}
 
 
+		/* Function: HasModPort
+		 * Returns whether the passed parameter contains a modport.  Modport tokens must be marked with
+		 * <PrototypeParsingType.TypeModifier> and immediately follow a <PrototypeParsingType.Type>.
+		 */
+		protected bool HasModPort (ParameterSection parameterSection, int parameterIndex)
+			{
+			TokenIterator ignore;
+			return FindModPort(parameterSection, parameterIndex, out ignore);
+			}
+
+
 		/* Function: HasSigning
 		 * Returns whether the passed parameter contains a signing keyword (signed, unsigned)  Signing keywords
 		 * must be marked with <PrototypeParsingType.TypeModifier>.
@@ -691,6 +709,49 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				}
 
 			baseDataTypePosition = tokenizer.EndOfTokens;
+			return false;
+			}
+
+
+		/* Function: FindModPort
+		 * If the passed parameter contains a modport it will return a <TokenIterator> at its position and return true
+		 * Modport tokens must be marked with <PrototypeParsingType.TypeModifier> and immediately follow a
+		 * <PrototypeParsingType.Type>.
+		 */
+		protected bool FindModPort (ParameterSection parameterSection, int parameterIndex,
+												 out TokenIterator modPortPosition)
+			{
+			TokenIterator iterator, end;
+			parameterSection.GetParameterBounds(parameterIndex, out iterator, out end);
+
+			while (iterator < end)
+				{
+				if (iterator.PrototypeParsingType == PrototypeParsingType.Type)
+					{
+					do
+						{  iterator.Next();  }
+					while (iterator.PrototypeParsingType == PrototypeParsingType.Type);
+
+					if (iterator.Character == '.' &&
+						iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier)
+						{
+						modPortPosition = iterator;
+						iterator.Next();
+
+						if (iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier &&
+							iterator < end)
+							{  return true;  }
+						}
+					}
+
+				else
+					{
+					if (!TryToSkipBlock(ref iterator, end))
+						{  iterator.Next();  }
+					}
+				}
+
+			modPortPosition = tokenizer.EndOfTokens;
 			return false;
 			}
 
@@ -923,6 +984,31 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 					else
 						{  break;  }
 					}
+
+				return true;
+				}
+			else
+				{  return false;  }
+			}
+
+
+		/* Function: AppendModPort
+		 * If the passed parameter contains a modport it will add it to the <TypeBuilder> and return true.  Returns false
+		 * otherwise.  Modport tokens must be marked with <PrototypeParsingType.TypeModifier> and immediately follow
+		 * a <PrototypeParsingType.Type>.
+		 */
+		protected bool AppendModPort (ParameterSection parameterSection, int parameterIndex, TypeBuilder typeBuilder)
+			{
+			TokenIterator iterator;
+
+			if (FindModPort(parameterSection, parameterIndex, out iterator))
+				{
+				do
+					{
+					typeBuilder.AddToken(iterator);
+					iterator.Next();
+					}
+				while (iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier);
 
 				return true;
 				}
