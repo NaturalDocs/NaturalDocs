@@ -103,6 +103,16 @@ module Interconnects (
 endmodule
 
 
+// Module: InterfacesAndModPorts
+module InterfacesAndModPorts (
+	interface portA,
+	interface.ModPort portB,
+	UserInterface portC,
+	UserInterface.ModPort portD);
+endmodule
+
+
+
 // Group: Net Types and Data Types
 // ___________________________________________________
 //

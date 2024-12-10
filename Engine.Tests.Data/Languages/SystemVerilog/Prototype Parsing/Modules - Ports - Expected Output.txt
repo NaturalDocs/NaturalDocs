@@ -353,6 +353,44 @@ Port Definition Components:
     - Link Candidates: (none)
 
 ------------------------------
+
+- Parameter Section:
+  - Before Parameters: module InterfacesAndModPorts (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: interface portA,
+    - Name: portA
+    - Full Type: interface
+    - Base Type: interface
+    - Link Candidates: interface
+    - Default Value: (not detected)
+
+  - Parameter 2: interface.ModPort portB,
+    - Name: portB
+    - Full Type: interface.ModPort
+    - Base Type: interface
+    - Link Candidates: interface
+    - Default Value: (not detected)
+
+  - Parameter 3: UserInterface portC,
+    - Name: portC
+    - Full Type: UserInterface
+    - Base Type: UserInterface
+    - Link Candidates: UserInterface
+    - Default Value: (not detected)
+
+  - Parameter 4: UserInterface.ModPort portD
+    - Name: portD
+    - Full Type: UserInterface.ModPort
+    - Base Type: UserInterface
+    - Link Candidates: UserInterface
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
 Net Types and Data Types:
 ------------------------------
 
