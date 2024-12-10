@@ -87,6 +87,21 @@ module UserDefinedNetTypes (
 endmodule
 
 
+// Module: Interconnects
+//
+// According to the language specification "interconnect" may be followed by implicit_data_type, which
+// means it could have signing and/or packed dimensions.  In practice none of the tested tools allowed
+// that so we'll ignore it.
+//
+// - Aldec Riviera Pro 2023.04
+// - Cadence Xcelium 23.09
+// - Siemens Questa 2023.3
+// - Synopsys VCS 2023.03
+//
+module Interconnects (
+	interconnect portA);
+endmodule
+
 
 // Group: Net Types and Data Types
 // ___________________________________________________

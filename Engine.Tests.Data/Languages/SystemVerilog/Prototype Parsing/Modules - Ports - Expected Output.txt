@@ -336,6 +336,23 @@ Port Definition Components:
     - Link Candidates: (none)
 
 ------------------------------
+
+- Parameter Section:
+  - Before Parameters: module Interconnects (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: interconnect portA
+    - Name: portA
+    - Full Type: interconnect
+    - Base Type: interconnect
+    - Link Candidates: interconnect
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
 Net Types and Data Types:
 ------------------------------
 
