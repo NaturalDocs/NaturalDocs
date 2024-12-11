@@ -18,6 +18,7 @@ Topic: ANSI Port Attribute Inheritance Rules
 			- For parameter ports this would instead be the *parameter keyword* (parameter, localparam)
 		- "wire" is the *kind*, which can be tri0, var, etc.
 			- It can be any of the *net types* (wire, tri0, etc.) or *var*
+			- It can also be a user-defined net type, so you can't rely on a keyword list being exhaustive
 		- "bit signed [7:0]" is the *data type*, which can also be reg, int, etc.
 			- "signed" is the *signing* and is considered part of the data type
 			- "[7:0]" is the *packed dimension* and is considered part of the data type
