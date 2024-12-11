@@ -867,7 +867,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 
-			// Type Detection
+			// Special Types
+
+			if (TryToSkipStruct(ref lookahead, mode))
+				{
+				TryToSkipWhitespace(ref lookahead, mode);
+				}
+
+
+			// All Other Types
 
 			// Between the direction and the port name we can have any combination of:
 			//
@@ -886,81 +894,84 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// First we're going to count the number of identifiers before the first modifier (signing, packed dimension)
 			// or until we reach the end of the parameter, so basically all consecutive text identifiers except signing.
 
-			TokenIterator beginningOfType = lookahead;
-			int typeIdentifiers = 0;
-
-			while (!IsOnSigningKeyword(lookahead) &&
-					 TryToSkipUnqualifiedIdentifier(ref lookahead, ParseMode.IterateOnly))
+			else
 				{
-				typeIdentifiers++;
+				TokenIterator beginningOfType = lookahead;
+				int typeIdentifiers = 0;
 
-				TryToSkipModPort(ref lookahead, ParseMode.IterateOnly);
-				TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
-				}
-
-			// Skip the signing if it's there
-			bool hasSigning = IsOnSigningKeyword(lookahead);
-
-			if (hasSigning)
-				{
-				lookahead.Next();
-				TryToSkipWhitespace(ref lookahead);
-				}
-
-			// Skip the dimension if it's there
-			bool hasPackedDimensions = TryToSkipDimensions(ref lookahead, ParseMode.IterateOnly);
-
-			if (hasPackedDimensions)
-				{
-				TryToSkipWhitespace(ref lookahead);
-				}
-
-			// Are there no more identifiers?  We're being a bit loose with the parsing at this stage since this is just a
-			// preliminary check.
-			if (lookahead.Character == '=' ||
-				lookahead.Character == ',' ||
-				lookahead.Character == ')')
-				{
-				if (typeIdentifiers > 0)
+				while (!IsOnSigningKeyword(lookahead) &&
+						 TryToSkipUnqualifiedIdentifier(ref lookahead, ParseMode.IterateOnly))
 					{
-					// If not, reduce the number of type identifiers by one, since the last one should be the parameter name
+					typeIdentifiers++;
+
+					TryToSkipModPort(ref lookahead, ParseMode.IterateOnly);
+					TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
+					}
+
+				// Skip the signing if it's there
+				bool hasSigning = IsOnSigningKeyword(lookahead);
+
+				if (hasSigning)
+					{
+					lookahead.Next();
+					TryToSkipWhitespace(ref lookahead);
+					}
+
+				// Skip the dimension if it's there
+				bool hasPackedDimensions = TryToSkipDimensions(ref lookahead, ParseMode.IterateOnly);
+
+				if (hasPackedDimensions)
+					{
+					TryToSkipWhitespace(ref lookahead);
+					}
+
+				// Are there no more identifiers?  We're being a bit loose with the parsing at this stage since this is just a
+				// preliminary check.
+				if (lookahead.Character == '=' ||
+					lookahead.Character == ',' ||
+					lookahead.Character == ')')
+					{
+					if (typeIdentifiers > 0)
+						{
+						// If not, reduce the number of type identifiers by one, since the last one should be the parameter name
+						typeIdentifiers--;
+
+						// Also, if we found packed dimensions, they're actually unpacked dimensions appearing after the name
+						hasPackedDimensions = false;
+						}
+					}
+
+				// Reset back to the beginning for the proper parse
+				lookahead = beginningOfType;
+
+
+				// Type
+
+				while (typeIdentifiers > 0)
+					{
+					if (!TryToSkipUnqualifiedIdentifier(ref lookahead, mode, PrototypeParsingType.Type))
+						{
+						ResetTokensBetween(iterator, lookahead, mode);
+						return false;
+						}
+
 					typeIdentifiers--;
 
-					// Also, if we found packed dimensions, they're actually unpacked dimensions appearing after the name
-					hasPackedDimensions = false;
+					TryToSkipModPort(ref lookahead, mode);
+					TryToSkipWhitespace(ref lookahead, mode);
 					}
-				}
 
-			// Reset back to the beginning for the proper parse
-			lookahead = beginningOfType;
-
-
-			// Type
-
-			while (typeIdentifiers > 0)
-				{
-				if (!TryToSkipUnqualifiedIdentifier(ref lookahead, mode, PrototypeParsingType.Type))
+				if (hasSigning ||
+					hasPackedDimensions)
 					{
-					ResetTokensBetween(iterator, lookahead, mode);
-					return false;
+					if (!TryToSkipType(ref lookahead, mode, impliedOnly: true))
+						{
+						ResetTokensBetween(iterator, lookahead, mode);
+						return false;
+						}
+
+					TryToSkipWhitespace(ref lookahead, mode);
 					}
-
-				typeIdentifiers--;
-
-				TryToSkipModPort(ref lookahead, mode);
-				TryToSkipWhitespace(ref lookahead, mode);
-				}
-
-			if (hasSigning ||
-				hasPackedDimensions)
-				{
-				if (!TryToSkipType(ref lookahead, mode, impliedOnly: true))
-					{
-					ResetTokensBetween(iterator, lookahead, mode);
-					return false;
-					}
-
-				TryToSkipWhitespace(ref lookahead, mode);
 				}
 
 
@@ -1436,7 +1447,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 
-			// We've been updating iterator whenever we found part of the enum and continuing with lookahead
+			// We've been updating iterator whenever we found part of the struct and continuing with lookahead
 			// to see if we could extend it, so we need to reset anything between iterator and lookahead since that
 			// part wasn't accepted.
 			if (lookahead > iterator)

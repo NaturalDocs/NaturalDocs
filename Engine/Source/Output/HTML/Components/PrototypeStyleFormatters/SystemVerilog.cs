@@ -122,7 +122,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 						type == PrototypeParsingType.Null)
 						{  iterator.Next();   }
 					else if (type == PrototypeParsingType.OpeningTypeModifier &&
-							   (iterator.Character == '(' || iterator.MatchesAcrossTokens("#(")))
+							   (iterator.Character == '(' || iterator.MatchesAcrossTokens("#(") || iterator.Character == '{'))
 						{  SkipModifierBlock(ref iterator, endOfParam);  }
 					else
 						{  break;  }

@@ -66,7 +66,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 *		HasBaseDataType - Whether the port has a base data type defined, such as "logic".  This doesn't include
 		 *									 the signing or packed dimension parts, which are denoted separately, hence _base_
 		 *									 data type.
-		 *		HasModPort - Whether the interface port has a modport defined, such as ".mymodport".
+		 *		HasOtherModifiers - Whether the port has modifiers defined that aren't signing or packed dimensions.  This
+		 *									 includes modports on interfaces, struct/union modifiers, and struct/union definitions.
 		 *		HasSigning - Whether the port has signing defined, such as "unsigned".
 		 *		HasPackedDimensions - Whether the port has one or more packed dimensions defined, such as "[7:0]".
 		 *		HasName - Whether the port's name was defined.
@@ -87,7 +88,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			HasDirection = 0x01,
 			HasParameterKeyword = 0x02,
 			HasBaseDataType = 0x04,
-			HasModPort = 0x08,
+			HasOtherModifiers = 0x08,
 			HasSigning = 0x10,
 			HasPackedDimensions = 0x20,
 			HasName = 0x40,
@@ -286,8 +287,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				{
 				portFlags |= PortFlags.HasBaseDataType;
 
-				if (AppendModPort(parameterSection, parameterIndex, typeBuilder))
-					{  portFlags |= PortFlags.HasModPort;  }
+				if (AppendOtherModifiers(parameterSection, parameterIndex, typeBuilder))
+					{  portFlags |= PortFlags.HasOtherModifiers;  }
 				}
 			if (AppendSigning(parameterSection, parameterIndex, typeBuilder))
 				{  portFlags |= PortFlags.HasSigning;  }
@@ -529,20 +530,23 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			}
 
 
-		/* Function: HasModPort
-		 * Returns whether the passed parameter contains a modport.  Modport tokens must be marked with
-		 * <PrototypeParsingType.TypeModifier> and immediately follow a <PrototypeParsingType.Type>.
+		/* Function: HasOtherModifiers
+		 * Returns whether the passed parameter contains modifiers that aren't signing or packed dimensions.
 		 */
-		protected bool HasModPort (ParameterSection parameterSection, int parameterIndex)
+		protected bool HasOtherModifiers (ParameterSection parameterSection, int parameterIndex)
 			{
 			TokenIterator ignore;
-			return FindModPort(parameterSection, parameterIndex, out ignore);
+			return FindOtherModifiers(parameterSection, parameterIndex, out ignore);
 			}
 
 
 		/* Function: HasSigning
+		 *
 		 * Returns whether the passed parameter contains a signing keyword (signed, unsigned)  Signing keywords
 		 * must be marked with <PrototypeParsingType.TypeModifier>.
+		 *
+		 * Note that this will return false for signed structs and unions.  This is because those appear in the middle of
+		 * "other modifiers" so are treated as part of them.
 		 */
 		protected bool HasSigning (ParameterSection parameterSection, int parameterIndex)
 			{
@@ -661,53 +665,76 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			}
 
 
-		/* Function: FindModPort
-		 * If the passed parameter contains a modport it will return a <TokenIterator> at its position and return true
-		 * Modport tokens must be marked with <PrototypeParsingType.TypeModifier> and immediately follow a
-		 * <PrototypeParsingType.Type>.
+		/* Function: FindOtherModifiers
+		 * If the passed parameter contains modifiers that aren't signing or packed dimensions it will return a
+		 * <TokenIterator> at its position and return true.
 		 */
-		protected bool FindModPort (ParameterSection parameterSection, int parameterIndex,
-												 out TokenIterator modPortPosition)
+		protected bool FindOtherModifiers (ParameterSection parameterSection, int parameterIndex,
+														  out TokenIterator modifierPosition)
 			{
 			TokenIterator iterator, end;
 			parameterSection.GetParameterBounds(parameterIndex, out iterator, out end);
 
-			while (iterator < end)
+			// First find the type
+			for (;;)
 				{
-				if (iterator.PrototypeParsingType == PrototypeParsingType.Type)
+				if (iterator >= end)
 					{
-					do
-						{  iterator.Next();  }
-					while (iterator.PrototypeParsingType == PrototypeParsingType.Type);
-
-					if (iterator.Character == '.' &&
-						iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier)
-						{
-						modPortPosition = iterator;
-						iterator.Next();
-
-						if (iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier &&
-							iterator < end)
-							{  return true;  }
-						}
+					modifierPosition = tokenizer.EndOfTokens;
+					return false;
 					}
-
+				else if (iterator.PrototypeParsingType == PrototypeParsingType.Type)
+					{  break;  }
 				else
-					{
-					if (!TryToSkipBlock(ref iterator, end))
-						{  iterator.Next();  }
-					}
+					{  iterator.Next();  }
 				}
 
-			modPortPosition = tokenizer.EndOfTokens;
-			return false;
+			// Move past the type
+			do
+				{  iterator.Next();  }
+			while (iterator < end &&
+					 iterator.PrototypeParsingType == PrototypeParsingType.Type);
+
+			// Move past any unmarked whitespace after the type
+			while (iterator < end &&
+					 iterator.PrototypeParsingType == PrototypeParsingType.Null &&
+					 (iterator.FundamentalType == FundamentalType.Whitespace ||
+					  iterator.FundamentalType == FundamentalType.LineBreak))
+				{  iterator.Next();  }
+
+			// Check that we're still in bounds
+			if (iterator >= end)
+				{
+				modifierPosition = tokenizer.EndOfTokens;
+				return false;
+				}
+
+			// Return true for any modifier that isn't a signing keyword, and any modifier block that isn't a packed
+			// dimension
+			if ( (iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier &&
+				  !Languages.Parsers.SystemVerilog.IsOnSigningKeyword(iterator)) ||
+				 (iterator.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier &&
+				  iterator.Character != '[') )
+				{
+				modifierPosition = iterator;
+				return true;
+				}
+			else
+				{
+				modifierPosition = tokenizer.EndOfTokens;
+				return false;
+				}
 			}
 
 
 		/* Function: FindSigning
+		 *
 		 * If the passed parameter contains a signing keyword (signed, unsigned) it will return a <TokenIterator> at its
 		 * position and return true.  Returns false otherwise.  Signing keywords must be marked with
 		 * <PrototypeParsingType.TypeModifier>.
+		 *
+		 * Note that this will return false for signed structs and unions.  This is because those appear in the middle of
+		 * "other modifiers" so are treated as part of them.
 		 */
 		protected bool FindSigning (ParameterSection parameterSection, int parameterIndex, out TokenIterator signingPosition)
 			{
@@ -719,8 +746,17 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				if (iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier &&
 					Languages.Parsers.SystemVerilog.IsOnSigningKeyword(iterator))
 					{
-					signingPosition = iterator;
-					return true;
+					// Structs and unions can have a signing keyword, but we don't want to include them here.  They will
+					// always appear after a "packed" keyword and be followed by the opening brace of the body definition.
+					// Search for "packed" since that seems like the less likely one to create a false positive.
+					TokenIterator lookbehind = iterator;
+					lookbehind.Previous(2);
+
+					if (lookbehind.IsInBounds && lookbehind.MatchesToken("packed") == false)
+						{
+						signingPosition = iterator;
+						return true;
+						}
 					}
 
 				if (!TryToSkipBlock(ref iterator, end))
@@ -922,34 +958,66 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			}
 
 
-		/* Function: AppendModPort
-		 * If the passed parameter contains a modport it will add it to the <TypeBuilder> and return true.  Returns false
-		 * otherwise.  Modport tokens must be marked with <PrototypeParsingType.TypeModifier> and immediately follow
-		 * a <PrototypeParsingType.Type>.
+		/* Function: AppendOtherModifiers
+		 * If the passed parameter contains modifiers that aren't signing or packed dimensions it will add them to the
+		 * <TypeBuilder> and return true.  Returns false otherwise.
 		 */
-		protected bool AppendModPort (ParameterSection parameterSection, int parameterIndex, TypeBuilder typeBuilder)
+		protected bool AppendOtherModifiers (ParameterSection parameterSection, int parameterIndex, TypeBuilder typeBuilder)
 			{
 			TokenIterator iterator;
 
-			if (FindModPort(parameterSection, parameterIndex, out iterator))
+			if (!FindOtherModifiers(parameterSection, parameterIndex, out iterator))
+				{  return false;  }
+
+			TokenIterator closingSymbol, endOfBlock;
+
+			while (iterator.IsInBounds)
 				{
-				do
+				if (iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier)
 					{
 					typeBuilder.AddToken(iterator);
 					iterator.Next();
 					}
-				while (iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier);
 
-				return true;
+				else if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier)
+					{
+					// Stop at a packed dimension
+					if (iterator.Character == '[')
+						{  break;  }
+					else
+						{
+						GetEndOfBlock(iterator, out closingSymbol, out endOfBlock);
+
+						typeBuilder.AddModifierBlock(iterator, closingSymbol, endOfBlock);
+						iterator = endOfBlock;
+						}
+					}
+
+				else
+					{  break;  }
+
+				// If there's null whitespace tokens, move past them to see if there's any more properties on the other side.
+				// The type builder will handle spacing so we don't have to worry about adding them.
+				while (iterator.PrototypeParsingType == PrototypeParsingType.Null &&
+						 iterator.IsInBounds &&
+						 (iterator.FundamentalType == FundamentalType.Whitespace ||
+						  iterator.FundamentalType == FundamentalType.LineBreak) )
+					{
+					iterator.Next();
+					}
 				}
-			else
-				{  return false;  }
+
+			return true;
 			}
 
 
 		/* Function: AppendSigning
+		 *
 		 * If the passed parameter contains a signing keyword (signed, unsigned) it will add it to the <TypeBuilder> and return
 		 * true.  Returns false otherwise.  Signing keywords must be marked with <PrototypeParsingType.TypeModifier>.
+		 *
+		 * Note that this will return false for signed structs and unions.  This is because those appear in the middle of
+		 * "other modifiers" so are treated as part of them.
 		 */
 		protected bool AppendSigning (ParameterSection parameterSection, int parameterIndex, TypeBuilder typeBuilder)
 			{
