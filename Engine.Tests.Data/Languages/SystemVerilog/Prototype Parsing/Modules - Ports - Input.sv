@@ -131,6 +131,26 @@ module VariableTypes (
 endmodule
 
 
+// Module: StructsAndUnions
+module StructsAndUnions (
+	input struct { bit a1; } portA,
+	input union { bit b1; bit b2; } portB,
+
+	input struct tagged { bit c1; bit c2; } portC,
+	input union tagged { bit d1; bit d2; } portD,
+
+	input struct packed { bit e1; bit e2; } portE,
+	input union packed { bit f1; bit f2; } portF,
+	input struct packed signed { bit g1; bit g2; } portG,
+	input union packed unsigned { bit h1; bit h2; } portH,
+
+	input struct { bit i1; bit i2; } [1:0] portI,
+	input union tagged { bit j1; bit j2; } [1:0] portJ,
+	input struct packed { bit k1; bit k2; } [1:0] portK,
+	input union packed unsigned { bit l1; bit l2; } [1:0] portL);
+endmodule
+
+
 
 // Group: Net Types and Data Types
 // ___________________________________________________

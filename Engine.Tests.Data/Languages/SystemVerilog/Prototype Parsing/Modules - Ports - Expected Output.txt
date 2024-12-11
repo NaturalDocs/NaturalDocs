@@ -485,6 +485,100 @@ Port Definition Components:
     - Link Candidates: (none)
 
 ------------------------------
+
+- Parameter Section:
+  - Before Parameters: module StructsAndUnions (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: input struct { bit a1; } portA,
+    - Name: portA
+    - Full Type: input struct { bit a1; }
+    - Base Type: struct
+    - Link Candidates: struct
+    - Default Value: (not detected)
+
+  - Parameter 2: input union { bit b1; bit b2; } portB,
+    - Name: portB
+    - Full Type: input union { bit b1; bit b2; }
+    - Base Type: union
+    - Link Candidates: union
+    - Default Value: (not detected)
+
+  - Parameter 3: input struct tagged { bit c1; bit c2; } portC,
+    - Name: portC
+    - Full Type: input struct tagged { bit c1; bit c2; }
+    - Base Type: struct
+    - Link Candidates: struct
+    - Default Value: (not detected)
+
+  - Parameter 4: input union tagged { bit d1; bit d2; } portD,
+    - Name: portD
+    - Full Type: input union tagged { bit d1; bit d2; }
+    - Base Type: union
+    - Link Candidates: union
+    - Default Value: (not detected)
+
+  - Parameter 5: input struct packed { bit e1; bit e2; } portE,
+    - Name: portE
+    - Full Type: input struct packed { bit e1; bit e2; }
+    - Base Type: struct
+    - Link Candidates: struct
+    - Default Value: (not detected)
+
+  - Parameter 6: input union packed { bit f1; bit f2; } portF,
+    - Name: portF
+    - Full Type: input union packed { bit f1; bit f2; }
+    - Base Type: union
+    - Link Candidates: union
+    - Default Value: (not detected)
+
+  - Parameter 7: input struct packed signed { bit g1; bit g2; } portG,
+    - Name: portG
+    - Full Type: input struct packed signed { bit g1; bit g2; }
+    - Base Type: struct
+    - Link Candidates: struct
+    - Default Value: (not detected)
+
+  - Parameter 8: input union packed unsigned { bit h1; bit h2; } portH,
+    - Name: portH
+    - Full Type: input union packed unsigned { bit h1; bit h2; }
+    - Base Type: union
+    - Link Candidates: union
+    - Default Value: (not detected)
+
+  - Parameter 9: input struct { bit i1; bit i2; } [1:0] portI,
+    - Name: portI
+    - Full Type: input struct { bit i1; bit i2; }[1:0]
+    - Base Type: struct
+    - Link Candidates: struct
+    - Default Value: (not detected)
+
+  - Parameter 10: input union tagged { bit j1; bit j2; } [1:0] portJ,
+    - Name: portJ
+    - Full Type: input union tagged { bit j1; bit j2; }[1:0]
+    - Base Type: union
+    - Link Candidates: union
+    - Default Value: (not detected)
+
+  - Parameter 11: input struct packed { bit k1; bit k2; } [1:0] portK,
+    - Name: portK
+    - Full Type: input struct packed { bit k1; bit k2; }[1:0]
+    - Base Type: struct
+    - Link Candidates: struct
+    - Default Value: (not detected)
+
+  - Parameter 12: input union packed unsigned { bit l1; bit l2; } [1:0] portL
+    - Name: portL
+    - Full Type: input union packed unsigned { bit l1; bit l2; }[1:0]
+    - Base Type: union
+    - Link Candidates: union
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
 Net Types and Data Types:
 ------------------------------
 
