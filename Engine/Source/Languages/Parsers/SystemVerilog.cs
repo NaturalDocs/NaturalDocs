@@ -386,24 +386,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
-		/* Function: IsNetTypeKeyword
-		 * Returns whether the string is a net type keyword like "tri0" or "wire".
-		 */
-		public static bool IsNetTypeKeyword (string keyword)
-			{
-			return NetTypes.Contains(keyword);
-			}
-
-
-		/* Function: IsOnNetTypeKeyword
-		 * Returns whether the <TokenIterator> is on a net type keyword like "tri0" or "wire".
-		 */
-		public static bool IsOnNetTypeKeyword (TokenIterator iterator)
-			{
-			return IsOnAnyKeyword(iterator, NetTypes);
-			}
-
-
 
 		// Group: Component Parsing Functions
 		// __________________________________________________________________________
@@ -2856,16 +2838,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			"shortreal", "real", "realtime",
 			"enum",
 			"string", "chandle", "event"
-
-			});
-
-		/* var: NetTypes
-		 */
-		static protected StringSet NetTypes = new StringSet (KeySettings.Literal, new string[] {
-
-			"supply0", "supply1",
-			"tri", "triand", "trior", "trireg", "tri0", "tri1",
-			"uwire", "wire", "wand", "wor"
 
 			});
 

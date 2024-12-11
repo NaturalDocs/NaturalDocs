@@ -63,7 +63,6 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 *
 		 *		HasDirection - Whether the port has a direction defined, such as "input".
 		 *		HasParameterkeyword - Whether the port has a parameter keyword defined, such as "localparam".
-		 *		HasKind - Whether the port's kind is defined, such as "wire".
 		 *		HasBaseDataType - Whether the port has a base data type defined, such as "logic".  This doesn't include
 		 *									 the signing or packed dimension parts, which are denoted separately, hence _base_
 		 *									 data type.
@@ -78,26 +77,23 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 *		These are combinations of the above flags that are only used for testing the value against multiple flags
 		 *		at once.
 		 *
-		 *		HasAnyDataType - A combination of <HasBaseDataType>, <HasSigning>, and <HasPackedDimensions>.
-		 *								   Does *not* include <HasUnpackedDimensions>.
-		 *		HasKindOrAnyDataType - A combination of <HasKind> and <HasAnyDataType>.
+		 *		HasDataTypeOrProperties - A combination of <HasBaseDataType>, <HasSigning>, and <HasPackedDimensions>.
+		 *											   Does *not* include <HasUnpackedDimensions>.
 		 *
 		 */
 		[Flags]
-		protected enum PortFlags : ushort
+		protected enum PortFlags : byte
 			{
-			HasDirection = 0x0001,
-			HasParameterKeyword = 0x0002,
-			HasKind = 0x0004,
-			HasBaseDataType = 0x0008,
-			HasModPort = 0x0010,
-			HasSigning = 0x0020,
-			HasPackedDimensions = 0x0040,
-			HasName = 0x0080,
-			HasUnpackedDimensions = 0x0100,
+			HasDirection = 0x01,
+			HasParameterKeyword = 0x02,
+			HasBaseDataType = 0x04,
+			HasModPort = 0x08,
+			HasSigning = 0x10,
+			HasPackedDimensions = 0x20,
+			HasName = 0x40,
+			HasUnpackedDimensions = 0x80,
 
-			HasAnyDataType = HasBaseDataType | HasSigning | HasPackedDimensions,
-			HasKindOrAnyDataType = HasKind | HasAnyDataType
+			HasDataTypeOrProperties = HasBaseDataType | HasSigning | HasPackedDimensions
 			}
 
 
@@ -214,10 +210,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			// Parameter keywords are treated as if they don't inherit.  See SystemVerilog Notes.
 
 
-			// Kind and Data Type
+			// Data Type
 
-			if (AppendKind(parameterSection, parameterIndex, typeBuilder))
-				{  portFlags |= PortFlags.HasKind;  }
 			if (AppendBaseDataType(parameterSection, parameterIndex, typeBuilder))
 				{  portFlags |= PortFlags.HasBaseDataType;  }
 			if (AppendSigning(parameterSection, parameterIndex, typeBuilder))
@@ -225,14 +219,12 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			if (AppendPackedDimensions(parameterSection, parameterIndex, typeBuilder))
 				{  portFlags |= PortFlags.HasPackedDimensions;  }
 
-			// Kind and data type only inherit if none of them are specified.  If any component is set the other ones do not
-			// inherit, they revert to a default data type.  This includes if signing or packed data types appear alone.
-			if (impliedTypes && (portFlags & PortFlags.HasKindOrAnyDataType) == 0)
+			// The data type only inherits if nothing is specified.  If the base type or any properties are set the rest does
+			// not inherit, they revert to the default.  This includes if signing or packed data types appear alone.
+			if (impliedTypes && (portFlags & PortFlags.HasDataTypeOrProperties) == 0)
 				{
 				for (int i = parameterIndex - 1; i >= 0; i--)
 					{
-					if (AppendKind(parameterSection, i, typeBuilder))
-						{  portFlags |= PortFlags.HasKind;  }
 					if (AppendBaseDataType(parameterSection, i, typeBuilder))
 						{  portFlags |= PortFlags.HasBaseDataType;  }
 					if (AppendSigning(parameterSection, i, typeBuilder))
@@ -240,7 +232,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 					if (AppendPackedDimensions(parameterSection, i, typeBuilder))
 						{  portFlags |= PortFlags.HasPackedDimensions;  }
 
-					if (impliedTypes && (portFlags & PortFlags.HasKindOrAnyDataType) != 0)
+					if (impliedTypes && (portFlags & PortFlags.HasDataTypeOrProperties) != 0)
 						{  break;  }
 					}
 
@@ -288,10 +280,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				}
 
 
-			// Kind and Data Type
+			// Data Type
 
-			if (AppendKind(parameterSection, parameterIndex, typeBuilder))
-				{  portFlags |= PortFlags.HasKind;  }
 			if (AppendBaseDataType(parameterSection, parameterIndex, typeBuilder))
 				{
 				portFlags |= PortFlags.HasBaseDataType;
@@ -304,14 +294,12 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			if (AppendPackedDimensions(parameterSection, parameterIndex, typeBuilder))
 				{  portFlags |= PortFlags.HasPackedDimensions;  }
 
-			// Kind and data type only inherit if none of them are specified.  If any component is set the other ones do not
-			// inherit, they revert to a default data type.  This includes if signing or packed data types appear alone.
-			if (impliedTypes && (portFlags & PortFlags.HasKindOrAnyDataType) == 0)
+			// The data type only inherits if nothing is specified.  If the base type or any properties are set the rest does
+			// not inherit, they revert to the default.  This includes if signing or packed data types appear alone.
+			if (impliedTypes && (portFlags & PortFlags.HasDataTypeOrProperties) == 0)
 				{
 				for (int i = parameterIndex - 1; i >= 0; i--)
 					{
-					if (AppendKind(parameterSection, i, typeBuilder))
-						{  portFlags |= PortFlags.HasKind;  }
 					if (AppendBaseDataType(parameterSection, i, typeBuilder))
 						{  portFlags |= PortFlags.HasBaseDataType;  }
 					if (AppendSigning(parameterSection, i, typeBuilder))
@@ -319,7 +307,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 					if (AppendPackedDimensions(parameterSection, i, typeBuilder))
 						{  portFlags |= PortFlags.HasPackedDimensions;  }
 
-					if (impliedTypes && (portFlags & PortFlags.HasKindOrAnyDataType) != 0)
+					if (impliedTypes && (portFlags & PortFlags.HasDataTypeOrProperties) != 0)
 						{  break;  }
 					}
 
@@ -529,17 +517,6 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			}
 
 
-		/* Function: HasKind
-		 * Returns whether the passed parameter contains a kind keyword (wire, tri0, var, etc.)  Kind keywords must
-		 * be marked with <PrototypeParsingType.TypeModifier>.
-		 */
-		protected bool HasKind (ParameterSection parameterSection, int parameterIndex)
-			{
-			TokenIterator ignore;
-			return FindKind(parameterSection, parameterIndex, out ignore);
-			}
-
-
 		/* Function: HasBaseDataType
 		 * Returns whether the passed parameter contains a base data type.  Base data type tokens must be marked
 		 * with <PrototypeParsingType.Type>, <PrototypeParsingType.TypeQualifier>, or for type references like "type(x)",
@@ -651,35 +628,6 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				}
 
 			keywordPosition = tokenizer.EndOfTokens;
-			return false;
-			}
-
-
-		/* Function: FindKind
-		 * If the passed parameter contains a kind keyword (wire, tri0, var, etc.) it will return a <TokenIterator> at its
-		 * position and return true.  Returns false otherwise.  Kind keywords must be marked with
-		 * <PrototypeParsingType.TypeModifier>.
-		 */
-		protected bool FindKind (ParameterSection parameterSection, int parameterIndex, out TokenIterator kindPosition)
-			{
-			TokenIterator iterator, end;
-			parameterSection.GetParameterBounds(parameterIndex, out iterator, out end);
-
-			while (iterator < end)
-				{
-				if (iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier &&
-					(Languages.Parsers.SystemVerilog.IsOnNetTypeKeyword(iterator) ||
-					 Languages.Parsers.SystemVerilog.IsOnKeyword(iterator, "var")) )
-					{
-					kindPosition = iterator;
-					return true;
-					}
-
-				if (!TryToSkipBlock(ref iterator, end))
-					{  iterator.Next();  }
-				}
-
-			kindPosition = tokenizer.EndOfTokens;
 			return false;
 			}
 
@@ -907,24 +855,6 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			if (FindParameterKeyword(parameterSection, parameterIndex, out directionKeyword))
 				{
 				typeBuilder.AddToken(directionKeyword);
-				return true;
-				}
-			else
-				{  return false;  }
-			}
-
-
-		/* Function: AppendKind
-		 * If the passed parameter contains a kind keyword (wire, tri0, var, etc.) it will add it to the <TypeBuilder> and return
-		 * true.  Returns false otherwise.  Kind keywords must be marked with <PrototypeParsingType.TypeModifier>.
-		 */
-		protected bool AppendKind (ParameterSection parameterSection, int parameterIndex, TypeBuilder typeBuilder)
-			{
-			TokenIterator kindKeyword;
-
-			if (FindKind(parameterSection, parameterIndex, out kindKeyword))
-				{
-				typeBuilder.AddToken(kindKeyword);
 				return true;
 				}
 			else
