@@ -41,6 +41,7 @@
 
 
 using System;
+using System.Reflection.Emit;
 using CodeClear.NaturalDocs.Engine.Tokenization;
 
 
@@ -336,8 +337,9 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			// Find the start of the base type, and whether we have one
 
 			bool foundBaseType = false;
+			TokenIterator endOfParameter;
 
-			if (FindBaseDataType(parameterSection, parameterIndex, out baseTypeStart))
+			if (FindBaseDataType(parameterSection, parameterIndex, out baseTypeStart, out endOfParameter))
 				{
 				foundBaseType = true;
 				}
@@ -356,7 +358,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 					{
 					for (int i = parameterIndex - 1; i >= 0; i--)
 						{
-						if (FindBaseDataType(parameterSection, i, out baseTypeStart))
+						if (FindBaseDataType(parameterSection, i, out baseTypeStart, out endOfParameter))
 							{
 							foundBaseType = true;
 							break;
@@ -418,8 +420,9 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			// Find the start of the base type, and whether we have one
 
 			bool foundBaseType = false;
+			TokenIterator endOfParameter;
 
-			if (FindBaseDataType(parameterSection, parameterIndex, out baseTypeStart))
+			if (FindBaseDataType(parameterSection, parameterIndex, out baseTypeStart, out endOfParameter))
 				{
 				foundBaseType = true;
 				}
@@ -438,7 +441,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 					{
 					for (int i = parameterIndex - 1; i >= 0; i--)
 						{
-						if (FindBaseDataType(parameterSection, i, out baseTypeStart))
+						if (FindBaseDataType(parameterSection, i, out baseTypeStart, out endOfParameter))
 							{
 							foundBaseType = true;
 							break;
@@ -502,8 +505,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 */
 		protected bool HasDirection (ParameterSection parameterSection, int parameterIndex)
 			{
-			TokenIterator ignore;
-			return FindDirection(parameterSection, parameterIndex, out ignore);
+			TokenIterator ignore1, ignore2;
+			return FindDirection(parameterSection, parameterIndex, out ignore1, out ignore2);
 			}
 
 
@@ -513,8 +516,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 */
 		protected bool HasParameterKeyword (ParameterSection parameterSection, int parameterIndex)
 			{
-			TokenIterator ignore;
-			return FindParameterKeyword(parameterSection, parameterIndex, out ignore);
+			TokenIterator ignore1, ignore2;
+			return FindParameterKeyword(parameterSection, parameterIndex, out ignore1, out ignore2);
 			}
 
 
@@ -525,8 +528,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 */
 		protected bool HasBaseDataType (ParameterSection parameterSection, int parameterIndex)
 			{
-			TokenIterator ignore;
-			return FindBaseDataType(parameterSection, parameterIndex, out ignore);
+			TokenIterator ignore1, ignore2;
+			return FindBaseDataType(parameterSection, parameterIndex, out ignore1, out ignore2);
 			}
 
 
@@ -535,8 +538,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 */
 		protected bool HasOtherModifiers (ParameterSection parameterSection, int parameterIndex)
 			{
-			TokenIterator ignore;
-			return FindOtherModifiers(parameterSection, parameterIndex, out ignore);
+			TokenIterator ignore1, ignore2;
+			return FindOtherModifiers(parameterSection, parameterIndex, out ignore1, out ignore2);
 			}
 
 
@@ -550,8 +553,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 */
 		protected bool HasSigning (ParameterSection parameterSection, int parameterIndex)
 			{
-			TokenIterator ignore;
-			return FindSigning(parameterSection, parameterIndex, out ignore);
+			TokenIterator ignore1, ignore2;
+			return FindSigning(parameterSection, parameterIndex, out ignore1, out ignore2);
 			}
 
 
@@ -562,8 +565,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 */
 		protected bool HasPackedDimensions (ParameterSection parameterSection, int parameterIndex)
 			{
-			TokenIterator ignore;
-			return FindPackedDimensions(parameterSection, parameterIndex, out ignore);
+			TokenIterator ignore1, ignore2;
+			return FindPackedDimensions(parameterSection, parameterIndex, out ignore1, out ignore2);
 			}
 
 
@@ -575,8 +578,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 */
 		protected bool HasUnpackedDimensions (ParameterSection parameterSection, int parameterIndex)
 			{
-			TokenIterator ignore;
-			return FindUnpackedDimensions(parameterSection, parameterIndex, out ignore);
+			TokenIterator ignore1, ignore2;
+			return FindUnpackedDimensions(parameterSection, parameterIndex, out ignore1, out ignore2);
 			}
 
 
@@ -585,12 +588,13 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * its position and return true.  Returns false otherwise.  Direction keywords must be marked with
 		 * <PrototypeParsingType.TypeModifier>.
 		 */
-		protected bool FindDirection (ParameterSection parameterSection, int parameterIndex, out TokenIterator directionPosition)
+		protected bool FindDirection (ParameterSection parameterSection, int parameterIndex,
+												  out TokenIterator directionPosition, out TokenIterator endOfParameter)
 			{
-			TokenIterator iterator, end;
-			parameterSection.GetParameterBounds(parameterIndex, out iterator, out end);
+			TokenIterator iterator;
+			parameterSection.GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
 
-			while (iterator < end)
+			while (iterator < endOfParameter)
 				{
 				if (iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier &&
 					Languages.Parsers.SystemVerilog.IsOnDirectionKeyword(iterator))
@@ -599,11 +603,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 					return true;
 					}
 
-				if (!TryToSkipBlock(ref iterator, end))
+				if (!TryToSkipBlock(ref iterator, endOfParameter))
 					{  iterator.Next();  }
 				}
 
-			directionPosition = tokenizer.EndOfTokens;
+			directionPosition = endOfParameter;
 			return false;
 			}
 
@@ -613,12 +617,13 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * its position and return true.  Returns false otherwise.  Parameter keywords must be marked with
 		 * <PrototypeParsingType.TypeModifier>.
 		 */
-		protected bool FindParameterKeyword (ParameterSection parameterSection, int parameterIndex, out TokenIterator keywordPosition)
+		protected bool FindParameterKeyword (ParameterSection parameterSection, int parameterIndex,
+																out TokenIterator keywordPosition, out TokenIterator endOfParameter)
 			{
-			TokenIterator iterator, end;
-			parameterSection.GetParameterBounds(parameterIndex, out iterator, out end);
+			TokenIterator iterator;
+			parameterSection.GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
 
-			while (iterator < end)
+			while (iterator < endOfParameter)
 				{
 				if (iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier &&
 					Languages.Parsers.SystemVerilog.IsOnParameterKeyword(iterator))
@@ -627,11 +632,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 					return true;
 					}
 
-				if (!TryToSkipBlock(ref iterator, end))
+				if (!TryToSkipBlock(ref iterator, endOfParameter))
 					{  iterator.Next();  }
 				}
 
-			keywordPosition = tokenizer.EndOfTokens;
+			keywordPosition = endOfParameter;
 			return false;
 			}
 
@@ -642,12 +647,12 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * <PrototypeParsingType.TypeQualifier>.
 		 */
 		protected bool FindBaseDataType (ParameterSection parameterSection, int parameterIndex,
-														  out TokenIterator baseDataTypePosition)
+														  out TokenIterator baseDataTypePosition, out TokenIterator endOfParameter)
 			{
-			TokenIterator iterator, end;
-			parameterSection.GetParameterBounds(parameterIndex, out iterator, out end);
+			TokenIterator iterator;
+			parameterSection.GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
 
-			while (iterator < end)
+			while (iterator < endOfParameter)
 				{
 				if (iterator.PrototypeParsingType == PrototypeParsingType.Type ||
 					iterator.PrototypeParsingType == PrototypeParsingType.TypeQualifier)
@@ -656,11 +661,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 					return true;
 					}
 
-				if (!TryToSkipBlock(ref iterator, end))
+				if (!TryToSkipBlock(ref iterator, endOfParameter))
 					{  iterator.Next();  }
 				}
 
-			baseDataTypePosition = tokenizer.EndOfTokens;
+			baseDataTypePosition = endOfParameter;
 			return false;
 			}
 
@@ -670,17 +675,17 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * <TokenIterator> at its position and return true.
 		 */
 		protected bool FindOtherModifiers (ParameterSection parameterSection, int parameterIndex,
-														  out TokenIterator modifierPosition)
+														  out TokenIterator modifierPosition, out TokenIterator endOfParameter)
 			{
-			TokenIterator iterator, end;
-			parameterSection.GetParameterBounds(parameterIndex, out iterator, out end);
+			TokenIterator iterator;
+			parameterSection.GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
 
 			// First find the type
 			for (;;)
 				{
-				if (iterator >= end)
+				if (iterator >= endOfParameter)
 					{
-					modifierPosition = tokenizer.EndOfTokens;
+					modifierPosition = endOfParameter;
 					return false;
 					}
 				else if (iterator.PrototypeParsingType == PrototypeParsingType.Type)
@@ -692,20 +697,20 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			// Move past the type
 			do
 				{  iterator.Next();  }
-			while (iterator < end &&
+			while (iterator < endOfParameter &&
 					 iterator.PrototypeParsingType == PrototypeParsingType.Type);
 
 			// Move past any unmarked whitespace after the type
-			while (iterator < end &&
+			while (iterator < endOfParameter &&
 					 iterator.PrototypeParsingType == PrototypeParsingType.Null &&
 					 (iterator.FundamentalType == FundamentalType.Whitespace ||
 					  iterator.FundamentalType == FundamentalType.LineBreak))
 				{  iterator.Next();  }
 
 			// Check that we're still in bounds
-			if (iterator >= end)
+			if (iterator >= endOfParameter)
 				{
-				modifierPosition = tokenizer.EndOfTokens;
+				modifierPosition = endOfParameter;
 				return false;
 				}
 
@@ -721,7 +726,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				}
 			else
 				{
-				modifierPosition = tokenizer.EndOfTokens;
+				modifierPosition = endOfParameter;
 				return false;
 				}
 			}
@@ -736,12 +741,13 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * Note that this will return false for signed structs and unions.  This is because those appear in the middle of
 		 * "other modifiers" so are treated as part of them.
 		 */
-		protected bool FindSigning (ParameterSection parameterSection, int parameterIndex, out TokenIterator signingPosition)
+		protected bool FindSigning (ParameterSection parameterSection, int parameterIndex,
+												out TokenIterator signingPosition, out TokenIterator endOfParameter)
 			{
-			TokenIterator iterator, end;
-			parameterSection.GetParameterBounds(parameterIndex, out iterator, out end);
+			TokenIterator iterator;
+			parameterSection.GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
 
-			while (iterator < end)
+			while (iterator < endOfParameter)
 				{
 				if (iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier &&
 					Languages.Parsers.SystemVerilog.IsOnSigningKeyword(iterator))
@@ -752,18 +758,18 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 					TokenIterator lookbehind = iterator;
 					lookbehind.Previous(2);
 
-					if (lookbehind.IsInBounds && lookbehind.MatchesToken("packed") == false)
+					if (lookbehind < endOfParameter && lookbehind.MatchesToken("packed") == false)
 						{
 						signingPosition = iterator;
 						return true;
 						}
 					}
 
-				if (!TryToSkipBlock(ref iterator, end))
+				if (!TryToSkipBlock(ref iterator, endOfParameter))
 					{  iterator.Next();  }
 				}
 
-			signingPosition = tokenizer.EndOfTokens;
+			signingPosition = endOfParameter;
 			return false;
 			}
 
@@ -775,12 +781,12 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * cannot appear after a <PrototypeParsingType.Name> token.
 		 */
 		protected bool FindPackedDimensions (ParameterSection parameterSection, int parameterIndex,
-																out TokenIterator packedDimensionsPosition)
+																out TokenIterator packedDimensionsPosition, out TokenIterator endOfParameter)
 			{
-			TokenIterator iterator, end;
-			parameterSection.GetParameterBounds(parameterIndex, out iterator, out end);
+			TokenIterator iterator;
+			parameterSection.GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
 
-			while (iterator < end)
+			while (iterator < endOfParameter)
 				{
 				if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier &&
 					iterator.Character == '[')
@@ -792,11 +798,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				else if (iterator.PrototypeParsingType == PrototypeParsingType.Name)
 					{  break;  }
 
-				if (!TryToSkipBlock(ref iterator, end))
+				if (!TryToSkipBlock(ref iterator, endOfParameter))
 					{  iterator.Next();  }
 				}
 
-			packedDimensionsPosition = tokenizer.EndOfTokens;
+			packedDimensionsPosition = endOfParameter;
 			return false;
 			}
 
@@ -808,18 +814,18 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * must appear after a <PrototypeParsingType.Name> token.
 		 */
 		protected bool FindUnpackedDimensions (ParameterSection parameterSection, int parameterIndex,
-																	out TokenIterator unpackedDimensionsPosition)
+																   out TokenIterator unpackedDimensionsPosition, out TokenIterator endOfParameter)
 			{
-			TokenIterator iterator, end;
-			parameterSection.GetParameterBounds(parameterIndex, out iterator, out end);
+			TokenIterator iterator;
+			parameterSection.GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
 
 
 			// Skip all the tokens before the name
 
-			while (iterator < end &&
+			while (iterator < endOfParameter &&
 					 iterator.PrototypeParsingType != PrototypeParsingType.Name)
 				{
-				if (!TryToSkipBlock(ref iterator, end))
+				if (!TryToSkipBlock(ref iterator, endOfParameter))
 					{  iterator.Next();  }
 				}
 
@@ -828,7 +834,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 			if (iterator.PrototypeParsingType != PrototypeParsingType.Name)
 				{
-				unpackedDimensionsPosition = tokenizer.EndOfTokens;
+				unpackedDimensionsPosition = endOfParameter;
 				return false;
 				}
 
@@ -842,7 +848,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 			// Now look for param modifiers after the name
 
-			while (iterator < end)
+			while (iterator < endOfParameter)
 				{
 				if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier &&
 					iterator.Character == '[')
@@ -851,11 +857,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 					return true;
 					}
 
-				if (!TryToSkipBlock(ref iterator, end))
+				if (!TryToSkipBlock(ref iterator, endOfParameter))
 					{  iterator.Next();  }
 				}
 
-			unpackedDimensionsPosition = tokenizer.EndOfTokens;
+			unpackedDimensionsPosition = endOfParameter;
 			return false;
 			}
 
@@ -867,9 +873,9 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 */
 		protected bool AppendDirection (ParameterSection parameterSection, int parameterIndex, TypeBuilder typeBuilder)
 			{
-			TokenIterator directionKeyword;
+			TokenIterator directionKeyword, endOfParameter;
 
-			if (FindDirection(parameterSection, parameterIndex, out directionKeyword))
+			if (FindDirection(parameterSection, parameterIndex, out directionKeyword, out endOfParameter))
 				{
 				typeBuilder.AddToken(directionKeyword);
 				return true;
@@ -886,9 +892,9 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 */
 		protected bool AppendParameterKeyword (ParameterSection parameterSection, int parameterIndex, TypeBuilder typeBuilder)
 			{
-			TokenIterator directionKeyword;
+			TokenIterator directionKeyword, endOfParameter;
 
-			if (FindParameterKeyword(parameterSection, parameterIndex, out directionKeyword))
+			if (FindParameterKeyword(parameterSection, parameterIndex, out directionKeyword, out endOfParameter))
 				{
 				typeBuilder.AddToken(directionKeyword);
 				return true;
@@ -905,9 +911,9 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 */
 		protected bool AppendBaseDataType (ParameterSection parameterSection, int parameterIndex, TypeBuilder typeBuilder)
 			{
-			TokenIterator iterator;
+			TokenIterator iterator, endOfParameter;
 
-			if (FindBaseDataType(parameterSection, parameterIndex, out iterator))
+			if (FindBaseDataType(parameterSection, parameterIndex, out iterator, out endOfParameter))
 				{
 				bool isTypeReference = iterator.MatchesToken("type");
 
@@ -915,7 +921,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				iterator.Next();
 
 				// Add any consecutive type or type qualifier tokens.
-				while (iterator.IsInBounds)
+				while (iterator < endOfParameter)
 					{
 					if (iterator.PrototypeParsingType == PrototypeParsingType.Type ||
 						iterator.PrototypeParsingType == PrototypeParsingType.TypeQualifier)
@@ -932,7 +938,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 						TokenIterator openingSymbol = iterator;
 						TokenIterator closingSymbol, endOfBlock;
 
-						if (!GetEndOfBlock(openingSymbol, out closingSymbol, out endOfBlock))
+						if (!GetEndOfBlock(openingSymbol, endOfParameter, out closingSymbol, out endOfBlock))
 							{  break;  }
 
 						typeBuilder.AddModifierBlock(openingSymbol, closingSymbol, endOfBlock);
@@ -964,14 +970,14 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 */
 		protected bool AppendOtherModifiers (ParameterSection parameterSection, int parameterIndex, TypeBuilder typeBuilder)
 			{
-			TokenIterator iterator;
+			TokenIterator iterator, endOfParameter;
 
-			if (!FindOtherModifiers(parameterSection, parameterIndex, out iterator))
+			if (!FindOtherModifiers(parameterSection, parameterIndex, out iterator, out endOfParameter))
 				{  return false;  }
 
 			TokenIterator closingSymbol, endOfBlock;
 
-			while (iterator.IsInBounds)
+			while (iterator < endOfParameter)
 				{
 				if (iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier)
 					{
@@ -986,7 +992,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 						{  break;  }
 					else
 						{
-						GetEndOfBlock(iterator, out closingSymbol, out endOfBlock);
+						GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock);
 
 						typeBuilder.AddModifierBlock(iterator, closingSymbol, endOfBlock);
 						iterator = endOfBlock;
@@ -999,7 +1005,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				// If there's null whitespace tokens, move past them to see if there's any more properties on the other side.
 				// The type builder will handle spacing so we don't have to worry about adding them.
 				while (iterator.PrototypeParsingType == PrototypeParsingType.Null &&
-						 iterator.IsInBounds &&
+						 iterator < endOfParameter &&
 						 (iterator.FundamentalType == FundamentalType.Whitespace ||
 						  iterator.FundamentalType == FundamentalType.LineBreak) )
 					{
@@ -1021,9 +1027,9 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 */
 		protected bool AppendSigning (ParameterSection parameterSection, int parameterIndex, TypeBuilder typeBuilder)
 			{
-			TokenIterator signingKeyword;
+			TokenIterator signingKeyword, endOfParameter;
 
-			if (FindSigning(parameterSection, parameterIndex, out signingKeyword))
+			if (FindSigning(parameterSection, parameterIndex, out signingKeyword, out endOfParameter))
 				{
 				typeBuilder.AddToken(signingKeyword);
 				return true;
@@ -1040,23 +1046,23 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 */
 		protected bool AppendPackedDimensions (ParameterSection parameterSection, int parameterIndex, TypeBuilder typeBuilder)
 			{
-			TokenIterator iterator;
+			TokenIterator iterator, endOfParameter;
 
-			if (FindPackedDimensions(parameterSection, parameterIndex, out iterator))
+			if (FindPackedDimensions(parameterSection, parameterIndex, out iterator, out endOfParameter))
 				{
 				TokenIterator closingSymbol, endOfBlock;
-				GetEndOfBlock(iterator, out closingSymbol, out endOfBlock);
+				GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock);
 
 				typeBuilder.AddModifierBlock(iterator, closingSymbol, endOfBlock);
 				iterator = endOfBlock;
 
 				// Add any consecutive packed dimensions.
-				while (iterator.IsInBounds)
+				while (iterator < endOfParameter)
 					{
 					if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier &&
 						iterator.Character == '[')
 						{
-						GetEndOfBlock(iterator, out closingSymbol, out endOfBlock);
+						GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock);
 
 						typeBuilder.AddModifierBlock(iterator, closingSymbol, endOfBlock);
 						iterator = endOfBlock;
@@ -1102,26 +1108,26 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		protected bool AppendUnpackedDimensions (ParameterSection parameterSection, int parameterIndex, TypeBuilder typeBuilder,
 																		bool addStandInForName)
 			{
-			TokenIterator iterator;
+			TokenIterator iterator, endOfParameter;
 
-			if (FindUnpackedDimensions(parameterSection, parameterIndex, out iterator))
+			if (FindUnpackedDimensions(parameterSection, parameterIndex, out iterator, out endOfParameter))
 				{
 				if (addStandInForName)
 					{  typeBuilder.AddToken(NameStandInToken.FirstToken);  }
 
 				TokenIterator closingSymbol, endOfBlock;
-				GetEndOfBlock(iterator, out closingSymbol, out endOfBlock);
+				GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock);
 
 				typeBuilder.AddModifierBlock(iterator, closingSymbol, endOfBlock);
 				iterator = endOfBlock;
 
 				// Add any consecutive unpacked dimensions.
-				while (iterator.IsInBounds)
+				while (iterator < endOfParameter)
 					{
 					if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier &&
 						iterator.Character == '[')
 						{
-						GetEndOfBlock(iterator, out closingSymbol, out endOfBlock);
+						GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock);
 
 						typeBuilder.AddModifierBlock(iterator, closingSymbol, endOfBlock);
 						iterator = endOfBlock;
