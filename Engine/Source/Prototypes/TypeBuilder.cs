@@ -168,7 +168,9 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					  (iterator.Tokenizer != lastTokenIterator.Tokenizer || iterator.TokenIndex != lastTokenIterator.TokenIndex + 1))
 					||
 					(thisTokenType == FundamentalType.Text && lastTokenType == FundamentalType.Symbol &&
-					 !dontAddSpaceAfterSymbol && (pastFirstText || lastSymbolWasBlock)) )
+					 !dontAddSpaceAfterSymbol && (pastFirstText || lastSymbolWasBlock))
+					||
+					(iterator.Character == '{' && lastTokenType == FundamentalType.Text) )
 					{
 					rawText.Append(' ');
 					prototypeParsingTypes.Add(PrototypeParsingType.Null);
