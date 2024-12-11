@@ -112,6 +112,25 @@ module InterfacesAndModPorts (
 endmodule
 
 
+// Module: VariableTypes
+module VariableTypes (
+	input bit portA,
+	input logic unsigned portB,
+	input reg [7:0] portC,
+
+	input byte portD,
+	input shortint portE,
+	input int unsigned portF,
+	input longint unsigned portG,
+	input integer portH,
+	input time portI,
+
+	input shortreal portJ,
+	input real portK,
+	input realtime portL);
+endmodule
+
+
 
 // Group: Net Types and Data Types
 // ___________________________________________________
