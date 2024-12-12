@@ -678,57 +678,60 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 														  out TokenIterator modifierPosition, out TokenIterator endOfParameter)
 			{
 			TokenIterator iterator;
-			parameterSection.GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
+			string typeKeyword = null;
 
-			// First find the type
-			for (;;)
+			// If it has a base data type, take the first token as a keyword.  This lets us detect types like structs and unions
+			// which need special handling.
+			if (FindBaseDataType(parameterSection, parameterIndex, out iterator, out endOfParameter))
 				{
-				if (iterator >= endOfParameter)
-					{
-					modifierPosition = endOfParameter;
-					return false;
-					}
-				else if (iterator.PrototypeParsingType == PrototypeParsingType.Type)
-					{  break;  }
-				else
+				// Checking for PrototypeParsingType.Type avoids qualifiers being taken as the keyword
+				if (iterator.PrototypeParsingType == PrototypeParsingType.Type)
+					{  typeKeyword = iterator.String;  }
+
+				// Move past the rest of the type
+				do
 					{  iterator.Next();  }
-				}
+				while (iterator < endOfParameter &&
+						 (iterator.PrototypeParsingType == PrototypeParsingType.Type ||
+						  iterator.PrototypeParsingType == PrototypeParsingType.TypeQualifier));
 
-			// Move past the type
-			do
-				{  iterator.Next();  }
-			while (iterator < endOfParameter &&
-					 iterator.PrototypeParsingType == PrototypeParsingType.Type);
-
-			// Move past any unmarked whitespace after the type
-			while (iterator < endOfParameter &&
-					 iterator.PrototypeParsingType == PrototypeParsingType.Null &&
-					 (iterator.FundamentalType == FundamentalType.Whitespace ||
-					  iterator.FundamentalType == FundamentalType.LineBreak))
-				{  iterator.Next();  }
-
-			// Check that we're still in bounds
-			if (iterator >= endOfParameter)
-				{
-				modifierPosition = endOfParameter;
-				return false;
-				}
-
-			// Return true for any modifier that isn't a signing keyword, and any modifier block that isn't a packed
-			// dimension
-			if ( (iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier &&
-				  !Languages.Parsers.SystemVerilog.IsOnSigningKeyword(iterator)) ||
-				 (iterator.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier &&
-				  iterator.Character != '[') )
-				{
-				modifierPosition = iterator;
-				return true;
+				// Move past any unmarked whitespace after the type
+				while (iterator < endOfParameter &&
+						 iterator.PrototypeParsingType == PrototypeParsingType.Null &&
+						 (iterator.FundamentalType == FundamentalType.Whitespace ||
+						  iterator.FundamentalType == FundamentalType.LineBreak))
+					{  iterator.Next();  }
 				}
 			else
 				{
-				modifierPosition = endOfParameter;
-				return false;
+				// If it doesn't have a base data type we don't have to worry about special handling.  Position the
+				// iterator at the beginning of the parameter.
+				parameterSection.GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
 				}
+
+			if (iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier)
+				{
+				// Structs and unions can have signing but we want to treat them as "other modifiers"
+				if (Languages.Parsers.SystemVerilog.IsOnSigningKeyword(iterator) == false ||
+					typeKeyword == "struct" ||
+					typeKeyword == "union")
+					{
+					modifierPosition = iterator;
+					return true;
+					}
+				}
+			else if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier)
+				{
+				// Don't treat packed dimensions as "other modifiers"
+				if (iterator.Character != '[')
+					{
+					modifierPosition = iterator;
+					return true;
+					}
+				}
+
+			modifierPosition = endOfParameter;
+			return false;
 			}
 
 
@@ -745,24 +748,39 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 												out TokenIterator signingPosition, out TokenIterator endOfParameter)
 			{
 			TokenIterator iterator;
-			parameterSection.GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
+
+			// If it has a base data type, take the first token as a keyword.  This lets us detect types like structs and unions
+			// which need special handling.
+			if (FindBaseDataType(parameterSection, parameterIndex, out iterator, out endOfParameter))
+				{
+				// Checking for PrototypeParsingType.Type avoids qualifiers being taken as the keyword
+				if (iterator.PrototypeParsingType == PrototypeParsingType.Type)
+					{
+					string typeKeyword = iterator.String;
+
+					// Structs and unions can have signing keywords, but we want to treat them as "other modifiers"
+					if (typeKeyword == "struct" ||
+						typeKeyword == "union")
+						{
+						signingPosition = endOfParameter;
+						return false;
+						}
+					}
+				}
+			else
+				{
+				// If it doesn't have a base data type we don't have to worry about special handling.  Position the
+				// iterator at the beginning of the parameter.
+				parameterSection.GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
+				}
 
 			while (iterator < endOfParameter)
 				{
 				if (iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier &&
 					Languages.Parsers.SystemVerilog.IsOnSigningKeyword(iterator))
 					{
-					// Structs and unions can have a signing keyword, but we don't want to include them here.  They will
-					// always appear after a "packed" keyword and be followed by the opening brace of the body definition.
-					// Search for "packed" since that seems like the less likely one to create a false positive.
-					TokenIterator lookbehind = iterator;
-					lookbehind.Previous(2);
-
-					if (lookbehind < endOfParameter && lookbehind.MatchesToken("packed") == false)
-						{
-						signingPosition = iterator;
-						return true;
-						}
+					signingPosition = iterator;
+					return true;
 					}
 
 				if (!TryToSkipBlock(ref iterator, endOfParameter))
