@@ -170,7 +170,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					(thisTokenType == FundamentalType.Text && lastTokenType == FundamentalType.Symbol &&
 					 !dontAddSpaceAfterSymbol && (pastFirstText || lastSymbolWasBlock))
 					||
-					(iterator.Character == '{' && lastTokenType == FundamentalType.Text) )
+					iterator.Character == '{' )
 					{
 					rawText.Append(' ');
 					prototypeParsingTypes.Add(PrototypeParsingType.Null);
