@@ -132,6 +132,7 @@ endmodule
 
 
 // Module: StructsAndUnions
+// Structs and unions are allowed to be defined inline in port declarations.
 module StructsAndUnions (
 	input struct { bit a1; } portA,
 	input union { bit b1; bit b2; } portB,
@@ -151,6 +152,39 @@ module StructsAndUnions (
 endmodule
 
 
+// Module: Enums
+// Enums are allowed to be defined inline in port declarations.
+module Enums (
+	input enum { a1, a2 } portA,
+
+	input enum bit { b1, b2 } portB,
+	input enum bit unsigned { c1, c2 } portC,
+	input enum bit unsigned [7:0] { d1, d2 } portD,
+	input enum bit [7:0] { e1, e2 } portE,
+
+	input enum unsigned { f1, f2 } portF,
+	input enum unsigned [7:0] { g1, g2 } portG,
+	input enum [7:0] { h1, h2 } portH,
+
+	input enum UserType { i1, i2 } portI,
+	input enum UserType [7:0]{  j1, j2 } portJ,
+
+	input enum { k1, k2 } [7:0] portK,
+
+	input enum bit { l1, l2 } [7:0] portL,
+	input enum bit unsigned { m1, m2 } [7:0] portM,
+	input enum bit unsigned [7:0] { n1, n2 } [7:0] portN,
+	input enum bit [7:0] { o1, o2 } [7:0] portO,
+
+	input enum unsigned { p1, p2 } [7:0] portP,
+	input enum unsigned [7:0] { q1, q2 } [7:0] portQ,
+	input enum [7:0] { r1, r2 } [7:0] portR,
+
+	input enum UserType { s1, s2 } [7:0] portS,
+	input enum UserType [7:0] { t1, t2 } [7:0] portT,
+
+	input enum { u1, u2 = 2, u3[1], u4[1:4] = 'b0100 } portU);
+endmodule
 
 // Group: Net Types and Data Types
 // ___________________________________________________

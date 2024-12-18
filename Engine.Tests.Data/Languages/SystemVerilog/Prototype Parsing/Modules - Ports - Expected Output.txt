@@ -579,6 +579,163 @@ Port Definition Components:
     - Link Candidates: (none)
 
 ------------------------------
+
+- Parameter Section:
+  - Before Parameters: module Enums (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: input enum { a1, a2 } portA,
+    - Name: portA
+    - Full Type: input enum { a1, a2 }
+    - Base Type: enum
+    - Link Candidates: enum
+    - Default Value: (not detected)
+
+  - Parameter 2: input enum bit { b1, b2 } portB,
+    - Name: portB
+    - Full Type: input enum bit { b1, b2 }
+    - Base Type: enum
+    - Link Candidates: enum
+    - Default Value: (not detected)
+
+  - Parameter 3: input enum bit unsigned { c1, c2 } portC,
+    - Name: portC
+    - Full Type: input enum bit unsigned { c1, c2 }
+    - Base Type: enum
+    - Link Candidates: enum
+    - Default Value: (not detected)
+
+  - Parameter 4: input enum bit unsigned [7:0] { d1, d2 } portD,
+    - Name: portD
+    - Full Type: input enum bit unsigned[7:0] { d1, d2 }
+    - Base Type: enum
+    - Link Candidates: enum
+    - Default Value: (not detected)
+
+  - Parameter 5: input enum bit [7:0] { e1, e2 } portE,
+    - Name: portE
+    - Full Type: input enum bit[7:0] { e1, e2 }
+    - Base Type: enum
+    - Link Candidates: enum
+    - Default Value: (not detected)
+
+  - Parameter 6: input enum unsigned { f1, f2 } portF,
+    - Name: portF
+    - Full Type: input enum unsigned { f1, f2 }
+    - Base Type: enum
+    - Link Candidates: enum
+    - Default Value: (not detected)
+
+  - Parameter 7: input enum unsigned [7:0] { g1, g2 } portG,
+    - Name: portG
+    - Full Type: input enum unsigned[7:0] { g1, g2 }
+    - Base Type: enum
+    - Link Candidates: enum
+    - Default Value: (not detected)
+
+  - Parameter 8: input enum [7:0] { h1, h2 } portH,
+    - Name: portH
+    - Full Type: input enum[7:0] { h1, h2 }
+    - Base Type: enum
+    - Link Candidates: enum
+    - Default Value: (not detected)
+
+  - Parameter 9: input enum UserType { i1, i2 } portI,
+    - Name: portI
+    - Full Type: input enum UserType { i1, i2 }
+    - Base Type: enum
+    - Link Candidates: enum
+    - Default Value: (not detected)
+
+  - Parameter 10: input enum UserType [7:0]{ j1, j2 } portJ,
+    - Name: portJ
+    - Full Type: input enum UserType[7:0] { j1, j2 }
+    - Base Type: enum
+    - Link Candidates: enum
+    - Default Value: (not detected)
+
+  - Parameter 11: input enum { k1, k2 } [7:0] portK,
+    - Name: portK
+    - Full Type: input enum { k1, k2 }[7:0]
+    - Base Type: enum
+    - Link Candidates: enum
+    - Default Value: (not detected)
+
+  - Parameter 12: input enum bit { l1, l2 } [7:0] portL,
+    - Name: portL
+    - Full Type: input enum bit { l1, l2 }[7:0]
+    - Base Type: enum
+    - Link Candidates: enum
+    - Default Value: (not detected)
+
+  - Parameter 13: input enum bit unsigned { m1, m2 } [7:0] portM,
+    - Name: portM
+    - Full Type: input enum bit unsigned { m1, m2 }[7:0]
+    - Base Type: enum
+    - Link Candidates: enum
+    - Default Value: (not detected)
+
+  - Parameter 14: input enum bit unsigned [7:0] { n1, n2 } [7:0] portN,
+    - Name: portN
+    - Full Type: input enum bit unsigned[7:0] { n1, n2 }[7:0]
+    - Base Type: enum
+    - Link Candidates: enum
+    - Default Value: (not detected)
+
+  - Parameter 15: input enum bit [7:0] { o1, o2 } [7:0] portO,
+    - Name: portO
+    - Full Type: input enum bit[7:0] { o1, o2 }[7:0]
+    - Base Type: enum
+    - Link Candidates: enum
+    - Default Value: (not detected)
+
+  - Parameter 16: input enum unsigned { p1, p2 } [7:0] portP,
+    - Name: portP
+    - Full Type: input enum unsigned { p1, p2 }[7:0]
+    - Base Type: enum
+    - Link Candidates: enum
+    - Default Value: (not detected)
+
+  - Parameter 17: input enum unsigned [7:0] { q1, q2 } [7:0] portQ,
+    - Name: portQ
+    - Full Type: input enum unsigned[7:0] { q1, q2 }[7:0]
+    - Base Type: enum
+    - Link Candidates: enum
+    - Default Value: (not detected)
+
+  - Parameter 18: input enum [7:0] { r1, r2 } [7:0] portR,
+    - Name: portR
+    - Full Type: input enum[7:0] { r1, r2 }[7:0]
+    - Base Type: enum
+    - Link Candidates: enum
+    - Default Value: (not detected)
+
+  - Parameter 19: input enum UserType { s1, s2 } [7:0] portS,
+    - Name: portS
+    - Full Type: input enum UserType { s1, s2 }[7:0]
+    - Base Type: enum
+    - Link Candidates: enum
+    - Default Value: (not detected)
+
+  - Parameter 20: input enum UserType [7:0] { t1, t2 } [7:0] portT,
+    - Name: portT
+    - Full Type: input enum UserType[7:0] { t1, t2 }[7:0]
+    - Base Type: enum
+    - Link Candidates: enum
+    - Default Value: (not detected)
+
+  - Parameter 21: input enum { u1, u2 = 2, u3[1], u4[1:4] = 'b0100 } portU
+    - Name: portU
+    - Full Type: input enum { u1, u2 = 2, u3[1], u4[1:4] = 'b0100 }
+    - Base Type: enum
+    - Link Candidates: enum
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
 Net Types and Data Types:
 ------------------------------
 
