@@ -869,7 +869,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Special Types
 
-			if (TryToSkipStruct(ref lookahead, mode))
+			if (TryToSkipStruct(ref lookahead, mode) ||
+				TryToSkipEnum(ref lookahead, mode))
 				{
 				TryToSkipWhitespace(ref lookahead, mode);
 				}
@@ -1604,9 +1605,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					return false;
 					}
 
-				// We want the type to be "enum" and not something like "enum int", so change any type tokens that were
-				// set by TryToSkipTypeName().  We do want the signing and dimensions tokens it marked, so we can't use
-				// IterateOnly instead.
+				// We want the type to be "enum" and not something like "enum int", so change any Type tokens that were set
+				// by TryToSkipTypeName() to TypeModifier.  We want to leave how it marked any signing or dimensions tokens
+				// though.
 				if (mode == ParseMode.ParsePrototype)
 					{
 					while (beginningOfType < lookahead)

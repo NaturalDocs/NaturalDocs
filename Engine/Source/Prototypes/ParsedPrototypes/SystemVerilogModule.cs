@@ -678,17 +678,16 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 														  out TokenIterator modifierPosition, out TokenIterator endOfParameter)
 			{
 			TokenIterator iterator;
-			string typeKeyword = null;
+			bool isStructUnion = false;
+			bool isEnum = false;
 
-			// If it has a base data type, take the first token as a keyword.  This lets us detect types like structs and unions
-			// which need special handling.
 			if (FindBaseDataType(parameterSection, parameterIndex, out iterator, out endOfParameter))
 				{
-				// Checking for PrototypeParsingType.Type avoids qualifiers being taken as the keyword
-				if (iterator.PrototypeParsingType == PrototypeParsingType.Type)
-					{  typeKeyword = iterator.String;  }
+				// If it has a base data type, check if it's a struct, union, or enum since they'll need special handling.
+				isStructUnion = Languages.Parsers.SystemVerilog.IsOnAnyKeyword(iterator, "struct", "union");
+				isEnum = Languages.Parsers.SystemVerilog.IsOnKeyword(iterator, "enum");
 
-				// Move past the rest of the type
+				// Move past the rest of the type name
 				do
 					{  iterator.Next();  }
 				while (iterator < endOfParameter &&
@@ -704,34 +703,74 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				}
 			else
 				{
-				// If it doesn't have a base data type we don't have to worry about special handling.  Position the
-				// iterator at the beginning of the parameter.
+				// If it doesn't have a base data type we don't have to worry about special handling.  Position the iterator
+				// at the beginning of the parameter.
 				parameterSection.GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
 				}
 
 			if (iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier)
 				{
-				// Structs and unions can have signing but we want to treat them as "other modifiers"
-				if (Languages.Parsers.SystemVerilog.IsOnSigningKeyword(iterator) == false ||
-					typeKeyword == "struct" ||
-					typeKeyword == "union")
+				if (Languages.Parsers.SystemVerilog.IsOnSigningKeyword(iterator))
 					{
-					modifierPosition = iterator;
-					return true;
+					// Structs, unions, and enums can have signing but we want to treat them as "other modifiers" instead,
+					// so return true.
+					if (isStructUnion || isEnum)
+						{
+						modifierPosition = iterator;
+						return true;
+						}
+					// For everything else signing doesn't get put under "other modifiers", so return false.
+					else
+						{
+						modifierPosition = endOfParameter;
+						return false;
+						}
 					}
-				}
-			else if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier)
-				{
-				// Don't treat packed dimensions as "other modifiers"
-				if (iterator.Character != '[')
+				// If it's a modifier but not a signing keyword it's definitely part of "other modifiers".
+				else
 					{
 					modifierPosition = iterator;
 					return true;
 					}
 				}
 
-			modifierPosition = endOfParameter;
-			return false;
+			else if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier)
+				{
+				if (iterator.Character == '[')
+					{
+					// Enums can have packed dimensions on the base type or after the body.  We want to treat ones on the
+					// base type as "other modifiers".
+					// - For "enum bit [7:0] { ... }" we would find "bit" before the dimensions and not hit this code block.
+					// - For "enum [7:0] { ... }" we would find the dimensions immediately after the base type.
+					// - For "enum { ... } [7:0]" we would find the body before the dimensions and not hit this code block.
+					// Thus we can say if we're here it's always the second option and so we should return true, that it's part
+					// of "other modifiers".
+					if (isEnum)
+						{
+						modifierPosition = iterator;
+						return true;
+						}
+					// If it's not on an enum then it's a packed dimension which we don't want to inlude in "other modifiers".
+					else
+						{
+						modifierPosition = endOfParameter;
+						return false;
+						}
+					}
+				// If it's an opening modifier keyword but not a dimension then it's definitely part of "other modifiers".
+				else
+					{
+					modifierPosition = iterator;
+					return true;
+					}
+				}
+
+			// If it's not a modifier at all we can return false.
+			else
+				{
+				modifierPosition = endOfParameter;
+				return false;
+				}
 			}
 
 
@@ -749,28 +788,19 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			{
 			TokenIterator iterator;
 
-			// If it has a base data type, take the first token as a keyword.  This lets us detect types like structs and unions
-			// which need special handling.
 			if (FindBaseDataType(parameterSection, parameterIndex, out iterator, out endOfParameter))
 				{
-				// Checking for PrototypeParsingType.Type avoids qualifiers being taken as the keyword
-				if (iterator.PrototypeParsingType == PrototypeParsingType.Type)
+				// If it has a base data type, check if it's a struct, union, or enum.  They can have signing keywords
+				// but we treat them as "other modifiers" so this function should return false.
+				if (Languages.Parsers.SystemVerilog.IsOnAnyKeyword(iterator, "struct", "union", "enum"))
 					{
-					string typeKeyword = iterator.String;
-
-					// Structs and unions can have signing keywords, but we want to treat them as "other modifiers"
-					if (typeKeyword == "struct" ||
-						typeKeyword == "union")
-						{
-						signingPosition = endOfParameter;
-						return false;
-						}
+					signingPosition = endOfParameter;
+					return false;
 					}
 				}
 			else
 				{
-				// If it doesn't have a base data type we don't have to worry about special handling.  Position the
-				// iterator at the beginning of the parameter.
+				// If it doesn't have a base data type, position the iterator at the beginning of the parameter.
 				parameterSection.GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
 				}
 
@@ -794,7 +824,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 		/* Function: FindPackedDimensions
 		 * If the passed parameter contains one or more packed dimensions it will return a <TokenIterator> at its position
-		 * and return true. Returns false otherwise.  Packed dimensions must be marked with
+		 * and return true.  Returns false otherwise.  Packed dimensions must be marked with
 		 * <PrototypeParsingType.OpeningTypeModifier> and <PrototypeParsingType.ClosingTypeModifier>.  They also
 		 * cannot appear after a <PrototypeParsingType.Name> token.
 		 */
@@ -802,15 +832,43 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 																out TokenIterator packedDimensionsPosition, out TokenIterator endOfParameter)
 			{
 			TokenIterator iterator;
-			parameterSection.GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
+			bool isEnum = false;
+
+			if (FindBaseDataType(parameterSection, parameterIndex, out iterator, out endOfParameter))
+				{
+				// If it has a base data type, check if it's "enum" since that will need special handling.
+				isEnum = Languages.Parsers.SystemVerilog.IsOnKeyword(iterator, "enum");
+				}
+			else
+				{
+				// If it doesn't have a base data type we don't have to worry about special handling.  Position the iterator
+				// at the beginning of the parameter.
+				parameterSection.GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
+				}
+
+			bool afterBody = false;
 
 			while (iterator < endOfParameter)
 				{
-				if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier &&
-					iterator.Character == '[')
+				if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier)
 					{
-					packedDimensionsPosition = iterator;
-					return true;
+					if (iterator.Character == '[')
+						{
+						// If we're at dimensions, make sure either it isn't an enum, in which case we want to return true, or
+						// if it is an enum, it appears after the body.  We don't want to return dimensions before the body like
+						// "enum bit [7:0] { ... }" since those go in "other identifiers".  We do want to return ones after it like
+						// "enum bit { ... } [7:0]".
+						if (isEnum == false ||
+							afterBody == true)
+							{
+							packedDimensionsPosition = iterator;
+							return true;
+							}
+						}
+					else if (iterator.Character == '{')
+						{
+						afterBody = true;
+						}
 					}
 
 				else if (iterator.PrototypeParsingType == PrototypeParsingType.Name)
@@ -994,6 +1052,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				{  return false;  }
 
 			TokenIterator closingSymbol, endOfBlock;
+			bool afterBody = false;
 
 			while (iterator < endOfParameter)
 				{
@@ -1005,16 +1064,29 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 				else if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier)
 					{
-					// Stop at a packed dimension
+					// Stop at a packed dimension.  However, don't stop if we're on an enum and the packed dimension appears before
+					// the body ("enum bit [7:0] { ... }") instead of after ("enum bit { ... } [7:0]").
 					if (iterator.Character == '[')
-						{  break;  }
-					else
 						{
-						GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock);
+						if (afterBody)
+							{  break;  }
 
-						typeBuilder.AddModifierBlock(iterator, closingSymbol, endOfBlock);
-						iterator = endOfBlock;
+						TokenIterator baseType, ignore;
+
+						if (FindBaseDataType(parameterSection, parameterIndex, out baseType, out ignore) &&
+							Languages.Parsers.SystemVerilog.IsOnKeyword(baseType, "enum"))
+							{  /* continue */  }
+						else
+							{  break;  }
 						}
+
+					if (iterator.Character == '{')
+						{  afterBody = true;  }
+
+					GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock);
+
+					typeBuilder.AddModifierBlock(iterator, closingSymbol, endOfBlock);
+					iterator = endOfBlock;
 					}
 
 				else
