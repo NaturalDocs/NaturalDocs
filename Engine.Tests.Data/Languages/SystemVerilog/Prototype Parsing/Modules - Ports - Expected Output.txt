@@ -750,6 +750,10 @@ Port Definition Components:
     - Link Candidates: (none)
 
 ------------------------------
+
+(No prototype detected)
+
+------------------------------
 Net Types and Data Types:
 ------------------------------
 

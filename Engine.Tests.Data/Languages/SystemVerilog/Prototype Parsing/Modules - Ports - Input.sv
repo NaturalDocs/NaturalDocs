@@ -190,6 +190,14 @@ module Enums (
 endmodule
 
 
+// Topic: Unsupported Types
+//
+// These data types cannot be used as module ports:
+// - chandles
+// - virtual interfaces
+//
+
+
 
 // Group: Net Types and Data Types
 // ___________________________________________________
