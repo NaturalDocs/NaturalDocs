@@ -474,11 +474,25 @@ Port Definition Components:
     - Link Candidates: real
     - Default Value: (not detected)
 
-  - Parameter 12: input realtime portL
+  - Parameter 12: input realtime portL,
     - Name: portL
     - Full Type: input realtime
     - Base Type: realtime
     - Link Candidates: realtime
+    - Default Value: (not detected)
+
+  - Parameter 13: input string portM,
+    - Name: portM
+    - Full Type: input string
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value: (not detected)
+
+  - Parameter 14: input event portN
+    - Name: portN
+    - Full Type: input event
+    - Base Type: event
+    - Link Candidates: event
     - Default Value: (not detected)
 
   - After Parameters: )

@@ -127,7 +127,10 @@ module VariableTypes (
 
 	input shortreal portJ,
 	input real portK,
-	input realtime portL);
+	input realtime portL,
+
+	input string portM,
+	input event portN);
 endmodule
 
 
@@ -185,6 +188,8 @@ module Enums (
 
 	input enum { u1, u2 = 2, u3[1], u4[1:4] = 'b0100 } portU);
 endmodule
+
+
 
 // Group: Net Types and Data Types
 // ___________________________________________________
