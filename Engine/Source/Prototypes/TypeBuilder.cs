@@ -49,186 +49,101 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				}
 
 			lastTokenIterator = default(TokenIterator);
+			lastCharacter = '\0';
 			lastTokenType = FundamentalType.Null;
-			pastFirstText = false;
-			dontAddSpaceAfterSymbol = false;
-			lastSymbolWasBlock = false;
 			}
 
 
 		/* Function: AddToken
-		 * Adds a single token to the type builder.  You must use <AddBlock()>, <AddModifierBlock()>, or <AddTuple()> for blocks.
+		 * Adds a single token to the type builder.
 		 */
 		public void AddToken (TokenIterator iterator)
 			{
-			// Allow Start/EndOfTuple because AddTuple() will add them using this function
-			if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier ||
-				iterator.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier)
-				{  throw new InvalidOperationException();  }
+			char thisCharacter = iterator.Character;
+			FundamentalType thisTokenType = (thisCharacter == '_' ? FundamentalType.Text : iterator.FundamentalType);
 
-			if (iterator.PrototypeParsingType == PrototypeParsingType.Type ||
-				iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier ||
-				iterator.PrototypeParsingType == PrototypeParsingType.TypeQualifier ||
-				iterator.PrototypeParsingType == PrototypeParsingType.ParamModifier ||
-				iterator.PrototypeParsingType == PrototypeParsingType.StartOfTuple ||
-				iterator.PrototypeParsingType == PrototypeParsingType.EndOfTuple ||
-				iterator.PrototypeParsingType == PrototypeParsingType.TupleMemberSeparator ||
-				iterator.PrototypeParsingType == PrototypeParsingType.TupleMemberName)
+			// Only add text and symbols.  We'll create the whitespace according to the rules below.
+			if (thisTokenType == FundamentalType.Text ||
+				thisTokenType == FundamentalType.Symbol)
 				{
-				FundamentalType thisTokenType = (iterator.Character == '_' ? FundamentalType.Text : iterator.FundamentalType);
+				bool addSpaceBeforeToken = false;
 
-				// ignore whitespace, we'll create it as necessary
-				if (thisTokenType == FundamentalType.Text ||
-					thisTokenType == FundamentalType.Symbol)
+				// The conditionals are broken out for clarity and ease of documentation.  The compiler should be able to optimize them
+				// for us.  This is better than having one big unwieldy mess of an if statement.
+
+				// Add a space between two non-consecutive text tokens.  It's possible the two iterators come from different tokenizers
+				// so check for that.
+				if (lastTokenType == FundamentalType.Text &&
+					thisTokenType == FundamentalType.Text &&
+					(iterator.Tokenizer != lastTokenIterator.Tokenizer || iterator.TokenIndex != lastTokenIterator.TokenIndex + 1))
+					{  addSpaceBeforeToken = true;  }
+
+				// Add a space between a symbol followed by text, minus certain exceptions.
+				else if (lastTokenType == FundamentalType.Symbol &&
+						   thisTokenType == FundamentalType.Text &&
+						   lastCharacter != '.' &&  // exclude dot separators like Class.Member
+						   lastCharacter != ':' &&  // exclude colon separators like Class::Member
+						   lastCharacter != '%' &&  // exclude keywords in Oracle's PL/SQL like MyVar%TYPE or MyTable%ROWTYPE
+						   lastCharacter != '"' &&  // exclude strings in Java annotations like @copyright("me")
+						   lastCharacter != '\'' &&
+						   lastCharacter != '@' &&  // exclude tags in Java annotations like @copyright
+						   lastCharacter != '$' &&  // exclude keywords in SystemVerilog like $unit
+						   lastCharacter != '(' &&  // exclude opening symbols except braces
+						   lastCharacter != '[' &&
+						   lastCharacter != '<' &&
+						   lastCharacter != '=')  // exclude assignments in SystemVerilog enum bodies like enum { x=2 }
 					{
-					// Do we need to add a space?
-					if ( (thisTokenType == FundamentalType.Text && lastTokenType == FundamentalType.Text &&
-						  (iterator.Tokenizer != lastTokenIterator.Tokenizer || iterator.TokenIndex != lastTokenIterator.TokenIndex + 1))
-						 ||
-						 (thisTokenType == FundamentalType.Text && lastTokenType == FundamentalType.Symbol &&
-						  !dontAddSpaceAfterSymbol && (pastFirstText || lastSymbolWasBlock))
-						 ||
-						 (!lastTokenIterator.IsNull && lastTokenIterator.PrototypeParsingType == PrototypeParsingType.TupleMemberSeparator))
-						{
-						rawText.Append(' ');
-						prototypeParsingTypes.Add(PrototypeParsingType.Null);
-						syntaxHighlightingTypes.Add(SyntaxHighlightingType.Null);
-						}
-
-					// Special handling for package separators and a few other things
-					if (iterator.FundamentalType == FundamentalType.Symbol)
-						{
-						if (iterator.Character == '.'  || iterator.MatchesAcrossTokens("::") ||
-							(iterator.Character == ':' && dontAddSpaceAfterSymbol) ||  // second colon of ::
-							iterator.Character == '%' ||  // used for MyVar%TYPE or MyTable%ROWTYPE in Oracle's PL/SQL
-							iterator.Character == '"' || iterator.Character == '\'' ||  // strings in Java annotations like @copyright("me")
-							iterator.Character == '@' ||  // tags in Java annotations like @copyright
-							iterator.Character == '(')  // parens around tuples
-							{  dontAddSpaceAfterSymbol = true;  }
-						else
-							{  dontAddSpaceAfterSymbol = false;  }
-						}
-
-					do
-						{
-						iterator.AppendTokenTo(rawText);
-						prototypeParsingTypes.Add(iterator.PrototypeParsingType);
-						syntaxHighlightingTypes.Add(iterator.SyntaxHighlightingType);
-
-						lastTokenIterator = iterator;
-						lastTokenType = thisTokenType;
-						lastSymbolWasBlock = false;
-
-						if (thisTokenType == FundamentalType.Text)
-							{  pastFirstText = true;  }
-
-						iterator.Next();
-						thisTokenType = (iterator.Character == '_' ? FundamentalType.Text : iterator.FundamentalType);
-						}
-					while (iterator.PrototypeParsingType == PrototypeParsingType.OpeningExtensionSymbol ||
-							  iterator.PrototypeParsingType == PrototypeParsingType.ClosingExtensionSymbol);
+					addSpaceBeforeToken = true;
 					}
-				}
-			}
 
+				// Always add a space around braces.
+				else if (thisCharacter == '{' ||
+						   lastCharacter == '{' ||
+						   thisCharacter == '}')
+						   // allow symbols to follow } without a space, like SystemVerilog's "struct { ... }[7:0]"
+					{
+					addSpaceBeforeToken = true;
+					}
 
-		/* Function: AddBlock
-		 * Adds a full block marked with <PrototypeParsingType.OpeningTypeModifier>, <PrototypeParsingType.OpeningParamModifier>,
-		 * or <PrototypeParsingType.StartOfTuple> to the type builder.
-		 */
-		public void AddBlock (TokenIterator openingToken, TokenIterator closingToken, TokenIterator endOfBlock)
-			{
-			if (openingToken.PrototypeParsingType == PrototypeParsingType.StartOfTuple)
-				{  AddTuple(openingToken, closingToken, endOfBlock);  }
-			else
-				{  AddModifierBlock(openingToken, closingToken, endOfBlock);  }
-			}
+				// Add a space between commas and other symbols, except when it's a closing symbol or another comma.  This lets us
+				// condense things like "string[,,]".
+				else if (lastCharacter == ',' &&
+						   thisCharacter != ',' &&
+						   thisCharacter != ')' &&
+						   thisCharacter != ']' &&
+						   thisCharacter != '}' &&
+						   thisCharacter != '>')
+					{
+					addSpaceBeforeToken = true;
+					}
 
-
-		/* Function: AddModifierBlock
-		 * Adds a full modifier block marked with <PrototypeParsingType.OpeningTypeModifier> or <PrototypeParsingType.OpeningParamModifier>
-		 * to the type builder.
-		 */
-		public void AddModifierBlock (TokenIterator openingToken, TokenIterator closingToken, TokenIterator endOfBlock)
-			{
-			if ( (openingToken.PrototypeParsingType != PrototypeParsingType.OpeningTypeModifier &&
-				  openingToken.PrototypeParsingType != PrototypeParsingType.OpeningParamModifier) ||
-				 (closingToken.PrototypeParsingType != PrototypeParsingType.ClosingTypeModifier &&
-				  closingToken.PrototypeParsingType != PrototypeParsingType.ClosingParamModifier) )
-				{  throw new InvalidOperationException();  }
-
-			TokenIterator iterator = openingToken;
-
-			while (iterator < endOfBlock)
-				{
-				FundamentalType thisTokenType = (iterator.Character == '_' ? FundamentalType.Text : iterator.FundamentalType);
-
-				// Do we need to add a space?
-				if ( (thisTokenType == FundamentalType.Text && lastTokenType == FundamentalType.Text &&
-					  (iterator.Tokenizer != lastTokenIterator.Tokenizer || iterator.TokenIndex != lastTokenIterator.TokenIndex + 1))
-					||
-					(thisTokenType == FundamentalType.Text && lastTokenType == FundamentalType.Symbol &&
-					 !dontAddSpaceAfterSymbol && (pastFirstText || lastSymbolWasBlock))
-					||
-					iterator.Character == '{' )
+				if (addSpaceBeforeToken)
 					{
 					rawText.Append(' ');
 					prototypeParsingTypes.Add(PrototypeParsingType.Null);
 					syntaxHighlightingTypes.Add(SyntaxHighlightingType.Null);
 					}
 
-				while (iterator < endOfBlock)
-					{
-					iterator.AppendTokenTo(rawText);
-					prototypeParsingTypes.Add(iterator.PrototypeParsingType);
-					syntaxHighlightingTypes.Add(iterator.SyntaxHighlightingType);
+				iterator.AppendTokenTo(rawText);
+				prototypeParsingTypes.Add(iterator.PrototypeParsingType);
+				syntaxHighlightingTypes.Add(iterator.SyntaxHighlightingType);
 
-					iterator.Next();
-					}
-
-				lastTokenIterator = closingToken;
+				lastTokenIterator = iterator;
+				lastCharacter = thisCharacter;
 				lastTokenType = thisTokenType;
-				lastSymbolWasBlock = true;
-				dontAddSpaceAfterSymbol = false;
-
-				if (thisTokenType == FundamentalType.Text)
-					{  pastFirstText = true;  }
 				}
 			}
 
 
-		/* Function: AddTuple
-		 * Adds a full tuple marked with <PrototypeParsingType.StartOfTuple> to the type builder.
+		/* Function: AddTokens
+		 * Adds a group of tokens to the type builder.
 		 */
-		public void AddTuple (TokenIterator startOfTuple, TokenIterator endOfTuple, TokenIterator endOfBlock)
+		public void AddTokens (TokenIterator iterator, TokenIterator end)
 			{
-			if (startOfTuple.PrototypeParsingType != PrototypeParsingType.StartOfTuple ||
-				endOfTuple.PrototypeParsingType != PrototypeParsingType.EndOfTuple)
-				{  throw new InvalidOperationException();  }
-
-			TokenIterator iterator = startOfTuple;
-
-			while (iterator < endOfBlock)
+			while (iterator < end)
 				{
-				// Types appearing in tuples may have modifier blocks
-				if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier ||
-					iterator.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier)
-					{
-					TokenIterator closingModifier, endOfModifierBlock;
-					ParsedPrototype.GetEndOfBlock(iterator, endOfBlock, out closingModifier, out endOfModifierBlock);
-
-					AddModifierBlock(iterator, closingModifier, endOfModifierBlock);
-
-					iterator = endOfModifierBlock;
-					}
-				else if (iterator.FundamentalType != FundamentalType.Whitespace)
-					{
-					// Let AddToken() handle the formatting for everything else so it's uniform
-					AddToken(iterator);
-					iterator.Next();
-					}
-				else
-					{  iterator.Next();  }
+				AddToken(iterator);
+				iterator.Next();
 				}
 			}
 
@@ -398,25 +313,15 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 */
 		protected TokenIterator lastTokenIterator;
 
+		/* var: lastCharacter
+		 * The first character of the last token added.
+		 */
+		protected char lastCharacter;
+
 		/* var: lastTokenType
 		 * The <FundamentalType> of the last token added.  Will be set to <FundamentalType.Text> for underscores.
 		 */
 		protected FundamentalType lastTokenType;
-
-		/* var: pastFirstText
-		 * Whether any text tokens or underscores have been added.
-		 */
-		protected bool pastFirstText;
-
-		/* var: dontAddSpaceAfterSymbol
-		 * Whether to skip adding a space after the last symbol, such as if it was a package separator.
-		 */
-		protected bool dontAddSpaceAfterSymbol;
-
-		/* var: lastSymbolWasBlock
-		 * Whether the last symbol added was a block.
-		 */
-		protected bool lastSymbolWasBlock;
 
 		}
 	}

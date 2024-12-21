@@ -434,7 +434,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 								TokenIterator closingToken, endOfBlock;
 								ParsedPrototype.GetEndOfBlock(iterator, end, out closingToken, out endOfBlock);
 
-								typeBuilder.AddModifierBlock(iterator, closingToken, endOfBlock);
+								typeBuilder.AddTokens(iterator, endOfBlock);
 
 								iterator = endOfBlock;
 								}
@@ -470,7 +470,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 							TokenIterator closingToken, endOfBlock;
 							ParsedPrototype.GetEndOfBlock(iterator, end, out closingToken, out endOfBlock);
 
-							typeBuilder.AddBlock(iterator, closingToken, endOfBlock);
+							typeBuilder.AddTokens(iterator, endOfBlock);
 
 							iterator = endOfBlock;
 							}
@@ -504,7 +504,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 							TokenIterator closingToken, endOfBlock;
 							ParsedPrototype.GetEndOfBlock(iterator, end, out closingToken, out endOfBlock);
 
-							typeBuilder.AddModifierBlock(iterator, closingToken, endOfBlock);
+							typeBuilder.AddTokens(iterator, endOfBlock);
 
 							iterator = endOfBlock;
 							}

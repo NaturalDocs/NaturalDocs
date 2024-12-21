@@ -1017,7 +1017,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 						if (!GetEndOfBlock(openingSymbol, endOfParameter, out closingSymbol, out endOfBlock))
 							{  break;  }
 
-						typeBuilder.AddModifierBlock(openingSymbol, closingSymbol, endOfBlock);
+						typeBuilder.AddTokens(openingSymbol, endOfBlock);
 						iterator = endOfBlock;
 						}
 
@@ -1085,7 +1085,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 					GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock);
 
-					typeBuilder.AddModifierBlock(iterator, closingSymbol, endOfBlock);
+					typeBuilder.AddTokens(iterator, endOfBlock);
 					iterator = endOfBlock;
 					}
 
@@ -1143,7 +1143,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				TokenIterator closingSymbol, endOfBlock;
 				GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock);
 
-				typeBuilder.AddModifierBlock(iterator, closingSymbol, endOfBlock);
+				typeBuilder.AddTokens(iterator, endOfBlock);
 				iterator = endOfBlock;
 
 				// Add any consecutive packed dimensions.
@@ -1154,7 +1154,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 						{
 						GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock);
 
-						typeBuilder.AddModifierBlock(iterator, closingSymbol, endOfBlock);
+						typeBuilder.AddTokens(iterator, endOfBlock);
 						iterator = endOfBlock;
 						}
 
@@ -1208,7 +1208,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				TokenIterator closingSymbol, endOfBlock;
 				GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock);
 
-				typeBuilder.AddModifierBlock(iterator, closingSymbol, endOfBlock);
+				typeBuilder.AddTokens(iterator, endOfBlock);
 				iterator = endOfBlock;
 
 				// Add any consecutive unpacked dimensions.
@@ -1219,7 +1219,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 						{
 						GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock);
 
-						typeBuilder.AddModifierBlock(iterator, closingSymbol, endOfBlock);
+						typeBuilder.AddTokens(iterator, endOfBlock);
 						iterator = endOfBlock;
 						}
 
