@@ -482,7 +482,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 					lookahead.Next();
 					baseTypeEnd = lookahead;
 					}
-				if (lookahead.FundamentalType == FundamentalType.Whitespace)
+				else if (lookahead.FundamentalType == FundamentalType.Whitespace)
 					{
 					lookahead.Next();
 					}

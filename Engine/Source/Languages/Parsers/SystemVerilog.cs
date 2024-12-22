@@ -915,7 +915,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				if (hasSigning)
 					{
 					lookahead.Next();
-					TryToSkipWhitespace(ref lookahead);
+					TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
 					}
 
 				// Skip the dimension if it's there
@@ -923,7 +923,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 				if (hasPackedDimensions)
 					{
-					TryToSkipWhitespace(ref lookahead);
+					TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
 					}
 
 				// Are there no more identifiers?  We're being a bit loose with the parsing at this stage since this is just a
@@ -2180,8 +2180,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					{
 					startOfParameters = lookahead;
 					GenericSkip(ref lookahead);
-					TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
 					endOfParameters = lookahead;
+					TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
 					}
 
 				if (lookahead.MatchesAcrossTokens("::"))
@@ -2225,7 +2225,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 				// Mark the parameter if there is one
 
-				if (startOfParameters > endOfIdentifier)
+				if (startOfParameters >= endOfIdentifier)
 					{
 					// There can only be one, and it can only be #( )
 					lookahead = startOfParameters;
