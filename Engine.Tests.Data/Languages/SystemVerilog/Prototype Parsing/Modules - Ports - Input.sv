@@ -190,6 +190,56 @@ module Enums (
 endmodule
 
 
+// Module: QualifiedAndParameterizedTypes
+module QualifiedAndParameterizedTypes (
+	UserType portA,
+	UserType [7:0] portB,
+
+	UserPackage::UserType portC,
+	UserPackage::UserType [7:0] portD,
+
+	UserPackageA::UserPackageB::UserType portE,
+	UserPackageA::UserPackageB::UserType [7:0] portF,
+
+	$unit::UserType portG,
+	$unit::UserPackage::UserType portH,
+
+	UserPackage#(12) portI,
+	UserPackage #(1, 2, 3) portJ,
+	UserPackage #(, 2, 3) portK,
+	UserPackage #(1, , 3) portL,
+	UserPackage #(1, 2, ) portM,
+	UserPackage #(1, , ) portN,
+	UserPackage #(, 2, ) portO,
+	UserPackage #(, , 3) portP,
+	UserPackage #(, , ) portQ,
+
+	UserPackage #(.r1, .r2(), .r3(12), .r4(name), .r5(name[7:0])) portR,
+	UserPackage #(.s1, .s2 (), .s3 (12), .s4 (name), .s5 (name[7:0])) portS,
+
+	UserPackage #(.*) portT,
+	UserPackage #(.*, .u1, .u2(), .u3(12), .u4(name), .u5(name[7:0])) portU);
+endmodule
+
+
+// Module: DoubleParameterizedTypes
+//
+// Unfortunately Natural Docs doesn't have a good way to support parameterized qualifiers (UserPackageA#(12)::) so
+// we won't worry about what the results are for Base Type or Link Candidates on those ones.  We only care that Name
+// and Full Type are correct.
+//
+module DoubleParameterizedTypes (
+	UserPackageA#(12)::UserPackageB portA,
+	UserPackageA #(12)::UserPackageB portB,
+	UserPackageA::UserPackageB#(13) portC,
+	UserPackageA::UserPackageB #(13) portD,
+	UserPackageA#(12)::UserPackageB#(13) portE,
+	UserPackageA #(12)::UserPackageB #(13) portF,
+	$unit::UserPackageA #(.*, .v1, .v2(), .v3(12))::UserPackageB#(, 12, , 4) portG);
+endmodule
+
+
+
 // Topic: Unsupported Types
 //
 // These data types cannot be used as module ports:

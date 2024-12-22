@@ -751,6 +751,222 @@ Port Definition Components:
 
 ------------------------------
 
+- Parameter Section:
+  - Before Parameters: module QualifiedAndParameterizedTypes (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: UserType portA,
+    - Name: portA
+    - Full Type: UserType
+    - Base Type: UserType
+    - Link Candidates: UserType
+    - Default Value: (not detected)
+
+  - Parameter 2: UserType [7:0] portB,
+    - Name: portB
+    - Full Type: UserType[7:0]
+    - Base Type: UserType
+    - Link Candidates: UserType
+    - Default Value: (not detected)
+
+  - Parameter 3: UserPackage::UserType portC,
+    - Name: portC
+    - Full Type: UserPackage::UserType
+    - Base Type: UserPackage::UserType
+    - Link Candidates: UserPackage::UserType
+    - Default Value: (not detected)
+
+  - Parameter 4: UserPackage::UserType [7:0] portD,
+    - Name: portD
+    - Full Type: UserPackage::UserType[7:0]
+    - Base Type: UserPackage::UserType
+    - Link Candidates: UserPackage::UserType
+    - Default Value: (not detected)
+
+  - Parameter 5: UserPackageA::UserPackageB::UserType portE,
+    - Name: portE
+    - Full Type: UserPackageA::UserPackageB::UserType
+    - Base Type: UserPackageA::UserPackageB::UserType
+    - Link Candidates: UserPackageA::UserPackageB::UserType
+    - Default Value: (not detected)
+
+  - Parameter 6: UserPackageA::UserPackageB::UserType [7:0] portF,
+    - Name: portF
+    - Full Type: UserPackageA::UserPackageB::UserType[7:0]
+    - Base Type: UserPackageA::UserPackageB::UserType
+    - Link Candidates: UserPackageA::UserPackageB::UserType
+    - Default Value: (not detected)
+
+  - Parameter 7: $unit::UserType portG,
+    - Name: portG
+    - Full Type: UserType
+    - Base Type: UserType
+    - Link Candidates: UserType
+    - Default Value: (not detected)
+
+  - Parameter 8: $unit::UserPackage::UserType portH,
+    - Name: portH
+    - Full Type: UserPackage::UserType
+    - Base Type: UserPackage::UserType
+    - Link Candidates: UserPackage::UserType
+    - Default Value: (not detected)
+
+  - Parameter 9: UserPackage#(12) portI,
+    - Name: portI
+    - Full Type: UserPackage#(12)
+    - Base Type: UserPackage
+    - Link Candidates: UserPackage
+    - Default Value: (not detected)
+
+  - Parameter 10: UserPackage #(1, 2, 3) portJ,
+    - Name: portJ
+    - Full Type: UserPackage#(1, 2, 3)
+    - Base Type: UserPackage
+    - Link Candidates: UserPackage
+    - Default Value: (not detected)
+
+  - Parameter 11: UserPackage #(, 2, 3) portK,
+    - Name: portK
+    - Full Type: UserPackage#(, 2, 3)
+    - Base Type: UserPackage
+    - Link Candidates: UserPackage
+    - Default Value: (not detected)
+
+  - Parameter 12: UserPackage #(1, , 3) portL,
+    - Name: portL
+    - Full Type: UserPackage#(1,, 3)
+    - Base Type: UserPackage
+    - Link Candidates: UserPackage
+    - Default Value: (not detected)
+
+  - Parameter 13: UserPackage #(1, 2, ) portM,
+    - Name: portM
+    - Full Type: UserPackage#(1, 2,)
+    - Base Type: UserPackage
+    - Link Candidates: UserPackage
+    - Default Value: (not detected)
+
+  - Parameter 14: UserPackage #(1, , ) portN,
+    - Name: portN
+    - Full Type: UserPackage#(1,,)
+    - Base Type: UserPackage
+    - Link Candidates: UserPackage
+    - Default Value: (not detected)
+
+  - Parameter 15: UserPackage #(, 2, ) portO,
+    - Name: portO
+    - Full Type: UserPackage#(, 2,)
+    - Base Type: UserPackage
+    - Link Candidates: UserPackage
+    - Default Value: (not detected)
+
+  - Parameter 16: UserPackage #(, , 3) portP,
+    - Name: portP
+    - Full Type: UserPackage#(,, 3)
+    - Base Type: UserPackage
+    - Link Candidates: UserPackage
+    - Default Value: (not detected)
+
+  - Parameter 17: UserPackage #(, , ) portQ,
+    - Name: portQ
+    - Full Type: UserPackage#(,,)
+    - Base Type: UserPackage
+    - Link Candidates: UserPackage
+    - Default Value: (not detected)
+
+  - Parameter 18: UserPackage #(.r1, .r2(), .r3(12), .r4(name), .r5(name[7:0])) portR,
+    - Name: portR
+    - Full Type: UserPackage#(.r1, .r2(), .r3(12), .r4(name), .r5(name[7:0]))
+    - Base Type: UserPackage
+    - Link Candidates: UserPackage
+    - Default Value: (not detected)
+
+  - Parameter 19: UserPackage #(.s1, .s2 (), .s3 (12), .s4 (name), .s5 (name[7:0])) portS,
+    - Name: portS
+    - Full Type: UserPackage#(.s1, .s2(), .s3(12), .s4(name), .s5(name[7:0]))
+    - Base Type: UserPackage
+    - Link Candidates: UserPackage
+    - Default Value: (not detected)
+
+  - Parameter 20: UserPackage #(.*) portT,
+    - Name: portT
+    - Full Type: UserPackage#(.*)
+    - Base Type: UserPackage
+    - Link Candidates: UserPackage
+    - Default Value: (not detected)
+
+  - Parameter 21: UserPackage #(.*, .u1, .u2(), .u3(12), .u4(name), .u5(name[7:0])) portU
+    - Name: portU
+    - Full Type: UserPackage#(.*, .u1, .u2(), .u3(12), .u4(name), .u5(name[7:0]))
+    - Base Type: UserPackage
+    - Link Candidates: UserPackage
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module DoubleParameterizedTypes (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: UserPackageA#(12)::UserPackageB portA,
+    - Name: portA
+    - Full Type: UserPackageA#(12)::UserPackageB
+    - Base Type: UserPackageA#(12)::UserPackageB
+    - Link Candidates: UserPackageA#(12)::UserPackageB
+    - Default Value: (not detected)
+
+  - Parameter 2: UserPackageA #(12)::UserPackageB portB,
+    - Name: portB
+    - Full Type: UserPackageA#(12)::UserPackageB
+    - Base Type: UserPackageA #(12)::UserPackageB
+    - Link Candidates: UserPackageA #(12)::UserPackageB
+    - Default Value: (not detected)
+
+  - Parameter 3: UserPackageA::UserPackageB#(13) portC,
+    - Name: portC
+    - Full Type: UserPackageA::UserPackageB#(13)
+    - Base Type: UserPackageA::UserPackageB
+    - Link Candidates: UserPackageA::UserPackageB
+    - Default Value: (not detected)
+
+  - Parameter 4: UserPackageA::UserPackageB #(13) portD,
+    - Name: portD
+    - Full Type: UserPackageA::UserPackageB#(13)
+    - Base Type: UserPackageA::UserPackageB
+    - Link Candidates: UserPackageA::UserPackageB
+    - Default Value: (not detected)
+
+  - Parameter 5: UserPackageA#(12)::UserPackageB#(13) portE,
+    - Name: portE
+    - Full Type: UserPackageA#(12)::UserPackageB#(13)
+    - Base Type: UserPackageA#(12)::UserPackageB
+    - Link Candidates: UserPackageA#(12)::UserPackageB
+    - Default Value: (not detected)
+
+  - Parameter 6: UserPackageA #(12)::UserPackageB #(13) portF,
+    - Name: portF
+    - Full Type: UserPackageA#(12)::UserPackageB#(13)
+    - Base Type: UserPackageA #(12)::UserPackageB
+    - Link Candidates: UserPackageA #(12)::UserPackageB
+    - Default Value: (not detected)
+
+  - Parameter 7: $unit::UserPackageA #(.*, .v1, .v2(), .v3(12))::UserPackageB#(, 12, , 4) portG
+    - Name: portG
+    - Full Type: UserPackageA#(.*, .v1, .v2(), .v3(12))::UserPackageB#(, 12,, 4)
+    - Base Type: UserPackageA #(.*, .v1, .v2(), .v3(12))::UserPackageB
+    - Link Candidates: UserPackageA #(.*, .v1, .v2(), .v3(12))::UserPackageB
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
 (No prototype detected)
 
 ------------------------------
