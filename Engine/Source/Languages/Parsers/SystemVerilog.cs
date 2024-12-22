@@ -2163,15 +2163,32 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					{  return false;  }
 
 				lookahead.NextByCharacters(2);
+
+				if (mode == ParseMode.ParsePrototype)
+					{
+					// Treat "$unit::" as a type modifier instead of a qualifier.  This is what we do for C++ identifiers with a leading :: to
+					// make it global, and $unit:: serves a similar purpose in SystemVerilog.
+					if (prototypeParsingType == PrototypeParsingType.Type)
+						{  iterator.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.TypeModifier);  }
+					else if (prototypeParsingType == PrototypeParsingType.Name)
+						{  iterator.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.ParamModifier);  }
+					else
+						{  throw new NotImplementedException();  }
+					}
+
 				TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
 
+				startOfIdentifier = lookahead;
 				endOfQualifier = lookahead;
 				}
 
 			for (;;)
 				{
 				if (!TryToSkipUnqualifiedIdentifier(ref lookahead, ParseMode.IterateOnly))
-					{  return false;  }
+					{
+					ResetTokensBetween(iterator, lookahead, mode);
+					return false;
+					}
 
 				endOfIdentifier = lookahead;
 				TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
@@ -2204,7 +2221,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 				if (prototypeParsingType == PrototypeParsingType.Type)
 					{
-					if (startOfIdentifier < endOfQualifier)
+					if (endOfQualifier > startOfIdentifier)
 						{  startOfIdentifier.SetPrototypeParsingTypeBetween(endOfQualifier, PrototypeParsingType.TypeQualifier);  }
 
 					endOfQualifier.SetPrototypeParsingTypeBetween(endOfIdentifier, PrototypeParsingType.Type);
