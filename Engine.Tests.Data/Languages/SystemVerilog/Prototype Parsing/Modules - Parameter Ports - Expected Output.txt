@@ -375,14 +375,14 @@ Typed Declarations:
 
   - Parameter 7: type( c ) cc = 0.5s,
     - Name: cc
-    - Full Type: type( c )
+    - Full Type: type(c)
     - Base Type: type
     - Link Candidates: type, c
     - Default Value: 0.5s
 
   - Parameter 8: type ( d ) dd = "x"
     - Name: dd
-    - Full Type: type( d )
+    - Full Type: type(d)
     - Base Type: type
     - Link Candidates: type, d
     - Default Value: "x"
@@ -735,14 +735,14 @@ Valueless Declarations:
 
   - Parameter 7: type( c ) cc,
     - Name: cc
-    - Full Type: type( c )
+    - Full Type: type(c)
     - Base Type: type
     - Link Candidates: type, c
     - Default Value: (not detected)
 
   - Parameter 8: type ( d ) dd
     - Name: dd
-    - Full Type: type( d )
+    - Full Type: type(d)
     - Base Type: type
     - Link Candidates: type, d
     - Default Value: (not detected)

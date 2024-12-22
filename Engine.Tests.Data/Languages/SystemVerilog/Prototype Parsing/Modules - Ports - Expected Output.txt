@@ -741,7 +741,7 @@ Port Definition Components:
 
   - Parameter 21: input enum { u1, u2 = 2, u3[1], u4[1:4] = 'b0100 } portU
     - Name: portU
-    - Full Type: input enum { u1, u2 = 2, u3[1], u4[1:4] = 'b0100 }
+    - Full Type: input enum { u1, u2=2, u3[1], u4[1:4]='b0100 }
     - Base Type: enum
     - Link Candidates: enum
     - Default Value: (not detected)
