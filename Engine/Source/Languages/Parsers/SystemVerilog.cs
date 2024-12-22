@@ -901,7 +901,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				int typeIdentifiers = 0;
 
 				while (!IsOnSigningKeyword(lookahead) &&
-						 TryToSkipUnqualifiedIdentifier(ref lookahead, ParseMode.IterateOnly))
+						 TryToSkipTypeIdentifier(ref lookahead, ParseMode.IterateOnly))
 					{
 					typeIdentifiers++;
 
@@ -950,7 +950,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 				while (typeIdentifiers > 0)
 					{
-					if (!TryToSkipUnqualifiedIdentifier(ref lookahead, mode, PrototypeParsingType.Type))
+					if (!TryToSkipTypeIdentifier(ref lookahead, mode, PrototypeParsingType.Type))
 						{
 						ResetTokensBetween(iterator, lookahead, mode);
 						return false;
