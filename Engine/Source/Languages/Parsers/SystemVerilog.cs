@@ -870,7 +870,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// Special Types
 
 			if (TryToSkipStruct(ref lookahead, mode) ||
-				TryToSkipEnum(ref lookahead, mode))
+				TryToSkipEnum(ref lookahead, mode) ||
+				TryToSkipTypeReference(ref lookahead, mode))
 				{
 				TryToSkipWhitespace(ref lookahead, mode);
 				}

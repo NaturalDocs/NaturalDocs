@@ -215,7 +215,12 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			// Data Type
 
 			if (AppendBaseDataType(parameterSection, parameterIndex, typeBuilder))
-				{  portFlags |= PortFlags.HasBaseDataType;  }
+				{
+				portFlags |= PortFlags.HasBaseDataType;
+
+				if (AppendOtherModifiers(parameterSection, parameterIndex, typeBuilder))
+					{  portFlags |= PortFlags.HasOtherModifiers;  }
+				}
 			if (AppendSigning(parameterSection, parameterIndex, typeBuilder))
 				{  portFlags |= PortFlags.HasSigning;  }
 			if (AppendPackedDimensions(parameterSection, parameterIndex, typeBuilder))
@@ -228,7 +233,12 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				for (int i = parameterIndex - 1; i >= 0; i--)
 					{
 					if (AppendBaseDataType(parameterSection, i, typeBuilder))
-						{  portFlags |= PortFlags.HasBaseDataType;  }
+						{
+						portFlags |= PortFlags.HasBaseDataType;
+
+						if (AppendOtherModifiers(parameterSection, i, typeBuilder))
+							{  portFlags |= PortFlags.HasOtherModifiers;  }
+						}
 					if (AppendSigning(parameterSection, i, typeBuilder))
 						{  portFlags |= PortFlags.HasSigning;  }
 					if (AppendPackedDimensions(parameterSection, i, typeBuilder))
@@ -303,7 +313,12 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				for (int i = parameterIndex - 1; i >= 0; i--)
 					{
 					if (AppendBaseDataType(parameterSection, i, typeBuilder))
-						{  portFlags |= PortFlags.HasBaseDataType;  }
+						{
+						portFlags |= PortFlags.HasBaseDataType;
+
+						if (AppendOtherModifiers(parameterSection, i, typeBuilder))
+							{  portFlags |= PortFlags.HasOtherModifiers;  }
+						}
 					if (AppendSigning(parameterSection, i, typeBuilder))
 						{  portFlags |= PortFlags.HasSigning;  }
 					if (AppendPackedDimensions(parameterSection, i, typeBuilder))
@@ -1004,21 +1019,6 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 						{
 						typeBuilder.AddToken(iterator);
 						iterator.Next();
-						}
-
-					// Also add a type modifier block for type references like "type(x)".
-					else if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier &&
-							   isTypeReference &&
-							   iterator.Character == '(')
-						{
-						TokenIterator openingSymbol = iterator;
-						TokenIterator closingSymbol, endOfBlock;
-
-						if (!GetEndOfBlock(openingSymbol, endOfParameter, out closingSymbol, out endOfBlock))
-							{  break;  }
-
-						typeBuilder.AddTokens(openingSymbol, endOfBlock);
-						iterator = endOfBlock;
 						}
 
 					// If there's null whitespace tokens, move past them to see if there's any more tokens we care about on the
