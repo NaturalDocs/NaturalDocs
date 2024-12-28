@@ -846,6 +846,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			{
 			TokenIterator lookahead = iterator;
 
+			bool skipName = false;
+			bool skipType = false;
+			bool skipDefaultValue = false;
+
 
 			// Attributes
 
@@ -879,37 +883,48 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 
-			// Special Types
+			// Special Declarations
 
-			if (TryToSkipStruct(ref lookahead, mode) ||
-				TryToSkipEnum(ref lookahead, mode) ||
-				TryToSkipTypeReference(ref lookahead, mode))
+			if (TryToSkipPortBinding(ref lookahead, mode))
 				{
+				skipName = true;
+				skipType = true;
+				skipDefaultValue = true;
+
+				TryToSkipWhitespace(ref lookahead, mode);
+				}
+
+			else if (TryToSkipStruct(ref lookahead, mode) ||
+					  TryToSkipEnum(ref lookahead, mode) ||
+					  TryToSkipTypeReference(ref lookahead, mode))
+				{
+				skipType = true;
+
 				TryToSkipWhitespace(ref lookahead, mode);
 				}
 
 
-			// All Other Types
+			// Type
 
-			// Between the direction and the port name we can have any combination of:
-			//
-			// - Net type (supply0, wire, etc.) or a user-defined one
-			// - Base data type (logic, reg, etc.) or a user-defined one
-			// - Signing (signed, unsigned)
-			// - Packed dimensions ([7:0], etc.)
-			// - None of the above
-			//
-			// The net type and base data type are both considered the parameter's type, while signing and dimensions
-			// are treated as modifiers.  Code will usually have one or the other, although it can have both.
-			//
-			// Since both net types and data types can be user-defined we cannot rely on a keyword list to know which
-			// it is.  A single unrecognized identifier could be either, but since they're treated the same it doesn't matter.
-			//
-			// First we're going to count the number of identifiers before the first modifier (signing, packed dimension)
-			// or until we reach the end of the parameter, so basically all consecutive text identifiers except signing.
-
-			else
+			if (!skipType)
 				{
+				// Between the direction and the port name we can have any combination of:
+				//
+				// - Net type (supply0, wire, etc.) or a user-defined one
+				// - Base data type (logic, reg, etc.) or a user-defined one
+				// - Signing (signed, unsigned)
+				// - Packed dimensions ([7:0], etc.)
+				// - None of the above
+				//
+				// The net type and base data type are both considered the parameter's type, while signing and dimensions
+				// are treated as modifiers.  Code will usually have one or the other, although it can have both.
+				//
+				// Since both net types and data types can be user-defined we cannot rely on a keyword list to know which
+				// it is.  A single unrecognized identifier could be either, but since they're treated the same it doesn't matter.
+				//
+				// First we're going to count the number of identifiers before the first modifier (signing, packed dimension)
+				// or until we reach the end of the parameter, so basically all consecutive text identifiers except signing.
+
 				TokenIterator beginningOfType = lookahead;
 				int typeIdentifiers = 0;
 
@@ -959,7 +974,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				lookahead = beginningOfType;
 
 
-				// Type
+				// Second pass to actually mark everything
 
 				while (typeIdentifiers > 0)
 					{
@@ -991,44 +1006,51 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Name
 
-			if (!TryToSkipUnqualifiedIdentifier(ref lookahead, mode, PrototypeParsingType.Name))
+			if (!skipName)
 				{
-				ResetTokensBetween(iterator, lookahead, mode);
-				return false;
+				if (!TryToSkipUnqualifiedIdentifier(ref lookahead, mode, PrototypeParsingType.Name))
+					{
+					ResetTokensBetween(iterator, lookahead, mode);
+					return false;
+					}
+
+				TryToSkipWhitespace(ref lookahead, mode);
+
+
+				// Unpacked Dimensions
+				// Both types and parameters can have dimensions, such as "bit[7:0] paramA[2]"
+
+				if (TryToSkipDimensions(ref lookahead, mode, PrototypeParsingType.ParamModifier))
+					{  TryToSkipWhitespace(ref lookahead, mode);  }
 				}
-
-			TryToSkipWhitespace(ref lookahead, mode);
-
-
-			// Unpacked Dimensions.  Both types and parameters can have dimensions, such as "bit[7:0] paramA[2]"
-
-			if (TryToSkipDimensions(ref lookahead, mode, PrototypeParsingType.ParamModifier))
-				{  TryToSkipWhitespace(ref lookahead, mode);  }
 
 
 			// Default Value
 
-			if (lookahead.Character == '=')
+			if (!skipDefaultValue)
 				{
-				if (mode == ParseMode.ParsePrototype)
-					{  lookahead.PrototypeParsingType = PrototypeParsingType.DefaultValueSeparator;  }
-
-				lookahead.Next();
-				TryToSkipWhitespace(ref lookahead, mode);
-
-				TokenIterator startOfDefaultValue = lookahead;
-
-				while (lookahead.IsInBounds &&
-						 lookahead.Character != ',' &&
-						 lookahead.Character != ')')
-					{  GenericSkip(ref lookahead);  }
-
-				if (mode == ParseMode.ParsePrototype)
+				if (lookahead.Character == '=')
 					{
-					TokenIterator endOfDefaultValue = lookahead;
-					endOfDefaultValue.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfDefaultValue);
+					if (mode == ParseMode.ParsePrototype)
+						{  lookahead.PrototypeParsingType = PrototypeParsingType.DefaultValueSeparator;  }
 
-					startOfDefaultValue.SetPrototypeParsingTypeBetween(endOfDefaultValue, PrototypeParsingType.DefaultValue);
+					lookahead.Next();
+					TryToSkipWhitespace(ref lookahead, mode);
+
+					TokenIterator startOfDefaultValue = lookahead;
+
+					while (lookahead.IsInBounds &&
+							 lookahead.Character != ',' &&
+							 lookahead.Character != ')')
+						{  GenericSkip(ref lookahead);  }
+
+					if (mode == ParseMode.ParsePrototype)
+						{
+						TokenIterator endOfDefaultValue = lookahead;
+						endOfDefaultValue.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfDefaultValue);
+
+						startOfDefaultValue.SetPrototypeParsingTypeBetween(endOfDefaultValue, PrototypeParsingType.DefaultValue);
+						}
 					}
 				}
 
@@ -1220,6 +1242,59 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 			iterator = endOfIdentifier;
+			return true;
+			}
+
+
+		/* Function: TryToSkipPortBinding
+		 *
+		 * Tries to move the iterator past a port binding declaration, such as ".PortName(x)".
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipPortBinding (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			if (iterator.Character != '.')
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+
+			if (mode == ParseMode.ParsePrototype)
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.ParamModifier;  }
+
+			lookahead.Next();
+
+			if (!TryToSkipUnqualifiedIdentifier(ref lookahead, mode, PrototypeParsingType.Name))
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+
+			TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
+
+			if (lookahead.Character != '(')
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+
+			if (mode == ParseMode.ParsePrototype)
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.OpeningParamModifier;  }
+
+			GenericSkip(ref lookahead);
+
+			if (mode == ParseMode.ParsePrototype)
+				{
+				TokenIterator closingSymbol = lookahead;
+				closingSymbol.Previous();
+				closingSymbol.PrototypeParsingType = PrototypeParsingType.ClosingParamModifier;
+				}
+
+			iterator = lookahead;
 			return true;
 			}
 

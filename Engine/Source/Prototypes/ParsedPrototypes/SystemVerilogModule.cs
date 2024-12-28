@@ -41,7 +41,6 @@
 
 
 using System;
-using System.Reflection.Emit;
 using CodeClear.NaturalDocs.Engine.Tokenization;
 
 
@@ -75,6 +74,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 *		HasName - Whether the port's name was defined.
 		 *		HasUnpackedDimensions - Whether the port has one or more unpacked dimensions defined, such as "[2]".
 		 *
+		 *		IsPortBinding - Whether the port is bound to something else, such as ".PortNameA(X)".
+		 *
 		 * Combination Flags:
 		 *
 		 *		These are combinations of the above flags that are only used for testing the value against multiple flags
@@ -96,6 +97,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			HasPackedDimensions = 0x0040,
 			HasName = 0x0080,
 			HasUnpackedDimensions = 0x0100,
+
+			IsPortBinding = 0x0200,
 
 			HasDataTypeOrProperties = HasBaseDataType | HasSigning | HasPackedDimensions
 			}
@@ -301,52 +304,63 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			// xxx inherits?
 
 
-			// Data Type
+			// Port Binding
 
-			if (AppendBaseDataType(parameterSection, parameterIndex, typeBuilder))
+			if (AppendPortBinding(parameterSection, parameterIndex, typeBuilder, skipName: true))
 				{
-				portFlags |= PortFlags.HasBaseDataType;
-
-				if (AppendOtherModifiers(parameterSection, parameterIndex, typeBuilder))
-					{  portFlags |= PortFlags.HasOtherModifiers;  }
+				portFlags |= PortFlags.IsPortBinding;
 				}
-			if (AppendSigning(parameterSection, parameterIndex, typeBuilder))
-				{  portFlags |= PortFlags.HasSigning;  }
-			if (AppendPackedDimensions(parameterSection, parameterIndex, typeBuilder))
-				{  portFlags |= PortFlags.HasPackedDimensions;  }
 
-			// The data type only inherits if nothing is specified.  If the base type or any properties are set the rest does
-			// not inherit, they revert to the default.  This includes if signing or packed data types appear alone.
-			if (impliedTypes && (portFlags & PortFlags.HasDataTypeOrProperties) == 0)
+			else
 				{
-				for (int i = parameterIndex - 1; i >= 0; i--)
+
+				// Data Type
+
+				if (AppendBaseDataType(parameterSection, parameterIndex, typeBuilder))
 					{
-					if (AppendBaseDataType(parameterSection, i, typeBuilder))
+					portFlags |= PortFlags.HasBaseDataType;
+
+					if (AppendOtherModifiers(parameterSection, parameterIndex, typeBuilder))
+						{  portFlags |= PortFlags.HasOtherModifiers;  }
+					}
+				if (AppendSigning(parameterSection, parameterIndex, typeBuilder))
+					{  portFlags |= PortFlags.HasSigning;  }
+				if (AppendPackedDimensions(parameterSection, parameterIndex, typeBuilder))
+					{  portFlags |= PortFlags.HasPackedDimensions;  }
+
+				// The data type only inherits if nothing is specified.  If the base type or any properties are set the rest does
+				// not inherit, they revert to the default.  This includes if signing or packed data types appear alone.
+				if (impliedTypes && (portFlags & PortFlags.HasDataTypeOrProperties) == 0)
+					{
+					for (int i = parameterIndex - 1; i >= 0; i--)
 						{
-						portFlags |= PortFlags.HasBaseDataType;
+						if (AppendBaseDataType(parameterSection, i, typeBuilder))
+							{
+							portFlags |= PortFlags.HasBaseDataType;
 
-						if (AppendOtherModifiers(parameterSection, i, typeBuilder))
-							{  portFlags |= PortFlags.HasOtherModifiers;  }
+							if (AppendOtherModifiers(parameterSection, i, typeBuilder))
+								{  portFlags |= PortFlags.HasOtherModifiers;  }
+							}
+						if (AppendSigning(parameterSection, i, typeBuilder))
+							{  portFlags |= PortFlags.HasSigning;  }
+						if (AppendPackedDimensions(parameterSection, i, typeBuilder))
+							{  portFlags |= PortFlags.HasPackedDimensions;  }
+
+						if (impliedTypes && (portFlags & PortFlags.HasDataTypeOrProperties) != 0)
+							{  break;  }
 						}
-					if (AppendSigning(parameterSection, i, typeBuilder))
-						{  portFlags |= PortFlags.HasSigning;  }
-					if (AppendPackedDimensions(parameterSection, i, typeBuilder))
-						{  portFlags |= PortFlags.HasPackedDimensions;  }
 
-					if (impliedTypes && (portFlags & PortFlags.HasDataTypeOrProperties) != 0)
-						{  break;  }
+					// xxx inherit from non-ANSI too?
 					}
 
-				// xxx inherit from non-ANSI too?
+
+				// Unpacked Dimensions
+
+				if (AppendUnpackedDimensions(parameterSection, parameterIndex, typeBuilder, addStandInForName: true))
+					{  portFlags |= PortFlags.HasUnpackedDimensions;  }
+				// Unpacked dimensions don't inherit from previous parameters
+
 				}
-
-
-			// Unpacked Dimensions
-
-			if (AppendUnpackedDimensions(parameterSection, parameterIndex, typeBuilder, addStandInForName: true))
-				{  portFlags |= PortFlags.HasUnpackedDimensions;  }
-			// Unpacked dimensions don't inherit from previous parameters
-
 
 			return typeBuilder;
 			}
@@ -615,6 +629,18 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			{
 			TokenIterator ignore1, ignore2;
 			return FindUnpackedDimensions(parameterSection, parameterIndex, out ignore1, out ignore2);
+			}
+
+
+		/* Function: IsPortBinding
+		 * Returns whether the passed parameter is a port binding.  Bindings must be marked with
+		 * <PrototypeParsingType.ParamModifier> at the dot, then <PrototypeParsingType.Name>, then
+		 * <PrototypeParsingType.OpeningParamModifier> at the parenthetical.
+		 */
+		protected bool IsPortBinding (ParameterSection parameterSection, int parameterIndex)
+			{
+			TokenIterator ignore1, ignore2;
+			return FindPortBinding(parameterSection, parameterIndex, out ignore1, out ignore2);
 			}
 
 
@@ -1005,6 +1031,86 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			}
 
 
+		/* Function: FindPortBinding
+		 * If the passed parameter is a port binding it will return <TokenIterators> at its position and return true.  Returns
+		 * false otherwise.  Bindings must be marked with <PrototypeParsingType.ParamModifier> at the dot, then
+		 * <PrototypeParsingType.Name>, then <PrototypeParsingType.OpeningParamModifier> at the parenthetical.
+		 */
+		protected bool FindPortBinding (ParameterSection parameterSection, int parameterIndex,
+													  out TokenIterator portBindingPosition, out TokenIterator endOfParameter)
+			{
+			TokenIterator iterator;
+			parameterSection.GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
+
+
+			// Skip all the tokens before the dot
+
+			while (iterator < endOfParameter &&
+					 iterator.Character != '.' &&
+					 iterator.PrototypeParsingType != PrototypeParsingType.ParamModifier)
+				{
+				if (!TryToSkipBlock(ref iterator, endOfParameter))
+					{  iterator.Next();  }
+				}
+
+
+			// If there's no dot, there's no port binding
+
+			if (iterator.Character != '.' ||
+				iterator.PrototypeParsingType != PrototypeParsingType.ParamModifier)
+				{
+				portBindingPosition = endOfParameter;
+				return false;
+				}
+
+			portBindingPosition = iterator;
+
+
+			// Skip the dot and whitespace
+
+			iterator.Next();
+
+			while (iterator < endOfParameter &&
+					 iterator.PrototypeParsingType == PrototypeParsingType.Null)
+				{  iterator.Next();  }
+
+
+			// If there's no name, there's no port binding
+
+			if (iterator.PrototypeParsingType != PrototypeParsingType.Name)
+				{
+				portBindingPosition = endOfParameter;
+				return false;
+				}
+
+
+			// Skip the name and whitespace
+
+			do
+				{  iterator.Next();  }
+			while (iterator.PrototypeParsingType == PrototypeParsingType.Name);
+
+			while (iterator < endOfParameter &&
+					 iterator.PrototypeParsingType == PrototypeParsingType.Null)
+				{  iterator.Next();  }
+
+
+			// If there's no opening parenthesis, there's no port binding
+
+			if (iterator.Character != '(' ||
+				iterator.PrototypeParsingType != PrototypeParsingType.OpeningParamModifier)
+				{
+				portBindingPosition = endOfParameter;
+				return false;
+				}
+
+
+			// Success
+
+			return true;
+			}
+
+
 		/* Function: AppendDirection
 		 * If the passed parameter contains a direction keyword (input, output, etc.) it will append it to the <TypeBuilder>
 		 * and return true.  Returns false otherwise.  Direction keywords must be marked with
@@ -1305,6 +1411,70 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				}
 			else
 				{  return false;  }
+			}
+
+
+		/* Function: AppendPortBinding
+		 *
+		 * If the passed parameter is a port binding it will add it to the <TypeBuilder> and return true.  Returns false otherwise.
+		 * Bindings must be marked with <PrototypeParsingType.ParamModifier> at the dot, then
+		 * <PrototypeParsingType.Name>, then <PrototypeParsingType.OpeningParamModifier> at the parenthetical.
+		 *
+		 * You can optionally skip the name to make it more generic, such as ".(x)" instead of ".portName(x)".
+		 */
+		protected bool AppendPortBinding (ParameterSection parameterSection, int parameterIndex, TypeBuilder typeBuilder,
+														   bool skipName)
+			{
+			TokenIterator iterator, endOfParameter;
+
+			if (!FindPortBinding(parameterSection, parameterIndex, out iterator, out endOfParameter))
+				{  return false;  }
+
+
+			// First dot
+
+			// Include a space because otherwise you may get "output.portA(x)" instead of "output .portA(x)".
+			typeBuilder.AddToken(iterator, alwaysSpaceBefore: true);
+			iterator.Next();
+
+
+			// Skip whitespace
+
+			while (iterator < endOfParameter &&
+						iterator.PrototypeParsingType == PrototypeParsingType.Null)
+				{  iterator.Next();  }
+
+
+			// Name
+
+			while (iterator.PrototypeParsingType == PrototypeParsingType.Name)
+				{
+				if (!skipName)
+					{  typeBuilder.AddToken(iterator);  }
+
+				iterator.Next();
+				}
+
+
+			// Skip whitespace
+
+			while (iterator < endOfParameter &&
+					 iterator.PrototypeParsingType == PrototypeParsingType.Null)
+				{  iterator.Next();  }
+
+
+			// Parenthetical
+
+			if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier)
+				{
+				TokenIterator closingSymbol, endOfBlock;
+				GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock);
+
+				typeBuilder.AddTokens(iterator, endOfBlock);
+				iterator = endOfBlock;
+				}
+
+			return true;
 			}
 
 
