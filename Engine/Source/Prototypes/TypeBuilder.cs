@@ -55,9 +55,13 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 
 		/* Function: AddToken
+		 *
 		 * Adds a single token to the type builder.
+		 *
+		 * You can optionally force it to include a space before the token.  Normally you should leave this false so it will
+		 * add spaces according to its own rules.
 		 */
-		public void AddToken (TokenIterator iterator)
+		public void AddToken (TokenIterator iterator, bool alwaysSpaceBefore = false)
 			{
 			char thisCharacter = iterator.Character;
 			FundamentalType thisTokenType = (thisCharacter == '_' ? FundamentalType.Text : iterator.FundamentalType);
@@ -71,11 +75,14 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				// The conditionals are broken out for clarity and ease of documentation.  The compiler should be able to optimize them
 				// for us.  This is better than having one big unwieldy mess of an if statement.
 
+				if (alwaysSpaceBefore)
+					{  addSpaceBeforeToken = true;  }
+
 				// Add a space between two non-consecutive text tokens.  It's possible the two iterators come from different tokenizers
 				// so check for that.
-				if (lastTokenType == FundamentalType.Text &&
-					thisTokenType == FundamentalType.Text &&
-					(iterator.Tokenizer != lastTokenIterator.Tokenizer || iterator.TokenIndex != lastTokenIterator.TokenIndex + 1))
+				else if (lastTokenType == FundamentalType.Text &&
+						  thisTokenType == FundamentalType.Text &&
+						  (iterator.Tokenizer != lastTokenIterator.Tokenizer || iterator.TokenIndex != lastTokenIterator.TokenIndex + 1))
 					{  addSpaceBeforeToken = true;  }
 
 				// Add a space between a symbol followed by text, minus certain exceptions.
@@ -117,7 +124,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					addSpaceBeforeToken = true;
 					}
 
-				if (addSpaceBeforeToken)
+				if (addSpaceBeforeToken && !IsEmpty)
 					{
 					rawText.Append(' ');
 					prototypeParsingTypes.Add(PrototypeParsingType.Null);
@@ -136,10 +143,20 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 
 		/* Function: AddTokens
+		 *
 		 * Adds a group of tokens to the type builder.
+		 *
+		 * You can optionally force it to include a space before the token.  Normally you should leave this false so it will
+		 * add spaces according to its own rules.
 		 */
-		public void AddTokens (TokenIterator iterator, TokenIterator end)
+		public void AddTokens (TokenIterator iterator, TokenIterator end, bool alwaysSpaceBefore = false)
 			{
+			if (iterator < end)
+				{
+				AddToken(iterator, alwaysSpaceBefore);
+				iterator.Next();
+				}
+
 			while (iterator < end)
 				{
 				AddToken(iterator);
