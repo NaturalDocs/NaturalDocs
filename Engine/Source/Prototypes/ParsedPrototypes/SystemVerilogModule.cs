@@ -64,6 +64,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 *
 		 *		HasDirection - Whether the port has a direction defined, such as "input".
 		 *		HasParameterkeyword - Whether the port has a parameter keyword defined, such as "localparam".
+		 *		HasVarkeyword - Whether the port has the "var" keyword defined.
 		 *		HasBaseDataType - Whether the port has a base data type defined, such as "logic".  This doesn't include
 		 *									 the signing or packed dimension parts, which are denoted separately, hence _base_
 		 *									 data type.
@@ -84,16 +85,17 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 *
 		 */
 		[Flags]
-		protected enum PortFlags : byte
+		protected enum PortFlags : short
 			{
-			HasDirection = 0x01,
-			HasParameterKeyword = 0x02,
-			HasBaseDataType = 0x04,
-			HasOtherModifiers = 0x08,
-			HasSigning = 0x10,
-			HasPackedDimensions = 0x20,
-			HasName = 0x40,
-			HasUnpackedDimensions = 0x80,
+			HasDirection = 0x0001,
+			HasParameterKeyword = 0x0002,
+			HasVarKeyword = 0x0004,
+			HasBaseDataType = 0x0008,
+			HasOtherModifiers = 0x0010,
+			HasSigning = 0x0020,
+			HasPackedDimensions = 0x0040,
+			HasName = 0x0080,
+			HasUnpackedDimensions = 0x0100,
 
 			HasDataTypeOrProperties = HasBaseDataType | HasSigning | HasPackedDimensions
 			}
@@ -290,6 +292,13 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 				// xxx inherit from non-ANSI too?
 				}
+
+
+			// Var Keyword
+
+			if (AppendVarKeyword(parameterSection, parameterIndex, typeBuilder))
+				{  portFlags |= PortFlags.HasVarKeyword;  }
+			// xxx inherits?
 
 
 			// Data Type
@@ -536,6 +545,17 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			}
 
 
+		/* Function: HasVarKeyword
+		 * Returns whether the passed parameter contains a "var" keyword.  Var keywords must be marked with
+		 * <PrototypeParsingType.TypeModifier>.
+		 */
+		protected bool HasVarKeyword (ParameterSection parameterSection, int parameterIndex)
+			{
+			TokenIterator ignore1, ignore2;
+			return FindVarKeyword(parameterSection, parameterIndex, out ignore1, out ignore2);
+			}
+
+
 		/* Function: HasBaseDataType
 		 * Returns whether the passed parameter contains a base data type.  Base data type tokens must be marked
 		 * with <PrototypeParsingType.Type>, <PrototypeParsingType.TypeQualifier>, or for type references like "type(x)",
@@ -642,6 +662,34 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				{
 				if (iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier &&
 					Languages.Parsers.SystemVerilog.IsOnParameterKeyword(iterator))
+					{
+					keywordPosition = iterator;
+					return true;
+					}
+
+				if (!TryToSkipBlock(ref iterator, endOfParameter))
+					{  iterator.Next();  }
+				}
+
+			keywordPosition = endOfParameter;
+			return false;
+			}
+
+
+		/* Function: FindVarKeyword
+		 * If the passed parameter contains a "var" keyword it will return a <TokenIterator> at its position and return true.
+		 * Returns false otherwise.  Var keywords must be marked with <PrototypeParsingType.TypeModifier>.
+		 */
+		protected bool FindVarKeyword (ParameterSection parameterSection, int parameterIndex,
+													  out TokenIterator keywordPosition, out TokenIterator endOfParameter)
+			{
+			TokenIterator iterator;
+			parameterSection.GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
+
+			while (iterator < endOfParameter)
+				{
+				if (iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier &&
+					Languages.Parsers.SystemVerilog.IsOnKeyword(iterator, "var"))
 					{
 					keywordPosition = iterator;
 					return true;
@@ -988,6 +1036,24 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			if (FindParameterKeyword(parameterSection, parameterIndex, out parameterKeyword, out endOfParameter))
 				{
 				typeBuilder.AddToken(parameterKeyword);
+				return true;
+				}
+			else
+				{  return false;  }
+			}
+
+
+		/* Function: AppendVarKeyword
+		 * If the passed parameter contains a "var" keyword it will append it to the <TypeBuilder> and return true.  Returns
+		 * false otherwise.  Var keywords must be marked with <PrototypeParsingType.TypeModifier>.
+		 */
+		protected bool AppendVarKeyword (ParameterSection parameterSection, int parameterIndex, TypeBuilder typeBuilder)
+			{
+			TokenIterator varKeyword, endOfParameter;
+
+			if (FindVarKeyword(parameterSection, parameterIndex, out varKeyword, out endOfParameter))
+				{
+				typeBuilder.AddToken(varKeyword);
 				return true;
 				}
 			else

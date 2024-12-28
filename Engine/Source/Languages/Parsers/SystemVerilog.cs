@@ -867,6 +867,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 
+			// Var Keyword
+
+			if (IsOnKeyword(lookahead, "var"))
+				{
+				if (mode == ParseMode.ParsePrototype)
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
+
+				lookahead.Next();
+				TryToSkipWhitespace(ref lookahead, mode);
+				}
+
+
 			// Special Types
 
 			if (TryToSkipStruct(ref lookahead, mode) ||
