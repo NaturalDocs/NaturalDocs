@@ -87,6 +87,37 @@ module UserDefinedNetTypes (
 endmodule
 
 
+// Module: VarKeyword
+module VarKeyword (
+	var portA,
+
+	var logic portB,
+	var logic unsigned portC,
+	var logic unsigned [7:0] portD,
+	var logic [7:0] portE,
+
+	var unsigned portF,
+	var unsigned [7:0] portG,
+	var [7:0] portH);
+endmodule
+
+
+// Module: VarAndDirectionKeywords
+module VarAndDirectionKeywords (
+	input var portA,
+
+	input var logic portB,
+	input var logic unsigned portC,
+	input var logic unsigned [7:0] portD,
+	input var logic [7:0] portE,
+
+	input var unsigned portF,
+	input var unsigned [7:0] portG,
+	input var [7:0] portH);
+	);
+endmodule
+
+
 // Module: Interconnects
 //
 // According to the language specification "interconnect" may be followed by implicit_data_type, which

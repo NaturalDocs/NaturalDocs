@@ -338,6 +338,138 @@ Port Definition Components:
 ------------------------------
 
 - Parameter Section:
+  - Before Parameters: module VarKeyword (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: var portA,
+    - Name: portA
+    - Full Type: var
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: var logic portB,
+    - Name: portB
+    - Full Type: var logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 3: var logic unsigned portC,
+    - Name: portC
+    - Full Type: var logic unsigned
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 4: var logic unsigned [7:0] portD,
+    - Name: portD
+    - Full Type: var logic unsigned[7:0]
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 5: var logic [7:0] portE,
+    - Name: portE
+    - Full Type: var logic[7:0]
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 6: var unsigned portF,
+    - Name: portF
+    - Full Type: var unsigned
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 7: var unsigned [7:0] portG,
+    - Name: portG
+    - Full Type: var unsigned[7:0]
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 8: var [7:0] portH
+    - Name: portH
+    - Full Type: var[7:0]
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module VarAndDirectionKeywords (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: input var portA,
+    - Name: portA
+    - Full Type: input var
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: input var logic portB,
+    - Name: portB
+    - Full Type: input var logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 3: input var logic unsigned portC,
+    - Name: portC
+    - Full Type: input var logic unsigned
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 4: input var logic unsigned [7:0] portD,
+    - Name: portD
+    - Full Type: input var logic unsigned[7:0]
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 5: input var logic [7:0] portE,
+    - Name: portE
+    - Full Type: input var logic[7:0]
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 6: input var unsigned portF,
+    - Name: portF
+    - Full Type: input var unsigned
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 7: input var unsigned [7:0] portG,
+    - Name: portG
+    - Full Type: input var unsigned[7:0]
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 8: input var [7:0] portH
+    - Name: portH
+    - Full Type: input var[7:0]
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
   - Before Parameters: module Interconnects (
     - Access Level: Unknown
     - Link Candidates: (none)
