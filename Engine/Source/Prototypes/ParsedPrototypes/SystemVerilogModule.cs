@@ -978,16 +978,16 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 		/* Function: AppendParameterKeyword
 		 * If the passed parameter contains a parameter keyword (parameter, localparam) it will append it to the <TypeBuilder>
-		 * and return true.  Returns false otherwise.  Direction keywords must be marked with
+		 * and return true.  Returns false otherwise.  Parameter keywords must be marked with
 		 * <PrototypeParsingType.TypeModifier>.
 		 */
 		protected bool AppendParameterKeyword (ParameterSection parameterSection, int parameterIndex, TypeBuilder typeBuilder)
 			{
-			TokenIterator directionKeyword, endOfParameter;
+			TokenIterator parameterKeyword, endOfParameter;
 
-			if (FindParameterKeyword(parameterSection, parameterIndex, out directionKeyword, out endOfParameter))
+			if (FindParameterKeyword(parameterSection, parameterIndex, out parameterKeyword, out endOfParameter))
 				{
-				typeBuilder.AddToken(directionKeyword);
+				typeBuilder.AddToken(parameterKeyword);
 				return true;
 				}
 			else
