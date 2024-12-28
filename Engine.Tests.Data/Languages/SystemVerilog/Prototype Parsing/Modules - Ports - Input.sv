@@ -280,6 +280,14 @@ module TypeReferences (
 endmodule
 
 
+// Module: PortBinding
+module PortBinding (
+	.portA(x),
+	output .portB(y[3:0]),
+	output .portC (y[7:4]));
+endmodule
+
+
 // Topic: Unsupported Types
 //
 // These data types cannot be used as module ports:
