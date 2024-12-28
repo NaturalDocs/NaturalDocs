@@ -967,6 +967,51 @@ Port Definition Components:
 
 ------------------------------
 
+- Parameter Section:
+  - Before Parameters: module TypeReferences (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: bit portA,
+    - Name: portA
+    - Full Type: bit
+    - Base Type: bit
+    - Link Candidates: bit
+    - Default Value: (not detected)
+
+  - Parameter 2: type(portA) portB,
+    - Name: portB
+    - Full Type: type(portA)
+    - Base Type: type
+    - Link Candidates: type, portA
+    - Default Value: (not detected)
+
+  - Parameter 3: type (portA) portC,
+    - Name: portC
+    - Full Type: type(portA)
+    - Base Type: type
+    - Link Candidates: type, portA
+    - Default Value: (not detected)
+
+  - Parameter 4: type( portA ) portD,
+    - Name: portD
+    - Full Type: type(portA)
+    - Base Type: type
+    - Link Candidates: type, portA
+    - Default Value: (not detected)
+
+  - Parameter 5: type ( portA ) portE
+    - Name: portE
+    - Full Type: type(portA)
+    - Base Type: type
+    - Link Candidates: type, portA
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
 (No prototype detected)
 
 ------------------------------

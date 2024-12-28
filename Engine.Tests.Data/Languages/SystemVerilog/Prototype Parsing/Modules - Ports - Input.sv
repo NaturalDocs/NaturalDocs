@@ -239,6 +239,15 @@ module DoubleParameterizedTypes (
 endmodule
 
 
+// Module: TypeReferences
+module TypeReferences (
+	bit portA,
+	type(portA) portB,
+	type (portA) portC,
+	type( portA ) portD,
+	type ( portA ) portE);
+endmodule
+
 
 // Topic: Unsupported Types
 //
