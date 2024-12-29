@@ -929,7 +929,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				int typeIdentifiers = 0;
 
 				while (!IsOnSigningKeyword(lookahead) &&
-						 TryToSkipTypeIdentifier(ref lookahead, ParseMode.IterateOnly))
+						 (TryToSkipTypeIdentifier(ref lookahead, ParseMode.IterateOnly) ||
+						  TryToSkipMacroInvocation(ref lookahead, ParseMode.IterateOnly)) )
 					{
 					typeIdentifiers++;
 
@@ -978,7 +979,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 				while (typeIdentifiers > 0)
 					{
-					if (!TryToSkipTypeIdentifier(ref lookahead, mode, PrototypeParsingType.Type))
+					if (!TryToSkipTypeIdentifier(ref lookahead, mode, PrototypeParsingType.Type) &&
+						!TryToSkipMacroInvocation(ref lookahead, mode, PrototypeParsingType.Type))
 						{
 						ResetTokensBetween(iterator, lookahead, mode);
 						return false;
@@ -1008,7 +1010,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (!skipName)
 				{
-				if (!TryToSkipUnqualifiedIdentifier(ref lookahead, mode, PrototypeParsingType.Name))
+				if (!TryToSkipUnqualifiedIdentifier(ref lookahead, mode, PrototypeParsingType.Name) &&
+					!TryToSkipMacroInvocation(ref lookahead, mode, PrototypeParsingType.Name))
 					{
 					ResetTokensBetween(iterator, lookahead, mode);
 					return false;
@@ -1295,6 +1298,76 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 			iterator = lookahead;
+			return true;
+			}
+
+
+		/* Function: TryToSkipMacroInvocation
+		 *
+		 * Tries to move the iterator past a macro invocation, such as "`MacroName(x)".
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.Name>
+		 *			  or <PrototypeParsingType.Type>.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipMacroInvocation (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
+																	PrototypeParsingType prototypeParsingType = PrototypeParsingType.Null)
+			{
+			if (iterator.Character != '`')
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+
+			if (mode == ParseMode.ParsePrototype)
+				{  lookahead.PrototypeParsingType = prototypeParsingType;  }
+
+			lookahead.Next();
+
+			if (!TryToSkipUnqualifiedIdentifier(ref lookahead, mode, prototypeParsingType))
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+
+			iterator = lookahead;
+			TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
+
+			if (lookahead.Character == '(')
+				{
+				if (mode == ParseMode.ParsePrototype)
+					{
+					if (prototypeParsingType == PrototypeParsingType.Type ||
+						prototypeParsingType == PrototypeParsingType.TypeModifier)
+						{  lookahead.PrototypeParsingType = PrototypeParsingType.OpeningTypeModifier;  }
+					else if (prototypeParsingType == PrototypeParsingType.Name)
+						{  lookahead.PrototypeParsingType = PrototypeParsingType.OpeningParamModifier;  }
+					else if (prototypeParsingType != PrototypeParsingType.Null)
+						{  throw new NotImplementedException();  }
+					}
+
+				GenericSkip(ref lookahead);
+
+				if (mode == ParseMode.ParsePrototype)
+					{
+					TokenIterator closingSymbol = lookahead;
+					closingSymbol.Previous();
+
+					if (prototypeParsingType == PrototypeParsingType.Type ||
+						prototypeParsingType == PrototypeParsingType.TypeModifier)
+						{  closingSymbol.PrototypeParsingType = PrototypeParsingType.ClosingTypeModifier;  }
+					else if (prototypeParsingType == PrototypeParsingType.Name)
+						{  closingSymbol.PrototypeParsingType = PrototypeParsingType.ClosingParamModifier;  }
+					else if (prototypeParsingType != PrototypeParsingType.Null)
+						{  throw new NotImplementedException();  }
+					}
+
+				iterator = lookahead;
+				}
+
 			return true;
 			}
 
