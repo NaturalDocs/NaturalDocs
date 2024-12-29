@@ -659,7 +659,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			if (!isTypeAssignment &&
 				!IsOnSigningKeyword(lookahead) &&
 				!IsOnBuiltInType(lookahead) &&
-				TryToSkipUnqualifiedIdentifier(ref lookahead, ParseMode.IterateOnly))
+				(TryToSkipUnqualifiedIdentifier(ref lookahead, ParseMode.IterateOnly) ||
+				 TryToSkipMacroInvocation(ref lookahead, ParseMode.IterateOnly)) )
 				{
 				TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
 
@@ -695,8 +696,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				// TryToSkipType covers signing and type (packed) dimensions
 				if (!TryToSkipType(ref lookahead, mode))
 					{
-					ResetTokensBetween(iterator, lookahead, mode);
-					return false;
+					if (TryToSkipMacroInvocation(ref lookahead, mode, PrototypeParsingType.Type))
+						{
+						TryToSkipWhitespace(ref lookahead, mode);
+						TryToSkipType(ref lookahead, mode, impliedOnly: true);
+						}
+					else
+						{
+						ResetTokensBetween(iterator, lookahead, mode);
+						return false;
+						}
 					}
 
 				TryToSkipWhitespace(ref lookahead, mode);
@@ -705,7 +714,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Name
 
-			if (TryToSkipUnqualifiedIdentifier(ref lookahead, mode, PrototypeParsingType.Name) == false)
+			if (!TryToSkipUnqualifiedIdentifier(ref lookahead, mode, PrototypeParsingType.Name) &&
+				!TryToSkipMacroInvocation(ref lookahead, mode, PrototypeParsingType.Name))
 				{
 				ResetTokensBetween(iterator, lookahead, mode);
 				return false;
