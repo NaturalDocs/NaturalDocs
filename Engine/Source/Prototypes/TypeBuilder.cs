@@ -98,7 +98,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 						   lastCharacter != '(' &&  // exclude opening symbols except braces
 						   lastCharacter != '[' &&
 						   lastCharacter != '<' &&
-						   lastCharacter != '=')  // exclude assignments in SystemVerilog enum bodies like enum { x=2 }
+						   lastCharacter != '=' &&  // exclude assignments in SystemVerilog enum bodies like enum { x=2 }
+						   lastCharacter != '`')  // exclude macro invocations in SystemVerilog like `MacroName
 					{
 					addSpaceBeforeToken = true;
 					}
