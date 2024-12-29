@@ -344,3 +344,13 @@ module TypeAssignments #(
 	localparam typeC paramZ = 6)
 	();
 endmodule
+
+// Module: Macros
+module Macros #(
+	`MacroA = 1,
+	`MacroB(12) = 2,
+	parameter `MacroC(12,16) = 3,
+	parameter logic d [`MacroD:0] = 4,
+	logic e = `MacroE)
+	();
+endmodule

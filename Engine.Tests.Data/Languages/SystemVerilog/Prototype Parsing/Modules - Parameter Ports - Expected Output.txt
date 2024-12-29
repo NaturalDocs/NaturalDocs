@@ -1585,3 +1585,56 @@ Misc:
 
   - After Parameters: )
     - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module Macros #(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: `MacroA = 1,
+    - Name: `MacroA
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 1
+
+  - Parameter 2: `MacroB(12) = 2,
+    - Name: `MacroB
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 2
+
+  - Parameter 3: parameter `MacroC(12,16) = 3,
+    - Name: `MacroC
+    - Full Type: parameter
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 3
+
+  - Parameter 4: parameter logic d [`MacroD:0] = 4,
+    - Name: d
+    - Full Type: parameter logic _[`MacroD:0]
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: 4
+
+  - Parameter 5: logic e = `MacroE
+    - Name: e
+    - Full Type: logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: `MacroE
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
