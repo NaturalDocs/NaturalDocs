@@ -288,6 +288,16 @@ module PortBinding (
 endmodule
 
 
+// Module: Macros
+module Macros (
+	`MacroA,
+	`MacroB(12),
+	input `MacroC(12,16),
+	input logic portD [`MacroD:0],
+	input logic portE = `MacroE);
+endmodule
+
+
 // Topic: Unsupported Types
 //
 // These data types cannot be used as module ports:

@@ -1175,6 +1175,51 @@ Port Definition Components:
 
 ------------------------------
 
+- Parameter Section:
+  - Before Parameters: module Macros (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: `MacroA,
+    - Name: `MacroA
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: `MacroB(12),
+    - Name: `MacroB
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: input `MacroC(12,16),
+    - Name: `MacroC
+    - Full Type: input
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 4: input logic portD [`MacroD:0],
+    - Name: portD
+    - Full Type: input logic _[`MacroD:0]
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: (not detected)
+
+  - Parameter 5: input logic portE = `MacroE
+    - Name: portE
+    - Full Type: input logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: `MacroE
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
 (No prototype detected)
 
 ------------------------------
