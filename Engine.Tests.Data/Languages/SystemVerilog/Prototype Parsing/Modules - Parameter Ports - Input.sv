@@ -263,7 +263,7 @@ endmodule
 
 
 // Module: ParameterKeywordsC
-// Keywords should *not* be inherited
+// "parameter" keywords should be inherited but "localparam" should *not* be
 module ParameterKeywordsC #(
 	a = 1,
 	aa = 2,
@@ -276,7 +276,7 @@ endmodule
 
 
 // Module: ParameterKeywordsD
-// Keywords should *not* be inherited, but the type still should be
+// The type should be inherited regardless of whether the parameter keyword is
 module ParameterKeywordsD #(
 	bit a = 1,
 	aa = 2,
@@ -291,7 +291,7 @@ endmodule
 
 
 // Module: ParameterKeywordsE
-// Keywords should *not* be inherited
+// Combinations of the above
 module ParameterKeywordsE #(
 	bit a = 1,
 	int aa = 2,

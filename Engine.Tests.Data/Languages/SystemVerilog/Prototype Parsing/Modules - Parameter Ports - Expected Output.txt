@@ -1229,7 +1229,7 @@ Parameter Keywords:
 
   - Parameter 4: bb = 4,
     - Name: bb
-    - Full Type: (not detected)
+    - Full Type (implied): parameter
     - Base Type: (not detected)
     - Link Candidates: (none)
     - Default Value: 4
@@ -1289,7 +1289,7 @@ Parameter Keywords:
 
   - Parameter 4: bb = 4,
     - Name: bb
-    - Full Type (implied): logic
+    - Full Type (implied): parameter logic
     - Base Type (implied): logic
     - Link Candidates: (none)
     - Default Value: 4
@@ -1364,6 +1364,7 @@ Parameter Keywords:
   - Parameter 4: [7:0] bb = 4,
     - Name: bb
     - Full Type: [7:0]
+    - Full Type (plus implied): parameter[7:0]
     - Base Type: (not detected)
     - Link Candidates: (none)
     - Default Value: 4
@@ -1624,6 +1625,7 @@ Misc:
   - Parameter 5: logic e = `MacroE
     - Name: e
     - Full Type: logic
+    - Full Type (plus implied): parameter logic
     - Base Type: logic
     - Link Candidates: logic
     - Default Value: `MacroE
