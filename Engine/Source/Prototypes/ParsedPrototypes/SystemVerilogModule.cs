@@ -1339,7 +1339,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				TokenIterator closingSymbol, endOfBlock;
 				GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock);
 
-				typeBuilder.AddTokens(iterator, endOfBlock);
+				typeBuilder.AddTokens(iterator, endOfBlock, alwaysSpaceBefore: true);
 				iterator = endOfBlock;
 
 				// Add any consecutive packed dimensions.
@@ -1350,7 +1350,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 						{
 						GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock);
 
-						typeBuilder.AddTokens(iterator, endOfBlock);
+						typeBuilder.AddTokens(iterator, endOfBlock, alwaysSpaceBefore: false);
 						iterator = endOfBlock;
 						}
 
