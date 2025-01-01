@@ -1753,3 +1753,324 @@ Net Types and Data Types:
 
   - After Parameters: )
     - Link Candidates: (none)
+
+------------------------------
+Implied Types:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module ImpliedTypesA (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: bit a = 1,
+    - Name: a
+    - Full Type: bit
+    - Base Type: bit
+    - Link Candidates: bit
+    - Default Value: 1
+
+  - Parameter 2: aa = 1,
+    - Name: aa
+    - Full Type (implied): bit
+    - Base Type (implied): bit
+    - Link Candidates: (none)
+    - Default Value: 1
+
+  - Parameter 3: logic [7:0] b = 2,
+    - Name: b
+    - Full Type: logic[7:0]
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: 2
+
+  - Parameter 4: bb = 2,
+    - Name: bb
+    - Full Type (implied): logic[7:0]
+    - Base Type (implied): logic
+    - Link Candidates: (none)
+    - Default Value: 2
+
+  - Parameter 5: int unsigned c = 3,
+    - Name: c
+    - Full Type: int unsigned
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: 3
+
+  - Parameter 6: cc = 3,
+    - Name: cc
+    - Full Type (implied): int unsigned
+    - Base Type (implied): int
+    - Link Candidates: (none)
+    - Default Value: 3
+
+  - Parameter 7: bit unsigned [3:0] d = 4,
+    - Name: d
+    - Full Type: bit unsigned[3:0]
+    - Base Type: bit
+    - Link Candidates: bit
+    - Default Value: 4
+
+  - Parameter 8: dd = 4
+    - Name: dd
+    - Full Type (implied): bit unsigned[3:0]
+    - Base Type (implied): bit
+    - Link Candidates: (none)
+    - Default Value: 4
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module ImpliedTypesB (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: bit a[2] = '{1,1},
+    - Name: a
+    - Full Type: bit ×[2]
+    - Base Type: bit
+    - Link Candidates: bit
+    - Default Value: '{1,1}
+
+  - Parameter 2: aa = 1,
+    - Name: aa
+    - Full Type (implied): bit
+    - Base Type (implied): bit
+    - Link Candidates: (none)
+    - Default Value: 1
+
+  - Parameter 3: logic b = 2,
+    - Name: b
+    - Full Type: logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: 2
+
+  - Parameter 4: bb[2] = '{2,2},
+    - Name: bb
+    - Full Type: ×[2]
+    - Full Type (plus implied): logic ×[2]
+    - Base Type (implied): logic
+    - Link Candidates: (none)
+    - Default Value: '{2,2}
+
+  - Parameter 5: reg c[0:1] = '{3,3},
+    - Name: c
+    - Full Type: reg ×[0:1]
+    - Base Type: reg
+    - Link Candidates: reg
+    - Default Value: '{3,3}
+
+  - Parameter 6: cc[3] = '{3,3,3}
+    - Name: cc
+    - Full Type: ×[3]
+    - Full Type (plus implied): reg ×[3]
+    - Base Type (implied): reg
+    - Link Candidates: (none)
+    - Default Value: '{3,3,3}
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module ImpliedTypesC (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: bit a = 1,
+    - Name: a
+    - Full Type: bit
+    - Base Type: bit
+    - Link Candidates: bit
+    - Default Value: 1
+
+  - Parameter 2: unsigned aa = 1,
+    - Name: aa
+    - Full Type: unsigned
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 1
+
+  - Parameter 3: reg signed b = 2,
+    - Name: b
+    - Full Type: reg signed
+    - Base Type: reg
+    - Link Candidates: reg
+    - Default Value: 2
+
+  - Parameter 4: unsigned bb = 2,
+    - Name: bb
+    - Full Type: unsigned
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 2
+
+  - Parameter 5: bit c = 3,
+    - Name: c
+    - Full Type: bit
+    - Base Type: bit
+    - Link Candidates: bit
+    - Default Value: 3
+
+  - Parameter 6: [3:0] cc = 3,
+    - Name: cc
+    - Full Type: [3:0]
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 3
+
+  - Parameter 7: reg [7:0] d = 4,
+    - Name: d
+    - Full Type: reg[7:0]
+    - Base Type: reg
+    - Link Candidates: reg
+    - Default Value: 4
+
+  - Parameter 8: [3:0] dd = 4,
+    - Name: dd
+    - Full Type: [3:0]
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 4
+
+  - Parameter 9: bit signed [7:0] e = 5,
+    - Name: e
+    - Full Type: bit signed[7:0]
+    - Base Type: bit
+    - Link Candidates: bit
+    - Default Value: 5
+
+  - Parameter 10: unsigned ee = 5,
+    - Name: ee
+    - Full Type: unsigned
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 5
+
+  - Parameter 11: reg signed [7:0] f = 6,
+    - Name: f
+    - Full Type: reg signed[7:0]
+    - Base Type: reg
+    - Link Candidates: reg
+    - Default Value: 6
+
+  - Parameter 12: [3:0] ff = 6,
+    - Name: ff
+    - Full Type: [3:0]
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 6
+
+  - Parameter 13: bit signed [7:0] g = 7,
+    - Name: g
+    - Full Type: bit signed[7:0]
+    - Base Type: bit
+    - Link Candidates: bit
+    - Default Value: 7
+
+  - Parameter 14: unsigned [3:0] gg = 7
+    - Name: gg
+    - Full Type: unsigned[3:0]
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 7
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module ImpliedTypesD (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: bit a[2] = '{1,1},
+    - Name: a
+    - Full Type: bit ×[2]
+    - Base Type: bit
+    - Link Candidates: bit
+    - Default Value: '{1,1}
+
+  - Parameter 2: unsigned aa = 1,
+    - Name: aa
+    - Full Type: unsigned
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 1
+
+  - Parameter 3: logic [3:0] b = 2,
+    - Name: b
+    - Full Type: logic[3:0]
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: 2
+
+  - Parameter 4: [7:0] bb[2] = '{2,2},
+    - Name: bb
+    - Full Type: [7:0] ×[2]
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: '{2,2}
+
+  - Parameter 5: reg signed [7:0] c = 3,
+    - Name: c
+    - Full Type: reg signed[7:0]
+    - Base Type: reg
+    - Link Candidates: reg
+    - Default Value: 3
+
+  - Parameter 6: cc[3] = '{3,3,3}
+    - Name: cc
+    - Full Type: ×[3]
+    - Full Type (plus implied): reg signed[7:0] ×[3]
+    - Base Type (implied): reg
+    - Link Candidates: (none)
+    - Default Value: '{3,3,3}
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module ImpliedTypesE (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: reg a = 1,
+    - Name: a
+    - Full Type: reg
+    - Base Type: reg
+    - Link Candidates: reg
+    - Default Value: 1
+
+  - Parameter 2: aa = 2,
+    - Name: aa
+    - Full Type (implied): reg
+    - Base Type (implied): reg
+    - Link Candidates: (none)
+    - Default Value: 2
+
+  - Parameter 3: type(a) b = 2,
+    - Name: b
+    - Full Type: type(a)
+    - Base Type: type
+    - Link Candidates: type, a
+    - Default Value: 2
+
+  - Parameter 4: bb = 3
+    - Name: bb
+    - Full Type (implied): type(a)
+    - Base Type (implied): type
+    - Link Candidates: (none)
+    - Default Value: 3
+
+  - After Parameters: )
+    - Link Candidates: (none)

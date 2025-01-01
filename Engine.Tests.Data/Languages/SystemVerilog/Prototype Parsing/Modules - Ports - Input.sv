@@ -429,3 +429,77 @@ module UserNetTypesAndUserDataTypes (
 	UserNetType UserDataType unsigned [7:0] userNetTypeAndUserDataTypeDD[2]);
 
 endmodule
+
+
+
+// Group: Implied Types
+// ___________________________________________________
+
+
+// Module: ImpliedTypesA
+// The full type should be inherited including the packed dimension and signing.
+module ImpliedTypesA (
+	bit a = 1,
+	aa = 1,
+	logic [7:0] b = 2,
+	bb = 2,
+	int unsigned c = 3,
+	cc = 3,
+	bit unsigned [3:0] d = 4,
+	dd = 4);
+endmodule
+
+
+// Module: ImpliedTypesB
+// Unpacked dimensions should *not* be inherited.
+module ImpliedTypesB (
+	bit a[2] = '{1,1},
+	aa = 1,
+	logic b = 2,
+	bb[2] = '{2,2},
+	reg c[0:1] = '{3,3},
+	cc[3] = '{3,3,3});
+endmodule
+
+
+// Module: ImpliedTypesC
+// Signing and packed dimensions specified without a data type do *not* inherit the data type.
+// They revert to the default.  The default can be context-dependent and even changed by
+// preprocessor directives so we don't add it to the results.
+module ImpliedTypesC (
+	bit a = 1,
+	unsigned aa = 1,
+	reg signed b = 2,
+	unsigned bb = 2,
+	bit c = 3,
+	[3:0] cc = 3,
+	reg [7:0] d = 4,
+	[3:0] dd = 4,
+	bit signed [7:0] e = 5,
+	unsigned ee = 5,
+	reg signed [7:0] f = 6,
+	[3:0] ff = 6,
+	bit signed [7:0] g = 7,
+	unsigned [3:0] gg = 7);
+endmodule
+
+
+// Module: ImpliedTypesD
+// Combinations of the above.
+module ImpliedTypesD (
+	bit a[2] = '{1,1},
+	unsigned aa = 1,
+	logic [3:0] b = 2,
+	[7:0] bb[2] = '{2,2},
+	reg signed [7:0] c = 3,
+	cc[3] = '{3,3,3});
+endmodule
+
+
+// Module: ImpliedTypesE
+module ImpliedTypesE (
+	reg a = 1,
+	aa = 2,
+	type(a) b = 2,
+	bb = 3);
+endmodule
