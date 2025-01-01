@@ -31,10 +31,9 @@ Topic: ANSI Port Attribute Inheritance Rules
 		The direction of a port (input, output, inout, etc.) is always inherited if it's not specified.
 
 
-	Parameter Keywords are Not Inherited:
+	Parameter Keywords are Sometimes Inherited:
 
-		A parameter keyword (parameter, localparam) is _not_ inherited.  The behavior of a keywordless parameter
-		that follows a localparam appears to be undefined.  In this example:
+		The behavior of a keywordless parameter that follows a localparam appears to be undefined.  In this example:
 
 		--- SystemVerilog ---
 		module ParameterKeywords #(
@@ -49,7 +48,10 @@ Topic: ANSI Port Attribute Inheritance Rules
 		- Siemens Questa 2023.3 treats paramD as "parameter"
 		- Synopsys VCS 2023.03 treats paramD as "localparam"
 
-		Therefore we won't include it as an inherited property at all.
+		Therefore we don't allow "localparam" to inherit.
+
+		However, "localparam" is not used as often as "parameter" so it's still worth inheriting the parameter keyword.
+		Therefore we would treat paramB as having "parameter" defined but leave paramD as having neither.
 
 
 	Kind and Data Types are Only Inherited Together:

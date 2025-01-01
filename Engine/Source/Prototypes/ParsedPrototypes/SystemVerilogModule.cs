@@ -217,7 +217,28 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 			if (AppendParameterKeyword(parameterSection, parameterIndex, typeBuilder))
 				{  portFlags |= PortFlags.HasParameterKeyword;  }
-			// Parameter keywords are treated as if they don't inherit.  See SystemVerilog Notes.
+
+			// The parameter keyword only inherits if it's "parameter".  This is because compilers differ on whether a keywordless
+			// parameter following a "localparam" becomes "localparam" or defaults back to "parameter".  See the SystemVerilog
+			// Notes file.  Since "localparam" won't be used as often it's still worth inheriting "parameter" when we can.
+			else if (impliedTypes)
+				{
+				TokenIterator keywordPosition, endOfParameter;
+
+				for (int i = parameterIndex - 1; i >= 0; i--)
+					{
+					if (FindParameterKeyword(parameterSection, i, out keywordPosition, out endOfParameter))
+						{
+						if (keywordPosition.MatchesToken("parameter"))
+							{
+							typeBuilder.AddToken(keywordPosition);
+							portFlags |= PortFlags.HasParameterKeyword;
+							}
+
+						break;
+						}
+					}
+				}
 
 
 			// Data Type
