@@ -124,9 +124,12 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 */
 		static SystemVerilogModule ()
 			{
-			// I debated between "x" and "_".  "x[2]" works, as does "logic [7:0] x[2]".  Underscore draws your eye to it a little
-			// less and makes it clearer something's missing: "_[2]" and "logic [7:0] _[2]".  It's debatable though.
-			NameStandInToken = new Tokenizer("_");
+			// I debated which character to use as a stand-in:
+			// - "x" is somewhat intuitive in terms of meaning: "x[2]" and "logic [7:0] x[2]".
+			// - "_" draws your eye to it a little less and makes it clearer something's missing: "_[2]" and "logic [7:0] _[2]".
+			// - I eventually settled on "×" (U+00D7, multiplication sign) which is still intuitive and also slightly more visually
+			//   distinct: "×[2]" and "logic [7:0] ×[2]".
+			NameStandInToken = new Tokenizer("×");
 
 			TokenIterator iterator = NameStandInToken.FirstToken;
 			iterator.PrototypeParsingType = PrototypeParsingType.ParamModifier;
