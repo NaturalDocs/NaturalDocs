@@ -170,7 +170,7 @@ Typed Declarations:
 
   - Parameter 2: logic [7:0] b = 12,
     - Name: b
-    - Full Type: logic[7:0]
+    - Full Type: logic [7:0]
     - Base Type: logic
     - Link Candidates: logic
     - Default Value: 12
@@ -184,7 +184,7 @@ Typed Declarations:
 
   - Parameter 4: bit signed [7:0] d = 'z
     - Name: d
-    - Full Type: bit signed[7:0]
+    - Full Type: bit signed [7:0]
     - Base Type: bit
     - Link Candidates: bit
     - Default Value: 'z
@@ -333,7 +333,7 @@ Typed Declarations:
 
   - Parameter 1: bit [7:0] a = '1,
     - Name: a
-    - Full Type: bit[7:0]
+    - Full Type: bit [7:0]
     - Base Type: bit
     - Link Candidates: bit
     - Default Value: '1
@@ -530,7 +530,7 @@ Valueless Declarations:
 
   - Parameter 2: logic [7:0] b,
     - Name: b
-    - Full Type: logic[7:0]
+    - Full Type: logic [7:0]
     - Base Type: logic
     - Link Candidates: logic
     - Default Value: (not detected)
@@ -544,7 +544,7 @@ Valueless Declarations:
 
   - Parameter 4: reg signed [7:0] d
     - Name: d
-    - Full Type: reg signed[7:0]
+    - Full Type: reg signed [7:0]
     - Base Type: reg
     - Link Candidates: reg
     - Default Value: (not detected)
@@ -693,7 +693,7 @@ Valueless Declarations:
 
   - Parameter 1: bit [7:0] a,
     - Name: a
-    - Full Type: bit[7:0]
+    - Full Type: bit [7:0]
     - Base Type: bit
     - Link Candidates: bit
     - Default Value: (not detected)
@@ -783,14 +783,14 @@ Implied Types:
 
   - Parameter 3: logic [7:0] b = 2,
     - Name: b
-    - Full Type: logic[7:0]
+    - Full Type: logic [7:0]
     - Base Type: logic
     - Link Candidates: logic
     - Default Value: 2
 
   - Parameter 4: bb = 2,
     - Name: bb
-    - Full Type (implied): logic[7:0]
+    - Full Type (implied): logic [7:0]
     - Base Type (implied): logic
     - Link Candidates: (none)
     - Default Value: 2
@@ -811,14 +811,14 @@ Implied Types:
 
   - Parameter 7: bit unsigned [3:0] d = 4,
     - Name: d
-    - Full Type: bit unsigned[3:0]
+    - Full Type: bit unsigned [3:0]
     - Base Type: bit
     - Link Candidates: bit
     - Default Value: 4
 
   - Parameter 8: dd = 4
     - Name: dd
-    - Full Type (implied): bit unsigned[3:0]
+    - Full Type (implied): bit unsigned [3:0]
     - Base Type (implied): bit
     - Link Candidates: (none)
     - Default Value: 4
@@ -947,7 +947,7 @@ Implied Types:
 
   - Parameter 7: reg [7:0] d = 4,
     - Name: d
-    - Full Type: reg[7:0]
+    - Full Type: reg [7:0]
     - Base Type: reg
     - Link Candidates: reg
     - Default Value: 4
@@ -961,7 +961,7 @@ Implied Types:
 
   - Parameter 9: bit signed [7:0] e = 5,
     - Name: e
-    - Full Type: bit signed[7:0]
+    - Full Type: bit signed [7:0]
     - Base Type: bit
     - Link Candidates: bit
     - Default Value: 5
@@ -975,7 +975,7 @@ Implied Types:
 
   - Parameter 11: reg signed [7:0] f = 6,
     - Name: f
-    - Full Type: reg signed[7:0]
+    - Full Type: reg signed [7:0]
     - Base Type: reg
     - Link Candidates: reg
     - Default Value: 6
@@ -989,14 +989,14 @@ Implied Types:
 
   - Parameter 13: bit signed [7:0] g = 7,
     - Name: g
-    - Full Type: bit signed[7:0]
+    - Full Type: bit signed [7:0]
     - Base Type: bit
     - Link Candidates: bit
     - Default Value: 7
 
   - Parameter 14: unsigned [3:0] gg = 7
     - Name: gg
-    - Full Type: unsigned[3:0]
+    - Full Type: unsigned [3:0]
     - Base Type: (not detected)
     - Link Candidates: (none)
     - Default Value: 7
@@ -1035,7 +1035,7 @@ Implied Types:
 
   - Parameter 3: logic [3:0] b = 2,
     - Name: b
-    - Full Type: logic[3:0]
+    - Full Type: logic [3:0]
     - Base Type: logic
     - Link Candidates: logic
     - Default Value: 2
@@ -1049,7 +1049,7 @@ Implied Types:
 
   - Parameter 5: reg signed [7:0] c = 3,
     - Name: c
-    - Full Type: reg signed[7:0]
+    - Full Type: reg signed [7:0]
     - Base Type: reg
     - Link Candidates: reg
     - Default Value: 3
@@ -1057,7 +1057,7 @@ Implied Types:
   - Parameter 6: cc[3] = '{3,3,3}
     - Name: cc
     - Full Type: ×[3]
-    - Full Type (plus implied): reg signed[7:0] ×[3]
+    - Full Type (plus implied): reg signed [7:0] ×[3]
     - Base Type (implied): reg
     - Link Candidates: (none)
     - Default Value: '{3,3,3}
@@ -1176,7 +1176,7 @@ Parameter Keywords:
 
   - Parameter 2: parameter logic [7:0] b = 2,
     - Name: b
-    - Full Type: parameter logic[7:0]
+    - Full Type: parameter logic [7:0]
     - Base Type: logic
     - Link Candidates: logic
     - Default Value: 2
@@ -1310,14 +1310,14 @@ Parameter Keywords:
 
   - Parameter 7: localparam reg signed [7:0] d = 7,
     - Name: d
-    - Full Type: localparam reg signed[7:0]
+    - Full Type: localparam reg signed [7:0]
     - Base Type: reg
     - Link Candidates: reg
     - Default Value: 7
 
   - Parameter 8: dd = 8
     - Name: dd
-    - Full Type (implied): reg signed[7:0]
+    - Full Type (implied): reg signed [7:0]
     - Base Type (implied): reg
     - Link Candidates: (none)
     - Default Value: 8
@@ -1364,7 +1364,7 @@ Parameter Keywords:
   - Parameter 4: [7:0] bb = 4,
     - Name: bb
     - Full Type: [7:0]
-    - Full Type (plus implied): parameter[7:0]
+    - Full Type (plus implied): parameter [7:0]
     - Base Type: (not detected)
     - Link Candidates: (none)
     - Default Value: 4
@@ -1419,7 +1419,7 @@ Misc:
 
   - Parameter 3: logic [7:0] x = 12,
     - Name: x
-    - Full Type: logic[7:0]
+    - Full Type: logic [7:0]
     - Base Type: logic
     - Link Candidates: logic
     - Default Value: 12
@@ -1458,14 +1458,14 @@ Misc:
 
   - Parameter 1: bit [7:0] a[2] = '{'0, '0},
     - Name: a
-    - Full Type: bit[7:0] ×[2]
+    - Full Type: bit [7:0] ×[2]
     - Base Type: bit
     - Link Candidates: bit
     - Default Value: '{'0, '0}
 
   - Parameter 2: bit [3:0] b[0:1] = '{'0, '0}
     - Name: b
-    - Full Type: bit[3:0] ×[0:1]
+    - Full Type: bit [3:0] ×[0:1]
     - Base Type: bit
     - Link Candidates: bit
     - Default Value: '{'0, '0}
