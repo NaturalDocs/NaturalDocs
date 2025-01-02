@@ -305,7 +305,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 			if (AppendDirection(parameterSection, parameterIndex, typeBuilder))
 				{  portFlags |= PortFlags.HasDirection;  }
-			else
+
+			else if (impliedTypes)
 				{
 				// The direction is always inherited if it's not specified
 				for (int i = parameterIndex - 1; i >= 0; i--)
