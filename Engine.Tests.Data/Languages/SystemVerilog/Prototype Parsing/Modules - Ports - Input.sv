@@ -503,3 +503,47 @@ module ImpliedTypesE (
 	type(a) b = 2,
 	bb = 3);
 endmodule
+
+
+
+// Group: Implied Direction
+// ___________________________________________________
+
+
+// Module: ImpliedDirectionA
+module ImpliedDirectionA (
+	input a = 1,
+	aa = 2,
+	output b = 3,
+	bb = 4,
+	inout c = 5,
+	cc = 6,
+	ref d = 7,
+	dd = 8);
+endmodule
+
+
+// Module: ImpliedDirectionB
+module ImpliedDirectionB (
+	input logic a = 1,
+	logic aa = 2,
+	output logic b = 3,
+	logic bb = 4,
+	inout logic c = 5,
+	logic cc = 6,
+	ref logic d = 7,
+	logic dd = 8);
+endmodule
+
+
+// Module: ImpliedDirectionC
+module ImpliedDirectionC (
+	input logic a = 1,
+	aa = 2,
+	output b = 3,
+	reg bb = 4,
+	inout logic unsigned c = 5,
+	reg [7:0] cc = 6,
+	ref d[2] = {7,7},
+	logic unsigned dd = 8);
+endmodule

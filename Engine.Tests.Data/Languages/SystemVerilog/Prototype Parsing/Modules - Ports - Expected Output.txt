@@ -2074,3 +2074,212 @@ Implied Types:
 
   - After Parameters: )
     - Link Candidates: (none)
+
+------------------------------
+Implied Direction:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module ImpliedDirectionA (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: input a = 1,
+    - Name: a
+    - Full Type: input
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 1
+
+  - Parameter 2: aa = 2,
+    - Name: aa
+    - Full Type (implied): input
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 2
+
+  - Parameter 3: output b = 3,
+    - Name: b
+    - Full Type: output
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 3
+
+  - Parameter 4: bb = 4,
+    - Name: bb
+    - Full Type (implied): output
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 4
+
+  - Parameter 5: inout c = 5,
+    - Name: c
+    - Full Type: inout
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 5
+
+  - Parameter 6: cc = 6,
+    - Name: cc
+    - Full Type (implied): inout
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 6
+
+  - Parameter 7: ref d = 7,
+    - Name: d
+    - Full Type: ref
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 7
+
+  - Parameter 8: dd = 8
+    - Name: dd
+    - Full Type (implied): ref
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 8
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module ImpliedDirectionB (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: input logic a = 1,
+    - Name: a
+    - Full Type: input logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: 1
+
+  - Parameter 2: logic aa = 2,
+    - Name: aa
+    - Full Type: logic
+    - Full Type (plus implied): input logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: 2
+
+  - Parameter 3: output logic b = 3,
+    - Name: b
+    - Full Type: output logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: 3
+
+  - Parameter 4: logic bb = 4,
+    - Name: bb
+    - Full Type: logic
+    - Full Type (plus implied): output logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: 4
+
+  - Parameter 5: inout logic c = 5,
+    - Name: c
+    - Full Type: inout logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: 5
+
+  - Parameter 6: logic cc = 6,
+    - Name: cc
+    - Full Type: logic
+    - Full Type (plus implied): inout logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: 6
+
+  - Parameter 7: ref logic d = 7,
+    - Name: d
+    - Full Type: ref logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: 7
+
+  - Parameter 8: logic dd = 8
+    - Name: dd
+    - Full Type: logic
+    - Full Type (plus implied): ref logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: 8
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: module ImpliedDirectionC (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: input logic a = 1,
+    - Name: a
+    - Full Type: input logic
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: 1
+
+  - Parameter 2: aa = 2,
+    - Name: aa
+    - Full Type (implied): input logic
+    - Base Type (implied): logic
+    - Link Candidates: (none)
+    - Default Value: 2
+
+  - Parameter 3: output b = 3,
+    - Name: b
+    - Full Type: output
+    - Full Type (plus implied): output logic
+    - Base Type (implied): logic
+    - Link Candidates: (none)
+    - Default Value: 3
+
+  - Parameter 4: reg bb = 4,
+    - Name: bb
+    - Full Type: reg
+    - Full Type (plus implied): output reg
+    - Base Type: reg
+    - Link Candidates: reg
+    - Default Value: 4
+
+  - Parameter 5: inout logic unsigned c = 5,
+    - Name: c
+    - Full Type: inout logic unsigned
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: 5
+
+  - Parameter 6: reg [7:0] cc = 6,
+    - Name: cc
+    - Full Type: reg [7:0]
+    - Full Type (plus implied): inout reg [7:0]
+    - Base Type: reg
+    - Link Candidates: reg
+    - Default Value: 6
+
+  - Parameter 7: ref d[2] = {7,7},
+    - Name: d
+    - Full Type: ref ×[2]
+    - Full Type (plus implied): ref reg [7:0] ×[2]
+    - Base Type (implied): reg
+    - Link Candidates: (none)
+    - Default Value: {7,7}
+
+  - Parameter 8: logic unsigned dd = 8
+    - Name: dd
+    - Full Type: logic unsigned
+    - Full Type (plus implied): ref logic unsigned
+    - Base Type: logic
+    - Link Candidates: logic
+    - Default Value: 8
+
+  - After Parameters: )
+    - Link Candidates: (none)
