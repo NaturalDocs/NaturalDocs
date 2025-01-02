@@ -329,18 +329,18 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			// xxx inherits?
 
 
-			// Port Binding
+			// Port Binding instead of data type?
 
 			if (AppendPortBinding(parameterSection, parameterIndex, typeBuilder, skipName: true))
 				{
 				portFlags |= PortFlags.IsPortBinding;
 				}
 
+
+			// Data Type
+
 			else
 				{
-
-				// Data Type
-
 				if (AppendBaseDataType(parameterSection, parameterIndex, typeBuilder))
 					{
 					portFlags |= PortFlags.HasBaseDataType;
@@ -444,8 +444,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				}
 
 
-			// Since we have a base type, find its end.  It could contain multiple words ("tri0 logic") so we want look for additional type
-			// tokens after whitespace.
+			// Since we have a base type, find its end.  It could contain multiple words ("tri0 logic") so we want look for additional
+			// type tokens after whitespace.
 
 			baseTypeEnd = baseTypeStart;
 			baseTypeEnd.Next();
@@ -525,8 +525,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				}
 
 
-			// Since we have a base type, find its end.  It could contain multiple words ("tri0 logic") so we want look for additional type
-			// tokens after whitespace.
+			// Since we have a base type, find its end.  It could contain multiple words ("tri0 logic") so we want look for additional
+			// type tokens after whitespace.
 
 			baseTypeEnd = baseTypeStart;
 			baseTypeEnd.Next();
