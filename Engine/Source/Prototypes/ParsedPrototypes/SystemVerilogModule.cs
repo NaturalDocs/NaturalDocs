@@ -409,10 +409,9 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 			else if (impliedTypes)
 				{
-				// If kind, signing, or packed dimensions are defined the parameter does not inherit the base data type from a previous
+				// If signing or packed dimensions are defined the parameter does not inherit the base data type from a previous
 				// parameter.  It reverts to a default.
-				if (HasDirection(parameterSection, parameterIndex) ||
-					HasSigning(parameterSection, parameterIndex) ||
+				if (HasSigning(parameterSection, parameterIndex) ||
 					HasPackedDimensions(parameterSection, parameterIndex))
 					{
 					foundBaseType = false;
@@ -427,8 +426,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 							break;
 							}
 
-						if (HasDirection(parameterSection, i) ||
-							HasSigning(parameterSection, i) ||
+						if (HasSigning(parameterSection, i) ||
 							HasPackedDimensions(parameterSection, i))
 							{
 							foundBaseType = false;
@@ -492,10 +490,9 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 			else if (impliedTypes)
 				{
-				// If kind, signing, or packed dimensions are defined the parameter does not inherit the base data type from a previous
+				// If signing or packed dimensions are defined the parameter does not inherit the base data type from a previous
 				// parameter.  It reverts to a default.
-				if (HasDirection(parameterSection, parameterIndex) ||
-					HasSigning(parameterSection, parameterIndex) ||
+				if (HasSigning(parameterSection, parameterIndex) ||
 					HasPackedDimensions(parameterSection, parameterIndex))
 					{
 					foundBaseType = false;
@@ -510,8 +507,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 							break;
 							}
 
-						if (HasDirection(parameterSection, i) ||
-							HasSigning(parameterSection, i) ||
+						if (HasSigning(parameterSection, i) ||
 							HasPackedDimensions(parameterSection, i))
 							{
 							foundBaseType = false;
