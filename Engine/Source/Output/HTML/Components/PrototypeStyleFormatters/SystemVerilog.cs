@@ -128,6 +128,43 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 						{  break;  }
 					}
 
+				// If we ran into packed dimensions, see if there's an enum body following them.  Enums can have them on the
+				// date type and/or the overall port ("enum bit [7:0] { val1, val2 } [7:0]") and we only want to put the latter
+				// in the packed dimensions column.
+
+				if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier &&
+					iterator.Character == '[')
+					{
+					TokenIterator lookahead = iterator;
+					SkipModifierBlock(ref lookahead, endOfParam);
+
+					while (lookahead < endOfParam)
+						{
+						PrototypeParsingType type = lookahead.PrototypeParsingType;
+
+						if (type == PrototypeParsingType.Null)
+							{  lookahead.Next();   }
+						else if (type == PrototypeParsingType.OpeningTypeModifier &&
+								  lookahead.Character == '[')
+							{  SkipModifierBlock(ref lookahead, endOfParam);  }
+						else
+							{  break;  }
+						}
+
+					// Found a body?
+					if (lookahead.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier &&
+						lookahead.Character == '{')
+						{
+						SkipModifierBlock(ref lookahead, endOfParam);
+
+						while (lookahead < endOfParam &&
+								 lookahead.PrototypeParsingType == PrototypeParsingType.Null)
+							{  lookahead.Next();   }
+
+						iterator = lookahead;
+						}
+					}
+
 				endOfCell = iterator;
 
 				cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
