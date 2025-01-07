@@ -210,6 +210,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 					// Include the parameter separator because there may not be a default value.
 					if (type == PrototypeParsingType.Name ||
 						type == PrototypeParsingType.KeywordName ||
+						type == PrototypeParsingType.ParamModifier ||  // for the dot in port binding like .PortName(x)
 						type == PrototypeParsingType.ParamSeparator ||
 						type == PrototypeParsingType.Null)
 						{  iterator.Next();   }
