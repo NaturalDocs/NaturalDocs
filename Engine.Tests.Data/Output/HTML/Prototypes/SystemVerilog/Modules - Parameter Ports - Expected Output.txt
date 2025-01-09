@@ -1,0 +1,1011 @@
+<div class="NDPrototype">
+   <div class="PSection PPlainSection"><span class="SHKeyword">module</span> EmptyA #() ()</div>
+</div>
+-----
+<div class="NDPrototype">
+   <div class="PSection PPlainSection"><span class="SHKeyword">module</span> EmptyB #( ) ( )</div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> LeadingAssignmentsA #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="5" data-NarrowColumnCount="4">
+            <div class="PName InFirstParameterColumn" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">x</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/2/2/3" style="grid-area:1/2/2/3">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="1/3/2/4" style="grid-area:1/3/2/4"><span class="SHNumber">12</span></div>
+            <div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/1/3/5" style="grid-area:1/4/2/5">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> LeadingAssignmentsB #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="5" data-NarrowColumnCount="4">
+            <div class="PName InFirstParameterColumn" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">x[<span class="SHNumber">2</span>]</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/2/2/3" style="grid-area:1/2/2/3">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="1/3/2/4" style="grid-area:1/3/2/4">'{<span class="SHNumber">'0</span>, <span class="SHNumber">'0</span>}</div>
+            <div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/1/3/5" style="grid-area:1/4/2/5">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> LeadingAssignmentsC #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="5" data-NarrowColumnCount="4">
+            <div class="PName InFirstParameterColumn" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">x[<span class="SHNumber">0</span>:<span class="SHNumber">1</span>][<span class="SHNumber">2</span>]</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/2/2/3" style="grid-area:1/2/2/3">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="1/3/2/4" style="grid-area:1/3/2/4">'{'{<span class="SHNumber">'0</span>,<span class="SHNumber">'0</span>},'{<span class="SHNumber">'1</span>,<span class="SHNumber">'1</span>}}</div>
+            <div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/1/3/5" style="grid-area:1/4/2/5">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> LeadingAssignmentsD #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="5" data-NarrowColumnCount="4">
+            <div class="PName InFirstParameterColumn" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">a</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/2/2/3" style="grid-area:1/2/2/3">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="1/3/2/4" style="grid-area:1/3/2/4"><span class="SHNumber">12</span>,</div>
+            <div class="PName InFirstParameterColumn" data-WideGridArea="2/1/3/2" data-NarrowGridArea="2/1/3/2" style="grid-area:2/1/3/2">b[<span class="SHNumber">2</span>]</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="2/2/3/3" data-NarrowGridArea="2/2/3/3" style="grid-area:2/2/3/3">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/3/3/4" data-NarrowGridArea="2/3/3/4" style="grid-area:2/3/3/4">'{<span class="SHNumber">'0</span>,<span class="SHNumber">'0</span>},</div>
+            <div class="PName InFirstParameterColumn" data-WideGridArea="3/1/4/2" data-NarrowGridArea="3/1/4/2" style="grid-area:3/1/4/2">c[<span class="SHNumber">2</span>][<span class="SHNumber">0</span>:<span class="SHNumber">1</span>]</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="3/2/4/3" data-NarrowGridArea="3/2/4/3" style="grid-area:3/2/4/3">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="3/3/4/4" data-NarrowGridArea="3/3/4/4" style="grid-area:3/3/4/4">'{'{<span class="SHNumber">'0</span>,<span class="SHNumber">'0</span>},'{<span class="SHNumber">'1</span>,<span class="SHNumber">'1</span>}}</div>
+            <div class="PAfterParameters" data-WideGridArea="3/4/4/5" data-NarrowGridArea="4/1/5/5" style="grid-area:3/4/4/5">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> IntegerVectorTypes #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="7" data-NarrowColumnCount="6">
+            <div class="PType InFirstParameterColumn" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">bit</span></div>
+            <div class="PName" data-WideGridArea="1/3/2/4" data-NarrowGridArea="1/3/2/4" style="grid-area:1/3/2/4">a</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="1/4/2/5" data-NarrowGridArea="1/4/2/5" style="grid-area:1/4/2/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="1/5/2/6" data-NarrowGridArea="1/5/2/6" style="grid-area:1/5/2/6"><span class="SHNumber">'0</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="2/1/3/2" data-NarrowGridArea="2/1/3/2" style="grid-area:2/1/3/2"><span class="SHKeyword">logic</span></div>
+            <div class="PPackedDimensions" data-WideGridArea="2/2/3/3" data-NarrowGridArea="2/2/3/3" style="grid-area:2/2/3/3">&nbsp[<span class="SHNumber">7</span>:<span class="SHNumber">0</span>]&nbsp;</div>
+            <div class="PName" data-WideGridArea="2/3/3/4" data-NarrowGridArea="2/3/3/4" style="grid-area:2/3/3/4">b</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="2/4/3/5" data-NarrowGridArea="2/4/3/5" style="grid-area:2/4/3/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/5/3/6" data-NarrowGridArea="2/5/3/6" style="grid-area:2/5/3/6"><span class="SHNumber">12</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="3/1/4/2" data-NarrowGridArea="3/1/4/2" style="grid-area:3/1/4/2"><span class="SHKeyword">reg</span> <span class="SHKeyword">unsigned</span></div>
+            <div class="PName" data-WideGridArea="3/3/4/4" data-NarrowGridArea="3/3/4/4" style="grid-area:3/3/4/4">c</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="3/4/4/5" data-NarrowGridArea="3/4/4/5" style="grid-area:3/4/4/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="3/5/4/6" data-NarrowGridArea="3/5/4/6" style="grid-area:3/5/4/6"><span class="SHNumber">'1</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="4/1/5/2" data-NarrowGridArea="4/1/5/2" style="grid-area:4/1/5/2"><span class="SHKeyword">bit</span> <span class="SHKeyword">signed</span></div>
+            <div class="PPackedDimensions" data-WideGridArea="4/2/5/3" data-NarrowGridArea="4/2/5/3" style="grid-area:4/2/5/3">&nbsp[<span class="SHNumber">7</span>:<span class="SHNumber">0</span>]&nbsp;</div>
+            <div class="PName" data-WideGridArea="4/3/5/4" data-NarrowGridArea="4/3/5/4" style="grid-area:4/3/5/4">d</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="4/4/5/5" data-NarrowGridArea="4/4/5/5" style="grid-area:4/4/5/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="4/5/5/6" data-NarrowGridArea="4/5/5/6" style="grid-area:4/5/5/6"><span class="SHNumber">'z</span></div>
+            <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="4/6/5/7" data-NarrowGridArea="5/1/6/7" style="grid-area:4/6/5/7">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> IntegerAtomTypes #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="6" data-NarrowColumnCount="5">
+            <div class="PType InFirstParameterColumn" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">byte</span>&nbsp;</div>
+            <div class="PName" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/2/2/3" style="grid-area:1/2/2/3">a</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="1/3/2/4" data-NarrowGridArea="1/3/2/4" style="grid-area:1/3/2/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="1/4/2/5" style="grid-area:1/4/2/5"><span class="SHNumber">1</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="2/1/3/2" data-NarrowGridArea="2/1/3/2" style="grid-area:2/1/3/2"><span class="SHKeyword">shortint</span> <span class="SHKeyword">unsigned</span>&nbsp;</div>
+            <div class="PName" data-WideGridArea="2/2/3/3" data-NarrowGridArea="2/2/3/3" style="grid-area:2/2/3/3">b</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="2/3/3/4" data-NarrowGridArea="2/3/3/4" style="grid-area:2/3/3/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/4/3/5" data-NarrowGridArea="2/4/3/5" style="grid-area:2/4/3/5"><span class="SHNumber">2</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="3/1/4/2" data-NarrowGridArea="3/1/4/2" style="grid-area:3/1/4/2"><span class="SHKeyword">int</span> <span class="SHKeyword">signed</span>&nbsp;</div>
+            <div class="PName" data-WideGridArea="3/2/4/3" data-NarrowGridArea="3/2/4/3" style="grid-area:3/2/4/3">c</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="3/3/4/4" data-NarrowGridArea="3/3/4/4" style="grid-area:3/3/4/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="3/4/4/5" data-NarrowGridArea="3/4/4/5" style="grid-area:3/4/4/5"><span class="SHNumber">3</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="4/1/5/2" data-NarrowGridArea="4/1/5/2" style="grid-area:4/1/5/2"><span class="SHKeyword">longint</span>&nbsp;</div>
+            <div class="PName" data-WideGridArea="4/2/5/3" data-NarrowGridArea="4/2/5/3" style="grid-area:4/2/5/3">d</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="4/3/5/4" data-NarrowGridArea="4/3/5/4" style="grid-area:4/3/5/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="4/4/5/5" data-NarrowGridArea="4/4/5/5" style="grid-area:4/4/5/5"><span class="SHNumber">4</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="5/1/6/2" data-NarrowGridArea="5/1/6/2" style="grid-area:5/1/6/2"><span class="SHKeyword">integer</span> <span class="SHKeyword">unsigned</span>&nbsp;</div>
+            <div class="PName" data-WideGridArea="5/2/6/3" data-NarrowGridArea="5/2/6/3" style="grid-area:5/2/6/3">e</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="5/3/6/4" data-NarrowGridArea="5/3/6/4" style="grid-area:5/3/6/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="5/4/6/5" data-NarrowGridArea="5/4/6/5" style="grid-area:5/4/6/5"><span class="SHNumber">5</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="6/1/7/2" data-NarrowGridArea="6/1/7/2" style="grid-area:6/1/7/2"><span class="SHKeyword">time</span>&nbsp;</div>
+            <div class="PName" data-WideGridArea="6/2/7/3" data-NarrowGridArea="6/2/7/3" style="grid-area:6/2/7/3">f</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="6/3/7/4" data-NarrowGridArea="6/3/7/4" style="grid-area:6/3/7/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="6/4/7/5" data-NarrowGridArea="6/4/7/5" style="grid-area:6/4/7/5"><span class="SHNumber">1ms</span></div>
+            <div class="PAfterParameters" data-WideGridArea="6/5/7/6" data-NarrowGridArea="7/1/8/6" style="grid-area:6/5/7/6">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> NonIntegerTypes #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="6" data-NarrowColumnCount="5">
+            <div class="PType InFirstParameterColumn" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">shortreal</span>&nbsp;</div>
+            <div class="PName" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/2/2/3" style="grid-area:1/2/2/3">a</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="1/3/2/4" data-NarrowGridArea="1/3/2/4" style="grid-area:1/3/2/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="1/4/2/5" style="grid-area:1/4/2/5"><span class="SHNumber">1.0</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="2/1/3/2" data-NarrowGridArea="2/1/3/2" style="grid-area:2/1/3/2"><span class="SHKeyword">real</span>&nbsp;</div>
+            <div class="PName" data-WideGridArea="2/2/3/3" data-NarrowGridArea="2/2/3/3" style="grid-area:2/2/3/3">b</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="2/3/3/4" data-NarrowGridArea="2/3/3/4" style="grid-area:2/3/3/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/4/3/5" data-NarrowGridArea="2/4/3/5" style="grid-area:2/4/3/5"><span class="SHNumber">2.0</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="3/1/4/2" data-NarrowGridArea="3/1/4/2" style="grid-area:3/1/4/2"><span class="SHKeyword">realtime</span>&nbsp;</div>
+            <div class="PName" data-WideGridArea="3/2/4/3" data-NarrowGridArea="3/2/4/3" style="grid-area:3/2/4/3">c</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="3/3/4/4" data-NarrowGridArea="3/3/4/4" style="grid-area:3/3/4/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="3/4/4/5" data-NarrowGridArea="3/4/4/5" style="grid-area:3/4/4/5"><span class="SHNumber">3.0s</span></div>
+            <div class="PAfterParameters" data-WideGridArea="3/5/4/6" data-NarrowGridArea="4/1/5/6" style="grid-area:3/5/4/6">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> StringType #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="6" data-NarrowColumnCount="5">
+            <div class="PType InFirstParameterColumn" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">string</span>&nbsp;</div>
+            <div class="PName" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/2/2/3" style="grid-area:1/2/2/3">a</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="1/3/2/4" data-NarrowGridArea="1/3/2/4" style="grid-area:1/3/2/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="1/4/2/5" style="grid-area:1/4/2/5"><span class="SHString">&quot;aaa&quot;</span></div>
+            <div class="PAfterParameters" data-WideGridArea="1/5/2/6" data-NarrowGridArea="2/1/3/6" style="grid-area:1/5/2/6">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> TypeReferences #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="7" data-NarrowColumnCount="6">
+            <div class="PType InFirstParameterColumn" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">bit</span></div>
+            <div class="PPackedDimensions" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/2/2/3" style="grid-area:1/2/2/3">&nbsp[<span class="SHNumber">7</span>:<span class="SHNumber">0</span>]&nbsp;</div>
+            <div class="PName" data-WideGridArea="1/3/2/4" data-NarrowGridArea="1/3/2/4" style="grid-area:1/3/2/4">a</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="1/4/2/5" data-NarrowGridArea="1/4/2/5" style="grid-area:1/4/2/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="1/5/2/6" data-NarrowGridArea="1/5/2/6" style="grid-area:1/5/2/6"><span class="SHNumber">'1</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="2/1/3/2" data-NarrowGridArea="2/1/3/2" style="grid-area:2/1/3/2"><span class="SHKeyword">int</span> <span class="SHKeyword">signed</span></div>
+            <div class="PName" data-WideGridArea="2/3/3/4" data-NarrowGridArea="2/3/3/4" style="grid-area:2/3/3/4">b</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="2/4/3/5" data-NarrowGridArea="2/4/3/5" style="grid-area:2/4/3/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/5/3/6" data-NarrowGridArea="2/5/3/6" style="grid-area:2/5/3/6"><span class="SHNumber">12</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="3/1/4/2" data-NarrowGridArea="3/1/4/2" style="grid-area:3/1/4/2"><span class="SHKeyword">realtime</span></div>
+            <div class="PName" data-WideGridArea="3/3/4/4" data-NarrowGridArea="3/3/4/4" style="grid-area:3/3/4/4">c</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="3/4/4/5" data-NarrowGridArea="3/4/4/5" style="grid-area:3/4/4/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="3/5/4/6" data-NarrowGridArea="3/5/4/6" style="grid-area:3/5/4/6"><span class="SHNumber">1.0ms</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="4/1/5/2" data-NarrowGridArea="4/1/5/2" style="grid-area:4/1/5/2"><span class="SHKeyword">string</span></div>
+            <div class="PName" data-WideGridArea="4/3/5/4" data-NarrowGridArea="4/3/5/4" style="grid-area:4/3/5/4">d</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="4/4/5/5" data-NarrowGridArea="4/4/5/5" style="grid-area:4/4/5/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="4/5/5/6" data-NarrowGridArea="4/5/5/6" style="grid-area:4/5/5/6"><span class="SHString">&quot;ddd&quot;</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="5/1/6/2" data-NarrowGridArea="5/1/6/2" style="grid-area:5/1/6/2"><span class="SHKeyword">type</span>(a)</div>
+            <div class="PName" data-WideGridArea="5/3/6/4" data-NarrowGridArea="5/3/6/4" style="grid-area:5/3/6/4">aa</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="5/4/6/5" data-NarrowGridArea="5/4/6/5" style="grid-area:5/4/6/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="5/5/6/6" data-NarrowGridArea="5/5/6/6" style="grid-area:5/5/6/6"><span class="SHNumber">'0</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="6/1/7/2" data-NarrowGridArea="6/1/7/2" style="grid-area:6/1/7/2"><span class="SHKeyword">type</span> (b)</div>
+            <div class="PName" data-WideGridArea="6/3/7/4" data-NarrowGridArea="6/3/7/4" style="grid-area:6/3/7/4">bb</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="6/4/7/5" data-NarrowGridArea="6/4/7/5" style="grid-area:6/4/7/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="6/5/7/6" data-NarrowGridArea="6/5/7/6" style="grid-area:6/5/7/6"><span class="SHNumber">9</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="7/1/8/2" data-NarrowGridArea="7/1/8/2" style="grid-area:7/1/8/2"><span class="SHKeyword">type</span>( c )</div>
+            <div class="PName" data-WideGridArea="7/3/8/4" data-NarrowGridArea="7/3/8/4" style="grid-area:7/3/8/4">cc</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="7/4/8/5" data-NarrowGridArea="7/4/8/5" style="grid-area:7/4/8/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="7/5/8/6" data-NarrowGridArea="7/5/8/6" style="grid-area:7/5/8/6"><span class="SHNumber">0.5s</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="8/1/9/2" data-NarrowGridArea="8/1/9/2" style="grid-area:8/1/9/2"><span class="SHKeyword">type</span> ( d )</div>
+            <div class="PName" data-WideGridArea="8/3/9/4" data-NarrowGridArea="8/3/9/4" style="grid-area:8/3/9/4">dd</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="8/4/9/5" data-NarrowGridArea="8/4/9/5" style="grid-area:8/4/9/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="8/5/9/6" data-NarrowGridArea="8/5/9/6" style="grid-area:8/5/9/6"><span class="SHString">&quot;x&quot;</span></div>
+            <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="8/6/9/7" data-NarrowGridArea="9/1/10/7" style="grid-area:8/6/9/7">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> ValuelessDeclarationsA #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="3" data-NarrowColumnCount="2">
+            <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">x</div>
+            <div class="PAfterParameters" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/3" style="grid-area:1/2/2/3">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> ValuelessDeclarationsB #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="3" data-NarrowColumnCount="2">
+            <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">x[<span class="SHNumber">2</span>]</div>
+            <div class="PAfterParameters" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/3" style="grid-area:1/2/2/3">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> ValuelessDeclarationsC #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="3" data-NarrowColumnCount="2">
+            <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">x[<span class="SHNumber">0</span>:<span class="SHNumber">1</span>][<span class="SHNumber">2</span>]</div>
+            <div class="PAfterParameters" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/3" style="grid-area:1/2/2/3">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> ValuelessDeclarationsD #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="3" data-NarrowColumnCount="2">
+            <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">a,</div>
+            <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/1/3/2" data-NarrowGridArea="2/1/3/2" style="grid-area:2/1/3/2">b[<span class="SHNumber">2</span>],</div>
+            <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="3/1/4/2" data-NarrowGridArea="3/1/4/2" style="grid-area:3/1/4/2">c[<span class="SHNumber">2</span>][<span class="SHNumber">0</span>:<span class="SHNumber">1</span>]</div>
+            <div class="PAfterParameters" data-WideGridArea="3/2/4/3" data-NarrowGridArea="4/1/5/3" style="grid-area:3/2/4/3">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> ValuelessIntegerVectorTypes #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="5" data-NarrowColumnCount="4">
+            <div class="PType InFirstParameterColumn" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">bit</span></div>
+            <div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="1/3/2/4" style="grid-area:1/3/2/4">a,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="2/1/3/2" data-NarrowGridArea="2/1/3/2" style="grid-area:2/1/3/2"><span class="SHKeyword">logic</span></div>
+            <div class="PPackedDimensions" data-WideGridArea="2/2/3/3" data-NarrowGridArea="2/2/3/3" style="grid-area:2/2/3/3">&nbsp[<span class="SHNumber">7</span>:<span class="SHNumber">0</span>]&nbsp;</div>
+            <div class="PName InLastParameterColumn" data-WideGridArea="2/3/3/4" data-NarrowGridArea="2/3/3/4" style="grid-area:2/3/3/4">b,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="3/1/4/2" data-NarrowGridArea="3/1/4/2" style="grid-area:3/1/4/2"><span class="SHKeyword">reg</span> <span class="SHKeyword">unsigned</span></div>
+            <div class="PName InLastParameterColumn" data-WideGridArea="3/3/4/4" data-NarrowGridArea="3/3/4/4" style="grid-area:3/3/4/4">c,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="4/1/5/2" data-NarrowGridArea="4/1/5/2" style="grid-area:4/1/5/2"><span class="SHKeyword">reg</span> <span class="SHKeyword">signed</span></div>
+            <div class="PPackedDimensions" data-WideGridArea="4/2/5/3" data-NarrowGridArea="4/2/5/3" style="grid-area:4/2/5/3">&nbsp[<span class="SHNumber">7</span>:<span class="SHNumber">0</span>]&nbsp;</div>
+            <div class="PName InLastParameterColumn" data-WideGridArea="4/3/5/4" data-NarrowGridArea="4/3/5/4" style="grid-area:4/3/5/4">d</div>
+            <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="4/4/5/5" data-NarrowGridArea="5/1/6/5" style="grid-area:4/4/5/5">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> ValuelessIntegerAtomTypes #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="4" data-NarrowColumnCount="3">
+            <div class="PType InFirstParameterColumn" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">byte</span>&nbsp;</div>
+            <div class="PName InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/2/2/3" style="grid-area:1/2/2/3">a,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="2/1/3/2" data-NarrowGridArea="2/1/3/2" style="grid-area:2/1/3/2"><span class="SHKeyword">shortint</span> <span class="SHKeyword">unsigned</span>&nbsp;</div>
+            <div class="PName InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="2/2/3/3" style="grid-area:2/2/3/3">b,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="3/1/4/2" data-NarrowGridArea="3/1/4/2" style="grid-area:3/1/4/2"><span class="SHKeyword">int</span> <span class="SHKeyword">signed</span>&nbsp;</div>
+            <div class="PName InLastParameterColumn" data-WideGridArea="3/2/4/3" data-NarrowGridArea="3/2/4/3" style="grid-area:3/2/4/3">c,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="4/1/5/2" data-NarrowGridArea="4/1/5/2" style="grid-area:4/1/5/2"><span class="SHKeyword">longint</span>&nbsp;</div>
+            <div class="PName InLastParameterColumn" data-WideGridArea="4/2/5/3" data-NarrowGridArea="4/2/5/3" style="grid-area:4/2/5/3">d,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="5/1/6/2" data-NarrowGridArea="5/1/6/2" style="grid-area:5/1/6/2"><span class="SHKeyword">integer</span> <span class="SHKeyword">unsigned</span>&nbsp;</div>
+            <div class="PName InLastParameterColumn" data-WideGridArea="5/2/6/3" data-NarrowGridArea="5/2/6/3" style="grid-area:5/2/6/3">e,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="6/1/7/2" data-NarrowGridArea="6/1/7/2" style="grid-area:6/1/7/2"><span class="SHKeyword">time</span>&nbsp;</div>
+            <div class="PName InLastParameterColumn" data-WideGridArea="6/2/7/3" data-NarrowGridArea="6/2/7/3" style="grid-area:6/2/7/3">f</div>
+            <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="6/3/7/4" data-NarrowGridArea="7/1/8/4" style="grid-area:6/3/7/4">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> ValuelessNonIntegerTypes #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="4" data-NarrowColumnCount="3">
+            <div class="PType InFirstParameterColumn" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">shortreal</span>&nbsp;</div>
+            <div class="PName InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/2/2/3" style="grid-area:1/2/2/3">a,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="2/1/3/2" data-NarrowGridArea="2/1/3/2" style="grid-area:2/1/3/2"><span class="SHKeyword">real</span>&nbsp;</div>
+            <div class="PName InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="2/2/3/3" style="grid-area:2/2/3/3">b,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="3/1/4/2" data-NarrowGridArea="3/1/4/2" style="grid-area:3/1/4/2"><span class="SHKeyword">realtime</span>&nbsp;</div>
+            <div class="PName InLastParameterColumn" data-WideGridArea="3/2/4/3" data-NarrowGridArea="3/2/4/3" style="grid-area:3/2/4/3">c</div>
+            <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="3/3/4/4" data-NarrowGridArea="4/1/5/4" style="grid-area:3/3/4/4">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> ValuelessStringType #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="4" data-NarrowColumnCount="3">
+            <div class="PType InFirstParameterColumn" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">string</span>&nbsp;</div>
+            <div class="PName InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/2/2/3" style="grid-area:1/2/2/3">a</div>
+            <div class="PAfterParameters" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/1/3/4" style="grid-area:1/3/2/4">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> ValuelessTypeReferences #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="5" data-NarrowColumnCount="4">
+            <div class="PType InFirstParameterColumn" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">bit</span></div>
+            <div class="PPackedDimensions" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/2/2/3" style="grid-area:1/2/2/3">&nbsp[<span class="SHNumber">7</span>:<span class="SHNumber">0</span>]&nbsp;</div>
+            <div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="1/3/2/4" style="grid-area:1/3/2/4">a,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="2/1/3/2" data-NarrowGridArea="2/1/3/2" style="grid-area:2/1/3/2"><span class="SHKeyword">int</span> <span class="SHKeyword">signed</span></div>
+            <div class="PName InLastParameterColumn" data-WideGridArea="2/3/3/4" data-NarrowGridArea="2/3/3/4" style="grid-area:2/3/3/4">b,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="3/1/4/2" data-NarrowGridArea="3/1/4/2" style="grid-area:3/1/4/2"><span class="SHKeyword">realtime</span></div>
+            <div class="PName InLastParameterColumn" data-WideGridArea="3/3/4/4" data-NarrowGridArea="3/3/4/4" style="grid-area:3/3/4/4">c,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="4/1/5/2" data-NarrowGridArea="4/1/5/2" style="grid-area:4/1/5/2"><span class="SHKeyword">string</span></div>
+            <div class="PName InLastParameterColumn" data-WideGridArea="4/3/5/4" data-NarrowGridArea="4/3/5/4" style="grid-area:4/3/5/4">d,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="5/1/6/2" data-NarrowGridArea="5/1/6/2" style="grid-area:5/1/6/2"><span class="SHKeyword">type</span>(a)</div>
+            <div class="PName InLastParameterColumn" data-WideGridArea="5/3/6/4" data-NarrowGridArea="5/3/6/4" style="grid-area:5/3/6/4">aa,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="6/1/7/2" data-NarrowGridArea="6/1/7/2" style="grid-area:6/1/7/2"><span class="SHKeyword">type</span> (b)</div>
+            <div class="PName InLastParameterColumn" data-WideGridArea="6/3/7/4" data-NarrowGridArea="6/3/7/4" style="grid-area:6/3/7/4">bb,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="7/1/8/2" data-NarrowGridArea="7/1/8/2" style="grid-area:7/1/8/2"><span class="SHKeyword">type</span>( c )</div>
+            <div class="PName InLastParameterColumn" data-WideGridArea="7/3/8/4" data-NarrowGridArea="7/3/8/4" style="grid-area:7/3/8/4">cc,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="8/1/9/2" data-NarrowGridArea="8/1/9/2" style="grid-area:8/1/9/2"><span class="SHKeyword">type</span> ( d )</div>
+            <div class="PName InLastParameterColumn" data-WideGridArea="8/3/9/4" data-NarrowGridArea="8/3/9/4" style="grid-area:8/3/9/4">dd</div>
+            <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="8/4/9/5" data-NarrowGridArea="9/1/10/5" style="grid-area:8/4/9/5">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> ImpliedTypesA #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="7" data-NarrowColumnCount="6">
+            <div class="PType InFirstParameterColumn" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">bit</span></div>
+            <div class="PName" data-WideGridArea="1/3/2/4" data-NarrowGridArea="1/3/2/4" style="grid-area:1/3/2/4">a</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="1/4/2/5" data-NarrowGridArea="1/4/2/5" style="grid-area:1/4/2/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="1/5/2/6" data-NarrowGridArea="1/5/2/6" style="grid-area:1/5/2/6"><span class="SHNumber">1</span>,</div>
+            <div class="PName" data-WideGridArea="2/3/3/4" data-NarrowGridArea="2/3/3/4" style="grid-area:2/3/3/4">aa</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="2/4/3/5" data-NarrowGridArea="2/4/3/5" style="grid-area:2/4/3/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/5/3/6" data-NarrowGridArea="2/5/3/6" style="grid-area:2/5/3/6"><span class="SHNumber">1</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="3/1/4/2" data-NarrowGridArea="3/1/4/2" style="grid-area:3/1/4/2"><span class="SHKeyword">logic</span></div>
+            <div class="PPackedDimensions" data-WideGridArea="3/2/4/3" data-NarrowGridArea="3/2/4/3" style="grid-area:3/2/4/3">&nbsp[<span class="SHNumber">7</span>:<span class="SHNumber">0</span>]&nbsp;</div>
+            <div class="PName" data-WideGridArea="3/3/4/4" data-NarrowGridArea="3/3/4/4" style="grid-area:3/3/4/4">b</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="3/4/4/5" data-NarrowGridArea="3/4/4/5" style="grid-area:3/4/4/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="3/5/4/6" data-NarrowGridArea="3/5/4/6" style="grid-area:3/5/4/6"><span class="SHNumber">2</span>,</div>
+            <div class="PName" data-WideGridArea="4/3/5/4" data-NarrowGridArea="4/3/5/4" style="grid-area:4/3/5/4">bb</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="4/4/5/5" data-NarrowGridArea="4/4/5/5" style="grid-area:4/4/5/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="4/5/5/6" data-NarrowGridArea="4/5/5/6" style="grid-area:4/5/5/6"><span class="SHNumber">2</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="5/1/6/2" data-NarrowGridArea="5/1/6/2" style="grid-area:5/1/6/2"><span class="SHKeyword">int</span> <span class="SHKeyword">unsigned</span></div>
+            <div class="PName" data-WideGridArea="5/3/6/4" data-NarrowGridArea="5/3/6/4" style="grid-area:5/3/6/4">c</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="5/4/6/5" data-NarrowGridArea="5/4/6/5" style="grid-area:5/4/6/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="5/5/6/6" data-NarrowGridArea="5/5/6/6" style="grid-area:5/5/6/6"><span class="SHNumber">3</span>,</div>
+            <div class="PName" data-WideGridArea="6/3/7/4" data-NarrowGridArea="6/3/7/4" style="grid-area:6/3/7/4">cc</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="6/4/7/5" data-NarrowGridArea="6/4/7/5" style="grid-area:6/4/7/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="6/5/7/6" data-NarrowGridArea="6/5/7/6" style="grid-area:6/5/7/6"><span class="SHNumber">3</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="7/1/8/2" data-NarrowGridArea="7/1/8/2" style="grid-area:7/1/8/2"><span class="SHKeyword">bit</span> <span class="SHKeyword">unsigned</span></div>
+            <div class="PPackedDimensions" data-WideGridArea="7/2/8/3" data-NarrowGridArea="7/2/8/3" style="grid-area:7/2/8/3">&nbsp[<span class="SHNumber">3</span>:<span class="SHNumber">0</span>]&nbsp;</div>
+            <div class="PName" data-WideGridArea="7/3/8/4" data-NarrowGridArea="7/3/8/4" style="grid-area:7/3/8/4">d</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="7/4/8/5" data-NarrowGridArea="7/4/8/5" style="grid-area:7/4/8/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="7/5/8/6" data-NarrowGridArea="7/5/8/6" style="grid-area:7/5/8/6"><span class="SHNumber">4</span>,</div>
+            <div class="PName" data-WideGridArea="8/3/9/4" data-NarrowGridArea="8/3/9/4" style="grid-area:8/3/9/4">dd</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="8/4/9/5" data-NarrowGridArea="8/4/9/5" style="grid-area:8/4/9/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="8/5/9/6" data-NarrowGridArea="8/5/9/6" style="grid-area:8/5/9/6"><span class="SHNumber">4</span></div>
+            <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="8/6/9/7" data-NarrowGridArea="9/1/10/7" style="grid-area:8/6/9/7">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> ImpliedTypesB #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="6" data-NarrowColumnCount="5">
+            <div class="PType InFirstParameterColumn" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">bit</span>&nbsp;</div>
+            <div class="PName" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/2/2/3" style="grid-area:1/2/2/3">a[<span class="SHNumber">2</span>]</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="1/3/2/4" data-NarrowGridArea="1/3/2/4" style="grid-area:1/3/2/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="1/4/2/5" style="grid-area:1/4/2/5">'{<span class="SHNumber">1</span>,<span class="SHNumber">1</span>},</div>
+            <div class="PName" data-WideGridArea="2/2/3/3" data-NarrowGridArea="2/2/3/3" style="grid-area:2/2/3/3">aa</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="2/3/3/4" data-NarrowGridArea="2/3/3/4" style="grid-area:2/3/3/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/4/3/5" data-NarrowGridArea="2/4/3/5" style="grid-area:2/4/3/5"><span class="SHNumber">1</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="3/1/4/2" data-NarrowGridArea="3/1/4/2" style="grid-area:3/1/4/2"><span class="SHKeyword">logic</span>&nbsp;</div>
+            <div class="PName" data-WideGridArea="3/2/4/3" data-NarrowGridArea="3/2/4/3" style="grid-area:3/2/4/3">b</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="3/3/4/4" data-NarrowGridArea="3/3/4/4" style="grid-area:3/3/4/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="3/4/4/5" data-NarrowGridArea="3/4/4/5" style="grid-area:3/4/4/5"><span class="SHNumber">2</span>,</div>
+            <div class="PName" data-WideGridArea="4/2/5/3" data-NarrowGridArea="4/2/5/3" style="grid-area:4/2/5/3">bb[<span class="SHNumber">2</span>]</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="4/3/5/4" data-NarrowGridArea="4/3/5/4" style="grid-area:4/3/5/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="4/4/5/5" data-NarrowGridArea="4/4/5/5" style="grid-area:4/4/5/5">'{<span class="SHNumber">2</span>,<span class="SHNumber">2</span>},</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="5/1/6/2" data-NarrowGridArea="5/1/6/2" style="grid-area:5/1/6/2"><span class="SHKeyword">reg</span>&nbsp;</div>
+            <div class="PName" data-WideGridArea="5/2/6/3" data-NarrowGridArea="5/2/6/3" style="grid-area:5/2/6/3">c[<span class="SHNumber">0</span>:<span class="SHNumber">1</span>]</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="5/3/6/4" data-NarrowGridArea="5/3/6/4" style="grid-area:5/3/6/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="5/4/6/5" data-NarrowGridArea="5/4/6/5" style="grid-area:5/4/6/5">'{<span class="SHNumber">3</span>,<span class="SHNumber">3</span>},</div>
+            <div class="PName" data-WideGridArea="6/2/7/3" data-NarrowGridArea="6/2/7/3" style="grid-area:6/2/7/3">cc[<span class="SHNumber">3</span>]</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="6/3/7/4" data-NarrowGridArea="6/3/7/4" style="grid-area:6/3/7/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="6/4/7/5" data-NarrowGridArea="6/4/7/5" style="grid-area:6/4/7/5">'{<span class="SHNumber">3</span>,<span class="SHNumber">3</span>,<span class="SHNumber">3</span>}</div>
+            <div class="PAfterParameters" data-WideGridArea="6/5/7/6" data-NarrowGridArea="7/1/8/6" style="grid-area:6/5/7/6">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> ImpliedTypesC #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="7" data-NarrowColumnCount="6">
+            <div class="PType InFirstParameterColumn" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">bit</span></div>
+            <div class="PName" data-WideGridArea="1/3/2/4" data-NarrowGridArea="1/3/2/4" style="grid-area:1/3/2/4">a</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="1/4/2/5" data-NarrowGridArea="1/4/2/5" style="grid-area:1/4/2/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="1/5/2/6" data-NarrowGridArea="1/5/2/6" style="grid-area:1/5/2/6"><span class="SHNumber">1</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="2/1/3/2" data-NarrowGridArea="2/1/3/2" style="grid-area:2/1/3/2"><span class="SHKeyword">unsigned</span></div>
+            <div class="PName" data-WideGridArea="2/3/3/4" data-NarrowGridArea="2/3/3/4" style="grid-area:2/3/3/4">aa</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="2/4/3/5" data-NarrowGridArea="2/4/3/5" style="grid-area:2/4/3/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/5/3/6" data-NarrowGridArea="2/5/3/6" style="grid-area:2/5/3/6"><span class="SHNumber">1</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="3/1/4/2" data-NarrowGridArea="3/1/4/2" style="grid-area:3/1/4/2"><span class="SHKeyword">reg</span> <span class="SHKeyword">signed</span></div>
+            <div class="PName" data-WideGridArea="3/3/4/4" data-NarrowGridArea="3/3/4/4" style="grid-area:3/3/4/4">b</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="3/4/4/5" data-NarrowGridArea="3/4/4/5" style="grid-area:3/4/4/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="3/5/4/6" data-NarrowGridArea="3/5/4/6" style="grid-area:3/5/4/6"><span class="SHNumber">2</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="4/1/5/2" data-NarrowGridArea="4/1/5/2" style="grid-area:4/1/5/2"><span class="SHKeyword">unsigned</span></div>
+            <div class="PName" data-WideGridArea="4/3/5/4" data-NarrowGridArea="4/3/5/4" style="grid-area:4/3/5/4">bb</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="4/4/5/5" data-NarrowGridArea="4/4/5/5" style="grid-area:4/4/5/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="4/5/5/6" data-NarrowGridArea="4/5/5/6" style="grid-area:4/5/5/6"><span class="SHNumber">2</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="5/1/6/2" data-NarrowGridArea="5/1/6/2" style="grid-area:5/1/6/2"><span class="SHKeyword">bit</span></div>
+            <div class="PName" data-WideGridArea="5/3/6/4" data-NarrowGridArea="5/3/6/4" style="grid-area:5/3/6/4">c</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="5/4/6/5" data-NarrowGridArea="5/4/6/5" style="grid-area:5/4/6/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="5/5/6/6" data-NarrowGridArea="5/5/6/6" style="grid-area:5/5/6/6"><span class="SHNumber">3</span>,</div>
+            <div class="PPackedDimensions" data-WideGridArea="6/2/7/3" data-NarrowGridArea="6/2/7/3" style="grid-area:6/2/7/3">&nbsp[<span class="SHNumber">3</span>:<span class="SHNumber">0</span>]&nbsp;</div>
+            <div class="PName" data-WideGridArea="6/3/7/4" data-NarrowGridArea="6/3/7/4" style="grid-area:6/3/7/4">cc</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="6/4/7/5" data-NarrowGridArea="6/4/7/5" style="grid-area:6/4/7/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="6/5/7/6" data-NarrowGridArea="6/5/7/6" style="grid-area:6/5/7/6"><span class="SHNumber">3</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="7/1/8/2" data-NarrowGridArea="7/1/8/2" style="grid-area:7/1/8/2"><span class="SHKeyword">reg</span></div>
+            <div class="PPackedDimensions" data-WideGridArea="7/2/8/3" data-NarrowGridArea="7/2/8/3" style="grid-area:7/2/8/3">&nbsp[<span class="SHNumber">7</span>:<span class="SHNumber">0</span>]&nbsp;</div>
+            <div class="PName" data-WideGridArea="7/3/8/4" data-NarrowGridArea="7/3/8/4" style="grid-area:7/3/8/4">d</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="7/4/8/5" data-NarrowGridArea="7/4/8/5" style="grid-area:7/4/8/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="7/5/8/6" data-NarrowGridArea="7/5/8/6" style="grid-area:7/5/8/6"><span class="SHNumber">4</span>,</div>
+            <div class="PPackedDimensions" data-WideGridArea="8/2/9/3" data-NarrowGridArea="8/2/9/3" style="grid-area:8/2/9/3">&nbsp[<span class="SHNumber">3</span>:<span class="SHNumber">0</span>]&nbsp;</div>
+            <div class="PName" data-WideGridArea="8/3/9/4" data-NarrowGridArea="8/3/9/4" style="grid-area:8/3/9/4">dd</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="8/4/9/5" data-NarrowGridArea="8/4/9/5" style="grid-area:8/4/9/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="8/5/9/6" data-NarrowGridArea="8/5/9/6" style="grid-area:8/5/9/6"><span class="SHNumber">4</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="9/1/10/2" data-NarrowGridArea="9/1/10/2" style="grid-area:9/1/10/2"><span class="SHKeyword">bit</span> <span class="SHKeyword">signed</span></div>
+            <div class="PPackedDimensions" data-WideGridArea="9/2/10/3" data-NarrowGridArea="9/2/10/3" style="grid-area:9/2/10/3">&nbsp[<span class="SHNumber">7</span>:<span class="SHNumber">0</span>]&nbsp;</div>
+            <div class="PName" data-WideGridArea="9/3/10/4" data-NarrowGridArea="9/3/10/4" style="grid-area:9/3/10/4">e</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="9/4/10/5" data-NarrowGridArea="9/4/10/5" style="grid-area:9/4/10/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="9/5/10/6" data-NarrowGridArea="9/5/10/6" style="grid-area:9/5/10/6"><span class="SHNumber">5</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="10/1/11/2" data-NarrowGridArea="10/1/11/2" style="grid-area:10/1/11/2"><span class="SHKeyword">unsigned</span></div>
+            <div class="PName" data-WideGridArea="10/3/11/4" data-NarrowGridArea="10/3/11/4" style="grid-area:10/3/11/4">ee</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="10/4/11/5" data-NarrowGridArea="10/4/11/5" style="grid-area:10/4/11/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="10/5/11/6" data-NarrowGridArea="10/5/11/6" style="grid-area:10/5/11/6"><span class="SHNumber">5</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="11/1/12/2" data-NarrowGridArea="11/1/12/2" style="grid-area:11/1/12/2"><span class="SHKeyword">reg</span> <span class="SHKeyword">signed</span></div>
+            <div class="PPackedDimensions" data-WideGridArea="11/2/12/3" data-NarrowGridArea="11/2/12/3" style="grid-area:11/2/12/3">&nbsp[<span class="SHNumber">7</span>:<span class="SHNumber">0</span>]&nbsp;</div>
+            <div class="PName" data-WideGridArea="11/3/12/4" data-NarrowGridArea="11/3/12/4" style="grid-area:11/3/12/4">f</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="11/4/12/5" data-NarrowGridArea="11/4/12/5" style="grid-area:11/4/12/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="11/5/12/6" data-NarrowGridArea="11/5/12/6" style="grid-area:11/5/12/6"><span class="SHNumber">6</span>,</div>
+            <div class="PPackedDimensions" data-WideGridArea="12/2/13/3" data-NarrowGridArea="12/2/13/3" style="grid-area:12/2/13/3">&nbsp[<span class="SHNumber">3</span>:<span class="SHNumber">0</span>]&nbsp;</div>
+            <div class="PName" data-WideGridArea="12/3/13/4" data-NarrowGridArea="12/3/13/4" style="grid-area:12/3/13/4">ff</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="12/4/13/5" data-NarrowGridArea="12/4/13/5" style="grid-area:12/4/13/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="12/5/13/6" data-NarrowGridArea="12/5/13/6" style="grid-area:12/5/13/6"><span class="SHNumber">6</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="13/1/14/2" data-NarrowGridArea="13/1/14/2" style="grid-area:13/1/14/2"><span class="SHKeyword">bit</span> <span class="SHKeyword">signed</span></div>
+            <div class="PPackedDimensions" data-WideGridArea="13/2/14/3" data-NarrowGridArea="13/2/14/3" style="grid-area:13/2/14/3">&nbsp[<span class="SHNumber">7</span>:<span class="SHNumber">0</span>]&nbsp;</div>
+            <div class="PName" data-WideGridArea="13/3/14/4" data-NarrowGridArea="13/3/14/4" style="grid-area:13/3/14/4">g</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="13/4/14/5" data-NarrowGridArea="13/4/14/5" style="grid-area:13/4/14/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="13/5/14/6" data-NarrowGridArea="13/5/14/6" style="grid-area:13/5/14/6"><span class="SHNumber">7</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="14/1/15/2" data-NarrowGridArea="14/1/15/2" style="grid-area:14/1/15/2"><span class="SHKeyword">unsigned</span></div>
+            <div class="PPackedDimensions" data-WideGridArea="14/2/15/3" data-NarrowGridArea="14/2/15/3" style="grid-area:14/2/15/3">&nbsp[<span class="SHNumber">3</span>:<span class="SHNumber">0</span>]&nbsp;</div>
+            <div class="PName" data-WideGridArea="14/3/15/4" data-NarrowGridArea="14/3/15/4" style="grid-area:14/3/15/4">gg</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="14/4/15/5" data-NarrowGridArea="14/4/15/5" style="grid-area:14/4/15/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="14/5/15/6" data-NarrowGridArea="14/5/15/6" style="grid-area:14/5/15/6"><span class="SHNumber">7</span></div>
+            <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="14/6/15/7" data-NarrowGridArea="15/1/16/7" style="grid-area:14/6/15/7">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> ImpliedTypesD #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="7" data-NarrowColumnCount="6">
+            <div class="PType InFirstParameterColumn" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">bit</span></div>
+            <div class="PName" data-WideGridArea="1/3/2/4" data-NarrowGridArea="1/3/2/4" style="grid-area:1/3/2/4">a[<span class="SHNumber">2</span>]</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="1/4/2/5" data-NarrowGridArea="1/4/2/5" style="grid-area:1/4/2/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="1/5/2/6" data-NarrowGridArea="1/5/2/6" style="grid-area:1/5/2/6">'{<span class="SHNumber">1</span>,<span class="SHNumber">1</span>},</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="2/1/3/2" data-NarrowGridArea="2/1/3/2" style="grid-area:2/1/3/2"><span class="SHKeyword">unsigned</span></div>
+            <div class="PName" data-WideGridArea="2/3/3/4" data-NarrowGridArea="2/3/3/4" style="grid-area:2/3/3/4">aa</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="2/4/3/5" data-NarrowGridArea="2/4/3/5" style="grid-area:2/4/3/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/5/3/6" data-NarrowGridArea="2/5/3/6" style="grid-area:2/5/3/6"><span class="SHNumber">1</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="3/1/4/2" data-NarrowGridArea="3/1/4/2" style="grid-area:3/1/4/2"><span class="SHKeyword">logic</span></div>
+            <div class="PPackedDimensions" data-WideGridArea="3/2/4/3" data-NarrowGridArea="3/2/4/3" style="grid-area:3/2/4/3">&nbsp[<span class="SHNumber">3</span>:<span class="SHNumber">0</span>]&nbsp;</div>
+            <div class="PName" data-WideGridArea="3/3/4/4" data-NarrowGridArea="3/3/4/4" style="grid-area:3/3/4/4">b</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="3/4/4/5" data-NarrowGridArea="3/4/4/5" style="grid-area:3/4/4/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="3/5/4/6" data-NarrowGridArea="3/5/4/6" style="grid-area:3/5/4/6"><span class="SHNumber">2</span>,</div>
+            <div class="PPackedDimensions" data-WideGridArea="4/2/5/3" data-NarrowGridArea="4/2/5/3" style="grid-area:4/2/5/3">&nbsp[<span class="SHNumber">7</span>:<span class="SHNumber">0</span>]&nbsp;</div>
+            <div class="PName" data-WideGridArea="4/3/5/4" data-NarrowGridArea="4/3/5/4" style="grid-area:4/3/5/4">bb[<span class="SHNumber">2</span>]</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="4/4/5/5" data-NarrowGridArea="4/4/5/5" style="grid-area:4/4/5/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="4/5/5/6" data-NarrowGridArea="4/5/5/6" style="grid-area:4/5/5/6">'{<span class="SHNumber">2</span>,<span class="SHNumber">2</span>},</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="5/1/6/2" data-NarrowGridArea="5/1/6/2" style="grid-area:5/1/6/2"><span class="SHKeyword">reg</span> <span class="SHKeyword">signed</span></div>
+            <div class="PPackedDimensions" data-WideGridArea="5/2/6/3" data-NarrowGridArea="5/2/6/3" style="grid-area:5/2/6/3">&nbsp[<span class="SHNumber">7</span>:<span class="SHNumber">0</span>]&nbsp;</div>
+            <div class="PName" data-WideGridArea="5/3/6/4" data-NarrowGridArea="5/3/6/4" style="grid-area:5/3/6/4">c</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="5/4/6/5" data-NarrowGridArea="5/4/6/5" style="grid-area:5/4/6/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="5/5/6/6" data-NarrowGridArea="5/5/6/6" style="grid-area:5/5/6/6"><span class="SHNumber">3</span>,</div>
+            <div class="PName" data-WideGridArea="6/3/7/4" data-NarrowGridArea="6/3/7/4" style="grid-area:6/3/7/4">cc[<span class="SHNumber">3</span>]</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="6/4/7/5" data-NarrowGridArea="6/4/7/5" style="grid-area:6/4/7/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="6/5/7/6" data-NarrowGridArea="6/5/7/6" style="grid-area:6/5/7/6">'{<span class="SHNumber">3</span>,<span class="SHNumber">3</span>,<span class="SHNumber">3</span>}</div>
+            <div class="PAfterParameters" data-WideGridArea="6/6/7/7" data-NarrowGridArea="7/1/8/7" style="grid-area:6/6/7/7">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> ImpliedTypesE #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="6" data-NarrowColumnCount="5">
+            <div class="PType InFirstParameterColumn" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">reg</span>&nbsp;</div>
+            <div class="PName" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/2/2/3" style="grid-area:1/2/2/3">a</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="1/3/2/4" data-NarrowGridArea="1/3/2/4" style="grid-area:1/3/2/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="1/4/2/5" style="grid-area:1/4/2/5"><span class="SHNumber">1</span>,</div>
+            <div class="PName" data-WideGridArea="2/2/3/3" data-NarrowGridArea="2/2/3/3" style="grid-area:2/2/3/3">aa</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="2/3/3/4" data-NarrowGridArea="2/3/3/4" style="grid-area:2/3/3/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/4/3/5" data-NarrowGridArea="2/4/3/5" style="grid-area:2/4/3/5"><span class="SHNumber">2</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="3/1/4/2" data-NarrowGridArea="3/1/4/2" style="grid-area:3/1/4/2"><span class="SHKeyword">type</span>(a)&nbsp;</div>
+            <div class="PName" data-WideGridArea="3/2/4/3" data-NarrowGridArea="3/2/4/3" style="grid-area:3/2/4/3">b</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="3/3/4/4" data-NarrowGridArea="3/3/4/4" style="grid-area:3/3/4/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="3/4/4/5" data-NarrowGridArea="3/4/4/5" style="grid-area:3/4/4/5"><span class="SHNumber">2</span>,</div>
+            <div class="PName" data-WideGridArea="4/2/5/3" data-NarrowGridArea="4/2/5/3" style="grid-area:4/2/5/3">bb</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="4/3/5/4" data-NarrowGridArea="4/3/5/4" style="grid-area:4/3/5/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="4/4/5/5" data-NarrowGridArea="4/4/5/5" style="grid-area:4/4/5/5"><span class="SHNumber">3</span></div>
+            <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="4/5/5/6" data-NarrowGridArea="5/1/6/6" style="grid-area:4/5/5/6">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> ParameterKeywordsA #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="6" data-NarrowColumnCount="5">
+            <div class="PName" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/2/2/3" style="grid-area:1/2/2/3">a</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="1/3/2/4" data-NarrowGridArea="1/3/2/4" style="grid-area:1/3/2/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="1/4/2/5" style="grid-area:1/4/2/5"><span class="SHNumber">1</span>,</div>
+            <div class="PDirectionOrParameterKeyword InFirstParameterColumn" data-WideGridArea="2/1/3/2" data-NarrowGridArea="2/1/3/2" style="grid-area:2/1/3/2"><span class="SHKeyword">parameter</span>&nbsp;</div>
+            <div class="PName" data-WideGridArea="2/2/3/3" data-NarrowGridArea="2/2/3/3" style="grid-area:2/2/3/3">b</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="2/3/3/4" data-NarrowGridArea="2/3/3/4" style="grid-area:2/3/3/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/4/3/5" data-NarrowGridArea="2/4/3/5" style="grid-area:2/4/3/5"><span class="SHNumber">2</span>,</div>
+            <div class="PDirectionOrParameterKeyword InFirstParameterColumn" data-WideGridArea="3/1/4/2" data-NarrowGridArea="3/1/4/2" style="grid-area:3/1/4/2"><span class="SHKeyword">localparam</span>&nbsp;</div>
+            <div class="PName" data-WideGridArea="3/2/4/3" data-NarrowGridArea="3/2/4/3" style="grid-area:3/2/4/3">c</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="3/3/4/4" data-NarrowGridArea="3/3/4/4" style="grid-area:3/3/4/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="3/4/4/5" data-NarrowGridArea="3/4/4/5" style="grid-area:3/4/4/5"><span class="SHNumber">3</span></div>
+            <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="3/5/4/6" data-NarrowGridArea="4/1/5/6" style="grid-area:3/5/4/6">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> ParameterKeywordsB #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="8" data-NarrowColumnCount="7">
+            <div class="PType" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/2/2/3" style="grid-area:1/2/2/3"><span class="SHKeyword">bit</span></div>
+            <div class="PName" data-WideGridArea="1/4/2/5" data-NarrowGridArea="1/4/2/5" style="grid-area:1/4/2/5">a</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="1/5/2/6" data-NarrowGridArea="1/5/2/6" style="grid-area:1/5/2/6">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="1/6/2/7" data-NarrowGridArea="1/6/2/7" style="grid-area:1/6/2/7"><span class="SHNumber">1</span>,</div>
+            <div class="PDirectionOrParameterKeyword InFirstParameterColumn" data-WideGridArea="2/1/3/2" data-NarrowGridArea="2/1/3/2" style="grid-area:2/1/3/2"><span class="SHKeyword">parameter</span>&nbsp;</div>
+            <div class="PType" data-WideGridArea="2/2/3/3" data-NarrowGridArea="2/2/3/3" style="grid-area:2/2/3/3"><span class="SHKeyword">logic</span></div>
+            <div class="PPackedDimensions" data-WideGridArea="2/3/3/4" data-NarrowGridArea="2/3/3/4" style="grid-area:2/3/3/4">&nbsp[<span class="SHNumber">7</span>:<span class="SHNumber">0</span>]&nbsp;</div>
+            <div class="PName" data-WideGridArea="2/4/3/5" data-NarrowGridArea="2/4/3/5" style="grid-area:2/4/3/5">b</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="2/5/3/6" data-NarrowGridArea="2/5/3/6" style="grid-area:2/5/3/6">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/6/3/7" data-NarrowGridArea="2/6/3/7" style="grid-area:2/6/3/7"><span class="SHNumber">2</span>,</div>
+            <div class="PDirectionOrParameterKeyword InFirstParameterColumn" data-WideGridArea="3/1/4/2" data-NarrowGridArea="3/1/4/2" style="grid-area:3/1/4/2"><span class="SHKeyword">localparam</span>&nbsp;</div>
+            <div class="PType" data-WideGridArea="3/2/4/3" data-NarrowGridArea="3/2/4/3" style="grid-area:3/2/4/3"><span class="SHKeyword">int</span> <span class="SHKeyword">unsigned</span></div>
+            <div class="PName" data-WideGridArea="3/4/4/5" data-NarrowGridArea="3/4/4/5" style="grid-area:3/4/4/5">c</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="3/5/4/6" data-NarrowGridArea="3/5/4/6" style="grid-area:3/5/4/6">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="3/6/4/7" data-NarrowGridArea="3/6/4/7" style="grid-area:3/6/4/7"><span class="SHNumber">3</span></div>
+            <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="3/7/4/8" data-NarrowGridArea="4/1/5/8" style="grid-area:3/7/4/8">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> ParameterKeywordsC #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="6" data-NarrowColumnCount="5">
+            <div class="PName" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/2/2/3" style="grid-area:1/2/2/3">a</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="1/3/2/4" data-NarrowGridArea="1/3/2/4" style="grid-area:1/3/2/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="1/4/2/5" style="grid-area:1/4/2/5"><span class="SHNumber">1</span>,</div>
+            <div class="PName" data-WideGridArea="2/2/3/3" data-NarrowGridArea="2/2/3/3" style="grid-area:2/2/3/3">aa</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="2/3/3/4" data-NarrowGridArea="2/3/3/4" style="grid-area:2/3/3/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/4/3/5" data-NarrowGridArea="2/4/3/5" style="grid-area:2/4/3/5"><span class="SHNumber">2</span>,</div>
+            <div class="PDirectionOrParameterKeyword InFirstParameterColumn" data-WideGridArea="3/1/4/2" data-NarrowGridArea="3/1/4/2" style="grid-area:3/1/4/2"><span class="SHKeyword">parameter</span>&nbsp;</div>
+            <div class="PName" data-WideGridArea="3/2/4/3" data-NarrowGridArea="3/2/4/3" style="grid-area:3/2/4/3">b</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="3/3/4/4" data-NarrowGridArea="3/3/4/4" style="grid-area:3/3/4/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="3/4/4/5" data-NarrowGridArea="3/4/4/5" style="grid-area:3/4/4/5"><span class="SHNumber">3</span>,</div>
+            <div class="PName" data-WideGridArea="4/2/5/3" data-NarrowGridArea="4/2/5/3" style="grid-area:4/2/5/3">bb</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="4/3/5/4" data-NarrowGridArea="4/3/5/4" style="grid-area:4/3/5/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="4/4/5/5" data-NarrowGridArea="4/4/5/5" style="grid-area:4/4/5/5"><span class="SHNumber">4</span>,</div>
+            <div class="PDirectionOrParameterKeyword InFirstParameterColumn" data-WideGridArea="5/1/6/2" data-NarrowGridArea="5/1/6/2" style="grid-area:5/1/6/2"><span class="SHKeyword">localparam</span>&nbsp;</div>
+            <div class="PName" data-WideGridArea="5/2/6/3" data-NarrowGridArea="5/2/6/3" style="grid-area:5/2/6/3">c</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="5/3/6/4" data-NarrowGridArea="5/3/6/4" style="grid-area:5/3/6/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="5/4/6/5" data-NarrowGridArea="5/4/6/5" style="grid-area:5/4/6/5"><span class="SHNumber">5</span>,</div>
+            <div class="PName" data-WideGridArea="6/2/7/3" data-NarrowGridArea="6/2/7/3" style="grid-area:6/2/7/3">cc</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="6/3/7/4" data-NarrowGridArea="6/3/7/4" style="grid-area:6/3/7/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="6/4/7/5" data-NarrowGridArea="6/4/7/5" style="grid-area:6/4/7/5"><span class="SHNumber">6</span></div>
+            <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="6/5/7/6" data-NarrowGridArea="7/1/8/6" style="grid-area:6/5/7/6">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> ParameterKeywordsD #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="8" data-NarrowColumnCount="7">
+            <div class="PType" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/2/2/3" style="grid-area:1/2/2/3"><span class="SHKeyword">bit</span></div>
+            <div class="PName" data-WideGridArea="1/4/2/5" data-NarrowGridArea="1/4/2/5" style="grid-area:1/4/2/5">a</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="1/5/2/6" data-NarrowGridArea="1/5/2/6" style="grid-area:1/5/2/6">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="1/6/2/7" data-NarrowGridArea="1/6/2/7" style="grid-area:1/6/2/7"><span class="SHNumber">1</span>,</div>
+            <div class="PName" data-WideGridArea="2/4/3/5" data-NarrowGridArea="2/4/3/5" style="grid-area:2/4/3/5">aa</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="2/5/3/6" data-NarrowGridArea="2/5/3/6" style="grid-area:2/5/3/6">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/6/3/7" data-NarrowGridArea="2/6/3/7" style="grid-area:2/6/3/7"><span class="SHNumber">2</span>,</div>
+            <div class="PDirectionOrParameterKeyword InFirstParameterColumn" data-WideGridArea="3/1/4/2" data-NarrowGridArea="3/1/4/2" style="grid-area:3/1/4/2"><span class="SHKeyword">parameter</span>&nbsp;</div>
+            <div class="PType" data-WideGridArea="3/2/4/3" data-NarrowGridArea="3/2/4/3" style="grid-area:3/2/4/3"><span class="SHKeyword">logic</span></div>
+            <div class="PName" data-WideGridArea="3/4/4/5" data-NarrowGridArea="3/4/4/5" style="grid-area:3/4/4/5">b</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="3/5/4/6" data-NarrowGridArea="3/5/4/6" style="grid-area:3/5/4/6">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="3/6/4/7" data-NarrowGridArea="3/6/4/7" style="grid-area:3/6/4/7"><span class="SHNumber">3</span>,</div>
+            <div class="PName" data-WideGridArea="4/4/5/5" data-NarrowGridArea="4/4/5/5" style="grid-area:4/4/5/5">bb</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="4/5/5/6" data-NarrowGridArea="4/5/5/6" style="grid-area:4/5/5/6">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="4/6/5/7" data-NarrowGridArea="4/6/5/7" style="grid-area:4/6/5/7"><span class="SHNumber">4</span>,</div>
+            <div class="PDirectionOrParameterKeyword InFirstParameterColumn" data-WideGridArea="5/1/6/2" data-NarrowGridArea="5/1/6/2" style="grid-area:5/1/6/2"><span class="SHKeyword">localparam</span>&nbsp;</div>
+            <div class="PType" data-WideGridArea="5/2/6/3" data-NarrowGridArea="5/2/6/3" style="grid-area:5/2/6/3"><span class="SHKeyword">int</span> <span class="SHKeyword">unsigned</span></div>
+            <div class="PName" data-WideGridArea="5/4/6/5" data-NarrowGridArea="5/4/6/5" style="grid-area:5/4/6/5">c</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="5/5/6/6" data-NarrowGridArea="5/5/6/6" style="grid-area:5/5/6/6">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="5/6/6/7" data-NarrowGridArea="5/6/6/7" style="grid-area:5/6/6/7"><span class="SHNumber">5</span>,</div>
+            <div class="PName" data-WideGridArea="6/4/7/5" data-NarrowGridArea="6/4/7/5" style="grid-area:6/4/7/5">cc</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="6/5/7/6" data-NarrowGridArea="6/5/7/6" style="grid-area:6/5/7/6">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="6/6/7/7" data-NarrowGridArea="6/6/7/7" style="grid-area:6/6/7/7"><span class="SHNumber">6</span>,</div>
+            <div class="PDirectionOrParameterKeyword InFirstParameterColumn" data-WideGridArea="7/1/8/2" data-NarrowGridArea="7/1/8/2" style="grid-area:7/1/8/2"><span class="SHKeyword">localparam</span>&nbsp;</div>
+            <div class="PType" data-WideGridArea="7/2/8/3" data-NarrowGridArea="7/2/8/3" style="grid-area:7/2/8/3"><span class="SHKeyword">reg</span> <span class="SHKeyword">signed</span></div>
+            <div class="PPackedDimensions" data-WideGridArea="7/3/8/4" data-NarrowGridArea="7/3/8/4" style="grid-area:7/3/8/4">&nbsp[<span class="SHNumber">7</span>:<span class="SHNumber">0</span>]&nbsp;</div>
+            <div class="PName" data-WideGridArea="7/4/8/5" data-NarrowGridArea="7/4/8/5" style="grid-area:7/4/8/5">d</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="7/5/8/6" data-NarrowGridArea="7/5/8/6" style="grid-area:7/5/8/6">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="7/6/8/7" data-NarrowGridArea="7/6/8/7" style="grid-area:7/6/8/7"><span class="SHNumber">7</span>,</div>
+            <div class="PName" data-WideGridArea="8/4/9/5" data-NarrowGridArea="8/4/9/5" style="grid-area:8/4/9/5">dd</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="8/5/9/6" data-NarrowGridArea="8/5/9/6" style="grid-area:8/5/9/6">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="8/6/9/7" data-NarrowGridArea="8/6/9/7" style="grid-area:8/6/9/7"><span class="SHNumber">8</span></div>
+            <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="8/7/9/8" data-NarrowGridArea="9/1/10/8" style="grid-area:8/7/9/8">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> ParameterKeywordsE #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="8" data-NarrowColumnCount="7">
+            <div class="PType" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/2/2/3" style="grid-area:1/2/2/3"><span class="SHKeyword">bit</span></div>
+            <div class="PName" data-WideGridArea="1/4/2/5" data-NarrowGridArea="1/4/2/5" style="grid-area:1/4/2/5">a</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="1/5/2/6" data-NarrowGridArea="1/5/2/6" style="grid-area:1/5/2/6">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="1/6/2/7" data-NarrowGridArea="1/6/2/7" style="grid-area:1/6/2/7"><span class="SHNumber">1</span>,</div>
+            <div class="PType" data-WideGridArea="2/2/3/3" data-NarrowGridArea="2/2/3/3" style="grid-area:2/2/3/3"><span class="SHKeyword">int</span></div>
+            <div class="PName" data-WideGridArea="2/4/3/5" data-NarrowGridArea="2/4/3/5" style="grid-area:2/4/3/5">aa</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="2/5/3/6" data-NarrowGridArea="2/5/3/6" style="grid-area:2/5/3/6">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/6/3/7" data-NarrowGridArea="2/6/3/7" style="grid-area:2/6/3/7"><span class="SHNumber">2</span>,</div>
+            <div class="PDirectionOrParameterKeyword InFirstParameterColumn" data-WideGridArea="3/1/4/2" data-NarrowGridArea="3/1/4/2" style="grid-area:3/1/4/2"><span class="SHKeyword">parameter</span>&nbsp;</div>
+            <div class="PType" data-WideGridArea="3/2/4/3" data-NarrowGridArea="3/2/4/3" style="grid-area:3/2/4/3"><span class="SHKeyword">logic</span></div>
+            <div class="PName" data-WideGridArea="3/4/4/5" data-NarrowGridArea="3/4/4/5" style="grid-area:3/4/4/5">b</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="3/5/4/6" data-NarrowGridArea="3/5/4/6" style="grid-area:3/5/4/6">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="3/6/4/7" data-NarrowGridArea="3/6/4/7" style="grid-area:3/6/4/7"><span class="SHNumber">3</span>,</div>
+            <div class="PPackedDimensions" data-WideGridArea="4/3/5/4" data-NarrowGridArea="4/3/5/4" style="grid-area:4/3/5/4">&nbsp[<span class="SHNumber">7</span>:<span class="SHNumber">0</span>]&nbsp;</div>
+            <div class="PName" data-WideGridArea="4/4/5/5" data-NarrowGridArea="4/4/5/5" style="grid-area:4/4/5/5">bb</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="4/5/5/6" data-NarrowGridArea="4/5/5/6" style="grid-area:4/5/5/6">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="4/6/5/7" data-NarrowGridArea="4/6/5/7" style="grid-area:4/6/5/7"><span class="SHNumber">4</span>,</div>
+            <div class="PDirectionOrParameterKeyword InFirstParameterColumn" data-WideGridArea="5/1/6/2" data-NarrowGridArea="5/1/6/2" style="grid-area:5/1/6/2"><span class="SHKeyword">localparam</span>&nbsp;</div>
+            <div class="PType" data-WideGridArea="5/2/6/3" data-NarrowGridArea="5/2/6/3" style="grid-area:5/2/6/3"><span class="SHKeyword">int</span></div>
+            <div class="PName" data-WideGridArea="5/4/6/5" data-NarrowGridArea="5/4/6/5" style="grid-area:5/4/6/5">c</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="5/5/6/6" data-NarrowGridArea="5/5/6/6" style="grid-area:5/5/6/6">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="5/6/6/7" data-NarrowGridArea="5/6/6/7" style="grid-area:5/6/6/7"><span class="SHNumber">5</span>,</div>
+            <div class="PType" data-WideGridArea="6/2/7/3" data-NarrowGridArea="6/2/7/3" style="grid-area:6/2/7/3"><span class="SHKeyword">signed</span></div>
+            <div class="PName" data-WideGridArea="6/4/7/5" data-NarrowGridArea="6/4/7/5" style="grid-area:6/4/7/5">cc</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="6/5/7/6" data-NarrowGridArea="6/5/7/6" style="grid-area:6/5/7/6">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="6/6/7/7" data-NarrowGridArea="6/6/7/7" style="grid-area:6/6/7/7"><span class="SHNumber">6</span></div>
+            <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="6/7/7/8" data-NarrowGridArea="7/1/8/8" style="grid-area:6/7/7/8">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> LeadingAssignmentsAndTypes #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="7" data-NarrowColumnCount="6">
+            <div class="PName" data-WideGridArea="1/3/2/4" data-NarrowGridArea="1/3/2/4" style="grid-area:1/3/2/4">a</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="1/4/2/5" data-NarrowGridArea="1/4/2/5" style="grid-area:1/4/2/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="1/5/2/6" data-NarrowGridArea="1/5/2/6" style="grid-area:1/5/2/6"><span class="SHNumber">12</span>,</div>
+            <div class="PName" data-WideGridArea="2/3/3/4" data-NarrowGridArea="2/3/3/4" style="grid-area:2/3/3/4">b[<span class="SHNumber">2</span>]</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="2/4/3/5" data-NarrowGridArea="2/4/3/5" style="grid-area:2/4/3/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/5/3/6" data-NarrowGridArea="2/5/3/6" style="grid-area:2/5/3/6">'{<span class="SHNumber">'0</span>, <span class="SHNumber">'0</span>},</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="3/1/4/2" data-NarrowGridArea="3/1/4/2" style="grid-area:3/1/4/2"><span class="SHKeyword">logic</span></div>
+            <div class="PPackedDimensions" data-WideGridArea="3/2/4/3" data-NarrowGridArea="3/2/4/3" style="grid-area:3/2/4/3">&nbsp[<span class="SHNumber">7</span>:<span class="SHNumber">0</span>]&nbsp;</div>
+            <div class="PName" data-WideGridArea="3/3/4/4" data-NarrowGridArea="3/3/4/4" style="grid-area:3/3/4/4">x</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="3/4/4/5" data-NarrowGridArea="3/4/4/5" style="grid-area:3/4/4/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="3/5/4/6" data-NarrowGridArea="3/5/4/6" style="grid-area:3/5/4/6"><span class="SHNumber">12</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="4/1/5/2" data-NarrowGridArea="4/1/5/2" style="grid-area:4/1/5/2"><span class="SHKeyword">real</span></div>
+            <div class="PName" data-WideGridArea="4/3/5/4" data-NarrowGridArea="4/3/5/4" style="grid-area:4/3/5/4">y</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="4/4/5/5" data-NarrowGridArea="4/4/5/5" style="grid-area:4/4/5/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="4/5/5/6" data-NarrowGridArea="4/5/5/6" style="grid-area:4/5/5/6"><span class="SHNumber">2.0</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="5/1/6/2" data-NarrowGridArea="5/1/6/2" style="grid-area:5/1/6/2"><span class="SHKeyword">string</span></div>
+            <div class="PName" data-WideGridArea="5/3/6/4" data-NarrowGridArea="5/3/6/4" style="grid-area:5/3/6/4">z</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="5/4/6/5" data-NarrowGridArea="5/4/6/5" style="grid-area:5/4/6/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="5/5/6/6" data-NarrowGridArea="5/5/6/6" style="grid-area:5/5/6/6"><span class="SHString">&quot;aaa&quot;</span></div>
+            <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="5/6/6/7" data-NarrowGridArea="6/1/7/7" style="grid-area:5/6/6/7">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> PackedAndUnpackedArrays #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="7" data-NarrowColumnCount="6">
+            <div class="PType InFirstParameterColumn" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">bit</span></div>
+            <div class="PPackedDimensions" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/2/2/3" style="grid-area:1/2/2/3">&nbsp[<span class="SHNumber">7</span>:<span class="SHNumber">0</span>]&nbsp;</div>
+            <div class="PName" data-WideGridArea="1/3/2/4" data-NarrowGridArea="1/3/2/4" style="grid-area:1/3/2/4">a[<span class="SHNumber">2</span>]</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="1/4/2/5" data-NarrowGridArea="1/4/2/5" style="grid-area:1/4/2/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="1/5/2/6" data-NarrowGridArea="1/5/2/6" style="grid-area:1/5/2/6">'{<span class="SHNumber">'0</span>, <span class="SHNumber">'0</span>},</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="2/1/3/2" data-NarrowGridArea="2/1/3/2" style="grid-area:2/1/3/2"><span class="SHKeyword">bit</span></div>
+            <div class="PPackedDimensions" data-WideGridArea="2/2/3/3" data-NarrowGridArea="2/2/3/3" style="grid-area:2/2/3/3">&nbsp[<span class="SHNumber">3</span>:<span class="SHNumber">0</span>]&nbsp;</div>
+            <div class="PName" data-WideGridArea="2/3/3/4" data-NarrowGridArea="2/3/3/4" style="grid-area:2/3/3/4">b[<span class="SHNumber">0</span>:<span class="SHNumber">1</span>]</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="2/4/3/5" data-NarrowGridArea="2/4/3/5" style="grid-area:2/4/3/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/5/3/6" data-NarrowGridArea="2/5/3/6" style="grid-area:2/5/3/6">'{<span class="SHNumber">'0</span>, <span class="SHNumber">'0</span>}</div>
+            <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="2/6/3/7" data-NarrowGridArea="3/1/4/7" style="grid-area:2/6/3/7">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> TypeReferencesAndUnpackedDimensions #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="6" data-NarrowColumnCount="5">
+            <div class="PType InFirstParameterColumn" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">logic</span>&nbsp;</div>
+            <div class="PName" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/2/2/3" style="grid-area:1/2/2/3">a[<span class="SHNumber">2</span>]</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="1/3/2/4" data-NarrowGridArea="1/3/2/4" style="grid-area:1/3/2/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="1/4/2/5" style="grid-area:1/4/2/5">'{<span class="SHNumber">'0</span>,<span class="SHNumber">'0</span>},</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="2/1/3/2" data-NarrowGridArea="2/1/3/2" style="grid-area:2/1/3/2"><span class="SHKeyword">reg</span>&nbsp;</div>
+            <div class="PName" data-WideGridArea="2/2/3/3" data-NarrowGridArea="2/2/3/3" style="grid-area:2/2/3/3">b</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="2/3/3/4" data-NarrowGridArea="2/3/3/4" style="grid-area:2/3/3/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/4/3/5" data-NarrowGridArea="2/4/3/5" style="grid-area:2/4/3/5"><span class="SHNumber">2</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="3/1/4/2" data-NarrowGridArea="3/1/4/2" style="grid-area:3/1/4/2"><span class="SHKeyword">type</span>(a)&nbsp;</div>
+            <div class="PName" data-WideGridArea="3/2/4/3" data-NarrowGridArea="3/2/4/3" style="grid-area:3/2/4/3">aa</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="3/3/4/4" data-NarrowGridArea="3/3/4/4" style="grid-area:3/3/4/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="3/4/4/5" data-NarrowGridArea="3/4/4/5" style="grid-area:3/4/4/5"><span class="SHNumber">3</span>,</div>
+            <div class="PType InFirstParameterColumn" data-WideGridArea="4/1/5/2" data-NarrowGridArea="4/1/5/2" style="grid-area:4/1/5/2"><span class="SHKeyword">type</span>(b)&nbsp;</div>
+            <div class="PName" data-WideGridArea="4/2/5/3" data-NarrowGridArea="4/2/5/3" style="grid-area:4/2/5/3">bb[<span class="SHNumber">2</span>]</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="4/3/5/4" data-NarrowGridArea="4/3/5/4" style="grid-area:4/3/5/4">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="4/4/5/5" data-NarrowGridArea="4/4/5/5" style="grid-area:4/4/5/5">'{<span class="SHNumber">'0</span>,<span class="SHNumber">'0</span>}</div>
+            <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="4/5/5/6" data-NarrowGridArea="5/1/6/6" style="grid-area:4/5/5/6">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> TypeAssignments #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="7" data-NarrowColumnCount="6">
+            <div class="PType" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/2/2/3" style="grid-area:1/2/2/3"><span class="SHKeyword">type</span>&nbsp;</div>
+            <div class="PName" data-WideGridArea="1/3/2/4" data-NarrowGridArea="1/3/2/4" style="grid-area:1/3/2/4">typeA</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="1/4/2/5" data-NarrowGridArea="1/4/2/5" style="grid-area:1/4/2/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="1/5/2/6" data-NarrowGridArea="1/5/2/6" style="grid-area:1/5/2/6"><span class="SHKeyword">int</span>,</div>
+            <div class="PDirectionOrParameterKeyword InFirstParameterColumn" data-WideGridArea="2/1/3/2" data-NarrowGridArea="2/1/3/2" style="grid-area:2/1/3/2"><span class="SHKeyword">parameter</span>&nbsp;</div>
+            <div class="PType" data-WideGridArea="2/2/3/3" data-NarrowGridArea="2/2/3/3" style="grid-area:2/2/3/3"><span class="SHKeyword">type</span>&nbsp;</div>
+            <div class="PName" data-WideGridArea="2/3/3/4" data-NarrowGridArea="2/3/3/4" style="grid-area:2/3/3/4">typeB</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="2/4/3/5" data-NarrowGridArea="2/4/3/5" style="grid-area:2/4/3/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/5/3/6" data-NarrowGridArea="2/5/3/6" style="grid-area:2/5/3/6"><span class="SHKeyword">reg unsigned</span>,</div>
+            <div class="PDirectionOrParameterKeyword InFirstParameterColumn" data-WideGridArea="3/1/4/2" data-NarrowGridArea="3/1/4/2" style="grid-area:3/1/4/2"><span class="SHKeyword">localparam</span>&nbsp;</div>
+            <div class="PType" data-WideGridArea="3/2/4/3" data-NarrowGridArea="3/2/4/3" style="grid-area:3/2/4/3"><span class="SHKeyword">type</span>&nbsp;</div>
+            <div class="PName" data-WideGridArea="3/3/4/4" data-NarrowGridArea="3/3/4/4" style="grid-area:3/3/4/4">typeC</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="3/4/4/5" data-NarrowGridArea="3/4/4/5" style="grid-area:3/4/4/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="3/5/4/6" data-NarrowGridArea="3/5/4/6" style="grid-area:3/5/4/6"><span class="SHKeyword">bit signed</span> [<span class="SHNumber">7</span>:<span class="SHNumber">0</span>],</div>
+            <div class="PType" data-WideGridArea="4/2/5/3" data-NarrowGridArea="4/2/5/3" style="grid-area:4/2/5/3">typeA&nbsp;</div>
+            <div class="PName" data-WideGridArea="4/3/5/4" data-NarrowGridArea="4/3/5/4" style="grid-area:4/3/5/4">paramX</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="4/4/5/5" data-NarrowGridArea="4/4/5/5" style="grid-area:4/4/5/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="4/5/5/6" data-NarrowGridArea="4/5/5/6" style="grid-area:4/5/5/6"><span class="SHNumber">4</span>,</div>
+            <div class="PDirectionOrParameterKeyword InFirstParameterColumn" data-WideGridArea="5/1/6/2" data-NarrowGridArea="5/1/6/2" style="grid-area:5/1/6/2"><span class="SHKeyword">parameter</span>&nbsp;</div>
+            <div class="PType" data-WideGridArea="5/2/6/3" data-NarrowGridArea="5/2/6/3" style="grid-area:5/2/6/3">typeB&nbsp;</div>
+            <div class="PName" data-WideGridArea="5/3/6/4" data-NarrowGridArea="5/3/6/4" style="grid-area:5/3/6/4">paramY</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="5/4/6/5" data-NarrowGridArea="5/4/6/5" style="grid-area:5/4/6/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="5/5/6/6" data-NarrowGridArea="5/5/6/6" style="grid-area:5/5/6/6"><span class="SHNumber">5</span>,</div>
+            <div class="PDirectionOrParameterKeyword InFirstParameterColumn" data-WideGridArea="6/1/7/2" data-NarrowGridArea="6/1/7/2" style="grid-area:6/1/7/2"><span class="SHKeyword">localparam</span>&nbsp;</div>
+            <div class="PType" data-WideGridArea="6/2/7/3" data-NarrowGridArea="6/2/7/3" style="grid-area:6/2/7/3">typeC&nbsp;</div>
+            <div class="PName" data-WideGridArea="6/3/7/4" data-NarrowGridArea="6/3/7/4" style="grid-area:6/3/7/4">paramZ</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="6/4/7/5" data-NarrowGridArea="6/4/7/5" style="grid-area:6/4/7/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="6/5/7/6" data-NarrowGridArea="6/5/7/6" style="grid-area:6/5/7/6"><span class="SHNumber">6</span></div>
+            <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="6/6/7/7" data-NarrowGridArea="7/1/8/7" style="grid-area:6/6/7/7">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection SystemVerilogStyle">
+      <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> Macros #(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3" data-WideColumnCount="7" data-NarrowColumnCount="6">
+            <div class="PName" data-WideGridArea="1/3/2/4" data-NarrowGridArea="1/3/2/4" style="grid-area:1/3/2/4">`MacroA</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="1/4/2/5" data-NarrowGridArea="1/4/2/5" style="grid-area:1/4/2/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="1/5/2/6" data-NarrowGridArea="1/5/2/6" style="grid-area:1/5/2/6"><span class="SHNumber">1</span>,</div>
+            <div class="PName" data-WideGridArea="2/3/3/4" data-NarrowGridArea="2/3/3/4" style="grid-area:2/3/3/4">`MacroB(<span class="SHNumber">12</span>)</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="2/4/3/5" data-NarrowGridArea="2/4/3/5" style="grid-area:2/4/3/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/5/3/6" data-NarrowGridArea="2/5/3/6" style="grid-area:2/5/3/6"><span class="SHNumber">2</span>,</div>
+            <div class="PDirectionOrParameterKeyword InFirstParameterColumn" data-WideGridArea="3/1/4/2" data-NarrowGridArea="3/1/4/2" style="grid-area:3/1/4/2"><span class="SHKeyword">parameter</span>&nbsp;</div>
+            <div class="PName" data-WideGridArea="3/3/4/4" data-NarrowGridArea="3/3/4/4" style="grid-area:3/3/4/4">`MacroC(<span class="SHNumber">12</span>,<span class="SHNumber">16</span>)</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="3/4/4/5" data-NarrowGridArea="3/4/4/5" style="grid-area:3/4/4/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="3/5/4/6" data-NarrowGridArea="3/5/4/6" style="grid-area:3/5/4/6"><span class="SHNumber">3</span>,</div>
+            <div class="PDirectionOrParameterKeyword InFirstParameterColumn" data-WideGridArea="4/1/5/2" data-NarrowGridArea="4/1/5/2" style="grid-area:4/1/5/2"><span class="SHKeyword">parameter</span>&nbsp;</div>
+            <div class="PType" data-WideGridArea="4/2/5/3" data-NarrowGridArea="4/2/5/3" style="grid-area:4/2/5/3"><span class="SHKeyword">logic</span>&nbsp;</div>
+            <div class="PName" data-WideGridArea="4/3/5/4" data-NarrowGridArea="4/3/5/4" style="grid-area:4/3/5/4">d [`MacroD:<span class="SHNumber">0</span>]</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="4/4/5/5" data-NarrowGridArea="4/4/5/5" style="grid-area:4/4/5/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="4/5/5/6" data-NarrowGridArea="4/5/5/6" style="grid-area:4/5/5/6"><span class="SHNumber">4</span>,</div>
+            <div class="PType" data-WideGridArea="5/2/6/3" data-NarrowGridArea="5/2/6/3" style="grid-area:5/2/6/3"><span class="SHKeyword">logic</span>&nbsp;</div>
+            <div class="PName" data-WideGridArea="5/3/6/4" data-NarrowGridArea="5/3/6/4" style="grid-area:5/3/6/4">e</div>
+            <div class="PDefaultValueSeparator" data-WideGridArea="5/4/6/5" data-NarrowGridArea="5/4/6/5" style="grid-area:5/4/6/5">&nbsp=&nbsp;</div>
+            <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="5/5/6/6" data-NarrowGridArea="5/5/6/6" style="grid-area:5/5/6/6">`MacroE</div>
+            <div class="PAfterParameters" data-WideGridArea="5/6/6/7" data-NarrowGridArea="6/1/7/7" style="grid-area:5/6/6/7">)</div>
+         </div>
+         <div class="PBeforeParameters RightAlignOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="2/1/3/2" data-NarrowGridArea="3/1/4/2" style="grid-area:2/1/3/2">(</div>
+         <div class="PParameterCells Nested" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3" data-WideColumnCount="2" data-NarrowColumnCount="1">
+            <div class="PAfterParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2">)</div>
+         </div>
+      </div>
+   </div>
+</div>
