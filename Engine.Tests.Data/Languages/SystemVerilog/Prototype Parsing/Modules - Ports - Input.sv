@@ -301,6 +301,7 @@ endmodule
 // Topic: Unsupported Types
 //
 // These data types cannot be used as module ports:
+//
 // - chandles
 // - virtual interfaces
 //
