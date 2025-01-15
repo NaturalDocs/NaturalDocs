@@ -165,8 +165,9 @@
 /* Layout */
 
 	$Indent: 2.25rem;
-	$Indent50pct: 1.125rem;
-	$Indent150pct: 3.375rem;
+
+	$IndentList: 3.375rem;
+	$IndentSubList: 1.3rem;
 
 	$ParagraphSpacing: .5rem;
 	$DefinitionSpacing: .5rem;
@@ -1614,15 +1615,18 @@ td {
 			}
 
 	.CTopic ul {
-		margin: 0 0 0 $Indent150pct;
+		margin: 0 0 0 $IndentList;
 		padding: 0;
 		}
 	.CTopic ul ul {
-		margin: 0 0 0 $Indent50pct;
+		margin: 0 0 0 $IndentSubList;
 		}
 	.CTopic li {
 		list-style-type: disc;
 		}
+		.CTopic li li {
+			list-style-type: circle;
+			}
 	.CTopic li p {
 		text-indent: 0;
 		max-width: $MaxParagraphWidthMinus150pctIndent;
