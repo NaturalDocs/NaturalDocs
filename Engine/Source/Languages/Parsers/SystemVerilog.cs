@@ -228,6 +228,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		public static bool IsOnAnyKeyword (TokenIterator iterator, out string matchingKeyword, params string[] keywords)
 			{
+			if (iterator.FundamentalType != FundamentalType.Text &&
+				iterator.Character != '$')
+				{
+				matchingKeyword = null;
+				return false;
+				}
+
 			int matchIndex = iterator.MatchesAnyAcrossTokens(keywords, true);
 
 			if (matchIndex == -1)
@@ -277,6 +284,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		public static bool IsOnAnyKeyword (TokenIterator iterator, out string matchingKeyword, StringSet keywords)
 			{
+			if (iterator.FundamentalType != FundamentalType.Text &&
+				iterator.Character != '$')
+				{
+				matchingKeyword = null;
+				return false;
+				}
+
 			TokenIterator lookbehind = iterator;
 			lookbehind.Previous();
 
