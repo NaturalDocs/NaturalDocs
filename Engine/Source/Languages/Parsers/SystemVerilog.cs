@@ -2581,7 +2581,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				GenericSkipUntilAfterSymbol(ref iterator, '}');
 				}
 			else if (TryToSkipString(ref iterator) ||
-					  TryToSkipWhitespace(ref iterator))
+					  TryToSkipComment(ref iterator))
 				{  }
 			else
 				{  iterator.Next();  }
