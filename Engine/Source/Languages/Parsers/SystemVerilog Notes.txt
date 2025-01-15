@@ -110,3 +110,50 @@ Topic: ANSI Port Attribute Inheritance Rules
 		- portA is "bit [7:0] portA[2]" as specified
 		- portB is "bit [7:0] portB" as it doesn't inherit the "[2]"
 		- portC is "bit [7:0] portC[0:3]" as it doesn't inherit the "[2]" and has its own "[0:3]".
+
+
+_______________________________________________________________________________
+
+
+Topic: Keyword Block Pairs
+
+	A list of all the keyword block pairs (such as "begin" and "end") and some of the exceptions to be aware of when
+	parsing.
+
+	- begin, end
+
+	- module, endmodule
+	- macromodule, endmodule
+
+	- interface, endinterface
+		- Need to watch out for "interface class" which is not two separate blocks and uses "endclass" instead of
+		  "endinterface".
+		- Need to watch out for "interface.ModPort" which isn't a block
+
+	- program, endprogram
+	- checker, endchecker
+	- class, endclass
+	- package, endpackage
+	- config, endconfig
+	- function, endfunction
+	- task, endtask
+	- property, endproperty
+	- sequence, endsequence
+	- covergroup, endgroup
+	- generate, endgenerate
+	- case, endcase
+	- primitive, endprimitive
+	- table, endtable
+
+	- fork, join
+		- Can also end with "join_any" or "join_none"
+		- Need to watch out for "wait fork" and "disable fork" which aren't blocks
+
+	- case, endcase
+	- casex, endcase
+	- casez, endcase
+	- randcase, endcase
+
+	- clocking, endclocking
+	- randsequence, endsequence
+	- specify, endspecify
