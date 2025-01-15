@@ -515,7 +515,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 
-			GenericSkipUntilAfter(ref lookahead, ';');
+			GenericSkipUntilAfterSymbol(ref lookahead, ';');
 			lookahead.Previous();  // Don't want to include semicolon
 			iterator = lookahead;
 			return true;
@@ -1506,7 +1506,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				TryToSkipTypeIdentifier(ref lookahead, mode, PrototypeParsingType.Type);
 				}
 
-			GenericSkipUntilAfter(ref lookahead, ')');
+			GenericSkipUntilAfterSymbol(ref lookahead, ')');
 
 			if (mode == ParseMode.ParsePrototype)
 				{
@@ -2544,27 +2544,27 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			if (iterator.MatchesAcrossTokens("(*"))
 				{
 				iterator.Next(2);
-				GenericSkipUntilAfter(ref iterator, "*)");
+				GenericSkipUntilAfterSymbol(ref iterator, "*)");
 				}
 			else if (iterator.MatchesAcrossTokens("#("))
 				{
 				iterator.Next(2);
-				GenericSkipUntilAfter(ref iterator, ')');
+				GenericSkipUntilAfterSymbol(ref iterator, ')');
 				}
 			else if (iterator.Character == '(')
 				{
 				iterator.Next();
-				GenericSkipUntilAfter(ref iterator, ')');
+				GenericSkipUntilAfterSymbol(ref iterator, ')');
 				}
 			else if (iterator.Character == '[')
 				{
 				iterator.Next();
-				GenericSkipUntilAfter(ref iterator, ']');
+				GenericSkipUntilAfterSymbol(ref iterator, ']');
 				}
 			else if (iterator.Character == '{')
 				{
 				iterator.Next();
-				GenericSkipUntilAfter(ref iterator, '}');
+				GenericSkipUntilAfterSymbol(ref iterator, '}');
 				}
 			else if (TryToSkipString(ref iterator) ||
 					  TryToSkipWhitespace(ref iterator))
@@ -2574,10 +2574,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
-		/* Function: GenericSkipUntilAfter
+		/* Function: GenericSkipUntilAfterSymbol
 		 * Advances the iterator via <GenericSkip()> until a specific symbol is reached and passed.
 		 */
-		protected void GenericSkipUntilAfter (ref TokenIterator iterator, char symbol)
+		protected void GenericSkipUntilAfterSymbol (ref TokenIterator iterator, char symbol)
 			{
 			while (iterator.IsInBounds)
 				{
@@ -2592,10 +2592,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
-		/* Function: GenericSkipUntilAfter
+		/* Function: GenericSkipUntilAfterSymbol
 		 * Advances the iterator via <GenericSkip()> until a specific symbol is reached and passed.
 		 */
-		protected void GenericSkipUntilAfter (ref TokenIterator iterator, string symbol)
+		protected void GenericSkipUntilAfterSymbol (ref TokenIterator iterator, string symbol)
 			{
 			while (iterator.IsInBounds)
 				{
