@@ -2610,6 +2610,42 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
+		/* Function: GenericSkipUntilAfterKeyword
+		 * Advances the iterator via <GenericSkip()> until a specific keyword is reached and passed.
+		 */
+		protected void GenericSkipUntilAfterKeyword (ref TokenIterator iterator, string keyword)
+			{
+			while (iterator.IsInBounds)
+				{
+				if (IsOnKeyword(iterator, keyword))
+					{
+					iterator.NextByCharacters(keyword.Length);
+					break;
+					}
+				else
+					{  GenericSkip(ref iterator);  }
+				}
+			}
+
+
+		/* Function: GenericSkipUntilAfterKeyword
+		 * Advances the iterator via <GenericSkip()> until one of the keywords is reached and passed.
+		 */
+		protected void GenericSkipUntilAfterKeyword (ref TokenIterator iterator, string[] keywords)
+			{
+			while (iterator.IsInBounds)
+				{
+				if (IsOnAnyKeyword(iterator, out string matchingKeyword, keywords))
+					{
+					iterator.NextByCharacters(matchingKeyword.Length);
+					break;
+					}
+				else
+					{  GenericSkip(ref iterator);  }
+				}
+			}
+
+
 		/* Function: TryToSkipWhitespace
 		 *
 		 * For skipping whitespace and comments.
