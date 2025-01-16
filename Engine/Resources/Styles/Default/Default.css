@@ -166,8 +166,11 @@
 
 	$Indent: 2.25rem;
 
-	$IndentList: 3.375rem;
-	$IndentSubList: 1.3rem;
+	$IndentList: 4.1rem;
+	$IndentSubList: 1.5rem;
+	$IndentList_Firefox: 3.75rem;
+	$IndentSubList_Firefox: 1.3rem;
+	$IndentListItem_Firefox: .2rem;
 
 	$ParagraphSpacing: .5rem;
 	$DefinitionSpacing: .5rem;
@@ -1621,6 +1624,20 @@ td {
 	.CTopic ul ul {
 		margin: 0 0 0 $IndentSubList;
 		}
+
+	/* Firefox indents bullets slightly differently */
+	@-moz-document url-prefix() {
+		.CTopic ul {
+			margin-left: $IndentList_Firefox;
+			}
+		.CTopic ul ul {
+			margin-left: $IndentSubList_Firefox;
+			}
+		.CTopic ul li {
+			padding-left: $IndentListItem_Firefox;
+			}
+		}
+
 	.CTopic li {
 		list-style-type: disc;
 		}
