@@ -485,18 +485,42 @@ td {
 
 	.TSEntry {
 		display: block;
-		padding: 6px 12px 6px 6px;
-		min-height: 25px;
+		min-height: 37px;
+
+		color: #242424;
+		background-color: $SummaryBackgroundColor;
 		}
+		.DarkTheme .TSEntry {
+			color: $ContentTextColor_Dark;
+			background-color: $SummaryBackgroundColor_Dark;
+			}
+		.BlackTheme .TSEntry {
+			color: $ContentTextColor_Black;
+			background-color: $SummaryBackgroundColor_Black;
+			}
+
+		.TSEntry:hover {
+			text-decoration: none !important;
+			background-color: $SummaryHoverBackgroundColor;
+			}
+			.DarkTheme .TSEntry:hover {
+				background-color: $SummaryHoverBackgroundColor_Dark;
+				}
+			.BlackTheme .TSEntry:hover {
+				background-color: $SummaryHoverBackgroundColor_Black;
+				}
 
 	.TSEntryName {
-		margin: 3px 0 0 33px;
+		padding: 9px 18px 0px 45px;
 		white-space: nowrap;
 		vertical-align: bottom;
 		}
-		.TSEntry:hover {
-			text-decoration: none !important;
-			}
+
+	.TSEntryIconContainer {
+		position: absolute;
+		width: 37px;
+		height: 37px;
+		}
 
 	.TSEntryIcon {
 		box-sizing: border-box;
@@ -507,65 +531,47 @@ td {
 		position: absolute;
 		width: 25px;
 		height: 25px;
+
+		margin: 6px;
 		}
 
 
-	/* If you change the colors, make sure you update the SVG files to match */
-	.TSEntry_LightTheme {
-		color: $ContentTextColor;
+	/* The border color should match the SVG stroke color */
+	.TSEntry_LightTheme .TSEntryIconContainer {
 		background-color: $ContentBackgroundColor;
 		}
-		.TSEntry_LightTheme:hover {
-			background-color: #E8E8E8;
-			}
 		.TSEntry_LightTheme .TSEntryIcon {
 			background: url("images/theme-menu-light.svg") center center no-repeat;
 			border-color: #A0A0A0;
 			}
 
-	.TSEntry_DarkTheme {
-		color: $ContentTextColor_Dark;
+	.TSEntry_DarkTheme .TSEntryIconContainer {
 		background-color: $ContentBackgroundColor_Dark;
 		}
-		.TSEntry_DarkTheme:hover {
-			background-color: #4E4E4E;
-			}
 		.TSEntry_DarkTheme .TSEntryIcon {
 			background: url("images/theme-menu-dark.svg") center center no-repeat;
-			border-color: $ContentTextColor_Dark;
+			border-color: #DCDCDC;
 			}
 
-	.TSEntry_BlackTheme {
-		color: $ContentTextColor_Black;
+	.TSEntry_BlackTheme .TSEntryIconContainer {
 		background-color: $ContentBackgroundColor_Black;
 		}
-		.TSEntry_BlackTheme:hover {
-			background-color: #3E3E3E;
-			}
 		.TSEntry_BlackTheme .TSEntryIcon {
 			background: url("images/theme-menu-black.svg") center center no-repeat;
-			border-color: $ContentTextColor_Black;
+			border-color: #F4F4F4;
 			}
 
-	.TSEntry_AutoLightDarkTheme {
-		color: $ContentTextColor_Dark;
+	.TSEntry_AutoLightDarkTheme .TSEntryIconContainer {
 		background-image: linear-gradient(135deg, $ContentBackgroundColor 25px, $ContentBackgroundColor_Dark 27px);
 		}
-		.TSEntry_AutoLightDarkTheme:hover {
-			background-image: linear-gradient(135deg, $ContentBackgroundColor 25px, #4E4E4E 27px);
-			}
 		.TSEntry_AutoLightDarkTheme .TSEntryIcon {
 			background: url("images/theme-menu-autolightdark.svg") center center no-repeat;
 			border-color: #A0A0A0 #DCDCDC #DCDCDC #A0A0A0;
 			}
 
-	.TSEntry_AutoLightBlackTheme {
-		color: $ContentTextColor_Black;
+	.TSEntry_AutoLightBlackTheme .TSEntryIconContainer {
 		background-image: linear-gradient(135deg, $ContentBackgroundColor 25px, $ContentBackgroundColor_Black 27px);
 		}
-		.TSEntry_AutoLightBlackTheme:hover {
-			background-image: linear-gradient(135deg, $ContentBackgroundColor 25px, #3E3E3E 27px);
-			}
 		.TSEntry_AutoLightBlackTheme .TSEntryIcon {
 			background: url("images/theme-menu-autolightblack.svg") center center no-repeat;
 			border-color: #A0A0A0 #F4F4F4 #F4F4F4 #A0A0A0;
