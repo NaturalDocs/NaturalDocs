@@ -650,9 +650,7 @@ var NDThemeSwitcher = new function ()
 					{  html += " id=\"TSSelectedEntry\"";  }
 
 				html += " href=\"javascript:NDThemeSwitcher.OnMenuEntryClick('" + theme[$Theme_ID] + "');\">" +
-					"<div class=\"TSEntryIconContainer\">" +
-						"<div class=\"TSEntryIcon\"></div>" +
-					"</div>" +
+					"<div class=\"TSEntryIcon\"></div>" +
 					"<div class=\"TSEntryName\">" + theme[$Theme_Name] + "</div>" +
 				"</a>";
 				}

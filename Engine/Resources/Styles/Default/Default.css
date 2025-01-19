@@ -469,34 +469,35 @@ td {
 #NDThemeSwitcherMenu {
 	z-index: $NDThemeSwitcherMenuZIndex;
 
+	padding: 2px 0;
+	background-color: $SummaryBackgroundColor;
+
 	border-style: solid;
 	border-width: 1px;
 	border-color: #BCBCBC #747474 #747474 #BCBCBC;
 	box-shadow: $PopupShadow;
 	}
 	.DarkTheme #NDThemeSwitcherMenu {
+		background-color: $SummaryBackgroundColor_Dark;
 		border-color: #343434;
 		box-shadow: $PopupShadow_Dark;
 		}
 	.BlackTheme #NDThemeSwitcherMenu {
+		background-color: $SummaryBackgroundColor_Black;
 		border-color: $MenuLineColor_Black;
 		box-shadow: $PopupShadow_Black;
 		}
 
 	.TSEntry {
 		display: block;
-		min-height: 37px;
-
+		min-height: 33px;  /* icon 25px + 4px on each side */
 		color: #242424;
-		background-color: $SummaryBackgroundColor;
 		}
 		.DarkTheme .TSEntry {
 			color: $ContentTextColor_Dark;
-			background-color: $SummaryBackgroundColor_Dark;
 			}
 		.BlackTheme .TSEntry {
 			color: $ContentTextColor_Black;
-			background-color: $SummaryBackgroundColor_Black;
 			}
 
 		.TSEntry:hover {
@@ -511,70 +512,74 @@ td {
 				}
 
 	.TSEntryName {
-		padding: 9px 18px 0px 45px;
+		padding: 7px 16px 0px 39px;
 		white-space: nowrap;
 		vertical-align: bottom;
 		}
 
-	.TSEntryIconContainer {
-		position: absolute;
-		width: 37px;
-		height: 37px;
-		}
-
 	.TSEntryIcon {
 		box-sizing: border-box;
-		border-width: 1px;
-		border-style: solid;
-		border-radius: 50%;
-
 		position: absolute;
 		width: 25px;
 		height: 25px;
 
-		margin: 6px;
+		border-radius: 50%;
+		margin: 4px 7px;
 		}
-
-
-	/* The border color should match the SVG stroke color */
-	.TSEntry_LightTheme .TSEntryIconContainer {
-		background-color: $ContentBackgroundColor;
-		}
-		.TSEntry_LightTheme .TSEntryIcon {
-			background: url("images/theme-menu-light.svg") center center no-repeat;
-			border-color: #A0A0A0;
+		.DarkTheme .TSEntryIcon {
+			border-color: $ContentTextColor_Dark;
+			}
+		.BlackTheme .TSEntryIcon {
+			border-color: $ContentTextColor_Black;
 			}
 
-	.TSEntry_DarkTheme .TSEntryIconContainer {
-		background-color: $ContentBackgroundColor_Dark;
+	.TSEntry_LightTheme .TSEntryIcon {
+		background: url("images/theme-menu-light.svg") center center no-repeat;
 		}
-		.TSEntry_DarkTheme .TSEntryIcon {
-			background: url("images/theme-menu-dark.svg") center center no-repeat;
-			border-color: #DCDCDC;
+		.LightTheme .TSEntry_LightTheme .TSEntryIcon {
+			border: 1px solid #A0A0A0;
 			}
 
-	.TSEntry_BlackTheme .TSEntryIconContainer {
-		background-color: $ContentBackgroundColor_Black;
+	.TSEntry_DarkTheme .TSEntryIcon {
+		background: url("images/theme-menu-dark.svg") center center no-repeat;
 		}
-		.TSEntry_BlackTheme .TSEntryIcon {
-			background: url("images/theme-menu-black.svg") center center no-repeat;
-			border-color: #F4F4F4;
+		.DarkTheme .TSEntry_DarkTheme .TSEntryIcon,
+		.BlackTheme .TSEntry_DarkTheme .TSEntryIcon {
+			border: 1px solid #DCDCDC;
 			}
 
-	.TSEntry_AutoLightDarkTheme .TSEntryIconContainer {
-		background-image: linear-gradient(135deg, $ContentBackgroundColor 25px, $ContentBackgroundColor_Dark 27px);
+	.TSEntry_BlackTheme .TSEntryIcon {
+		background: url("images/theme-menu-black.svg") center center no-repeat;
 		}
-		.TSEntry_AutoLightDarkTheme .TSEntryIcon {
-			background: url("images/theme-menu-autolightdark.svg") center center no-repeat;
-			border-color: #A0A0A0 #DCDCDC #DCDCDC #A0A0A0;
+		.DarkTheme .TSEntry_BlackTheme .TSEntryIcon,
+		.BlackTheme .TSEntry_BlackTheme .TSEntryIcon {
+			border: 1px solid #FFFFFF;
 			}
 
-	.TSEntry_AutoLightBlackTheme .TSEntryIconContainer {
-		background-image: linear-gradient(135deg, $ContentBackgroundColor 25px, $ContentBackgroundColor_Black 27px);
+	.TSEntry_AutoLightDarkTheme .TSEntryIcon {
+		background: url("images/theme-menu-autolightdark.svg") center center no-repeat;
+		border-width: 1px;
+		border-style: solid;
 		}
-		.TSEntry_AutoLightBlackTheme .TSEntryIcon {
-			background: url("images/theme-menu-autolightblack.svg") center center no-repeat;
-			border-color: #A0A0A0 #F4F4F4 #F4F4F4 #A0A0A0;
+		.LightTheme .TSEntry_AutoLightDarkTheme .TSEntryIcon {
+			border-color: #A0A0A0 $ContentBackgroundColor_Dark $ContentBackgroundColor_Dark #A0A0A0;
+			}
+		.DarkTheme .TSEntry_AutoLightDarkTheme .TSEntryIcon,
+		.BlackTheme .TSEntry_AutoLightDarkTheme .TSEntryIcon {
+			border-color: $ContentBackgroundColor $ContentTextColor_Dark $ContentTextColor_Dark $ContentBackgroundColor;
+			}
+
+	.TSEntry_AutoLightBlackTheme .TSEntryIcon {
+		background: url("images/theme-menu-autolightblack.svg") center center no-repeat;
+		border-width: 1px;
+		border-style: solid;
+		}
+		.LightTheme .TSEntry_AutoLightBlackTheme .TSEntryIcon {
+			border-color: #A0A0A0 $ContentBackgroundColor_Black $ContentBackgroundColor_Black #A0A0A0;
+			}
+		.DarkTheme .TSEntry_AutoLightBlackTheme .TSEntryIcon,
+		.BlackTheme .TSEntry_AutoLightBlackTheme .TSEntryIcon {
+			border-color: $ContentBackgroundColor $ContentTextColor_Black $ContentTextColor_Black $ContentBackgroundColor;
 			}
 
 

@@ -500,9 +500,7 @@ _______________________________________________________________________________
 	<#NDThemeSwitcherMenu>
 
 		<TSEntry #TSSelectedEntry? TSEntry_[ThemeName]>
-			<TSEntryIconContainer>
-				<TSEntryIcon />
-			</TSEntryIconContainer>
+			<TSEntryIcon />
 			<TSEntryName>Name</TSEntryName>
 		</TSEntry>
 
