@@ -1267,11 +1267,9 @@ td {
 		background-color: $MenuSelectedColor;
 		}
 		.DarkTheme .MFile.Selected {
-			font-weight: $MenuSelectedFontWeight_Dark;
 			background-color: $MenuSelectedColor_Dark;
 			}
 		.BlackTheme .MFile.Selected {
-			font-weight: $MenuSelectedFontWeight_Black;
 			background-color: $MenuSelectedColor_Black;
 			}
 
