@@ -27,6 +27,8 @@
 		$ContentTextColor_Dark: #DCDCDC;  /* same as Visual Studio */
 		$ContentTextColor_Black: #FFFFFF;
 
+		$ContentLineColor_Black: #A0A0A0;
+
 
 	$ContentScrollbarThumbColor: #CCCCCC;
 	$ContentScrollbarTrackColor: #F0F0F0;
@@ -1563,7 +1565,7 @@ td {
 		margin-bottom: .5rem;
 		}
 		.DarkTheme .CTitle { border-color: #707070; }
-		.BlackTheme .CTitle { border-color: #686868; }
+		.BlackTheme .CTitle { border-color: $ContentLineColor_Black; }
 
 	.CTitle .Qualifier {
 		color: #444444;
@@ -1718,7 +1720,7 @@ td {
 		padding: $CodePadding;
 		}
 		.DarkTheme .CTopic pre { border-color: #808080; }
-		.BlackTheme .CTopic pre { border-color: #787878; }
+		.BlackTheme .CTopic pre { border-color: $ContentLineColor_Black; }
 
 		.CTopic pre.CCode {
 			color: $ContentTextColor;
@@ -1826,8 +1828,8 @@ td {
 
 		.BlackTheme .NDPrototype {
 			background-color: $ContentBackgroundColor_Black;
-			border-color: #686868;
-			scrollbar-color: #686868 $ContentBackgroundColor_Black;
+			border-color: $ContentLineColor_Black;
+			scrollbar-color: $ContentLineColor_Black $ContentBackgroundColor_Black;
 			}
 			.BlackTheme .NDPrototype::-webkit-scrollbar-track {  background-color: $ContentBackgroundColor_Black;  }
 			.BlackTheme .NDPrototype::-webkit-scrollbar-thumb {  background-color: #686868;  }
