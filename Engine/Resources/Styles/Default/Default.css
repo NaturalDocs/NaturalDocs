@@ -80,7 +80,7 @@
 		$MenuTextColor_Black: #C0C0C0;
 	$MenuFadedTextColor: #808080;
 		$MenuFadedTextColor_Dark: #808080;
-		$MenuFadedTextColor_Black: #808080;
+		$MenuFadedTextColor_Black: #A0A0A0;
 	$MenuFadedOpacity: .75;
 	$MenuLineColor: #BCBCBC;
 		$MenuLineColor_Dark: #2C2C2C;
@@ -92,7 +92,7 @@
 		$MenuHoverBackgroundColor_Dark: $MenuSelectedColor_Dark;
 		$MenuHoverBackgroundColor_Black: $MenuSelectedColor_Black;
 	$MenuHoverTextColor_Dark: $ContentTextColor_Dark;
-	$MenuHoverTextColor_Black: $ContentTextColor_Black;
+	$MenuHoverTextColor_Black: #FFFFFF;
 
 
 	$MenuScrollbarThumbColor: #C8C8C8;
@@ -943,7 +943,7 @@ td {
 		.DarkTheme #NDMenu a:hover,
 		.DarkTheme #NDMenu a:active { color: $MenuHoverTextColor_Dark; }
 		.BlackTheme #NDMenu a:hover,
-		.BlackkTheme #NDMenu a:active { color: $MenuHoverTextColor_Black; }
+		.BlackTheme #NDMenu a:active { color: $MenuHoverTextColor_Black; }
 
 	.MLoadingNotice {
 		height: 20px;
@@ -1027,41 +1027,48 @@ td {
 		top: 3px;
 		opacity: $MenuFadedOpacity;
 		}
+		.BlackTheme #NDMenu:hover .MTabIcon {  opacity: 1  }
+
 	#MFileTab .MTabIcon {  background: url("images/menu-tab-files.svg") center center no-repeat;  }
 		.DarkTheme #MFileTab .MTabIcon,
 		.BlackTheme #MFileTab .MTabIcon {  background-image: url("images/menu-tab-files-dark.svg");  }
 		.DarkTheme #MFileTab.Selected .MTabIcon,
 		.BlackTheme #MFileTab.Selected .MTabIcon,
 		.DarkTheme #MFileTab:hover .MTabIcon,
-		.BlackTheme #MFileTab:hover .MTabIcon {  background-image: url("images/menu-tab-files-dark-selected.svg");  }
+		.BlackTheme #MFileTab:hover .MTabIcon,
+		.BlackTheme #NDMenu:hover #MFileTab.MTabAsFolder .MTabIcon {  background-image: url("images/menu-tab-files-dark-selected.svg");  }
 	#MClassTab .MTabIcon {  background: url("images/menu-tab-classes.svg") center center no-repeat;  }
 		.DarkTheme #MClassTab .MTabIcon,
 		.BlackTheme #MClassTab .MTabIcon {  background-image: url("images/menu-tab-classes-dark.svg");  }
 		.DarkTheme #MClassTab.Selected .MTabIcon,
 		.BlackTheme #MClassTab.Selected .MTabIcon,
 		.DarkTheme #MClassTab:hover .MTabIcon,
-		.BlackTheme #MClassTab:hover .MTabIcon {  background-image: url("images/menu-tab-classes-dark-selected.svg");  }
+		.BlackTheme #MClassTab:hover .MTabIcon,
+		.BlackTheme #NDMenu:hover #MClassTab.MTabAsFolder .MTabIcon {  background-image: url("images/menu-tab-classes-dark-selected.svg");  }
 	#MDatabaseTab .MTabIcon {  background: url("images/menu-tab-database.svg") center center no-repeat;  }
 		.DarkTheme #MDatabaseTab .MTabIcon,
 		.BlackTheme #MDatabaseTab .MTabIcon {  background-image: url("images/menu-tab-database-dark.svg");  }
 		.DarkTheme #MDatabaseTab.Selected .MTabIcon,
 		.BlackTheme #MDatabaseTab.Selected .MTabIcon,
 		.DarkTheme #MDatabaseTab:hover .MTabIcon,
-		.BlackTheme #MDatabaseTab:hover .MTabIcon {  background-image: url("images/menu-tab-database-dark-selected.svg");  }
+		.BlackTheme #MDatabaseTab:hover .MTabIcon,
+		.BlackTheme #NDMenu:hover #MDatabaseTab.MTabAsFolder .MTabIcon {  background-image: url("images/menu-tab-database-dark-selected.svg");  }
 	#MModuleTab .MTabIcon {  background: url("images/menu-tab-modules.svg") center center no-repeat;  }
 		.DarkTheme #MModuleTab .MTabIcon,
 		.BlackTheme #MModuleTab .MTabIcon {  background-image: url("images/menu-tab-modules-dark.svg");  }
 		.DarkTheme #MModuleTab.Selected .MTabIcon,
 		.BlackTheme #MModuleTab.Selected .MTabIcon,
 		.DarkTheme #MModuleTab:hover .MTabIcon,
-		.BlackTheme #MModuleTab:hover .MTabIcon {  background-image: url("images/menu-tab-modules-dark-selected.svg");  }
+		.BlackTheme #MModuleTab:hover .MTabIcon,
+		.BlackTheme #NDMenu:hover #MModuleTab.MTabAsFolder .MTabIcon {  background-image: url("images/menu-tab-modules-dark-selected.svg");  }
 	#MPackageTab .MTabIcon {  background: url("images/menu-tab-packages.svg") center center no-repeat;  }
 		.DarkTheme #MPackageTab .MTabIcon,
 		.BlackTheme #MPackageTab .MTabIcon {  background-image: url("images/menu-tab-packages-dark.svg");  }
 		.DarkTheme #MPackageTab.Selected .MTabIcon,
 		.BlackTheme #MPackageTab.Selected .MTabIcon,
 		.DarkTheme #MPackageTab:hover .MTabIcon,
-		.BlackTheme #MPackageTab:hover .MTabIcon {  background-image: url("images/menu-tab-packages-dark-selected.svg");  }
+		.BlackTheme #MPackageTab:hover .MTabIcon,
+		.BlackTheme #NDMenu:hover #MPackageTab.MTabAsFolder .MTabIcon {  background-image: url("images/menu-tab-packages-dark-selected.svg");  }
 
 	@media (resolution: 120dpi) {  /* 125% scale */
 		#MFileTab .MTabIcon {  background-image: url("images/menu-tab-files-125.svg");  }
@@ -1070,35 +1077,40 @@ td {
 			.DarkTheme #MFileTab.Selected .MTabIcon,
 			.BlackTheme #MFileTab.Selected .MTabIcon,
 			.DarkTheme #MFileTab:hover .MTabIcon,
-			.BlackTheme #MFileTab:hover .MTabIcon {  background-image: url("images/menu-tab-files-dark-selected-125.svg");  }
+			.BlackTheme #MFileTab:hover .MTabIcon,
+			.BlackTheme #NDMenu:hover #MFileTab.MTabAsFolder .MTabIcon {  background-image: url("images/menu-tab-files-dark-selected-125.svg");  }
 		#MClassTab .MTabIcon {  background-image: url("images/menu-tab-classes-125.svg");  }
 			.DarkTheme #MClassTab .MTabIcon,
 			.BlackTheme #MClassTab .MTabIcon {  background-image: url("images/menu-tab-classes-dark-125.svg");  }
 			.DarkTheme #MClassTab.Selected .MTabIcon,
 			.BlackTheme #MClassTab.Selected .MTabIcon,
 			.DarkTheme #MClassTab:hover .MTabIcon,
-			.BlackTheme #MClassTab:hover .MTabIcon {  background-image: url("images/menu-tab-classes-dark-selected-125.svg");  }
+			.BlackTheme #MClassTab:hover .MTabIcon,
+			.BlackTheme #NDMenu:hover #MClassTab.MTabAsFolder .MTabIcon {  background-image: url("images/menu-tab-classes-dark-selected-125.svg");  }
 		#MDatabaseTab .MTabIcon {  background-image: url("images/menu-tab-database-125.svg");  }
 			.DarkTheme #MDatabaseTab .MTabIcon,
 			.BlackTheme #MDatabaseTab .MTabIcon {  background-image: url("images/menu-tab-database-dark-125.svg");  }
 			.DarkTheme #MDatabaseTab.Selected .MTabIcon,
 			.BlackTheme #MDatabaseTab.Selected .MTabIcon,
 			.DarkTheme #MDatabaseTab:hover .MTabIcon,
-			.BlackTheme #MDatabaseTab:hover .MTabIcon {  background-image: url("images/menu-tab-database-dark-selected-125.svg");  }
+			.BlackTheme #MDatabaseTab:hover .MTabIcon,
+			.BlackTheme #NDMenu:hover #MDatabaseTab.MTabAsFolder .MTabIcon {  background-image: url("images/menu-tab-database-dark-selected-125.svg");  }
 		#MModuleTab .MTabIcon {  background-image: url("images/menu-tab-modules-125.svg");  }
 			.DarkTheme #MModuleTab .MTabIcon,
 			.BlackTheme #MModuleTab .MTabIcon {  background-image: url("images/menu-tab-modules-dark-125.svg");  }
 			.DarkTheme #MModuleTab.Selected .MTabIcon,
 			.BlackTheme #MModuleTab.Selected .MTabIcon,
 			.DarkTheme #MModuleTab:hover .MTabIcon,
-			.BlackTheme #MModuleTab:hover .MTabIcon {  background-image: url("images/menu-tab-modules-dark-selected-125.svg");  }
+			.BlackTheme #MModuleTab:hover .MTabIcon,
+			.BlackTheme #NDMenu:hover #MModuleTab.MTabAsFolder .MTabIcon {  background-image: url("images/menu-tab-modules-dark-selected-125.svg");  }
 		#MPackageTab .MTabIcon {  background-image: url("images/menu-tab-packages-125.svg");  }
 			.DarkTheme #MPackageTab .MTabIcon,
 			.BlackTheme #MPackageTab .MTabIcon {  background-image: url("images/menu-tab-packages-dark-125.svg");  }
 			.DarkTheme #MPackageTab.Selected .MTabIcon,
 			.BlackTheme #MPackageTab.Selected .MTabIcon,
 			.DarkTheme #MPackageTab:hover .MTabIcon,
-			.BlackTheme #MPackageTab:hover .MTabIcon {  background-image: url("images/menu-tab-packages-dark-selected-125.svg");  }
+			.BlackTheme #MPackageTab:hover .MTabIcon,
+			.BlackTheme #NDMenu:hover #MPackageTab.MTabAsFolder .MTabIcon {  background-image: url("images/menu-tab-packages-dark-selected-125.svg");  }
 		}
 	@media (resolution: 144dpi) {  /* 150% scale */
 		#MFileTab .MTabIcon {  background-image: url("images/menu-tab-files-150.svg");  }
@@ -1107,35 +1119,40 @@ td {
 			.DarkTheme #MFileTab.Selected .MTabIcon,
 			.BlackTheme #MFileTab.Selected .MTabIcon,
 			.DarkTheme #MFileTab:hover .MTabIcon,
-			.BlackTheme #MFileTab:hover .MTabIcon {  background-image: url("images/menu-tab-files-dark-selected-150.svg");  }
+			.BlackTheme #MFileTab:hover .MTabIcon,
+			.BlackTheme #NDMenu:hover #MFileTab.MTabAsFolder .MTabIcon {  background-image: url("images/menu-tab-files-dark-selected-150.svg");  }
 		#MClassTab .MTabIcon {  background-image: url("images/menu-tab-classes-150.svg");  }
 			.DarkTheme #MClassTab .MTabIcon,
 			.BlackTheme #MClassTab .MTabIcon {  background-image: url("images/menu-tab-classes-dark-150.svg");  }
 			.DarkTheme #MClassTab.Selected .MTabIcon,
 			.BlackTheme #MClassTab.Selected .MTabIcon,
 			.DarkTheme #MClassTab:hover .MTabIcon,
-			.BlackTheme #MClassTab:hover .MTabIcon {  background-image: url("images/menu-tab-classes-dark-selected-150.svg");  }
+			.BlackTheme #MClassTab:hover .MTabIcon,
+			.BlackTheme #NDMenu:hover #MClassTab.MTabAsFolder .MTabIcon {  background-image: url("images/menu-tab-classes-dark-selected-150.svg");  }
 		#MDatabaseTab .MTabIcon {  background-image: url("images/menu-tab-database-150.svg");  }
 			.DarkTheme #MDatabaseTab .MTabIcon,
 			.BlackTheme #MDatabaseTab .MTabIcon {  background-image: url("images/menu-tab-database-dark-150.svg");  }
 			.DarkTheme #MDatabaseTab.Selected .MTabIcon,
 			.BlackTheme #MDatabaseTab.Selected .MTabIcon,
 			.DarkTheme #MDatabaseTab:hover .MTabIcon,
-			.BlackTheme #MDatabaseTab:hover .MTabIcon {  background-image: url("images/menu-tab-database-dark-selected-150.svg");  }
+			.BlackTheme #MDatabaseTab:hover .MTabIcon,
+			.BlackTheme #NDMenu:hover #MDatabaseTab.MTabAsFolder .MTabIcon {  background-image: url("images/menu-tab-database-dark-selected-150.svg");  }
 		#MModuleTab .MTabIcon {  background-image: url("images/menu-tab-modules-150.svg");  }
 			.DarkTheme #MModuleTab .MTabIcon,
 			.BlackTheme #MModuleTab .MTabIcon {  background-image: url("images/menu-tab-modules-dark-150.svg");  }
 			.DarkTheme #MModuleTab.Selected .MTabIcon,
 			.BlackTheme #MModuleTab.Selected .MTabIcon,
 			.DarkTheme #MModuleTab:hover .MTabIcon,
-			.BlackTheme #MModuleTab:hover .MTabIcon {  background-image: url("images/menu-tab-modules-dark-selected-150.svg");  }
+			.BlackTheme #MModuleTab:hover .MTabIcon,
+			.BlackTheme #NDMenu:hover #MModuleTab.MTabAsFolder .MTabIcon {  background-image: url("images/menu-tab-modules-dark-selected-150.svg");  }
 		#MPackageTab .MTabIcon {  background-image: url("images/menu-tab-packages-150.svg");  }
 			.DarkTheme #MPackageTab .MTabIcon,
 			.BlackTheme #MPackageTab .MTabIcon {  background-image: url("images/menu-tab-packages-dark-150.svg");  }
 			.DarkTheme #MPackageTab.Selected .MTabIcon,
 			.BlackTheme #MPackageTab.Selected .MTabIcon,
 			.DarkTheme #MPackageTab:hover .MTabIcon,
-			.BlackTheme #MPackageTab:hover .MTabIcon {  background-image: url("images/menu-tab-packages-dark-selected-150.svg");  }
+			.BlackTheme #MPackageTab:hover .MTabIcon,
+			.BlackTheme #NDMenu:hover #MPackageTab.MTabAsFolder .MTabIcon {  background-image: url("images/menu-tab-packages-dark-selected-150.svg");  }
 		}
 	/* Everything else can stay with the regular icon */
 
@@ -1150,7 +1167,8 @@ td {
 		.DarkTheme .MTab:hover .MTabTitle { color: $MenuTextColor_Dark; }
 		.BlackTheme .MTabTitle { color: $MenuFadedTextColor_Black; }
 		.BlackTheme .MTab.Selected .MTabTitle,
-		.BlackTheme .MTab:hover .MTabTitle { color: $MenuTextColor_Black; }
+		.BlackTheme #NDMenu:hover .MTabTitle { color: $MenuTextColor_Black; }
+		.BlackTheme #NDMenu:hover .MTab.Selected .MTabTitle  { color: $MenuHoverTextColor_Black; }
 
 		.MTab.Narrow .MTabTitle {
 			display: none;
@@ -1169,6 +1187,8 @@ td {
 		.DarkTheme a.MEntry { color: $MenuTextColor_Dark; }
 		.BlackTheme .MEntry,
 		.BlackTheme a.MEntry { color: $MenuTextColor_Black; }
+		.BlackTheme #NDMenu:hover .MEntry,
+		.BlackTheme #NDMenu:hover a.MEntry { color: $MenuHoverTextColor_Black; }
 
 	a.MEntry:hover,
 	a.MEntry:active {
@@ -1190,7 +1210,7 @@ td {
 			.DarkTheme .MTabAsFolder .MTabTitle { color: $MenuTextColor_Dark; }
 			.BlackTheme .MTabAsFolder .MTabTitle { color: $MenuTextColor_Black; }
 			.DarkTheme .MTabAsFolder:hover .MTabTitle { color: $MenuHoverTextColor_Dark; }
-			.BlackTheme .MTabAsFolder:hover .MTabTitle { color: $MenuHoverTextColor_Black; }
+			.BlackTheme #NDMenu:hover .MTabAsFolder .MTabTitle { color: $MenuHoverTextColor_Black; }
 
 		.MTabAsFolder .MTabIcon {
 			opacity: 1;
@@ -1224,6 +1244,8 @@ td {
 	.MFolder.Parent.Empty {
 		opacity: .6;
 		}
+		.BlackTheme .MFolder.Parent.Empty { opacity: .75; }
+
 	.MFolder.Child {
 		padding-right: 1.75rem;
 		}
@@ -1241,7 +1263,7 @@ td {
 		.DarkTheme .MFolderIcon,
 		.BlackTheme .MFolderIcon { background-image: url("images/menu-folder-arrow-dark.svg"); }
 		.DarkTheme .MEntry:hover .MFolderIcon,
-		.BlackTheme .MEntry:hover .MFolderIcon { background-image: url("images/menu-folder-arrow-dark-hover.svg"); }
+		.BlackTheme #NDMenu:hover .MFolderIcon { background-image: url("images/menu-folder-arrow-dark-hover.svg"); }
 
 		a.MEntry:hover .MFolderIcon,
 		a.MEntry:active .MFolderIcon {
