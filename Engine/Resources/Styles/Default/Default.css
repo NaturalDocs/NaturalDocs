@@ -25,7 +25,7 @@
 		$ContentBackgroundColor_Black: #000000;
 	$ContentTextColor: #000000;
 		$ContentTextColor_Dark: #DCDCDC;  /* same as Visual Studio */
-		$ContentTextColor_Black: #F4F4F4;
+		$ContentTextColor_Black: #FFFFFF;
 
 
 	$ContentScrollbarThumbColor: #CCCCCC;
@@ -107,10 +107,10 @@
 
 	$FooterTextColor: #909090;
 		$FooterTextColor_Dark: #909090;  /* going darker makes it difficult to read */
-		$FooterTextColor_Black: #909090;
+		$FooterTextColor_Black: $MenuTextColor_Black;
 	$FooterHoverColor: $MenuTextColor;
 		$FooterHoverColor_Dark: $MenuTextColor_Dark;
-		$FooterHoverColor_Black: $MenuTextColor_Black;
+		$FooterHoverColor_Black: #FFFFFF;
 
 	$HomePageBottomTextColor: #A0A0A0;
 		$HomePageBottomTextColor_Dark: #828282;
@@ -131,7 +131,11 @@
 
 	/* Make sure to change search-dark/black.svg to match */
 	$SearchOutlineColor_Dark: #6E6E6E;
-	$SearchOutlineColor_Black: #747474;
+	$SearchOutlineColor_Black: #A0A0A0;
+
+	$SearchDefaultTextColor: #909090;
+	$SearchDefaultTextColor_Dark: $SearchOutlineColor_Dark;
+	$SearchDefaultTextColor_Black: $SearchOutlineColor_Black;
 
 
 /* Fonts */
@@ -417,7 +421,7 @@ td {
 		.BlackTheme #HSubtitle a:link,
 		.BlackTheme #HSubtitle a:hover,
 		.BlackTheme #HSubtitle a:active,
-		.BlackTheme #HSubtitle a:visited { color: #B8B8B8; }
+		.BlackTheme #HSubtitle a:visited { color: #C8C8C8; }
 
 
 
@@ -617,11 +621,11 @@ td {
 		}
 
 	#NDSearchField.DefaultText {
-		color: #909090;
+		color: $SearchDefaultTextColor;
 		font-style: italic;
 		}
-		.DarkTheme #NDSearchField.DefaultText { color: $SearchOutlineColor_Dark; }
-		.BlackTheme #NDSearchField.DefaultText { color: $SearchOutlineColor_Black; }
+		.DarkTheme #NDSearchField.DefaultText { color: $SearchDefaultTextColor_Dark; }
+		.BlackTheme #NDSearchField.DefaultText { color: $SearchDefaultTextColor_Black; }
 
 	#NDSearchField:focus {
 		outline: none;  /* Get rid of Chrome's orange highlight */
@@ -1542,7 +1546,7 @@ td {
 		font-weight: normal;
 		}
 		.DarkTheme .CTitle .Qualifier { color: #C4C4C4; }
-		.BlackTheme .CTitle .Qualifier { color: #D6D6D6; }
+		.BlackTheme .CTitle .Qualifier { color: #E4E4E4; }
 
 	.TClass .CTitle,
 	.TInterface .CTitle,
