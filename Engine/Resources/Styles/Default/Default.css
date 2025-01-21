@@ -1730,7 +1730,7 @@ td {
 			color: #484848;
 			}
 			.DarkTheme .CTopic pre.CText { color: #A6A6A6; }
-			.BlackTheme .CTopic pre.CText { color: #AFAFAF; }
+			.BlackTheme .CTopic pre.CText { color: $ContentTextColor_Black; }
 
 
 	.CImage {
