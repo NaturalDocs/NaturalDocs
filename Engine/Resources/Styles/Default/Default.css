@@ -1469,8 +1469,10 @@ td {
 			}
 		.BlackTheme a.SuEntry:hover,
 		.BlackTheme a.SuEntry:active {
-			color: $ContentTextColor_Black;
 			background-color: $SummaryHoverBackgroundColor_Black;
+			}
+		.BlackTheme #NDSummary:hover a.SuEntry {
+			color: $ContentTextColor_Black;
 			}
 
 
