@@ -103,7 +103,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 		/* Property: MaximumEffectiveChildAccessLevel
 		 * The maximum effective access level children can attain, which is usually the effective access level of the parent.  For
-		 * example, a private class's children wolud have a maximum effective access level of private, even if they were declared
+		 * example, a private class's children would have a maximum effective access level of private, even if they were declared
 		 * public.  Will be <AccessLevel.Unknown> if it's not set.
 		 */
 		public AccessLevel MaximumEffectiveChildAccessLevel
@@ -154,7 +154,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			}
 
 		/* Property: DefaultChildClassStringSet
-		 * Whether <DeaultChildClassString> was set for this element, and thus whether its value is relevant.
+		 * Whether <DefaultChildClassString> was set for this element, and thus whether its value is relevant.
 		 */
 		public bool DefaultChildClassStringSet
 			{
