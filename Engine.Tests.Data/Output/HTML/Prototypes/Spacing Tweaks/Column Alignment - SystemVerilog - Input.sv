@@ -7,6 +7,7 @@
 (* expr_value = (12 + 9) % 2,
 	cond_value = x ? 1 : 0 *)
 module Attributes1 ();
+endmodule
 
 // Module: NoValue1
 // Attributes without values should also be treated as parameter sections so that the closing *) are
@@ -15,14 +16,17 @@ module Attributes1 ();
 (* no_value *)
 (* optimize_power = 0 *)
 module NoValue1 ();
+endmodule
 
 // Module: NoValue2
 (* no_value *)
 (* mode = "cla" *)
 module NoValue2 ();
+endmodule
 
 // Module: NoValue3
 (* no_value1 *)
 (* no_value2 *)
 (* optimize_power = 0 *)
 module NoValue3 ();
+endmodule
