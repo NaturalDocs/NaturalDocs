@@ -297,18 +297,6 @@ Language: SystemVerilog
 
    Aliases: SV Verilog
 
-   Line Comment: //
-   Block Comment: /* */
-   Enum Values: Global
-   Case Sensitive: Yes
-
-   Class Prototype Ender: ;
-   Interface Prototype Ender: ;
-   Function Prototype Ender: ;
-   Variable Prototype Ender: ;
-   Module Prototype Ender: ;
-   Package Prototype Ender: ;
-
 
 Language: Tcl
 

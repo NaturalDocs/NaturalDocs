@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using CodeClear.NaturalDocs.Engine.Collections;
+using CodeClear.NaturalDocs.Engine.Hierarchies;
 using CodeClear.NaturalDocs.Engine.Prototypes;
 using CodeClear.NaturalDocs.Engine.Symbols;
 using CodeClear.NaturalDocs.Engine.Tokenization;
@@ -62,50 +63,48 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: GetCodeElements
 		 */
-		override public List<Element> GetCodeElements(Tokenizer source)
+		override public List<Element> GetCodeElements (Tokenizer source)
 			{
 			List<Element> elements = new List<Element>();
+
+			ParentElement rootElement = new ParentElement(0, 0, Element.Flags.InCode);
+			rootElement.IsRootElement = true;
+			rootElement.DefaultChildLanguageID = language.ID;
+			rootElement.ChildContextString = new ContextString();
+			rootElement.EndingLineNumber = int.MaxValue;
+			rootElement.EndingCharNumber = int.MaxValue;
+
+			elements.Add(rootElement);
+
+			TokenIterator iterator = source.FirstToken;
+			GetCodeElements(ref iterator, elements, new SymbolString());
 
 			return elements;
 			}
 
 
-		/* Function: TryToFindBasicPrototype
-		 * A temporary implementation to allow SystemVerilog to use the full language support functions to find prototypes following
-		 * comments.  Natural Docs will still otherwise behave as if SystemVerilog has basic language support.
+		/* Function: GetCodeElements
+		 *
+		 * Adds code elements to the list until it reaches the end of the file or optionally passes a specific keyword.  This will
+		 * recursively go into nested classes and modules.  It will handle any end block keyword complications documented
+		 * in <SystemVerilog Parser Notes>, so for example you can pass "join" and it will also accept "join_any" and
+		 * "join_none".  The iterator will be left past the end block keyword or at the end of the file.
+		 *
 		 */
-		override protected bool TryToFindBasicPrototype (Topic topic, LineIterator startCode, LineIterator endCode,
-																			   out TokenIterator prototypeStart, out TokenIterator prototypeEnd)
+		protected void GetCodeElements (ref TokenIterator iterator, List<Element> elements, SymbolString scope,
+														 string endBlockKeyword = null)
 			{
-			if (topic.CommentTypeID != 0 &&
-				( topic.CommentTypeID == EngineInstance.CommentTypes.IDFromKeyword("module", language.ID) ||
-				  topic.CommentTypeID == EngineInstance.CommentTypes.IDFromKeyword("systemverilog module", language.ID) ))
+			while (iterator.IsInBounds)
 				{
-				TokenIterator startToken = startCode.FirstToken(LineBoundsMode.ExcludeWhitespace);
-				TokenIterator endToken = endCode.FirstToken(LineBoundsMode.Everything);
+				if (endBlockKeyword != null &&
+					TryToSkipEndBlockKeyword(ref iterator, endBlockKeyword))
+					{  break;  }
 
-				TokenIterator iterator = startToken;
+				else if (TryToSkipModule(ref iterator, ParseMode.CreateElements, elements, scope))
+					{  }
 
-				if (TryToSkipModule(ref iterator, ParseMode.IterateOnly) &&
-					iterator <= endToken &&
-					iterator.Tokenizer.ContainsTextBetween(topic.Title, true, startToken, iterator))
-					{
-					prototypeStart = startToken;
-					prototypeEnd = iterator;
-					return true;
-					}
 				else
-					{
-					prototypeStart = iterator;
-					prototypeEnd = iterator;
-					return false;
-					}
-				}
-
-			// Fall back to the default implementation for everything else
-			else
-				{
-				return base.TryToFindBasicPrototype(topic, startCode, endCode, out prototypeStart, out prototypeEnd);
+					{  GenericSkip(ref iterator);  }
 				}
 			}
 
@@ -464,6 +463,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParsePrototype>
+		 *		- <ParseMode.CreateElements>
+		 *			- The elements and scope parameters must be set.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		protected bool TryToSkipModule (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null,
@@ -580,7 +581,67 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 			GenericSkipUntilAfterSymbol(ref lookahead, ';');
-			lookahead.Previous();  // Don't want to include semicolon
+
+
+			// Create elements
+
+			if (mode == ParseMode.CreateElements)
+				{
+				SymbolString symbol = scope + SymbolString.FromPlainText_NoParameters(name);
+
+				Hierarchy hierarchy = EngineInstance.Hierarchies.FromName("module");
+				int hierarchyID = (hierarchy != null ? hierarchy.ID : 0);
+
+				ClassString classString = ClassString.FromParameters(hierarchyID, language.ID, true, symbol);
+
+				ContextString childContext = new ContextString();
+				childContext.Scope = symbol;
+
+				ParentElement codeElement = new ParentElement(iterator, Element.Flags.InCode);
+				codeElement.DefaultChildLanguageID = language.ID;
+				codeElement.DefaultChildClassString = classString;
+				codeElement.ChildContextString = childContext;
+
+				int commentTypeID = EngineInstance.CommentTypes.IDFromKeyword(keyword, language.ID);
+
+				if (commentTypeID != 0)
+					{
+					// To not include the semicolon when getting the prototype
+					TokenIterator endOfPrototype = lookahead;
+					endOfPrototype.Previous();
+
+					Topic topic = new Topic(EngineInstance.CommentTypes);
+					topic.Title = symbol.FormatWithSeparator('.');  // so the title is fully resolved
+					topic.Symbol = symbol;
+					topic.ClassString = classString;
+					topic.Prototype = NormalizePrototype( iterator.TextBetween(endOfPrototype) );
+					topic.CommentTypeID = commentTypeID;
+					topic.LanguageID = language.ID;
+					topic.CodeLineNumber = iterator.LineNumber;
+
+					codeElement.Topic = topic;
+					}
+
+				elements.Add(codeElement);
+
+
+				// Body, in CreateElements mode
+
+				GetCodeElements(ref lookahead, elements, symbol, "endmodule");
+
+				codeElement.EndingLineNumber = lookahead.LineNumber;
+				codeElement.EndingCharNumber = lookahead.CharNumber;
+				}
+
+			else
+				{
+
+				// Body, not in CreateElements mode
+
+				GenericSkipUntilAfterKeyword(ref lookahead, "endmodule");
+
+				}
+
 			iterator = lookahead;
 			return true;
 			}
