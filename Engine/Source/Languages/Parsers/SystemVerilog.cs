@@ -323,6 +323,56 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
+		/* Function: IsOnAnyKeyword
+		 * Returns whether the <TokenIterator> is on any of the keywords in the table, making sure there are no other
+		 * identifier tokens before or after it.  This allows us to be sure an iterator on "input" isn't actually on "_input" or
+		 * similar.  This function works with multi-token keywords like "wait_order".
+		 */
+		public static bool IsOnAnyKeyword (TokenIterator iterator, out string matchingKeyword, out string value,
+														   StringToStringTable keywords)
+			{
+			if (iterator.FundamentalType != FundamentalType.Text &&
+				iterator.Character != '$')
+				{
+				matchingKeyword = null;
+				value = null;
+				return false;
+				}
+
+			TokenIterator lookbehind = iterator;
+			lookbehind.Previous();
+
+			if (lookbehind.FundamentalType == FundamentalType.Text ||
+				lookbehind.Character == '_' ||
+				lookbehind.Character == '$')
+				{
+				matchingKeyword = null;
+				value = null;
+				return false;
+				}
+
+			TokenIterator endOfIdentifier = iterator;
+
+			do
+				{  endOfIdentifier.Next();  }
+			while (endOfIdentifier.FundamentalType == FundamentalType.Text ||
+					 endOfIdentifier.Character == '_' ||
+					 endOfIdentifier.Character == '$');
+
+			string identifier = iterator.TextBetween(endOfIdentifier);
+			value = keywords[identifier];
+
+			if (value == null)
+				{
+				matchingKeyword = null;
+				return false;
+				}
+
+			matchingKeyword = identifier;
+			return true;
+			}
+
+
 		/* Function: IsOnBuiltInType
 		 * Returns whether the <TokenIterator> is on a built-in type such as "bit" as opposed to a user-defined
 		 * type.
@@ -2581,7 +2631,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				GenericSkipUntilAfterSymbol(ref iterator, '}');
 				}
 			else if (TryToSkipString(ref iterator) ||
-					  TryToSkipComment(ref iterator))
+					  TryToSkipComment(ref iterator) ||
+					  TryToSkipTextBlock(ref iterator))
 				{  }
 			else
 				{  iterator.Next();  }
@@ -2657,6 +2708,108 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				else
 					{  GenericSkip(ref iterator);  }
 				}
+			}
+
+
+		/* Function: TryToSkipTextBlock
+		 *
+		 * If the <TokenIterator> is on a block keyword such as "begin", moves the iterator past the entire block and returns
+		 * true, leaving the iterator past the ending keyword.  This will handle nested blocks.  It will also handle the exceptions
+		 * documented in <SystemVerilog Parser Notes> such as how "fork" can end on one of three possible keywords.
+		 */
+		protected bool TryToSkipTextBlock (ref TokenIterator iterator)
+			{
+			if (iterator.FundamentalType != FundamentalType.Text)
+				{  return false;  }
+
+			string blockKeyword, endBlockKeyword;
+
+			if (!IsOnAnyKeyword(iterator, out blockKeyword, out endBlockKeyword, TextBlockKeywords))
+				{  return false;  }
+
+
+			// Language exceptions to handle
+
+			if (blockKeyword == "interface")
+				{
+				TokenIterator lookahead = iterator;
+				lookahead.Next();
+				TryToSkipWhitespace(ref lookahead);
+
+				// Check for "interface.ModPort"
+				if (lookahead.Character == '.')
+					{  return false;  }
+
+				// Check for "interface class"
+				else if (IsOnKeyword(lookahead, "class"))
+					{
+					iterator = lookahead;
+					blockKeyword = "class";
+					endBlockKeyword = "endclass";
+					}
+				}
+
+			else if (blockKeyword == "fork")
+				{
+				TokenIterator lookbehind = iterator;
+
+				// Check for "wait fork" and "disable fork", which aren't blocks
+
+				// This is a little fragile in that it won't get "wait /* comment */ fork" but that should be unlikely to happen
+				// in the real world.
+				lookbehind.Previous(2);
+
+				if (IsOnKeyword(lookbehind, "wait") ||
+					IsOnKeyword(lookbehind, "disable"))
+					{  return false;  }
+				}
+
+
+			// Continue parsing
+
+			iterator.NextByCharacters(blockKeyword.Length);
+
+			while (iterator.IsInBounds)
+				{
+				if (TryToSkipEndBlockKeyword(ref iterator, endBlockKeyword))
+					{  break;  }
+				else
+					{  GenericSkip(ref iterator);  }
+				}
+
+			return true;
+			}
+
+
+		/* Function: TryToSkipEndBlockKeyword
+		 *
+		 * If the <TokenIterator> is on the passed end block keyword such as "endmodule", moves the iterator past it
+		 * and returns true.  Returns false and does nothing for all other keywords.
+		 *
+		 * If the keyword is "join" it will also check for "join_any" and "join_none".
+		 */
+		protected bool TryToSkipEndBlockKeyword (ref TokenIterator iterator, string keyword)
+			{
+			if (IsOnKeyword(iterator, keyword))
+				{
+				iterator.NextByCharacters(keyword.Length);
+				return true;
+				}
+			else if (keyword == "join")
+				{
+				if (IsOnKeyword(iterator, "join_any"))
+					{
+					iterator.NextByCharacters(8);
+					return true;
+					}
+				if (IsOnKeyword(iterator, "join_none"))
+					{
+					iterator.NextByCharacters(9);
+					return true;
+					}
+				}
+
+			return false;
 			}
 
 
@@ -3088,6 +3241,45 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			"shortreal", "real", "realtime",
 			"enum",
 			"string", "chandle", "event"
+
+			});
+
+		/* var: TextBlockKeywords
+		 *
+		 * A table mapping text block keywords like "begin" to their corresponding end keywords like "end".  Some block
+		 * keywords will map to the same end keywords, such as how "module" and "macromodule" both end at "endmodule".
+		 * Some keywords have exceptions to be aware of as documented in <SystemVerilog Parser Notes>, so you should
+		 * use function <TryToSkipTextBlock()> which will account for them.
+		 *
+		 */
+		static protected StringToStringTable TextBlockKeywords = new StringToStringTable (KeySettings.Literal, new string[] {
+
+			"begin", "end",
+			"module", "endmodule",
+			"macromodule", "endmodule",
+			"interface", "endinterface",
+			"program", "endprogram",
+			"checker", "endchecker",
+			"class", "endclass",
+			"package", "endpackage",
+			"config", "endconfig",
+			"function", "endfunction",
+			"task", "endtask",
+			"property", "endproperty",
+			"sequence", "endsequence",
+			"covergroup", "endgroup",
+			"generate", "endgenerate",
+			"case", "endcase",
+			"primitive", "endprimitive",
+			"table", "endtable",
+			"fork", "join",
+			"case", "endcase",
+			"casex", "endcase",
+			"casez", "endcase",
+			"randcase", "endcase",
+			"clocking", "endclocking",
+			"randsequence", "endsequence",
+			"specify", "endspecify"
 
 			});
 
