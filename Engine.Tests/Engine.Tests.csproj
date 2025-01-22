@@ -130,6 +130,7 @@
     <Compile Include="Source\Languages\SQL\CommentTypeDetection.cs" />
     <Compile Include="Source\Languages\SQL\PrototypeDetection.cs" />
     <Compile Include="Source\Languages\SQL\PrototypeParsing.cs" />
+    <Compile Include="Source\Languages\SystemVerilog\LanguageParsing.cs" />
     <Compile Include="Source\Languages\SystemVerilog\PrototypeParsing.cs" />
     <Compile Include="Source\Languages\Tcl\PrototypeParsing.cs" />
     <Compile Include="Source\Output\HTML\Anchors.cs" />

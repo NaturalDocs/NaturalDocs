@@ -1,0 +1,59 @@
+[Root Element]
+- Child Language: SystemVerilog
+- Child Scope: (global)
+  ---------------
+  Module: NoPorts
+  Symbol: NoPorts
+  Prototype: module NoPorts
+  (line 2, char 1)
+  - Child Language: SystemVerilog
+  - Child Scope: NoPorts
+  ---------------
+  Module: Ports
+  Symbol: Ports
+  Prototype: module Ports (input logic x)
+  (line 5, char 1)
+  - Child Language: SystemVerilog
+  - Child Scope: Ports
+  ---------------
+  Module: ParamPorts
+  Symbol: ParamPorts
+  Prototype: module ParamPorts #(parameter a = 12) (input logic x)
+  (line 8, char 1)
+  - Child Language: SystemVerilog
+  - Child Scope: ParamPorts
+  ---------------
+  Module: MacroModule
+  Symbol: MacroModule
+  Prototype: macromodule MacroModule #() ()
+  (line 11, char 1)
+  - Child Language: SystemVerilog
+  - Child Scope: MacroModule
+  ---------------
+  Module: Extern
+  Symbol: Extern
+  Prototype: extern module Extern ()
+  (line 14, char 1)
+  - Child Language: SystemVerilog
+  - Child Scope: Extern
+  ---------------
+  Module: ExternWithAttributes
+  Symbol: ExternWithAttributes
+  Prototype: extern (* optimize_power=1 *) module ExternWithAttributes ()
+  (line 17, char 1)
+  - Child Language: SystemVerilog
+  - Child Scope: ExternWithAttributes
+  ---------------
+  Module: ParentModule
+  Symbol: ParentModule
+  Prototype: module ParentModule ()
+  (line 20, char 1)
+  - Child Language: SystemVerilog
+  - Child Scope: ParentModule
+    ---------------
+    Module: ParentModule.ChildModule
+    Symbol: ParentModule.ChildModule
+    Prototype: module ChildModule ()
+    (line 22, char 2, child of ParentModule)
+    - Child Language: SystemVerilog
+    - Child Scope: ParentModule.ChildModule
