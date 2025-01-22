@@ -422,6 +422,8 @@ Comment Type: Module
 
    SystemVerilog Keywords:
       module, modules
+      macromodule, macromodules
+      macro module, macro modules
 
 
 Comment Type: Package
