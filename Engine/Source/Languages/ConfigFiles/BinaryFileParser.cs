@@ -56,7 +56,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					config = null;
 					return false;
 					}
-				else if (binaryFile.Version.IsAtLeastRelease("2.2") == false &&  // can handle changes in 2.4
+				else if (binaryFile.Version.IsAtLeastRelease("2.2") == false &&  // can handle changes in 2.3.1
 						   binaryFile.Version.IsSamePreRelease(Engine.Instance.Version) == false)
 					{
 					binaryFile.Close();
@@ -111,7 +111,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 
 						language.CaseSensitive = (binaryFile.ReadByte() == 1);
 
-						if (binaryFile.Version.IsAtLeastRelease("2.4") ||
+						if (binaryFile.Version.IsAtLeastRelease("2.3.1") ||
 							binaryFile.Version.IsSamePreRelease(Engine.Instance.Version))
 							{
 							language.BlockCommentsNest = (binaryFile.ReadByte() == 1);
