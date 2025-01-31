@@ -1,4 +1,4 @@
-﻿Format: 2.4
+﻿Format: 2.3.1
 
 # This is the main Natural Docs languages file.  If you change anything here,
 # it will apply to EVERY PROJECT you use Natural Docs on.  It's recommended
@@ -327,7 +327,7 @@ Language: Visual Basic
    Interface Prototype Ender: \n
    Function Prototype Ender: \n
    Variable Prototype Enders: \n =
-   Property Prototype Enders: \n
+   Property Prototype Ender: \n
 
 
 # These settings define the languages Natural Docs knows how to parse.  Note
