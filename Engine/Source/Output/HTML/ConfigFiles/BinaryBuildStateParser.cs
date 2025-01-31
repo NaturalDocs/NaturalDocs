@@ -57,7 +57,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 					{
 					result = false;
 					}
-				else if (!binaryFile.Version.IsAtLeastRelease("2.3") &&  // Rebuild all output for 2.3
+				else if (!binaryFile.Version.IsAtLeastRelease("2.3.1") &&  // Rebuild all output for 2.3.1
 						  !binaryFile.Version.IsSamePreRelease(Engine.Instance.Version))
 					{
 					binaryFile.Close();

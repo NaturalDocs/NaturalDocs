@@ -61,7 +61,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.ConfigFiles
 					}
 				else
 					{
-					bool forceReparse = (binaryFile.Version < "2.2");
+					bool forceReparse = (binaryFile.Version < "2.3.1");
 					bool didntStoreImageDimensions = (binaryFile.Version < "2.0.2");
 					bool didntStoreEncodingID = (binaryFile.Version < "2.2");
 
