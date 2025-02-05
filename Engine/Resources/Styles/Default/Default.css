@@ -2369,8 +2369,8 @@ $VariablePrototypeBorder_Black: $VariablePrototypeBorder_Dark;
 
 /* --- Constants --- */
 
-$ConstantPrototypeBackground: #CCCCCC;
-$ConstantPrototypeBorder: #BABABA;
+$ConstantPrototypeBackground: #CACACA;
+$ConstantPrototypeBorder: #989898;
 
 .TConstant .NDPrototype {
 	background-color: $ConstantPrototypeBackground;
@@ -2385,11 +2385,11 @@ $ConstantPrototypeBorder: #BABABA;
 		}
 	.TConstant .SuEntryIcon {
 		background-color: #BBBBBB;
-		border: 1px solid #888888;
+		border: 1px solid #8C8C8C;
 		}
 	.TConstant .SeEntryIcon {
 		background-color: #C0C0C0;
-		border: 1px solid #818181;
+		border: 1px solid #8A8A8A;
 		}
 
 $ConstantPrototypeBackground_Dark: #131313;
