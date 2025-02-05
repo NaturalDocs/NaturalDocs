@@ -30,7 +30,7 @@ Database Column: ContextString
 		ContextString TEXT NOT NULL
 	-----------------
 
-	The context, encoded with <Engine.Symbols.ContextString>.
+	The context, encoded with <CodeClear.NaturalDocs.Engine.Symbols.ContextString>.
 
 
 Database Column: ReferenceCount
