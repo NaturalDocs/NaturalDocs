@@ -1818,7 +1818,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 						body.Append("</dd>");
 						}
 
-					bool isSymbol = ( (topic.IsList || topic.IsEnum) && lastHeadingType != HeadingType.Parameters);
+					bool isSymbol = ( topic.IsEnum || (topic.IsList && lastHeadingType != HeadingType.Parameters) ) ;
 
 					if (isSymbol)
 						{  body.Append("<ds>");  }
