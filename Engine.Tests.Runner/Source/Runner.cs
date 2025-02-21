@@ -118,12 +118,37 @@ namespace CodeClear.NaturalDocs.Engine.Tests
 				StringBuilder failures = new StringBuilder();
 				MatchCollection failureMatches = Regex.Matches(xmlContent, @"<failure>.*?<message><!\[CDATA\[(.*?)\]\]>.*?</message>.*?</failure>", RegexOptions.Singleline);
 
+				Path dataFolder = assemblyFolder + "/../../../Engine.Tests.Data";
+				string dataFolderString = dataFolder.ToString();
+				string pathSeparatorString = Engine.SystemInfo.PathSeparatorCharacter.ToString();
+
 				foreach (Match failureMatch in failureMatches)
 					{
 					string failureMessage = failureMatch.Groups[1].ToString();
 
 					if (failureMessage != "One or more child tests had errors")
 						{
+						// Simplify error message so "1 out of 12 tests failed in F:\Projects\Natural Docs 2\Source\Engine.Tests.Data\General\Symbols:"
+						// becomes just "1 out of 12 tests failed in General > Symbols:".
+						int dataFolderIndex = failureMessage.IndexOf(dataFolderString, StringComparison.InvariantCultureIgnoreCase);
+
+						if (dataFolderIndex != -1)
+							{
+							int colonAfterPathIndex = failureMessage.IndexOf(':', dataFolderIndex + dataFolderString.Length);
+
+							if (colonAfterPathIndex != -1)
+								{
+								string beforePath = failureMessage.Substring(0, dataFolderIndex);
+								string shortenedPath = failureMessage.Substring(dataFolderIndex + dataFolderString.Length + 1,
+																									  colonAfterPathIndex - dataFolderIndex - dataFolderString.Length - 1);
+								string afterPath = failureMessage.Substring(colonAfterPathIndex);
+
+								shortenedPath = shortenedPath.Replace(pathSeparatorString, " > ");
+
+								failureMessage = beforePath + shortenedPath + afterPath;
+								}
+							}
+
 						failures.AppendLine(failureMessage);
 						foundFailures++;
 						}
