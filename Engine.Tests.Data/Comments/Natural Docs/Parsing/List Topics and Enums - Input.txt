@@ -4,7 +4,7 @@ _______________________________________________________________________________
 
 
 Functions: Function List
-	
+
 	A - aaa aaa aaa.
 	B - bbb bbb bbb.
 	C - ccc ccc ccc.
@@ -30,13 +30,13 @@ Enum: Enumeration
 
 	Parameters:
 
-		D - Items under a parameters heading should not become symbols.
+		D - Items under a parameters heading in enums should still become symbols.
 		E - eee eee eee.
 		F - fff fff fff.
 
 	Something Else:
 
-		G - Switching to another heading should create symbols again.
+		G - Switching to another heading should still create symbols.
 		H - hhh hhh hhh.
 		I - iii iii iii.
 s
