@@ -2,7 +2,9 @@
  * Class: CodeClear.NaturalDocs.Engine.Languages.Element
  * ____________________________________________________________________________
  *
- * A class to hold an element found when parsing the code or comments.
+ * A class to hold an element found when parsing the code or comments.  Every <Topic> will have a corresponding
+ * Element, but not every Element will contain a <Topic> as some are just needed to track changes to scope or
+ * access levels and will not appear in the output.  These properties are set on <ParentElement> objects.
  *
  */
 
