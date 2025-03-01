@@ -254,39 +254,36 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		public DatabaseCompareResult DatabaseCompare (Topic other, out ChangeFlags changeFlags)
 			{
 			// topicID - Wouldn't be known coming from a parse.
-
 			// title - Important in linking.
 			// body - Only the body's existence and length are important in linking, not the content beyond that, so this is
 			//			  handled by bodyLength.
 			// bodyLength - Important in linking because links may favor topics that have a body, or that have a longer
 			//						body length.
 			// summary - Not important in linking.
-			// prototype - Important in linking because links may favor topics that have a prototype.
+			// prototype - Important in linking because links may favor topics that have a prototype, or that have a longer
+			//					 prototype length, or that have a prototype where the parameters match the ones in the link.
 			// parsedPrototype - Not a database field.
+			// parsedClassPrototype - Not a database field.
 			// symbol - Important in linking.
 			// symbolDefinitonNumber - Important in linking.
-			// classString - Not important in linking.  Changes in class would be reflected in symbol.
+			// classString - Not important in linking.  Changes in classString would be reflected in symbol.
 			// classID - Wouldn't be known coming from a parse.
 			// isList - Not important in linking.
 			// isEmbedded - Not important in linking.
 			// titleParameters - Not a database field.
 			// prototypeParameters - Not a database field.
-
 			// commentTypeID - Important in linking.
-			// usesPluralKeyword - Not a database field.
 			// declaredAccessLevel - Not important in linking.
 			// effectiveAccessLevel - Not important in linking, but return Different anyway because it could affect visibility
 			//								   when building a filtered set of documentation.
-			// tags - Not important in linking, but return Different anyway because it could affect visibility when building a
-			//			 filtered set of documentation.
-
-			// languageID - Important in linking.
+			// tagIDs - Not important in linking, but return Different anyway because it could affect visibility when building a
+			//				filtered set of documentation.
+			// fileID - Not important in linking, but return Different anyway because the same topic in two different files
+			//			  are considered two separate topics.
+			// filePosition - Not important in linking.  SymbolDefinitionNumber will take care of the first being favored.
 			// commentLineNumber - Not imporant in linking.  SymbolDefinitionNumber will take care of the first being favored.
 			// codeLineNumber - Not important in linking.  SymbolDefinitionNumber will take care of the first being favored.
-
-			// fileID - Not important in linking, but return Different anyway because the same topic in two different files
-			//				  are considered two separate topics.
-			// filePosition - Not important in linking.  SymbolDefinitionNumber will take care of the first being favored.
+			// languageID - Important in linking.
 			// prototypeContext - Not important in linking.
 			// prototypeContextID - Wouldn't be known coming from a parse.
 			// bodyContext - Not important in linking.
@@ -525,7 +522,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 
 		/* Property: BodyLength
 		 * The length of the topic's body.  If <Body> is set this is the equivalent of checking its Length property.
-		 * However, if <IgnoreField.Body> is on you can use this to still have its length retrieved from the database.
+		 * However, if <IgnoreFields.Body> is on you can use this to still have its length retrieved from the database.
 		 */
 		public int BodyLength
 			{
