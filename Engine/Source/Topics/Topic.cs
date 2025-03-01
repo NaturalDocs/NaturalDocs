@@ -256,7 +256,10 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 			// topicID - Wouldn't be known coming from a parse.
 
 			// title - Important in linking.
-			// body - Important in linking because links may favor topics with a longer body length.
+			// body - Only the body's existence and length are important in linking, not the content beyond that, so this is
+			//			  handled by bodyLength.
+			// bodyLength - Important in linking because links may favor topics that have a body, or that have a longer
+			//						body length.
 			// summary - Not important in linking.
 			// prototype - Important in linking because links may favor topics that have a prototype.
 			// parsedPrototype - Not a database field.
@@ -297,11 +300,11 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 			if (
 				// Quick integer comparisons, only somewhat likely to be different but faster than a string comparison
 				commentTypeID != other.commentTypeID ||
+				bodyLength != other.bodyLength ||
 				effectiveAccessLevel != other.effectiveAccessLevel ||
 
 				// String comparisons, most likely to be different
 				title != other.title ||
-				body != other.body ||
 				prototype != other.prototype ||
 				symbol != other.symbol ||
 
@@ -335,6 +338,8 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 			// DEPENDENCY: CodeDB.Accessor.UpdateTopic() must update all fields that are relevant here.  If this function changes
 			// that one must change as well.
 
+			if (body != other.body)
+				{  changeFlags |= ChangeFlags.Body;  }
 			if (summary != other.summary)
 				{  changeFlags |= ChangeFlags.Summary;  }
 			if (classString != other.classString)
