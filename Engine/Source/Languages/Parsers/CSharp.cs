@@ -2629,8 +2629,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToSkipIdentifier
 		 *
-		 * Attempts to skip past and retrieve an identifier, such as "X.Y.Z".  Use <TryToSkipUnqualifiedIdentifier()> if you only want to
+		 * Attempts to skip past and retrieve an identifier, such as "A.B.C".  Use <TryToSkipUnqualifiedIdentifier()> if you only want to
 		 * retrieve a single segment.
+		 *
+		 * Note that this function will handle internal template signatures ("A.B<X>.C") but not the one at the end ("A.B.C<X>") since it
+		 * is assumed that you would want to handle that one manually.
 		 *
 		 * Supported Modes:
 		 *
@@ -2663,8 +2666,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToSkipIdentifier
 		 *
-		 * Tries to move the iterator past a qualified identifier, such as "X.Y.Z".  Use <TryToSkipUnqualifiedIdentifier()> if you only want
+		 * Tries to move the iterator past a qualified identifier, such as "A.B.C".  Use <TryToSkipUnqualifiedIdentifier()> if you only want
 		 * to skip a single segment.
+		 *
+		 * Note that this function will handle internal template signatures ("A.B<X>.C") but not the one at the end ("A.B.C<X>") since it
+		 * is assumed that you would want to handle that one manually.
 		 *
 		 * Supported Modes:
 		 *
@@ -2691,6 +2697,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 				endOfIdentifier = lookahead;
 				TryToSkipWhitespace(ref lookahead);
+
+				if (TryToSkipTemplateSignature(ref lookahead, mode, (prototypeParsingType == PrototypeParsingType.Type)))
+					{
+					TryToSkipWhitespace(ref lookahead);
+					}
 
 				if (lookahead.Character == '.')
 					{
@@ -2733,7 +2744,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToSkipUnqualifiedIdentifier
 		 *
-		 * Tries to move the iterator past a single unqualified identifier, which means only "X" in "X.Y.Z".
+		 * Tries to move the iterator past a single unqualified identifier, which means only "A" in "A.B.C".
 		 *
 		 * Supported Modes:
 		 *
