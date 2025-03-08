@@ -66,3 +66,8 @@
     Symbol: TestClass.FunctionK
     Prototype: static ref int FunctionK<T>(this ref int x, T y) where T:unmanaged, Enum
     (line 36, char 2, child of TestClass)
+    ---------------
+    Function: IEnumerable<T>.GetEnumerator
+    Symbol: TestClass.IEnumerable<T>.GetEnumerator
+    Prototype: IEnumerator<T> IEnumerable<T>.GetEnumerator()
+    (line 39, char 2, child of TestClass)

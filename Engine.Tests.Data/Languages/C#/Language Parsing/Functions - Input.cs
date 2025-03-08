@@ -35,4 +35,7 @@ class TestClass
 
 	static ref int FunctionK<T>(this ref int x, T y) where T:unmanaged, Enum
 		{  }
+
+	IEnumerator<T> IEnumerable<T>.GetEnumerator()
+		{  }
 	}
