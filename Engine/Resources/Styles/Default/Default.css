@@ -1926,8 +1926,28 @@ td {
 	.CDLParameterType a:visited,
 	.CDLParameterType a:hover,
 	.CDLParameterType a:active {
-		color: #000000;
+		color: $ContentTextColor;
 		}
+		.DarkTheme .NDPrototype a:link,
+		.DarkTheme .NDPrototype a:visited,
+		.DarkTheme .NDPrototype a:hover,
+		.DarkTheme .NDPrototype a:active,
+		.DarkTheme .CDLParameterType a:link,
+		.DarkTheme .CDLParameterType a:visited,
+		.DarkTheme .CDLParameterType a:hover,
+		.DarkTheme .CDLParameterType a:active {
+			color: $ContentTextColor_Dark;
+			}
+		.BlackTheme .NDPrototype a:link,
+		.BlackTheme .NDPrototype a:visited,
+		.BlackTheme .NDPrototype a:hover,
+		.BlackTheme .NDPrototype a:active,
+		.BlackTheme .CDLParameterType a:link,
+		.BlackTheme .CDLParameterType a:visited,
+		.BlackTheme .CDLParameterType a:hover,
+		.BlackTheme .CDLParameterType a:active {
+			color: $ContentTextColor_Black;
+			}
 
 	/* Underline all links when hovering over the prototype since it may not be obvious that you can click things. */
 	.NDPrototype:hover a:link,
