@@ -940,12 +940,39 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 			return tokenIndex.GetHashCode();
 			}
 
+		/* Operator: operator== (TokenIterator, TokenIterator)
+		 * Allows comparing two <TokenIterators> for equality.
+		 */
 		public static bool operator== (TokenIterator a, TokenIterator b)
 			{
 			return (a.tokenizer == b.tokenizer && a.tokenIndex == b.tokenIndex);
 			}
 
+		/* Operator: operator== (TokenIterator, TokenIterator?)
+		 * Allows comparing a <TokenIterator> to null.  When a struct is compared to null, the compiler automatically converts
+		 * it to a nullable version of that struct, and so this function will be used.
+		 */
+		public static bool operator== (TokenIterator a, TokenIterator? b)
+			{
+			if (b == null)
+				{  return a.IsNull;  }
+			else
+				{  return (a == (TokenIterator)b);  }
+			}
+
+		/* Operator: operator!= (TokenIterator, TokenIterator)
+		 * Allows comparing two <TokenIterators> for inequality.
+		 */
 		public static bool operator!= (TokenIterator a, TokenIterator b)
+			{
+			return !(a == b);
+			}
+
+		/* Operator: operator!= (TokenIterator, TokenIterator?)
+		 * Allows comparing a <TokenIterator> to null.  When a struct is compared to null, the compiler automatically converts
+		 * it to a nullable version of that struct, and so this function will be used.
+		 */
+		public static bool operator!= (TokenIterator a, TokenIterator? b)
 			{
 			return !(a == b);
 			}
