@@ -70,7 +70,7 @@
 
 
 	$MenuSummaryBorderColor: #D8D8D8;
-		$MenuSummaryBorderColor_Dark: $MenuLineColor_Dark;
+		$MenuSummaryBorderColor_Dark: #2F2F2F;
 		$MenuSummaryBorderColor_Black: $MenuLineColor_Black;
 
 
@@ -85,10 +85,10 @@
 		$MenuFadedTextColor_Black: #A0A0A0;
 	$MenuFadedOpacity: .75;
 	$MenuLineColor: #BCBCBC;
-		$MenuLineColor_Dark: #2C2C2C;
+		$MenuLineColor_Dark: #3B3B3B;
 		$MenuLineColor_Black: #484848;
 	$MenuSelectedColor: #FFFFFF;
-		$MenuSelectedColor_Dark: $ContentBackgroundColor_Dark;
+		$MenuSelectedColor_Dark: #242424;
 		$MenuSelectedColor_Black: #282828;
 	$MenuHoverBackgroundColor: #EEEEEE;
 		$MenuHoverBackgroundColor_Dark: $MenuSelectedColor_Dark;
