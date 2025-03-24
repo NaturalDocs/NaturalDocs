@@ -6,15 +6,15 @@ Function List: ListOfFunctions_InOrder
 <dl><ds>FunctionA</ds><dd><p>Description</p></dd><ds>FunctionB</ds><dd><p>Description</p></dd><ds>FunctionC</ds><dd><p>Description</p></dd></dl>
 -----
 Embedded Function: FunctionA
-(comment line 5, code line 9)
+(comment line 4, code line 9)
 <p>Description</p>
 -----
 Embedded Function: FunctionB
-(comment line 6, code line 13)
+(comment line 4, code line 13)
 <p>Description</p>
 -----
 Embedded Function: FunctionC
-(comment line 7, code line 17)
+(comment line 4, code line 17)
 <p>Description</p>
 -----
 Function List: ListOfFunctions_OutOfOrder
@@ -22,19 +22,19 @@ Function List: ListOfFunctions_OutOfOrder
 <dl><ds>FunctionD</ds><dd><p>Description</p></dd><ds>FunctionE</ds><dd><p>Description</p></dd><ds>FunctionF</ds><dd><p>Description</p></dd><ds>FunctionG</ds><dd><p>Description</p></dd></dl>
 -----
 Embedded Function: FunctionD
-(comment line 22, code line 31)
+(comment line 21, code line 31)
 <p>Description</p>
 -----
 Embedded Function: FunctionE
-(comment line 23, code line 39)
+(comment line 21, code line 39)
 <p>Description</p>
 -----
 Embedded Function: FunctionF
-(comment line 24, code line 27)
+(comment line 21, code line 27)
 <p>Description</p>
 -----
 Embedded Function: FunctionG
-(comment line 25, code line 35)
+(comment line 21, code line 35)
 <p>Description</p>
 -----
 Function List: ListOfFunctions_NotAllMatches
@@ -42,15 +42,15 @@ Function List: ListOfFunctions_NotAllMatches
 <dl><ds>FunctionH</ds><dd><p>Description</p></dd><ds>FunctionI</ds><dd><p>Not in code</p></dd><ds>FunctionK</ds><dd><p>Description</p></dd></dl>
 -----
 Embedded Function: FunctionH
-(comment line 44, code line 48)
+(comment line 43, code line 48)
 <p>Description</p>
 -----
 Embedded Function: FunctionI
-(comment line 45)
+(comment line 43)
 <p>Not in code</p>
 -----
 Embedded Function: FunctionK
-(comment line 46, code line 56)
+(comment line 43, code line 56)
 <p>Description</p>
 -----
 Function: FunctionJ
@@ -61,11 +61,11 @@ Class List: ListOfClasses
 <p>If you're documenting something with child elements, like classes, in a list topic, its members should not be documented.</p><dl><ds>ClassA</ds><dd><p>Description</p></dd><ds>ClassB</ds><dd><p>Description</p></dd></dl>
 -----
 Embedded Class: ClassA
-(comment line 63, code line 69)
+(comment line 62, code line 69)
 <p>Description</p>
 -----
 Embedded Class: ClassB
-(comment line 64, code line 75)
+(comment line 62, code line 75)
 <p>Description</p>
 -----
 Class: ClassC_NotInList
