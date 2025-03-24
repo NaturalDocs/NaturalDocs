@@ -2910,7 +2910,6 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 				}
 
 			int symbolIndex = topic.Body.IndexOf("<ds>");
-			int lineNumberOffset = 1;
 
 			int embeddedCommentTypeID = 0;
 
@@ -2940,13 +2939,11 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 				embeddedTopic.CommentTypeID = embeddedCommentTypeID;
 				embeddedTopic.DeclaredAccessLevel = topic.DeclaredAccessLevel;
 				embeddedTopic.TagString = topic.TagString;
-				embeddedTopic.CommentLineNumber = topic.CommentLineNumber + lineNumberOffset;
+				embeddedTopic.CommentLineNumber = topic.CommentLineNumber;
 
 				MakeSummaryFromBody(embeddedTopic);
 
 				topicList.Add(embeddedTopic);
-
-				lineNumberOffset++;
 
 				symbolIndex = topic.Body.IndexOf("<ds>", endDefinitionIndex + 5);
 				}
