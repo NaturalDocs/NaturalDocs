@@ -367,7 +367,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				// tab from Comments.txt.  If not, use the translation file.
 				var hierarchyAsCommentType = EngineInstance.CommentTypes.FromKeyword(hierarchy.Name, 0);
 
-				if (hierarchyAsCommentType != null)
+				// Only do this if the resulting comment type maps to the same hierarchy ID though, since language-specific
+				// keywords can make this not work.  The "package" keyword maps to the package hierarchy ID in SystemVerilog
+				// files but to the class hierarchy ID for other languages.
+				if (hierarchyAsCommentType != null &&
+					hierarchyAsCommentType.HierarchyID == hierarchy.ID)
 					{  rootContainer.Title  = hierarchyAsCommentType.PluralDisplayName;  }
 				else
 					{  rootContainer.Title = Engine.Locale.SafeGet("NaturalDocs.Engine", "Menu." + hierarchy.PluralSimpleIdentifier, hierarchy.PluralName);  }
