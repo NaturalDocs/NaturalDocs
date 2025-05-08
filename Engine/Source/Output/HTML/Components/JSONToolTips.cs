@@ -58,11 +58,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * Parameters:
 		 *
 		 *		topics - The <Engine.Topics.Topics> that appear in this file.
-		 *		context - The <Context> of the file.  Must include the page.
 		 *		links - A list of <Engine.Links.Links> that contain any which will be found in the tooltip.
 		 *		imageLinks - A list of <ImageLinks> that must contain any image links found in this topic.
+		 *		context - The <Context> of the file.  Must include the page.
+		 *		skipEmbeddedTopics - Whether to include any embedded <Engine.Topics.Topics> that appear in the topics parameter.
 		 */
-		public void ConvertToJSON (IList<Engine.Topics.Topic> topics, IList<Engine.Links.Link> links, IList<Engine.Links.ImageLink> imageLinks, Context context)
+		public void ConvertToJSON (IList<Engine.Topics.Topic> topics, IList<Engine.Links.Link> links, IList<Engine.Links.ImageLink> imageLinks,
+												Context context, bool skipEmbeddedTopics = false)
 			{
 			#if DEBUG
 			if (context.Page.IsNull)
@@ -78,7 +80,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			addWhitespace = (EngineInstance.Config.ShrinkFiles == false);
 
-			BuildToolTipsJSON();
+			BuildToolTipsJSON(skipEmbeddedTopics);
 			}
 
 
@@ -138,7 +140,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * If <Config.Manager.ShrinkFiles> is false, every entry will be indented at least once and appear on its own line.  The final line
 		 * will not be followed by a line break.
 		 */
-		protected void BuildToolTipsJSON ()
+		protected void BuildToolTipsJSON (bool skipEmbeddedTopics = false)
 			{
 			StringBuilder json = new StringBuilder();
 
@@ -159,7 +161,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				var topic = topics[topicIndex];
 
 				// Skip embedded topics
-				if (topic.IsEmbedded)
+				if (topic.IsEmbedded && skipEmbeddedTopics)
 					{  continue;  }
 
 				string tooltipHTML = tooltipBuilder.BuildToolTip(topic, context, links, imageLinks);

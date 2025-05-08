@@ -313,7 +313,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				summaryBuilder.BuildDataFile(pageTitle);
 
 				JSONToolTips toolTipsBuilder = new JSONToolTips(context);
-				toolTipsBuilder.ConvertToJSON(topics, links, imageLinks, context);
+				toolTipsBuilder.ConvertToJSON(topics, links, imageLinks, context, skipEmbeddedTopics: true);
 				toolTipsBuilder.BuildDataFileForSummary();
 
 				toolTipsBuilder.ConvertToJSON(linkTargets, summaryLinks, summaryImageLinks, context);
