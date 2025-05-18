@@ -254,7 +254,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 				iterator.NextPastWhitespace();
 
 				string description = GetText(iterator, endOfContent);
-				description = Normalize(description);
+				description = NormalizeNDMarkup(description);
 
 				if (symbol == null || symbol == "" || description == null || description == "")
 					{  return false;  }
@@ -271,7 +271,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 					  tag == "version")
 				{
 				string description = GetText(startOfContent, endOfContent);
-				description = Normalize(description);
+				description = NormalizeNDMarkup(description);
 
 				if (description == null || description == "")
 					{  return false;  }
@@ -296,7 +296,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 			else if (tag == "return")
 				{
 				string description = GetText(startOfContent, endOfContent);
-				description = Normalize(description);
+				description = NormalizeNDMarkup(description);
 
 				if (description == null || description == "")
 					{  return false;  }
@@ -318,7 +318,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 					{
 					// There's not symbol so interpret the whole thing as the description.  We'll let GetText() handle the HTML link.
 					description = GetText(iterator, endOfContent);
-					description = Normalize(description);
+					description = NormalizeNDMarkup(description);
 					}
 
 				// @see Class.Class#Member
@@ -329,7 +329,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 					iterator.NextPastWhitespace();
 
 					description = GetSimpleText(iterator, endOfContent);
-					description = Normalize(description);
+					description = NormalizeNDMarkup(description);
 
 					if (description == null || description == "")
 						{  description = "<p><link type=\"naturaldocs\" originaltext=\"" + symbol.EntityEncode() + "\"></p>";  }
@@ -597,7 +597,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 					linkIterator.NextPastWhitespace();
 
 					string description = GetSimpleText(linkIterator, linkContent.EndOfTokens);
-					description = Normalize(description);
+					description = NormalizeNDMarkup(description);
 
 					if (description == null || description == "")
 						{
@@ -718,7 +718,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 					linkIterator.NextPastWhitespace();
 
 					string description = GetSimpleText(linkIterator, linkContent.EndOfTokens);
-					description = Normalize(description);
+					description = NormalizeNDMarkup(description);
 
 					if (description == null || description == "")
 						{  output.EntityEncodeAndAppend(symbol);  }
@@ -823,7 +823,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 				iterator.Next();
 				}
 
-			Normalize(lines);
+			NormalizeCodeLines(lines);
 
 
 			// Build the output.
@@ -1072,7 +1072,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 
 			if (comment.Description != null)
 				{
-				body.Append( Normalize(comment.Description.ToString()) );
+				body.Append( NormalizeNDMarkup(comment.Description.ToString()) );
 				}
 
 			foreach (var section in comment.Sections)
@@ -1146,7 +1146,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 
 							if (listMember.Description != null)
 								{
-								body.Append( Normalize(listMember.Description) );  // Should already be in NDMarkup
+								body.Append( NormalizeNDMarkup(listMember.Description) );  // Should already be in NDMarkup
 								}
 
 							if (useDefinitionList)

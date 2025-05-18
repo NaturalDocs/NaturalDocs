@@ -105,7 +105,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 			}
 
 
-		/* Function: Normalize
+		/* Function: NormalizeNDMarkup
 		 *
 		 * Cleans up the generated NDMarkup.
 		 *
@@ -116,7 +116,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 		 *
 		 * If the generated NDMarkup is normalized down to nothing it will return null instead of an empty string.
 		 */
-		protected string Normalize (string ndMarkup)
+		protected string NormalizeNDMarkup (string ndMarkup)
 			{
 			ndMarkup = ndMarkup.Replace('\t', ' ');
 
@@ -141,7 +141,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 			}
 
 
-		/* Function: Normalize
+		/* Function: NormalizeCodeLines
 		 *
 		 * Cleans up the list of <CodeLines>.
 		 *
@@ -150,7 +150,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 		 * - Removes empty lines from the beginning and end of the list.
 		 * - Removes shared indent.
 		 */
-		protected void Normalize (List<CodeLine> lines)
+		protected void NormalizeCodeLines (List<CodeLine> lines)
 			{
 			// Trim lines and make sure all blank lines are null with an indent of -1.  We'll be finding the shared indent later and
 			// we don't want to count unindented blank lines against it.

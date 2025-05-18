@@ -227,7 +227,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 					GetText(ref iterator, descriptionBuilder, tagStack);
 					tagStack.CloseAllTags(descriptionBuilder);
 
-					description = Normalize(descriptionBuilder.ToString());
+					description = NormalizeNDMarkup(descriptionBuilder.ToString());
 
 					if (iterator.IsOnTag(keyword, TagForm.Closing))
 						{  iterator.Next();  }
@@ -771,7 +771,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 				iterator.Next();
 				}
 
-			Normalize(lines);
+			NormalizeCodeLines(lines);
 
 
 			// Build the output.
@@ -833,7 +833,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 						{
 						if (currentItem.Term != null)
 							{
-							currentItem.Term = Normalize(currentItem.Term.Trim());
+							currentItem.Term = NormalizeNDMarkup(currentItem.Term.Trim());
 
 							if (currentItem.Term == "")
 								{  currentItem.Term = null;  }
@@ -843,7 +843,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 
 						if (currentItem.Description != null)
 							{
-							currentItem.Description = Normalize(currentItem.Description.Trim());
+							currentItem.Description = NormalizeNDMarkup(currentItem.Description.Trim());
 
 							if (currentItem.Description == "")
 								{  currentItem.Description = null;  }
@@ -1043,7 +1043,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 				if (section.Name == "summary" || section.Name == "remark" || section.Name == "value")
 					{
 					string text = (section as XMLComment.TextSection).Content.ToString();
-					text = Normalize(text);
+					text = NormalizeNDMarkup(text);
 
 					if (text != null && text.Length > 0)
 						{  body.Append(text);  }
@@ -1063,7 +1063,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 					SectionedComment.TextSection textSection = (SectionedComment.TextSection)section;
 
 					string text = textSection.Content.ToString();
-					text = Normalize(text);
+					text = NormalizeNDMarkup(text);
 
 					if (text != null && text.Length > 0)
 						{
