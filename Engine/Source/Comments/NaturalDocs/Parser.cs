@@ -2177,10 +2177,12 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 					if (next.FundamentalType == FundamentalType.Whitespace)
 						{  continue;  }
 
+					bool slashOrDash = (prev.Character == '/' || prev.Character == '-');
+
 					// Move past the content immediately before it.
 					while (prev.FundamentalType != FundamentalType.Whitespace &&
-								 prev.FundamentalType != FundamentalType.Null &&
-								 prev.CommentParsingType != CommentParsingType.PossibleOpeningTag)
+							 prev.FundamentalType != FundamentalType.Null &&
+							 prev.CommentParsingType != CommentParsingType.PossibleOpeningTag)
 						{
 						prev.Previous();
 						}
@@ -2196,10 +2198,12 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 					// Move back past the null, whitespace, or opening tag.
 					prev.Next();
 
-					// If there's still intervening content, it must be entirely acceptable characters like ( and ".
+					// If there's still intervening content, it must be entirely acceptable characters like ( and ", or it must end with a
+					// slash or a dash.
 					if (prev < token)
 						{
-						if ( tokenizer.MatchTextBetween(AcceptableBeforeOpeningTagRegex, prev, token).Success == false )
+						if (!slashOrDash &&
+							tokenizer.MatchTextBetween(AcceptableBeforeOpeningTagRegex, prev, token).Success == false)
 							{  continue;  }
 						}
 
@@ -2253,11 +2257,11 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 						}
 
 					// If there's still intervening content, it must be entirely acceptable characters like ) and ", or it must
-					// start with a dash.
+					// start with a slash or dash.
 					if (next < end)
 						{
-						if ( next.Character != '-' &&
-							 tokenizer.MatchTextBetween(AcceptableAfterClosingTagRegex, next, end).Success == false )
+						if (next.Character != '/' && next.Character != '-' &&
+							tokenizer.MatchTextBetween(AcceptableAfterClosingTagRegex, next, end).Success == false)
 							{  continue;  }
 						}
 
