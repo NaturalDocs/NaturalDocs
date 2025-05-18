@@ -105,6 +105,70 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 			}
 
 
+		/* Function: ExtractEmbeddedTopics
+		 * Goes through the topic body to find any definition list symbols and adds them to the list as separate topics.
+		 * Since embedded topics must appear immediately after their parent topic, this must be called while the passed
+		 * topic is at the end of the list.
+		 */
+		public void ExtractEmbeddedTopics (Topic topic, IList<Topic> topicList)
+			{
+			if (topic.Body == null)
+				{  return;  }
+
+			if (topic.IsList == false && topic.IsEnum == false)
+				{
+				#if DEBUG
+				if (topic.Body.IndexOf("<ds>") != -1)
+					{
+					throw new Exception ("ExtractEmbeddedTopics found definition symbols in topic " + topic.Title + " even though it isn't " +
+															"a list or an enum.");
+					}
+				#endif
+
+				return;
+				}
+
+			int symbolIndex = topic.Body.IndexOf("<ds>");
+
+			int embeddedCommentTypeID = 0;
+
+			if (topic.IsEnum)
+				{  embeddedCommentTypeID = EngineInstance.CommentTypes.IDFromKeyword("constant", topic.LanguageID);  }
+
+			// We do it this way in case there is no type that uses the "constant" keyword.
+			if (embeddedCommentTypeID == 0)
+				{  embeddedCommentTypeID = topic.CommentTypeID;  }
+
+			while (symbolIndex != -1)
+				{
+				int endSymbolIndex = topic.Body.IndexOf("</ds>", symbolIndex + 4);
+				int definitionIndex = endSymbolIndex + 5;
+
+				#if DEBUG
+				if (topic.Body.Substring(definitionIndex, 4) != "<dd>")
+					{  throw new Exception ("The assumption that a <dd> would appear immediately after a </ds> failed for some reason.");  }
+				#endif
+
+				int endDefinitionIndex = topic.Body.IndexOf("</dd>", definitionIndex + 4);
+
+				Topic embeddedTopic = new Topic(EngineInstance.CommentTypes);
+				embeddedTopic.Title = topic.Body.Substring(symbolIndex + 4, endSymbolIndex - (symbolIndex + 4)).EntityDecode();
+				embeddedTopic.Body = topic.Body.Substring(definitionIndex + 4, endDefinitionIndex - (definitionIndex + 4));
+				embeddedTopic.IsEmbedded = true;
+				embeddedTopic.CommentTypeID = embeddedCommentTypeID;
+				embeddedTopic.DeclaredAccessLevel = topic.DeclaredAccessLevel;
+				embeddedTopic.TagString = topic.TagString;
+				embeddedTopic.CommentLineNumber = topic.CommentLineNumber;
+
+				MakeSummaryFromBody(embeddedTopic);
+
+				topicList.Add(embeddedTopic);
+
+				symbolIndex = topic.Body.IndexOf("<ds>", endDefinitionIndex + 5);
+				}
+			}
+
+
 		/* Function: NormalizeNDMarkup
 		 *
 		 * Cleans up the generated NDMarkup.
