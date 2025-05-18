@@ -4,11 +4,14 @@ _______________________________________________________________________________
 
 Paragraph with a <simple link> to something.
 
-Paragraph with links followed by <periods>. <commas>, <question marks>? <exclamation points>!
+Paragraph with links followed by <periods>. <commas>, <question marks>? <exclamation points>! <colons>: <semicolons>;
 
-Paragraph with links in (<parentheses>) and "<quotes>" and (<combinations>?) of "<the two>."
+Paragraph with links in (<parentheses>) and "<quotes>".
 
-Paragraph with links followed by <colons>: and <dashes>-leading to other words.
+Paragraph with links followed by <slashes>/x and <dashes>-x leading to other words.  Also x/<slashes> and x-<dashes>.
+Also <slashes A>/<slashes B> and <dashes A>-<dashes B>.
+
+Paragraph with links containing (<combinations>?) of the "<above>."
 
 Paragraph with a <potentially named link: blah> and another <potentially named link at blah>.
 
