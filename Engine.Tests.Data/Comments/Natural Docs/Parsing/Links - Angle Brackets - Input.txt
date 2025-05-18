@@ -4,7 +4,11 @@ _______________________________________________________________________________
 
 Paragraph with a <simple link> to something.
 
-Paragraph with a (<simple link>.) and "<punctuation>?"
+Paragraph with links followed by <periods>. <commas>, <question marks>? <exclamation points>!
+
+Paragraph with links in (<parentheses>) and "<quotes>" and (<combinations>?) of "<the two>."
+
+Paragraph with links followed by <colons>: and <dashes>-leading to other words.
 
 Paragraph with a <potentially named link: blah> and another <potentially named link at blah>.
 
