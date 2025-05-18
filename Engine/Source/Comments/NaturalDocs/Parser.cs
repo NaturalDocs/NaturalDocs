@@ -2252,10 +2252,12 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 							{  continue;  }
 						}
 
-					// If there's still intervening content, it must be entirely acceptable characters like ( and ".
+					// If there's still intervening content, it must be entirely acceptable characters like ) and ", or it must
+					// start with a dash.
 					if (next < end)
 						{
-						if ( tokenizer.MatchTextBetween(AcceptableAfterClosingTagRegex, next, end).Success == false )
+						if ( next.Character != '-' &&
+							 tokenizer.MatchTextBetween(AcceptableAfterClosingTagRegex, next, end).Success == false )
 							{  continue;  }
 						}
 
