@@ -316,9 +316,8 @@ namespace CodeClear.NaturalDocs.Engine.NDMarkup
 
 
 		/* Function: Property
-		 * If the iterator is on a tag and it contains the passed property, returns it sans quotes.  The value is
-		 * automatically passed through <TextConverter.DecodeEntityChars()>.  If the property isn't defined it
-		 * will return null.
+		 * If the iterator is on a tag and it contains the passed property, returns its value.  The quotes will be removed and any entity
+		 * characters will be decoded.  If the property isn't defined it will return null.
 		 */
 		public string Property (string propertyName)
 			{
@@ -405,23 +404,35 @@ namespace CodeClear.NaturalDocs.Engine.NDMarkup
 			}
 
 		/* Property: IsOpeningTag
-		 * If <Element> is on a tag, whether it is an opening or a closing tag.  This value is undefined if the iterator is
-		 * on a non-tag or standalone tag element.
+		 * If the iterator is on a tag, whether it is an opening tag.
 		 */
 		public bool IsOpeningTag
 			{
 			get
-				{  return isOpeningTag;  }
+				{
+				#if DEBUG
+				if (!IsTag)
+					{  throw new Exception("Tried to call IsOpeningTag when the iterator is not on a tag.");  }
+				#endif
+
+				return isOpeningTag;
+				}
 			}
 
 		/* Property: IsClosingTag
-		 * If <Element> is on a tag, whether it is an opening or a closing tag.  This value is undefined if the iterator is
-		 * on a non-tag or standalone tag element.
+		 * If the iterator is on a tag, whether it is on a closing tag.
 		 */
 		public bool IsClosingTag
 			{
 			get
-				{  return !isOpeningTag;  }
+				{
+				#if DEBUG
+				if (!IsTag)
+					{  throw new Exception("Tried to call IsClosingTag when the iterator is not on a tag.");  }
+				#endif
+
+				return !isOpeningTag;
+				}
 			}
 
 		/* Property: IsEntityChar
@@ -487,7 +498,6 @@ namespace CodeClear.NaturalDocs.Engine.NDMarkup
 		// Group: Static Variables
 		// __________________________________________________________________________
 
-		private static char[] SpaceOrClosingBracket = { ' ', '>' };
 		private static char[] AmpersandOrOpeningBracket = { '&', '<' };
 
 		private static Collections.StringTable<ElementType> TagNameToElementType = null;
