@@ -217,18 +217,18 @@ _______________________________________________________________________________
 					</li>
 				</ul>
 
-				<table CDescriptionList>
+				<table CDefinitionList>
 					<tr>
 						<td CDLEntry>
 							Entry
 							<CDLParameterType>Type</CDLParameterType>?
 						</td CDLEntry>
 
-						<td CDLDescription>
+						<td CDLDefinition>
 							Description
-						</td CDLDescription>
+						</td CDLDefinition>
 					</tr>
-				</table CDescriptionList>
+				</table CDefinitionList>
 
 				<pre CText/CCode>
 					Code<br>
