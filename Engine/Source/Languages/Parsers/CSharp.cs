@@ -2039,6 +2039,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			#endif
 
 			TokenIterator lookahead = iterator;
+			TokenIterator endOfPrototype;
 
 
 			// Attributes
@@ -2076,6 +2077,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				return false;
 				}
 
+			endOfPrototype = lookahead;
 			TryToSkipWhitespace(ref lookahead);
 
 
@@ -2092,39 +2094,42 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					return false;
 					}
 
+				endOfPrototype = lookahead;
 				TryToSkipWhitespace(ref lookahead);
 				}
 
-			if (lookahead.IsInBounds &&
-				lookahead.Character != '{')
-				{
-				ResetTokensBetween(iterator, lookahead, mode);
-				return false;
-				}
 
+			// Create enum element
 
-			// Create element
+			int elementsAdded = 0;
+
+			int enumCommentTypeID = 0;
+			int constantCommentTypeID = 0;
+
+			ParentElement enumElement = null;
+			Topic enumTopic = null;
 
 			if (mode == ParseMode.CreateElements)
 				{
+				enumCommentTypeID = EngineInstance.CommentTypes.IDFromKeyword("enum", language.ID);
+				constantCommentTypeID = EngineInstance.CommentTypes.IDFromKeyword("constant", language.ID);
+
 				SymbolString symbol = scope + SymbolString.FromPlainText_NoParameters(name);
 
 				ContextString childContext = new ContextString();
 				childContext.Scope = symbol;
 
-				ParentElement enumElement = new ParentElement(iterator, Element.Flags.InCode);
+				enumElement = new ParentElement(iterator, Element.Flags.InCode);
 				enumElement.ChildContextString = childContext;
 				enumElement.MaximumEffectiveChildAccessLevel = accessLevel;
 
-				int commentTypeID = EngineInstance.CommentTypes.IDFromKeyword("enum", language.ID);
-
-				if (commentTypeID != 0)
+				if (enumCommentTypeID != 0)
 					{
-					Topic enumTopic = new Topic(EngineInstance.CommentTypes);
+					enumTopic = new Topic(EngineInstance.CommentTypes);
 					enumTopic.Title = name;
 					enumTopic.Symbol = symbol;
-					enumTopic.Prototype = NormalizePrototype( iterator.TextBetween(lookahead) );
-					enumTopic.CommentTypeID = commentTypeID;
+					enumTopic.Prototype = NormalizePrototype( iterator.TextBetween(endOfPrototype) );
+					enumTopic.CommentTypeID = enumCommentTypeID;
 					enumTopic.LanguageID = language.ID;
 					enumTopic.DeclaredAccessLevel = accessLevel;
 					enumTopic.CodeLineNumber = iterator.LineNumber;
@@ -2133,36 +2138,147 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					}
 
 				elements.Add(enumElement);
-
-
-				//  Body
-
-				iterator = lookahead;
-
-				if (iterator.Character == '{')
-					{
-					iterator.Next();
-					GenericSkipUntilAfter(ref iterator, '}');
-
-					enumElement.EndingLineNumber = iterator.LineNumber;
-					enumElement.EndingCharNumber = iterator.CharNumber;
-					}
-
-				return true;
+				elementsAdded++;
 				}
 
-			else // mode isn't CreateElements
+
+			// Values
+
+			// The body isn't included in prototypes so we shouldn't fail if it's missing
+			if (lookahead.Character == '{')
 				{
-				iterator = lookahead;
+				lookahead.Next();
+				TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);
 
-				if (iterator.Character == '{')
+				// We check this first in case the body is empty
+				if (lookahead.Character == '}')
+					{  lookahead.Next();  }
+				else
 					{
-					iterator.Next();
-					GenericSkipUntilAfter(ref iterator, '}');
-					}
+					for (;;)
+						{
+						TokenIterator startOfValue = lookahead;
 
-				return true;
+
+						// Value attributes
+
+						if (TryToSkipAttributes(ref lookahead, mode: mode, prototypeParsingType: PrototypeParsingType.ParamModifier))
+							{  TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly);  }
+
+
+						// Value name
+
+						string valueName;
+
+						if (!TryToSkipIdentifier(ref lookahead, out valueName, mode, PrototypeParsingType.Name))
+							{
+							ResetTokensBetween(iterator, lookahead, mode);
+							elements.RemoveRange(elements.Count - elementsAdded, elementsAdded);
+							return false;
+							}
+
+						TokenIterator endOfValue = lookahead;
+
+
+						// Create value element
+
+						Element valueElement = null;
+						Topic valueTopic = null;
+
+						if (mode == ParseMode.CreateElements)
+							{
+							valueElement = new Element(startOfValue, Element.Flags.InCode);
+
+							if (constantCommentTypeID != 0)
+								{
+								valueTopic = new Topic(EngineInstance.CommentTypes);
+								valueTopic.Title = valueName;
+								valueTopic.Symbol = enumElement.ChildContextString.Scope + SymbolString.FromPlainText_NoParameters(valueName);
+								valueTopic.IsEmbedded = true;
+								valueTopic.LanguageID = language.ID;
+								valueTopic.CommentTypeID = constantCommentTypeID;
+
+								valueElement.Topic = valueTopic;
+								}
+
+							elements.Add(valueElement);
+							elementsAdded++;
+							}
+
+						TryToSkipWhitespace(ref lookahead, mode);
+
+
+						// Value constant
+
+						if (lookahead.Character == '=')
+							{
+							lookahead.Next();
+							TryToSkipWhitespace(ref lookahead, mode);
+
+							while (lookahead.IsInBounds &&
+									 lookahead.Character != ',' &&
+									 lookahead.Character != '}')
+								{
+								if (!TryToSkipWhitespace(ref lookahead, ParseMode.IterateOnly))
+									{
+									GenericSkip(ref lookahead);
+									endOfValue = lookahead;
+									}
+								}
+							}
+
+
+						// End of value or body
+
+						char endCharacter = lookahead.Character;
+
+						if (endCharacter == ',' ||
+							endCharacter == '}')
+							{
+							lookahead.Next();
+
+							if (lookahead.LineNumber == endOfValue.LineNumber)
+								{  endOfValue = lookahead;  }
+
+							if (mode == ParseMode.CreateElements)
+								{
+								var inlineComment = GetInlineDocumentationComment(endOfValue);
+
+								if (inlineComment != null &&
+									valueTopic != null)
+									{
+									Topic inlineTopic = EngineInstance.Comments.Parse(inlineComment);
+									valueTopic.Body = inlineTopic.Body;
+									valueTopic.Summary = inlineTopic.Summary;
+									}
+								}
+
+							if (endCharacter == ',')
+								{  TryToSkipWhitespace(ref lookahead, mode);  }
+							else // endCharacter == '}'
+								{  break;  }
+							}
+						else
+							{
+							ResetTokensBetween(iterator, lookahead, mode);
+							elements.RemoveRange(elements.Count - elementsAdded, elementsAdded);
+							return false;
+							}
+						}
+					}
 				}
+
+
+			// Finish up
+
+			if (mode == ParseMode.CreateElements)
+				{
+				enumElement.EndingLineNumber = lookahead.LineNumber;
+				enumElement.EndingCharNumber = lookahead.CharNumber;
+				}
+
+			iterator = lookahead;
+			return true;
 			}
 
 
