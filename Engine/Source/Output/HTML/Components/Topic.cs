@@ -242,6 +242,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			StringBuilder inlineImageContent = null;
 			int imageNumber = 1;
 
+			bool definitionListAsBulletList = false;
+
 			while (iterator.IsInBounds)
 				{
 				switch (iterator.Type)
@@ -348,9 +350,36 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					case NDMarkup.Iterator.ElementType.DefinitionListTag:
 
 						if (iterator.IsOpeningTag)
-							{  output.Append("<table class=\"CDefinitionList\">");  }
+							{
+							// Does it have any non-empty descriptions?
+							bool hasDescriptions = false;
+
+							// +4 to skip "<dl>"
+							var dlDescriptionWithContent = NonEmptyDefinitionListDefinitionRegex.Match(body, iterator.RawTextIndex + 4);
+
+							if (dlDescriptionWithContent.Success)
+								{
+								int endOfDescriptionListIndex = body.IndexOf("</dl>", iterator.RawTextIndex + 4);
+
+								if (dlDescriptionWithContent.Index < endOfDescriptionListIndex)
+									{  hasDescriptions = true;  }
+								}
+
+							// If not, format it as a bullet list instead
+							definitionListAsBulletList = !hasDescriptions;
+
+							if (definitionListAsBulletList)
+								{  output.Append("<ul>");  }
+							else
+								{  output.Append("<table class=\"CDefinitionList\">");  }
+							}
 						else
-							{  output.Append("</table>");  }
+							{
+							if (definitionListAsBulletList)
+								{  output.Append("</ul>");  }
+							else
+								{  output.Append("</table>");  }
+							}
 						break;
 
 
@@ -359,7 +388,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 						if (iterator.IsOpeningTag)
 							{
-							output.Append("<tr><td class=\"CDLEntry\">");
+							if (definitionListAsBulletList)
+								{  output.Append("<li><p>");  }
+							else
+								{  output.Append("<tr><td class=\"CDLEntry\">");  }
+
 							parameterListSymbol = null;
 
 							// Create anchors for symbols.  We are assuming there are enough embedded topics for each <ds>
@@ -470,13 +503,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 									}
 								}
 
-							output.Append("</td>");
+							if (definitionListAsBulletList)
+								{  output.Append("</p></li>");  }
+							else
+								{  output.Append("</td>");  }
 							}
 						break;
 
 
 					case NDMarkup.Iterator.ElementType.DefinitionListDefinitionTag:
 
+						// These won't appear when definitionListAsBulletList is set
 						if (iterator.IsOpeningTag)
 							{  output.Append("<td class=\"CDLDefinition\">");  }
 						else
@@ -945,6 +982,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * to break on those characters as it looks cleaner, but this limit forces it to happen if they don't occur.
 		 */
 		protected const int MaxUnbrokenURLCharacters = 35;
+
+		protected static Regex.NDMarkup.NonEmptyDefinitionListDefinition NonEmptyDefinitionListDefinitionRegex
+			= new Regex.NDMarkup.NonEmptyDefinitionListDefinition();
 
 		}
 	}
