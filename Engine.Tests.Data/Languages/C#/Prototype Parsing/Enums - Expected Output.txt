@@ -4,6 +4,18 @@
 
 ------------------------------
 
+(No prototype detected)
+
+------------------------------
+
+(No prototype detected)
+
+------------------------------
+
+(No prototype detected)
+
+------------------------------
+
 - Plain Section: [Attribute]
   - Access Level: Unknown
   - Link Candidates: (none)
@@ -11,3 +23,15 @@
 - Plain Section: public enum EnumB : byte
   - Access Level: Public
   - Link Candidates: byte
+
+------------------------------
+
+(No prototype detected)
+
+------------------------------
+
+(No prototype detected)
+
+------------------------------
+
+(No prototype detected)

@@ -18,6 +18,18 @@
     (line 4, char 2, child of TestClass)
     - Maximum Effective Child Access Level: Public
     - Child Scope: TestClass.EnumA
+      ---------------
+      Constant: A
+      Symbol: TestClass.EnumA.A
+      (line 5, char 5, child of EnumA)
+      ---------------
+      Constant: B
+      Symbol: TestClass.EnumA.B
+      (line 5, char 8, child of EnumA)
+      ---------------
+      Constant: C
+      Symbol: TestClass.EnumA.C
+      (line 5, char 11, child of EnumA)
     ---------------
     Enumeration: EnumB
     Symbol: TestClass.EnumB
@@ -25,3 +37,15 @@
     (line 7, char 2, child of TestClass)
     - Maximum Effective Child Access Level: Public
     - Child Scope: TestClass.EnumB
+      ---------------
+      Constant: A
+      Symbol: TestClass.EnumB.A
+      (line 10, char 3, child of EnumB)
+      ---------------
+      Constant: B
+      Symbol: TestClass.EnumB.B
+      (line 11, char 3, child of EnumB)
+      ---------------
+      Constant: C
+      Symbol: TestClass.EnumB.C
+      (line 12, char 3, child of EnumB)

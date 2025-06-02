@@ -23,3 +23,15 @@
     (line 19, char 2, child of TestClass)
     - Maximum Effective Child Access Level: Public
     - Child Scope: TestClass.TestEnum
+      ---------------
+      Constant: X
+      Symbol: TestClass.TestEnum.X
+      (line 24, char 5, child of TestEnum)
+      ---------------
+      Constant: Y
+      Symbol: TestClass.TestEnum.Y
+      (line 24, char 8, child of TestEnum)
+      ---------------
+      Constant: Z
+      Symbol: TestClass.TestEnum.Z
+      (line 24, char 11, child of TestEnum)
