@@ -12,6 +12,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using CodeClear.NaturalDocs.Engine.Topics;
 
 
@@ -102,6 +103,53 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 				}
 
 			return false;
+			}
+
+
+		/* Function: ConvertDefinitionEntriesToSymbols
+		 *
+		 * If the <Topic> body contains definition list entries ("<de></de>") converts them to symbol entries ("<ds></ds>").  Returns
+		 * the number of entries that were converted, or zero if none.
+		 *
+		 * This is used in situations such as documenting an enum with a headerless comment.  In the initial parsing stage it's not known
+		 * what type of comment it is so definition lists in the body are treated as regular entries.  Later, when the comment is merged with
+		 * an enum code element, this function can convert the regular entries into symbol entries since they represent enum values.  This
+		 * should be followed by a call to <ExtractEmbeddedTopics()> since none would have been created in the first pass.
+		 */
+		public int ConvertDefinitionEntriesToSymbols (Topic topic)
+			{
+			if (topic.Body == null)
+				{  return 0;  }
+
+			string body = topic.Body;
+			int substitutionCount = 0;
+
+			string newBody = DefinitionListEntryTagRegex.Replace(body,
+				delegate (Match match)
+					{
+					substitutionCount++;
+
+					#if DEBUG
+					if (match.Value != "<de>" &&
+						match.Value != "</de>")
+						{  throw new Exception ("Unexpected match: " + match.Value);  }
+					#endif
+
+					if (match.Length == 4) // "<de>"
+						{  return "<ds>";  }
+					else // assume "</de>"
+						{  return "</ds>";  }
+					});
+
+			#if DEBUG
+			if (substitutionCount % 2 != 0)
+				{  throw new Exception("Count should be even because there should be balanced tag pairs.");  }
+			#endif
+
+			topic.Body = newBody;
+
+			// Halve the count since we replaced both the opening and closing tags but we want the number of entries
+			return (substitutionCount / 2);
 			}
 
 
@@ -320,6 +368,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 
 		protected static Regex.Comments.LineBreakWhichProbablyEndsSentence LineBreakWhichProbablyEndsSentenceRegex =
 			new Regex.Comments.LineBreakWhichProbablyEndsSentence();
+
+		protected static Regex.NDMarkup.DefinitionListEntryTag DefinitionListEntryTagRegex = new Regex.NDMarkup.DefinitionListEntryTag();
 
 
 

@@ -77,6 +77,8 @@ Timestamp.ShortMonth11: Nov
 Timestamp.Month12: December
 Timestamp.ShortMonth12: Dec
 
+Heading.EnumValues: Values
+
 
 
 #

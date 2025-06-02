@@ -209,7 +209,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 				// Fill in the declared access levels for comment elements.  We do this before merging with the code elements so the defaults
-				// that come from the  comment settings only apply to topics that don't also appear in the code.  Anything that gets merged will
+				// that come from the comment settings only apply to topics that don't also appear in the code.  Anything that gets merged will
 				// have the comment settings overwritten by the code settings.
 
 				ApplyDeclaredAccessLevels(commentElements);
@@ -259,6 +259,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				#if DEBUG
 					ValidateElements(elements, ValidateElementsMode.MergedElements);
 				#endif
+
+
+				// Make sure all enum topics have their values in their bodies.
+
+				AddEnumValuesToBodies(elements);
 
 
 				// Remove code topics if --documented-only is on.  We do this after merging and keep all the original elements so that the
@@ -1091,8 +1096,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		//
 		// Default Implementation:
 		//
-		// The default implementation uses the comment symbols found in <Language> or passed to the constructor.  You can override
-		// this function if you need to do something more sophisticated, such as interpret the POD directives in Perl.
+		//	The default implementation uses the comment symbols found in <Language>.  You can override this function if you need to
+		// do something more sophisticated, such as interpret the POD directives in Perl.
 		//
 		// Comments must be alone on a line to be a candidate for documentation, meaning that the comment symbol must be the
 		// first non-whitespace character on a line, and in the case of block comments, nothing but whitespace may trail the closing
@@ -1116,7 +1121,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		// denoted with "", Perl's q{} forms and here doc) so you can't account for them all in a generalized way.  Also, putting this in
 		// an independent stage even when using full language support means comments don't disappear the way prototypes do if the
 		// parser gets tripped up on something like an unmatched brace.
-		//
 		//
 		virtual public List<PossibleDocumentationComment> GetPossibleDocumentationComments (Tokenizer source)
 			{
@@ -1718,8 +1722,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 *		  Other code will not apply parent symbols to children.
 		 *		- You cannot return list <Topics>.  If you have multiple variables declared in one statement or something similar, you must
 		 *		  generate individual <Topics> for each one.
-		 *		- You cannot return embedded <Topics>.  This may change in the future only to allow enum members, but for now it is not
-		 *		  allowed at all.
 		 */
 		public virtual List<Element> GetCodeElements (Tokenizer source)
 			{
@@ -2334,6 +2336,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 */
 		protected List<Element> MergeElements (List<Element> commentElements, List<Element> codeElements)
 			{
+
+			// If only one of the lists has usable content we can return it as is.
+
 			if (codeElements == null || codeElements.Count == 0 ||
 				(codeElements.Count == 1 && codeElements[0] is ParentElement && (codeElements[0] as ParentElement).IsRootElement))
 				{  return commentElements;  }
@@ -2378,6 +2383,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			while (commentIndex < commentElements.Count && codeIndex < codeElements.Count)
 				{
+
+				// Determine the lengths of the blocks
+
 				int commentCount = 1;
 
 				while (commentIndex + commentCount < commentElements.Count &&
@@ -2401,23 +2409,76 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 				int lastCommentIndex = commentIndex + commentCount - 1;
 
+				// If it's embedded walk backwards to find the last non-embedded one.
+				while (commentElements[lastCommentIndex].Topic != null &&
+						 commentElements[lastCommentIndex].Topic.IsEmbedded == true &&
+						 lastCommentIndex > commentIndex)
+					{  lastCommentIndex--;  }
+
 				if (commentElements[lastCommentIndex].Topic != null &&
 					commentElements[lastCommentIndex].Topic.Title == null &&
 					CanMergeTopics(commentElements[lastCommentIndex].Topic, codeElements[codeIndex].Topic, true))
 					{
-					for (int i = commentIndex; i < lastCommentIndex; i++)
-						{  mergedElements.Add(commentElements[i]);  }
+					// Add the comment elements prior to the last one as is.
+					while (commentIndex < lastCommentIndex)
+						{
+						mergedElements.Add(commentElements[commentIndex]);
+						commentIndex++;
+						commentCount--;
+						}
 
 					var mergedElement = codeElements[codeIndex];
 					mergedElement.InComments = true;
 					mergedElement.Topic = MergeTopics(commentElements[lastCommentIndex].Topic, codeElements[codeIndex].Topic);
 					mergedElements.Add(mergedElement);
 
-					for (int i = codeIndex + 1; i < codeIndex + codeCount; i++)
-						{  mergedElements.Add(codeElements[i]);  }
+					commentIndex++;
+					commentCount--;
+					codeIndex++;
+					codeCount--;
 
-					commentIndex += commentCount;
-					codeIndex += codeCount;
+					// If the merged element is an enum, that means any definition list entries in its body should be symbols to represent
+					// the enum's values.  However, since it was orginally a headerless topic, it wasn't known that it was an enum when it
+					// was first parsed and they were treated as regular definition list entries.  Convert them to symbol entries.
+					if (EngineInstance.CommentTypes.FromID(mergedElement.Topic.CommentTypeID).IsEnum)
+						{
+						var commentParser = EngineInstance.Comments.NaturalDocsParser;
+
+						int definitionListEntryCount = commentParser.ConvertDefinitionEntriesToSymbols(mergedElement.Topic);
+
+						if (definitionListEntryCount > 0)
+							{
+							// We also have to make embedded topics and elements for them
+							List<Topic> newEmbeddedTopics = new List<Topic>(definitionListEntryCount);
+							commentParser.ExtractEmbeddedTopics(mergedElement.Topic, newEmbeddedTopics);
+
+							for (int i = 0; i < definitionListEntryCount; i++)
+								{
+								Element newEmbeddedElement = new Element(mergedElement.Topic.CommentLineNumber, 1, Element.Flags.InComments);
+								newEmbeddedElement.Topic = newEmbeddedTopics[i];
+
+								commentElements.Insert(commentIndex + i, newEmbeddedElement);
+								commentCount++;
+								}
+							}
+						}
+
+					if (MergeEmbeddedElements(commentElements, commentIndex, codeElements, codeIndex, mergedElements,
+															 out int embeddedCommentElementsMerged, out int embeddedCodeElementsMerged))
+						{
+						commentIndex += embeddedCommentElementsMerged;
+						commentCount -= embeddedCommentElementsMerged;
+						codeIndex += embeddedCodeElementsMerged;
+						codeCount -= embeddedCodeElementsMerged;
+						}
+
+					// Add the remainder of the code elements as is.
+					while (codeCount > 0)
+						{
+						mergedElements.Add(codeElements[codeIndex]);
+						codeIndex++;
+						codeCount--;
+						}
 					}
 
 
@@ -2488,6 +2549,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 								commentCount--;
 								codeIndex++;
 								codeCount--;
+
+								if (MergeEmbeddedElements(commentElements, commentIndex, codeElements, codeIndex, mergedElements,
+																		 out int embeddedCommentElementsMerged, out int embeddedCodeElementsMerged))
+									{
+									commentIndex += embeddedCommentElementsMerged;
+									commentCount -= embeddedCommentElementsMerged;
+									codeIndex += embeddedCodeElementsMerged;
+									codeCount -= embeddedCodeElementsMerged;
+									}
 								}
 
 							else // comment topic is embedded
@@ -2547,7 +2617,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				}
 
 
-			// Now we may have to fix up the ranges of any comment only elements.
+			// Now we may have to fix up the ranges of any comment-only elements.
 
 			for (int i = 0; i < mergedElements.Count; i++)
 				{
@@ -2621,6 +2691,138 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 			return mergedElements;
+			}
+
+
+		/* Function: MergeEmbeddedElements
+		 *
+		 * If either of the indexes are on embedded topics, it will merge them into the list and return how many it did.
+		 *
+		 * - commentElementIndex should be an index into commentElements pointing to the first potential embedded topic,
+		 *   not to parent element.  Likewise for codeElementIndex and codeElements.
+		 *
+		 *	- The merged embedded elements will be added to the end of the mergedElements list.  As such the merged parent
+		 *	  element should already be on the list as the last element.
+		 *
+		 *	- As with <MergeElements()> the original <Elements> and/or <Topics> may be reused so don't use them after
+		 *	  calling this function.
+		 *
+		 *	- It will return the amount of elements merged from each list in embeddedCommentElementsMerged and
+		 *	  embeddedCodeElementsMerged.  The calling code should skip ahead that many in its list processing.
+		 */
+		protected bool MergeEmbeddedElements (List<Element> commentElements, int commentElementIndex,
+																	List<Element> codeElements, int codeElementIndex,
+																	List<Element> mergedElements,
+																	out int embeddedCommentElementsMerged,
+																	out int embeddedCodeElementsMerged)
+			{
+			// See how many embedded topics there are in each list.
+
+			int commentEmbeddedTopicCount = CountConsecutiveEmbeddedTopics(commentElements, commentElementIndex);
+			int codeEmbeddedTopicCount = CountConsecutiveEmbeddedTopics(codeElements, codeElementIndex);
+
+
+			// Merge the elements.
+
+			if (commentEmbeddedTopicCount == 0)
+				{
+				// If there are no embedded comment or code topics we can just return.
+				if (codeEmbeddedTopicCount == 0)
+					{
+					embeddedCommentElementsMerged = 0;
+					embeddedCodeElementsMerged = 0;
+					return false;
+					}
+
+				// If there are no embedded comment topics but we do have code topics, we can add them as is.
+				else
+					{
+					for (int i = codeElementIndex; i < codeElementIndex + codeEmbeddedTopicCount; i++)
+						{  mergedElements.Add(codeElements[i]);  }
+
+					embeddedCommentElementsMerged = 0;
+					embeddedCodeElementsMerged = codeEmbeddedTopicCount;
+					return true;
+					}
+				}
+
+			// If there are embedded comment topics but no embedded code topics we can add them as is.
+			else if (codeEmbeddedTopicCount == 0)
+				{
+				for (int i = commentElementIndex; i < commentElementIndex + commentEmbeddedTopicCount; i++)
+					{  mergedElements.Add(commentElements[i]);  }
+
+				embeddedCommentElementsMerged = commentEmbeddedTopicCount;
+				embeddedCodeElementsMerged = 0;
+				return true;
+				}
+
+			// If both have embedded topics, we must compare the lists.
+			else
+				{
+				// Start by adding every code element.  If there is a matching comment element we'll use its Topic since its description
+				// should be used.
+
+				StringComparison comparisonType =
+					(EngineInstance.Languages.FromID(codeElements[codeElementIndex].Topic.LanguageID).CaseSensitive ?
+					 StringComparison.InvariantCulture :
+					 StringComparison.InvariantCultureIgnoreCase);
+
+				for (int codeEmbeddedElementIndex = codeElementIndex;
+					  codeEmbeddedElementIndex < codeElementIndex + codeEmbeddedTopicCount;
+					  codeEmbeddedElementIndex++)
+					{
+					Element codeEmbeddedElement = codeElements[codeEmbeddedElementIndex];
+					Topic codeEmbeddedTopic = codeEmbeddedElement.Topic;
+
+					for (int commentEmbeddedElementIndex = commentElementIndex;
+						  commentEmbeddedElementIndex < commentElementIndex + commentEmbeddedTopicCount;
+						  commentEmbeddedElementIndex++)
+						{
+						Element commentEmbeddedElement = commentElements[commentEmbeddedElementIndex];
+						Topic commentEmbeddedTopic = commentEmbeddedElement.Topic;
+
+						if (commentEmbeddedTopic != null &&
+							string.Compare(codeEmbeddedTopic.Title, commentEmbeddedTopic.Title, comparisonType) == 0)
+							{
+							// Replace the code topic with the comment's
+							codeEmbeddedElement.Topic = commentEmbeddedTopic;
+
+							// Set the comment's to null so we don't reuse it and we can tell which ones weren't used later
+							commentEmbeddedElement.Topic = null;
+
+							break;
+							}
+						}
+
+					// Add the code element whether there was a comment match or not
+					mergedElements.Add(codeEmbeddedElement);
+					}
+
+
+				// Now go through all the comment elements to add any that didn't have a match, which we'll recognize because
+				// they didn't have their Topics set to null in the last stage.
+
+				// Reuse the last added element's file position because the elements must appear in source order.
+				FilePosition lastFilePosition = mergedElements[mergedElements.Count - 1].FilePosition;
+
+				for (int commentEmbeddedElementIndex = commentElementIndex;
+					  commentEmbeddedElementIndex < commentElementIndex + commentEmbeddedTopicCount;
+					  commentEmbeddedElementIndex++)
+					{
+					Element commentEmbeddedElement = commentElements[commentEmbeddedElementIndex];
+
+					if (commentEmbeddedElement.Topic != null)
+						{
+						commentEmbeddedElement.FilePosition = lastFilePosition;
+						mergedElements.Add(commentEmbeddedElement);
+						}
+					}
+
+				embeddedCommentElementsMerged = commentEmbeddedTopicCount;
+				embeddedCodeElementsMerged = codeEmbeddedTopicCount;
+				return true;
+				}
 			}
 
 
@@ -2763,6 +2965,23 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			}
 
 
+		/* Function: CountConsecutiveEmbeddedTopics
+		 * Returns the number of consecutive embedded <Topics> that are present in the list starting at the passed index, or zero if
+		 * none.  Each <Element> must have a <Topic> present with <Topic.IsEmbedded> set to be included.
+		 */
+		protected int CountConsecutiveEmbeddedTopics (List<Element> elements, int startingIndex)
+			{
+			int endingIndex = startingIndex;
+
+			while (endingIndex < elements.Count &&
+					 elements[endingIndex].Topic != null &&
+					 elements[endingIndex].Topic.IsEmbedded)
+				{  endingIndex++;  }
+
+			return (endingIndex - startingIndex);
+			}
+
+
 		/* Function: RemoveHeaderlessTopics
 		 * Deletes any <Topics> which do not have the Title field set, which means they were headerless and they were never merged
 		 * with a code topic.  It will remove their <Elements> if they serve no other purpose.
@@ -2789,6 +3008,322 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				else
 					{  i++;  }
 				}
+			}
+
+
+		/* Function: AddEnumValuesToBodies
+		 * Goes through all the enum <Topics> in the list of <Elements> and makes sure all embedded value <Topics> are also
+		 * represented in the enum's body via a definition list.  If any are missing it will add them.
+		 */
+		protected void AddEnumValuesToBodies (List<Element> elements)
+			{
+			int elementIndex = 0;
+			while (elementIndex < elements.Count)
+				{
+				// If the topic is an enum...
+				if (elements[elementIndex].Topic != null &&
+					elements[elementIndex].Topic.IsList == false &&
+					EngineInstance.CommentTypes.FromID(elements[elementIndex].Topic.CommentTypeID).IsEnum)
+					{
+					var enumElement = elements[elementIndex];
+					var enumTopic = enumElement.Topic;
+					var enumBody = enumTopic.Body;
+					elementIndex++;
+
+					int firstValueElementIndex = elementIndex;
+					int valueCount = CountConsecutiveEmbeddedTopics(elements, firstValueElementIndex);
+					elementIndex += valueCount;
+
+					// If the enum topic has values...
+					if (valueCount > 0)
+						{
+
+						// If there's no existing body just add them all in order
+						if (enumBody == null)
+							{
+							StringBuilder newBody = new StringBuilder();
+
+							newBody.Append("<h>" + Locale.Get("NaturalDocs.Engine", "Heading.EnumValues") + "</h>");
+							newBody.Append("<dl>");
+
+							for (int i = 0; i < valueCount; i++)
+								{
+								AddAsDefinitionListSymbol(elements[firstValueElementIndex + i].Topic, newBody);
+								}
+
+							newBody.Append("</dl>");
+							enumTopic.Body = newBody.ToString();
+							}
+
+						// If the enum element already has a body...
+						else
+							{
+
+							// For each value, find the index of where it appears in the enum topic's body.
+
+							// The array values are initialized to zero, and it's okay to use that to mean "undefined" instead of -1
+							// because no value will ever have a body index of zero.  The index is to the "<ds>" which must appear
+							// after a "<dl>".
+							int[] bodyIndexOfValue = new int[valueCount];
+
+							int bodyIndex = 0;
+
+							while (GetNextDefinitionListSymbol(enumBody, bodyIndex, out int valueTagIndex, out int valueNameIndex,
+																				out int valueNameLength, out int valueEndIndex))
+								{
+								// Find a matching unused value element
+								for (int i = 0; i < valueCount; i++)
+									{
+									var valueElement = elements[firstValueElementIndex + i];
+									var valueTopic = valueElement.Topic;
+
+									if (bodyIndexOfValue[i] == 0 &&
+										valueTopic.Title.Length == valueNameLength &&
+										string.Compare(enumBody, valueNameIndex, valueTopic.Title, 0, valueNameLength) == 0)
+										{
+										bodyIndexOfValue[i] = valueTagIndex;
+										break;
+										}
+									}
+
+								bodyIndex = valueEndIndex;
+								}
+
+
+							// Now that bodyIndexOfValue is filled in, get some summary information about it such as whether all
+							// the values are represented in the body and if they're in the same order.
+
+							bool allValuesInBody = true;
+							bool anyValuesInBody = false;
+							bool allValuesInOrder = true;
+							int bodyIndexOfLastValueInBody = 0;
+							int lastDefinedBodyIndex = 0;
+
+							for (int i = 0; i < valueCount; i++)
+								{
+								if (bodyIndexOfValue[i] == 0)
+									{
+									allValuesInBody = false;
+									}
+								else
+									{
+									anyValuesInBody = true;
+
+									if (bodyIndexOfValue[i] < lastDefinedBodyIndex)
+										{  allValuesInOrder = false;  }
+
+									lastDefinedBodyIndex = bodyIndexOfValue[i];
+
+									if (bodyIndexOfValue[i] > bodyIndexOfLastValueInBody)
+										{  bodyIndexOfLastValueInBody = bodyIndexOfValue[i];  }
+									}
+								}
+
+
+							// If there are no values in the body, we can just add them to the end in a new section.
+
+							if (!anyValuesInBody)
+								{
+								StringBuilder newBody = new StringBuilder(enumBody);
+
+								newBody.Append("<h>" + Locale.Get("NaturalDocs.Engine", "Heading.EnumValues") + "</h>");
+								newBody.Append("<dl>");
+
+								for (int i = 0; i < valueCount; i++)
+									{
+									AddAsDefinitionListSymbol(elements[firstValueElementIndex + i].Topic, newBody);
+									}
+
+								newBody.Append("</dl>");
+								enumElement.Topic.Body = newBody.ToString();
+								}
+
+
+							// Otherwise if there's some values in the body but not all, we have to add the rest in.
+
+							else if (!allValuesInBody)
+								{
+
+								// If the existing ones aren't in any discernable order, just add the missing ones to the end of the list.
+
+								if (!allValuesInOrder)
+									{
+									int insertionPoint = GetEndOfDefinitionListEntry(enumBody, bodyIndexOfLastValueInBody);
+
+									// Create the new body.
+									StringBuilder newBody = new StringBuilder();
+
+									newBody.Append(enumBody, 0, insertionPoint);
+
+									for (int i = 0; i < valueCount; i++)
+										{
+										if (bodyIndexOfValue[i] == 0)
+											{
+											AddAsDefinitionListSymbol(elements[firstValueElementIndex + i].Topic, newBody);
+											}
+										}
+
+									newBody.Append(enumBody, insertionPoint, enumBody.Length - insertionPoint);
+									enumTopic.Body = newBody.ToString();
+									}
+
+								else // allValuesInOrder
+									{
+									// Create the new body.
+									StringBuilder newBody = new StringBuilder();
+
+									int valueIndex = 0;
+									int valueInBodyIndex = 0;
+									int lastBodyIndex = 0;
+
+									for (;;)
+										{
+										// Skip past any values that don't appear in the body.
+										while (valueInBodyIndex < valueCount &&
+												 bodyIndexOfValue[valueInBodyIndex] == 0)
+											{  valueInBodyIndex++;  }
+
+										if (valueInBodyIndex < valueCount)
+											{
+											// Add the body between the last point we added and the beginning of this value to the
+											// new body.
+											if (bodyIndexOfValue[valueInBodyIndex] > lastBodyIndex)
+												{
+												newBody.Append(enumBody, lastBodyIndex, bodyIndexOfValue[valueInBodyIndex] - lastBodyIndex);
+												lastBodyIndex = bodyIndexOfValue[valueInBodyIndex];
+												}
+
+											// Add the values that don't appear in the body to it.
+											while (valueIndex < valueInBodyIndex)
+												{
+												AddAsDefinitionListSymbol(elements[firstValueElementIndex + valueIndex].Topic, newBody);
+												valueIndex++;
+												}
+
+											// Increment both to start this process again on the next one.
+											valueIndex++;
+											valueInBodyIndex++;
+											}
+
+										else // there's no more values that appear in the body
+											{
+											// Add all the body between the last point we added and the end of the last value entry.
+											int afterLastValueInBodyIndex = GetEndOfDefinitionListEntry(enumBody, bodyIndexOfLastValueInBody);
+
+											if (afterLastValueInBodyIndex > lastBodyIndex)
+												{
+												newBody.Append(enumBody, lastBodyIndex, afterLastValueInBodyIndex - lastBodyIndex);
+												lastBodyIndex = afterLastValueInBodyIndex;
+												}
+
+											// Add all remaining values that don't appear in the body to it.
+											while (valueIndex < valueCount)
+												{
+												AddAsDefinitionListSymbol(elements[firstValueElementIndex + valueIndex].Topic, newBody);
+												valueIndex++;
+												}
+
+											// Add the last of the original body to it.
+											if (lastBodyIndex < enumBody.Length)
+												{
+												newBody.Append(enumBody, lastBodyIndex, enumBody.Length - lastBodyIndex);
+												lastBodyIndex = enumBody.Length;
+												}
+
+											break;
+											}
+										}
+
+									enumTopic.Body = newBody.ToString();
+									}
+								}
+							}
+						}
+
+					// elementIndex was already incremented
+					}
+
+				else // not an enum
+					{  elementIndex++;  }
+				}
+			}
+
+
+		/* Function: GetNextDefinitionListSymbol
+		 * Walks through the passed <NDMarkup>, stopping on definition list symbols enclosed in "<ds>" tags.  Returns whether
+		 * it found one, and if so, also returns its tag index (where the "<ds>" is), the name index and length, and the ending
+		 * index (after the "</ds>".)  You can pass an index into the <NDMarkup> where the search should start from.
+		 */
+		protected bool GetNextDefinitionListSymbol (string ndMarkup, int searchStartIndex, out int tagIndex, out int nameIndex,
+																		out int nameLength, out int endIndex)
+			{
+			tagIndex = ndMarkup.IndexOf("<ds>", searchStartIndex);
+
+			if (tagIndex == -1)
+				{
+				nameIndex = -1;
+				nameLength = 0;
+				endIndex = -1;
+				return false;
+				}
+
+			nameIndex = tagIndex + 4;  // move past "<ds>"
+			endIndex = ndMarkup.IndexOf("</ds>", nameIndex);
+
+			if (endIndex == -1)
+				{
+				tagIndex = -1;
+				nameIndex = -1;
+				nameLength = 0;
+				return false;
+				}
+
+			nameLength = endIndex - nameIndex;
+			endIndex += 5;  // move past "</ds>"
+
+			return true;
+			}
+
+
+		/* Function: AddAsDefinitionListSymbol
+		 * Adds the passed <Topic> as a definition list entry to the end of the StringBuilder.
+		 */
+		protected void AddAsDefinitionListSymbol (Topic topic, StringBuilder stringBuilder)
+			{
+			stringBuilder.Append("<ds>" + topic.Title + "</ds>");
+			stringBuilder.Append("<dd>");
+
+			if (topic.Body != null)
+				{  stringBuilder.Append(topic.Body);  }
+
+			stringBuilder.Append("</dd>");
+			}
+
+
+		/* Function: GetEndOfDefinitionListEntry
+		 * Assuming the index is on the beginning of a definition list entry (the "<de>" or "<ds>" tag), returns the index of the
+		 * end of the entry (after the "</dd>" tag.)
+		 */
+		protected int GetEndOfDefinitionListEntry (string ndMarkup, int beginningOfDefinitionListEntry)
+			{
+			#if DEBUG
+			if (string.Compare(ndMarkup, beginningOfDefinitionListEntry, "<de>", 0, 4) != 0 &&
+				string.Compare(ndMarkup, beginningOfDefinitionListEntry, "<ds>", 0, 4) != 0)
+				{  throw new Exception("beginningOfDefinitionListEntry must be on a <de> or a <ds>.");  }
+			#endif
+
+			// Find the following "</dd>".  +13 since we have to go at least that far to skip the "<ds>", "</ds>", and "<dd>".
+			int endOfDefinitionListEntry = ndMarkup.IndexOf("</dd>", beginningOfDefinitionListEntry + 13);
+
+			#if DEBUG
+			if (endOfDefinitionListEntry == -1)
+				{  throw new Exception("endOfDefinitionListEntry shouldn't be -1 because there should always be a </dd> following it.");  }
+			#endif
+
+			// Now move past the "</dd>"
+			endOfDefinitionListEntry += 5;
+
+			return endOfDefinitionListEntry;
 			}
 
 
@@ -5489,8 +6024,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						{  throw new Exception("All topics returned by GetCodeElements() must have comment type IDs.");  }
 					if (element.Topic.IsList)
 						{  throw new Exception("GetCodeElements() cannot return list topics.");  }
-					if (element.Topic.IsEmbedded)
-						{  throw new Exception("GetCodeElements() cannot return embedded topics.");  }
 					}
 
 				if ((mode == ValidateElementsMode.CommentElements ||
@@ -5678,6 +6211,5 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 		static protected Regex.Languages.ExtraOperatorWhitespace extraOperatorWhitespaceRegex
 			= new Regex.Languages.ExtraOperatorWhitespace();
-
 		}
 	}
