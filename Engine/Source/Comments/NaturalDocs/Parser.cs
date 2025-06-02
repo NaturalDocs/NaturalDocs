@@ -269,6 +269,32 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 			}
 
 
+		/* Function: Parse
+		 *
+		 * Attempts to parse the passed inline comment into a single <Topic>.  Returns it if it was successful, or null if not.  Only
+		 * these fields will be set:
+		 *
+		 *		- CommentLineNumber
+		 *		- Body
+		 *		- Summary
+		 */
+		public Topic Parse (InlineDocumentationComment comment)
+			{
+			// Create a separate Tokenizer from the comment bounds so we can use LineIterators and such.  This will filter out any
+			// non-comment tokens before the start of the comment.
+			Tokenizer tokenizer = Tokenizer.CreateFromIterators(comment.Start, comment.End);
+
+			LineIterator firstLine = tokenizer.FirstLine;
+
+			Topic topic = new Topic(EngineInstance.CommentTypes);
+			topic.CommentLineNumber = firstLine.LineNumber;
+
+			ParseBody(firstLine, tokenizer.EndOfLines, topic, inlineFormattingOnly: true);
+
+			return topic;
+			}
+
+
 		/* Function: LinkInterpretations
 		 *
 		 * Generates a list of possible interpretations for the passed target of a Natural Docs link, or null if there are none.  If
@@ -1594,7 +1620,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 		 * Parses the content between two <LineIterators> and adds its content to the <Topic> in <NDMarkup> as its body.
 		 * Also extracts the summary from it and adds it to the <Topic>.
 		 */
-		protected void ParseBody (LineIterator firstContentLine, LineIterator endOfContent, Topic topic)
+		protected void ParseBody (LineIterator firstContentLine, LineIterator endOfContent, Topic topic, bool inlineFormattingOnly = false)
 			{
 			LineIterator line = firstContentLine;
 			StringBuilder body = new StringBuilder();
@@ -1623,7 +1649,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 				// (start code)
 				// --- code
 
-				if (IsStartBlockLine(line, out blockChar, out blockType, out language))
+				if (!inlineFormattingOnly &&
+					IsStartBlockLine(line, out blockChar, out blockType, out language))
 					{
 					CloseAllBlocks(ref paragraph, ref definitionIndent, ref bulletIndents, body);
 
@@ -1689,7 +1716,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 				// Standalone preformatted blocks
 				// > code
 
-				else if (IsStandalonePreformattedLine(line, out tempString, out indent, out leadingCharacter))
+				else if (!inlineFormattingOnly &&
+						  IsStandalonePreformattedLine(line, out tempString, out indent, out leadingCharacter))
 					{
 					CloseAllBlocks(ref paragraph, ref definitionIndent, ref bulletIndents, body);
 
@@ -1720,7 +1748,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 				// Standalone image lines
 				// (see image.jpg)
 
-				else if (IsStandaloneImage(line, out filePath))
+				else if (!inlineFormattingOnly &&
+						  IsStandaloneImage(line, out filePath))
 					{
 					CloseAllBlocks(ref paragraph, ref definitionIndent, ref bulletIndents, body);
 
@@ -1741,7 +1770,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 				// Bullet lists
 				// - bullet
 
-				else if ( (prevLineBlank || (bulletIndents != null && bulletIndents.Count > 0)) &&
+				else if ( !inlineFormattingOnly &&
+						   (prevLineBlank || (bulletIndents != null && bulletIndents.Count > 0)) &&
 						   IsBulletLine(line, out tempString, out leadingCharacter, out indent) )
 					{
 					if (bulletIndents == null)
@@ -1803,7 +1833,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 				// Definition Lists
 				// item - definition
 
-				else if ( (prevLineBlank || definitionIndent != -1) &&
+				else if (!inlineFormattingOnly &&
+						   (prevLineBlank || definitionIndent != -1) &&
 						   IsDefinitionLine(line, out tempString, out tempString2, out indent) )
 					{
 					if (definitionIndent == -1)
@@ -1848,7 +1879,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 				// Headings
 				// heading:
 
-				else if (prevLineBlank && IsHeading(line, out tempString, out headingType))
+				else if (!inlineFormattingOnly &&
+						  prevLineBlank && IsHeading(line, out tempString, out headingType))
 					{
 					CloseAllBlocks(ref paragraph, ref definitionIndent, ref bulletIndents, body);
 
@@ -1877,7 +1909,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 
 				else if (line.IsEmpty(LineBoundsMode.CommentContent) || LineFinder.IsHorizontalLine(line))
 					{
-					CloseParagraph(ref paragraph, body);
+					CloseParagraph(ref paragraph, body, inlineFormattingOnly);
 					prevLineBlank = true;
 					line.Next();
 					}
@@ -1930,7 +1962,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 				}
 
 
-			CloseAllBlocks(ref paragraph, ref definitionIndent, ref bulletIndents, body);
+			CloseAllBlocks(ref paragraph, ref definitionIndent, ref bulletIndents, body, inlineFormattingOnly);
 
 			if (body.Length > 0)
 				{
@@ -1994,11 +2026,11 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 		 * If the paragraph isn't null or empty, convert its contents to <NDMarkup>, add it to the body along with a closing </p>,
 		 *	and empty it.
 		 */
-		protected void CloseParagraph (ref StringBuilder paragraph, StringBuilder body)
+		protected void CloseParagraph (ref StringBuilder paragraph, StringBuilder body, bool inlineFormattingOnly = false)
 			{
 			if (paragraph != null && paragraph.Length > 0)
 				{
-				ParseTextBlock(paragraph.ToString(), body);
+				ParseTextBlock(paragraph.ToString(), body, inlineFormattingOnly);
 				body.Append("</p>");
 
 				paragraph.Remove(0, paragraph.Length);
@@ -2018,9 +2050,10 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 		 *		bulletIndents - If this isn't null or empty, adds a closing </li></ul> for every entry on the list and empties it.
 		 *
 		 */
-		protected void CloseAllBlocks (ref StringBuilder paragraph, ref int definitionIndent, ref List<int> bulletIndents, StringBuilder body)
+		protected void CloseAllBlocks (ref StringBuilder paragraph, ref int definitionIndent, ref List<int> bulletIndents, StringBuilder body,
+													bool inlineFormattingOnly = false)
 			{
-			CloseParagraph(ref paragraph, body);
+			CloseParagraph(ref paragraph, body, inlineFormattingOnly);
 
 			if (definitionIndent != -1)
 				{
@@ -2041,20 +2074,25 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 		/* Function: ParseTextBlock
 		 * Parses a block of text for inline tags and adds it to the StringBuilder as <NDMarkup>.
 		 */
-		protected void ParseTextBlock (string input, StringBuilder output)
+		protected void ParseTextBlock (string input, StringBuilder output, bool inlineFormattingOnly = false)
 			{
 			Tokenizer tokenizer = new Tokenizer(input, tabWidth: EngineInstance.Config.TabWidth);
 
 			// The order of these function calls is important.  Read each of their descriptions.
 			MarkPossibleFormattingTags(tokenizer);
 			MarkPossibleLinkTags(tokenizer);
-			MarkPossibleInlineImageTags(tokenizer);
+
+			if (!inlineFormattingOnly)
+				{  MarkPossibleInlineImageTags(tokenizer);  }
 
 			MarkEMailAddresses(tokenizer);
 			MarkURLs(tokenizer);
 
 			FinalizeLinkTags(tokenizer);
-			FinalizeInlineImageTags(tokenizer);
+
+			if (!inlineFormattingOnly)
+				{  FinalizeInlineImageTags(tokenizer);  }
+
 			FinalizeFormattingTags(tokenizer);
 
 			MarkedTokensToNDMarkup(tokenizer, output);

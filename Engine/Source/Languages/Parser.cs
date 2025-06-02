@@ -1363,6 +1363,116 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			}
 
 
+		/* Function: GetInlineDocumentationComment
+		 *
+		 * If the iterator is on an inline comment suitable for documentation, returns it as a <InlineDocumentationComment>, or
+		 * null if not.  The iterator will not be moved.
+		 *
+		 * The comment will have its comment symbols marked as <CommentParsingType.CommentSymbol> in the tokenizer.  This
+		 * allows further operations to be done on it in a language independent manner.
+		 *
+		 * Default Implementation:
+		 *
+		 *		The default implementation uses the comment symbols found in <Language>.
+		 *
+		 *		The comment must be at the end of a line to be a candidate for documentation, so the comment symbol must be the
+		 *		next non-whitespace character on the line, and in the case of block comments, nothing but whitespace may trail the
+		 *		closing symbol.
+		 *
+		 *		Multiple consecutive line comments are allowed but they must be continuous and the later line comments must be
+		 *		alone on their lines.
+		 */
+		virtual public InlineDocumentationComment GetInlineDocumentationComment (TokenIterator iterator)
+			{
+			if (language.Type == Language.LanguageType.Container ||
+				language.Type == Language.LanguageType.TextFile)
+				{  throw new Exceptions.BadContainerOperation("GetInlineDocumentationComment");  }
+
+			while (iterator.FundamentalType == FundamentalType.Whitespace)
+				{  iterator.Next();  }
+
+			TokenIterator startOfComment = iterator;
+
+
+			// Block comment
+
+			// We test block comments ahead of line comments because in Lua the line comments are a substring of them: --
+			// versus --[[ and ]]--.
+
+			if (TryToSkipBlockComment(ref iterator, out string openingSymbol, out string closingSymbol))
+				{
+				TokenIterator endOfComment = iterator;
+
+				// Check that there's nothing after the closing symbol on the line
+				while (iterator.FundamentalType == FundamentalType.Whitespace)
+					{  iterator.Next();  }
+
+				if (iterator.IsInBounds &&
+					iterator.FundamentalType != FundamentalType.LineBreak)
+					{  return null;  }
+
+				// Mark the comment symbols
+				startOfComment.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, openingSymbol.Length);
+
+				TokenIterator lookbehind = endOfComment;
+				lookbehind.PreviousByCharacters(closingSymbol.Length);
+				lookbehind.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, closingSymbol.Length);
+
+				// Create and return the comment
+				InlineDocumentationComment comment = new InlineDocumentationComment();
+				comment.Start = startOfComment;
+				comment.End = endOfComment;
+				return comment;
+				}
+
+
+			// Line comment
+
+			else if (TryToSkipLineComment(ref iterator, out string firstCommentSymbol))
+				{
+				TokenIterator endOfComment = iterator;
+
+				// Mark the comment symbols
+				startOfComment.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, firstCommentSymbol.Length);
+
+				// TryToSkipLineComment leaves the iterator at the line break or end of content
+
+				// Find additional lines
+				while (iterator.IsInBounds &&
+						 iterator.FundamentalType == FundamentalType.LineBreak)
+					{
+					iterator.Next();
+
+					while (iterator.FundamentalType == FundamentalType.Whitespace)
+						{  iterator.Next();  }
+
+					TokenIterator startOfNextCommentLine = iterator;
+
+					if (TryToSkipLineComment(ref iterator, out string nextCommentSymbol) &&
+						nextCommentSymbol == firstCommentSymbol)
+						{
+						startOfNextCommentLine.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol,
+																													nextCommentSymbol.Length);
+						endOfComment = iterator;
+						}
+					else
+						{  break;  }
+					}
+
+				// Create and return the comment
+				InlineDocumentationComment comment = new InlineDocumentationComment();
+				comment.Start = startOfComment;
+				comment.End = endOfComment;
+				return comment;
+				}
+
+
+			// Not on a comment
+			else
+				{  return null;  }
+			}
+
+
 		/* Function: IsBuiltInType
 		 * Returns whether the type string is a built-in type such as "int" as opposed to a user-defined type.
 		 */

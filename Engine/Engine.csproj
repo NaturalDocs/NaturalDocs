@@ -47,6 +47,7 @@
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Source\Comments\InlineDocumentationComment.cs" />
     <Compile Include="Source\Comments\NaturalDocs\Config.cs" />
     <Compile Include="Source\Comments\NaturalDocs\ConfigFiles\BinaryFileParser.cs" />
     <Compile Include="Source\Comments\NaturalDocs\ConfigFiles\TextFileParser.cs" />

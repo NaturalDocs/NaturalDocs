@@ -95,6 +95,21 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 			}
 
 
+		/* Function: Parse
+		 *
+		 * Attempts to parse the passed inline comment into a single <Topic>.  Returns it if it was successful, or null if not.  Only
+		 * these fields will be set:
+		 *
+		 *		- CommentLineNumber
+		 *		- Body
+		 *		- Summary
+		 */
+		public Topic Parse (InlineDocumentationComment comment)
+			{
+			return naturalDocsParser.Parse(comment);
+			}
+
+
 
 		// Group: Properties
 		// __________________________________________________________________________
