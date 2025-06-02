@@ -1,0 +1,741 @@
+
+Group: No Descriptions
+
+-----
+
+Enum: NoDescriptionsA
+
+   Prototype: enum NoDescriptionsA
+
+   Members:
+      A
+      B
+      C
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Enum: NoDescriptionsB
+
+   Prototype: enum NoDescriptionsB
+
+   Members:
+      A
+      B
+      C
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Enum: NoDescriptionsC
+
+   Prototype: [Flags] enum NoDescriptionsC : byte
+
+   Members:
+      A
+      B
+      C
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Group: Descriptions in Comment
+
+-----
+
+Enum: DescriptionsInCommentA
+
+   Prototype: enum DescriptionsInCommentA
+
+   Members:
+      A - <p>Comment description of A</p>
+      B - <p>Comment description of B</p>
+      C - <p>Comment description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Comment description of A</p></dd><ds>B</ds><dd><p>Comment description of B</p></dd><ds>C</ds><dd><p>Comment description of C</p></dd></dl>
+
+-----
+
+Enum: DescriptionsInCommentB
+
+   Prototype: enum DescriptionsInCommentB
+
+   Members:
+      A - <p>Comment description of A</p>
+      B - <p>Comment description of B</p>
+      C - <p>Comment description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Comment description of A</p></dd><ds>B</ds><dd><p>Comment description of B</p></dd><ds>C</ds><dd><p>Comment description of C</p></dd></dl>
+
+-----
+
+Enum: DescriptionsInCommentC
+
+   Prototype: [Flags] enum DescriptionsInCommentC : byte
+
+   Members:
+      A - <p>Comment description of A</p>
+      B - <p>Comment description of B</p>
+      C - <p>Comment description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Comment description of A</p></dd><ds>B</ds><dd><p>Comment description of B</p></dd><ds>C</ds><dd><p>Comment description of C</p></dd></dl>
+
+-----
+
+Group: Descriptions Inline
+
+-----
+
+Enum: DescriptionsInlineA
+
+   Prototype: enum DescriptionsInlineA
+
+   Members:
+      A - <p>Inline description of A</p>
+      B - <p>Inline description of B</p>
+      C - <p>Inline description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Inline description of A</p></dd><ds>B</ds><dd><p>Inline description of B</p></dd><ds>C</ds><dd><p>Inline description of C</p></dd></dl>
+
+-----
+
+Enum: DescriptionsInlineB
+
+   Prototype: enum DescriptionsInlineB
+
+   Members:
+      A - <p>Inline description of A</p>
+      B - <p>Inline description of B</p>
+      C - <p>Inline description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Inline description of A</p></dd><ds>B</ds><dd><p>Inline description of B</p></dd><ds>C</ds><dd><p>Inline description of C</p></dd></dl>
+
+-----
+
+Enum: DescriptionsInlineC
+
+   Prototype: [Flags] enum DescriptionsInlineC : byte
+
+   Members:
+      A - <p>Inline description of A</p>
+      B - <p>Inline description of B</p>
+      C - <p>Inline description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Inline description of A</p></dd><ds>B</ds><dd><p>Inline description of B</p></dd><ds>C</ds><dd><p>Inline description of C</p></dd></dl>
+
+-----
+
+Group: Descriptions in Both
+
+-----
+
+Enum: DescriptionsInBothA
+
+   Prototype: enum DescriptionsInBothA
+
+   Members:
+      A - <p>Comment description of A</p>
+      B - <p>Comment description of B</p>
+      C - <p>Comment description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Comment description of A</p></dd><ds>B</ds><dd><p>Comment description of B</p></dd><ds>C</ds><dd><p>Comment description of C</p></dd></dl>
+
+-----
+
+Enum: DescriptionsInBothB
+
+   Prototype: enum DescriptionsInBothB
+
+   Members:
+      A - <p>Comment description of A</p>
+      B - <p>Comment description of B</p>
+      C - <p>Comment description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Comment description of A</p></dd><ds>B</ds><dd><p>Comment description of B</p></dd><ds>C</ds><dd><p>Comment description of C</p></dd></dl>
+
+-----
+
+Enum: DescriptionsInBothC
+
+   Prototype: [Flags] enum DescriptionsInBothC : byte
+
+   Members:
+      A - <p>Comment description of A</p>
+      B - <p>Comment description of B</p>
+      C - <p>Comment description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Comment description of A</p></dd><ds>B</ds><dd><p>Comment description of B</p></dd><ds>C</ds><dd><p>Comment description of C</p></dd></dl>
+
+-----
+
+Group: Mixed Descriptions
+
+-----
+
+Enum: MixedDescriptionsA
+
+   Prototype: enum MixedDescriptionsA
+
+   Members:
+      A - <p>Comment description of A</p>
+      B - <p>Inline description of B</p>
+      C - <p>Inline description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Comment description of A</p></dd><ds>B</ds><dd><p>Inline description of B</p></dd><ds>C</ds><dd><p>Inline description of C</p></dd></dl>
+
+-----
+
+Enum: MixedDescriptionsB
+
+   Prototype: enum MixedDescriptionsB
+
+   Members:
+      A - <p>Inline description of A</p>
+      B - <p>Inline description of B</p>
+      C - <p>Comment description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Inline description of A</p></dd><ds>B</ds><dd><p>Inline description of B</p></dd><ds>C</ds><dd><p>Comment description of C</p></dd></dl>
+
+-----
+
+Enum: MixedDescriptionsC
+
+   Prototype: [Flags] enum MixedDescriptionsC : byte
+
+   Members:
+      A - <p>Comment description of A</p>
+      B - <p>Inline description of B</p>
+      C - <p>Comment description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Comment description of A</p></dd><ds>B</ds><dd><p>Inline description of B</p></dd><ds>C</ds><dd><p>Comment description of C</p></dd></dl>
+
+-----
+
+Group: Multiline Descriptions
+
+-----
+
+Enum: MultilineLineCommentsA
+
+   Prototype: enum MultilineLineCommentsA
+
+   Members:
+      A - <p>Line comment description of A line 1.  Line comment description of A line 2.</p>
+      B - <p>Line comment description of B line 1.</p><p>Line comment description of B line 3, new paragraph.</p>
+      C - <p>Line comment description of C line 1.</p>
+      D - <p>Line comment description of D line 1.  Line comment description of D line 2.</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Line comment description of A line 1.  Line comment description of A line 2.</p></dd><ds>B</ds><dd><p>Line comment description of B line 1.</p><p>Line comment description of B line 3, new paragraph.</p></dd><ds>C</ds><dd><p>Line comment description of C line 1.</p></dd><ds>D</ds><dd><p>Line comment description of D line 1.  Line comment description of D line 2.</p></dd></dl>
+
+-----
+
+Enum: MultilineLineCommentsB
+
+   Prototype: enum MultilineLineCommentsB
+
+   Members:
+      A - <p>Line comment description of A line 1.  Line comment description of A line 2.</p>
+      B - <p>Line comment description of B line 1.</p><p>Line comment description of B line 3, new paragraph.</p>
+      C - <p>Line comment description of C line 1.</p>
+      D - <p>Line comment description of D line 1.  Line comment description of D line 2.</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Line comment description of A line 1.  Line comment description of A line 2.</p></dd><ds>B</ds><dd><p>Line comment description of B line 1.</p><p>Line comment description of B line 3, new paragraph.</p></dd><ds>C</ds><dd><p>Line comment description of C line 1.</p></dd><ds>D</ds><dd><p>Line comment description of D line 1.  Line comment description of D line 2.</p></dd></dl>
+
+-----
+
+Enum: MultilineBlockCommentsA
+
+   Prototype: enum MultilineBlockCommentsA
+
+   Members:
+      A - <p>Block comment description of A line 1.  Block comment description of A line 2.</p>
+      B - <p>Block comment description of B line 1.  Block comment description of B line 2.</p>
+      C - <p>Block comment description of C line 1.</p><p>Block comment description of C line 3, new paragraph.</p>
+      D - <p>Block comment description of D line 1.</p><p>Block comment description of D line 3, new paragraph.</p>
+      E - <p>Block comment description of E line 1.</p><p>Block comment description of E line 3, new paragraph.</p>
+      F - <p>Block comment description of F line 1.</p><p>Block comment description of F line 3, new paragraph.</p>
+      G - <p>Block comment description of G line 1.</p>
+      H - <p>Block comment description of H line 1.</p>
+      I - <p>Block comment description of I line 1.  Block comment description of I line 2.</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Block comment description of A line 1.  Block comment description of A line 2.</p></dd><ds>B</ds><dd><p>Block comment description of B line 1.  Block comment description of B line 2.</p></dd><ds>C</ds><dd><p>Block comment description of C line 1.</p><p>Block comment description of C line 3, new paragraph.</p></dd><ds>D</ds><dd><p>Block comment description of D line 1.</p><p>Block comment description of D line 3, new paragraph.</p></dd><ds>E</ds><dd><p>Block comment description of E line 1.</p><p>Block comment description of E line 3, new paragraph.</p></dd><ds>F</ds><dd><p>Block comment description of F line 1.</p><p>Block comment description of F line 3, new paragraph.</p></dd><ds>G</ds><dd><p>Block comment description of G line 1.</p></dd><ds>H</ds><dd><p>Block comment description of H line 1.</p></dd><ds>I</ds><dd><p>Block comment description of I line 1.  Block comment description of I line 2.</p></dd></dl>
+
+-----
+
+Enum: MultilineBlockCommentsB
+
+   Prototype: enum MultilineBlockCommentsB
+
+   Members:
+      A - <p>Block comment description of A line 1.  Block comment description of A line 2.</p>
+      B - <p>Block comment description of B line 1.  Block comment description of B line 2.</p>
+      C - <p>Block comment description of C line 1.</p><p>Block comment description of C line 3, new paragraph.</p>
+      D - <p>Block comment description of D line 1.</p><p>Block comment description of D line 3, new paragraph.</p>
+      E - <p>Block comment description of E line 1.</p><p>Block comment description of E line 3, new paragraph.</p>
+      F - <p>Block comment description of F line 1.</p><p>Block comment description of F line 3, new paragraph.</p>
+      G - <p>Block comment description of G line 1.</p>
+      H - <p>Block comment description of H line 1.</p>
+      I - <p>Block comment description of I line 1.  Block comment description of I line 2.</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Block comment description of A line 1.  Block comment description of A line 2.</p></dd><ds>B</ds><dd><p>Block comment description of B line 1.  Block comment description of B line 2.</p></dd><ds>C</ds><dd><p>Block comment description of C line 1.</p><p>Block comment description of C line 3, new paragraph.</p></dd><ds>D</ds><dd><p>Block comment description of D line 1.</p><p>Block comment description of D line 3, new paragraph.</p></dd><ds>E</ds><dd><p>Block comment description of E line 1.</p><p>Block comment description of E line 3, new paragraph.</p></dd><ds>F</ds><dd><p>Block comment description of F line 1.</p><p>Block comment description of F line 3, new paragraph.</p></dd><ds>G</ds><dd><p>Block comment description of G line 1.</p></dd><ds>H</ds><dd><p>Block comment description of H line 1.</p></dd><ds>I</ds><dd><p>Block comment description of I line 1.  Block comment description of I line 2.</p></dd></dl>
+
+-----
+
+Group: No Comments
+
+-----
+
+Enum: NoCommentsA
+
+   Prototype: enum NoCommentsA
+
+   Members:
+      A
+      B
+      C
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Enum: NoCommentsB
+
+   Prototype: enum NoCommentsB
+
+   Members:
+      A - <p>Inline description of A</p>
+      B - <p>Inline description of B</p>
+      C - <p>Inline description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Inline description of A</p></dd><ds>B</ds><dd><p>Inline description of B</p></dd><ds>C</ds><dd><p>Inline description of C</p></dd></dl>
+
+-----
+
+Enum: NoCommentsC
+
+   Prototype: [Flags] enum NoCommentsC : byte
+
+   Members:
+      A - <p>Inline description of A</p>
+      B
+      C - <p>Inline description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Inline description of A</p></dd><ds>B</ds><dd></dd><ds>C</ds><dd><p>Inline description of C</p></dd></dl>
+
+-----
+
+Enum: EmptyInlineComments
+
+   Prototype: enum EmptyInlineComments
+
+   Members:
+      A
+      B
+      C
+      D
+      E
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd><ds>D</ds><dd></dd><ds>E</ds><dd></dd></dl>
+
+-----
+
+Group: Formatting
+
+-----
+
+Enum: BasicFormatting
+
+   Prototype: enum BasicFormatting
+
+   Members:
+      A - <p>Comment description of A with <b>bold</b> and <u>underline</u> and <link type="email" target="email@addresses.com"> and <link type="url" target="https://www.naturaldocs.org"> and <link type="url" target="https://www.naturaldocs.org" text="named links">.</p>
+      B - <p>Inline description of B with <b>bold</b> and <u>underline</u> and <link type="email" target="email@addresses.com"> and <link type="url" target="https://www.naturaldocs.org"> and <link type="url" target="https://www.naturaldocs.org" text="named links">.</p>
+      C - <p>Inline description of C with <b>bold</b> and <u>underline</u> and <link type="email" target="email@addresses.com"> and <link type="url" target="https://www.naturaldocs.org"> and <link type="url" target="https://www.naturaldocs.org" text="named links">.</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Comment description of A with <b>bold</b> and <u>underline</u> and <link type="email" target="email@addresses.com"> and <link type="url" target="https://www.naturaldocs.org"> and <link type="url" target="https://www.naturaldocs.org" text="named links">.</p></dd><ds>B</ds><dd><p>Inline description of B with <b>bold</b> and <u>underline</u> and <link type="email" target="email@addresses.com"> and <link type="url" target="https://www.naturaldocs.org"> and <link type="url" target="https://www.naturaldocs.org" text="named links">.</p></dd><ds>C</ds><dd><p>Inline description of C with <b>bold</b> and <u>underline</u> and <link type="email" target="email@addresses.com"> and <link type="url" target="https://www.naturaldocs.org"> and <link type="url" target="https://www.naturaldocs.org" text="named links">.</p></dd></dl>
+
+-----
+
+Group: Headerless Comments
+
+-----
+
+Enum: HeaderlessComments
+
+   Prototype: enum HeaderlessComments
+
+   Members:
+      A - <p>Comment description of A</p>
+      B - <p>Comment description of B</p>
+      C - <p>Inline description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Comment description of A</p></dd><ds>B</ds><dd><p>Comment description of B</p></dd><ds>C</ds><dd><p>Inline description of C</p></dd></dl>
+
+-----
+
+Group: Traps
+
+-----
+
+Enum: ExtraCommentTrapsA
+
+   Prototype: enum ExtraCommentTrapsA
+
+   Members:
+      A - <p>Inline description of A</p>
+      B - <p>Inline description of B</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Inline description of A</p></dd><ds>B</ds><dd><p>Inline description of B</p></dd></dl>
+
+-----
+
+Enum: ExtraCommentTrapsB
+
+   Prototype: enum ExtraCommentTrapsB
+
+   Members:
+      A
+      B
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd></dl>
+
+-----
+
+Enum: LineBreakTraps
+
+   Prototype: enum LineBreakTraps
+
+   Members:
+      A - <p>Acceptable description of A</p>
+      B - <p>Acceptable description of B</p>
+      C
+      D
+      E - <p>Acceptable description of E</p>
+      F - <p>Acceptable description of F</p>
+      G
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Acceptable description of A</p></dd><ds>B</ds><dd><p>Acceptable description of B</p></dd><ds>C</ds><dd></dd><ds>D</ds><dd></dd><ds>E</ds><dd><p>Acceptable description of E</p></dd><ds>F</ds><dd><p>Acceptable description of F</p></dd><ds>G</ds><dd></dd></dl>
+
+-----
+
+Enum: CommentAfterCloseA
+
+   Prototype: enum CommentAfterCloseA
+
+   Members:
+      A
+      B
+      C - <p>Description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd><p>Description of C</p></dd></dl>
+
+-----
+
+Enum: CommentAfterCloseB
+
+   Prototype: enum CommentAfterCloseB
+
+   Members:
+      A
+      B
+      C - <p>Description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd><p>Description of C</p></dd></dl>
+
+-----
+
+Enum: CommentAfterCloseC
+
+   Prototype: enum CommentAfterCloseC
+
+   Members:
+      A
+      B
+      C - <p>Description of C.  Continuation of description of C.</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd><p>Description of C.  Continuation of description of C.</p></dd></dl>
+
+-----
+
+Enum: CommentAfterCloseD
+
+   Prototype: enum CommentAfterCloseD
+
+   Members:
+      A
+      B
+      C - <p>Description of C.  Continuation of description of C.</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd><p>Description of C.  Continuation of description of C.</p></dd></dl>
+
+-----
+
+Enum: MixedCommentTypes
+
+   Prototype: enum MixedCommentTypes
+
+   Members:
+      A - <p>Description of A</p>
+      B - <p>Description of B</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Description of A</p></dd><ds>B</ds><dd><p>Description of B</p></dd></dl>
+
+-----
+
+Enum: ExtraInCode_InOrderA
+
+   Prototype: enum ExtraInCode_InOrderA
+
+   Members:
+      A
+      B - <p>Description of B</p>
+      C - <p>Description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd><p>Description of B</p></dd><ds>C</ds><dd><p>Description of C</p></dd></dl>
+
+-----
+
+Enum: ExtraInCode_InOrderB
+
+   Prototype: enum ExtraInCode_InOrderB
+
+   Members:
+      A - <p>Description of A</p>
+      B - <p>Description of B</p>
+      C
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Description of A</p></dd><ds>B</ds><dd><p>Description of B</p></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Enum: ExtraInCode_InOrderC
+
+   Prototype: enum ExtraInCode_InOrderC
+
+   Members:
+      A - <p>Description of A</p>
+      B
+      C - <p>Description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Description of A</p></dd><ds>B</ds><dd></dd><ds>C</ds><dd><p>Description of C</p></dd></dl>
+
+-----
+
+Enum: ExtraInCode_InOrderD
+
+   Prototype: enum ExtraInCode_InOrderD
+
+   Members:
+      A
+      B
+      C - <p>Description of C</p>
+      D
+      E
+      F - <p>Description of F</p>
+      G
+      H - <p>Description of H</p>
+      I - <p>Description of I</p>
+      J
+      K
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd><p>Description of C</p></dd><ds>D</ds><dd></dd><ds>E</ds><dd></dd><ds>F</ds><dd><p>Description of F</p></dd><ds>G</ds><dd></dd><ds>H</ds><dd><p>Description of H</p></dd><ds>I</ds><dd><p>Description of I</p></dd><ds>J</ds><dd></dd><ds>K</ds><dd></dd></dl>
+
+-----
+
+Enum: ExtraInCode_OutOfOrderA
+
+   Prototype: enum ExtraInCode_OutOfOrderA
+
+   Members:
+      A - <p>Description of A</p>
+      B - <p>Description of B</p>
+      C
+      D
+
+   Body: <h>Values</h><dl><ds>B</ds><dd><p>Description of B</p></dd><ds>A</ds><dd><p>Description of A</p></dd><ds>C</ds><dd></dd><ds>D</ds><dd></dd></dl>
+
+-----
+
+Enum: ExtraInCode_OutOfOrderB
+
+   Prototype: enum ExtraInCode_OutOfOrderB
+
+   Members:
+      D
+      C
+      B - <p>Description of B</p>
+      A - <p>Description of A</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Description of A</p></dd><ds>B</ds><dd><p>Description of B</p></dd><ds>D</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Enum: ExtraInCode_OutOfOrderC
+
+   Prototype: enum ExtraInCode_OutOfOrderC
+
+   Members:
+      A
+      B - <p>Description of B</p>
+      C - <p>Description of C</p>
+      D
+
+   Body: <h>Values</h><dl><ds>C</ds><dd><p>Description of C</p></dd><ds>B</ds><dd><p>Description of B</p></dd><ds>A</ds><dd></dd><ds>D</ds><dd></dd></dl>
+
+-----
+
+Enum: ExtraInComment
+
+   Prototype: enum ExtraInComment
+
+   Members:
+      A - <p>Comment description of A</p>
+      B - <p>Comment description of B</p>
+      C - <p>Comment description of C</p>
+      D - <p>Comment description of non-existent D</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Comment description of A</p></dd><ds>B</ds><dd><p>Comment description of B</p></dd><ds>C</ds><dd><p>Comment description of C</p></dd><ds>D</ds><dd><p>Comment description of non-existent D</p></dd></dl>
+
+-----
+
+Enum: ContentSurroundingList_InOrder
+
+   Prototype: enum ContentSurroundingList_InOrder
+
+   Members:
+      A - <p>Comment description of A</p>
+      B - <p>Inline description of B</p>
+      C - <p>Comment description of C</p>
+
+   Body: <p>This paragraph appears before the list.</p><dl><ds>A</ds><dd><p>Comment description of A</p></dd><ds>B</ds><dd><p>Inline description of B</p></dd><ds>C</ds><dd><p>Comment description of C</p></dd></dl><p>This paragraph appears after the list.</p>
+
+-----
+
+Enum: ContentSurroundingList_OutOfOrder
+
+   Prototype: enum ContentSurroundingList_OutOfOrder
+
+   Members:
+      A - <p>Comment description of A</p>
+      B - <p>Inline description of B</p>
+      C - <p>Comment description of C</p>
+
+   Body: <p>This paragraph appears before the list.</p><dl><ds>C</ds><dd><p>Comment description of C</p></dd><ds>A</ds><dd><p>Comment description of A</p></dd><ds>B</ds><dd><p>Inline description of B</p></dd></dl><p>This paragraph appears after the list.</p>
+
+-----
+
+Enum: ListTopic
+
+   Prototype: (none)
+
+   Members:
+      ListEnumA - <p>Comment description of ListEnumA</p>
+      ListEnumB - <p>Comment description of ListEnumB</p>
+      ListEnumC - <p>Comment description of ListEnumC</p>
+      A - <p>Comment description of A, but it's not valid to document them this way</p>
+      B - <p>Comment description of B, but it's not valid to document them this way</p>
+      E - <p>Comment description of E, but it's not valid to document them this way</p>
+      F - <p>Comment description of F, but it's not valid to document them this way</p>
+      G - <p>Comment description of G, but it's not valid to document them this way</p>
+      I - <p>Comment description of I, but it's not valid to document them this way</p>
+
+   Body: <dl><ds>ListEnumA</ds><dd><p>Comment description of ListEnumA</p></dd><ds>ListEnumB</ds><dd><p>Comment description of ListEnumB</p></dd><ds>ListEnumC</ds><dd><p>Comment description of ListEnumC</p></dd></dl><h>Values</h><dl><ds>A</ds><dd><p>Comment description of A, but it's not valid to document them this way</p></dd><ds>B</ds><dd><p>Comment description of B, but it's not valid to document them this way</p></dd><ds>E</ds><dd><p>Comment description of E, but it's not valid to document them this way</p></dd><ds>F</ds><dd><p>Comment description of F, but it's not valid to document them this way</p></dd><ds>G</ds><dd><p>Comment description of G, but it's not valid to document them this way</p></dd><ds>I</ds><dd><p>Comment description of I, but it's not valid to document them this way</p></dd></dl>
+
+-----
+
+Enum: DuplicatesInComment
+
+   Prototype: enum DuplicatesInComment
+
+   Members:
+      A - <p>First comment description of A</p>
+      B - <p>First comment description of B</p>
+      A - <p>Second comment description of A</p>
+      B - <p>Second comment description of B</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>First comment description of A</p></dd><ds>A</ds><dd><p>Second comment description of A</p></dd><ds>B</ds><dd><p>First comment description of B</p></dd><ds>B</ds><dd><p>Second comment description of B</p></dd></dl>
+
+-----
+
+Enum: DuplicatesInCodeA
+
+   Prototype: enum DuplicatesInCodeA
+
+   Members:
+      A - <p>Comment description of A</p>
+      A
+      B - <p>Comment description of B</p>
+      B - <p>Second inline description of B</p>
+      C - <p>Comment description of C</p>
+      C
+      D - <p>Comment description of D</p>
+      D - <p>Inline description of D</p>
+
+   Body: <p>This isn't valid C# but we still want the parser to not crash on it.</p><h>Values</h><dl><ds>A</ds><dd><p>Comment description of A</p></dd><ds>A</ds><dd></dd><ds>B</ds><dd><p>Comment description of B</p></dd><ds>B</ds><dd><p>Second inline description of B</p></dd><ds>C</ds><dd><p>Comment description of C</p></dd><ds>C</ds><dd></dd><ds>D</ds><dd><p>Comment description of D</p></dd><ds>D</ds><dd><p>Inline description of D</p></dd></dl>
+
+-----
+
+Enum: DuplicatesInCodeB
+
+   Prototype: enum DuplicatesInCodeB
+
+   Members:
+      A
+      A
+      B - <p>First inline description of B</p>
+      B - <p>Second inline description of B</p>
+      C - <p>Inline description of C</p>
+      C
+      D
+      D - <p>Inline description of D</p>
+
+   Body: <p>This isn't valid C# but we still want the parser to not crash on it.</p><h>Values</h><dl><ds>A</ds><dd></dd><ds>A</ds><dd></dd><ds>B</ds><dd><p>First inline description of B</p></dd><ds>B</ds><dd><p>Second inline description of B</p></dd><ds>C</ds><dd><p>Inline description of C</p></dd><ds>C</ds><dd></dd><ds>D</ds><dd></dd><ds>D</ds><dd><p>Inline description of D</p></dd></dl>
+
+-----
+
+Enum: MissingValuesA
+
+   Prototype: (none)
+
+   Members:
+      A - <p>Comment description of A</p>
+      B - <p>Comment description of B</p>
+      C - <p>Comment description of C</p>
+
+   Body: <p>This isn't valid C# but we still want the parser to not crash on it.</p><h>Values</h><dl><ds>A</ds><dd><p>Comment description of A</p></dd><ds>B</ds><dd><p>Comment description of B</p></dd><ds>C</ds><dd><p>Comment description of C</p></dd></dl>
+
+-----
+
+Enum: MissingValuesB
+
+   Prototype: (none)
+
+   Members: (none)
+
+   Body: <p>This isn't valid C# but we still want the parser to not crash on it.</p>
+
+-----
+
+Enum: NoDefinitionA
+
+   Prototype: (none)
+
+   Members: (none)
+
+   Body: <p>This is valid, we just want to make sure the parser handles it.</p>
+
+-----
+
+Enum: NoDefinitionB
+
+   Prototype: (none)
+
+   Members:
+      A - <p>Comment description of A</p>
+      B - <p>Comment description of B</p>
+      C - <p>Comment description of C</p>
+
+   Body: <p>This is valid, we just want to make sure the parser handles it.</p><h>Values</h><dl><ds>A</ds><dd><p>Comment description of A</p></dd><ds>B</ds><dd><p>Comment description of B</p></dd><ds>C</ds><dd><p>Comment description of C</p></dd></dl>

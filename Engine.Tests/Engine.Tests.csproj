@@ -117,6 +117,7 @@
     <Compile Include="Source\Languages\C#\AttributeInheritance.cs" />
     <Compile Include="Source\Languages\C#\CommentDetection.cs" />
     <Compile Include="Source\Languages\C#\CommentMerging.cs" />
+    <Compile Include="Source\Languages\C#\Enums.cs" />
     <Compile Include="Source\Languages\C#\PrototypeParsing.cs" />
     <Compile Include="Source\Languages\PowerShell\CommentDetection.cs" />
     <Compile Include="Source\Languages\PHP\PrototypeParsing.cs" />
