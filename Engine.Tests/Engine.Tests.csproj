@@ -73,6 +73,7 @@
     <Compile Include="Source\Framework\TestTypes\CommentTypeDetection.cs" />
     <Compile Include="Source\Framework\TestTypes\HTML.cs" />
     <Compile Include="Source\Framework\TestTypes\CommentTypesAndSymbols.cs" />
+    <Compile Include="Source\Framework\TestTypes\Enums.cs" />
     <Compile Include="Source\Framework\TestTypes\TopicBodies.cs" />
     <Compile Include="Source\Framework\TestTypes\VersionStrings.cs" />
     <Compile Include="Source\Framework\TestTypes\LinkInterpretations.cs" />
