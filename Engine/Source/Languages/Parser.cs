@@ -256,14 +256,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					{  return ParseResult.Cancelled;  }
 
 
-				#if DEBUG
-					ValidateElements(elements, ValidateElementsMode.MergedElements);
-				#endif
-
-
 				// Make sure all enum topics have their values in their bodies.
 
 				AddEnumValuesToBodies(elements);
+
+
+				#if DEBUG
+					ValidateElements(elements, ValidateElementsMode.MergedElements);
+				#endif
 
 
 				// Remove code topics if --documented-only is on.  We do this after merging and keep all the original elements so that the
