@@ -29,11 +29,12 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 
 		/* Function: MarkTextBoxes
 		 *
-		 * Finds all text boxes in a comment and marks their tokens as <Tokenization.CommentParsingType.CommentDecoration>.
-		 * Vertical lines will only be detected if they are continuous throughout the comment and horizontal lines if they
-		 * are connected to it.  Freestanding horizontal lines are *not* detected here.  This function tolerates differing
-		 * symbols on corners and where embedded horizontal lines connect to the vertical.  It also tolerates tokens
-		 * marked with <Tokenization.CommentParsingType.CommentSymbol> differing.
+		 * Finds all text boxes in a <PossibleDocumentationComment> and marks the tokens as
+		 * <CommentParsingType.CommentDecoration>.  Vertical lines will only be detected if they are continuous
+		 * throughout the comment and horizontal lines if they are connected to it.  Freestanding horizontal lines are
+		 * *not* detected here.  This function tolerates differing symbols on corners and where embedded horizontal
+		 * lines connect to the vertical.  It also tolerates tokens marked with <CommentParsingType.CommentSymbol>
+		 * differing.
 		 *
 		 * Examples:
 		 *
@@ -310,6 +311,136 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 			}
 
 
+		// Function: MarkTextBoxes
+		//
+		// Finds all text boxes in a <InlineDocumentationComment> and marks the tokens as
+		// <CommentParsingType.CommentDecoration>.  Since these comments are simpler, only a limited set of lines
+		// are supported, currently only a left side vertical line.
+		//
+		// Example:
+		//
+		// The box below will be marked completely.
+		//
+		// > /* Text
+		// >  * Text
+		// >  */
+		//
+		public static void MarkTextBoxes (InlineDocumentationComment comment)
+			{
+			// If the start and end are on the same line we can exit early, since vertical line detection wouldn't be relevant.
+			// We don't have to worry about this affecting single line /// comments because the extra symbols would be
+			// detected as XML or Javadoc comment symbols.
+			if (comment.End.LineNumber == comment.Start.LineNumber)
+				{  return;  }
+
+			// We can also exit early if the end is one line past the start and at character one, meaning the comment was a
+			// single line but the bounds include the line break, putting the end at the start of the next line.
+			if (comment.End.LineNumber == comment.Start.LineNumber + 1 && comment.End.CharNumber == 1)
+				{  return;  }
+
+			TokenIterator iterator = comment.Start;
+
+
+			// We ignore the first line since it may be different.  This allows /** */ comments where the vertical line starts on
+			// the second comment line to work.
+
+			SkipToNextLine(ref iterator, comment.End);
+
+
+			// Now walk through each subsequent line and see if there's a consistent left symbol.  It can't be more than three
+			// characters wide.
+
+			char leftLineSymbol = '\0';
+			int leftLineSymbolCount = 0;
+
+			while (iterator < comment.End)
+				{
+				while (iterator.FundamentalType == FundamentalType.Whitespace)
+					{  iterator.Next();  }
+
+				if (iterator >= comment.End)
+					{  break;  }
+
+				// If the line starts with a comment symbol, skip it.  It's either multiple line comments strung together, or the
+				// closing symbol on the last line of a block comment, which shouldn't break vertical line detection.
+				else if (iterator.CommentParsingType == CommentParsingType.CommentSymbol)
+					{
+					iterator.Next();
+					SkipToNextLine(ref iterator, comment.End);
+					}
+
+				// If the line doesn't start with a symbol, there is no vertical line and we can end early
+				else if (iterator.FundamentalType != FundamentalType.Symbol)
+					{  return;  }
+
+				// Otherwise we're on a symbol
+				else
+					{
+					char currentLineSymbol = iterator.Character;
+					int currentLineSymbolCount = 1;
+
+					iterator.Next();
+
+					while (iterator < comment.End &&
+							  iterator.Character == currentLineSymbol)
+						{
+						currentLineSymbolCount++;
+						iterator.Next();
+						}
+
+					// There must be whitespace between a vertical line and its content, so fail if there isn't
+					if (iterator.FundamentalType != FundamentalType.Whitespace &&
+						iterator.FundamentalType != FundamentalType.LineBreak &&
+						iterator.FundamentalType != FundamentalType.Null)
+						{  return;  }
+
+					// Also fail if the line is more than three characters wide
+					if (currentLineSymbolCount > 3)
+						{  return;  }
+
+					if (leftLineSymbolCount == 0)
+						{
+						leftLineSymbol = currentLineSymbol;
+						leftLineSymbolCount = currentLineSymbolCount;
+						}
+					// Fail if it doesn't match what we have on previous lines
+					else if (currentLineSymbol != leftLineSymbol ||
+							   currentLineSymbolCount != leftLineSymbolCount)
+						{  return;  }
+
+					SkipToNextLine(ref iterator, comment.End);
+					}
+				}
+
+			// If we made it this far we haven't failed any tests.  However, we still have to check if a left line was detected at
+			// all.  It may have been a two-line block comment where the second line was just the closing symbols, in which
+			// case there wouldn't be one.
+			if (leftLineSymbolCount == 0)
+				{  return;  }
+
+
+			// Now we know we actually have a vertical line.  Go through the comment again and mark the symbols.
+
+			iterator = comment.Start;
+
+			while (iterator < comment.End)
+				{
+				while (iterator.FundamentalType == FundamentalType.Whitespace)
+					{  iterator.Next();  }
+
+				while (iterator < comment.End &&
+						  iterator.CommentParsingType != CommentParsingType.CommentSymbol &&
+						  iterator.Character == leftLineSymbol)
+					{
+					iterator.CommentParsingType = CommentParsingType.CommentDecoration;
+					iterator.Next();
+					}
+
+				SkipToNextLine(ref iterator, comment.End);
+				}
+			}
+
+
 		/* Function: IsHorizontalLine
 		 * Returns whether the passed <LineIterator> is at a horizontal line, not including any comment symbols or decoration.
 		 */
@@ -516,6 +647,25 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 				}
 
 			return true;
+			}
+
+
+		/* Function: SkipToNextLine
+		 * Moves the iterator past the rest of the current line, including the line break, so that it is on the first character of the
+		 * next line.  It won't move past the limit.
+		 */
+		private static void SkipToNextLine (ref TokenIterator iterator, TokenIterator limit)
+			{
+			while (iterator < limit)
+				{
+				if (iterator.FundamentalType == FundamentalType.LineBreak)
+					{
+					iterator.Next();
+					return;
+					}
+				else
+					{  iterator.Next();  }
+				}
 			}
 		}
 	}

@@ -106,6 +106,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 		 */
 		public Topic Parse (InlineDocumentationComment comment)
 			{
+			LineFinder.MarkTextBoxes(comment);
+
 			return naturalDocsParser.Parse(comment);
 			}
 
