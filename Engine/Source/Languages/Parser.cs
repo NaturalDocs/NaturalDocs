@@ -1177,7 +1177,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					// Plain block comments
 
 					// We test block comments ahead of line comments because in Lua the line comments are a substring of them: --
-					// versus --[[ and ]]--.
+					// versus --[[ and ]].
 
 					if (foundComment == false && language.HasBlockCommentSymbols)
 						{
@@ -1395,85 +1395,112 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			while (iterator.FundamentalType == FundamentalType.Whitespace)
 				{  iterator.Next();  }
 
-			TokenIterator startOfComment = iterator;
+
+			// Javadoc block comments
+
+			// We test for these before regular block comments because they are usually extended versions of them, such
+			// as /** and /*.
+
+			if (language.HasJavadocBlockCommentSymbols)
+				{
+				foreach (var javadocBlockCommentSymbols in language.JavadocBlockCommentSymbols)
+					{
+					if (TryToGetBlockComment(ref iterator,
+															javadocBlockCommentSymbols.OpeningSymbol,
+															javadocBlockCommentSymbols.ClosingSymbol,
+															true, out InlineDocumentationComment comment))
+						{  return comment;  }
+					}
+				}
 
 
-			// Block comment
+			// Plain block comments
 
 			// We test block comments ahead of line comments because in Lua the line comments are a substring of them: --
-			// versus --[[ and ]]--.
+			// versus --[[ and ]].
 
-			if (TryToSkipBlockComment(ref iterator, out string openingSymbol, out string closingSymbol))
+			if (language.HasBlockCommentSymbols)
 				{
-				TokenIterator endOfComment = iterator;
-
-				// Check that there's nothing after the closing symbol on the line
-				while (iterator.FundamentalType == FundamentalType.Whitespace)
-					{  iterator.Next();  }
-
-				if (iterator.IsInBounds &&
-					iterator.FundamentalType != FundamentalType.LineBreak)
-					{  return null;  }
-
-				// Mark the comment symbols
-				startOfComment.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, openingSymbol.Length);
-
-				TokenIterator lookbehind = endOfComment;
-				lookbehind.PreviousByCharacters(closingSymbol.Length);
-				lookbehind.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, closingSymbol.Length);
-
-				// Create and return the comment
-				InlineDocumentationComment comment = new InlineDocumentationComment();
-				comment.Start = startOfComment;
-				comment.End = endOfComment;
-				return comment;
-				}
-
-
-			// Line comment
-
-			else if (TryToSkipLineComment(ref iterator, out string firstCommentSymbol))
-				{
-				TokenIterator endOfComment = iterator;
-
-				// Mark the comment symbols
-				startOfComment.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, firstCommentSymbol.Length);
-
-				// TryToSkipLineComment leaves the iterator at the line break or end of content
-
-				// Find additional lines
-				while (iterator.IsInBounds &&
-						 iterator.FundamentalType == FundamentalType.LineBreak)
+				foreach (var blockCommentSymbols in language.BlockCommentSymbols)
 					{
-					iterator.Next();
-
-					while (iterator.FundamentalType == FundamentalType.Whitespace)
-						{  iterator.Next();  }
-
-					TokenIterator startOfNextCommentLine = iterator;
-
-					if (TryToSkipLineComment(ref iterator, out string nextCommentSymbol) &&
-						nextCommentSymbol == firstCommentSymbol)
-						{
-						startOfNextCommentLine.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol,
-																													nextCommentSymbol.Length);
-						endOfComment = iterator;
-						}
-					else
-						{  break;  }
+					if (TryToGetBlockComment(ref iterator,
+															blockCommentSymbols.OpeningSymbol,
+															blockCommentSymbols.ClosingSymbol,
+															false, out InlineDocumentationComment comment))
+						{  return comment;  }
 					}
-
-				// Create and return the comment
-				InlineDocumentationComment comment = new InlineDocumentationComment();
-				comment.Start = startOfComment;
-				comment.End = endOfComment;
-				return comment;
 				}
 
 
-			// Not on a comment
-			else
-				{  return null;  }
+			// XML line comments
+
+			// XML and Javadoc may share an openingsymbol, such as ///.  In this case check for both and use whichever is
+			// longest.
+			InlineDocumentationComment longestLineComment = null;
+
+			if (language.HasXMLLineCommentSymbols)
+				{
+				foreach (var xmlLineCommentSymbol in language.XMLLineCommentSymbols)
+					{
+					TokenIterator temp = iterator;
+
+					if (TryToGetLineComment(ref temp, xmlLineCommentSymbol, xmlLineCommentSymbol,
+														  true, out InlineDocumentationComment comment))
+						{
+						if (longestLineComment == null ||
+							comment.End > longestLineComment.End)
+							{  longestLineComment = comment;  }
+						}
+					}
+				}
+
+
+			// Javadoc line comments
+
+			if (language.HasJavadocLineCommentSymbols)
+				{
+				foreach (var javadocLineCommentSymbol in language.JavadocLineCommentSymbols)
+					{
+					TokenIterator temp = iterator;
+
+					if (TryToGetLineComment(ref temp,
+														  javadocLineCommentSymbol.FirstLineSymbol,
+														  javadocLineCommentSymbol.FollowingLinesSymbol,
+														  true, out InlineDocumentationComment comment))
+						{
+						if (longestLineComment == null ||
+							comment.End > longestLineComment.End)
+							{  longestLineComment = comment;  }
+						}
+					}
+				}
+
+
+			// Plain line comments
+
+			if (language.HasLineCommentSymbols)
+				{
+				foreach (var lineCommentSymbol in language.LineCommentSymbols)
+					{
+					TokenIterator temp = iterator;
+
+					if (TryToGetLineComment(ref temp, lineCommentSymbol, lineCommentSymbol,
+														  false, out InlineDocumentationComment comment))
+						{
+						if (longestLineComment == null ||
+							comment.End > longestLineComment.End)
+							{  longestLineComment = comment;  }
+						}
+					}
+				}
+
+			if (longestLineComment != null)
+				{  return longestLineComment;  }
+
+
+			// Nada
+
+			return null;
 			}
 
 
@@ -5229,6 +5256,89 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			}
 
 
+		/* Function: TryToGetBlockComment
+		 *
+		 * If the iterator is on the opening symbol of a block comment, this function moves the iterator past the entire
+		 * comment and returns true.  It will also return it as an <InlineDocumentationComment> and mark the symbols
+		 * as <CommentParsingType.CommentSymbol>.  If the line does not start with an opening comment symbol it will
+		 * return false and leave the iterator where it is.
+		 *
+		 * Not all the block comments it finds will be candidates for documentation, since some will have text after the closing
+		 * symbol, so it's possible for this function to return true and have comment be null.  This is important because in Lua
+		 * the block comment symbol is --[[ and the line comment symbol is --, so if we didn't move past the block comment
+		 * it could be interpreted as a line comment as well.
+		 *
+		 * If openingMustBeAlone is set, that means no symbol can appear immediately after the opening symbol.  If it does
+		 * the function will return false and not move past the comment.  This allows you to specifically detect something like
+		 * /** without also matching /******.
+		 */
+		protected bool TryToGetBlockComment (ref TokenIterator iterator,
+																 string openingSymbol, string closingSymbol, bool openingMustBeAlone,
+																 out InlineDocumentationComment comment)
+			{
+			if (iterator.MatchesAcrossTokens(openingSymbol) == false)
+				{
+				comment = null;
+				return false;
+				}
+
+			TokenIterator openingSymbolIterator = iterator;
+			TokenIterator lookahead = iterator;
+
+			// Advance past the opening symbol because it's possible for it to be the same as the closing one, such as with
+			// Python's ''' and """ strings.
+			lookahead.NextByCharacters(openingSymbol.Length);
+
+			if (openingMustBeAlone && lookahead.FundamentalType == FundamentalType.Symbol)
+				{
+				comment = null;
+				return false;
+				}
+
+			comment = new InlineDocumentationComment();
+			comment.Start = openingSymbolIterator;
+
+			var tokenizer = iterator.Tokenizer;
+			TokenIterator closingSymbolIterator, endOfCommentIterator;
+
+			if (tokenizer.FindTokensBetween(closingSymbol, false, lookahead, tokenizer.EndOfTokens, out closingSymbolIterator) == true)
+				{
+				endOfCommentIterator = closingSymbolIterator;
+				endOfCommentIterator.NextByCharacters(closingSymbol.Length);
+
+				// Make sure nothing appears after the closing symbol on the line
+				lookahead = endOfCommentIterator;
+				lookahead.NextPastWhitespace();
+
+				if (lookahead.FundamentalType != FundamentalType.LineBreak &&
+					lookahead.FundamentalType != FundamentalType.Null)
+					{  comment = null;  }
+				else
+					{  comment.End = endOfCommentIterator;  }
+				}
+			else // no closing symbol
+				{
+				// If we're here that means there was an unclosed comment at the end of the file.  Skip it but don't treat
+				// it as a documentation candidate.
+				comment = null;
+				endOfCommentIterator = iterator.Tokenizer.EndOfTokens;
+				}
+
+			if (comment != null)
+				{
+				// Mark the symbols before returning
+				openingSymbolIterator.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, openingSymbol.Length);
+				closingSymbolIterator.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, closingSymbol.Length);
+				}
+
+			// If we made it this far that means we found a comment and can move the iterator and return true.  Whether that
+			// comment was suitable for documentation will be determined by the comment variable, but we are moving the
+			// iterator and returning true either way.
+			iterator = endOfCommentIterator;
+			return true;
+			}
+
+
 		/* Function: TryToGetLineComment
 		 *
 		 * If the iterator is on a line that starts with a line comment symbol, this function moves the iterator past the entire
@@ -5288,6 +5398,83 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				}
 
 			comment.End = lineIterator;
+			return true;
+			}
+
+
+		/* Function: TryToGetLineComment
+		 *
+		 * If the iterator is on a line comment symbol, this function moves the iterator past the entire comment and returns
+		 * true.  If the comment is a candidate for documentation it will also return it as an <InlineDocumentationComment>
+		 * and mark the symbols as <CommentParsingType.CommentSymbol>.  If the iterator is not on a line comment symbol
+		 * it will return false and leave the iterator where it is.
+		 *
+		 * This function takes a separate comment symbol for the first line and all remaining lines, allowing you to detect
+		 * Javadoc line comments that start with ## and the remaining lines use #.  Both symbols can be the same if this isn't
+		 * required.
+		 *
+		 * If openingMustBeAlone is set, no symbol can appear immediately after the first line symbol.  If it does the function
+		 * will return false and not move past the comment.  This allows you to specifically detect something like ## without
+		 * also matching #######.
+		 */
+		protected bool TryToGetLineComment (ref TokenIterator iterator,
+																string firstSymbol, string remainderSymbol, bool openingMustBeAlone,
+																out InlineDocumentationComment comment)
+			{
+			if (iterator.MatchesAcrossTokens(firstSymbol) == false)
+				{
+				comment = null;
+				return false;
+				}
+
+			if (openingMustBeAlone)
+				{
+				TokenIterator lookahead = iterator;
+				lookahead.NextByCharacters(firstSymbol.Length);
+
+				if (lookahead.FundamentalType == FundamentalType.Symbol)
+					{
+					comment = null;
+					return false;
+					}
+				}
+
+			comment = new InlineDocumentationComment();
+			comment.Start = iterator;
+
+			// Since we're definitely returning a comment we can mark the comment symbols as we go rather than waiting until
+			// the end.
+			iterator.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, firstSymbol.Length);
+			iterator.NextByCharacters(firstSymbol.Length);
+
+			for (;;)
+				{
+				// Skip the rest of the line
+				while (iterator.IsInBounds &&
+						  iterator.FundamentalType != FundamentalType.LineBreak)
+					{  iterator.Next();  }
+
+				// Skip the line break too if it's there
+				if (iterator.FundamentalType == FundamentalType.LineBreak)
+					{  iterator.Next();  }
+
+				comment.End = iterator;
+
+				// Look ahead to see if the next line continues the comment or we stop here
+				TokenIterator lookahead = iterator;
+				lookahead.NextPastWhitespace();
+
+				if (lookahead.MatchesAcrossTokens(remainderSymbol))
+					{
+					lookahead.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, remainderSymbol.Length);
+					lookahead.NextByCharacters(remainderSymbol.Length);
+
+					iterator = lookahead;
+					}
+				else
+					{  break;  }
+				}
+
 			return true;
 			}
 
