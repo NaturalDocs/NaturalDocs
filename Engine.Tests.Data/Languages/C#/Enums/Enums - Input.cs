@@ -323,6 +323,91 @@ enum MultilineBlockCommentsB
 	/* Trailing comment that shouldn't be included. */
 	}
 
+/* Enum: VerticalLinesAndExtraSymbolsA
+ */
+enum VerticalLinesAndExtraSymbolsA
+	{
+	A, /* Description of A line 1.
+		 * Description of A line 2.
+		 * Description of A line 3.
+		 */
+
+	B, /** Description of B line 1.
+			  Description of B line 2.
+			  Description of B line 3.
+		  */
+
+	C, /** Description of C line 1.
+		  *   Description of C line 2.
+		  *   Description of C line 3.
+		  */
+
+	D, /** Description of D line 1.
+		  ** Description of D line 2.
+		  ** Description of D line 3.
+		  */
+
+	E, /// Description of E line 1.
+		//   Description of E line 2.
+		//   Description of E line 3.
+
+	F /// Description of F line 1.
+	   /// Description of F line 2.
+	   /// Description of F line 3.
+	}
+
+/* Enum: VerticalLinesAndExtraSymbolsB
+ */
+enum VerticalLinesAndExtraSymbolsB
+	{
+	A, /* Description of A line 1.
+		 *
+		 * Description of A line 3.
+		 */
+
+	B, /** Description of B line 1.
+
+			  Description of B line 3.
+		  */
+
+	C, /** Description of C line 1.
+		  *
+		  *   Description of C line 3.
+		  */
+
+	D, /** Description of D line 1.
+		  **
+		  ** Description of D line 3.
+		  */
+
+	E, /// Description of E line 1.
+		//
+		//   Description of E line 3.
+
+	F /// Description of F line 1.
+	   ///
+	   /// Description of F line 3.
+	}
+
+/* Enum: VerticalLinesAndExtraSymbolsC
+ */
+enum VerticalLinesAndExtraSymbolsC
+	{
+	A, /** Description of A. */
+
+	B, /** Description of B.
+		  */
+
+	C, /* Description of C. */
+
+	D, /* Description of D.
+		  */
+
+	E, /// Description of E.
+
+	F // Description of F.
+	}
+
 
 
 // Group: No Comments
