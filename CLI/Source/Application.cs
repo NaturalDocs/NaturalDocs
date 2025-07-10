@@ -364,12 +364,10 @@ namespace CodeClear.NaturalDocs.CLI
 			// Collect versions in try blocks in case there are any errors
 
 			string dotNETVersion = null;
-			string monoVersion = null;
 			string osNameAndVersion = null;
 			string sqliteVersion = null;
 
 			try { dotNETVersion = Engine.SystemInfo.dotNETVersion; } catch {  }
-			try { monoVersion = Engine.SystemInfo.MonoVersion; } catch {  }
 			try { osNameAndVersion = Engine.SystemInfo.OSNameAndVersion; } catch {  }
 			try { sqliteVersion = Engine.SystemInfo.SQLiteVersion; } catch {  }
 
@@ -383,37 +381,15 @@ namespace CodeClear.NaturalDocs.CLI
 			else
 				{  Console.WriteLine("Couldn't get OS name and version");  }
 
-			// There's a possibility of Natural Docs being run through Mono on Windows
-			if (Engine.SystemInfo.OnUnix || monoVersion != null)
-				{
-				if (monoVersion != null)
-					{  Console.WriteLine("Mono " + monoVersion);  }
-				else
-					{  Console.WriteLine("Couldn't get Mono version");  }
-				}
+			if (dotNETVersion != null)
+				{  Console.WriteLine(".NET " + dotNETVersion);  }
 			else
-				{
-				if (dotNETVersion != null)
-					{  Console.WriteLine(".NET " + dotNETVersion);  }
-				else
-					{  Console.WriteLine("Couldn't get .NET version");  }
-				}
+				{  Console.WriteLine("Couldn't get .NET version");  }
 
 			if (sqliteVersion != null)
 				{  Console.WriteLine("SQLite " + sqliteVersion);  }
 			else
 				{  Console.WriteLine("Couldn't get SQLite version");  }
-
-
-			// Include a notice for outdated Mono versions
-
-			if (Engine.SystemInfo.MonoVersionTooOld)
-				{
-				Console.WriteLine();
-				Console.WriteLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.OutdatedMono(currentVersion, minimumVersion)",
-											"You appear to be using Mono {0}, which is very outdated.  This has been known to cause Natural Docs to crash.  Please update it to version {1} or higher.",
-											Engine.SystemInfo.MonoVersion, Engine.SystemInfo.MinimumMonoVersion) );
-				}
 			}
 
 
@@ -760,18 +736,6 @@ namespace CodeClear.NaturalDocs.CLI
 					errorOutput.WriteLine (Locale.SafeGet("NaturalDocs.CLI", "Crash.IncludeInfoAndGetHelp",
 																			"Please include this information when asking for help at naturaldocs.org."));
 					}
-
-
-				// Include a notice for outdated Mono versions
-
-				if (Engine.SystemInfo.MonoVersionTooOld)
-					{
-					errorOutput.WriteLine();
-					errorOutput.WriteLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.OutdatedMono(currentVersion, minimumVersion)",
-													  "You appear to be using Mono {0}, which is very outdated.  This has been known to cause Natural Docs to crash.  Please update it to version {1} or higher.",
-													  Engine.SystemInfo.MonoVersion, Engine.SystemInfo.MinimumMonoVersion) );
-					}
-
 				}
 
 			errorOutput.Write ("------------------------------------------------------------\n\n");

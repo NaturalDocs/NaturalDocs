@@ -149,69 +149,6 @@ namespace CodeClear.NaturalDocs.Engine
 			}
 
 
-		/* Property: MonoVersion
-		 * The version of Mono we're running on, or null if we're not or it can't be determined.
-		 */
-		static public string MonoVersion
-			{
-			get
-				{
-				try
-					{
-					string monoString =
-						Type.GetType("Mono.Runtime")?
-						.GetMethod("GetDisplayName", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)?
-						.Invoke(null, null)?.ToString();
-
-					if (monoString != null)
-						{
-						// Can return something like "Mono 5.2.0.215 (tarball Mon Aug 14 15:57:49 UTC 2017)".  Strip off the parentheses if present.
-						int parenIndex = monoString.IndexOf('(');
-
-						if (parenIndex > 0)
-							{  monoString = monoString.Substring(0, parenIndex).TrimEnd();  }
-						}
-
-					return monoString;
-					}
-				catch
-					{  }
-
-				return null;
-				}
-			}
-
-
-		/* Property: MonoVersionTooOld
-		 * Returns whether the version of Mono we're running on is too told and known to cause problems.  Will return false when not running on Mono.
-		 */
-		static public bool MonoVersionTooOld
-			{
-			get
-				{
-				string monoVersion = MonoVersion;
-
-				if (monoVersion == null)
-					{  return false;  }
-
-				return ( monoVersion.StartsWith("0.") ||
-							monoVersion.StartsWith("1.") ||
-							monoVersion.StartsWith("2.") ||
-							monoVersion.StartsWith("3.") );
-				}
-			}
-
-
-		/* Property: MinimumMonoVersion
-		 * Returns the minimum version of Mono required by Natural Docs.
-		 */
-		static public string MinimumMonoVersion
-			{
-			get
-				{  return "4.0";  }
-			}
-
-
 		/* Property: dotNETVersion
 		 * The version of .NET we're running on, or null if it can't be determined.  This will probably return a value for Mono so check
 		 * <MonoVersion> first if you only want it for actual .NET.
