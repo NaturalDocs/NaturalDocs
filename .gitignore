@@ -4,6 +4,8 @@ Thumbs.db
 
 # Ignore files built by Visual Studio
 *.csproj.user
+*.pubxml.user
+launchSettings.json
 bin/
 obj/
 .vs/
@@ -14,4 +16,5 @@ CLI.Package.ZIP/
 
 # Ignore solution files
 /Natural Docs 2.sln
+/Natural Docs 2.slnx
 /.editorconfig
