@@ -20,21 +20,6 @@ namespace CodeClear.NaturalDocs.Engine
 	public static class SystemInfo
 		{
 
-		// Group: Functions
-		// __________________________________________________________________________
-
-
-		/* Constructor: SystemInfo
-		 */
-		static SystemInfo ()
-			{
-			// These two values are used so often that they're calculated here and cached instead of calculated on each use.
-			ignoreCaseInPaths = OnWindows;
-			pathSeparator = (OnWindows ? '\\' : '/');
-			}
-
-
-
 		// Group: Native Functions
 		// __________________________________________________________________________
 
@@ -134,7 +119,15 @@ namespace CodeClear.NaturalDocs.Engine
 		static public char PathSeparatorCharacter
 			{
 			get
-				{  return pathSeparator;  }
+				{
+				#if WINDOWS
+					return '\\';
+				#elif MAC || LINUX
+					return '/';
+				#else
+					throw new Exception("Unsupported platform");
+				#endif
+				}
 			}
 
 
@@ -144,7 +137,15 @@ namespace CodeClear.NaturalDocs.Engine
 		static public bool IgnoreCaseInPaths
 			{
 			get
-				{  return ignoreCaseInPaths;  }
+				{
+				#if WINDOWS
+					return true;
+				#elif MAC || LINUX
+					return false;
+				#else
+					throw new Exception("Unsupported platform");
+				#endif
+				}
 			}
 
 
@@ -440,13 +441,6 @@ namespace CodeClear.NaturalDocs.Engine
 				}
 			}
 
-
-
-		// Group: Static Variables
-		// __________________________________________________________________________
-
-		static private bool ignoreCaseInPaths;
-		static private char pathSeparator;
 
 		}
 	}
