@@ -49,22 +49,21 @@ namespace CodeClear.NaturalDocs.Engine
 			bool hasCR = (input.IndexOf('\r') != -1);
 			bool hasLF = (input.IndexOf('\n') != -1);
 
-			if (Engine.SystemInfo.OnUnix)
-				{
-				if (hasCR)
-					{  return input.Replace("\r", "");  }
-				else
-					{  return input;  }
-				}
-			else // Windows
-				{
+			#if WINDOWS
 				if (hasCR && hasLF)
 					{  return input;  }
 				else if (hasCR)
 					{  return input.Replace("\r", "\r\n");  }
 				else // hasLF
 					{  return input.Replace("\n", "\r\n");  }
-				}
+			#elif MAC || LINUX
+				if (hasCR)
+					{  return input.Replace("\r", "");  }
+				else
+					{  return input;  }
+			#else
+				throw new Exception("Unsupported platform");
+			#endif
 			}
 
 		/* Function: SplitLines
