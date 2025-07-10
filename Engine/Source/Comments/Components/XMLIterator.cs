@@ -22,7 +22,7 @@ using CodeClear.NaturalDocs.Engine.Tokenization;
 
 namespace CodeClear.NaturalDocs.Engine.Comments.Components
 	{
-	public struct XMLIterator
+	public partial struct XMLIterator
 		{
 
 		// Group: Functions
@@ -142,12 +142,12 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 
 			Dictionary<string, string> properties = new Dictionary<string,string>();
 
-			Match match = TagRegex.Match(RawText, RawTextIndex, length);
+			Match match = IsTagRegex().Match(RawText, RawTextIndex, length);
 			CaptureCollection captures = match.Groups[2].Captures;
 
 			foreach (Capture capture in captures)
 				{
-				Match propertyMatch = TagPropertyRegex.Match(RawText, capture.Index, capture.Length);
+				Match propertyMatch = IsTagPropertyRegex().Match(RawText, capture.Index, capture.Length);
 				properties.Add( propertyMatch.Groups[1].ToString(),
 										DecodePropertyValue(propertyMatch.Groups[2].Index, propertyMatch.Groups[2].Length) );
 				}
@@ -214,7 +214,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 					type = XMLElementType.Tag;
 					length = nextBracketIndex + 1 - RawTextIndex;
 
-					Match tagMatch = TagRegex.Match(RawText, RawTextIndex, length);
+					Match tagMatch = IsTagRegex().Match(RawText, RawTextIndex, length);
 
 					if (tagMatch.Success)
 						{
@@ -356,12 +356,12 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 			if (type != XMLElementType.Tag)
 				{  throw new InvalidOperationException();  }
 
-			Match match = TagRegex.Match(RawText, RawTextIndex, length);
+			Match match = IsTagRegex().Match(RawText, RawTextIndex, length);
 			CaptureCollection captures = match.Groups[2].Captures;
 
 			foreach (Capture capture in captures)
 				{
-				Match propertyMatch = TagPropertyRegex.Match(RawText, capture.Index, capture.Length);
+				Match propertyMatch = IsTagPropertyRegex().Match(RawText, capture.Index, capture.Length);
 
 				if (name.Length == propertyMatch.Groups[1].Length &&
 					string.Compare(name, 0, RawText, propertyMatch.Groups[1].Index, name.Length, true) == 0)
@@ -489,8 +489,39 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 		// DEPENDENCY: Assumes this encompasses all the line break chars recognized by Tokenizer
 		static private char[] StartOfElement = { '<', '&', '\n', '\r' };
 
-		static private Regex.Comments.XML.Tag TagRegex = new Regex.Comments.XML.Tag();
-		static private Regex.Comments.XML.TagProperty TagPropertyRegex = new Regex.Comments.XML.TagProperty();
+
+
+		// Group: Regular Expressions
+		// __________________________________________________________________________
+
+
+		/* Regex: IsTagRegex
+		 *
+		 * Will match if the entire string is an XML tag.
+		 *
+		 * Capture Groups:
+		 *
+		 *		1 - The tag name.  It will not include the leading slash on closing tags.
+		 *		2* - Properties.  Each capture is a single key/value pair.
+		 */
+		[GeneratedRegex("""^</? *([a-z0-9\-_]+)( +[a-z0-9\-_]+ *= *(?:"(?:\\"|[^">])*"|'(?:\\'|[^'>])*'))* */?>$""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex IsTagRegex();
+
+
+		/* Regex: IsTagPropertyRegex
+		 *
+		 * Will match if the entire string is an XML property key/value pair.
+		 *
+		 * Capture Groups:
+		 *
+		 *		1 - The property name.
+		 *		2 - The property value expression exactly as it appears.  It will include the surrounding quotes and the value will
+		 *			  not be unescaped.
+		 */
+		[GeneratedRegex("""^ *([a-z0-9\-_]+) *= *("(?:\\"|[^">])*"|'(?:\\'|[^'>])*')$""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex IsTagPropertyRegex();
 
 		}
 	}

@@ -22,7 +22,7 @@ using CodeClear.NaturalDocs.Engine.Tokenization;
 
 namespace CodeClear.NaturalDocs.Engine.Comments.Components
 	{
-	public struct JavadocIterator
+	public partial struct JavadocIterator
 		{
 
 		// Group: Functions
@@ -166,12 +166,12 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 
 			Dictionary<string, string> properties = new Dictionary<string,string>();
 
-			Match match = HTMLTagRegex.Match(RawText, RawTextIndex, length);
+			Match match = IsHTMLTagRegex().Match(RawText, RawTextIndex, length);
 			CaptureCollection captures = match.Groups[2].Captures;
 
 			foreach (Capture capture in captures)
 			    {
-			    Match propertyMatch = HTMLTagPropertyRegex.Match(RawText, capture.Index, capture.Length);
+			    Match propertyMatch = IsHTMLTagPropertyRegex().Match(RawText, capture.Index, capture.Length);
 			    properties.Add( propertyMatch.Groups[1].ToString(),
 									  DecodeHTMLPropertyValue(propertyMatch.Groups[2].Index, propertyMatch.Groups[2].Length) );
 			    }
@@ -251,7 +251,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 					type = JavadocElementType.HTMLTag;
 					length = nextBracketIndex + 1 - RawTextIndex;
 
-					Match tagMatch = HTMLTagRegex.Match(RawText, RawTextIndex, length);
+					Match tagMatch = IsHTMLTagRegex().Match(RawText, RawTextIndex, length);
 
 					if (tagMatch.Success)
 						{
@@ -480,12 +480,12 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 			if (type != JavadocElementType.HTMLTag)
 			    {  throw new InvalidOperationException();  }
 
-			Match match = HTMLTagRegex.Match(RawText, RawTextIndex, length);
+			Match match = IsHTMLTagRegex().Match(RawText, RawTextIndex, length);
 			CaptureCollection captures = match.Groups[2].Captures;
 
 			foreach (Capture capture in captures)
 			    {
-			    Match propertyMatch = HTMLTagPropertyRegex.Match(RawText, capture.Index, capture.Length);
+			    Match propertyMatch = IsHTMLTagPropertyRegex().Match(RawText, capture.Index, capture.Length);
 
 			    if (name.Length == propertyMatch.Groups[1].Length &&
 			        string.Compare(name, 0, RawText, propertyMatch.Groups[1].Index, name.Length, true) == 0)
@@ -613,8 +613,42 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 		// DEPENDENCY: Assumes this encompasses all the line break chars recognized by Tokenizer
 		static private char[] StartOfElement = { '<', '&', '{', '@', '\n', '\r' };
 
-		static private Regex.Comments.Javadoc.HTMLTag HTMLTagRegex = new Regex.Comments.Javadoc.HTMLTag();
-		static private Regex.Comments.Javadoc.HTMLTagProperty HTMLTagPropertyRegex = new Regex.Comments.Javadoc.HTMLTagProperty();
+
+
+		// Group: Regular Expressions
+		// __________________________________________________________________________
+
+
+		/* Regex: IsHTMLTagRegex
+		 *
+		 * Will match if the entire string is a HTML tag.
+		 *
+		 * Capture Groups:
+		 *
+		 *		1 - The tag name.  It will not include the leading slash on closing tags.
+		 *		2* - Properties.  Each capture is a single key/value pair, or in certain cases, a standalone modifier without a value
+		 *			   such as "nowrap".
+		 *
+		 */
+		[GeneratedRegex("""^</? *([a-z0-9!]+)( +(?:[a-z\-]+ *= *"(?:\\"|[^">])*"|[a-z\-]+ *= *'(?:\\'|[^'>])*'|[a-z\-]+ *= *[a-z0-9\-_%]+|checked|compact|declare|defer|disabled|ismap|multiple|nohref|noresize|noshade|nowrap|readonly|selected))* */?>$""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex IsHTMLTagRegex();
+
+
+		/* Regex: IsHTMLTagPropertyRegex
+		 *
+		 * Will match if the entire string is a HTML property key/value pair.  This does not match standalone modifiers such as
+		 * "nowrap".
+		 *
+		 * Capture Groups:
+		 *
+		 *		1 - The property name.
+		 *		2 - The property value expression exactly as it appears.  It will include the surrounding quotes and the value will
+		 *			  not be unescaped.
+		 */
+		[GeneratedRegex("""^ *([a-z0-9!]+) *= *("(?:\\"|[^">])*"|'(?:\\'|[^'>])*'|[a-z0-9\-_%]+)$""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex IsHTMLTagPropertyRegex();
 
 		}
 	}
