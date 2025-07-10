@@ -68,49 +68,6 @@ namespace CodeClear.NaturalDocs.Engine
 		// __________________________________________________________________________
 
 
-		/* Property: OnWindows
-		 * Whether the program is running in Windows.
-		 */
-		static public bool OnWindows
-			{
-			get
-				{
-				// Other Windows-like values are no longer used so we don't have to check them.
-				return (System.Environment.OSVersion.Platform == PlatformID.Win32NT);
-				}
-			}
-
-
-		/* Property: OnUnix
-		 * Whether the program is running in Unix.
-		 */
-		static public bool OnUnix
-			{
-			get
-				{
-				// Early versions of Mono returned 128 as the value, whereas PlatformID.Unix is 4.
-				// There's now also OS X which is 6, but .NET Core returns Unix so we don't try to distinguish.
-				return ( System.Environment.OSVersion.Platform == PlatformID.Unix ||
-							System.Environment.OSVersion.Platform == PlatformID.MacOSX ||
-							(int)System.Environment.OSVersion.Platform == 128 );
-				}
-			}
-
-
-		/* Property: Is64Bit
-		 * Whether the program is running in 64-bit mode.  This is not the same as whether the processor or the operating system
-		 * is 64-bit, it is whether .NET or Mono is executing the program as 64-bit.
-		 */
-		static public bool Is64Bit
-			{
-			get
-				{
-				// There's also Environment.Is64BitProcess but that wasn't introduced until .NET 4.
-				return (IntPtr.Size == 8);
-				}
-			}
-
-
 		/* Property: PathSeparatorCharacter
 		 * The path separator character for the current platform, such as slash or backslash.
 		 */
