@@ -181,6 +181,18 @@ namespace CodeClear.NaturalDocs.Engine
 				#pragma warning restore CA1416
 				}
 			}
+
+
+		/* Property: SQLiteVersion
+		 * Returns the version of SQLite we're using, or null if it can't be determined.
+		 */
+		static public string SQLiteVersion
+			{
+			get
+				{
+				try
+					{  return Engine.SQLite.API.LibVersion();  }
+				catch
 					{  return null;  }
 				}
 			}
@@ -300,21 +312,6 @@ namespace CodeClear.NaturalDocs.Engine
 
 				// Fallback value
 				return result ?? Environment.OSVersion.VersionString;
-				}
-			}
-
-
-		/* Property: SQLiteVersion
-		 * Returns the version of SQLite we're using, or null if it can't be determined.
-		 */
-		static public string SQLiteVersion
-			{
-			get
-				{
-				try
-					{  return Engine.SQLite.API.LibVersion();  }
-				catch
-					{  return null;  }
 				}
 			}
 		#endif
