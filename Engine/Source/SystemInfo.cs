@@ -158,78 +158,9 @@ namespace CodeClear.NaturalDocs.Engine
 			get
 				{
 				try
-					{
-					// First try getting the information from the registry, since that will let us make it a lot nicer.
-					if (OnWindows)
-						{
-						// Check registry for .NET 4.5 and later
-						var key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v4\\Full");
-
-						if (key != null)
-							{
-							string versionString = key.GetValue("Release")?.ToString();
-							int versionInt;
-
-							// Values are documented here:
-							// https://docs.microsoft.com/en-us/dotnet/framework/migration-guide/how-to-determine-which-versions-are-installed
-							if (versionString != null && Int32.TryParse(versionString, out versionInt))
-								{
-								if (versionInt > 533325)  // cover future versions
-									{  return "4.8.1 or later (" + versionInt + ")";  }
-								else if (versionInt >= 533320)
-									{  return "4.8.1";  }
-								else if (versionInt == 528040)
-									{  return "4.8";  }
-								else if (versionInt >= 461808)
-									{  return "4.7.2";  }
-								else if (versionInt >= 461308)
-									{  return "4.7.1";  }
-								else if (versionInt >= 460798)
-									{  return "4.7";  }
-								else if (versionInt >= 394802)
-									{  return "4.6.2";  }
-								else if (versionInt >= 394254)
-									{  return "4.6.1";  }
-								else if (versionInt >= 393295)
-									{  return "4.6";  }
-								else if (versionInt >= 379893)
-									{  return "4.5.2";  }
-								else if (versionInt >= 378675)
-									{  return "4.5.1";  }
-								else if (versionInt >= 378389)
-									{  return "4.5";  }
-								}
-							}
-
-						// If that didn't work, check for earlier versions of .NET
-						string[][] netVersions = new string[][]
-							{
-							new string[] { "SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v4.0\\Full", "4.0", null },
-							new string[] { "SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v4.0\\Client", "4.0", "client profile" },
-							new string[] { "SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v3.5", "3.5", null },
-							new string[] { "SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v3.0", "3.0", null },
-							new string[] { "SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v3.0\\Setup", "3.0", null },
-							new string[] { "SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v2.0.50727", "2.0", null }
-							};
-
-						foreach (var netVersion in netVersions)
-							{
-							key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(netVersion[0]);
-							if (key != null && (key.GetValue("Install")?.ToString() == "1" || key.GetValue("InstallSuccess")?.ToString() == "1"))
-								{
-								string spString = key.GetValue("SP")?.ToString();
-								return netVersion[1] + (spString != null ? " SP" + spString : "") + (netVersion[2] != null ? " " + netVersion[2] : "");
-								}
-							}
-						}
-
-					// Fallback
-					return System.Diagnostics.FileVersionInfo.GetVersionInfo(typeof(int).Assembly.Location).ProductVersion;
-					}
+					{  return Environment.Version.ToString();  }
 				catch
-					{  }
-
-				return null;
+					{  return null;  }
 				}
 			}
 
