@@ -12,8 +12,7 @@
 
 
 using System;
-using System.Runtime.InteropServices;
-using System.Text;
+using System.Runtime.Versioning;
 
 namespace CodeClear.NaturalDocs.Engine
 	{
@@ -24,6 +23,7 @@ namespace CodeClear.NaturalDocs.Engine
 		// __________________________________________________________________________
 
 
+		#if MAC || LINUX
 		/* Function: sysctlbyname
 		 * Used to get OS properties on macOS and Linux.  The library will only be loaded on the first usage attempt,
 		 * so it's safe to have this in Windows as long as it's not called.
@@ -38,9 +38,6 @@ namespace CodeClear.NaturalDocs.Engine
 		 */
 		static private string SysCtlByName (string property)
 			{
-			if (!OnUnix)
-				{  return null;  }
-
 		    try
 				{
 				byte[] valueBuffer;
@@ -63,6 +60,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 			return null;
 			}
+		#endif
 
 
 
@@ -172,26 +170,36 @@ namespace CodeClear.NaturalDocs.Engine
 			{
 			get
 				{
-				if (OnWindows)
-					{  return WindowsNameAndVersion;  }
-				else if (OnUnix)
-					{  return UnixNameAndVersion;  }
-				else
+				#pragma warning disable CA1416
+					#if WINDOWS
+						return WindowsNameAndVersion;
+					#elif MAC || LINUX
+						return UnixNameAndVersion;
+					#else
+						throw new Exception("Unsupported platform");
+					#endif
+				#pragma warning restore CA1416
+				}
+			}
 					{  return null;  }
 				}
 			}
 
 
+
+		// Group: Native Properties
+		// __________________________________________________________________________
+
+
+		#if WINDOWS
 		/* Property: WindowsNameAndVersion
 		 * Returns the full Windows name and version, such as "Windows 10 Home version 1909" or "Windows 7 Professional with Service Pack 1".
 		 */
+		[SupportedOSPlatform("Windows")]
 		static public string WindowsNameAndVersion
 			{
 			get
 				{
-				if (!OnWindows)
-					{  return null;  }
-
 				string result = null;
 
 				// First try getting the information from the registry, since that's a lot nicer.  We can build a string like "Windows 10 Home version 1909"
@@ -238,18 +246,19 @@ namespace CodeClear.NaturalDocs.Engine
 				return result;
 				}
 			}
+		#endif
 
 
+		#if MAC || LINUX
 		/* Property: UnixNameAndVersion
 		 * Returns the Unix name and version to the degree that it can be determined.
 		 */
+		[SupportedOSPlatform("macOS")]
+		[SupportedOSPlatform("Linux")]
 		static public string UnixNameAndVersion
 			{
 			get
 				{
-				if (!OnUnix)
-					{  return null;  }
-
 				string result = null;
 
 		        try
@@ -308,7 +317,7 @@ namespace CodeClear.NaturalDocs.Engine
 					{  return null;  }
 				}
 			}
-
+		#endif
 
 		}
 	}
