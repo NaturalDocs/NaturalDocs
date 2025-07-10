@@ -117,9 +117,7 @@ namespace CodeClear.NaturalDocs.Engine
 				{  localeCode = localeCode.ToLower(CultureInfo.InvariantCulture);  }
 
 			translationFolders = new List<Path>(1);
-			translationFolders.Add(
-				Path.FromAssembly( System.Reflection.Assembly.GetExecutingAssembly() ).ParentFolder + "/Translations"
-				);
+			translationFolders.Add(System.AppContext.BaseDirectory + "/Translations");
 
 			translations = new StringTable<StringToStringTable>(KeySettingsForLocaleNames);
 			accessLock = new System.Threading.ReaderWriterLock();

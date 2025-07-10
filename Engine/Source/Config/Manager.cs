@@ -109,7 +109,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			{
 			get
 				{
-				return Path.FromAssembly( System.Reflection.Assembly.GetExecutingAssembly() ).ParentFolder + "/Config";
+				return System.AppContext.BaseDirectory + "/Config";
 				}
 			}
 
@@ -121,7 +121,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			{
 			get
 				{
-				return Path.FromAssembly( System.Reflection.Assembly.GetExecutingAssembly() ).ParentFolder + "/Styles";
+				return System.AppContext.BaseDirectory + "/Styles";
 				}
 			}
 
