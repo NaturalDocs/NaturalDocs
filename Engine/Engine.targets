@@ -1,14 +1,36 @@
-<?xml version="1.0" encoding="utf-8"?>
-
 <!--
 	File: Engine.targets
 	___________________________________________________________________________
 
 	This is the supplemental MSBuild file for the Natural Docs engine.
+
+
+	Topic: Notes on Duplication
+
+		There are separate ForBuild and ForPublish versions of the targets that are the same except for the output
+		folder they use.  Why?
+
+		You might think that you can make one property for the output folder and set its value based on whether
+		we're being published or built.  $(_IsPublishing) seems to work to detect it.  However, the $(TargetDir) and
+		$(PublishDir) properties are not always set before the targets are called, so you can't get their values that
+		early.
+
+		Then you can just define the property in the <Compiler Event Targets>, right?  Nope, those values don't get
+		persisted to the <Individual Action Targets> they call.
+
+		Okay, fine, so then you can give each action target its own copy and just copy the logic that sets the property
+		in  there, right?  A little ugly but it should work?  No, MSBuild only executes targets once no matter how many
+		times they're called, so that's why they need to be separate targets.  Also, publishing doesn't execute a clean
+		beforehand, so if you want to do that you'd copy SQLite there once for the build, clean it once before the publish,
+		and then it won't copy a second time for the publish.
+
+		You can't parameterize targets either, at least not with CallTarget.  You'd have to use a MSBuild task to re-call
+		them passing different properties.  At this point things are feeling janky enough that I'd rather just duplicate the
+		logic into ForBuild and ForPublish versions and be done with it.
+
 -->
 
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-
 
 
 	<!--
@@ -16,19 +38,6 @@
 		_____________________________________________________________________________
 	-->
 	<PropertyGroup>
-
-		<!--
-			Build Property: OperatingSystemTarget
-
-			The operating system that you are building for, which must be one of the following values:
-
-			Windows - Build for Windows only.
-			Unix - Build for Unix, Linux, and Mac OS X.
-			Universal - Include files for both Windows and Unix.
-
-			If this property is not defined it defaults to Universal.
-		-->
-		<OperatingSystemTarget Condition="'$(OperatingSystemTarget)'==''">Universal</OperatingSystemTarget>
 
 		<!--
 			Build Property: NaturalDocsSourceDir
@@ -41,7 +50,7 @@
 			> etc.
 
 			If this property is not defined it assumes you're building part of Natural Docs itself and thus only have to go up one
-			folder level from Visual Studio's ProjectDir variable to find it.  However, it sanity checks this by trying to find the Engine
+			folder level from the $(ProjectDir) property to find it.  However, it sanity checks this by trying to find the Engine
 			subfolder.
 		-->
 		<NaturalDocsSourceDir Condition="'$(NaturalDocsSourceDir)'==''">$(ProjectDir)..\</NaturalDocsSourceDir>
@@ -51,140 +60,138 @@
 
 
 	<!--
-		Group: General Targets
+		Group: Compiler Event Targets
 		_____________________________________________________________________________
 
-		These targets are used when building this project.  They just forward to the <Engine General Targets> which can be called
-		when building any project.
-
+		These targets attach to compiler events related to building this project.  They don't need to be manually called.
 	-->
 
-		<!-- Build Target: BeforeClean -->
-		<Target Name="BeforeClean">
-			<CallTarget Targets="Engine_BeforeClean" />
+		<!--
+			Build Target: Engine_AfterClean
+		-->
+		<Target Name="Engine_AfterClean" AfterTargets="Clean">
+
+			<CallTarget Targets="Engine_ValidateProperties" />
+
+			<CallTarget Targets="Engine_CleanForBuild_SQLite" />
+			<CallTarget Targets="Engine_CleanForBuild_Regex" />
+			<CallTarget Targets="Engine_CleanForBuild_Config" />
+			<CallTarget Targets="Engine_CleanForBuild_Styles" />
+			<CallTarget Targets="Engine_CleanForBuild_Translations" />
+			<CallTarget Targets="Engine_CleanForBuild_License" />
+
 		</Target>
 
-		<!-- Build Target: AfterClean -->
-		<Target Name="AfterClean">
-			<CallTarget Targets="Engine_AfterClean" />
+
+		<!--
+			Build Target: Engine_AfterBuild
+		-->
+		<Target Name="Engine_AfterBuild" AfterTargets="Build">
+
+			<CallTarget Targets="Engine_ValidateProperties" />
+
+			<CallTarget Targets="Engine_CopyForBuild_SQLite" />
+			<CallTarget Targets="Engine_CopyForBuild_Regex" />
+			<CallTarget Targets="Engine_CopyForBuild_Config" />
+			<CallTarget Targets="Engine_CopyForBuild_Styles" />
+			<CallTarget Targets="Engine_CopyForBuild_Translations" />
+			<CallTarget Targets="Engine_CopyForBuild_License" />
+
 		</Target>
 
-		<!-- Build Target: BeforeBuild -->
-		<Target Name="BeforeBuild">
-			<CallTarget Targets="Engine_BeforeBuild" />
+
+		<!--
+			Build Target: Engine_BeforePublish
+		-->
+		<Target Name="Engine_BeforePublish" BeforeTargets="Publish">
+
+			<CallTarget Targets="Engine_ValidateProperties" />
+
+			<CallTarget Targets="Engine_CleanForPublish_SQLite" />
+			<CallTarget Targets="Engine_CleanForPublish_Regex" />
+			<CallTarget Targets="Engine_CleanForPublish_Config" />
+			<CallTarget Targets="Engine_CleanForPublish_Styles" />
+			<CallTarget Targets="Engine_CleanForPublish_Translations" />
+			<CallTarget Targets="Engine_CleanForPublish_License" />
+
 		</Target>
 
-		<!-- Build Target: AfterBuild -->
-		<Target Name="AfterBuild">
-			<CallTarget Targets="Engine_AfterBuild" />
+
+		<!--
+			Build Target: Engine_AfterPublish
+		-->
+		<Target Name="Engine_AfterPublish" AfterTargets="Publish">
+
+			<CallTarget Targets="Engine_ValidateProperties" />
+
+			<CallTarget Targets="Engine_CopyForPublish_SQLite" />
+			<CallTarget Targets="Engine_CopyForPublish_Regex" />
+			<CallTarget Targets="Engine_CopyForPublish_Config" />
+			<CallTarget Targets="Engine_CopyForPublish_Styles" />
+			<CallTarget Targets="Engine_CopyForPublish_Translations" />
+			<CallTarget Targets="Engine_CopyForPublish_License" />
+
 		</Target>
+
 
 
 
 	<!--
-		Group: Engine General Targets
+		Group: Individual Action Targets
 		_____________________________________________________________________________
 
-		These targets are used when building this project.  All projects that depend on this one should also call these functions from their own
-		<General Targets> so that resources are properly copied over.
+		These targets are for individual resources and are called by the <Compiler Event Targets>.
 	-->
-
-		<!-- Build Target: Engine_BeforeClean -->
-		<Target Name="Engine_BeforeClean">
-			<CallTarget Targets="Engine_ValidateProperties" />
-		</Target>
-
-		<!-- Build Target: Engine_AfterClean -->
-		<Target Name="Engine_AfterClean">
-			<CallTarget Targets="Engine_CleanSQLiteResources" />
-			<CallTarget Targets="Engine_CleanRegexResources" />
-			<CallTarget Targets="Engine_CleanConfigResources" />
-			<CallTarget Targets="Engine_CleanStyleResources" />
-			<CallTarget Targets="Engine_CleanTranslationResources" />
-			<CallTarget Targets="Engine_CleanLicenseResources" />
-		</Target>
-
-		<!-- Build Target: Engine_BeforeBuild -->
-		<Target Name="Engine_BeforeBuild">
-			<CallTarget Targets="Engine_ValidateProperties" />
-		</Target>
-
-		<!-- Build Target: Engine_AfterBuild -->
-		<Target Name="Engine_AfterBuild">
-			<CallTarget Targets="Engine_CopySQLiteResources" />
-			<CallTarget Targets="Engine_CopyRegexResources" />
-			<CallTarget Targets="Engine_CopyConfigResources" />
-			<CallTarget Targets="Engine_CopyStyleResources" />
-			<CallTarget Targets="Engine_CopyTranslationResources" />
-			<CallTarget Targets="Engine_CopyLicenseResources" />
-		</Target>
-
-
-
-		<!--
-			Group: Engine Action Targets
-			_____________________________________________________________________________
-
-			These targets are used by the <Engine General Targets>.  You shouldn't need to call these individually, just call the <Engine General Targets> and
-			they will be called automatically.
-		-->
-
 
 		<!--
 			Build Target: Engine_ValidateProperties
 			Makes sure all the <Properties> are set to valid values.
 		-->
 		<Target Name="Engine_ValidateProperties">
-			<Error
-				Condition="'$(OperatingSystemTarget)' != 'Windows' and '$(OperatingSystemTarget)' != 'Unix' and '$(OperatingSystemTarget)' != 'Universal'"
-				Text="OperatingSystemTarget property must be set to Windows, Unix, or Universal" />
+
 			<Error
 				Condition="!HasTrailingSlash('$(NaturalDocsSourceDir)')"
-				Text="The NaturalDocsSourceDir build variable needs a trailing backslash." />
+				Text="The NaturalDocsSourceDir build property needs a trailing backslash." />
 			<Error
 				Condition="!Exists('$(NaturalDocsSourceDir)Engine')"
 				Text="Cannot find the Natural Docs Engine source in $(NaturalDocsSourceDir)Engine.  If you are not building Natural Docs itself but instead something which depends on it, please set the NaturalDocsSourceDir build property." />
+
 		</Target>
 
 
 		<!--
-			Build Target: Engine_CopySQLiteResources
+			Build Target: Engine_CopyForBuild_SQLite
 		-->
-		<Target Name="Engine_CopySQLiteResources">
+		<Target Name="Engine_CopyForBuild_SQLite">
 
 			<Copy
-				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Windows'"
+				Condition="'$(Platform)'=='Windows x86'"
 				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\SQLite.Win.x86.dll"
 				DestinationFolder="$(TargetDir)"
 				/>
 			<Copy
-				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Windows'"
+				Condition="'$(Platform)'=='Windows x64'"
 				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\SQLite.Win.x64.dll"
 				DestinationFolder="$(TargetDir)"
 				/>
 			<Copy
-				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Unix'"
-				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libSQLite.Linux.x86.so"
-				DestinationFolder="$(TargetDir)"
-				/>
-			<Copy
-				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Unix'"
-				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libSQLite.Linux.x64.so"
-				DestinationFolder="$(TargetDir)"
-				/>
-			<Copy
-				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Unix'"
+				Condition="'$(Platform)'=='macOS x86'"
 				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libSQLite.Mac.x86.so"
 				DestinationFolder="$(TargetDir)"
 				/>
 			<Copy
-				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Unix'"
+				Condition="'$(Platform)'=='macOS x64'"
 				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libSQLite.Mac.x64.so"
 				DestinationFolder="$(TargetDir)"
 				/>
 			<Copy
-				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Unix'"
-				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\NaturalDocs.Engine.dll.config"
+				Condition="'$(Platform)'=='Linux x86'"
+				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libSQLite.Linux.x86.so"
+				DestinationFolder="$(TargetDir)"
+				/>
+			<Copy
+				Condition="'$(Platform)'=='Linux x64'"
+				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libSQLite.Linux.x64.so"
 				DestinationFolder="$(TargetDir)"
 				/>
 
@@ -192,38 +199,55 @@
 
 
 		<!--
-			Build Target: Engine_CleanSQLiteResources
+			Publish Target: Engine_CopyForPublish_SQLite
 		-->
-		<Target Name="Engine_CleanSQLiteResources">
+		<Target Name="Engine_CopyForPublish_SQLite">
 
-			<Delete
-				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Windows'"
-				Files="$(TargetDir)SQLite.Win.x86.dll"
+			<Copy
+				Condition="'$(Platform)'=='Windows x86'"
+				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\SQLite.Win.x86.dll"
+				DestinationFolder="$(PublishDir)"
 				/>
-			<Delete
-				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Windows'"
-				Files="$(TargetDir)SQLite.Win.x64.dll"
+			<Copy
+				Condition="'$(Platform)'=='Windows x64'"
+				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\SQLite.Win.x64.dll"
+				DestinationFolder="$(PublishDir)"
 				/>
-			<Delete
-				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Unix'"
-				Files="$(TargetDir)libSQLite.Linux.x86.so"
+			<Copy
+				Condition="'$(Platform)'=='macOS x86'"
+				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libSQLite.Mac.x86.so"
+				DestinationFolder="$(PublishDir)"
 				/>
-			<Delete
-				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Unix'"
-				Files="$(TargetDir)libSQLite.Linux.x64.so"
+			<Copy
+				Condition="'$(Platform)'=='macOS x64'"
+				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libSQLite.Mac.x64.so"
+				DestinationFolder="$(PublishDir)"
 				/>
-			<Delete
-				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Unix'"
-				Files="$(TargetDir)libSQLite.Mac.x86.so"
+			<Copy
+				Condition="'$(Platform)'=='Linux x86'"
+				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libSQLite.Linux.x86.so"
+				DestinationFolder="$(PublishDir)"
 				/>
-			<Delete
-				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Unix'"
-				Files="$(TargetDir)libSQLite.Mac.x64.so"
+			<Copy
+				Condition="'$(Platform)'=='Linux x64'"
+				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libSQLite.Linux.x64.so"
+				DestinationFolder="$(PublishDir)"
 				/>
-			<Delete
-				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Unix'"
-				Files="$(TargetDir)NaturalDocs.Engine.dll.config"
-				/>
+
+		</Target>
+
+
+		<!--
+			Build Target: Engine_CleanForBuild_SQLite
+		-->
+		<Target Name="Engine_CleanForBuild_SQLite">
+
+			<Delete Files="$(TargetDir)SQLite.Win.x86.dll" />
+			<Delete Files="$(TargetDir)SQLite.Win.x64.dll" />
+			<Delete Files="$(TargetDir)libSQLite.Mac.x86.so" />
+			<Delete Files="$(TargetDir)libSQLite.Mac.x64.so" />
+			<Delete Files="$(TargetDir)libSQLite.Linux.x86.so" />
+			<Delete Files="$(TargetDir)libSQLite.Linux.x64.so" />
 
 
 			<!-- Old file names, not in use anymore -->
@@ -234,13 +258,47 @@
 			<Delete Files="$(TargetDir)libNaturalDocs.Engine.SQLite.Linux32.so" />
 			<Delete Files="$(TargetDir)libNaturalDocs.Engine.SQLite.Linux64.so" />
 
+
+			<!-- Map file for Mono, not in use anymore -->
+
+			<Delete Files="$(TargetDir)NaturalDocs.Engine.dll.config" />
+
 		</Target>
 
 
 		<!--
-			Build Target: Engine_CopyRegexResources
+			Publish Target: Engine_CleanForPublish_SQLite
 		-->
-		<Target Name="Engine_CopyRegexResources">
+		<Target Name="Engine_CleanForPublish_SQLite">
+
+			<Delete Files="$(PublishDir)SQLite.Win.x86.dll" />
+			<Delete Files="$(PublishDir)SQLite.Win.x64.dll" />
+			<Delete Files="$(PublishDir)libSQLite.Mac.x86.so" />
+			<Delete Files="$(PublishDir)libSQLite.Mac.x64.so" />
+			<Delete Files="$(PublishDir)libSQLite.Linux.x86.so" />
+			<Delete Files="$(PublishDir)libSQLite.Linux.x64.so" />
+
+
+			<!-- Old file names, not in use anymore -->
+
+			<Delete Files="$(PublishDir)NaturalDocs.Engine.SQLite.dll" />
+			<Delete Files="$(PublishDir)libNaturalDocs.Engine.SQLite.Mac32.so" />
+			<Delete Files="$(PublishDir)libNaturalDocs.Engine.SQLite.Mac64.so" />
+			<Delete Files="$(PublishDir)libNaturalDocs.Engine.SQLite.Linux32.so" />
+			<Delete Files="$(PublishDir)libNaturalDocs.Engine.SQLite.Linux64.so" />
+
+
+			<!-- Map file for Mono, not in use anymore -->
+
+			<Delete Files="$(PublishDir)NaturalDocs.Engine.dll.config" />
+
+		</Target>
+
+
+		<!--
+			Build Target: Engine_CopyForBuild_Regex
+		-->
+		<Target Name="Engine_CopyForBuild_Regex">
 
 			<Copy
 				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\Regex\Release\NaturalDocs.Engine.Regex.dll"
@@ -251,9 +309,22 @@
 
 
 		<!--
-			Build Target: Engine_CleanRegexResources
+			Publish Target: Engine_CopyForPublish_Regex
 		-->
-		<Target Name="Engine_CleanRegexResources">
+		<Target Name="Engine_CopyForPublish_Regex">
+
+			<Copy
+				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\Regex\Release\NaturalDocs.Engine.Regex.dll"
+				DestinationFolder="$(PublishDir)"
+				/>
+
+		</Target>
+
+
+		<!--
+			Build Target: Engine_CleanForBuild_Regex
+		-->
+		<Target Name="Engine_CleanForBuild_Regex">
 
 			<Delete
 				Files="$(TargetDir)NaturalDocs.Engine.Regex.dll"
@@ -263,27 +334,59 @@
 
 
 		<!--
-			Build Target: Engine_CopyConfigResources
+			Build Target: Engine_CleanForPublish_Regex
 		-->
-		<Target Name="Engine_CopyConfigResources">
+		<Target Name="Engine_CleanForPublish_Regex">
 
-			<MakeDir Directories="$(TargetDir)Config" />
-			<Exec
-				Condition="'$(OS)'=='Windows_NT'"
-				Command='xcopy "$(NaturalDocsSourceDir)Engine\Resources\Config" "$(TargetDir)Config" /Y'
-				/>
-			<Exec
-				Condition="'$(OS)'!='Windows_NT'"
-				Command='cp -f -r "$(NaturalDocsSourceDir)Engine/Resources/Config" "$(TargetDir)"'
+			<Delete
+				Files="$(PublishDir)NaturalDocs.Engine.Regex.dll"
 				/>
 
 		</Target>
 
 
 		<!--
-			Build Target: Engine_CleanConfigResources
+			Build Target: Engine_CopyForBuild_Config
 		-->
-		<Target Name="Engine_CleanConfigResources">
+		<Target Name="Engine_CopyForBuild_Config">
+
+			<MakeDir Directories="$(TargetDir)Config" />
+
+			<ItemGroup>
+				<Engine_CopyForBuild_ConfigFiles Include="$(NaturalDocsSourceDir)Engine\Resources\Config\**\*.*" />
+			</ItemGroup>
+
+			<Copy
+				SourceFiles="@(Engine_CopyForBuild_ConfigFiles)"
+				DestinationFolder="$(TargetDir)Config\%(RecursiveDir)"
+				/>
+
+		</Target>
+
+
+		<!--
+			Build Target: Engine_CopyForPublish_Config
+		-->
+		<Target Name="Engine_CopyForPublish_Config">
+
+			<MakeDir Directories="$(PublishDir)Config" />
+
+			<ItemGroup>
+				<Engine_CopyForPublish_ConfigFiles Include="$(NaturalDocsSourceDir)Engine\Resources\Config\**\*.*" />
+			</ItemGroup>
+
+			<Copy
+				SourceFiles="@(Engine_CopyForPublish_ConfigFiles)"
+				DestinationFolder="$(PublishDir)Config\%(RecursiveDir)"
+				/>
+
+		</Target>
+
+
+		<!--
+			Build Target: Engine_CleanForBuild_Config
+		-->
+		<Target Name="Engine_CleanForBuild_Config">
 
 			<RemoveDir Directories="$(TargetDir)Config" />
 
@@ -291,27 +394,57 @@
 
 
 		<!--
-			Build Target: Engine_CopyStyleResources
+			Build Target: Engine_CleanForPublish_Config
 		-->
-		<Target Name="Engine_CopyStyleResources">
+		<Target Name="Engine_CleanForPublish_Config">
+
+			<RemoveDir Directories="$(PublishDir)Config" />
+
+		</Target>
+
+
+		<!--
+			Build Target: Engine_CopyForBuild_Styles
+		-->
+		<Target Name="Engine_CopyForBuild_Styles">
 
 			<MakeDir Directories="$(TargetDir)Styles" />
-			<Exec
-				Condition="'$(OS)'=='Windows_NT'"
-				Command='xcopy "$(NaturalDocsSourceDir)Engine\Resources\Styles" "$(TargetDir)Styles" /S /Y'
-				/>
-			<Exec
-				Condition="'$(OS)'!='Windows_NT'"
-				Command='cp -f -r "$(NaturalDocsSourceDir)Engine/Resources/Styles" "$(TargetDir)"'
+
+			<ItemGroup>
+				<Engine_CopyForBuild_StyleFiles Include="$(NaturalDocsSourceDir)Engine\Resources\Styles\**\*.*" />
+			</ItemGroup>
+
+			<Copy
+				SourceFiles="@(Engine_CopyForBuild_StyleFiles)"
+				DestinationFolder="$(TargetDir)Styles\%(RecursiveDir)"
 				/>
 
 		</Target>
 
 
 		<!--
-			Build Target: Engine_CleanStyleResources
+			Build Target: Engine_CopyForPublish_Styles
 		-->
-		<Target Name="Engine_CleanStyleResources">
+		<Target Name="Engine_CopyForPublish_Styles">
+
+			<MakeDir Directories="$(PublishDir)Styles" />
+
+			<ItemGroup>
+				<Engine_CopyForPublish_StyleFiles Include="$(NaturalDocsSourceDir)Engine\Resources\Styles\**\*.*" />
+			</ItemGroup>
+
+			<Copy
+				SourceFiles="@(Engine_CopyForPublish_StyleFiles)"
+				DestinationFolder="$(PublishDir)Styles\%(RecursiveDir)"
+				/>
+
+		</Target>
+
+
+		<!--
+			Build Target: Engine_CleanForBuild_Styles
+		-->
+		<Target Name="Engine_CleanForBuild_Styles">
 
 			<RemoveDir Directories="$(TargetDir)Styles" />
 
@@ -319,27 +452,57 @@
 
 
 		<!--
-			Build Target: Engine_CopyTranslationResources
+			Build Target: Engine_CleanForPublish_Styles
 		-->
-		<Target Name="Engine_CopyTranslationResources">
+		<Target Name="Engine_CleanForPublish_Styles">
+
+			<RemoveDir Directories="$(PublishDir)Styles" />
+
+		</Target>
+
+
+		<!--
+			Build Target: Engine_CopyForBuild_Translations
+		-->
+		<Target Name="Engine_CopyForBuild_Translations">
 
 			<MakeDir Directories="$(TargetDir)Translations" />
-			<Exec
-				Condition="'$(OS)'=='Windows_NT'"
-				Command='xcopy "$(NaturalDocsSourceDir)Engine\Resources\Translations" "$(TargetDir)Translations" /Y'
-				/>
-			<Exec
-				Condition="'$(OS)'!='Windows_NT'"
-				Command='cp -f -r "$(NaturalDocsSourceDir)Engine/Resources/Translations" "$(TargetDir)"'
+
+			<ItemGroup>
+				<Engine_CopyForBuild_TranslationFiles Include="$(NaturalDocsSourceDir)Engine\Resources\Translations\**\*.*" />
+			</ItemGroup>
+
+			<Copy
+				SourceFiles="@(Engine_CopyForBuild_TranslationFiles)"
+				DestinationFolder="$(TargetDir)Translations\%(RecursiveDir)"
 				/>
 
 		</Target>
 
 
 		<!--
-			Build Target: Engine_CleanTranslationResources
+			Build Target: Engine_CopyForPublish_Translations
 		-->
-		<Target Name="Engine_CleanTranslationResources">
+		<Target Name="Engine_CopyForPublish_Translations">
+
+			<MakeDir Directories="$(PublishDir)Translations" />
+
+			<ItemGroup>
+				<Engine_CopyForPublish_TranslationFiles Include="$(NaturalDocsSourceDir)Engine\Resources\Translations\**\*.*" />
+			</ItemGroup>
+
+			<Copy
+				SourceFiles="@(Engine_CopyForPublish_TranslationFiles)"
+				DestinationFolder="$(PublishDir)Translations\%(RecursiveDir)"
+				/>
+
+		</Target>
+
+
+		<!--
+			Build Target: Engine_CleanForBuild_Translations
+		-->
+		<Target Name="Engine_CleanForBuild_Translations">
 
 			<RemoveDir Directories="$(TargetDir)Translations" />
 
@@ -347,9 +510,19 @@
 
 
 		<!--
-			Build Target: Engine_CopyLicenseResources
+			Build Target: Engine_CleanForPublish_Translations
 		-->
-		<Target Name="Engine_CopyLicenseResources">
+		<Target Name="Engine_CleanForPublish_Translations">
+
+			<RemoveDir Directories="$(PublishDir)Translations" />
+
+		</Target>
+
+
+		<!--
+			Build Target: Engine_CopyForBuild_License
+		-->
+		<Target Name="Engine_CopyForBuild_License">
 
 			<Copy
 				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\License\License.txt"
@@ -360,12 +533,37 @@
 
 
 		<!--
-			Build Target: Engine_CleanLicenseResources
+			Build Target: Engine_CopyForPublish_License
 		-->
-		<Target Name="Engine_CleanLicenseResources">
+		<Target Name="Engine_CopyForPublish_License">
+
+			<Copy
+				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\License\License.txt"
+				DestinationFolder="$(PublishDir)"
+				/>
+
+		</Target>
+
+
+		<!--
+			Build Target: Engine_CleanForBuild_License
+		-->
+		<Target Name="Engine_CleanForBuild_License">
 
 			<Delete
 				Files="$(TargetDir)License.txt"
+				/>
+
+		</Target>
+
+
+		<!--
+			Build Target: Engine_CleanForPublish_License
+		-->
+		<Target Name="Engine_CleanForPublish_License">
+
+			<Delete
+				Files="$(PublishDir)License.txt"
 				/>
 
 		</Target>

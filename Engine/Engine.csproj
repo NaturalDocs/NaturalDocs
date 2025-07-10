@@ -1,351 +1,59 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{F7569B05-FFFD-4084-8F33-760F3E1916CD}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <TargetFramework>net8.0</TargetFramework>
+    <Platforms>Windows x64;Windows ARM64</Platforms>
     <RootNamespace>CodeClear.NaturalDocs.Engine</RootNamespace>
     <AssemblyName>NaturalDocs.Engine</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
-    <FileAlignment>512</FileAlignment>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SQLITE_UTF8</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <LangVersion>default</LangVersion>
-    <Prefer32Bit>false</Prefer32Bit>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;SQLITE_UTF8</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <LangVersion>default</LangVersion>
-    <Prefer32Bit>false</Prefer32Bit>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <PropertyGroup>
+    <Configurations>Debug;Release;Publish</Configurations>
     <StartupObject />
+    <AssemblyTitle>Natural Docs Engine</AssemblyTitle>
+    <Company>Code Clear LLC</Company>
+    <Product>Natural Docs</Product>
+    <Copyright>Copyright © 2003-2025 Code Clear LLC</Copyright>
+    <AssemblyVersion>2.4.0.11</AssemblyVersion>
+    <FileVersion>2.4.0.11</FileVersion>
+    <PackageProjectUrl>https://www.naturaldocs.org</PackageProjectUrl>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <NuGetAuditMode>all</NuGetAuditMode>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <LangVersion>default</LangVersion>
+    <WarningLevel>9999</WarningLevel>
+    <NoWarn />
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <IsAotCompatible>True</IsAotCompatible>
+    <OutputPath>bin\$(Platform) $(Configuration)\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <IntermediateOutputPath>obj\$(Platform) $(Configuration)\</IntermediateOutputPath>
+    <AppendTargetFrameworkToIntermediateOutputPath>false</AppendTargetFrameworkToIntermediateOutputPath>
+    <AppendRuntimeIdentifierToIntermediateOutputPath>false</AppendRuntimeIdentifierToIntermediateOutputPath>
   </PropertyGroup>
-  <PropertyGroup>
-    <RunPostBuildEvent>Always</RunPostBuildEvent>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <DefineConstants>SQLITE_UTF8;TRACE;DEBUG</DefineConstants>
+    <Optimize>False</Optimize>
+    <DebugType>pdbonly</DebugType>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="Source\Comments\InlineDocumentationComment.cs" />
-    <Compile Include="Source\Comments\NaturalDocs\Config.cs" />
-    <Compile Include="Source\Comments\NaturalDocs\ConfigFiles\BinaryFileParser.cs" />
-    <Compile Include="Source\Comments\NaturalDocs\ConfigFiles\TextFileParser.cs" />
-    <Compile Include="Source\Config\CharacterEncodingRule.cs" />
-    <Compile Include="Source\Config\OverridableInputSettings.cs" />
-    <Compile Include="Source\Exceptions\PathMustBeAbsolute.cs" />
-    <Compile Include="Source\Exceptions\PathMustBeRelative.cs" />
-    <Compile Include="Source\Files\ChangeProcessorDetailedStatus.cs" />
-    <Compile Include="Source\Languages\Parsers\PowerBuilder.cs" />
-    <Compile Include="Source\Languages\Parsers\PowerShell.cs" />
-    <Compile Include="Source\Languages\Parsers\Tcl.cs" />
-    <Compile Include="Source\Languages\Parsers\SystemVerilog.cs" />
-    <Compile Include="Source\Output\HTML\Components\PrototypeCellLayout.cs" />
-    <Compile Include="Source\Output\HTML\Components\PrototypeColumnType.cs" />
-    <Compile Include="Source\Output\HTML\Components\PrototypeColumnLayout.cs" />
-    <Compile Include="Source\Output\HTML\Components\PrototypeParameterLayout.cs" />
-    <Compile Include="Source\Output\HTML\Components\PrototypeStyleFormatters\Unknown.cs" />
-    <Compile Include="Source\Output\HTML\Components\PrototypeStyleFormatters\C.cs" />
-    <Compile Include="Source\Output\HTML\Components\PrototypeStyleFormatters\Pascal.cs" />
-    <Compile Include="Source\Output\HTML\Components\PrototypeStyleFormatters\SystemVerilog.cs" />
-    <Compile Include="Source\Output\HTML\Components\PrototypeStyleFormatter.cs" />
-    <Compile Include="Source\Output\HTML\Target.Start.cs" />
-    <Compile Include="Source\Prototypes\ParameterStyle.cs" />
-    <Compile Include="Source\Prototypes\ParsedPrototypes\SystemVerilogModule.cs" />
-    <Compile Include="Source\RelativePath.cs" />
-    <Compile Include="Source\CommentTypes\Config.cs" />
-    <Compile Include="Source\CommentTypes\ConfigFiles\TextFile.cs" />
-    <Compile Include="Source\CommentTypes\ConfigFiles\TextFileCommentType.cs" />
-    <Compile Include="Source\CommentTypes\ConfigFiles\TextFileKeywordDefinition.cs" />
-    <Compile Include="Source\CommentTypes\KeywordDefinition.cs" />
-    <Compile Include="Source\CommentTypes\Manager.Start.cs" />
-    <Compile Include="Source\Config\Manager.Start.cs" />
-    <Compile Include="Source\Hierarchies\Hierarchy.cs" />
-    <Compile Include="Source\Hierarchies\Manager.cs" />
-    <Compile Include="Source\Languages\CommentSymbols.cs" />
-    <Compile Include="Source\Languages\ConfigFiles\TextFile.cs" />
-    <Compile Include="Source\Languages\ConfigFiles\TextFilePrototypeEnders.cs" />
-    <Compile Include="Source\Languages\Config.cs" />
-    <Compile Include="Source\Languages\Manager.Start.cs" />
-    <Compile Include="Source\Languages\Parsers\PHP.cs" />
-    <Compile Include="Source\Output\HTML\Components\JSONMenuEntries\RootContainer.cs" />
-    <Compile Include="Source\Output\HTML\Paths\Class.cs" />
-    <Compile Include="Source\Output\HTML\ConfigFiles\BinarySearchIndexParser.cs" />
-    <Compile Include="Source\AbsolutePath.cs" />
-    <Compile Include="Source\SQLite\DLLImport\x86.cs" />
-    <Compile Include="Source\SQLite\DLLImport\x64.cs" />
-    <Compile Include="Source\StartupIssues.cs" />
-    <Compile Include="Source\Config\Targets\ImageFolder.cs" />
-    <Compile Include="Source\Files\FileSources\Folder.cs" />
-    <Compile Include="Source\Files\FileSources\ImageFolder.cs" />
-    <Compile Include="Source\Files\FileSources\SourceFolder.cs" />
-    <Compile Include="Source\Files\FileSources\ImageFolderAdder.cs" />
-    <Compile Include="Source\Files\ConfigFiles\BinaryFileParser.cs" />
-    <Compile Include="Source\Files\ImageFileProcessor.cs" />
-    <Compile Include="Source\Collections\NumberSetTable.cs" />
-    <Compile Include="Source\Files\FileSourceAdder.cs" />
-    <Compile Include="Source\Files\FileSources\SourceFolderAdder.cs" />
-    <Compile Include="Source\Languages\Parsers\Lua.cs" />
-    <Compile Include="Source\Links\Manager.Events.cs" />
-    <Compile Include="Source\Links\Resolver.cs" />
-    <Compile Include="Source\Links\ResolverStatus.cs" />
-    <Compile Include="Source\Links\UnprocessedChanges.cs" />
-    <Compile Include="Source\Output\Builder.cs" />
-    <Compile Include="Source\Output\HTML\Paths\Image.cs" />
-    <Compile Include="Source\Output\HTML\TargetBuilder.cs" />
-    <Compile Include="Source\Output\HTML\Components\Page.cs" />
-    <Compile Include="Source\Output\HTML\Target.Events.cs" />
-    <Compile Include="Source\Output\HTML\UnprocessedChanges.cs" />
-    <Compile Include="Source\Output\HTML\ConfigFiles\BinaryBuildStateParser.cs" />
-    <Compile Include="Source\Output\HTML\ConfigFiles\BinaryConfigParser.cs" />
-    <Compile Include="Source\Output\HTML\PageType.cs" />
-    <Compile Include="Source\Output\HTML\PageTypes.cs" />
-    <Compile Include="Source\Output\HTML\Paths\Style.cs" />
-    <Compile Include="Source\Output\TargetBuilder.cs" />
-    <Compile Include="Source\Styles\CSSOnly.cs" />
-    <Compile Include="Source\Styles\Advanced.cs" />
-    <Compile Include="Source\Styles\Manager.cs" />
-    <Compile Include="Source\Styles\PageType.cs" />
-    <Compile Include="Source\Styles\PageTypes.cs" />
-    <Compile Include="Source\Styles\ConfigFiles\TextFileParser.cs" />
-    <Compile Include="Source\Output\HTML\Component.cs" />
-    <Compile Include="Source\Output\HTML\Components\ClassPrototype.cs" />
-    <Compile Include="Source\Output\HTML\Components\TopicPage.cs" />
-    <Compile Include="Source\Output\HTML\Components\JSONMenu.cs" />
-    <Compile Include="Source\Output\HTML\Components\JSONMenuEntries\Container.cs" />
-    <Compile Include="Source\Output\HTML\Components\JSONMenuEntries\Target.cs" />
-    <Compile Include="Source\Output\HTML\Components\JSONMenuEntries\Entry.cs" />
-    <Compile Include="Source\Output\HTML\Components\JSONToolTips.cs" />
-    <Compile Include="Source\Output\HTML\Components\JSONSummary.cs" />
-    <Compile Include="Source\Output\HTML\Components\JSONSearchIndex.cs" />
-    <Compile Include="Source\Output\HTML\Components\Tooltip.cs" />
-    <Compile Include="Source\Output\HTML\Components\Topic.cs" />
-    <Compile Include="Source\Output\HTML\Components\Prototype.cs" />
-    <Compile Include="Source\Output\HTML\Context.cs" />
-    <Compile Include="Source\Output\HTML\Paths\Topic.cs" />
-    <Compile Include="Source\Output\HTML\PageLocation.cs" />
-    <Compile Include="Source\Output\HTML\Paths\SearchIndex.cs" />
-    <Compile Include="Source\Output\HTML\Paths\Menu.cs" />
-    <Compile Include="Source\Output\HTML\Paths\SourceFile.cs" />
-    <Compile Include="Source\Output\HTML\Paths\Utilities.cs" />
-    <Compile Include="Source\Styles\FileSourceAdder.cs" />
-    <Compile Include="Source\Output\HTML\Components\FormattedText.cs" />
-    <Compile Include="Source\Process.cs" />
-    <Compile Include="Source\SystemInfo.cs" />
-    <Compile Include="Source\Files\FilesBeingProcessed.cs" />
-    <Compile Include="Source\Files\IChangeWatcher.cs" />
-    <Compile Include="Source\Files\ImageFile.cs" />
-    <Compile Include="Source\Files\Adder.cs" />
-    <Compile Include="Source\Files\UnprocessedChanges.cs" />
-    <Compile Include="Source\Files\ChangeProcessor.cs" />
-    <Compile Include="Source\Languages\Parsers\Java.cs" />
-    <Compile Include="Source\Languages\Parsers\SQL.cs" />
-    <Compile Include="Source\Languages\Parsers\Ruby.cs" />
-    <Compile Include="Source\Languages\Parsers\Python.cs" />
-    <Compile Include="Source\Links\ImageLink.cs" />
-    <Compile Include="Source\Links\ImageLinkSet.cs" />
-    <Compile Include="Source\Links\Manager.Scoring.cs" />
-    <Compile Include="Source\Links\Manager.cs" />
-    <Compile Include="Source\Module.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Source\BinaryFile.cs" />
-    <Compile Include="Source\CodeDB\Accessor.cs" />
-    <Compile Include="Source\CodeDB\Accessor.SQL.cs" />
-    <Compile Include="Source\CodeDB\Exceptions\FieldMustNotBeValue.cs" />
-    <Compile Include="Source\CodeDB\ReferenceChangeCache.cs" />
-    <Compile Include="Source\CodeDB\EventAccessor.SQL.cs" />
-    <Compile Include="Source\CodeDB\EventAccessor.cs" />
-    <Compile Include="Source\CodeDB\Exceptions\BadLockChange.cs" />
-    <Compile Include="Source\CodeDB\Exceptions\FieldMustBeValue.cs" />
-    <Compile Include="Source\CodeDB\Exceptions\FieldMustBeNull.cs" />
-    <Compile Include="Source\CodeDB\Exceptions\LockMinimumNotMet.cs" />
-    <Compile Include="Source\CodeDB\Exceptions\FieldMustHaveContent.cs" />
-    <Compile Include="Source\CodeDB\Exceptions\FieldMustBeNonZero.cs" />
-    <Compile Include="Source\CodeDB\Exceptions\FieldMustBeZero.cs" />
-    <Compile Include="Source\CodeDB\IChangeWatcher.cs" />
-    <Compile Include="Source\CodeDB\InfoTableID.cs" />
-    <Compile Include="Source\CodeDB\IDLookupCache.cs" />
-    <Compile Include="Source\Collections\KeySettings.cs" />
-    <Compile Include="Source\Comments\Components\SectionedComment.cs" />
-    <Compile Include="Source\Comments\Components\JavadocTagForm.cs" />
-    <Compile Include="Source\Comments\Components\HTMLEntityChars.cs" />
-    <Compile Include="Source\Comments\Components\JavadocIterator.cs" />
-    <Compile Include="Source\Comments\Components\TagForm.cs" />
-    <Compile Include="Source\Comments\Components\JavadocElementType.cs" />
-    <Compile Include="Source\Comments\Components\JavadocComment.cs" />
-    <Compile Include="Source\Comments\Components\XMLComment.cs" />
-    <Compile Include="Source\Collections\TagStack.cs" />
-    <Compile Include="Source\Comments\Javadoc\Parser.cs" />
-    <Compile Include="Source\Comments\XML\Parser.cs" />
-    <Compile Include="Source\Comments\Components\XMLElementType.cs" />
-    <Compile Include="Source\Comments\Components\XMLIterator.cs" />
-    <Compile Include="Source\CommandLine.cs" />
-    <Compile Include="Source\Config\ConfigFiles\LegacyMenuFileParser.cs" />
-    <Compile Include="Source\Config\ConfigFiles\BinaryFileParser.cs" />
-    <Compile Include="Source\Config\ConfigFiles\TextFileParser.cs" />
-    <Compile Include="Source\Config\Targets\IgnoredSourceFolderPattern.cs" />
-    <Compile Include="Source\Config\Targets\IgnoredSourceFolder.cs" />
-    <Compile Include="Source\Config\Targets\SourceFolder.cs" />
-    <Compile Include="Source\Config\Targets\HTMLOutputFolder.cs" />
-    <Compile Include="Source\Config\Targets\Output.cs" />
-    <Compile Include="Source\Config\Targets\Filter.cs" />
-    <Compile Include="Source\Config\Targets\Input.cs" />
-    <Compile Include="Source\Config\ProjectConfig.cs" />
-    <Compile Include="Source\Config\OverridableOutputSettings.cs" />
-    <Compile Include="Source\Config\PropertySource.cs" />
-    <Compile Include="Source\Config\PropertyLocation.cs" />
-    <Compile Include="Source\Languages\ConfigFiles\BinaryFileParser.cs" />
-    <Compile Include="Source\Languages\Parsers\Perl.cs" />
-    <Compile Include="Source\Languages\ConfigFiles\TextFileParser.cs" />
-    <Compile Include="Source\Output\HTML\BuildState.cs" />
-    <Compile Include="Source\Output\ResourceProcessor.cs" />
-    <Compile Include="Source\Output\ResourceProcessors\JavaScript.cs" />
-    <Compile Include="Source\Output\ResourceProcessors\CSS.cs" />
-    <Compile Include="Source\FilePosition.cs" />
-    <Compile Include="Source\Languages\Exceptions\BadContainerOperation.cs" />
-    <Compile Include="Source\Languages\Parsers\ShebangScript.cs" />
-    <Compile Include="Source\Languages\Parsers\CSharp.cs" />
-    <Compile Include="Source\Languages\Element.cs" />
-    <Compile Include="Source\Languages\ParentElement.cs" />
-    <Compile Include="Source\ClassView.cs" />
-    <Compile Include="Source\Prototypes\ParameterSection.cs" />
-    <Compile Include="Source\Prototypes\TypeBuilder.cs" />
-    <Compile Include="Source\Prototypes\Section.cs" />
-    <Compile Include="Source\Prototypes\ParsedClassPrototype.cs" />
-    <Compile Include="Source\CodeDB\Lock.cs" />
-    <Compile Include="Source\CodeDB\Manager.cs" />
-    <Compile Include="Source\CodeDB\Manager.SQL.cs" />
-    <Compile Include="Source\Collections\SafeStack.cs" />
-    <Compile Include="Source\Collections\SafeDictionary.cs" />
-    <Compile Include="Source\Collections\SortedStringTable.cs" />
-    <Compile Include="Source\Collections\StringSet.cs" />
-    <Compile Include="Source\Collections\StringTable.cs" />
-    <Compile Include="Source\Collections\StringToStringTable.cs" />
-    <Compile Include="Source\Links\LinkInterpretation.cs" />
-    <Compile Include="Source\Comments\Manager.cs" />
-    <Compile Include="Source\Comments\Parser.cs" />
-    <Compile Include="Source\Comments\LineFinder.cs" />
-    <Compile Include="Source\Comments\NaturalDocs\Parser.cs" />
-    <Compile Include="Source\Comments\PossibleDocumentationComment.cs" />
-    <Compile Include="Source\ConfigFile.cs" />
-    <Compile Include="Source\Config\Manager.cs" />
-    <Compile Include="Source\IDObjects\NumberRange.cs" />
-    <Compile Include="Source\Languages\Parser.cs" />
-    <Compile Include="Source\Languages\PrototypeEnders.cs" />
-    <Compile Include="Source\Links\LinkSet.cs" />
-    <Compile Include="Source\Links\Link.cs" />
-    <Compile Include="Source\Links\LinkType.cs" />
-    <Compile Include="Source\NDMarkup\Exceptions\InvalidTag.cs" />
-    <Compile Include="Source\NDMarkup\Exceptions\InvalidMarkup.cs" />
-    <Compile Include="Source\NDMarkup\Iterator.cs" />
-    <Compile Include="Source\Delegates.cs" />
-    <Compile Include="Source\Errors\Error.cs" />
-    <Compile Include="Source\Errors\ErrorList.cs" />
-    <Compile Include="Source\Exceptions\ArrayDidntHaveEvenLength.cs" />
-    <Compile Include="Source\Exceptions\FileAlreadyOpen.cs" />
-    <Compile Include="Source\Exceptions\NameChangeDifferedInMoreThanCapitalization.cs" />
-    <Compile Include="Source\Exceptions\RelativeCompareOfIteratorsNotOnSameBase.cs" />
-    <Compile Include="Source\Exceptions\StringNotInValidFormat.cs" />
-    <Compile Include="Source\Exceptions\Thread.cs" />
-    <Compile Include="Source\Exceptions\UserFriendly.cs" />
-    <Compile Include="Source\IStartupWatcher.cs" />
-    <Compile Include="Source\Output\HTML\Components\Menu.cs" />
-    <Compile Include="Source\Output\HTML\Components\MenuEntries\Container.cs" />
-    <Compile Include="Source\Output\HTML\Components\MenuEntries\Entry.cs" />
-    <Compile Include="Source\Output\HTML\Components\MenuEntries\Classes\Class.cs" />
-    <Compile Include="Source\Output\HTML\Components\MenuEntries\Classes\Scope.cs" />
-    <Compile Include="Source\Output\HTML\Components\MenuEntries\Classes\Language.cs" />
-    <Compile Include="Source\Output\HTML\Components\MenuEntries\Files\File.cs" />
-    <Compile Include="Source\Output\HTML\Components\MenuEntries\Files\FileSource.cs" />
-    <Compile Include="Source\Output\HTML\Components\MenuEntries\Files\Folder.cs" />
-    <Compile Include="Source\Styles\Style.cs" />
-    <Compile Include="Source\Styles\FileSource.cs" />
-    <Compile Include="Source\Prototypes\ParsedPrototype.cs" />
-    <Compile Include="Source\Path.cs" />
-    <Compile Include="Source\Files\File.cs" />
-    <Compile Include="Source\Files\FileSource.cs" />
-    <Compile Include="Source\Files\FileType.cs" />
-    <Compile Include="Source\Files\Filter.cs" />
-    <Compile Include="Source\Files\Filters\IgnoredSourceFolder.cs" />
-    <Compile Include="Source\Files\Filters\IgnoredSourceFolderPattern.cs" />
-    <Compile Include="Source\Files\Filters\IgnoredSourceFolderRegex.cs" />
-    <Compile Include="Source\Files\InputType.cs" />
-    <Compile Include="Source\Files\Manager.cs" />
-    <Compile Include="Source\Files\AdderStatus.cs" />
-    <Compile Include="Source\Files\ChangeProcessorStatus.cs" />
-    <Compile Include="Source\IDObjects\IDObject.cs" />
-    <Compile Include="Source\IDObjects\Manager.cs" />
-    <Compile Include="Source\IDObjects\NumberSet.cs" />
-    <Compile Include="Source\Instance.cs" />
-    <Compile Include="Source\Languages\AccessLevel.cs" />
-    <Compile Include="Source\Languages\ConfigFiles\TextFileLanguage.cs" />
-    <Compile Include="Source\Languages\Language.cs" />
-    <Compile Include="Source\Languages\Manager.cs" />
-    <Compile Include="Source\Locale.cs" />
-    <Compile Include="Source\Output\HTML\SearchIndex\Entries\Entry.cs" />
-    <Compile Include="Source\Output\HTML\SearchIndex\Entries\Keyword.cs" />
-    <Compile Include="Source\Output\HTML\SearchIndex\Entries\Topic.cs" />
-    <Compile Include="Source\Output\HTML\SearchIndex\IChangeWatcher.cs" />
-    <Compile Include="Source\Output\HTML\SearchIndex\Manager.cs" />
-    <Compile Include="Source\StringBuilderExtensions.cs" />
-    <Compile Include="Source\Output\Target.cs" />
-    <Compile Include="Source\Output\HTML\Target.cs" />
-    <Compile Include="Source\Output\Manager.cs" />
-    <Compile Include="Source\SQLite\API.cs" />
-    <Compile Include="Source\SQLite\Connection.cs" />
-    <Compile Include="Source\SQLite\Exceptions\UnexpectedResult.cs" />
-    <Compile Include="Source\SQLite\Query.cs" />
-    <Compile Include="Source\ExceptionExtensions.cs" />
-    <Compile Include="Source\StringExtensions.cs" />
-    <Compile Include="Source\Symbols\ContextString.cs" />
-    <Compile Include="Source\Symbols\ClassString.cs" />
-    <Compile Include="Source\Collections\ILookupKey.cs" />
-    <Compile Include="Source\Symbols\UsingString.cs" />
-    <Compile Include="Source\Symbols\SeparatorChars.cs" />
-    <Compile Include="Source\Symbols\ParameterString.cs" />
-    <Compile Include="Source\Symbols\EndingSymbol.cs" />
-    <Compile Include="Source\Symbols\SymbolString.cs" />
-    <Compile Include="Source\Thread.cs" />
-    <Compile Include="Source\Tokenization\SimpleTokenIterator.cs" />
-    <Compile Include="Source\Tokenization\PreviousPastWhitespaceMode.cs" />
-    <Compile Include="Source\Tokenization\Line.cs" />
-    <Compile Include="Source\Tokenization\LineBoundsMode.cs" />
-    <Compile Include="Source\Tokenization\LineIterator.cs" />
-    <Compile Include="Source\Tokenization\TokenIterator.cs" />
-    <Compile Include="Source\Tokenization\Tokenizer.cs" />
-    <Compile Include="Source\Tokenization\TokenTypes.cs" />
-    <Compile Include="Source\CommentTypes\ConfigFiles\BinaryFileParser.cs" />
-    <Compile Include="Source\CommentTypes\ConfigFiles\TextFileParser.cs" />
-    <Compile Include="Source\Topics\Topic.cs" />
-    <Compile Include="Source\Topics\GroupedTopics.cs" />
-    <Compile Include="Source\Topics\TopicGroup.cs" />
-    <Compile Include="Source\CommentTypes\ConfigFiles\TextFileKeywordGroup.cs" />
-    <Compile Include="Source\CommentTypes\Manager.cs" />
-    <Compile Include="Source\CommentTypes\Tag.cs" />
-    <Compile Include="Source\CommentTypes\CommentType.cs" />
-    <Compile Include="Source\UTF8Marshaller.cs" />
-    <Compile Include="Source\Version.cs" />
-  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DefineConstants>SQLITE_UTF8;TRACE</DefineConstants>
+    <Optimize>True</Optimize>
+    <DebugType>pdbonly</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Publish'">
+    <DefineConstants>SQLITE_UTF8;TRACE</DefineConstants>
+    <Optimize>True</Optimize>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='Windows x64'">
+	<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <PlatformTarget>x64</PlatformTarget>
+    <DefineConstants>WINDOWS;X64</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='Windows ARM64'">
+	<RuntimeIdentifier>win-arm64</RuntimeIdentifier>
+    <PlatformTarget>ARM64</PlatformTarget>
+    <DefineConstants>WINDOWS;ARM64</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <Content Include="Architecture\Code Conventions.txt" />
     <Content Include="Architecture\Compilation Symbols.txt" />
@@ -392,32 +100,9 @@
     <Content Include="Source\Languages\Parsers\CSharp Notes.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-    <None Include="Engine.targets" />
-    <None Include="Resources\License\License.rtf" />
-  </ItemGroup>
-  <ItemGroup />
-  <ItemGroup>
-    <Reference Include="NaturalDocs.Engine.Regex, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="NaturalDocs.Engine.Regex">
       <HintPath>Resources\Regex\Release\NaturalDocs.Engine.Regex.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target> -->
   <Import Project="Engine.targets" />
 </Project>
