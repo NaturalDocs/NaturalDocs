@@ -86,9 +86,6 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			if (timestampCode == null)
 				{  return null;  }
 
-			if (date == null)
-				{  date = DateTime.Now.ToLocalTime();  }
-
 			Tokenization.Tokenizer tokenizer = new Tokenization.Tokenizer(timestampCode);
 			Tokenization.TokenIterator tokenIterator = tokenizer.FirstToken;
 			System.Text.StringBuilder output = new System.Text.StringBuilder();
