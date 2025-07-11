@@ -467,6 +467,25 @@ namespace CodeClear.NaturalDocs.Engine
 		// __________________________________________________________________________
 
 
+		/* Function: IsYes
+		 * Returns whether the passed value is "yes" or an equivalent such as "y", "true", or "t".
+		 */
+		static public bool IsYes (string value)
+			{
+			return IsYesValueRegex().IsMatch(value);
+			}
+
+
+		/* Function: IsNo
+		 * Returns whether the passed value is "no" or an equivalent such as "n", "false", or "f".  Null and empty strings do
+		 * _not_ count as no.
+		 */
+		static public bool IsNo (string value)
+			{
+			return IsNoValueRegex().IsMatch(value);
+			}
+
+
 		/* Function: TryToAnnotateWithErrors
 		 *
 		 * Attempts to provide comment annotations for all the config files with errors appearing in a passed <ErrorList>.  Only
@@ -795,6 +814,25 @@ namespace CodeClear.NaturalDocs.Engine
 
 		// Group: Regular Expressions
 		// __________________________________________________________________________
+
+
+		/* Regex: IsYesValueRegex
+		 *
+		 * Will match if the string is "yes" or an equivalent such as "y", "true", or "t".
+		 */
+		[GeneratedRegex("""^(?:y|yes|t|true)$""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex IsYesValueRegex();
+
+
+		/* Regex: IsNoValueRegex
+		 *
+		 * Will match if the string is "no" or an equivalent such as "n", "false", or "n".  Null and empty strings do _not_
+		 * count as no.
+		 */
+		[GeneratedRegex("""^(?:n|no|f|false)$""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex IsNoValueRegex();
 
 
 		/* Regex: FindFormatLineRegex
