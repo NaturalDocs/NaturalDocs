@@ -315,6 +315,15 @@ namespace CodeClear.NaturalDocs.Engine
 		// __________________________________________________________________________
 
 
+		/* Function: IsOnlyAToZ
+		 * Returns whether the passed string only contains the letters A to Z.
+		 */
+		public static bool IsOnlyAToZ (this string input)
+			{
+			return (!FindNonAToZRegex().IsMatch(input));
+			}
+
+
 		/* Function: OnlyAToZ
 		 * Converts the passed string to a version that only contains the letters A to Z.  All other characters are stripped or
 		 * replaced with related characters.  If there are no ASCII characters available it returns null.
