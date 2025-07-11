@@ -119,13 +119,13 @@ namespace CodeClear.NaturalDocs.Engine
 			return FindCopyrightAndTrademarksRegex().Replace(input,
 				delegate (Match match)
 					{
-					string lcMatch = match.Value.ToLower(CultureInfo.InvariantCulture);
+					char mainChar = match.Value[1];
 
-					if (lcMatch == "(c)")
+					if (mainChar == 'c' || mainChar == 'C')
 						{  return "©";  }
-					else if (lcMatch == "(r)")
+					else if (mainChar == 'r' || mainChar == 'R')
 						{  return "®";  }
-					else // (lcMatch == "(tm)")
+					else // (mainChar == 't' || mainChar == 'T')
 						{  return "™";  }
 					}
 				);
