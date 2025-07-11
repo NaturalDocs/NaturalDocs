@@ -38,8 +38,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			yesRegex = new Regex.Config.Yes();
 			noRegex = new Regex.Config.No();
 
-			nonASCIILettersRegex = new Regex.NonASCIILetters();
-
 			addReplaceAliasesRegex = new Regex.Languages.AddReplaceAliases();
 			addReplaceExtensionsRegex = new Regex.Languages.AddReplaceExtensions();
 			addReplaceShebangStringsRegex = new Regex.Languages.AddReplaceShebangStrings();
@@ -386,7 +384,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 						{
 						if (currentLanguage == null)
 							{  AddNeedsLanguageError(file, identifier);  }
-						else if (nonASCIILettersRegex.IsMatch(value))
+						else if (!value.IsOnlyAToZ())
 							{
 							file.AddError(
 								Locale.Get("NaturalDocs.Engine", "Languages.txt.SimpleIdentifierMustOnlyBeASCIILetters(name)", value)
@@ -1001,8 +999,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 
 		protected Regex.Config.Yes yesRegex;
 		protected Regex.Config.No noRegex;
-
-		protected Regex.NonASCIILetters nonASCIILettersRegex;
 
 		protected Regex.Languages.AddReplaceAliases addReplaceAliasesRegex;
 		protected Regex.Languages.AddReplaceExtensions addReplaceExtensionsRegex;

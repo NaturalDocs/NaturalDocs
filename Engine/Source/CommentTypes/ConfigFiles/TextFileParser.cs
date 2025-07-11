@@ -39,8 +39,6 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 			startRegex = new Regex.CommentTypes.ScopeStart();
 			endRegex = new Regex.CommentTypes.ScopeEnd();
 
-			nonASCIILettersRegex = new Regex.NonASCIILetters();
-
 			ignoreKeywordsRegex = new Regex.CommentTypes.IgnoreKeywords();
 			commentTypeRegex = new Regex.CommentTypes.CommentType();
 			alterCommentTypeRegex = new Regex.CommentTypes.AlterCommentType();
@@ -418,7 +416,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 						{
 						if (currentCommentType == null)
 							{  AddNeedsCommentTypeError(file, identifier);  }
-						else if (nonASCIILettersRegex.IsMatch(value))
+						else if (!value.IsOnlyAToZ())
 							{
 							file.AddError(
 								Locale.Get("NaturalDocs.Engine", "Comments.txt.SimpleIdentifierMustOnlyBeASCIILetters(name)", value)
@@ -956,8 +954,6 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 		protected Regex.Config.No noRegex;
 		protected Regex.CommentTypes.ScopeStart startRegex;
 		protected Regex.CommentTypes.ScopeEnd endRegex;
-
-		protected Regex.NonASCIILetters nonASCIILettersRegex;
 
 		protected Regex.CommentTypes.IgnoreKeywords ignoreKeywordsRegex;
 		protected Regex.CommentTypes.CommentType commentTypeRegex;
