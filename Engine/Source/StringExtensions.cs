@@ -21,7 +21,7 @@ namespace CodeClear.NaturalDocs.Engine
 	static public partial class StringExtensions
 		{
 
-		// Group: Functions
+		// Group: Normalization Functions
 		// __________________________________________________________________________
 
 
@@ -33,6 +33,7 @@ namespace CodeClear.NaturalDocs.Engine
 			return FindWhitespaceCharsRegex().Replace(input, " ");
 			}
 
+
 		/* Function: RemoveWhitespace
 		 * Removes all whitespace from the string.
 		 */
@@ -40,6 +41,7 @@ namespace CodeClear.NaturalDocs.Engine
 			{
 			return FindWhitespaceCharsRegex().Replace(input, "");
 			}
+
 
 		/* Function: NormalizeLineBreaks
 		 * Replaces all line breaks in a string with the native platform's format, which is CRLF for Windows and LF for Mac/Linux.
@@ -66,6 +68,7 @@ namespace CodeClear.NaturalDocs.Engine
 			#endif
 			}
 
+
 		/* Function: NormalizeKey
 		 * Normalizes a string key by applying <Collections.KeySettings>.
 		 */
@@ -79,115 +82,9 @@ namespace CodeClear.NaturalDocs.Engine
 			return key;
 			}
 
-		/* Function: OnlyAToZ
-		 * Converts the passed string to a version that only contains the letters A to Z.  All other characters are stripped or
-		 * replaced with related characters.  If there are no ASCII characters available it returns null.
-		 */
-		public static string OnlyAToZ (this string input)
-			{
-			// Use a compatibility decomposition to increase the chances of finding ASCII letters.  Hopefully some accented
-			// Latin characters will be separated into ASCII characters and combining characters.
-			string result = input.Normalize(System.Text.NormalizationForm.FormKD);
-
-			Regex.NonASCIILetters nonASCIILettersRegex = new Regex.NonASCIILetters();
-			result = nonASCIILettersRegex.Replace(result, "");
-
-			if (String.IsNullOrEmpty(result))
-				{  result = null;  }
-
-			return result;
-			}
-
-		/* Function: ToHTML
-		 * Converts the plain text string to HTML.  This encodes <, >, ", and & as entity characters and encodes double
-		 * spaces with &nbsp;.
-		 */
-		public static string ToHTML (this string text)
-			{
-			text = text.EntityEncode();
-			text = text.ConvertLineBreaksToBR();
-			text = text.ConvertMultipleWhitespaceChars();
-
-			return text;
-			}
-
-		/* Function: ConvertCopyrightAndTrademark
-		 * Returns a string with all occurrances of (c), (r), and (tm) converted to their respective Unicode characters.
-		 */
-		public static string ConvertCopyrightAndTrademark (this string input)
-			{
-			return FindCopyrightAndTrademarksRegex().Replace(input,
-				delegate (Match match)
-					{
-					char mainChar = match.Value[1];
-
-					if (mainChar == 'c' || mainChar == 'C')
-						{  return "©";  }
-					else if (mainChar == 'r' || mainChar == 'R')
-						{  return "®";  }
-					else // (mainChar == 't' || mainChar == 'T')
-						{  return "™";  }
-					}
-				);
-			}
-
-		/* Function: ConvertLineBreaksToBR
-		 *	 Replaces line breaks in any format with <br> or <br /> tags.  If you plan to use this and
-		 *	 <ConvertMultipleWhitespaceChars()> you must call this function first.
-		 */
-		public static string ConvertLineBreaksToBR (this string input, bool includeSlash = false)
-			{
-			if (includeSlash)
-				{  return FindLineBreakRegex().Replace(input, "<br />");  }
-			else
-				{  return FindLineBreakRegex().Replace(input, "<br>");  }
-			}
 
 
-		/* Function: ConvertMultipleWhitespaceChars
-		 * Replaces instances of at least two whitespace characters in a row with &nbsp; and a space.  If you plan to use this and
-		 * <ConvertLineBreaksToBR()>, you must call the other function first.
-		 */
-		public static string ConvertMultipleWhitespaceChars (this string input)
-			{
-			return FindMultipleWhitespaceCharsRegex().Replace(input, "&nbsp; ");
-			}
-
-
-		/* Function: Count
-		 * Returns the number of times the passed character appears in the string.
-		 */
-		static public int Count (this string input, char character)
-			{
-			return input.Count(character, 0, input.Length);
-			}
-
-
-		/* Function: Count
-		 * Returns the number of times the passed character appears in the string segment.
-		 */
-		static public int Count (this string input, char character, int index, int length)
-			{
-			int endingIndex = index + length;
-			int count = 0;
-
-			while (index < endingIndex)
-				{
-				int match = input.IndexOf(character, index, endingIndex - index);
-
-				if (match == -1)
-					{  break;  }
-
-				count++;
-				index = match + 1;
-				}
-
-			return count;
-			}
-
-
-
-		// Group: Entity Functions
+		// Group: Entity Encoding Functions
 		// __________________________________________________________________________
 
 
@@ -292,7 +189,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 
 
-		// Group: Escaping Functions
+		// Group: String Escaping Functions
 		// __________________________________________________________________________
 
 
@@ -351,14 +248,136 @@ namespace CodeClear.NaturalDocs.Engine
 
 
 
+		// Group: Other Conversion Functions
+		// __________________________________________________________________________
+
+
+		/* Function: ToHTML
+		 * Converts the plain text string to HTML.  This encodes <, >, ", and & as entity characters and encodes double
+		 * spaces with &nbsp;.
+		 */
+		public static string ToHTML (this string text)
+			{
+			text = text.EntityEncode();
+			text = text.ConvertLineBreaksToBR();
+			text = text.ConvertMultipleWhitespaceChars();
+
+			return text;
+			}
+
+
+		/* Function: ConvertCopyrightAndTrademark
+		 * Returns a string with all occurrances of (c), (r), and (tm) converted to their respective Unicode characters.
+		 */
+		public static string ConvertCopyrightAndTrademark (this string input)
+			{
+			return FindCopyrightAndTrademarksRegex().Replace(input,
+				delegate (Match match)
+					{
+					char mainChar = match.Value[1];
+
+					if (mainChar == 'c' || mainChar == 'C')
+						{  return "©";  }
+					else if (mainChar == 'r' || mainChar == 'R')
+						{  return "®";  }
+					else // (mainChar == 't' || mainChar == 'T')
+						{  return "™";  }
+					}
+				);
+			}
+
+
+		/* Function: ConvertLineBreaksToBR
+		 *	 Replaces line breaks in any format with <br> or <br /> tags.  If you plan to use this and
+		 *	 <ConvertMultipleWhitespaceChars()> you must call this function first.
+		 */
+		public static string ConvertLineBreaksToBR (this string input, bool includeSlash = false)
+			{
+			if (includeSlash)
+				{  return FindLineBreakRegex().Replace(input, "<br />");  }
+			else
+				{  return FindLineBreakRegex().Replace(input, "<br>");  }
+			}
+
+
+		/* Function: ConvertMultipleWhitespaceChars
+		 * Replaces instances of at least two whitespace characters in a row with &nbsp; and a space.  If you plan to use this and
+		 * <ConvertLineBreaksToBR()>, you must call the other function first.
+		 */
+		public static string ConvertMultipleWhitespaceChars (this string input)
+			{
+			return FindMultipleWhitespaceCharsRegex().Replace(input, "&nbsp; ");
+			}
+
+
+
+		// Group: Other Functions
+		// __________________________________________________________________________
+
+
+		/* Function: OnlyAToZ
+		 * Converts the passed string to a version that only contains the letters A to Z.  All other characters are stripped or
+		 * replaced with related characters.  If there are no ASCII characters available it returns null.
+		 */
+		public static string OnlyAToZ (this string input)
+			{
+			// Use a compatibility decomposition to increase the chances of finding ASCII letters.  Hopefully some accented
+			// Latin characters will be separated into ASCII characters and combining characters.
+			string result = input.Normalize(System.Text.NormalizationForm.FormKD);
+
+			Regex.NonASCIILetters nonASCIILettersRegex = new Regex.NonASCIILetters();
+			result = nonASCIILettersRegex.Replace(result, "");
+
+			if (String.IsNullOrEmpty(result))
+				{  result = null;  }
+
+			return result;
+			}
+
+
+		/* Function: Count
+		 * Returns the number of times the passed character appears in the string.
+		 */
+		static public int Count (this string input, char character)
+			{
+			return input.Count(character, 0, input.Length);
+			}
+
+
+		/* Function: Count
+		 * Returns the number of times the passed character appears in the string segment.
+		 */
+		static public int Count (this string input, char character, int index, int length)
+			{
+			int endingIndex = index + length;
+			int count = 0;
+
+			while (index < endingIndex)
+				{
+				int match = input.IndexOf(character, index, endingIndex - index);
+
+				if (match == -1)
+					{  break;  }
+
+				count++;
+				index = match + 1;
+				}
+
+			return count;
+			}
+
+
+
 		// Group: Static Variables
 		// __________________________________________________________________________
+
 
 		/* var: EntityCharLiterals
 		 * An array of characters that would need to be converted to entity characters in <NDMarkup>.  Useful for
 		 * String.IndexOfAny(char[]).
 		 */
 		static public char[] EntityCharLiterals = new char[] { '"', '&', '<', '>' };
+
 
 		/* var: EscapedStringChars
 		 * An array of characters that must be escaped in a JavaScript string.
