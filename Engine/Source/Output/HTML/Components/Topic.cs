@@ -338,8 +338,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 							{
 							output.Append("<pre class=\"CText\">");
 
-							string htmlCode = textCode.EntityEncode();
-							htmlCode = StringExtensions.LineBreakRegex.Replace(htmlCode, "<br />");
+							string htmlCode = textCode.EntityEncode().ConvertLineBreaksToBR(includeSlash: true);
 							output.Append(htmlCode);
 							}
 
