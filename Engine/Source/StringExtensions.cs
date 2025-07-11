@@ -132,12 +132,15 @@ namespace CodeClear.NaturalDocs.Engine
 			}
 
 		/* Function: ConvertLineBreaksToBR
-		 *	 Replaces line breaks in any format with <br> tags.  If you plan to use this and <ConvertMultipleWhitespaceChars()>,
-		 *	 you must call this function first.
+		 *	 Replaces line breaks in any format with <br> or <br /> tags.  If you plan to use this and
+		 *	 <ConvertMultipleWhitespaceChars()> you must call this function first.
 		 */
-		public static string ConvertLineBreaksToBR (this string input)
+		public static string ConvertLineBreaksToBR (this string input, bool includeSlash = false)
 			{
-			return LineBreakRegex.Replace(input, "<br>");
+			if (includeSlash)
+				{  return LineBreakRegex.Replace(input, "<br />");  }
+			else
+				{  return LineBreakRegex.Replace(input, "<br>");  }
 			}
 
 
