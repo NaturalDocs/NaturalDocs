@@ -34,8 +34,6 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 		 */
 		public TextFileParser ()
 			{
-			yesRegex = new Regex.Config.Yes();
-			noRegex = new Regex.Config.No();
 			startRegex = new Regex.CommentTypes.ScopeStart();
 			endRegex = new Regex.CommentTypes.ScopeEnd();
 
@@ -525,9 +523,9 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 							{
 							value = value.ToLower(CultureInfo.InvariantCulture);
 
-							if (yesRegex.IsMatch(value))
+							if (ConfigFile.IsYes(value))
 								{  currentCommentType.SetHierarchyName("Class", file.PropertyLocation);  }
-							else if (noRegex.IsMatch(value))
+							else if (ConfigFile.IsNo(value))
 								{
 								if (currentCommentType.HierarchyName != null &&
 									currentCommentType.HierarchyName.ToLower(CultureInfo.InvariantCulture) == "class")
@@ -950,8 +948,6 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 		// Group: Regular Expressions
 		// __________________________________________________________________________
 
-		protected Regex.Config.Yes yesRegex;
-		protected Regex.Config.No noRegex;
 		protected Regex.CommentTypes.ScopeStart startRegex;
 		protected Regex.CommentTypes.ScopeEnd endRegex;
 

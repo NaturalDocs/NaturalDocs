@@ -35,9 +35,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		 */
 		public TextFileParser ()
 			{
-			yesRegex = new Regex.Config.Yes();
-			noRegex = new Regex.Config.No();
-
 			addReplaceAliasesRegex = new Regex.Languages.AddReplaceAliases();
 			addReplaceExtensionsRegex = new Regex.Languages.AddReplaceExtensions();
 			addReplaceShebangStringsRegex = new Regex.Languages.AddReplaceShebangStrings();
@@ -520,9 +517,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 							{
 							string lcValue = value.ToLower(CultureInfo.InvariantCulture);
 
-							if (yesRegex.IsMatch(lcValue))
+							if (ConfigFile.IsYes(lcValue))
 								{  currentLanguage.SetCaseSensitive(true, file.PropertyLocation);  }
-							else if (noRegex.IsMatch(lcValue))
+							else if (ConfigFile.IsNo(lcValue))
 								{  currentLanguage.SetCaseSensitive(false, file.PropertyLocation);  }
 							else
 								{
@@ -546,9 +543,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 							{
 							string lcValue = value.ToLower(CultureInfo.InvariantCulture);
 
-							if (yesRegex.IsMatch(lcValue))
+							if (ConfigFile.IsYes(lcValue))
 								{  currentLanguage.SetBlockCommentsNest(true, file.PropertyLocation);  }
-							else if (noRegex.IsMatch(lcValue))
+							else if (ConfigFile.IsNo(lcValue))
 								{  currentLanguage.SetBlockCommentsNest(false, file.PropertyLocation);  }
 							else
 								{
@@ -996,9 +993,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 
 		// Group: Regular Expressions
 		// __________________________________________________________________________
-
-		protected Regex.Config.Yes yesRegex;
-		protected Regex.Config.No noRegex;
 
 		protected Regex.Languages.AddReplaceAliases addReplaceAliasesRegex;
 		protected Regex.Languages.AddReplaceExtensions addReplaceExtensionsRegex;

@@ -38,8 +38,6 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			errorList = null;
 			projectConfig = null;
 
-			yesRegex = new Regex.Config.Yes();
-			noRegex = new Regex.Config.No();
 
 			subtitleRegex = new Regex.Config.Subtitle();
 			timestampRegex = new Regex.Config.Timestamp();
@@ -611,12 +609,12 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			else if (documentedOnlyRegex.IsMatch(lcIdentifier))
 				{
-				if (yesRegex.IsMatch(value))
+				if (ConfigFile.IsYes(value))
 					{
 					projectConfig.DocumentedOnly = true;
 					projectConfig.DocumentedOnlyPropertyLocation = propertyLocation;
 					}
-				else if (noRegex.IsMatch(value))
+				else if (ConfigFile.IsNo(value))
 					{
 					projectConfig.DocumentedOnly = false;
 					projectConfig.DocumentedOnlyPropertyLocation = propertyLocation;
@@ -635,12 +633,12 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			else if (autoGroupRegex.IsMatch(lcIdentifier))
 				{
-				if (yesRegex.IsMatch(value))
+				if (ConfigFile.IsYes(value))
 					{
 					projectConfig.AutoGroup = true;
 					projectConfig.AutoGroupPropertyLocation = propertyLocation;
 					}
-				else if (noRegex.IsMatch(value))
+				else if (ConfigFile.IsNo(value))
 					{
 					projectConfig.AutoGroup = false;
 					projectConfig.AutoGroupPropertyLocation = propertyLocation;
@@ -1330,8 +1328,6 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 		// Group: Regular Expressions
 		// __________________________________________________________________________
 
-		protected Regex.Config.Yes yesRegex;
-		protected Regex.Config.No noRegex;
 
 		protected Regex.Config.Subtitle subtitleRegex;
 		protected Regex.Config.Timestamp timestampRegex;
