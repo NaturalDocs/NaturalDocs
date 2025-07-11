@@ -52,7 +52,7 @@ using System.Text.RegularExpressions;
 
 namespace CodeClear.NaturalDocs.Engine
 	{
-	public struct Path : IComparable
+	public partial struct Path : IComparable
 		{
 
 		// Group: Constructors
@@ -136,7 +136,7 @@ namespace CodeClear.NaturalDocs.Engine
 			{
 			get
 				{
-				Match match = pathPrefixRegex.Match(pathString);
+				Match match = FindPathPrefixRegex().Match(pathString);
 
 				if (match.Success)
 					{  return match.Groups[0].ToString();  }
@@ -347,7 +347,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 			// Split off the prefix, if available.
 
-			Match match = pathPrefixRegex.Match(pathString);
+			Match match = FindPathPrefixRegex().Match(pathString);
 
 			if (match.Success)
 				{
@@ -694,9 +694,23 @@ namespace CodeClear.NaturalDocs.Engine
 		 */
 		static private char[] unnormalizedSeparators = { '\\', '/', ':' };
 
-		/* var: pathPrefixRegex
-		 * The regular expression that capture the path prefix, such as "/" on Unix and "\\" or "c:" on Windows.
+
+
+		// Group: Regular Expressions
+		// __________________________________________________________________________
+
+
+		/* Regex: FindPathPrefixRegex
+		 *
+		 * Will match if the string begins with a path prefix such as "C:", "\\server", or "/".
+		 *
+		 * Capture Groups:
+		 *
+		 *		1 - The path prefix.
 		 */
-		static private Regex.Path.PathPrefix pathPrefixRegex = new Regex.Path.PathPrefix();
+		[GeneratedRegex("""^([a-z]:|\/|\\\\[^\\]+)""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex FindPathPrefixRegex();
+
 		}
 	}
