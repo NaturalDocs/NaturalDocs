@@ -325,8 +325,7 @@ namespace CodeClear.NaturalDocs.Engine
 			// Latin characters will be separated into ASCII characters and combining characters.
 			string result = input.Normalize(System.Text.NormalizationForm.FormKD);
 
-			Regex.NonASCIILetters nonASCIILettersRegex = new Regex.NonASCIILetters();
-			result = nonASCIILettersRegex.Replace(result, "");
+			result = FindNonAToZRegex().Replace(result, "");
 
 			if (String.IsNullOrEmpty(result))
 				{  result = null;  }
@@ -427,6 +426,16 @@ namespace CodeClear.NaturalDocs.Engine
 		[GeneratedRegex("""\((?:c|r|tm)\)""",
 								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
 		static private partial Regex FindCopyrightAndTrademarksRegex();
+
+
+		/* Regex: FindNonAToZRegex
+		 *
+		 * Will match occurrences of any characters that are not A to Z.  Multiple consecutive non-A to Z characters will be
+		 * returned as a single match rather than matching on each individual character.
+		 */
+		[GeneratedRegex("""[^a-zA-Z]+""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex FindNonAToZRegex();
 
 		}
 	}
