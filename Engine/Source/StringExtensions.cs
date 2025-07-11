@@ -66,14 +66,6 @@ namespace CodeClear.NaturalDocs.Engine
 			#endif
 			}
 
-		/* Function: SplitLines
-		 * Returns the string as an array of lines regardless of the format of line break it contains.
-		 */
-		static public string[] SplitLines (this string input)
-			{
-			return input.Split(LineBreakChars, StringSplitOptions.RemoveEmptyEntries);
-			}
-
 		/* Function: NormalizeKey
 		 * Normalizes a string key by applying <Collections.KeySettings>.
 		 */
@@ -279,8 +271,6 @@ namespace CodeClear.NaturalDocs.Engine
 		 * An array of characters that must be escaped in a JavaScript string.
 		 */
 		static public char[] EscapedStringChars = new char[] { '"', '\'', '\\' };
-
-		static public char[] LineBreakChars = new char[] { '\r', '\n' };
 
 		static public Regex.WhitespaceChars WhitespaceCharsRegex = new Regex.WhitespaceChars();
 		static public Regex.NDMarkup.CopyrightAndTrademark CopyrightAndTrademarkRegex = new Regex.NDMarkup.CopyrightAndTrademark();
