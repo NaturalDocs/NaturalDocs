@@ -18,7 +18,7 @@ using System.Text.RegularExpressions;
 
 namespace CodeClear.NaturalDocs.Engine
 	{
-	static public class StringExtensions
+	static public partial class StringExtensions
 		{
 
 		// Group: Functions
@@ -30,7 +30,7 @@ namespace CodeClear.NaturalDocs.Engine
 		 */
 		static public string CondenseWhitespace (this string input)
 			{
-			return WhitespaceCharsRegex.Replace(input, " ");
+			return FindWhitespaceCharsRegex().Replace(input, " ");
 			}
 
 		/* Function: RemoveWhitespace
@@ -38,7 +38,7 @@ namespace CodeClear.NaturalDocs.Engine
 		 */
 		static public string RemoveWhitespace (this string input)
 			{
-			return WhitespaceCharsRegex.Replace(input, "");
+			return FindWhitespaceCharsRegex().Replace(input, "");
 			}
 
 		/* Function: NormalizeLineBreaks
@@ -116,7 +116,7 @@ namespace CodeClear.NaturalDocs.Engine
 		 */
 		public static string ConvertCopyrightAndTrademark (this string input)
 			{
-			return CopyrightAndTrademarkRegex.Replace(input,
+			return FindCopyrightAndTrademarksRegex().Replace(input,
 				delegate (Match match)
 					{
 					string lcMatch = match.Value.ToLower(CultureInfo.InvariantCulture);
@@ -138,9 +138,9 @@ namespace CodeClear.NaturalDocs.Engine
 		public static string ConvertLineBreaksToBR (this string input, bool includeSlash = false)
 			{
 			if (includeSlash)
-				{  return LineBreakRegex.Replace(input, "<br />");  }
+				{  return FindLineBreakRegex().Replace(input, "<br />");  }
 			else
-				{  return LineBreakRegex.Replace(input, "<br>");  }
+				{  return FindLineBreakRegex().Replace(input, "<br>");  }
 			}
 
 
@@ -150,7 +150,7 @@ namespace CodeClear.NaturalDocs.Engine
 		 */
 		public static string ConvertMultipleWhitespaceChars (this string input)
 			{
-			return MultipleWhitespaceCharsRegex.Replace(input, "&nbsp; ");
+			return FindMultipleWhitespaceCharsRegex().Replace(input, "&nbsp; ");
 			}
 
 
@@ -365,10 +365,49 @@ namespace CodeClear.NaturalDocs.Engine
 		 */
 		static public char[] EscapedStringChars = new char[] { '"', '\'', '\\' };
 
-		static public Regex.WhitespaceChars WhitespaceCharsRegex = new Regex.WhitespaceChars();
-		static public Regex.NDMarkup.CopyrightAndTrademark CopyrightAndTrademarkRegex = new Regex.NDMarkup.CopyrightAndTrademark();
-		static public Regex.MultipleWhitespaceChars MultipleWhitespaceCharsRegex = new Regex.MultipleWhitespaceChars();
-		static public Regex.LineBreak LineBreakRegex = new Regex.LineBreak();
+
+
+		// Group: Regular Expressions
+		// __________________________________________________________________________
+
+
+		/* Regex: FindWhitespaceCharsRegex
+		 *
+		 * Will match one or more consecutive whitespace characters in a string.  Multiple consecutive whitespace characters will
+		 * be returned as a single match rather than matching on each individual character.
+		 */
+		[GeneratedRegex("""\s+""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex FindWhitespaceCharsRegex();
+
+
+		/* Regex: FindMultipleWhitespaceCharsRegex
+		 *
+		 * Will match _two_ or more consecutive whitespace characters in a string.  Each set of consecutive whitespace characters
+		 * will be returned as a single match.  It will not match on single characters at all.
+		 */
+		[GeneratedRegex("""\s{2,}""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex FindMultipleWhitespaceCharsRegex();
+
+
+		/* Regex: FindLineBreakRegex
+		 *
+		 * Will match a single line break in a string, regardless if it's in CRLF, CR, or LF format.  This has the benefit of treating
+		 * CRLF as a single line break.
+		 */
+		[GeneratedRegex("""\r\n|\n|\r""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex FindLineBreakRegex();
+
+
+		/* Regex: FindCopyrightAndTrademarksRegex
+		 *
+		 * Will match occurrences of (c), (r), or (tm) in a string.
+		 */
+		[GeneratedRegex("""\((?:c|r|tm)\)""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex FindCopyrightAndTrademarksRegex();
 
 		}
 	}
