@@ -58,12 +58,13 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Text.RegularExpressions;
 using CodeClear.NaturalDocs.Engine.Errors;
 
 
 namespace CodeClear.NaturalDocs.Engine
 	{
-	public class ConfigFile : IDisposable
+	public partial class ConfigFile : IDisposable
 		{
 
 		// Group: Types
@@ -704,8 +705,8 @@ namespace CodeClear.NaturalDocs.Engine
 
 			// We also don't want to rewrite the file just for Format: line differences.  This prevents unnecessary file changes in
 			// version control systems when the contents of two files are the same except for "Format: 2.0" versus "Format: 2.0.1".
-			newContentNormalized = FormatLineRegex.Replace(newContentNormalized, "");
-			existingContentNormalized = (existingContent == null ? null : FormatLineRegex.Replace(existingContentNormalized, ""));
+			newContentNormalized = FindFormatLineRegex().Replace(newContentNormalized, "");
+			existingContentNormalized = (existingContent == null ? null : FindFormatLineRegex().Replace(existingContentNormalized, ""));
 
 			if (newContentNormalized == existingContentNormalized)
 				{  return true;  }
@@ -790,7 +791,20 @@ namespace CodeClear.NaturalDocs.Engine
 		 */
 		static protected char[] BracesChars = new char[] { '{', '}' };
 
-		static public Regex.Config.FormatLine FormatLineRegex = new Regex.Config.FormatLine();
+
+
+		// Group: Regular Expressions
+		// __________________________________________________________________________
+
+
+		/* Regex: FindFormatLineRegex
+		 *
+		 * Will match a "Format:" line in a string or text file.  You can run it against an entire multi-line text file to find the
+		 * format line within it.
+		 */
+		[GeneratedRegex("""(?<=^|[\r\n])Format: (?:[^\r\n#]+)""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex FindFormatLineRegex();
 
 		}
 	}
