@@ -34,3 +34,12 @@ Topic: Dependency Comments
 	Then the programmer won't inadvertantly change that behavior without being aware of the side effects, and if it needs to
 	be changed anyway they can update the dependent functions.  These comments also start with "DEPENDENCY:" by convention
 	to make them stand out more and and be easier to search for.
+
+
+Topic: Regular Expression Naming
+
+	Regular expressions starting with "Is" imply that the entire string must match the subject for it to be successful.  For example,
+	IsXMLTagRegex() will only succeed if the entire string is an XML tag.
+
+	Regular expressions starting with "Find" imply that they will locate instances of the subject within a string.  For example,
+	FindXMLTagRegex() will return each XML tag appearing inside a string.
