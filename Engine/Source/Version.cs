@@ -104,7 +104,7 @@ using System.Text.RegularExpressions;
 
 namespace CodeClear.NaturalDocs.Engine
 	{
-	public struct Version
+	public partial struct Version
 		{
 
 
@@ -169,8 +169,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 			// Release format "x.y.z".  This will also catch the pre-2.0 release strings.
 
-			Regex.Version.ReleaseVersionString releaseRegex = new Regex.Version.ReleaseVersionString();
-			Match match = releaseRegex.Match(versionString);
+			Match match = IsReleaseVersionStringRegex().Match(versionString);
 
 			if (match.Success)
 				{
@@ -223,8 +222,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 			// Development release format "x.y (type mm-dd-yyyy)"
 
-			Regex.Version.DevelopmentDateVersionString developmentDateRegex = new Regex.Version.DevelopmentDateVersionString();
-			match = developmentDateRegex.Match(versionString);
+			match = IsDevelopmentVersionStringWithDateRegex().Match(versionString);
 
 			if (match.Success)
 				{
@@ -259,8 +257,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 			// Development release format "x.y (type count)"
 
-			Regex.Version.DevelopmentCountVersionString developmentCountRegex = new Regex.Version.DevelopmentCountVersionString();
-			match = developmentCountRegex.Match(versionString);
+			match = IsDevelopmentVersionStringWithCountRegex().Match(versionString);
 
 			if (match.Success)
 				{
@@ -293,8 +290,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 			// 1.35 development release format "Development Release mm-dd-yyyy (1.35 base)"
 
-			Regex.Version.OldDevelopmentDateVersionString oldDevelopmentRegex = new Regex.Version.OldDevelopmentDateVersionString();
-			match = oldDevelopmentRegex.Match(versionString);
+			match = IsOldDevelopmentVersionStringWithDateRegex().Match(versionString);
 
 			if (match.Success)
 				{
@@ -768,5 +764,80 @@ namespace CodeClear.NaturalDocs.Engine
 		 * The structure's version in <Integer Format>.
 		 */
 		private ulong versionInt;
+
+
+
+		// Group: Regular Expressions
+		// __________________________________________________________________________
+
+
+		/* Regex: IsReleaseVersionStringRegex
+		 *
+		 * Will match if the entire string is a release version string such as "2.0" or "2.0.1".
+		 *
+		 * Capture Groups:
+		 *
+		 *		1 - The major version number, such as "2" in "2.0.1".
+		 *		2 - The minor version number, such as "0" in "2.0.1".
+		 *		3 - The bugfix release number, if it exists, such as "1" in "2.0.1".
+		 */
+		[GeneratedRegex("""^([0-9]{1,2})\.([0-9]{1,2})(?:\.([0-9]{1,2}))?$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsReleaseVersionStringRegex();
+
+
+		/* Regex: IsDevelopmentVersionStringWithDateRegex
+		 *
+		 * Will match if the entire string is a date-based development version string such as "2.0.1 (Development Release 07-01-2025)".
+		 *
+		 * Capture Groups:
+		 *
+		 *		1 - The major version number, such as "2" in "2.0.1 (Development Release 07-01-2025)".
+		 *		2 - The minor version number, such as "0" in "2.0.1 (Development Release 07-01-2025)".
+		 *		3 - The bugfix release number, if it exists, such as "1" in "2.0.1 (Development Release 07-01-2025)".
+		 *		4 - The release type, such as "Development Release" in "2.0.1 (Development Release 07-01-2025)".
+		 *		5 - The numeric month, such as "07" in "2.0.1 (Development Release 07-01-2025)".
+		 *		6 - The numeric day, such as "01" in "2.0.1 (Development Release 07-01-2025)".
+		 *		7 - The numeric year, such as "2025" in "2.0.1 (Development Release 07-01-2025)".
+		 */
+		[GeneratedRegex("""^([0-9]{1,2})\.([0-9]{1,2})(?:\.([0-9]{1,2}))? \(([a-z ]+?) ([0-9]{1,2})-([0-9]{1,2})-([0-9]{4})\)$""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex IsDevelopmentVersionStringWithDateRegex();
+
+
+		/* Regex: IsDevelopmentVersionStringWithCountRegex
+		 *
+		 * Will match if the entire string is a date-based development version string such as "2.0.1 (Beta 1)" or
+		 * "2.0.1 (Release Candidate 2)".
+		 *
+		 * Capture Groups:
+		 *
+		 *		1 - The major version number, such as "2" in "2.0.1 (Beta 3)".
+		 *		2 - The minor version number, such as "0" in "2.0.1 (Beta 3)".
+		 *		3 - The bugfix release number, if it exists, such as "1" in "2.0.1 (Beta 3)".
+		 *		4 - The release type, such as "Beta" in "2.0.1 (Beta 3)".
+		 *		5 - The count, such as "3" in "2.0.1 (Beta 3)".
+		 */
+		[GeneratedRegex("""^([0-9]{1,2})\.([0-9]{1,2})(?:\.([0-9]{1,2}))? \(([a-z ]+?) ([0-9]{1,3})\)$""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex IsDevelopmentVersionStringWithCountRegex();
+
+
+		/* Regex: IsOldDevelopmentVersionStringWithDateRegex
+		 *
+		 * Will match if the entire string is an old date-based development version string such as
+		 * "Development Release 02-10-2007 (1.35 base)".  This format was only ever used with 1.35 as the base.
+		 *
+		 * Capture Groups:
+		 *
+		 *		1 - The numeric month, such as "02" in "Development Release 02-10-2007 (1.35 base)".
+		 *		2 - The numeric day, such as "10" in "Development Release 02-10-2007 (1.35 base)".
+		 *		3 - The numeric year, such as "2007" in "Development Release 02-10-2007 (1.35 base)".
+		 */
+		[GeneratedRegex("""^Development Release ([0-9]{1,2})-([0-9]{1,2})-([0-9]{4}) \(1\.35 base\)$""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex IsOldDevelopmentVersionStringWithDateRegex();
+
+
 		}
 	}
