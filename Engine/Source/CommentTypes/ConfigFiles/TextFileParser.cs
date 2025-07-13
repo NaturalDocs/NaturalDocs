@@ -19,46 +19,13 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 
 namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 	{
-	public class TextFileParser
+	public partial class TextFileParser
 		{
-
-		// Group: Functions
-		// __________________________________________________________________________
-
-
-		/* Constructor: TextFileParser
-		 */
-		public TextFileParser ()
-			{
-			startRegex = new Regex.CommentTypes.ScopeStart();
-			endRegex = new Regex.CommentTypes.ScopeEnd();
-
-			ignoreKeywordsRegex = new Regex.CommentTypes.IgnoreKeywords();
-			commentTypeRegex = new Regex.CommentTypes.CommentType();
-			alterCommentTypeRegex = new Regex.CommentTypes.AlterCommentType();
-			displayNameRegex = new Regex.CommentTypes.DisplayName();
-			pluralDisplayNameRegex = new Regex.CommentTypes.PluralDisplayName();
-			displayNameFromLocaleRegex = new Regex.CommentTypes.DisplayNameFromLocale();
-			pluralDisplayNameFromLocaleRegex = new Regex.CommentTypes.PluralDisplayNameFromLocale();
-			hierarchyNameRegex = new Regex.CommentTypes.HierarchyName();
-			flagsRegex = new Regex.CommentTypes.Flags();
-			documentationRegex = new Regex.CommentTypes.Documentation();
-			variableTypeRegex = new Regex.CommentTypes.VariableType();
-			classHierarchyRegex = new Regex.CommentTypes.ClassHierarchy();
-			enumRegex = new Regex.CommentTypes.Enum();
-			breakListsRegex = new Regex.CommentTypes.BreakLists();
-			keywordsRegex = new Regex.CommentTypes.Keywords();
-			languageSpecificKeywordsRegex = new Regex.CommentTypes.LanguageSpecificKeywords();
-			commaSeparatorRegex = new Regex.CondensedWhitespaceCommaSeparator();
-			alwaysGlobalRegex = new Regex.CommentTypes.ScopeAlwaysGlobal();
-			tagsRegex = new Regex.CommentTypes.Tags();
-			}
-
-
 
 		// Group: Loading Functions
 		// __________________________________________________________________________
@@ -105,14 +72,14 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 				bool inKeywords = false;
 				bool inTags = false;
 
-				while (file.Get(out string identifier, out string value))
+				while (file.Get(out string lcIdentifier, out string value))
 					{
 
 					//
 					// Identifierless lines
 					//
 
-					if (identifier == null)
+					if (lcIdentifier == null)
 						{
 
 
@@ -223,7 +190,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 					// Ignore Keywords
 					//
 
-					if (ignoreKeywordsRegex.IsMatch(identifier))
+					if (IsIgnoreKeywordsRegexLC().IsMatch(lcIdentifier))
 						{
 						currentCommentType = null;
 
@@ -233,7 +200,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 
 						if (!string.IsNullOrEmpty(value))
 							{
-							string[] ignoredKeywordsArray = commaSeparatorRegex.Split(value);
+							string[] ignoredKeywordsArray = FindCondensedWhitespaceCommaSeparatorRegex().Split(value);
 
 							foreach (string ignoredKeyword in ignoredKeywordsArray)
 								{
@@ -256,14 +223,14 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 					// Tags
 					//
 
-					else if (tagsRegex.IsMatch(identifier))
+					else if (IsTagsRegexLC().IsMatch(lcIdentifier))
 						{
 						currentCommentType = null;
 						inTags = true;
 
 						if (!string.IsNullOrEmpty(value))
 							{
-							string[] tagsArray = commaSeparatorRegex.Split(value);
+							string[] tagsArray = FindCondensedWhitespaceCommaSeparatorRegex().Split(value);
 
 							foreach (string tag in tagsArray)
 								{
@@ -286,7 +253,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 					// Comment Type
 					//
 
-					else if (commentTypeRegex.IsMatch(identifier))
+					else if (IsCommentTypeRegexLC().IsMatch(lcIdentifier))
 						{
 						var existingCommentType = config.FindCommentType(value);
 
@@ -317,7 +284,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 					// Alter Comment Type
 					//
 
-					else if (alterCommentTypeRegex.IsMatch(identifier))
+					else if (IsAlterCommentTypeRegexLC().IsMatch(lcIdentifier))
 						{
 						// We don't check if the name exists because it may exist in a different file.  We also don't check if it exists
 						// in the current file because using Alter is valid (if unnecessary) in that case and we don't want to combine
@@ -344,10 +311,10 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 					// (Plural) Display Name (From Locale)
 					//
 
-					else if (displayNameRegex.IsMatch(identifier))
+					else if (IsDisplayNameRegexLC().IsMatch(lcIdentifier))
 						{
 						if (currentCommentType == null)
-							{  AddNeedsCommentTypeError(file, identifier);  }
+							{  AddNeedsCommentTypeError(file, lcIdentifier);  }
 						else if (currentCommentType.HasDisplayNameFromLocale)
 							{
 							file.AddError(
@@ -359,10 +326,10 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 							currentCommentType.SetDisplayName(value, file.PropertyLocation);
 							}
 						}
-					else if (pluralDisplayNameRegex.IsMatch(identifier))
+					else if (IsPluralDisplayNameRegexLC().IsMatch(lcIdentifier))
 						{
 						if (currentCommentType == null)
-							{  AddNeedsCommentTypeError(file, identifier);  }
+							{  AddNeedsCommentTypeError(file, lcIdentifier);  }
 						else if (currentCommentType.HasPluralDisplayNameFromLocale)
 							{
 							file.AddError(
@@ -374,10 +341,10 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 							currentCommentType.SetPluralDisplayName(value, file.PropertyLocation);
 							}
 						}
-					else if (displayNameFromLocaleRegex.IsMatch(identifier))
+					else if (IsDisplayNameFromLocaleRegexLC().IsMatch(lcIdentifier))
 						{
 						if (currentCommentType == null)
-							{  AddNeedsCommentTypeError(file, identifier);  }
+							{  AddNeedsCommentTypeError(file, lcIdentifier);  }
 						else if (currentCommentType.HasDisplayName)
 							{
 							file.AddError(
@@ -389,10 +356,10 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 							currentCommentType.SetDisplayNameFromLocale(value, file.PropertyLocation);
 							}
 						}
-					else if (pluralDisplayNameFromLocaleRegex.IsMatch(identifier))
+					else if (IsPluralDisplayNameFromLocaleRegexLC().IsMatch(lcIdentifier))
 						{
 						if (currentCommentType == null)
-							{  AddNeedsCommentTypeError(file, identifier);  }
+							{  AddNeedsCommentTypeError(file, lcIdentifier);  }
 						else if (currentCommentType.HasPluralDisplayName)
 							{
 							file.AddError(
@@ -410,10 +377,10 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 					// Simple Identifier
 					//
 
-					else if (identifier == "simple identifier")
+					else if (lcIdentifier == "simple identifier")
 						{
 						if (currentCommentType == null)
-							{  AddNeedsCommentTypeError(file, identifier);  }
+							{  AddNeedsCommentTypeError(file, lcIdentifier);  }
 						else if (!value.IsOnlyAToZ())
 							{
 							file.AddError(
@@ -431,21 +398,21 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 					// Scope
 					//
 
-					else if (identifier == "scope")
+					else if (lcIdentifier == "scope")
 						{
 						if (currentCommentType == null)
-							{  AddNeedsCommentTypeError(file, identifier);  }
+							{  AddNeedsCommentTypeError(file, lcIdentifier);  }
 						else
 							{
-							value = value.ToLower(CultureInfo.InvariantCulture);
+							string lcValue = value.ToLower(CultureInfo.InvariantCulture);
 
-							if (value == "normal")
+							if (lcValue == "normal")
 								{  currentCommentType.SetScope(CommentType.ScopeValue.Normal, file.PropertyLocation);  }
-							else if (startRegex.IsMatch(value))
+							else if (IsScopeStartRegexLC().IsMatch(lcValue))
 								{  currentCommentType.SetScope(CommentType.ScopeValue.Start, file.PropertyLocation);  }
-							else if (endRegex.IsMatch(value))
+							else if (IsScopeEndRegexLC().IsMatch(lcValue))
 								{  currentCommentType.SetScope(CommentType.ScopeValue.End, file.PropertyLocation);  }
-							else if (alwaysGlobalRegex.IsMatch(value))
+							else if (IsScopeAlwaysGlobalRegexLC().IsMatch(lcValue))
 								{  currentCommentType.SetScope(CommentType.ScopeValue.AlwaysGlobal, file.PropertyLocation);  }
 							else
 								{
@@ -461,44 +428,44 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 					// Flags and Hierarchy
 					//
 
-					else if (flagsRegex.IsMatch(identifier))
+					else if (IsFlagsRegexLC().IsMatch(lcIdentifier))
 						{
 						if (currentCommentType == null)
-							{  AddNeedsCommentTypeError(file, identifier);  }
+							{  AddNeedsCommentTypeError(file, lcIdentifier);  }
 						else
 							{
-							value = value.ToLower(CultureInfo.InvariantCulture);
-
 							if (!string.IsNullOrEmpty(value))
 								{
-								string[] flagStrings = commaSeparatorRegex.Split(value);
+								string lcValue = value.ToLower(CultureInfo.InvariantCulture);
+
+								string[] lcFlagStrings = FindCondensedWhitespaceCommaSeparatorRegex().Split(lcValue);
 								CommentType.FlagValue flagsValue = default;
 								string hierarchyName = null;
 
-								foreach (string flagString in flagStrings)
+								foreach (string lcFlagString in lcFlagStrings)
 									{
-									if (flagString == "code")
+									if (lcFlagString == "code")
 										{  flagsValue |= CommentType.FlagValue.Code;  }
-									else if (flagString == "file")
+									else if (lcFlagString == "file")
 										{  flagsValue |= CommentType.FlagValue.File;  }
-									else if (documentationRegex.IsMatch(flagString))
+									else if (IsDocumentationFlagRegexLC().IsMatch(lcFlagString))
 										{  flagsValue |= CommentType.FlagValue.Documentation;  }
-									else if (variableTypeRegex.IsMatch(flagString))
+									else if (IsVariableFlagRegexLC().IsMatch(lcFlagString))
 										{  flagsValue |= CommentType.FlagValue.VariableType;  }
-									else if (enumRegex.IsMatch(flagString))
+									else if (IsEnumFlagRegexLC().IsMatch(lcFlagString))
 										{  flagsValue |= CommentType.FlagValue.Enum;  }
 									else
 										{
-										var hierarchyMatch = hierarchyNameRegex.Match(flagString);
+										var hierarchyMatch = IsHierarchyNameFlagRegexLC().Match(lcFlagString);
 
 										if (hierarchyMatch.Success)
 											{
 											hierarchyName = hierarchyMatch.Groups[1].ToString();
 											}
-										else if (string.IsNullOrEmpty(flagString) == false)
+										else if (string.IsNullOrEmpty(lcFlagString) == false)
 											{
 											file.AddError(
-												Locale.Get("NaturalDocs.Engine", "Comments.txt.UnrecognizedValue(keyword, value)", "Flags", flagString)
+												Locale.Get("NaturalDocs.Engine", "Comments.txt.UnrecognizedValue(keyword, value)", "Flags", lcFlagString)
 												);
 											}
 										}
@@ -515,14 +482,12 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 					// Class Hierarchy (deprecated, convert to flag)
 					//
 
-					else if (classHierarchyRegex.IsMatch(identifier))
+					else if (IsClassHierarchyRegexLC().IsMatch(lcIdentifier))
 						{
 						if (currentCommentType == null)
-							{  AddNeedsCommentTypeError(file, identifier);  }
+							{  AddNeedsCommentTypeError(file, lcIdentifier);  }
 						else
 							{
-							value = value.ToLower(CultureInfo.InvariantCulture);
-
 							if (ConfigFile.IsYes(value))
 								{  currentCommentType.SetHierarchyName("Class", file.PropertyLocation);  }
 							else if (ConfigFile.IsNo(value))
@@ -545,10 +510,10 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 					// Keywords
 					//
 
-					else if (keywordsRegex.IsMatch(identifier))
+					else if (IsKeywordsRegexLC().IsMatch(lcIdentifier))
 						{
 						if (currentCommentType == null)
-							{  AddNeedsCommentTypeError(file, identifier);  }
+							{  AddNeedsCommentTypeError(file, lcIdentifier);  }
 						else
 							{
 							currentKeywordGroup = new TextFileKeywordGroup(file.PropertyLocation);
@@ -557,7 +522,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 
 							if (!string.IsNullOrEmpty(value))
 								{
-								string[] keywordsArray = commaSeparatorRegex.Split(value);
+								string[] keywordsArray = FindCondensedWhitespaceCommaSeparatorRegex().Split(value);
 
 								foreach (string keyword in keywordsArray)
 									{
@@ -583,22 +548,22 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 
 					// This must be tested after ignored and language-general keywords so that their modifiers ("add" or "ignore") don't
 					// get mistaken for language names.
-					else if (languageSpecificKeywordsRegex.IsMatch(identifier))
+					else if (IsLanguageSpecificKeywordsRegexLC().IsMatch(lcIdentifier))
 						{
 						if (currentCommentType == null)
-							{  AddNeedsCommentTypeError(file, identifier);  }
+							{  AddNeedsCommentTypeError(file, lcIdentifier);  }
 						else
 							{
-							var match = languageSpecificKeywordsRegex.Match(identifier);
-							var languageName = match.Groups[1].ToString();
+							var match = IsLanguageSpecificKeywordsRegexLC().Match(lcIdentifier);
+							var lcLanguageName = match.Groups[1].ToString();
 
-							currentKeywordGroup = new TextFileKeywordGroup(file.PropertyLocation, languageName);
+							currentKeywordGroup = new TextFileKeywordGroup(file.PropertyLocation, lcLanguageName);
 							currentCommentType.AddKeywordGroup(currentKeywordGroup);
 							inKeywords = true;
 
 							if (!string.IsNullOrEmpty(value))
 								{
-								string[] keywordsArray = commaSeparatorRegex.Split(value);
+								string[] keywordsArray = FindCondensedWhitespaceCommaSeparatorRegex().Split(value);
 
 								foreach (string keyword in keywordsArray)
 									{
@@ -622,11 +587,11 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 					// Deprecated keywords: Can Group With, Page Title if First
 					//
 
-					else if (identifier == "index" ||
-							   identifier == "index with" ||
-							   breakListsRegex.IsMatch(identifier) ||
-							   identifier == "can group with" ||
-							   identifier == "page title if first")
+					else if (lcIdentifier == "index" ||
+							   lcIdentifier == "index with" ||
+							   IsBreakListsRegexLC().IsMatch(lcIdentifier) ||
+							   lcIdentifier == "can group with" ||
+							   lcIdentifier == "page title if first")
 						{
 						// Ignore and continue
 						}
@@ -639,7 +604,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 					else
 						{
 						file.AddError(
-							Locale.Get("NaturalDocs.Engine", "Comments.txt.UnrecognizedKeyword(keyword)", identifier)
+							Locale.Get("NaturalDocs.Engine", "Comments.txt.UnrecognizedKeyword(keyword)", lcIdentifier)
 							);
 						}
 
@@ -945,41 +910,220 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 
 
 
-		// Group: Regular Expressions
-		// __________________________________________________________________________
-
-		protected Regex.CommentTypes.ScopeStart startRegex;
-		protected Regex.CommentTypes.ScopeEnd endRegex;
-
-		protected Regex.CommentTypes.IgnoreKeywords ignoreKeywordsRegex;
-		protected Regex.CommentTypes.CommentType commentTypeRegex;
-		protected Regex.CommentTypes.AlterCommentType alterCommentTypeRegex;
-		protected Regex.CommentTypes.DisplayName displayNameRegex;
-		protected Regex.CommentTypes.PluralDisplayName pluralDisplayNameRegex;
-		protected Regex.CommentTypes.DisplayNameFromLocale displayNameFromLocaleRegex;
-		protected Regex.CommentTypes.PluralDisplayNameFromLocale pluralDisplayNameFromLocaleRegex;
-		protected Regex.CommentTypes.HierarchyName hierarchyNameRegex;
-		protected Regex.CommentTypes.Flags flagsRegex;
-		protected Regex.CommentTypes.Documentation documentationRegex;
-		protected Regex.CommentTypes.VariableType variableTypeRegex;
-		protected Regex.CommentTypes.ClassHierarchy classHierarchyRegex;
-		protected Regex.CommentTypes.Enum enumRegex;
-		protected Regex.CommentTypes.BreakLists breakListsRegex;
-		protected Regex.CommentTypes.Keywords keywordsRegex;
-		protected Regex.CommentTypes.LanguageSpecificKeywords languageSpecificKeywordsRegex;
-		protected Regex.CondensedWhitespaceCommaSeparator commaSeparatorRegex;
-		protected Regex.CommentTypes.ScopeAlwaysGlobal alwaysGlobalRegex;
-		protected Regex.CommentTypes.Tags tagsRegex;
-
-
 		// Group: Static Variables
 		// __________________________________________________________________________
+
 
 		/* var: BannedKeywordChars
 		 * An array containing all the characters that cannot appear in keywords.  Best used with String.IndexOfAny().
 		 */
 		protected static char[] BannedKeywordChars = { '{', '}', ',', '#', ':' };
 
+
+
+		// Group: Regular Expressions
+		// __________________________________________________________________________
+
+
+		/* Regex: FindCondensedWhitespaceCommaSeparatorRegex
+		 * Will match a comma that may or may not have a single space on either side of it.  Assumes the input string has
+		 * already had whitespace condensed.
+		 */
+		[GeneratedRegex(""" ?, ?""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex FindCondensedWhitespaceCommaSeparatorRegex();
+
+
+		/* Regex: IsIgnoreKeywordsRegexLC
+		 * Will match if the entire string is the property name "ignore keywords" or one of its acceptable variants.  Assumes
+		 * the input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^ignored? keywords?$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsIgnoreKeywordsRegexLC();
+
+
+		/* Regex: IsTagsRegexLC
+		 * Will match if the entire string is the property name "tags" or one of its acceptable variants.  Assumes the input
+		 * string is already in lowercase.
+		 */
+		[GeneratedRegex("""^(?:add )?tags?$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsTagsRegexLC();
+
+
+		/* Regex: IsCommentTypeRegexLC
+		 * Will match if the entire string is the property name "comment type" or one of its acceptable variants.  Assumes
+		 * the input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^(?:comment|topic) type$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsCommentTypeRegexLC();
+
+
+		/* Regex: IsAlterCommentTypeRegexLC
+		 * Will match if the entire string is the property name "alter comment type" or one of its acceptable variants.
+		 * Assumes the input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^(?:alter|edit|change) (?:comment|topic) type$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsAlterCommentTypeRegexLC();
+
+
+		/* Regex: IsDisplayNameRegexLC
+		 * Will match if the entire string is the property name "display name" or one of its acceptable variants.  Assumes the
+		 * input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^(?:display )?name$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsDisplayNameRegexLC();
+
+
+		/* Regex: IsPluralDisplayNameRegexLC
+		 * Will match if the entire string is the property name "plural display name" or one of its acceptable variants.
+		 * Assumes the input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^plural(?: display)?(?: name)?$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsPluralDisplayNameRegexLC();
+
+
+		/* Regex: IsDisplayNameFromLocaleRegexLC
+		 * Will match if the entire string is the property name "display name from locale" or one of its acceptable variants.
+		 * Assumes the input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^(?:display )?name from locale$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsDisplayNameFromLocaleRegexLC();
+
+
+		/* Regex: IsPluralDisplayNameFromLocaleRegexLC
+		 * Will match if the entire string is the property name "plural display name from locale" or one of its acceptable
+		 * variants.  Assumes the input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^plural(?: display)?(?: name)? from locale$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsPluralDisplayNameFromLocaleRegexLC();
+
+
+		/* Regex: IsScopeStartRegexLC
+		 * Will match if the entire string is the scope value "start" or one of its acceptable variants.  Assumes the input string
+		 * is already in lowercase.
+		 */
+		[GeneratedRegex("""^starts?$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsScopeStartRegexLC();
+
+
+		/* Regex: IsScopeEndRegexLC
+		 * Will match if the entire string is the scope value "end" or one of its acceptable variants.  Assumes the input string
+		 * is already in lowercase.
+		 */
+		[GeneratedRegex("""^ends?$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsScopeEndRegexLC();
+
+
+		/* Regex: IsScopeAlwaysGlobalRegexLC
+		 * Will match if the entire string is the scope value "always global" or one of its acceptable variants.  Assumes the
+		 * input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^(?:always )?global$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsScopeAlwaysGlobalRegexLC();
+
+
+		/* Regex: IsFlagsRegexLC
+		 * Will match if the entire string is the property name "flags" or one of its acceptable variants.  Assumes the input
+		 * string is already in lowercase.
+		 */
+		[GeneratedRegex("""^(?:replace )?flags?$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsFlagsRegexLC();
+
+
+		/* Regex: IsDocumentationFlagRegexLC
+		 * Will match if the entire string is the flag value "documentation" or one of its acceptable variants.  Assumes the
+		 * input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^doc(?:umentation)?$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsDocumentationFlagRegexLC();
+
+
+		/* Regex: IsVariableFlagRegexLC
+		 * Will match if the entire string is the flag value "variable" or one of its acceptable variants.  Assumes the input
+		 * string is already in lowercase.
+		 */
+		[GeneratedRegex("""^var(?:iable)?|type|var(?:iable)? ?type$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsVariableFlagRegexLC();
+
+
+		/* Regex: IsEnumFlagRegexLC
+		 * Will match if the entire string is the flag value "enum" or one of its acceptable variants.  Assumes the input string
+		 * is already in lowercase.
+		 */
+		[GeneratedRegex("""^enum(?:eration)?$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsEnumFlagRegexLC();
+
+
+		/* Regex: IsHierarchyNameFlagRegexLC
+		 *
+		 * Will match if the entire string is the flag value "[name] hierarchy" or one of its acceptable variants.  Assumes the
+		 * input string is already in lowercase.
+		 *
+		 * Capture Groups:
+		 *
+		 *		1 - The name of the hierarchy, such as "class" in "class hierarchy".  Since the input string is in all lowercase
+		 *			 the hierarchy name will be as well.
+		 */
+		[GeneratedRegex("""^(.*[^ ]) ?(?:h(?:ie|ei)rarchy)$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsHierarchyNameFlagRegexLC();
+
+
+		/* Regex: IsClassHierarchyRegexLC
+		 * Will match if the entire string is the deprecated property name "class hierarchy" or one of its acceptable variants.
+		 * Assumes the input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^class ?(?:h(?:ie|ei)rarchy)?$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsClassHierarchyRegexLC();
+
+
+		/* Regex: IsKeywordsRegexLC
+		 * Will match if the entire string is the property name "keywords" or one of its acceptable variants.  Assumes the
+		 * input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^(?:add )?keywords?$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsKeywordsRegexLC();
+
+
+		/* Regex: IsLanguageSpecificKeywordsRegexLC
+		 *
+		 * Will match if the entire string is the property name "[language name] keywords" or one of its acceptable variants.
+		 * Assumes the input string is already in lowercase.
+		 *
+		 * Capture Groups:
+		 *
+		 *		1 - The name of the language, such as "c#" in "c# keywords".  Since the input string is in all lowercase the
+		 *			 language name will be as well.
+		 */
+		[GeneratedRegex("""^(?:add )?(.+) keywords?$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsLanguageSpecificKeywordsRegexLC();
+
+
+		/* Regex: IsBreakListsRegexLC
+		 * Will match if the entire string is the deprecated property name "break lists" or one of its acceptable variants.
+		 * Assumes the input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^break lists?$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsBreakListsRegexLC();
 
 		}
 	}
