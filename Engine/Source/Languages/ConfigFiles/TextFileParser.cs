@@ -19,41 +19,13 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using CodeClear.NaturalDocs.Engine.Collections;
+using System.Text.RegularExpressions;
 
 
 namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 	{
-	public class TextFileParser
+	public partial class TextFileParser
 		{
-
-		// Group: Functions
-		// __________________________________________________________________________
-
-
-		/* Constructor: TextFileParser
-		 */
-		public TextFileParser ()
-			{
-			addReplaceAliasesRegex = new Regex.Languages.AddReplaceAliases();
-			addReplaceExtensionsRegex = new Regex.Languages.AddReplaceExtensions();
-			addReplaceShebangStringsRegex = new Regex.Languages.AddReplaceShebangStrings();
-			aliasesRegex = new Regex.Languages.Aliases();
-			alterLanguageRegex = new Regex.Languages.AlterLanguage();
-			blockCommentsRegex = new Regex.Languages.BlockComments();
-			enumValuesRegex = new Regex.Languages.EnumValues();
-			fileExtensionsRegex = new Regex.Languages.FileExtensions();
-			ignorePrefixesRegex = new Regex.Languages.IgnorePrefixes();
-			ignoreExtensionsRegex = new Regex.Languages.IgnoreExtensions();
-			lineCommentsRegex = new Regex.Languages.LineComments();
-			prototypeEndersRegex = new Regex.Languages.PrototypeEnders();
-			shebangStringsRegex = new Regex.Languages.ShebangStrings();
-			memberOperatorRegex = new Regex.Languages.MemberOperator();
-			caseSensitiveRegex = new Regex.Languages.CaseSensitive();
-			blockCommentsNestRegex = new Regex.Languages.BlockCommentsNest();
-			}
-
-
 
 		// Group: Loading Functions
 		// __________________________________________________________________________
@@ -98,14 +70,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 				System.Text.RegularExpressions.Match match;
 
 
-				while (file.Get(out string identifier, out string value))
+				while (file.Get(out string lcIdentifier, out string value))
 					{
 
 					//
 					// Ignore Extensions
 					//
 
-					if (ignoreExtensionsRegex.IsMatch(identifier))
+					if (IsIgnoreExtensionsRegexLC().IsMatch(lcIdentifier))
 						{
 						currentLanguage = null;
 
@@ -120,7 +92,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// Language
 					//
 
-					else if (identifier == "language")
+					else if (lcIdentifier == "language")
 						{
 						var existingLanguage = config.FindLanguage(value);
 
@@ -147,7 +119,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// Alter Language
 					//
 
-					else if (alterLanguageRegex.IsMatch(identifier))
+					else if (IsAlterLanguageRegexLC().IsMatch(lcIdentifier))
 						{
 						// We don't check if the name exists because it may exist in a different file.  We also don't check if it exists
 						// in the current file because using Alter is valid (if unnecessary) in that case and we don't want to combine
@@ -174,10 +146,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// Aliases
 					//
 
-					else if (aliasesRegex.IsMatch(identifier))
+					else if (IsAliasesRegexLC().IsMatch(lcIdentifier))
 						{
 						if (currentLanguage == null)
-							{  AddNeedsLanguageError(file, identifier);  }
+							{  AddNeedsLanguageError(file, lcIdentifier);  }
 						else if (currentLanguage.AlterLanguage)
 							{
 							file.AddError(
@@ -196,10 +168,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// Add/Replace Aliases
 					//
 
-					else if ( (match = addReplaceAliasesRegex.Match(identifier)) != null && match.Success )
+					else if ( (match = IsAddOrReplaceAliasesRegexLC().Match(lcIdentifier)) != null && match.Success )
 						{
 						if (currentLanguage == null)
-							{  AddNeedsLanguageError(file, identifier);  }
+							{  AddNeedsLanguageError(file, lcIdentifier);  }
 						else
 							{
 							TextFileLanguage.PropertyChange propertyChange;
@@ -240,10 +212,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// File Extensions
 					//
 
-					else if (fileExtensionsRegex.IsMatch(identifier))
+					else if (IsExtensionsRegexLC().IsMatch(lcIdentifier))
 						{
 						if (currentLanguage == null)
-							{  AddNeedsLanguageError(file, identifier);  }
+							{  AddNeedsLanguageError(file, lcIdentifier);  }
 						else if (currentLanguage.AlterLanguage)
 							{
 							file.AddError(
@@ -264,10 +236,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// Add/Replace File Extensions
 					//
 
-					else if ( (match = addReplaceExtensionsRegex.Match(identifier)) != null && match.Success )
+					else if ( (match = IsAddOrReplaceExtensionsRegexLC().Match(lcIdentifier)) != null && match.Success )
 						{
 						if (currentLanguage == null)
-							{  AddNeedsLanguageError(file, identifier);  }
+							{  AddNeedsLanguageError(file, lcIdentifier);  }
 						else
 							{
 							TextFileLanguage.PropertyChange propertyChange;
@@ -311,10 +283,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// Shebang Strings
 					//
 
-					else if (shebangStringsRegex.IsMatch(identifier))
+					else if (IsShebangStringsRegexLC().IsMatch(lcIdentifier))
 						{
 						if (currentLanguage == null)
-							{  AddNeedsLanguageError(file, identifier);  }
+							{  AddNeedsLanguageError(file, lcIdentifier);  }
 						else if (currentLanguage.AlterLanguage)
 							{
 							file.AddError(
@@ -333,10 +305,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// Add/Replace Shebang Strings
 					//
 
-					else if ( (match = addReplaceShebangStringsRegex.Match(identifier)) != null && match.Success )
+					else if ( (match = IsAddOrReplaceShebangStringsRegexLC().Match(lcIdentifier)) != null && match.Success )
 						{
 						if (currentLanguage == null)
-							{  AddNeedsLanguageError(file, identifier);  }
+							{  AddNeedsLanguageError(file, lcIdentifier);  }
 						else
 							{
 							TextFileLanguage.PropertyChange propertyChange;
@@ -377,10 +349,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// Simple Identifier
 					//
 
-					else if (identifier == "simple identifier")
+					else if (lcIdentifier == "simple identifier")
 						{
 						if (currentLanguage == null)
-							{  AddNeedsLanguageError(file, identifier);  }
+							{  AddNeedsLanguageError(file, lcIdentifier);  }
 						else if (!value.IsOnlyAToZ())
 							{
 							file.AddError(
@@ -399,10 +371,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// Line Comments
 					//
 
-					else if (lineCommentsRegex.IsMatch(identifier))
+					else if (IsLineCommentsRegexLC().IsMatch(lcIdentifier))
 						{
 						if (currentLanguage == null)
-							{  AddNeedsLanguageError(file, identifier);  }
+							{  AddNeedsLanguageError(file, lcIdentifier);  }
 						else
 							{
 							var lineCommentSymbols = value.Split(space);
@@ -416,10 +388,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// Block Comments
 					//
 
-					else if (blockCommentsRegex.IsMatch(identifier))
+					else if (IsBlockCommentsRegexLC().IsMatch(lcIdentifier))
 						{
 						if (currentLanguage == null)
-							{  AddNeedsLanguageError(file, identifier);  }
+							{  AddNeedsLanguageError(file, lcIdentifier);  }
 						else
 							{
 							var blockCommentStrings = value.Split(space);
@@ -453,10 +425,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// Member Operator
 					//
 
-					else if (memberOperatorRegex.IsMatch(identifier))
+					else if (IsMemberOperatorRegexLC().IsMatch(lcIdentifier))
 						{
 						if (currentLanguage == null)
-							{  AddNeedsLanguageError(file, identifier);  }
+							{  AddNeedsLanguageError(file, lcIdentifier);  }
 						else
 							{  currentLanguage.SetMemberOperator(value, file.PropertyLocation);  }
 						}
@@ -467,10 +439,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// Line Extender
 					//
 
-					else if (identifier == "line extender")
+					else if (lcIdentifier == "line extender")
 						{
 						if (currentLanguage == null)
-							{  AddNeedsLanguageError(file, identifier);  }
+							{  AddNeedsLanguageError(file, lcIdentifier);  }
 						else
 							{  currentLanguage.SetLineExtender(value, file.PropertyLocation);  }
 						}
@@ -481,10 +453,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// Enum Values
 					//
 
-					else if (enumValuesRegex.IsMatch(identifier))
+					else if (IsEnumValuesRegexLC().IsMatch(lcIdentifier))
 						{
 						if (currentLanguage == null)
-							{  AddNeedsLanguageError(file, identifier);  }
+							{  AddNeedsLanguageError(file, lcIdentifier);  }
 						else
 							{
 							string lcValue = value.ToLower(CultureInfo.InvariantCulture);
@@ -509,10 +481,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// Case Sensitive
 					//
 
-					else if (caseSensitiveRegex.IsMatch(identifier))
+					else if (IsCaseSensitiveRegexLC().IsMatch(lcIdentifier))
 						{
 						if (currentLanguage == null)
-							{  AddNeedsLanguageError(file, identifier);  }
+							{  AddNeedsLanguageError(file, lcIdentifier);  }
 						else
 							{
 							string lcValue = value.ToLower(CultureInfo.InvariantCulture);
@@ -535,10 +507,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// Block Comments Nest
 					//
 
-					else if (blockCommentsNestRegex.IsMatch(identifier))
+					else if (IsBlockCommentsNestRegexLC().IsMatch(lcIdentifier))
 						{
 						if (currentLanguage == null)
-							{  AddNeedsLanguageError(file, identifier);  }
+							{  AddNeedsLanguageError(file, lcIdentifier);  }
 						else
 							{
 							string lcValue = value.ToLower(CultureInfo.InvariantCulture);
@@ -562,10 +534,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					//
 
 					// Use identifier and not lcIdentifier to keep the case of the comment type.  The regex will compensate.
-					else if ( (match = prototypeEndersRegex.Match(identifier)) != null && match.Success )
+					else if ( (match = IsPrototypeEndersRegexLC().Match(lcIdentifier)) != null && match.Success )
 						{
 						if (currentLanguage == null)
-							{  AddNeedsLanguageError(file, identifier);  }
+							{  AddNeedsLanguageError(file, lcIdentifier);  }
 						else
 							{
 							string commentType = match.Groups[1].Value;
@@ -583,9 +555,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// Deprecated keywords
 					//
 
-					else if ( ignorePrefixesRegex.IsMatch(identifier) ||
-								identifier == "perl package" ||
-								identifier == "full language support" )
+					else if ( IsIgnorePrefixesRegexLC().IsMatch(lcIdentifier) ||
+								lcIdentifier == "perl package" ||
+								lcIdentifier == "full language support" )
 						{
 						// Ignore
 						}
@@ -598,7 +570,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					else
 					    {
 					    file.AddError(
-					        Locale.Get("NaturalDocs.Engine", "Languages.txt.UnrecognizedKeyword(keyword)", identifier)
+					        Locale.Get("NaturalDocs.Engine", "Languages.txt.UnrecognizedKeyword(keyword)", lcIdentifier)
 					        );
 					    }
 
@@ -994,22 +966,169 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		// Group: Regular Expressions
 		// __________________________________________________________________________
 
-		protected Regex.Languages.AddReplaceAliases addReplaceAliasesRegex;
-		protected Regex.Languages.AddReplaceExtensions addReplaceExtensionsRegex;
-		protected Regex.Languages.AddReplaceShebangStrings addReplaceShebangStringsRegex;
-		protected Regex.Languages.Aliases aliasesRegex;
-		protected Regex.Languages.AlterLanguage alterLanguageRegex;
-		protected Regex.Languages.BlockComments blockCommentsRegex;
-		protected Regex.Languages.EnumValues enumValuesRegex;
-		protected Regex.Languages.FileExtensions fileExtensionsRegex;
-		protected Regex.Languages.IgnorePrefixes ignorePrefixesRegex;
-		protected Regex.Languages.IgnoreExtensions ignoreExtensionsRegex;
-		protected Regex.Languages.LineComments lineCommentsRegex;
-		protected Regex.Languages.PrototypeEnders prototypeEndersRegex;
-		protected Regex.Languages.ShebangStrings shebangStringsRegex;
-		protected Regex.Languages.MemberOperator memberOperatorRegex;
-		protected Regex.Languages.CaseSensitive caseSensitiveRegex;
-		protected Regex.Languages.BlockCommentsNest blockCommentsNestRegex;
+
+		/* Regex: IsIgnoreExtensionsRegexLC
+		 * Will match if the entire string is the property name "ignore extensions" or one of its acceptable variants.
+		 * Assumes the input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^ignored? (?:file )?extensions?$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsIgnoreExtensionsRegexLC();
+
+
+		/* Regex: IsAlterLanguageRegexLC
+		 * Will match if the entire string is the property name "alter language" or one of its acceptable variants.  Assumes
+		 * the input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^(?:alter|edit|change) language$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsAlterLanguageRegexLC();
+
+
+		/* Regex: IsAliasesRegexLC
+		 * Will match if the entire string is the property name "aliases" or one of its acceptable variants.  Assumes the input
+		 * string is already in lowercase.
+		 */
+		[GeneratedRegex("""^alias(?:es)?$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsAliasesRegexLC();
+
+
+		/* Regex: IsAddOrReplaceAliasesRegexLC
+		 *
+		 * Will match if the entire string is the property name "add alias", "replace alias", or one of their acceptable variants.
+		 * Assumes the input string is already in lowercase.
+		 *
+		 * Capture Groups:
+		 *
+		 *		1 - The string "add" or "replace".  Since the input string is in all lowercase these will be as well.
+		 */
+		[GeneratedRegex("""^(add|replace) alias(?:es)?$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsAddOrReplaceAliasesRegexLC();
+
+
+		/* Regex: IsExtensionsRegexLC
+		 * Will match if the entire string is the property name "extensions" or one of its acceptable variants.  Assumes the
+		 * input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^(?:file )?extensions?$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsExtensionsRegexLC();
+
+
+		/* Regex: IsAddOrReplaceExtensionsRegexLC
+		 *
+		 * Will match if the entire string is the property name "add extensions", "replace extensions", or one of their
+		 * acceptable variants. Assumes the input string is already in lowercase.
+		 *
+		 * Capture Groups:
+		 *
+		 *		1 - The string "add" or "replace".  Since the input string is in all lowercase these will be as well.
+		 */
+		[GeneratedRegex("""^(add|replace) (?:file )?extensions?$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsAddOrReplaceExtensionsRegexLC();
+
+
+		/* Regex: IsShebangStringsRegexLC
+		 * Will match if the entire string is the property name "shebang strings" or one of its acceptable variants.  Assumes
+		 * the input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^shebang strings?$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsShebangStringsRegexLC();
+
+
+		/* Regex: IsAddOrReplaceShebangStringsRegexLC
+		 *
+		 * Will match if the entire string is the property name "add shebang strings", "replace shebang strings", or one of
+		 * their acceptable variants.  Assumes the input string is already in lowercase.
+		 *
+		 * Capture Groups:
+		 *
+		 *		1 - The string "add" or "replace".  Since the input string is in all lowercase these will be as well.
+		 */
+		[GeneratedRegex("""^(add|replace) shebang strings?$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsAddOrReplaceShebangStringsRegexLC();
+
+
+		/* Regex: IsLineCommentsRegexLC
+		 * Will match if the entire string is the property name "line comments" or one of its acceptable variants.  Assumes
+		 * the input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^line comments?$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsLineCommentsRegexLC();
+
+
+		/* Regex: IsBlockCommentsRegexLC
+		 * Will match if the entire string is the property name "block comments" or one of its acceptable variants.  Assumes
+		 * the input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^block comments?$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsBlockCommentsRegexLC();
+
+
+		/* Regex: IsMemberOperatorRegexLC
+		 * Will match if the entire string is the property name "member operator" or one of its acceptable variants.  Assumes
+		 * the input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^(?:member operator|package separator)$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsMemberOperatorRegexLC();
+
+
+		/* Regex: IsEnumValuesRegexLC
+		 * Will match if the entire string is the property name "enum values" or one of its acceptable variants.  Assumes the
+		 * input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^enum values?$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsEnumValuesRegexLC();
+
+
+		/* Regex: IsCaseSensitiveRegexLC
+		 * Will match if the entire string is the property name "case sensitive" or one of its acceptable variants.  Assumes the
+		 * input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^case[ -]sensitiv(?:e|ity)$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsCaseSensitiveRegexLC();
+
+
+		/* Regex: IsBlockCommentsNestRegexLC
+		 * Will match if the entire string is the property name "block comments nest" or one of its acceptable variants.
+		 * Assumes the input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^(?:block comments (?:can )?nest)|(?:nest(?:ed)? block comments)$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsBlockCommentsNestRegexLC();
+
+
+		/* Regex: IsPrototypeEndersRegexLC
+		 *
+		 * Will match if the entire string is the property name "[type] prototype enders" or one of its acceptable variants.
+		 * Assumes the input string is already in lowercase.
+		 *
+		 * Capture Groups:
+		 *
+		 *		1 - The name of the comment type.  Since the input string is in all lowercase these will be as well.
+		 */
+		[GeneratedRegex("""^(.+?) prototype enders?$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsPrototypeEndersRegexLC();
+
+
+		/* Regex: IsIgnorePrefixesRegexLC
+		 * Will match if the entire string is the deprecated property name "ignore prefixes" or one of its acceptable variants.
+		 * Assumes the input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^(?:add |replace )?ignored?.*?prefix(?:es)? in index$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsIgnorePrefixesRegexLC();
 
 		}
 	}
