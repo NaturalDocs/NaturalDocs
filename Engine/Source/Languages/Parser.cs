@@ -30,6 +30,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.Comments;
 using CodeClear.NaturalDocs.Engine.CommentTypes;
@@ -42,7 +43,7 @@ using CodeClear.NaturalDocs.Engine.Topics;
 
 namespace CodeClear.NaturalDocs.Engine.Languages
 	{
-	public class Parser
+	public partial class Parser
 		{
 
 		// Group: Types
@@ -2026,9 +2027,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			// If "operator" is in the string, make another attempt to see if we can match "operator +" with "operator+".
 			else if (undecoratedTitle.IndexOf("operator", StringComparison.OrdinalIgnoreCase) != -1)
 				{
-				string undecoratedTitleOp = extraOperatorWhitespaceRegex.Replace(undecoratedTitle, "");
+				string undecoratedTitleOp = FindExtraOperatorWhitespaceRegex().Replace(undecoratedTitle, "");
 				string prototypeString = prototypeStart.TextBetween(prototypeEnd);
-				string prototypeStringOp = extraOperatorWhitespaceRegex.Replace(prototypeString, "");
+				string prototypeStringOp = FindExtraOperatorWhitespaceRegex().Replace(prototypeString, "");
 
 				if (prototypeStringOp.IndexOf(undecoratedTitleOp, StringComparison.OrdinalIgnoreCase) != -1)
 					{  return true;  }
@@ -2173,8 +2174,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					commentContentEnd.PreviousByCharacters(closingSymbol.Length);
 
 					// Allow certain comments to appear in the output, such as those for Splint.  See splint.org.
-					if (input.MatchTextBetween(acceptablePrototypeCommentRegex,
-																	  commentContentStart, commentContentEnd).Success)
+					if (input.MatchTextBetween(IsPreservedPrototypeCommentRegex(),
+														   commentContentStart, commentContentEnd).Success)
 						{
 						output.Append(openingSymbol);
 
@@ -6393,10 +6394,28 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			};
 
 
-		static protected Regex.Comments.AcceptablePrototypeComments acceptablePrototypeCommentRegex
-			= new Regex.Comments.AcceptablePrototypeComments();
 
-		static protected Regex.Languages.ExtraOperatorWhitespace extraOperatorWhitespaceRegex
-			= new Regex.Languages.ExtraOperatorWhitespace();
+		// Group: Regular Expressions
+		// __________________________________________________________________________
+
+
+		// Regex: IsPreservedPrototypeCommentRegex
+		// Will match if the string is the content of a comment that should not be removed from prototypes in the output,
+		// such as Splint comments.  This will only match against the comment content, such as "@out@" in "/*@out@*/",
+		// so the surrounding comment symbols should not be included.
+		//
+		[GeneratedRegex("""^@.*@$|^[ \t]*(?:in|out|in[-/ ]?out|ref)[ \t]*$""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex IsPreservedPrototypeCommentRegex();
+
+
+		/* Regex: FindExtraOperatorWhitespaceRegex
+		 * Will match parts of the string representing extra spaces between the "operator" keyword and any extra symbols.
+		 * This allows the whitespace to be removed so "operator +" can match "operator+".
+		 */
+		[GeneratedRegex("""(?<=operator)[ \t]+(?=[^a-z0-9_])""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex FindExtraOperatorWhitespaceRegex();
+
 		}
 	}
