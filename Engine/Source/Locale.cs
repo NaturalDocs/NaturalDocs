@@ -94,12 +94,13 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text.RegularExpressions;
 using CodeClear.NaturalDocs.Engine.Collections;
 
 
 namespace CodeClear.NaturalDocs.Engine
 	{
-	static public class Locale
+	static public partial class Locale
 		{
 
 		// Group: Functions
@@ -110,7 +111,7 @@ namespace CodeClear.NaturalDocs.Engine
 		 */
 		static Locale ()
 			{
-			localeCode = System.Globalization.CultureInfo.CurrentCulture.Name;
+			localeCode = CultureInfo.CurrentCulture.Name;
 			if (String.IsNullOrEmpty(localeCode))  // Will be empty for the invariant culture
 				{  localeCode = "default";  }
 			else
@@ -121,8 +122,6 @@ namespace CodeClear.NaturalDocs.Engine
 
 			translations = new StringTable<StringToStringTable>(KeySettingsForLocaleNames);
 			accessLock = new System.Threading.ReaderWriterLock();
-
-			pluralFormatterRegex = new Engine.Regex.Locale.PluralFormatter();
 			}
 
 
@@ -342,10 +341,10 @@ namespace CodeClear.NaturalDocs.Engine
 			{
 			string newValue = value;
 
-			if (pluralFormatterRegex.IsMatch(value))
+			if (FindPluralConditionalSubstitutionRegex().IsMatch(value))
 				{
 				LocalePluralFormatReplacer replacer = new LocalePluralFormatReplacer(arguments);
-				newValue = pluralFormatterRegex.Replace(newValue, replacer.MatchEvaluatorDelegate);
+				newValue = FindPluralConditionalSubstitutionRegex().Replace(newValue, replacer.MatchEvaluatorDelegate);
 				}
 
 			return string.Format(newValue, arguments);
@@ -598,9 +597,27 @@ namespace CodeClear.NaturalDocs.Engine
 		 */
 		private static System.Threading.ReaderWriterLock accessLock;
 
-		/* object: pluralFormatterRegex
+
+
+		// Group: Regular Expressions
+		// __________________________________________________________________________
+
+
+		/* Regex: FindPluralConditionalSubstitutionRegex
+		 *
+		 * Will match instances of plural conditional subtitutions in strings, such as "{0s?files:file}", which allows us to use one
+		 * substitution if a plural is appropriate for {0} and another if it is not.
+		 *
+		 * Capture Groups:
+		 *
+		 *		1 - The argument number, such as "0" in "{0s?files:file}".
+		 *		2 - The plural substitution, such as "files" in "{0s?files:file}".
+		 *		3 - The singular substitution, such as "file" in "{0s?files:file}".
 		 */
-		internal static Engine.Regex.Locale.PluralFormatter pluralFormatterRegex;
+		[GeneratedRegex("""\{([0-9]+)s\?([^\:\}]*)\:([^\:\}]*)\}""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex FindPluralConditionalSubstitutionRegex();
+
 		}
 
 
@@ -619,7 +636,7 @@ namespace CodeClear.NaturalDocs.Engine
 			arguments = newArguments;
 			}
 
-		internal string MatchEvaluator (System.Text.RegularExpressions.Match match)
+		internal string MatchEvaluator (Match match)
 			{
 			int argumentIndex = int.Parse(match.Groups[1].Value);
 
@@ -636,10 +653,10 @@ namespace CodeClear.NaturalDocs.Engine
 			return match.Groups[2].Value;
 			}
 
-		internal System.Text.RegularExpressions.MatchEvaluator MatchEvaluatorDelegate
+		internal MatchEvaluator MatchEvaluatorDelegate
 			{
 			get
-				{  return new System.Text.RegularExpressions.MatchEvaluator(MatchEvaluator);  }
+				{  return new MatchEvaluator(MatchEvaluator);  }
 			}
 
 		object[] arguments;
