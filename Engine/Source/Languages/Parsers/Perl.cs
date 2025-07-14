@@ -13,16 +13,14 @@
 
 using System;
 using System.Collections.Generic;
-using CodeClear.NaturalDocs.Engine.Collections;
+using System.Text.RegularExpressions;
 using CodeClear.NaturalDocs.Engine.Comments;
-using CodeClear.NaturalDocs.Engine.Symbols;
 using CodeClear.NaturalDocs.Engine.Tokenization;
-using CodeClear.NaturalDocs.Engine.Topics;
 
 
 namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 	{
-	public class Perl : Parser
+	public partial class Perl : Parser
 		{
 
 		// Group: Types
@@ -276,14 +274,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TokenIterator endOfContent = endOfLine;
 			endOfContent.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds);
 
-			// ND and Javadoc lines may also match PODBeginLineRegex so test them first.
-			if (iterator.Tokenizer.MatchTextBetween(PODBeginNDLineRegex, iterator, endOfContent).Success)
+			// ND and Javadoc lines might also match IsPODBeginRegex so test them first.
+			if (iterator.Tokenizer.MatchTextBetween(IsPODBeginNDRegex(), iterator, endOfContent).Success)
 				{  type = PODLineType.StartNaturalDocs;  }
-			else if (iterator.Tokenizer.MatchTextBetween(PODBeginJavadocLineRegex, iterator, endOfContent).Success)
+			else if (iterator.Tokenizer.MatchTextBetween(IsPODBeginJavadocRegex(), iterator, endOfContent).Success)
 				{  type = PODLineType.StartJavadoc;  }
-			else if (iterator.Tokenizer.MatchTextBetween(PODBeginLineRegex, iterator, endOfContent).Success)
+			else if (iterator.Tokenizer.MatchTextBetween(IsPODBeginRegex(), iterator, endOfContent).Success)
 				{  type = PODLineType.StartPOD;  }
-			else if (iterator.Tokenizer.MatchTextBetween(PODEndLineRegex, iterator, endOfContent).Success)
+			else if (iterator.Tokenizer.EqualsTextBetween("=cut", true, iterator, endOfContent))
 				{  type = PODLineType.End;  }
 			else
 				{  return false;  }
@@ -298,14 +296,32 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 
-		// Group: Static Variables
+		// Group: Regular Expressions
 		// __________________________________________________________________________
 
 
-		static protected Regex.Languages.Perl.PODBeginLine PODBeginLineRegex = new Regex.Languages.Perl.PODBeginLine();
-		static protected Regex.Languages.Perl.PODBeginNDLine PODBeginNDLineRegex = new Regex.Languages.Perl.PODBeginNDLine();
-		static protected Regex.Languages.Perl.PODBeginJavadocLine PODBeginJavadocLineRegex = new Regex.Languages.Perl.PODBeginJavadocLine();
-		static protected Regex.Languages.Perl.PODEndLine PODEndLineRegex = new Regex.Languages.Perl.PODEndLine();
+		/* Regex: IsPODBeginRegex
+		 * Will match if the string is a POD line that begins a section of regular POD documentation.
+		 */
+		[GeneratedRegex("""^=(?:pod$|head[1-4][ \t]|over[ \t]|item[ \t]|back$|begin[ \t]|end[ \t]|for[ \t]|encoding[ \t])""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex IsPODBeginRegex();
+
+
+		/* Regex: IsPODBeginNDRegex
+		 * Will match if the string is a POD line that begins a section of Natural Docs POD documentation.
+		 */
+		[GeneratedRegex("""=(?:(?:pod[ \t]+)?begin[ \t]+)?(?:nd|natural[ \t]*docs?)$""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex IsPODBeginNDRegex();
+
+
+		/* Regex: IsPODBeginJavadocRegex
+		 * Will match if the string is a POD line that begins a section of Javadoc POD documentation.
+		 */
+		[GeneratedRegex("""=(?:(?:pod[ \t]+)?begin[ \t]+)?(?:jd|java[ \t]*docs?)$""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex IsPODBeginJavadocRegex();
 
 		}
 	}
