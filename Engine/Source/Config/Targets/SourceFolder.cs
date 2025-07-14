@@ -12,12 +12,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using CodeClear.NaturalDocs.Engine.Errors;
 
 
 namespace CodeClear.NaturalDocs.Engine.Config.Targets
 	{
-	public class SourceFolder : Targets.Input
+	public partial class SourceFolder : Targets.Input
 		{
 
 		// Group: Functions
@@ -103,9 +104,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 				int nameIndex = segments.Count - 1;
 				name = segments[nameIndex];
 
-				Regex.Config.DefaultNameIgnoredSegment ignoredSegmentRegex = new Regex.Config.DefaultNameIgnoredSegment();
-
-				while (nameIndex >= 0 && ignoredSegmentRegex.IsMatch(segments[nameIndex]))
+				while (nameIndex >= 0 && IsIgnoredSourceFolderSegmentRegex().IsMatch(segments[nameIndex]))
 					{  nameIndex--;  }
 
 				if (nameIndex >= 0)
@@ -189,6 +188,21 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 
 		protected PropertyLocation folderPropertyLocation;
 		protected PropertyLocation namePropertyLocation;
+
+
+
+		// Group: Regular Expressions
+		// __________________________________________________________________________
+
+
+		/* Regex: IsIgnoredSourceFolderSegmentRegex
+		 * Will match if the string is an individual folder name that should be excluded when generating a default source
+		 * folder name.  For example, a source folder "C:\Projects\My Project\src" should be called "My Project" instead
+		 * of "src".  This regex should be matched against individual folder names ("src") and not on the entire path.
+		 */
+		[GeneratedRegex("""^(?:source|src|content)$""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex IsIgnoredSourceFolderSegmentRegex();
 
 		}
 	}

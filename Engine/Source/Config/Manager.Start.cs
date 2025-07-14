@@ -439,7 +439,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			EngineInstance.Files.AddFilter( new Engine.Files.Filters.IgnoredSourceFolder(SystemConfigFolder) );
 			EngineInstance.Files.AddFilter( new Engine.Files.Filters.IgnoredSourceFolder(SystemStyleFolder) );
 
-			EngineInstance.Files.AddFilter( new Engine.Files.Filters.IgnoredSourceFolderRegex(new Regex.Config.DefaultIgnoredSourceFolderRegex()) );
+			EngineInstance.Files.AddFilter( new Engine.Files.Filters.IgnoredSourceFolderRegex(IsIgnoredSourcePathRegex()) );
 
 			// Some people may put output folders in their source folders.  Exclude them automatically.
 			foreach (var outputTarget in combinedConfig.OutputTargets)
@@ -493,13 +493,12 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			// Purge stray output working data, since otherwise it will be left behind if an output entry is removed.
 			//
 
-			Regex.Config.OutputPathNumber outputPathNumberRegex = new Regex.Config.OutputPathNumber();
 			bool raisedPossiblyLongOperationEvent = false;
 
 			string[] outputDataFolders = System.IO.Directory.GetDirectories(workingDataFolder, "Output*", System.IO.SearchOption.TopDirectoryOnly);
 			foreach (string outputDataFolder in outputDataFolders)
 				{
-				System.Text.RegularExpressions.Match match = outputPathNumberRegex.Match(outputDataFolder);
+				System.Text.RegularExpressions.Match match = IsOutputDataPathRegex().Match(outputDataFolder);
 				if (match.Success)
 					{
 					string numberString = match.Groups[1].ToString();
@@ -534,7 +533,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			string[] outputDataFiles = System.IO.Directory.GetFiles(workingDataFolder, "Output*.nd", System.IO.SearchOption.TopDirectoryOnly);
 			foreach (string outputDataFile in outputDataFiles)
 				{
-				System.Text.RegularExpressions.Match match = outputPathNumberRegex.Match(outputDataFile);
+				System.Text.RegularExpressions.Match match = IsOutputDataPathRegex().Match(outputDataFile);
 				if (match.Success)
 					{
 					string numberString = match.Groups[1].ToString();

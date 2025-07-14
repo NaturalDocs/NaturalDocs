@@ -24,8 +24,7 @@
 
 
 using System;
-using System.Collections.Generic;
-using CodeClear.NaturalDocs.Engine.Errors;
+using System.Text.RegularExpressions;
 
 
 namespace CodeClear.NaturalDocs.Engine.Config
@@ -338,10 +337,34 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		static protected ProjectConfig systemDefaultConfig;
 
 
+
 		// Group: Constants
 		// __________________________________________________________________________
 
 		public const int DefaultTabWidth = 4;
+
+
+
+		// Group: Regular Expressions
+		// __________________________________________________________________________
+
+
+		/* Regex: IsIgnoredSourcePathRegex
+		 * Will match source paths that should be excluded from scanning by default, such as ".git" and ".vs".  This regex
+		 * can be matched against the entire path and not just the folder segment.
+		 */
+		[GeneratedRegex("""(?:^|[/\\])\.(?:cvs|svn|git|hg|vs)(?:$|[/\\])""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex IsIgnoredSourcePathRegex();
+
+
+		/* Regex: IsOutputDataPathRegex
+		 * Will match file and folder paths that represent stray Natural Docs working data.  This regex can be matched
+		 * against the entire path and not just the folder segment.
+		 */
+		[GeneratedRegex("""(?:^|[/\\])Output([0-9]{0,9})(?:\.nd)?$""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex IsOutputDataPathRegex();
 
 		}
 	}
