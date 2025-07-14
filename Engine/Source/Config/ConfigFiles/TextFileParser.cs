@@ -18,13 +18,13 @@
 
 using System;
 using System.Text;
+using System.Text.RegularExpressions;
 using CodeClear.NaturalDocs.Engine.Errors;
-using CodeClear.NaturalDocs.Engine.Collections;
 
 
 namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 	{
-	public class TextFileParser
+	public partial class TextFileParser
 		{
 
 		// Group: Functions
@@ -37,21 +37,6 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			{
 			errorList = null;
 			projectConfig = null;
-
-
-			subtitleRegex = new Regex.Config.Subtitle();
-			timestampRegex = new Regex.Config.Timestamp();
-			homePageRegex = new Regex.Config.HomePage();
-			tabWidthRegex = new Regex.Config.TabWidth();
-			documentedOnlyRegex = new Regex.Config.DocumentedOnly();
-			autoGroupRegex = new Regex.Config.AutoGroup();
-
-			sourceFolderRegex = new Regex.Config.SourceFolder();
-			imageFolderRegex = new Regex.Config.ImageFolder();
-			htmlOutputFolderRegex = new Regex.Config.HTMLOutputFolder();
-			ignoredSourceFolderRegex = new Regex.Config.IgnoredSourceFolder();
-			ignoredSourceFolderPatternRegex = new Regex.Config.IgnoredSourceFolderPattern();
-			encodingRegex = new Regex.Config.Encoding();
 			}
 
 
@@ -143,7 +128,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			// Source folder
 
-			System.Text.RegularExpressions.Match match = sourceFolderRegex.Match(lcIdentifier);
+			Match match = IsSourceFolderRegexLC().Match(lcIdentifier);
 
 			if (match.Success)
 				{
@@ -172,7 +157,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			// Image folder
 
-			match = imageFolderRegex.Match(lcIdentifier);
+			match = IsImageFolderRegexLC().Match(lcIdentifier);
 
 			if (match.Success)
 				{
@@ -240,7 +225,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			// Encoding
 
-			else if (encodingRegex.IsMatch(lcIdentifier))
+			else if (IsEncodingRegexLC().IsMatch(lcIdentifier))
 				{
 				var inputSettings = inputTarget ?? projectConfig.InputSettings;
 
@@ -399,7 +384,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			// Ignored source folder
 
-			if (ignoredSourceFolderRegex.IsMatch(lcIdentifier))
+			if (IsIgnoreSourceFolderRegexLC().IsMatch(lcIdentifier))
 				{
 				var target = new Targets.IgnoredSourceFolder(propertyLocation);
 				Path path = value;
@@ -418,7 +403,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			// Ignored source folder pattern
 
-			else if (ignoredSourceFolderPatternRegex.IsMatch(lcIdentifier))
+			else if (IsIgnoreSourceFolderPatternRegexLC().IsMatch(lcIdentifier))
 				{
 				var target = new Targets.IgnoredSourceFolderPattern(propertyLocation);
 
@@ -449,7 +434,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			// HTML output folder
 
-			if (htmlOutputFolderRegex.IsMatch(lcIdentifier))
+			if (IsHTMLOutputFolderRegexLC().IsMatch(lcIdentifier))
 				{
 				var target = new Targets.HTMLOutputFolder(propertyLocation);
 				Path path = value;
@@ -499,7 +484,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			// Subtitle
 
-			else if (subtitleRegex.IsMatch(lcIdentifier))
+			else if (IsSubtitleRegexLC().IsMatch(lcIdentifier))
 				{
 				var outputSettings = outputTarget ?? projectConfig.OutputSettings;
 
@@ -523,7 +508,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			// Timestamp
 
-			else if (timestampRegex.IsMatch(lcIdentifier))
+			else if (IsTimestampRegexLC().IsMatch(lcIdentifier))
 				{
 				var outputSettings = outputTarget ?? projectConfig.OutputSettings;
 
@@ -547,7 +532,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			// Home page
 
-			else if (homePageRegex.IsMatch(lcIdentifier))
+			else if (IsHomePageRegexLC().IsMatch(lcIdentifier))
 				{
 				Path path = value;
 
@@ -586,7 +571,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			// Tab width
 
-			if (tabWidthRegex.IsMatch(lcIdentifier))
+			if (IsTabWidthRegexLC().IsMatch(lcIdentifier))
 				{
 				int tabWidth = 0;
 
@@ -607,7 +592,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			// Documented only
 
-			else if (documentedOnlyRegex.IsMatch(lcIdentifier))
+			else if (IsDocumentedOnlyRegexLC().IsMatch(lcIdentifier))
 				{
 				if (ConfigFile.IsYes(value))
 					{
@@ -631,7 +616,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			// Auto-group
 
-			else if (autoGroupRegex.IsMatch(lcIdentifier))
+			else if (IsAutoGroupRegexLC().IsMatch(lcIdentifier))
 				{
 				if (ConfigFile.IsYes(value))
 					{
@@ -1325,23 +1310,129 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 		protected ProjectConfig projectConfig;
 
 
+
 		// Group: Regular Expressions
 		// __________________________________________________________________________
+		//
+		// These are internal rather than private because they may also be used by <LegacyMenuFileParser>.
 
 
-		protected Regex.Config.Subtitle subtitleRegex;
-		protected Regex.Config.Timestamp timestampRegex;
-		protected Regex.Config.HomePage homePageRegex;
-		protected Regex.Config.TabWidth tabWidthRegex;
-		protected Regex.Config.DocumentedOnly documentedOnlyRegex;
-		protected Regex.Config.AutoGroup autoGroupRegex;
+		/* Regex: IsSubtitleRegexLC
+		 * Will match if the entire string is the property name "subtitle" or one of its acceptable variants.  Assumes the
+		 * input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^sub[ -]?title$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static internal partial Regex IsSubtitleRegexLC();
 
-		protected Regex.Config.SourceFolder sourceFolderRegex;
-		protected Regex.Config.ImageFolder imageFolderRegex;
-		protected Regex.Config.HTMLOutputFolder htmlOutputFolderRegex;
-		protected Regex.Config.IgnoredSourceFolder ignoredSourceFolderRegex;
-		protected Regex.Config.IgnoredSourceFolderPattern ignoredSourceFolderPatternRegex;
-		protected Regex.Config.Encoding encodingRegex;
+
+		/* Regex: IsTimestampRegexLC
+		 * Will match if the entire string is the property name "timestamp" or one of its acceptable variants.  Assumes the
+		 * input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^time[ -]?stamp$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static internal partial Regex IsTimestampRegexLC();
+
+
+		/* Regex: IsHomePageRegexLC
+		 * Will match if the entire string is the property name "home page" or one of its acceptable variants.  Assumes the
+		 * input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^home[ -]?page$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static internal partial Regex IsHomePageRegexLC();
+
+
+		/* Regex: IsTabWidthRegexLC
+		 * Will match if the entire string is the property name "tab width" or one of its acceptable variants.  Assumes the
+		 * input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^tabs?(?:[ -]?(?:width|length|len))?$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static internal partial Regex IsTabWidthRegexLC();
+
+
+		/* Regex: IsDocumentedOnlyRegexLC
+		 * Will match if the entire string is the property name "documented only" or one of its acceptable variants.
+		 * Assumes the input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^(?:documented[ -]only|only[ -]documented)$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static internal partial Regex IsDocumentedOnlyRegexLC();
+
+
+		/* Regex: IsAutoGroupRegexLC
+		 * Will match if the entire string is the property name "auto group" or one of its acceptable variants.  Assumes the
+		 * input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^auto(?:matic)?[ -]?group(?:ing)?$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static internal partial Regex IsAutoGroupRegexLC();
+
+
+		/* Regex: IsSourceFolderRegexLC
+		 *
+		 * Will match if the entire string is the property name "source folder" or one of its acceptable variants.  Assumes
+		 * the input string is already in lowercase.
+		 *
+		 * Capture Groups:
+		 *
+		 *		1 - The source folder number, if it exists, such as "2" in "Source Folder 2".
+		 */
+		[GeneratedRegex("""^(?:source|input) (?:folder|dir|directory) ?([0-9]*)$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static internal partial Regex IsSourceFolderRegexLC();
+
+
+		/* Regex: IsImageFolderRegexLC
+		 *
+		 * Will match if the entire string is the property name "image folder" or one of its acceptable variants.  Assumes
+		 * the input string is already in lowercase.
+		 *
+		 * Capture Groups:
+		 *
+		 *		1 - The source folder number, if it exists, such as "2" in "Image Folder 2".
+		 */
+		[GeneratedRegex("""^(?:source|input) (?:folder|dir|directory) ?([0-9]*)$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static internal partial Regex IsImageFolderRegexLC();
+
+
+		/* Regex: IsHTMLOutputFolderRegexLC
+		 * Will match if the entire string is the property name "html output folder" or one of its acceptable variants.
+		 * Assumes the input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^(?:framed ?)?html (?:output )?(?:folder|dir|directory) ?[0-9]*$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static internal partial Regex IsHTMLOutputFolderRegexLC();
+
+
+		/* Regex: IsIgnoreSourceFolderRegexLC
+		 * Will match if the entire string is the property name "ignore source folder" or one of its acceptable variants.
+		 * Assumes the input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^ignored? (?:(?:source|input) )?(?:folder|dir|directory) ?[0-9]*$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static internal partial Regex IsIgnoreSourceFolderRegexLC();
+
+
+		/* Regex: IsIgnoreSourceFolderPatternRegexLC
+		 * Will match if the entire string is the property name "ignore source folder pattern" or one of its acceptable
+		 * variants.  Assumes the input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^ignored? (?:(?:source|input) )?(?:(?:folder|dir|directory) )?pattern ?[0-9]*$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static internal partial Regex IsIgnoreSourceFolderPatternRegexLC();
+
+
+		/* Regex: IsEncodingRegexLC
+		 * Will match if the entire string is the property name "encoding" or one of its acceptable variants.  Assumes the
+		 * input string is already in lowercase.
+		 */
+		[GeneratedRegex("""(?:char|character)?[ \-]?(?:encoding|set)""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static internal partial Regex IsEncodingRegexLC();
 
 		}
 	}

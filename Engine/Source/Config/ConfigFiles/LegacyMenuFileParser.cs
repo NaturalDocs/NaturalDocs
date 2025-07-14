@@ -65,9 +65,6 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				if (openResult == false)
 					{  return false;  }
 
-				Regex.Config.Subtitle subtitleRegex = new Regex.Config.Subtitle();
-				Regex.Config.Timestamp timestampRegex = new Regex.Config.Timestamp();
-
 				string lcIdentifier, value;
 
 				while (configFile.Get(out lcIdentifier, out value))
@@ -79,7 +76,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 						projectConfig.OutputSettings.Title = value.ConvertCopyrightAndTrademark();
 						projectConfig.OutputSettings.TitlePropertyLocation = propertyLocation;
 						}
-					else if (subtitleRegex.IsMatch(lcIdentifier))
+					else if (TextFileParser.IsSubtitleRegexLC().IsMatch(lcIdentifier))
 						{
 						projectConfig.OutputSettings.Subtitle = value.ConvertCopyrightAndTrademark();
 						projectConfig.OutputSettings.SubtitlePropertyLocation = propertyLocation;
@@ -89,7 +86,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 						projectConfig.OutputSettings.Copyright = value.ConvertCopyrightAndTrademark();
 						projectConfig.OutputSettings.CopyrightPropertyLocation = propertyLocation;
 						}
-					else if (timestampRegex.IsMatch(lcIdentifier))
+					else if (TextFileParser.IsTimestampRegexLC().IsMatch(lcIdentifier))
 						{
 						projectConfig.OutputSettings.TimestampCode = value;
 						projectConfig.OutputSettings.TimestampCodePropertyLocation = propertyLocation;
