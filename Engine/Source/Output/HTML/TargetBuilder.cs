@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 using CodeClear.NaturalDocs.Engine.Files;
 using CodeClear.NaturalDocs.Engine.IDObjects;
 using CodeClear.NaturalDocs.Engine.Symbols;
@@ -29,7 +30,7 @@ using CodeClear.NaturalDocs.Engine.Symbols;
 
 namespace CodeClear.NaturalDocs.Engine.Output.HTML
 	{
-	public class TargetBuilder : Output.TargetBuilder
+	public partial class TargetBuilder : Output.TargetBuilder
 		{
 
 		// Group: Functions
@@ -787,11 +788,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					);
 				}
 
-			var titleRegex = new Engine.Regex.Output.HTML.HomePageSubstitutions.Title();
-			var subtitleRegex = new Engine.Regex.Output.HTML.HomePageSubstitutions.Subtitle();
-			var copyrightRegex = new Engine.Regex.Output.HTML.HomePageSubstitutions.Copyright();
-			var timestampRegex = new Engine.Regex.Output.HTML.HomePageSubstitutions.Timestamp();
-
 			// Can't use null strings for regex substitutions, so use empty strings.
 			string titleHTML = "";
 			string subtitleHTML = "";
@@ -831,15 +827,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			// Update HomePageUsesTimestamp
 
-			Target.BuildState.HomePageUsesTimestamp = timestampRegex.IsMatch(output);
+			Target.BuildState.HomePageUsesTimestamp = FindProjectTimestampSubstitutionRegex().IsMatch(output);
 
 
 			// Perform substitutions
 
-			output = titleRegex.Replace(output, titleHTML);
-			output = subtitleRegex.Replace(output, subtitleHTML);
-			output = copyrightRegex.Replace(output, copyrightHTML);
-			output = timestampRegex.Replace(output, timestampHTML);
+			output = FindProjectTitleSubstitutionRegex().Replace(output, titleHTML);
+			output = FindProjectSubtitleSubstitutionRegex().Replace(output, subtitleHTML);
+			output = FindProjectCopyrightSubstitutionRegex().Replace(output, copyrightHTML);
+			output = FindProjectTimestampSubstitutionRegex().Replace(output, timestampHTML);
 
 			Path outputFile = Target.OutputFolder + "/other/home.html";
 			HTML.Component.WriteTextFile(outputFile, output);
@@ -1587,6 +1583,47 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		public const long HomePageCost = 1;
 		public const long MenuCost = 15;
 		public const long PossiblyEmptyFolderCost = 1;
+
+
+
+		// Group: Regular Expressions
+		// __________________________________________________________________________
+
+
+		/* Regex: FindProjectTitleSubstitutionRegex
+		 * Will match the parts of the string that should be replaced with the project title, such as
+		 * "%NaturalDocs_Title%", and its acceptable variations.
+		 */
+		[GeneratedRegex("""%Natural[\-_ ]?Docs[\-_ ]?(?:Project[\-_ ]?)?Title%""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex FindProjectTitleSubstitutionRegex();
+
+
+		/* Regex: FindProjectSubtitleSubstitutionRegex
+		 * Will match the parts of the string that should be replaced with the project subtitle, such as
+		 * "%NaturalDocs_Subtitle%", and its acceptable variations.
+		 */
+		[GeneratedRegex("""%Natural[\-_ ]?Docs[\-_ ]?(?:Project[\-_ ]?)?Sub[\-_ ]?Title%""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex FindProjectSubtitleSubstitutionRegex();
+
+
+		/* Regex: FindProjectCopyrightSubstitutionRegex
+		 * Will match the parts of the string that should be replaced with the project copyright, such as
+		 * "%NaturalDocs_Copyright%", and its acceptable variations.
+		 */
+		[GeneratedRegex("""%Natural[\-_ ]?Docs[\-_ ]?(?:Project[\-_ ]?)?Copyright%""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex FindProjectCopyrightSubstitutionRegex();
+
+
+		/* Regex: FindProjectTimestampSubstitutionRegex
+		 * Will match the parts of the string that should be replaced with the project timestamp, such as
+		 * "%NaturalDocs_Timestamp%", and its acceptable variations.
+		 */
+		[GeneratedRegex("""%Natural[\-_ ]?Docs[\-_ ]?(?:Project[\-_ ]?)?Time[\-_ ]?stamp%""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex FindProjectTimestampSubstitutionRegex();
 
 		}
 	}

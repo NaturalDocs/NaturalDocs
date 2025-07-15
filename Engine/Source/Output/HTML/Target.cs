@@ -24,6 +24,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using CodeClear.NaturalDocs.Engine.Styles;
 
 
@@ -163,13 +164,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 */
 		protected void PurgeAllSourceAndImageFolders (ref bool inPurgingOperation)
 			{
-			var sourceOrImageOutputFolderRegex = new Regex.Output.HTML.SourceOrImageOutputFolder();
-
 			string[] outputFolders = System.IO.Directory.GetDirectories(OutputFolder);
 
 			foreach (string outputFolder in outputFolders)
 				{
-				if (sourceOrImageOutputFolderRegex.IsMatch(outputFolder))
+				if (IsSourceOrImageOutputFolderRegex().IsMatch(outputFolder))
 					{
 					PurgeFolder(outputFolder, ref inPurgingOperation);
 					}
@@ -344,6 +343,20 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 * The <SearchIndex.Manager> for this output target.
 		 */
 		protected SearchIndex.Manager searchIndex;
+
+
+
+		// Group: Regular Expressions
+		// __________________________________________________________________________
+
+
+		/* Regex: IsSourceOrImageOutputFolderRegex
+		 * Will match if the string appears to be the path of a source or image output folder, such as one ending with "/images2".
+		 * You can use it with a complete path.
+		 */
+		[GeneratedRegex("""(?:^|[/\\])(?:files|images)[0-9]{0,9}$""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex IsSourceOrImageOutputFolderRegex();
 
 		}
 
