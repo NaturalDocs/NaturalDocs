@@ -18,27 +18,16 @@
 
 using System;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 
 namespace CodeClear.NaturalDocs.Engine.Styles.ConfigFiles
 	{
-	public class TextFileParser
+	public partial class TextFileParser
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
-
-
-		/* Function: TextFileParser
-		 */
-		public TextFileParser ()
-			{
-			inheritRegex = new Regex.Styles.Inherit();
-			linkRegex = new Regex.Styles.Link();
-			onLoadRegex = new Regex.Styles.OnLoad();
-			homePageRegex = new Regex.Styles.HomePage();
-			localeSubstitutionRegex = new Regex.Styles.LocaleSubstitution();
-			}
 
 
 		/* Function: Load
@@ -59,14 +48,14 @@ namespace CodeClear.NaturalDocs.Engine.Styles.ConfigFiles
 
 				int errorCount = errors.Count;
 				string lcIdentifier, value;
-				System.Text.RegularExpressions.Match match;
+				Match match;
 
 				while (file.Get(out lcIdentifier, out value))
 					{
 
 					// Inherit
 
-					if (inheritRegex.IsMatch(lcIdentifier))
+					if (IsInheritPropertyRegexLC().IsMatch(lcIdentifier))
 						{
 						style.AddInheritedStyle(value, file.PropertyLocation, null);
 						continue;
@@ -75,7 +64,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles.ConfigFiles
 
 					// Link
 
-					match = linkRegex.Match(lcIdentifier);
+					match = IsLinkPropertyRegexLC().Match(lcIdentifier);
 					if (match.Success)
 						{
 						PageType pageType = PageType.All;
@@ -120,7 +109,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles.ConfigFiles
 
 					// OnLoad
 
-					match = onLoadRegex.Match(lcIdentifier);
+					match = IsOnLoadPropertyRegexLC().Match(lcIdentifier);
 					if (match.Success)
 						{
 						PageType pageType = PageType.All;
@@ -134,8 +123,8 @@ namespace CodeClear.NaturalDocs.Engine.Styles.ConfigFiles
 								{  pageType = pageTypeTemp.Value;  }
 							}
 
-						string valueWithSubstitutions = localeSubstitutionRegex.Replace(value,
-							delegate (System.Text.RegularExpressions.Match match)
+						string valueWithSubstitutions = FindLocaleSubstitutionRegex().Replace(value,
+							delegate (Match match)
 								{
 								return Engine.Locale.SafeGet("NaturalDocs.Engine", match.Groups[1].ToString(), match.ToString());
 								}
@@ -148,7 +137,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles.ConfigFiles
 
 					// Home Page
 
-					if (homePageRegex.IsMatch(lcIdentifier))
+					if (IsHomePagePropertyRegexLC().IsMatch(lcIdentifier))
 						{
 						Path homePageFile = value;
 						string lcExtension = homePageFile.Extension.ToLower(CultureInfo.InvariantCulture);
@@ -336,11 +325,64 @@ namespace CodeClear.NaturalDocs.Engine.Styles.ConfigFiles
 		// Group: Regular Expressions
 		// __________________________________________________________________________
 
-		protected Regex.Styles.Inherit inheritRegex;
-		protected Regex.Styles.Link linkRegex;
-		protected Regex.Styles.OnLoad onLoadRegex;
-		protected Regex.Styles.HomePage homePageRegex;
-		protected Regex.Styles.LocaleSubstitution localeSubstitutionRegex;
+
+		/* Regex: IsInheritPropertyRegexLC
+		 * Will match if the entire string is the property name "inherit" or one of its acceptable variants.  Assumes the
+		 * input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^inherits?|(?:(?:add|inherit|import|include)s? style)$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsInheritPropertyRegexLC();
+
+
+		/* Regex: IsLinkPropertyRegexLC
+		 *
+		 * Will match if the entire string is the property name "link" or one of its acceptable variants.  Assumes the
+		 * input string is already in lowercase.
+		 *
+		 * Capture Groups:
+		 *
+		 *		1 - The type of link it is, either "content", "frame", "home", or none, in which case it applies to all pages.
+		 */
+		[GeneratedRegex("""^(?:(content|frame|home) )?(?:link|(?:link|add|inherit|include|import)s? (?:css|js|json|javascript|file)(?: file)?)$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsLinkPropertyRegexLC();
+
+
+		/* Regex: IsOnLoadPropertyRegexLC
+		 *
+		 * Will match if the entire string is the property name "onload" or one of its acceptable variants.  Assumes the
+		 * input string is already in lowercase.
+		 *
+		 * Capture Groups:
+		 *
+		 *		1 - The type of link it is, either "content", "frame", "home", or none, in which case it applies to all pages.
+		 */
+		[GeneratedRegex("""^(?:(content|frame|home) )?on ?load$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsOnLoadPropertyRegexLC();
+
+
+		/* Regex: IsHomePagePropertyRegexLC
+		 * Will match if the entire string is the property name "home page" or one of its acceptable variants.  Assumes
+		 * the input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^(?:(?:add|import|include)s? )?home ?page$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsHomePagePropertyRegexLC();
+
+
+		/* Regex: FindLocaleSubstitutionRegex
+		 *
+		 * Will match instances in the string of "$Locale{[identifier]}" used to substitute values from <Locale.Manager>.
+		 *
+		 * Capture Groups:
+		 *
+		 *		1 - The locale identifier, such as "Theme.Light" in "$Locale{Theme.Light}".
+		 */
+		[GeneratedRegex("""[\$\@]Locale\{([^}]+)\}""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex FindLocaleSubstitutionRegex();
 
 		}
 	}
