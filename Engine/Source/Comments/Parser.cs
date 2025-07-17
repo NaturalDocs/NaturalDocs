@@ -18,7 +18,7 @@ using CodeClear.NaturalDocs.Engine.Topics;
 
 namespace CodeClear.NaturalDocs.Engine.Comments
 	{
-	public class Parser
+	public partial class Parser
 		{
 
 		// Group: Functions
@@ -124,7 +124,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 			string body = topic.Body;
 			int substitutionCount = 0;
 
-			string newBody = DefinitionListEntryTagRegex.Replace(body,
+			string newBody = FindDefinitionListEntryTagRegex().Replace(body,
 				delegate (Match match)
 					{
 					substitutionCount++;
@@ -233,16 +233,16 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 			ndMarkup = ndMarkup.Replace('\t', ' ');
 
 			// Once to prepare for replacing line breaks
-			ndMarkup = TrailingSpacesRegex.Replace(ndMarkup, "");
+			ndMarkup = FindTrailingSpacesRegex().Replace(ndMarkup, "");
 
-			ndMarkup = LineBreakWhichProbablyEndsSentenceRegex.Replace(ndMarkup, "  ");
+			ndMarkup = FindLineBreakWhichProbablyEndsSentenceRegex().Replace(ndMarkup, "  ");
 			ndMarkup = ndMarkup.Replace('\n', ' ');
 
-			ndMarkup = LeadingSpacesRegex.Replace(ndMarkup, "");
-			ndMarkup = TrailingSpacesRegex.Replace(ndMarkup, "");  // Again since we added spaces
-			ndMarkup = MultipleLineBreaksRegex.Replace(ndMarkup, "");
+			ndMarkup = FindLeadingSpacesRegex().Replace(ndMarkup, "");
+			ndMarkup = FindTrailingSpacesRegex().Replace(ndMarkup, "");  // Again since we added spaces
+			ndMarkup = FindMultipleLineBreaksRegex().Replace(ndMarkup, "");
 
-			ndMarkup = EmptyParagraphsRegex.Replace(ndMarkup, "");
+			ndMarkup = FindEmptyParagraphsRegex().Replace(ndMarkup, "");
 
 			ndMarkup = ndMarkup.Trim();
 
@@ -360,16 +360,56 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 		// __________________________________________________________________________
 
 
-		protected static Regex.Comments.LeadingSpaces LeadingSpacesRegex = new Regex.Comments.LeadingSpaces();
-		protected static Regex.Comments.TrailingSpaces TrailingSpacesRegex = new Regex.Comments.TrailingSpaces();
-		protected static Regex.Comments.MultipleLineBreaks MultipleLineBreaksRegex = new Regex.Comments.MultipleLineBreaks();
+		/* Regex: FindLeadingSpacesRegex
+		 * Will match instances in the string of spaces that appear immediately after a line break or an opening paragraph
+		 * <NDMarkup> tag.
+		 */
+		[GeneratedRegex("""(?<=\n|<p>) +""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex FindLeadingSpacesRegex();
 
-		protected static Regex.Comments.EmptyParagraphs EmptyParagraphsRegex = new Regex.Comments.EmptyParagraphs();
 
-		protected static Regex.Comments.LineBreakWhichProbablyEndsSentence LineBreakWhichProbablyEndsSentenceRegex =
-			new Regex.Comments.LineBreakWhichProbablyEndsSentence();
+		/* Regex: FindTrailingSpacesRegex
+		 * Will match instances in the string of spaces that appear immediately before a line break or a closing paragraph
+		 * <NDMarkup> tag.
+		 */
+		[GeneratedRegex(""" +(?=(?:</[biu]>)*(?:\n|</p>))""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex FindTrailingSpacesRegex();
 
-		protected static Regex.NDMarkup.DefinitionListEntryTag DefinitionListEntryTagRegex = new Regex.NDMarkup.DefinitionListEntryTag();
+
+		/* Regex: FindMultipleLineBreaksRegex
+		 * Will match instances in the string of line breaks that appear immediately after another line break.  Only the duplicate
+		 * breaks will be matched, not the first.
+		 */
+		[GeneratedRegex("""(?<=\n)\n+""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex FindMultipleLineBreaksRegex();
+
+
+		/* Regex: FindEmptyParagraphsRegex
+		 * Will match instances in the string of empty <NDMarkup> paragraphs.
+		 */
+		[GeneratedRegex("""<p></p>""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex FindEmptyParagraphsRegex();
+
+
+		/* Regex: FindLineBreakWhichProbablyEndsSentenceRegex
+		 * Will match instances in the string of a line break where the preceding characters indicate that it probably is at the end
+		 * of a sentence.
+		 */
+		[GeneratedRegex("""(?<=[\.\?\!](?:<\/[a-z\-_]+>)*[\)\"\u201d]?(?:<\/[a-z\-_]+>)*)\n""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex FindLineBreakWhichProbablyEndsSentenceRegex();
+
+
+		/* Regex: FindDefinitionListEntryTagRegex
+		 * Will match instances in the string of a <NDMarkup> definition list entry tag, both the opening and closing versions.
+		 */
+		[GeneratedRegex("""\<\/?de\>\n""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex FindDefinitionListEntryTagRegex();
 
 
 
