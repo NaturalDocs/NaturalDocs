@@ -13,22 +13,18 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.Comments;
 using CodeClear.NaturalDocs.Engine.Tokenization;
 
 namespace CodeClear.NaturalDocs.Engine.Output
 	{
-	public abstract class ResourceProcessor
+	public abstract partial class ResourceProcessor
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
-
-		static ResourceProcessor ()
-			{
-			IncludeInOutputRegex = new Regex.Comments.IncludeInOutput();
-			}
 
 		public ResourceProcessor ()
 			{
@@ -270,7 +266,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			// Find the "include in output" header if it exists
 
 			while (iterator < comment.End &&
-					 iterator.Match(IncludeInOutputRegex, LineBoundsMode.CommentContent).Success == false)
+					 iterator.Match(IsIncludeInOutputRegex(), LineBoundsMode.CommentContent).Success == false)
 				{  iterator.Next();  }
 
 			if (iterator >= comment.End)
@@ -865,8 +861,21 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		// Group: Static Variables
 		// __________________________________________________________________________
 
-		protected static Regex.Comments.IncludeInOutput IncludeInOutputRegex;
+
 		protected static char[] SubstitutionIdentifierPrefixes = { '@', '$' };
+
+
+
+		// Group: Regular Expressions
+		// __________________________________________________________________________
+
+
+		/* Regex: IsIncludeInOutputRegex
+		 * Will match if the entire string is "Include in output:" or one of its acceptable variants.
+		 */
+		[GeneratedRegex("""^(?:keep|include) in output:$""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex IsIncludeInOutputRegex();
 
 		}
 	}
