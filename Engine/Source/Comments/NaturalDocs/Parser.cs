@@ -18,8 +18,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using CodeClear.NaturalDocs.Engine.Languages;
 using CodeClear.NaturalDocs.Engine.Links;
-using CodeClear.NaturalDocs.Engine.Regex.Comments;
-using CodeClear.NaturalDocs.Engine.Regex.Comments.NaturalDocs;
 using CodeClear.NaturalDocs.Engine.Symbols;
 using CodeClear.NaturalDocs.Engine.Tokenization;
 using CodeClear.NaturalDocs.Engine.Topics;
@@ -27,7 +25,7 @@ using CodeClear.NaturalDocs.Engine.Topics;
 
 namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 	{
-	public class Parser : Comments.Parser
+	public partial class Parser : Comments.Parser
 		{
 
 		// Group: Types
@@ -1823,7 +1821,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 						{  paragraph = new StringBuilder();  }
 
 					paragraph.Append(tempString);
-					prevParagraphLineEndsSentence = LineEndProbablyEndsSentenceRegex.IsMatch(tempString);
+					prevParagraphLineEndsSentence = LineEndProbablyEndsSentenceRegex().IsMatch(tempString);
 
 					prevLineBlank = false;
 					line.Next();
@@ -1869,7 +1867,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 						{  paragraph = new StringBuilder();  }
 
 					paragraph.Append(tempString2);
-					prevParagraphLineEndsSentence = LineEndProbablyEndsSentenceRegex.IsMatch(tempString2);
+					prevParagraphLineEndsSentence = LineEndProbablyEndsSentenceRegex().IsMatch(tempString2);
 
 					prevLineBlank = false;
 					line.Next();
@@ -1954,7 +1952,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 
 					string lineString = line.String(LineBoundsMode.CommentContent);
 					paragraph.Append(lineString);
-					prevParagraphLineEndsSentence = LineEndProbablyEndsSentenceRegex.IsMatch(lineString);
+					prevParagraphLineEndsSentence = LineEndProbablyEndsSentenceRegex().IsMatch(lineString);
 
 					prevLineBlank = false;
 					line.Next();
@@ -2140,7 +2138,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 					// If there's still intervening content, it must be entirely acceptable characters like ( and ".
 					if (prev < token)
 						{
-						if ( tokenizer.MatchTextBetween(AcceptableBeforeOpeningTagRegex, prev, token).Success == false )
+						if ( tokenizer.MatchTextBetween(IsAcceptableBeforeOpeningTagRegex(), prev, token).Success == false )
 							{  goto ClosingSymbols;  }
 						}
 
@@ -2174,7 +2172,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 					// If there's still intervening content, it must be entirely acceptable characters like ) and ".
 					if (end > next)
 						{
-						if ( tokenizer.MatchTextBetween(AcceptableAfterClosingTagRegex, next, end).Success == false )
+						if ( tokenizer.MatchTextBetween(IsAcceptableAfterClosingTagRegex(), next, end).Success == false )
 							{  continue;  }
 						}
 
@@ -2241,7 +2239,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 					if (prev < token)
 						{
 						if (!slashOrDash &&
-							tokenizer.MatchTextBetween(AcceptableBeforeOpeningTagRegex, prev, token).Success == false)
+							tokenizer.MatchTextBetween(IsAcceptableBeforeOpeningTagRegex(), prev, token).Success == false)
 							{  continue;  }
 						}
 
@@ -2299,7 +2297,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 					if (next < end)
 						{
 						if (next.Character != '/' && next.Character != '-' &&
-							tokenizer.MatchTextBetween(AcceptableAfterClosingTagRegex, next, end).Success == false)
+							tokenizer.MatchTextBetween(IsAcceptableAfterClosingTagRegex(), next, end).Success == false)
 							{  continue;  }
 						}
 
@@ -2360,8 +2358,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 
 					// There may be a single acceptable non-whitespace token after it.
 					if ( next.IsInBounds &&
-						 AcceptableAfterInlineImageRegex.Match(tokenizer.RawText, next.RawTextIndex,
-																				next.RawTextLength).Success == true )
+						 IsAcceptableAfterInlineImageRegex().Match(tokenizer.RawText, next.RawTextIndex,
+																					   next.RawTextLength).Success == true )
 						{  next.Next();  }
 
 					// After that it must be whitespace.
@@ -2606,7 +2604,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 
 			while (token.IsInBounds)
 				{
-				Match match = URLAnywhereInLineRegex.Match(tokenizer.RawText, token.RawTextIndex);
+				Match match = FindURLAnywhereInLineRegex().Match(tokenizer.RawText, token.RawTextIndex);
 
 				if (match.Success == false)
 					{  break;  }
@@ -2664,7 +2662,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 
 			while (token.IsInBounds)
 				{
-				Match match = EMailAnywhereInLineRegex.Match(tokenizer.RawText, token.RawTextIndex);
+				Match match = FindEMailAnywhereInLineRegex().Match(tokenizer.RawText, token.RawTextIndex);
 
 				if (match.Success == false)
 					{  break;  }
@@ -2779,7 +2777,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 
 						else // character == '<'
 							{
-							Match match = StartsWithURLProtocolRegex.Match(tagContent);
+							Match match = StartsWithURLProtocolRegex().Match(tagContent);
 
 							if (match.Success && IsURLProtocol(match.Groups[1].Value))
 								{
@@ -2790,7 +2788,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 
 							else
 								{
-								match = EMailRegex.Match(tagContent);
+								match = IsEMailRegex().Match(tagContent);
 
 								if (match.Success)
 									{
@@ -2811,7 +2809,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 										{
 										for (int i = 0; i < interpretations.Count && !found; i++)
 											{
-											match = StartsWithURLProtocolRegex.Match(interpretations[i].Target);
+											match = StartsWithURLProtocolRegex().Match(interpretations[i].Target);
 
 											if (match.Success && IsURLProtocol(match.Groups[1].Value))
 												{
@@ -2825,7 +2823,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 												}
 											else
 												{
-												match = EMailRegex.Match(interpretations[i].Target);
+												match = IsEMailRegex().Match(interpretations[i].Target);
 
 												if (match.Success)
 													{
@@ -2893,7 +2891,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 						{  tokenIterator.Next();  }
 					while (tokenIterator.CommentParsingType == CommentParsingType.EMail);
 
-					Match match = tokenizer.MatchTextBetween(EMailRegex, startOfURL, tokenIterator);
+					Match match = tokenizer.MatchTextBetween(IsEMailRegex(), startOfURL, tokenIterator);
 
 					output.Append("<link type=\"email\" target=\"");
 					output.EntityEncodeAndAppend( match.Groups[1].Value );
@@ -2940,17 +2938,78 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 		protected static char[] ParenthesesChars = { '(', ')' };
 
 
-		protected static LineEndProbablyEndsSentence LineEndProbablyEndsSentenceRegex = new LineEndProbablyEndsSentence();
 
-		protected static AcceptableBeforeOpeningTag AcceptableBeforeOpeningTagRegex = new AcceptableBeforeOpeningTag();
-		protected static AcceptableAfterClosingTag AcceptableAfterClosingTagRegex = new AcceptableAfterClosingTag();
-		protected static AcceptableAfterInlineImage AcceptableAfterInlineImageRegex = new AcceptableAfterInlineImage();
+		// Group: Regular Expressions
+		// __________________________________________________________________________
 
-		protected static AcceptableURLProtocolCharacters AcceptableURLProtocolCharactersRegex = new AcceptableURLProtocolCharacters();
-		protected static StartsWithURLProtocol StartsWithURLProtocolRegex = new StartsWithURLProtocol();
 
-		protected static URLAnywhereInLine URLAnywhereInLineRegex = new URLAnywhereInLine();
-		protected static EMailAnywhereInLine EMailAnywhereInLineRegex = new EMailAnywhereInLine();
-		protected static EMail EMailRegex = new EMail();
+		/* Regex: LineEndProbablyEndsSentenceRegex
+		 * Will match the string if the end of it probably ends a sentence as well.
+		 */
+		[GeneratedRegex("""[\.\?\!][\*_]?[\)\"\u201d]?$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex LineEndProbablyEndsSentenceRegex();
+
+
+		/* Regex: IsAcceptableBeforeOpeningTagRegex
+		 * Will match the string if all of its characters are acceptable before the beginning of a formatting tag.
+		 */
+		[GeneratedRegex("""^[\p{Ps}\p{Pi}\"\'\/\-\u00bf\u00a1\*_]+$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsAcceptableBeforeOpeningTagRegex();
+
+
+		/* Regex: IsAcceptableAfterClosingTagRegex
+		 * Will match the string if all of its characters are acceptable after the end of a formatting tag.
+		 */
+		[GeneratedRegex("""^[\p{Pe}\p{Pf}\"\'\.\,\?\!\:\;\/\-\*_]+$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsAcceptableAfterClosingTagRegex();
+
+
+		/* Regex: IsAcceptableAfterInlineImageRegex
+		 * Will match the string if all of its characters are acceptable after an inline image.
+		 */
+		[GeneratedRegex("""^[\.\,\?\!\:\;]$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsAcceptableAfterInlineImageRegex();
+
+
+		/* Regex: StartsWithURLProtocolRegex
+		 * Will match the string if it starts with an URL protocol.
+		 */
+		[GeneratedRegex("""^([a-z0-9\.\-\+]+):""",
+								  RegexOptions.Singleline |  RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex StartsWithURLProtocolRegex();
+
+
+		/* Regex: FindURLAnywhereInLineRegex
+		 * Will match instances of an URL appearing without surrounding tags in a line of text.
+		 */
+		[GeneratedRegex("""
+			([a-z0-9\.\-\+]+):
+
+			[a-z0-9_\-\=\~\@\#\%\&\+\/\\\|\*\;\:\?\.\,]+
+			[a-z0-9_\-\=\~\@\#\%\&\+\/\\\|\*]
+			""",
+								  RegexOptions.Singleline |  RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace | RegexOptions.CultureInvariant)]
+		static private partial Regex FindURLAnywhereInLineRegex();
+
+
+		/* Regex: FindEMailAnywhereInLineRegex
+		 * Will match instances of an e-mail link or address appearing without surrounding tags in a line of text.
+		 */
+		[GeneratedRegex("""(?:mailto:)?([a-z0-9_\-\.\+]+\@(?:[a-z0-9_\-]+\.)+[a-z]{2,})""",
+								  RegexOptions.Singleline |  RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex FindEMailAnywhereInLineRegex();
+
+
+		/* Regex: IsEMailRegex
+		 * Will match the string if it is an e-mail link or address.
+		 */
+		[GeneratedRegex("""^(?:mailto:)?([a-z0-9_\-\.\+]+\@(?:[a-z0-9_\-]+\.)+[a-z]{2,})$""",
+								  RegexOptions.Singleline |  RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex IsEMailRegex();
+
 		}
 	}
