@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using CodeClear.NaturalDocs.Engine.Links;
 using CodeClear.NaturalDocs.Engine.Prototypes;
 using CodeClear.NaturalDocs.Engine.Tokenization;
@@ -26,7 +27,7 @@ using CodeClear.NaturalDocs.Engine.Tokenization;
 
 namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 	{
-	public class Topic : HTML.Components.FormattedText
+	public partial class Topic : HTML.Components.FormattedText
 		{
 
 		// Group: Functions
@@ -354,7 +355,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 							bool hasDescriptions = false;
 
 							// +4 to skip "<dl>"
-							var dlDescriptionWithContent = NonEmptyDefinitionListDefinitionRegex.Match(body, iterator.RawTextIndex + 4);
+							var dlDescriptionWithContent = FindNonEmptyDefinitionListDefinitionRegex().Match(body, iterator.RawTextIndex + 4);
 
 							if (dlDescriptionWithContent.Success)
 								{
@@ -982,8 +983,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 */
 		protected const int MaxUnbrokenURLCharacters = 35;
 
-		protected static Regex.NDMarkup.NonEmptyDefinitionListDefinition NonEmptyDefinitionListDefinitionRegex
-			= new Regex.NDMarkup.NonEmptyDefinitionListDefinition();
+
+
+		// Group: Static Variables
+		// __________________________________________________________________________
+
+
+		/* Regex: FindNonEmptyDefinitionListDefinitionRegex
+		 * Will match if there are instances in the string of a <NDMarkup> definition list definition that isn't empty.
+		 */
+		[GeneratedRegex("""<dd>(?!\<\/dd\>)""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex FindNonEmptyDefinitionListDefinitionRegex();
 
 		}
 	}
