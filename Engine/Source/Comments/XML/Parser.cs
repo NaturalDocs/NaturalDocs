@@ -62,7 +62,6 @@ using System.Collections.Generic;
 using System.Text;
 using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.Comments.Components;
-using CodeClear.NaturalDocs.Engine.Regex.Comments;
 using CodeClear.NaturalDocs.Engine.Topics;
 
 
@@ -968,8 +967,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 		protected void ConvertUnformattedTextAndBareLinks (string text, StringBuilder output)
 			{
 			int index = 0;
-			var urlMatch = URLAnywhereInLineRegex.Match(text);
-			var emailMatch = EMailAnywhereInLineRegex.Match(text);
+			var urlMatch = FindURLAnywhereInLineRegex().Match(text);
+			var emailMatch = FindEMailAnywhereInLineRegex().Match(text);
 
 
 			// Walk through the string, handling the thing with the lowest index: an e-mail address, an URL, or if the index is
@@ -1019,9 +1018,9 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 
 				// Now refresh our regular expressions if they've fallen behind the index
 				if (urlMatch.Success && urlMatch.Index < index)
-					{  urlMatch = URLAnywhereInLineRegex.Match(text, index);  }
+					{  urlMatch = FindURLAnywhereInLineRegex().Match(text, index);  }
 				if (emailMatch.Success && emailMatch.Index < index)
-					{  emailMatch = EMailAnywhereInLineRegex.Match(text, index);  }
+					{  emailMatch = FindEMailAnywhereInLineRegex().Match(text, index);  }
 				}
 			}
 
@@ -1166,15 +1165,6 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 
 			return topic;
 			}
-
-
-
-		// Group: Static Variables
-		// __________________________________________________________________________
-
-
-		protected static URLAnywhereInLine URLAnywhereInLineRegex = new URLAnywhereInLine();
-		protected static EMailAnywhereInLine EMailAnywhereInLineRegex = new EMailAnywhereInLine();
 
 
 
