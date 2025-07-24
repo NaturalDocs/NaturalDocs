@@ -19,7 +19,7 @@ using CodeClear.NaturalDocs.Engine.Symbols;
 
 namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.Entries
 	{
-	public class Topic : Entry
+	public partial class Topic : Entry
 		{
 
 		// Group: Functions
@@ -79,7 +79,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.Entries
 			// Remove the space in "operator <".  This prevents them from appearing as two keywords, and also makes sure "operator <" and
 			// "operator<" are always displayed consistently, which will be important for sorting.
 
-			title = SpaceAfterOperatorKeywordRegex.Replace(title, "");
+			title = FindSpaceAfterOperatorKeywordRegex().Replace(title, "");
 
 
 			displayName = (extraScope == null ? title : extraScope + title);
@@ -87,13 +87,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.Entries
 
 			if (commentType.IsFile)
 				{
-				endOfDisplayNameQualifiers = FindEndOfQualifiers(displayName, FileSplitSymbolsRegex.Matches(displayName));
-				endOfSearchTextQualifiers = FindEndOfQualifiers(searchText, FileSplitSymbolsRegex.Matches(searchText));
+				endOfDisplayNameQualifiers = FindEndOfQualifiers(displayName, FindFileSplitSymbolsRegex().Matches(displayName));
+				endOfSearchTextQualifiers = FindEndOfQualifiers(searchText, FindFileSplitSymbolsRegex().Matches(searchText));
 				}
 			else if (commentType.IsCode)
 				{
-				endOfDisplayNameQualifiers = FindEndOfQualifiers(displayName, CodeSplitSymbolsRegex.Matches(displayName));
-				endOfSearchTextQualifiers = FindEndOfQualifiers(searchText, CodeSplitSymbolsRegex.Matches(searchText));
+				endOfDisplayNameQualifiers = FindEndOfQualifiers(displayName, FindCodeSplitSymbolsRegex().Matches(displayName));
+				endOfSearchTextQualifiers = FindEndOfQualifiers(searchText, FindCodeSplitSymbolsRegex().Matches(searchText));
 				}
 			else // documentation topic
 				{
@@ -149,7 +149,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.Entries
 					}
 				else
 					{
-					var nonWhitespaceCharsMatch = NonWhitespaceCharsRegex.Match(title, afterSplitSymbolIndex, endOfString - afterSplitSymbolIndex);
+					var nonWhitespaceCharsMatch = FindNonWhitespaceCharactersRegex().Match(title, afterSplitSymbolIndex, endOfString - afterSplitSymbolIndex);
 
 					if (nonWhitespaceCharsMatch.Success)
 						{  break;  }
@@ -194,8 +194,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.Entries
 
 					if (isDocumentation)
 						{
-						keyword = LeadingPunctuationRegex.Replace(keyword, "");
-						keyword = TrailingPunctuationRegex.Replace(keyword, "");
+						keyword = FindLeadingPunctuationRegex().Replace(keyword, "");
+						keyword = FindTrailingPunctuationRegex().Replace(keyword, "");
 						}
 
 					if (keyword.Length > 0)
@@ -302,12 +302,62 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.Entries
 
 		private static char[] NormalizedKeywordSeparators = { ' ', '.', '/' };
 
-		static protected Regex.FileSplitSymbols FileSplitSymbolsRegex = new Regex.FileSplitSymbols();
-		static protected Regex.CodeSplitSymbols CodeSplitSymbolsRegex = new Regex.CodeSplitSymbols();
-		static protected Regex.NonWhitespaceChars NonWhitespaceCharsRegex =  new Regex.NonWhitespaceChars();
-		static protected Regex.SpaceAfterOperatorKeyword SpaceAfterOperatorKeywordRegex = new Regex.SpaceAfterOperatorKeyword();
-		static protected Regex.LeadingPunctuation LeadingPunctuationRegex = new Regex.LeadingPunctuation();
-		static protected Regex.TrailingPunctuation TrailingPunctuationRegex = new Regex.TrailingPunctuation();
+
+
+		// Group: Regular Expressions
+		// __________________________________________________________________________
+
+
+		/* Regex: FindFileSplitSymbolsRegex
+		 * Will match instances in the string of slashes and backslashes which split segments of a file path.
+		 */
+		[GeneratedRegex("""/|\\""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex FindFileSplitSymbolsRegex();
+
+
+		/* Regex: FindCodeSplitSymbolsRegex
+		 * Will match instances in the string of member operators which split segments of a code hierarchy.
+		 */
+		[GeneratedRegex("""\.|::|->""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex FindCodeSplitSymbolsRegex();
+
+
+		/* Regex: FindNonWhitespaceCharactersRegex
+		 * Will match instances in the string of stretches of non-whitespace characters.  Each stretch will appear as a single
+		 * match.
+		 */
+		[GeneratedRegex("""\S+""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex FindNonWhitespaceCharactersRegex();
+
+
+		/* Regex: FindSpaceAfterOperatorKeywordRegex
+		 * Will match instances in the string of a space which can appear between the keyword "operator" and its defined symbol.
+		 * It will only match the space.
+		 */
+		[GeneratedRegex("""(?<=operator) (?=[^a-z0-9_])""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex FindSpaceAfterOperatorKeywordRegex();
+
+
+		/* Regex: FindLeadingPunctuationRegex
+		 * Will match any punctuation that appears at the beginning of the string.  If there are multiple punctuation characters, it
+		 * will return it as one match.
+		 */
+		[GeneratedRegex("""^(?:\p{Pc}|\p{Pd}|\p{Pe}|\p{Pf}|\p{Pi}|\p{Po}|\p{Ps})+""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex FindLeadingPunctuationRegex();
+
+
+		/* Regex: FindTrailingPunctuationRegex
+		 * Will match any punctuation that appears at the end of the string.  If there are multiple punctuation characters, it will
+		 * return it as one match.
+		 */
+		[GeneratedRegex("""(?:\p{Pc}|\p{Pd}|\p{Pe}|\p{Pf}|\p{Pi}|\p{Po}|\p{Ps})+$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex FindTrailingPunctuationRegex();
 
 		}
 	}
