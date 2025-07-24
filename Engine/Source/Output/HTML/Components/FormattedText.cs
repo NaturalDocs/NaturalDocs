@@ -24,12 +24,11 @@ using CodeClear.NaturalDocs.Engine.Languages;
 using CodeClear.NaturalDocs.Engine.Links;
 using CodeClear.NaturalDocs.Engine.Symbols;
 using CodeClear.NaturalDocs.Engine.Tokenization;
-using CodeClear.NaturalDocs.Engine.Topics;
 
 
 namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 	{
-	public class FormattedText : Component
+	public partial class FormattedText : Component
 		{
 
 		// Group: Types
@@ -449,12 +448,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			if (mode == WrappedTitleMode.Code)
 				{
-				splitSymbols = CodeSplitSymbolsRegex.Matches(title);
+				splitSymbols = FindCodeSplitSymbolsRegex().Matches(title);
 				splitCount = splitSymbols.Count;
 				}
 			else if (mode == WrappedTitleMode.File)
 				{
-				splitSymbols = FileSplitSymbolsRegex.Matches(title);
+				splitSymbols = FindFileSplitSymbolsRegex().Matches(title);
 				splitCount = splitSymbols.Count;
 				}
 
@@ -513,12 +512,24 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 
-		// Group: Static Variables
+		// Group: Regular Expressions
 		// __________________________________________________________________________
 
 
-		static protected Regex.FileSplitSymbols FileSplitSymbolsRegex = new Regex.FileSplitSymbols();
-		static protected Regex.CodeSplitSymbols CodeSplitSymbolsRegex = new Regex.CodeSplitSymbols();
+		/* Regex: FindFileSplitSymbolsRegex
+		 * Will match instances in the string of slashes and backslashes which split segments of a file path.
+		 */
+		[GeneratedRegex("""/|\\""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex FindFileSplitSymbolsRegex();
+
+
+		/* Regex: FindCodeSplitSymbolsRegex
+		 * Will match instances in the string of member operators which split segments of a code hierarchy.
+		 */
+		[GeneratedRegex("""\.|::|->""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex FindCodeSplitSymbolsRegex();
 
 		}
 	}
