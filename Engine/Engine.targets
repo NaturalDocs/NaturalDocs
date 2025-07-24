@@ -74,11 +74,12 @@
 			<CallTarget Targets="Engine_ValidateProperties" />
 
 			<CallTarget Targets="Engine_CleanForBuild_SQLite" />
-			<CallTarget Targets="Engine_CleanForBuild_Regex" />
 			<CallTarget Targets="Engine_CleanForBuild_Config" />
 			<CallTarget Targets="Engine_CleanForBuild_Styles" />
 			<CallTarget Targets="Engine_CleanForBuild_Translations" />
 			<CallTarget Targets="Engine_CleanForBuild_License" />
+
+			<CallTarget Targets="Engine_CleanForBuild_Regex" />
 
 		</Target>
 
@@ -91,7 +92,6 @@
 			<CallTarget Targets="Engine_ValidateProperties" />
 
 			<CallTarget Targets="Engine_CopyForBuild_SQLite" />
-			<CallTarget Targets="Engine_CopyForBuild_Regex" />
 			<CallTarget Targets="Engine_CopyForBuild_Config" />
 			<CallTarget Targets="Engine_CopyForBuild_Styles" />
 			<CallTarget Targets="Engine_CopyForBuild_Translations" />
@@ -108,11 +108,12 @@
 			<CallTarget Targets="Engine_ValidateProperties" />
 
 			<CallTarget Targets="Engine_CleanForPublish_SQLite" />
-			<CallTarget Targets="Engine_CleanForPublish_Regex" />
 			<CallTarget Targets="Engine_CleanForPublish_Config" />
 			<CallTarget Targets="Engine_CleanForPublish_Styles" />
 			<CallTarget Targets="Engine_CleanForPublish_Translations" />
 			<CallTarget Targets="Engine_CleanForPublish_License" />
+
+			<CallTarget Targets="Engine_CleanForPublish_Regex" />
 
 		</Target>
 
@@ -125,7 +126,6 @@
 			<CallTarget Targets="Engine_ValidateProperties" />
 
 			<CallTarget Targets="Engine_CopyForPublish_SQLite" />
-			<CallTarget Targets="Engine_CopyForPublish_Regex" />
 			<CallTarget Targets="Engine_CopyForPublish_Config" />
 			<CallTarget Targets="Engine_CopyForPublish_Styles" />
 			<CallTarget Targets="Engine_CopyForPublish_Translations" />
@@ -296,36 +296,11 @@
 
 
 		<!--
-			Build Target: Engine_CopyForBuild_Regex
-		-->
-		<Target Name="Engine_CopyForBuild_Regex">
-
-			<Copy
-				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\Regex\Release\NaturalDocs.Engine.Regex.dll"
-				DestinationFolder="$(TargetDir)"
-				/>
-
-		</Target>
-
-
-		<!--
-			Publish Target: Engine_CopyForPublish_Regex
-		-->
-		<Target Name="Engine_CopyForPublish_Regex">
-
-			<Copy
-				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\Regex\Release\NaturalDocs.Engine.Regex.dll"
-				DestinationFolder="$(PublishDir)"
-				/>
-
-		</Target>
-
-
-		<!--
 			Build Target: Engine_CleanForBuild_Regex
 		-->
 		<Target Name="Engine_CleanForBuild_Regex">
 
+			<!-- Old file names, not in use anymore -->
 			<Delete
 				Files="$(TargetDir)NaturalDocs.Engine.Regex.dll"
 				/>
@@ -338,6 +313,7 @@
 		-->
 		<Target Name="Engine_CleanForPublish_Regex">
 
+			<!-- Old file names, not in use anymore -->
 			<Delete
 				Files="$(PublishDir)NaturalDocs.Engine.Regex.dll"
 				/>

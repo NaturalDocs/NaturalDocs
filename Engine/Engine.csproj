@@ -100,10 +100,5 @@
     <Content Include="Source\Languages\Parsers\Perl Notes.txt" />
     <Content Include="Source\Languages\Parsers\CSharp Notes.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="NaturalDocs.Engine.Regex">
-      <HintPath>Resources\Regex\Release\NaturalDocs.Engine.Regex.dll</HintPath>
-    </Reference>
-  </ItemGroup>
   <Import Project="Engine.targets" />
 </Project>
