@@ -412,6 +412,27 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 		static private partial Regex FindDefinitionListEntryTagRegex();
 
 
+		/* Regex: FindURLAnywhereInLineRegex
+		 * Will match instances of an URL appearing without surrounding tags in a line of text.
+		 */
+		[GeneratedRegex("""
+			([a-z0-9\.\-\+]+):
+
+			[a-z0-9_\-\=\~\@\#\%\&\+\/\\\|\*\;\:\?\.\,]+
+			[a-z0-9_\-\=\~\@\#\%\&\+\/\\\|\*]
+			""",
+								  RegexOptions.Singleline |  RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace | RegexOptions.CultureInvariant)]
+		static protected partial Regex FindURLAnywhereInLineRegex();
+
+
+		/* Regex: FindEMailAnywhereInLineRegex
+		 * Will match instances of an e-mail link or address appearing without surrounding tags in a line of text.
+		 */
+		[GeneratedRegex("""(?:mailto:)?([a-z0-9_\-\.\+]+\@(?:[a-z0-9_\-]+\.)+[a-z]{2,})""",
+								  RegexOptions.Singleline |  RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static protected partial Regex FindEMailAnywhereInLineRegex();
+
+
 
 		/* __________________________________________________________________________
 		 *
