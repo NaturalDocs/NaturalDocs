@@ -20,29 +20,14 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text.RegularExpressions;
 using CodeClear.NaturalDocs.Engine.Collections;
-using CodeClear.NaturalDocs.Engine.Regex;
-using CodeClear.NaturalDocs.Engine.Regex.Comments.NaturalDocs;
 
 
 namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 	{
-	public class TextFileParser
+	public partial class TextFileParser
 		{
-
-		// Group: Functions
-		// __________________________________________________________________________
-
-
-		/* Constructor: TextFileParser
-		 */
-		public TextFileParser ()
-			{
-		    arrowSeparatorRegex = new CondensedWhitespaceArrowSeparator();
-			acceptableURLProtocolCharactersRegex = new AcceptableURLProtocolCharacters();
-			}
-
-
 
 		// Group: Loading Functions
 		// __________________________________________________________________________
@@ -143,7 +128,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 								break;
 								}
 
-							if (urlProtocols && acceptableURLProtocolCharactersRegex.IsMatch(value) == false)
+							if (urlProtocols && AreAcceptableURLProtocolCharactersRegex().IsMatch(value) == false)
 								{
 								file.AddError(
 									Locale.Get("NaturalDocs.Engine", "ConfigFile.NotAValidValue(value)", value)
@@ -191,7 +176,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 								}
 
 							string lcValue = value.ToLowerInvariant();
-							string[] split = arrowSeparatorRegex.Split(lcValue, 2);
+							string[] split = FindCondensedWhitespaceArrowSeparatorRegex().Split(lcValue, 2);
 
 
 							// Block Types
@@ -303,7 +288,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 
 							if (list != null)
 								{
-								string[] split = arrowSeparatorRegex.Split(value, 2);
+								string[] split = FindCondensedWhitespaceArrowSeparatorRegex().Split(value, 2);
 
 								string left = split[0].ToLower(CultureInfo.InvariantCulture).Normalize(System.Text.NormalizationForm.FormC);
 								string right = (String.IsNullOrEmpty(split[1]) ? null : split[1].ToLower(CultureInfo.InvariantCulture).Normalize(System.Text.NormalizationForm.FormC));
@@ -343,12 +328,27 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 			}
 
 
-		// Group: Variables
+
+		// Group: Regular Expressions
 		// __________________________________________________________________________
 
-	    protected CondensedWhitespaceArrowSeparator arrowSeparatorRegex;
-		protected AcceptableURLProtocolCharacters acceptableURLProtocolCharactersRegex;
 
+		/* Regex: FindCondensedWhitespaceArrowSeparatorRegex
+		 * Will match instances of an arrow separator (->) which may or may not contain spaces on one or both sides of it.
+		 * It's assuming whitespace is already condensed so there will only be a single space character on each side at most.
+		 * The match includes the spaces if they exist so it can be used with split functions.
+		 */
+		[GeneratedRegex(""" ?\-\> ?""",
+								  RegexOptions.Singleline |  RegexOptions.CultureInvariant)]
+		static private partial Regex FindCondensedWhitespaceArrowSeparatorRegex();
+
+
+		/* Regex: AreAcceptableURLProtocolCharactersRegex
+		 * Will match if the entire string contains acceptable URL protocol characters, not including the ending colon.
+		 */
+		[GeneratedRegex("""^[a-z0-9\-\.\+]+$""",
+								  RegexOptions.Singleline |  RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static private partial Regex AreAcceptableURLProtocolCharactersRegex();
 
 		}
 	}
