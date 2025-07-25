@@ -206,7 +206,7 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 				return Marshal.PtrToStringUni(nativeResult);
 			#elif SQLITE_UTF8
 				nativeResult = NativeLibrary.sqlite3_column_text (statementHandle, column);
-				return (string)UTF8Marshaller.GetInstance().MarshalNativeToManaged(nativeResult);
+				return Marshal.PtrToStringUTF8(nativeResult);
 			#else
 				throw new Exception("Did not define SQLITE_UTF8 or SQLITE_UTF16");
 			#endif
@@ -237,7 +237,7 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 			IntPtr nativeResult;
 			nativeResult = NativeLibrary.sqlite3_libversion();
 
-			return (string)UTF8Marshaller.GetInstance().MarshalNativeToManaged(nativeResult);
+			return Marshal.PtrToStringUTF8(nativeResult);
 			}
 
 		}

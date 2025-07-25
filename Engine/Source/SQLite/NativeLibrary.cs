@@ -45,7 +45,7 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 		extern static internal API.Result sqlite3_shutdown ();
 
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
-		extern static internal API.Result sqlite3_open_v2 ([MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef=typeof(UTF8Marshaller))] string filename,
+		extern static internal API.Result sqlite3_open_v2 ([MarshalAs(UnmanagedType.LPUTF8Str)] string filename,
 																			   out IntPtr connectionHandle, API.OpenOption options, IntPtr vfs);
 
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
@@ -68,7 +68,7 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 		#elif SQLITE_UTF8
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
 		extern static internal API.Result sqlite3_prepare_v2 (IntPtr connectionHandle,
-																				   [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef=typeof(UTF8Marshaller))] string statementText,
+																				   [MarshalAs(UnmanagedType.LPUTF8Str)] string statementText,
 																				   int statementTextByteLength, out IntPtr statementHandle, out IntPtr unusedStatementText);
 		#endif
 
@@ -86,8 +86,8 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 		#elif SQLITE_UTF8
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
 		extern static internal API.Result sqlite3_bind_text (IntPtr statementHandle, int index,
-																			    [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef=typeof(UTF8Marshaller))] string value,
-																			    int valueByteLength, API.DestructorOption destructor);
+																				[MarshalAs(UnmanagedType.LPUTF8Str)] string value,
+																				int valueByteLength, API.DestructorOption destructor);
 		#endif
 
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
