@@ -82,12 +82,12 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
 		extern static internal API.Result sqlite3_bind_text16 (IntPtr statementHandle, int index,
 																				    [MarshalAs(UnmanagedType.LPWStr)] string value,
-																				    int valueByteLength, DestructorOption destructor);
+																				    int valueByteLength, IntPtr destructor);
 		#elif SQLITE_UTF8
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
 		extern static internal API.Result sqlite3_bind_text (IntPtr statementHandle, int index,
 																				[MarshalAs(UnmanagedType.LPUTF8Str)] string value,
-																				int valueByteLength, API.DestructorOption destructor);
+																				int valueByteLength, IntPtr destructor);
 		#endif
 
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
