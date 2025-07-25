@@ -139,9 +139,9 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 
 			#if SQLITE_UTF16
 				// It wants the length in bytes, not in characters
-				return NativeLibrary.sqlite3_prepare16_v2(connectionHandle, statementText, Encoding.Unicode.GetByteCount(statementText), out statementHandle, out ignore);
+				return NativeLibrary.sqlite3_prepare16_v2(connectionHandle, statementText, -1, out statementHandle, out ignore);
 			#elif SQLITE_UTF8
-				return NativeLibrary.sqlite3_prepare_v2(connectionHandle, statementText, Encoding.UTF8.GetByteCount(statementText), out statementHandle, out ignore);
+				return NativeLibrary.sqlite3_prepare_v2(connectionHandle, statementText, -1, out statementHandle, out ignore);
 			#else
 				throw new Exception("Did not define SQLITE_UTF8 or SQLITE_UTF16");
 			#endif
@@ -160,10 +160,9 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 		static public Result BindText (IntPtr statementHandle, int index, string value)
 			{
 			#if SQLITE_UTF16
-				// It wants the length in bytes, not in characters
-				return NativeLibrary.sqlite3_bind_text16(statementHandle, index, value, Encoding.Unicode.GetByteCount(value), (IntPtr)DestructorOption.Transient);
+				return NativeLibrary.sqlite3_bind_text16(statementHandle, index, value, -1, (IntPtr)DestructorOption.Transient);
 			#elif SQLITE_UTF8
-				return NativeLibrary.sqlite3_bind_text(statementHandle, index, value, Encoding.UTF8.GetByteCount(value), (IntPtr)DestructorOption.Transient);
+				return NativeLibrary.sqlite3_bind_text(statementHandle, index, value, -1, (IntPtr)DestructorOption.Transient);
 			#else
 				throw new Exception("Did not define SQLITE_UTF8 or SQLITE_UTF16");
 			#endif
