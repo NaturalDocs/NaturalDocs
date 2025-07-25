@@ -1394,7 +1394,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 		 *
 		 *		1 - The source folder number, if it exists, such as "2" in "Image Folder 2".
 		 */
-		[GeneratedRegex("""^(?:source|input) (?:folder|dir|directory) ?([0-9]*)$""",
+		[GeneratedRegex("""^image (?:folder|dir|directory) ?([0-9]*)$""",
 								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
 		static internal partial Regex IsImageFolderRegexLC();
 
