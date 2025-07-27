@@ -106,6 +106,9 @@ namespace CodeClear.NaturalDocs.Engine
 			startupIssues = StartupIssues.None;
 			startupWatchers = new List<IStartupWatcher>();
 
+			// Ensure all the encodings get included in the compiled and trimmed binary, not just the most common ones
+			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
 			this.config = configManager ?? new Config.Manager(this);
 			this.hierarchies = hierarchiesManager ?? new Hierarchies.Manager(this);
 			this.commentTypes = commentTypesManager ?? new CommentTypes.Manager(this);
