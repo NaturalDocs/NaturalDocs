@@ -162,7 +162,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 		#if WINDOWS
 		/* Property: WindowsNameAndVersion
-		 * Returns the full Windows name and version, such as "Windows 10 Home version 1909" or "Windows 7 Professional with Service Pack 1".
+		 * Returns the full Windows name and version, such as "Windows 10 Home 1909" or "Windows 7 Professional with Service Pack 1".
 		 */
 		[SupportedOSPlatform("Windows")]
 		static public string WindowsNameAndVersion
@@ -171,7 +171,7 @@ namespace CodeClear.NaturalDocs.Engine
 				{
 				string result = null;
 
-				// First try getting the information from the registry, since that's a lot nicer.  We can build a string like "Windows 10 Home version 1909"
+				// First try getting the information from the registry, since that's a lot nicer.  We can build a string like "Windows 10 Home 1909"
 				// from it.
 				try
 					{
@@ -184,15 +184,32 @@ namespace CodeClear.NaturalDocs.Engine
 							{
 							result = productName;
 
-							// Newer key that will say things like "20H2".  Doesn't exist on older versions.
-							string win10version = key.GetValue("DisplayVersion")?.ToString();
+							// Get the build number, as it's the only way to distinguish between Windows 10 and 11.  ProductName will actually still
+							// say "Windows 10" on 11.
+							string buildNumberString = key.GetValue("CurrentBuildNumber")?.ToString();
+							int buildNumber = 0;
 
-							// Older key that will say things like "1909".  Still exists on newer versions but will say "2009" instead of "20H2".
-							if (win10version == null)
-								{  win10version = key.GetValue("ReleaseId")?.ToString();  }
+							if (!String.IsNullOrEmpty(buildNumberString) &&
+								int.TryParse(buildNumberString,out buildNumber))
+								{
+								// Windows 11 will have build numbers starting at 22000 and Windows 10's should always be below it.
+								if (buildNumber >= 22000)
+									{
+									result = result.Replace("Windows 10", "Windows 11");
+									}
+								}
 
-							if (win10version != null)
-								{  result += " version " + win10version;  }
+							// Now get the extended version.  First try the newer registry key that will say things like "20H2".  It doesn't exist on
+							// older Windows versions.
+							string extendedVersion = key.GetValue("DisplayVersion")?.ToString();
+
+							// Next try the older registry key that will say things like "1909".  It still exists on newer versions but will say "2009"
+							// instead of "20H2".
+							if (extendedVersion == null)
+								{  extendedVersion = key.GetValue("ReleaseId")?.ToString();  }
+
+							if (extendedVersion != null)
+								{  result += " " + extendedVersion;  }
 
 							string servicePack = key.GetValue("CSDVersion")?.ToString();
 							if (servicePack != null)
