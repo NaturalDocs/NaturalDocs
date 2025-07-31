@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
+using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.Languages;
 using CodeClear.NaturalDocs.Engine.Links;
 using CodeClear.NaturalDocs.Engine.Symbols;
@@ -1539,6 +1540,9 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 		 */
 		public bool IsDefinitionLine (LineIterator lineIterator, out string leftSide, out string rightSide, out int indent)
 			{
+
+			// First find an instance of whitespace-dash-whitespace
+
 			TokenIterator start, end, token;
 			lineIterator.GetBounds(LineBoundsMode.CommentContent, out start, out end);
 
@@ -1561,6 +1565,9 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 				token.Next();
 				}
 
+
+			// Fail if we didn't find one
+
 			if (token >= end)
 				{
 				leftSide = null;
@@ -1568,6 +1575,9 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 				indent = 0;
 				return false;
 				}
+
+
+			// Find the content bounds
 
 			TokenIterator endOfLeftSide = token;
 			TokenIterator startOfRightSide = token;
@@ -1581,6 +1591,9 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 			while (startOfRightSide.FundamentalType == FundamentalType.Whitespace)
 				{  startOfRightSide.Next();  }
 
+
+			// Fail if either side is empty
+
 			if (endOfLeftSide <= start || startOfRightSide >= end)
 				{
 				leftSide = null;
@@ -1588,6 +1601,169 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 				indent = 0;
 				return false;
 				}
+
+
+			// Fail if the dash appears inside quotes or braces
+
+			// This could be tricky because of things like "[test name] - Input.[ext]".  First walk through the left side collecting a stack of block
+			// characters.  We won't create the stack object until the first occurrence because most lines won't have them at all, so we can avoid
+			// the memory churn.
+			TokenIterator iterator = start;
+			SafeStack<char> blocks = null;
+			bool balancedBlocks = true;
+
+			while (iterator < endOfLeftSide)
+				{
+				char character = iterator.Character;
+
+				// We'll ignore '<' because of the potential for false positives
+				if (character == '(' ||
+					character == '[' ||
+					character == '{')
+					{
+					if (blocks == null)
+						{  blocks = new SafeStack<char>();  }
+
+					blocks.Push(character);
+					}
+
+				else if (character == ')' ||
+						  character == ']' ||
+						  character == '}')
+					{
+					char openingCharacter;
+
+					if (character == ')')
+						{  openingCharacter = '(';  }
+					else if (character == ']')
+						{  openingCharacter = '[';  }
+					else // character == '}'
+						{  openingCharacter = '{';  }
+
+					if (blocks == null ||
+						blocks.Peek() != openingCharacter)
+						{
+						// We only ignore the dash on balanced blocks, so we can quit early if they're not
+						balancedBlocks = false;
+						break;
+						}
+
+					blocks.Pop();
+					}
+
+				// We'll ignore '\'' because of the potential for false positives
+				else if (character == '"')
+					{
+					if (blocks == null)
+						{
+						blocks = new SafeStack<char>();
+						blocks.Push(character);
+						}
+					else if (!blocks.Contains('"'))
+						{
+						blocks.Push(character);
+						}
+					else if (blocks.Peek() == '"')
+						{
+						blocks.Pop();
+						}
+					else
+						{
+						// We only ignore the dash on balanced blocks, so we can quit early if they're not
+						balancedBlocks = false;
+						break;
+						}
+					}
+
+				iterator.Next();
+				}
+
+			// If we reached the dash while inside balanced blocks...
+			if (blocks != null &&
+				blocks.Count > 0 &&
+				balancedBlocks)
+				{
+				// See if all the open blocks close on the right side of the line.  Only then will we ignore the dash.  We're not going to check
+				// later lines.
+				iterator = startOfRightSide;
+
+				while (iterator < end)
+					{
+					char character = iterator.Character;
+
+					if (character == '(' ||
+						character == '[' ||
+						character == '{')
+						{
+						blocks.Push(character);
+						}
+
+					else if (character == ')' ||
+							  character == ']' ||
+							  character == '}')
+						{
+						char openingCharacter;
+
+						if (character == ')')
+							{  openingCharacter = '(';  }
+						else if (character == ']')
+							{  openingCharacter = '[';  }
+						else // character == '}'
+							{  openingCharacter = '{';  }
+
+						if (blocks.Peek() != openingCharacter)
+							{
+							// We only ignore the dash on balanced blocks, so we can quit early if they're not
+							balancedBlocks = false;
+							break;
+							}
+
+						blocks.Pop();
+
+						// If we've reach zero stack members, that means all the blocks closed and we can ignore the dash
+						if (blocks.Count == 0)
+							{
+							leftSide = null;
+							rightSide = null;
+							indent = 0;
+							return false;
+							}
+						}
+
+					// We'll ignore '\'' because of the potential for false positives
+					else if (character == '"')
+						{
+						if (!blocks.Contains('"'))
+							{
+							blocks.Push(character);
+							}
+						else if (blocks.Peek() == '"')
+							{
+							blocks.Pop();
+
+							// If we've reach zero stack members, that means all the blocks closed and we can ignore the dash
+							if (blocks.Count == 0)
+								{
+								leftSide = null;
+								rightSide = null;
+								indent = 0;
+								return false;
+								}
+							}
+						else
+							{
+							// We only ignore the dash on balanced blocks, so we can quit early if they're not
+							balancedBlocks = false;
+							break;
+							}
+						}
+
+					iterator.Next();
+					}
+				}
+
+
+			// Return the contents
 
 			leftSide = start.TextBetween(endOfLeftSide);
 			rightSide = startOfRightSide.TextBetween(end);
