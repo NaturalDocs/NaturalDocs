@@ -138,7 +138,6 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 			IntPtr ignore;
 
 			#if SQLITE_UTF16
-				// It wants the length in bytes, not in characters
 				return NativeLibrary.sqlite3_prepare16_v2(connectionHandle, statementText, -1, out statementHandle, out ignore);
 			#elif SQLITE_UTF8
 				return NativeLibrary.sqlite3_prepare_v2(connectionHandle, statementText, -1, out statementHandle, out ignore);
@@ -195,9 +194,6 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 
 		static public string ColumnText (IntPtr statementHandle, int column)
 			{
-			// We can't use the string type as a return value for the API call or else C# will try to deallocate it, which
-			// it shouldn't.  It may not crash on .NET but it definitely does in Mono.
-
 			IntPtr nativeResult;
 
 			#if SQLITE_UTF16
