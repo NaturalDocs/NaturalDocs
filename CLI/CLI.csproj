@@ -21,7 +21,6 @@
     <WarningLevel>9999</WarningLevel>
     <NoWarn />
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-    <WarningsNotAsErrors>NU1900</WarningsNotAsErrors>
     <IsAotCompatible>True</IsAotCompatible>
     <OutputPath>bin\$(Platform) $(Configuration)\</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
@@ -35,16 +34,19 @@
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <Optimize>False</Optimize>
     <DebugType>pdbonly</DebugType>
+    <WarningsNotAsErrors>NU1900;CS0219;CS0162</WarningsNotAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>True</Optimize>
     <DebugType>pdbonly</DebugType>
+    <WarningsNotAsErrors>NU1900</WarningsNotAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Publish'">
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>True</Optimize>
     <DebugType>none</DebugType>
+    <WarningsNotAsErrors>NU1900</WarningsNotAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Platform)'=='Windows x64'">
 	<RuntimeIdentifier>win-x64</RuntimeIdentifier>
