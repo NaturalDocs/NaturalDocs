@@ -1,0 +1,12 @@
+<!--
+	File: Tests.targets
+	___________________________________________________________________________
+
+	This is the supplemental MSBuild file for Natural Docs tests.
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<Import Project="..\Engine\Engine.targets" />
+
+</Project>

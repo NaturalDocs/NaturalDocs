@@ -1,0 +1,67 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Platforms>Windows x64;Windows ARM64</Platforms>
+    <RootNamespace>CodeClear.NaturalDocs.Tests</RootNamespace>
+    <AssemblyName>NaturalDocs.Tests</AssemblyName>
+    <Configurations>Debug;Release;Publish</Configurations>
+    <StartupObject />
+    <AssemblyTitle>Natural Docs Tests</AssemblyTitle>
+    <Company>Code Clear LLC</Company>
+    <Product>Natural Docs</Product>
+    <Copyright>Copyright © 2003-2025 Code Clear LLC</Copyright>
+    <AssemblyVersion>2.4.0.11</AssemblyVersion>
+    <FileVersion>2.4.0.11</FileVersion>
+    <PackageProjectUrl>https://www.naturaldocs.org</PackageProjectUrl>
+    <RunPostBuildEvent></RunPostBuildEvent>
+    <NuGetAuditMode>all</NuGetAuditMode>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <LangVersion>default</LangVersion>
+    <WarningLevel>9999</WarningLevel>
+    <NoWarn />
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <IsAotCompatible>True</IsAotCompatible>
+    <OutputPath>bin\$(Platform) $(Configuration)\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <IntermediateOutputPath>obj\$(Platform) $(Configuration)\</IntermediateOutputPath>
+    <AppendTargetFrameworkToIntermediateOutputPath>false</AppendTargetFrameworkToIntermediateOutputPath>
+    <AppendRuntimeIdentifierToIntermediateOutputPath>false</AppendRuntimeIdentifierToIntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <Optimize>False</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <WarningsNotAsErrors>NU1900;CS0219;CS0162</WarningsNotAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>True</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <WarningsNotAsErrors>NU1900</WarningsNotAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Publish'">
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>True</Optimize>
+    <DebugType>none</DebugType>
+    <WarningsNotAsErrors>NU1900</WarningsNotAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='Windows x64'">
+	<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <PlatformTarget>x64</PlatformTarget>
+    <DefineConstants>WINDOWS;X64</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='Windows ARM64'">
+	<RuntimeIdentifier>win-arm64</RuntimeIdentifier>
+    <PlatformTarget>ARM64</PlatformTarget>
+    <DefineConstants>WINDOWS;ARM64</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="Architecture\Test Folder.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Engine\Engine.csproj" />
+  </ItemGroup>
+  <Import Project="Tests.targets" />
+</Project>

@@ -1,0 +1,97 @@
+﻿
+File: Test Folder.txt
+_______________________________________________________________________________
+
+The presence of Test Folder.txt in a folder indicates that it is a folder of "expected output"-based tests.
+
+Alternative File Names:
+
+	The file can also have one of these names, which is useful if you want it to appear at the top of a sorted file list:
+
+	- - Test Folder.txt
+	- ~ Test Folder.txt
+	- .Test Folder.txt
+
+
+Group: Test File Names
+_______________________________________________________________________________
+
+	Tests are files with names in the format "[test name] - Input.[ext]".  The part prior to " - Input" can be anything, as can the
+	file extension, so a test can be named "Prototype Parsing - Input.cs".
+
+	After the tests are run, a file called "[test name] - Actual Output.txt" will be created in the same folder as the test file, so
+	"Prototype Parsing - Actual Output.txt" in our example.
+
+	The expected test results are stored in "[test name] - Expected Output.txt".  If they match the actual output, the test passes.
+	If the expected output file doesn't exist or the contents don't match, the test fails.  This design allows file comparison programs
+	to compare the expected output to the actual output to see what changed.  It also allows the actual output file to just be saved
+	as the expected output file if everything is correct.  When creating new tests you don't have to create an expected output file by
+	hand, you can just run the test without one and check the contents of the actual output file that was generated, then resave it.
+
+
+
+Group: File Format
+_______________________________________________________________________________
+
+
+	Topic: Format
+
+		> Format: [version]
+
+		Like other Natural Docs configuration files, the first content line must be a Format line that specifies what version it was written
+		for.
+
+
+	Topic: Test Type
+
+		> Test Type: [type]
+
+		The test to be run on each input file in the current folder.  This must exist in each configuration file.  You cannot have more
+		than one type of test per folder, though subfolders can have different tests.
+
+
+	Topic: Engine Config
+
+		> Engine Config: [path]
+
+		This can be used to set the project configuration folder Natural Docs should use.  This is primarily to configure <Languages.txt>,
+		<Comments.txt>, and any custom styles.  Most settings in <Project.txt> will be overridden or ignored, and some of them can be
+		set with the below properties.  Optional.
+
+
+	Topic: Keep HTML
+
+		> Keep HTML: [yes/no]
+
+		If HTML output is built as part of the test, whether it should be kept so that it can be manually opened and inspected afterwards.
+		If yes it will be stored in a "HTML Output" subfolder.  If not it will be deleted with the other temporary data generated.  Optional,
+		defaults to no.
+
+
+	Topic: Title
+
+		> Title: [text]
+
+		If <Keep HTML> is true, this can be used to set the title of the HTML output.  Optional.
+
+
+	Topic: Subtitle
+
+		> Subtitle: [text]
+
+		If <Keep HTML> is true, this can be used to set the subtitle of the HTML output.  Optional.
+
+
+	Topic: Style
+
+		> Style: [name]
+
+		If <Keep HTML> is true, this can be used to set the style of the HTML output.  Optional.
+
+
+	Topic: Auto-Group
+
+		> Auto-Group: [yes/no]
+
+		Whether automatic grouping is turned on or off.  It is normally turned off to prevent unnecessary topics from appearing in the
+		output, but can be turned on to test the automatic grouping code itself.  Optional, defaults to no.

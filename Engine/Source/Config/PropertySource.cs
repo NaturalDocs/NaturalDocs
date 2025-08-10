@@ -22,6 +22,7 @@
  *		ProjectCommentsFile - The property is defined in the project's <Comments.txt> file.
  *		SystemCommentsFile - The property is defined in the system's <Comments.txt> file.
  *		StyleConfigurationFile - The property is defined in a <Style.txt> file.
+ *		TestFolderConfigurationFile - The property is defined in a <Test Folder.txt> file.
  *
  * Meta-Values:
  *
@@ -59,8 +60,9 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		ProjectCommentsFile,
 		SystemCommentsFile,
 		StyleConfigurationFile,
+		TestFolderConfigurationFile,
 
 		LowestFileValue = ProjectFile,
-		HighestFileValue = StyleConfigurationFile
+		HighestFileValue = TestFolderConfigurationFile
 		}
 	}
