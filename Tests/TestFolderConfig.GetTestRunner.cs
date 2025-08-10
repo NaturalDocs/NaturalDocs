@@ -31,6 +31,9 @@ namespace CodeClear.NaturalDocs.Tests
 
 			switch (lcTestType)
 				{
+				case "numberset":
+					return new TestRunners.NumberSet();
+
 				default:
 					return null;
 				}

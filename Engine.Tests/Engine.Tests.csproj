@@ -85,7 +85,6 @@
     <Compile Include="Source\General\FileEncodings\Manual.cs" />
     <Compile Include="Source\General\LinkScoring.cs" />
     <Compile Include="Source\General\VersionStrings.cs" />
-    <Compile Include="Source\General\NumberSet.cs" />
     <Compile Include="Source\General\AutomaticGrouping.cs" />
     <Compile Include="Source\General\Symbols.cs" />
     <Compile Include="Source\Languages\BasicSupport\PrototypeDetection.cs" />
@@ -100,7 +99,6 @@
     <Compile Include="Source\Framework\TestTypes\Summaries.cs" />
     <Compile Include="Source\Framework\BaseTestTypes\TextCommands.cs" />
     <Compile Include="Source\Framework\TestTypes\NDMarkup.cs" />
-    <Compile Include="Source\Framework\TestTypes\NumberSet.cs" />
     <Compile Include="Source\Framework\TestTypes\PrototypeParsing.cs" />
     <Compile Include="Source\Framework\BaseTestTypes\SourceToCommentsAndTopics.cs" />
     <Compile Include="Source\Framework\BaseTestTypes\SourceToHTML.cs" />

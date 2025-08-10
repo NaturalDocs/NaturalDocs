@@ -1,28 +1,13 @@
 ﻿/*
- * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes.NumberSet
+ * Class: CodeClear.NaturalDocs.Tests.TestRunners.NumberSet
  * ____________________________________________________________________________
  *
  * A class to test <Engine.IDObjects.NumberSet>.
  *
  *
- * Deriving a Test Class:
- *
- *		- Derive a class and add the [TestFixture] attribute.
- *
- *		- Create a function with the [Test] attribute that calls TestFolder(), pointing it to the input files.
- *
- *
- * Input and Output Files:
- *
- *		- All files in the test folder in the format "[Test Name] - Input.[extension]" will be tested when NUnit runs.
- *
- *		- A corresponding file "[Test Name] - Actual Output.txt" will be created for each one.
- *
- *		- If it matches the contents of the file "[Test Name] - Expected Output.txt", the test will pass.  If it doesn't,
- *		  that file doesn't exist, or an exception was thrown, the test will fail.
- *
- *
  * Commands:
+ *
+ *		The input files are a series of commands, one one each line, in one of the following formats:
  *
  *		> // text
  *		Comment.  Ignored.
@@ -56,18 +41,23 @@
 
 
 using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
 
-namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
+namespace CodeClear.NaturalDocs.Tests.TestRunners
 	{
-	public class NumberSet : Framework.BaseTestTypes.TextCommands
+	public class NumberSet : TestRunner
 		{
 
-		public override string OutputOf (IList<string> commands)
+		public NumberSet ()
+			: base (EngineMode.NotNeeded)
+			{  	}
+
+		protected override string RunTest (string testInput)
 			{
+			string[] commands = testInput.Split(LineBreakStrings, StringSplitOptions.TrimEntries);
+
 			StringBuilder output = new StringBuilder();
 			Engine.IDObjects.NumberSet set = new Engine.IDObjects.NumberSet();
 
@@ -158,12 +148,14 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 			return output.ToString();
 			}
 
+		protected static string[] LineBreakStrings = new string[] { "\r\n", "\r", "\n" };
+
 		protected static Regex GetBracesRegex = new Regex(@"{.*?}",
 																					 RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant);
 		protected static Regex GetNumberRegex = new Regex("[0-9]+",
 																					   RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant);
 		protected static Regex ExtractRangeRegex = new Regex("Extract ([0-9]+), ?([0-9]+)",
 																						 RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-
 		}
+
 	}
