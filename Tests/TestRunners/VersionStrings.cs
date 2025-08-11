@@ -1,25 +1,8 @@
 ﻿/*
- * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes.VersionStrings
+ * Class: CodeClear.NaturalDocs.Tests.TestRunners.VersionStrings
  * ____________________________________________________________________________
  *
- * A class to test Natural Docs' link interpreting.
- *
- *
- * Deriving a Test Class:
- *
- *		- Derive a class and add the [TestFixture] attribute.
- *
- *		- Create a function with the [Test] attribute that calls TestFolder(), pointing it to the input files.
- *
- *
- * Input and Output Files:
- *
- *		- All files in the test folder in the format "[Test Name] - Input.[extension]" will be tested when NUnit runs.
- *
- *		- A corresponding file "[Test Name] - Actual Output.txt" will be created for each one.
- *
- *		- If it matches the contents of the file "[Test Name] - Expected Output.txt", the test will pass.  If it doesn't,
- *		  that file doesn't exist, or an exception was thrown, the test will fail.
+ * A class to test Natural Docs' handling of version string formats.
  *
  *
  * Commands:
@@ -29,6 +12,7 @@
  *
  *		> Version string
  *		The version string to parse.
+ *
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2025 Code Clear LLC.
@@ -37,17 +21,22 @@
 
 
 using System;
-using System.Collections.Generic;
 using System.Text;
+using CodeClear.NaturalDocs.Engine;
 
 
-namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
+namespace CodeClear.NaturalDocs.Tests.TestRunners
 	{
-	public class VersionStrings : Framework.BaseTestTypes.TextCommands
+	public class VersionStrings : TestRunner
 		{
 
-		public override string OutputOf (IList<string> commands)
+		public VersionStrings ()
+			: base (EngineMode.NotNeeded)
+			{  	}
+
+		protected override string RunTest (string testInput)
 			{
+			string[] commands = testInput.SplitIntoLines();
 			StringBuilder output = new StringBuilder();
 
 			foreach (var command in commands)
@@ -59,7 +48,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 					try
 						{
 						string versionString = command.Trim();
-						Engine.Version version = new Version(versionString);
+						Engine.Version version = new Engine.Version(versionString);
 
 						output.AppendLine("- Major: " + version.MajorVersion + ", Minor: " + version.MinorVersion + ", Bugfix: " + version.BugFixVersion);
 						output.AppendLine("- Release Type: " + version.Type.ToString());

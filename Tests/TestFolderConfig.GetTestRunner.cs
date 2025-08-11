@@ -33,6 +33,8 @@ namespace CodeClear.NaturalDocs.Tests
 				{
 				case "numberset":
 					return new TestRunners.NumberSet();
+				case "version strings":
+					return new TestRunners.VersionStrings();
 
 				default:
 					return null;
