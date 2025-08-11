@@ -337,6 +337,8 @@ namespace CodeClear.NaturalDocs.Tests
 				return false;
 				}
 
+			SaveIfDifferent(test.ActualOutputFile, actualOutput);
+
 			if (!System.IO.File.Exists(test.ExpectedOutputFile))
 				{
 				test.MarkAsFailed(Test.FailureReasons.ExpectedOutputMissing);
@@ -352,8 +354,6 @@ namespace CodeClear.NaturalDocs.Tests
 				}
 			else
 				{
-				SaveIfDifferent(test.ActualOutputFile, actualOutput);
-
 				test.MarkAsFailed(Test.FailureReasons.OutputDoesntMatch);
 				return false;
 				}
