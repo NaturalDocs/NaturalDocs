@@ -43,6 +43,7 @@
 using System;
 using System.Text;
 using System.Text.RegularExpressions;
+using CodeClear.NaturalDocs.Engine;
 
 
 namespace CodeClear.NaturalDocs.Tests.TestRunners
@@ -56,7 +57,7 @@ namespace CodeClear.NaturalDocs.Tests.TestRunners
 
 		protected override string RunTest (string testInput)
 			{
-			string[] commands = testInput.Split(LineBreakStrings, StringSplitOptions.TrimEntries);
+			string[] commands = testInput.SplitIntoLines();
 
 			StringBuilder output = new StringBuilder();
 			Engine.IDObjects.NumberSet set = new Engine.IDObjects.NumberSet();
@@ -148,14 +149,12 @@ namespace CodeClear.NaturalDocs.Tests.TestRunners
 			return output.ToString();
 			}
 
-		protected static string[] LineBreakStrings = new string[] { "\r\n", "\r", "\n" };
-
 		protected static Regex GetBracesRegex = new Regex(@"{.*?}",
 																					 RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant);
 		protected static Regex GetNumberRegex = new Regex("[0-9]+",
 																					   RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant);
 		protected static Regex ExtractRangeRegex = new Regex("Extract ([0-9]+), ?([0-9]+)",
 																						 RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-		}
 
+		}
 	}

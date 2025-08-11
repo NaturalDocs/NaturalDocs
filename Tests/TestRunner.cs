@@ -468,5 +468,4 @@ namespace CodeClear.NaturalDocs.Tests
 		protected EngineMode engineMode;
 
 		}
-
 	}
