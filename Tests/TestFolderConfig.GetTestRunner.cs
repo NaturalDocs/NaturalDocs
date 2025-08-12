@@ -61,6 +61,8 @@ namespace CodeClear.NaturalDocs.Tests
 					return new TestRunners.LanguageDetection();
 				case "ndmarkup":
 					return new TestRunners.NDMarkup();
+				case "prototype detection":
+					return new TestRunners.PrototypeDetection();
 
 				default:
 					return null;
