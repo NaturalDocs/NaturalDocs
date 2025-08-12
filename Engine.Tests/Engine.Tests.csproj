@@ -87,7 +87,6 @@
     <Compile Include="Source\Framework\TestList.cs" />
     <Compile Include="Source\Framework\TestTypes\Symbols.cs" />
     <Compile Include="Source\Framework\TestTypes\Summaries.cs" />
-    <Compile Include="Source\Framework\BaseTestTypes\TextCommands.cs" />
     <Compile Include="Source\Framework\TestTypes\NDMarkup.cs" />
     <Compile Include="Source\Framework\TestTypes\PrototypeParsing.cs" />
     <Compile Include="Source\Framework\BaseTestTypes\SourceToCommentsAndTopics.cs" />
