@@ -49,6 +49,8 @@ namespace CodeClear.NaturalDocs.Tests
 					return new TestRunners.ClassPrototypeParsing();
 				case "comment merging":
 					return new TestRunners.CommentMerging();
+				case "comment type detection":
+					return new TestRunners.CommentTypeDetection();
 
 				default:
 					return null;

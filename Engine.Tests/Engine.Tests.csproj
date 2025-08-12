@@ -64,7 +64,6 @@
     <Compile Include="Source\Framework\TestTypes\ClassCombining.cs" />
     <Compile Include="Source\Framework\TestTypes\CommentDetection.cs" />
     <Compile Include="Source\Framework\BaseTestTypes\SourceToElements.cs" />
-    <Compile Include="Source\Framework\TestTypes\CommentTypeDetection.cs" />
     <Compile Include="Source\Framework\TestTypes\HTML.cs" />
     <Compile Include="Source\Framework\TestTypes\CommentTypesAndSymbols.cs" />
     <Compile Include="Source\Framework\TestTypes\Enums.cs" />
@@ -77,7 +76,6 @@
     <Compile Include="Source\General\Symbols.cs" />
     <Compile Include="Source\Languages\BasicSupport\PrototypeDetection.cs" />
     <Compile Include="Source\Languages\BasicSupport\PrototypeParsing.cs" />
-    <Compile Include="Source\Languages\CSharp\CommentTypeDetection.cs" />
     <Compile Include="Source\Languages\CSharp\LanguageParsing.cs" />
     <Compile Include="Source\Framework\BaseTestTypes\SourceToClassTopics.cs" />
     <Compile Include="Source\Framework\TestList.cs" />
@@ -106,7 +104,6 @@
     <Compile Include="Source\Languages\Shebang Script\LanguageDetection.cs" />
     <Compile Include="Source\Languages\Java\PrototypeDetection.cs" />
     <Compile Include="Source\Languages\Java\PrototypeParsing.cs" />
-    <Compile Include="Source\Languages\SQL\CommentTypeDetection.cs" />
     <Compile Include="Source\Languages\SQL\PrototypeDetection.cs" />
     <Compile Include="Source\Languages\SQL\PrototypeParsing.cs" />
     <Compile Include="Source\Languages\SystemVerilog\LanguageParsing.cs" />

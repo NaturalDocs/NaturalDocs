@@ -1,25 +1,8 @@
 ﻿/*
- * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes.CommentTypeDetection
+ * Class: CodeClear.NaturalDocs.Tests.TestRunners.CommentTypeDetection
  * ____________________________________________________________________________
  *
- * File-based tests to detect the comment types of <Topics>.
- *
- *
- * Deriving a Test Class:
- *
- *		- Derive a class and add the [TestFixture] attribute.
- *
- *		- Create a function with the [Test] attribute that calls TestFolder(), pointing it to the input files.
- *
- *
- * Input and Output Files:
- *
- *		- All files in the test folder in the format "[Test Name] - Input.[extension]" will be tested when NUnit runs.
- *
- *		- A corresponding file "[Test Name] - Actual Output.txt" will be created for each one.
- *
- *		- If it matches the contents of the file "[Test Name] - Expected Output.txt", the test will pass.  If it doesn't,
- *		  that file doesn't exist, or an exception was thrown, the test will fail.
+ * Tests to detect the comment types of <Topics>.
  *
  */
 
@@ -34,12 +17,16 @@ using System.Text;
 using CodeClear.NaturalDocs.Engine.Topics;
 
 
-namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
+namespace CodeClear.NaturalDocs.Tests.TestRunners
 	{
-	public class CommentTypeDetection : Framework.BaseTestTypes.SourceToTopics
+	public class CommentTypeDetection : TestRunner
 		{
 
-		public override string OutputOf (IList<Topic> topics)
+		public CommentTypeDetection ()
+			: base (InputMode.Topics, EngineMode.InstanceOnly)
+			{  	}
+
+		protected override string RunTest (IList<Topic> topics)
 			{
 			if (topics == null || topics.Count == 0)
 				{  return "(No topics found)";  }
