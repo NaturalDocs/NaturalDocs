@@ -25,7 +25,7 @@ private protected void CompoundModifierB ()
 
 [Attribute][DllImport ("NaturalDocs.Engine.SQLite.dll")]
 extern static private bool Attributes_NoBraces ([MarshalAs(UnmanagedType.LPStr)] string x,
-															  [param: something("don't trip on this: )]){")][AnotherOne] int y,
+															  [param:something("don't trip on this:)]) { ")][AnotherOne] int y,
 															  out int z);
 
 void DefaultValues (string x = "),;[<{ \" ),;[<{", int[,,] y = [1,2,3], int z = 6)
