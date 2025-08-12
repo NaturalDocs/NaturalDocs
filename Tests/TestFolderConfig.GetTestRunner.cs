@@ -57,6 +57,8 @@ namespace CodeClear.NaturalDocs.Tests
 					return new TestRunners.Enums();
 				case "grouping":
 					return new TestRunners.Grouping();
+				case "language detection":
+					return new TestRunners.LanguageDetection();
 
 				default:
 					return null;
