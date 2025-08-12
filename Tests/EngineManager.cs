@@ -118,7 +118,7 @@ namespace CodeClear.NaturalDocs.Tests
 			System.IO.Directory.CreateDirectory(workingDataFolder);
 			System.IO.Directory.CreateDirectory(outputFolder);
 
-			if (testFolder.Config.EngineConfigFolder != null)
+			if (testFolder.Config.EngineConfigFolder == null)
 				{  System.IO.Directory.CreateDirectory(projectFolder);  }
 
 
