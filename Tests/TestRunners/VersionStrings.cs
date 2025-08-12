@@ -7,6 +7,8 @@
  *
  * Commands:
  *
+ *		The input files are a series of commands, one one each line, in one of the following formats:
+ *
  *		> // text
  *		Comment.
  *
