@@ -66,10 +66,8 @@
     <Compile Include="Source\Framework\TestTypes\HTML.cs" />
     <Compile Include="Source\Framework\TestTypes\TopicBodies.cs" />
     <Compile Include="Source\Framework\TestTypes\SearchKeywords.cs" />
-    <Compile Include="Source\Framework\TestTypes\Grouping.cs" />
     <Compile Include="Source\Framework\TestTypes\LanguageDetection.cs" />
     <Compile Include="Source\General\FileEncodings\Manual.cs" />
-    <Compile Include="Source\General\AutomaticGrouping.cs" />
     <Compile Include="Source\General\Symbols.cs" />
     <Compile Include="Source\Languages\BasicSupport\PrototypeDetection.cs" />
     <Compile Include="Source\Languages\BasicSupport\PrototypeParsing.cs" />

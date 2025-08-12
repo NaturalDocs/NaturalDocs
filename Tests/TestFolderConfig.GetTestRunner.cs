@@ -55,6 +55,8 @@ namespace CodeClear.NaturalDocs.Tests
 					return new TestRunners.CommentTypesAndSymbols();
 				case "enums":
 					return new TestRunners.Enums();
+				case "grouping":
+					return new TestRunners.Grouping();
 
 				default:
 					return null;
