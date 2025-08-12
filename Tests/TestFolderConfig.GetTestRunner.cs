@@ -59,6 +59,8 @@ namespace CodeClear.NaturalDocs.Tests
 					return new TestRunners.Grouping();
 				case "language detection":
 					return new TestRunners.LanguageDetection();
+				case "ndmarkup":
+					return new TestRunners.NDMarkup();
 
 				default:
 					return null;
