@@ -45,6 +45,8 @@ namespace CodeClear.NaturalDocs.Tests
 					return new TestRunners.LinkScoring();
 				case "attribute inheritance":
 					return new TestRunners.AttributeInheritance();
+				case "class prototype parsing":
+					return new TestRunners.ClassPrototypeParsing();
 
 				default:
 					return null;
