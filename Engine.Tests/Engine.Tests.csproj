@@ -64,7 +64,6 @@
     <Compile Include="Source\Framework\TestTypes\CommentDetection.cs" />
     <Compile Include="Source\Framework\BaseTestTypes\SourceToElements.cs" />
     <Compile Include="Source\Framework\TestTypes\HTML.cs" />
-    <Compile Include="Source\Framework\TestTypes\Enums.cs" />
     <Compile Include="Source\Framework\TestTypes\TopicBodies.cs" />
     <Compile Include="Source\Framework\TestTypes\SearchKeywords.cs" />
     <Compile Include="Source\Framework\TestTypes\Grouping.cs" />
@@ -92,7 +91,6 @@
     <Compile Include="Source\General\FileEncodings\UnicodeAuto.cs" />
     <Compile Include="Source\Languages\BasicSupport\CommentDetection.cs" />
     <Compile Include="Source\Languages\CSharp\CommentDetection.cs" />
-    <Compile Include="Source\Languages\CSharp\Enums.cs" />
     <Compile Include="Source\Languages\CSharp\PrototypeParsing.cs" />
     <Compile Include="Source\Languages\PowerShell\CommentDetection.cs" />
     <Compile Include="Source\Languages\PHP\PrototypeParsing.cs" />

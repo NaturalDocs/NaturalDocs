@@ -53,6 +53,8 @@ namespace CodeClear.NaturalDocs.Tests
 					return new TestRunners.CommentTypeDetection();
 				case "comment types and symbols":
 					return new TestRunners.CommentTypesAndSymbols();
+				case "enums":
+					return new TestRunners.Enums();
 
 				default:
 					return null;
