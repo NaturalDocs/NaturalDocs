@@ -11,9 +11,12 @@
 // Refer to License.txt for the complete details
 
 
-using CodeClear.NaturalDocs.Engine;
 using System;
 using System.Collections.Generic;
+using CodeClear.NaturalDocs.Engine;
+using CodeClear.NaturalDocs.Engine.Languages;
+using CodeClear.NaturalDocs.Engine.Links;
+using CodeClear.NaturalDocs.Engine.Topics;
 
 
 namespace CodeClear.NaturalDocs.Tests
@@ -32,12 +35,16 @@ namespace CodeClear.NaturalDocs.Tests
 		 * Values:
 		 *
 		 *		String - The test runner will read the input file contents as a flat string and send it to <RunTest(string)>.
+		 *
 		 *		Lines - The test runner will read the input file contents as an array of strings, one per line, and send them to
 		 *				   <RunTest(string[])>.
 		 *
+		 *		Topics - The test runner will parse the input file as a source file and send the resulting <Topics> to
+		 *					<RunTest(Topic)>.  Requires at least <EngineMode.InstanceOnly>.
+		 *
 		 */
 		protected enum InputMode
-			{  String, Lines  }
+			{  String, Lines, Topics  }
 
 
 		/* Enum: EngineMode
@@ -357,6 +364,23 @@ namespace CodeClear.NaturalDocs.Tests
 					}
 
 
+				// Topics
+
+				else if (inputMode == InputMode.Topics)
+					{
+					Language language = EngineInstance.Languages.FromFileExtension(test.InputFile.Extension);
+
+					if (language == null)
+						{  throw new Exception("Extension " + test.InputFile.Extension + " did not resolve to a language.");  }
+
+					IList<Topic> topics;
+					LinkSet classParentLinks;
+					language.Parser.Parse(test.InputFile, -1, Engine.Delegates.NeverCancel, out topics, out classParentLinks);
+
+					actualOutput = RunTest(topics);
+					}
+
+
 				else
 					{  throw new NotImplementedException();  }
 				}
@@ -435,6 +459,27 @@ namespace CodeClear.NaturalDocs.Tests
 		 *
 		 */
 		protected virtual string RunTest (string[] input)
+			{
+			throw new NotImplementedException();
+			}
+
+
+		/* Function: RunTest (Topic)
+		 *
+		 * Generates output from the test input <Topics> and returns it.  The input files will be parsed as source files to generate the
+		 * <Topics>.  The output will be whatever properties from them are relevant to the test.
+		 *
+		 * This function is only relevant if you're using the default implementation of <RunTest(Test)> with <InputMode.Topics>.  It will
+		 * not be called otherwise, unless your implementation of <RunTest(Test)> also calls it.
+		 *
+		 * Default Implementation:
+		 *
+		 *		The default implementation throws a NotImplementException because you need to define it if you're not overriding
+		 *		<RunTest(Test)>.  We do this instead of making it abstract so that if you do override <RunTest(Test)> you're not forced
+		 *		to define this as well.
+		 *
+		 */
+		protected virtual string RunTest (IList<Topic> topics)
 			{
 			throw new NotImplementedException();
 			}
