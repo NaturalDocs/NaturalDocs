@@ -1,0 +1,5 @@
+Format: 2.3
+
+Test Type: Attribute Inheritance
+
+Engine Config: ..\..\..\- Shared Engine Configs\Basic Language Support plus Tags
