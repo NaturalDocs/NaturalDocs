@@ -407,7 +407,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 		/* Regex: FindDefinitionListEntryTagRegex
 		 * Will match instances in the string of a <NDMarkup> definition list entry tag, both the opening and closing versions.
 		 */
-		[GeneratedRegex("""\<\/?de\>\n""",
+		[GeneratedRegex("""\<\/?de\>""",
 								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
 		static private partial Regex FindDefinitionListEntryTagRegex();
 
