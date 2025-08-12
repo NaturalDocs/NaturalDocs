@@ -54,3 +54,4 @@
 <Some::text: Object::Name>
 - "Some::text: Object::Name" -> Some::text: Object::Name
 - "Some::text" -> Object::Name
+
