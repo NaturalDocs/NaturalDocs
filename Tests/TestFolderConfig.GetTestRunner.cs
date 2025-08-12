@@ -37,6 +37,8 @@ namespace CodeClear.NaturalDocs.Tests
 					return new TestRunners.VersionStrings();
 				case "javadoc iterator":
 					return new TestRunners.JavadocIterator();
+				case "xml iterator":
+					return new TestRunners.XMLIterator();
 
 				default:
 					return null;

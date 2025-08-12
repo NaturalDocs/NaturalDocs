@@ -60,7 +60,6 @@
     <Compile Include="Source\Comments\NaturalDocs\Parsing.cs" />
     <Compile Include="Source\Comments\NaturalDocs\TopicLines.cs" />
     <Compile Include="Source\Comments\NaturalDocs\Summaries.cs" />
-    <Compile Include="Source\Comments\XML\Iterator.cs" />
     <Compile Include="Source\Comments\XML\Parsing.cs" />
     <Compile Include="Source\Framework\TestTypes\Elements.cs" />
     <Compile Include="Source\Framework\TestTypes\ClassCombining.cs" />
@@ -77,7 +76,6 @@
     <Compile Include="Source\Framework\TestTypes\LinkInterpretations.cs" />
     <Compile Include="Source\Framework\TestTypes\SearchKeywords.cs" />
     <Compile Include="Source\Framework\TestTypes\Grouping.cs" />
-    <Compile Include="Source\Framework\TestTypes\XMLIterator.cs" />
     <Compile Include="Source\Framework\TestTypes\LanguageDetection.cs" />
     <Compile Include="Source\General\FileEncodings\Manual.cs" />
     <Compile Include="Source\General\LinkScoring.cs" />
