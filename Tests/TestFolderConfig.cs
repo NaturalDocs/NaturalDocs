@@ -54,7 +54,7 @@ namespace CodeClear.NaturalDocs.Tests
 					if (lcIdentifier == "test type")
 						{  testFolderConfig.testType = value;  }
 
-					else if (lcIdentifier == "config")
+					else if (lcIdentifier == "engine config")
 						{
 						Path pathAsEntered = value;
 						AbsolutePath absolutePath;
