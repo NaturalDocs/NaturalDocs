@@ -47,6 +47,8 @@ namespace CodeClear.NaturalDocs.Tests
 					return new TestRunners.AttributeInheritance();
 				case "class prototype parsing":
 					return new TestRunners.ClassPrototypeParsing();
+				case "comment merging":
+					return new TestRunners.CommentMerging();
 
 				default:
 					return null;
