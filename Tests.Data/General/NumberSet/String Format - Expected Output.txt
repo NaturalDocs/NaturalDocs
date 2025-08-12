@@ -180,4 +180,3 @@ Exception: The string "{16-13}" is not in a valid format for NumberSet.
 (CodeClear.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
 = {} Lowest Available: 1, Highest Used: 0, Count: 0
 
-

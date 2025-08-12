@@ -65,4 +65,3 @@ Property href in <a href="&unrecognized;">
 
 Property href in <a href="unterminated &amp">
 - unterminated &amp
-
