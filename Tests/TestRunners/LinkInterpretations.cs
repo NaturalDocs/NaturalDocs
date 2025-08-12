@@ -33,13 +33,11 @@ namespace CodeClear.NaturalDocs.Tests.TestRunners
 		{
 
 		public LinkInterpretations ()
-			: base (EngineMode.InstanceOnly)
+			: base (InputMode.Lines, EngineMode.InstanceOnly)
 			{  	}
 
-		protected override string RunTest (string testInput)
+		protected override string RunTest (string[] commands)
 			{
-			string[] commands = testInput.SplitIntoLines();
-
 			StringBuilder output = new StringBuilder();
 			var parser = EngineInstance.Comments.NaturalDocsParser;
 

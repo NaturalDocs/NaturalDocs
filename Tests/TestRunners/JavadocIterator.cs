@@ -39,12 +39,11 @@ namespace CodeClear.NaturalDocs.Tests.TestRunners
 		{
 
 		public JavadocIterator ()
-			: base (EngineMode.NotNeeded)
+			: base (InputMode.Lines, EngineMode.NotNeeded)
 			{  	}
 
-		protected override string RunTest (string testInput)
+		protected override string RunTest (string[] commands)
 			{
-			string[] commands = testInput.SplitIntoLines();
 			StringBuilder output = new StringBuilder();
 
 			foreach (string command in commands)

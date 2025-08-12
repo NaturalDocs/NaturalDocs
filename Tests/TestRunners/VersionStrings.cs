@@ -33,12 +33,11 @@ namespace CodeClear.NaturalDocs.Tests.TestRunners
 		{
 
 		public VersionStrings ()
-			: base (EngineMode.NotNeeded)
+			: base (InputMode.Lines, EngineMode.NotNeeded)
 			{  	}
 
-		protected override string RunTest (string testInput)
+		protected override string RunTest (string[] commands)
 			{
-			string[] commands = testInput.SplitIntoLines();
 			StringBuilder output = new StringBuilder();
 
 			foreach (var command in commands)
