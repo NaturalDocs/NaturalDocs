@@ -38,6 +38,7 @@ namespace CodeClear.NaturalDocs.Tests.CLI
 		static Application ()
 			{
 			dashedLineLength = 15;
+			longestPrettyTestPathLength = 0;
 			pauseOnError = false;
 			pauseBeforeExit = false;
 			}
@@ -100,6 +101,22 @@ namespace CodeClear.NaturalDocs.Tests.CLI
 
 			if (GetTestFolders(out testFolders, errorList))
 				{
+
+				// Get the longest name length for formatting
+
+				longestPrettyTestPathLength = 0;
+
+				foreach (var testFolder in testFolders)
+					{
+					int prettyTestPathLength = PrettifyTestFolderPath(testFolder.Path).Length;
+
+					if (prettyTestPathLength > longestPrettyTestPathLength)
+						{  longestPrettyTestPathLength = prettyTestPathLength;  }
+					}
+
+
+				// Run the tests
+
 				foreach (var testFolder in testFolders)
 					{
 					lastFolderSucceeded = RunTestsIn(testFolder);
@@ -139,7 +156,17 @@ namespace CodeClear.NaturalDocs.Tests.CLI
 
 		private static bool RunTestsIn (TestFolder testFolder)
 			{
-			Write("  " + PrettifyTestFolderPath(testFolder.Path) + "... ");
+			string prettyTestFolderPath = PrettifyTestFolderPath(testFolder.Path);
+
+			Write("  " + prettyTestFolderPath + "... ");
+
+			if (prettyTestFolderPath.Length < longestPrettyTestPathLength)
+				{
+				int extraSpaceCount = longestPrettyTestPathLength - prettyTestFolderPath.Length;
+				StringBuilder extraSpaces = new StringBuilder(extraSpaceCount);
+				extraSpaces.Append(' ', extraSpaceCount);
+				Write(extraSpaces.ToString());
+				}
 
 
 			// Get the test runner
@@ -454,6 +481,8 @@ namespace CodeClear.NaturalDocs.Tests.CLI
 		 * The number of dashes to include in horizontal lines in the output.
 		 */
 		static private int dashedLineLength;
+
+		static private int longestPrettyTestPathLength;
 
 		static private bool pauseOnError;
 		static private bool pauseBeforeExit;
