@@ -51,6 +51,8 @@ namespace CodeClear.NaturalDocs.Tests
 					return new TestRunners.CommentMerging();
 				case "comment type detection":
 					return new TestRunners.CommentTypeDetection();
+				case "comment types and symbols":
+					return new TestRunners.CommentTypesAndSymbols();
 
 				default:
 					return null;

@@ -57,7 +57,6 @@
   <ItemGroup>
     <Compile Include="Source\Comments\Javadoc\Parsing.cs" />
     <Compile Include="Source\Comments\NaturalDocs\Parsing.cs" />
-    <Compile Include="Source\Comments\NaturalDocs\TopicLines.cs" />
     <Compile Include="Source\Comments\NaturalDocs\Summaries.cs" />
     <Compile Include="Source\Comments\XML\Parsing.cs" />
     <Compile Include="Source\Framework\TestTypes\Elements.cs" />
@@ -65,7 +64,6 @@
     <Compile Include="Source\Framework\TestTypes\CommentDetection.cs" />
     <Compile Include="Source\Framework\BaseTestTypes\SourceToElements.cs" />
     <Compile Include="Source\Framework\TestTypes\HTML.cs" />
-    <Compile Include="Source\Framework\TestTypes\CommentTypesAndSymbols.cs" />
     <Compile Include="Source\Framework\TestTypes\Enums.cs" />
     <Compile Include="Source\Framework\TestTypes\TopicBodies.cs" />
     <Compile Include="Source\Framework\TestTypes\SearchKeywords.cs" />
