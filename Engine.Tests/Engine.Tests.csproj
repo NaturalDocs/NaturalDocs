@@ -62,7 +62,6 @@
     <Compile Include="Source\Framework\BaseTestTypes\SourceToElements.cs" />
     <Compile Include="Source\Framework\TestTypes\HTML.cs" />
     <Compile Include="Source\Framework\TestTypes\TopicBodies.cs" />
-    <Compile Include="Source\Framework\TestTypes\SearchKeywords.cs" />
     <Compile Include="Source\General\FileEncodings\Manual.cs" />
     <Compile Include="Source\General\Symbols.cs" />
     <Compile Include="Source\Framework\BaseTestTypes\SourceToClassTopics.cs" />
@@ -107,7 +106,6 @@
     <Compile Include="Source\Output\HTML\SyntaxHighlighting\SystemVerilog.cs" />
     <Compile Include="Source\Output\HTML\SyntaxHighlighting\CSharp.cs" />
     <Compile Include="Source\Output\HTML\TopicTitles.cs" />
-    <Compile Include="Source\SearchIndex\Keywords.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="nunit.framework, Version=3.11.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
