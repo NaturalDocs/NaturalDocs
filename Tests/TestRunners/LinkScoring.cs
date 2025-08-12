@@ -1,28 +1,13 @@
 ﻿/*
- * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes.LinkScoring
+ * Class: CodeClear.NaturalDocs.Tests.TestRunners.LinkScoring
  * ____________________________________________________________________________
  *
  * A class to test <Engine.CodeDB.Manager.ScoreLink>.
  *
  *
- * Deriving a Test Class:
- *
- *		- Derive a class and add the [TestFixture] attribute.
- *
- *		- Create a function with the [Test] attribute that calls TestFolder(), pointing it to the input files.
- *
- *
- * Input and Output Files:
- *
- *		- All files in the test folder in the format "[Test Name] - Input.[extension]" will be tested when NUnit runs.
- *
- *		- A corresponding file "[Test Name] - Actual Output.txt" will be created for each one.
- *
- *		- If it matches the contents of the file "[Test Name] - Expected Output.txt", the test will pass.  If it doesn't,
- *		  that file doesn't exist, or an exception was thrown, the test will fail.
- *
- *
  * Commands:
+ *
+ *		The input files are a series of commands, one one each line, in one of the following formats:
  *
  *		> // text
  *		Comment.
@@ -72,6 +57,7 @@
  *
  *		The code will tolerate semicolons after commands.  They're not necessary, but due to its similarity to
  *		actual code they're handled just in case.
+ *
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2025 Code Clear LLC.
@@ -84,18 +70,25 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
+using CodeClear.NaturalDocs.Engine;
 using CodeClear.NaturalDocs.Engine.Links;
 using CodeClear.NaturalDocs.Engine.Symbols;
 using CodeClear.NaturalDocs.Engine.Topics;
 
 
-namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
+namespace CodeClear.NaturalDocs.Tests.TestRunners
 	{
-	public class LinkScoring : Framework.BaseTestTypes.TextCommands
+	public class LinkScoring : TestRunner
 		{
 
-		public override string OutputOf (IList<string> commands)
+		public LinkScoring ()
+			: base (EngineMode.InstanceOnly)
+			{  	}
+
+		protected override string RunTest (string testInput)
 			{
+			string[] commands = testInput.SplitIntoLines();
+
 			StringBuilder output = new StringBuilder();
 			bool lastWasLineBreak = true;
 
@@ -110,7 +103,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 
 			string show = "all";
 
-			for (int i = 0; i < commands.Count; i++)
+			for (int i = 0; i < commands.Length; i++)
 				{
 				string command = commands[i];
 				if (command.EndsWith(";"))

@@ -76,7 +76,6 @@
     <Compile Include="Source\Framework\TestTypes\Grouping.cs" />
     <Compile Include="Source\Framework\TestTypes\LanguageDetection.cs" />
     <Compile Include="Source\General\FileEncodings\Manual.cs" />
-    <Compile Include="Source\General\LinkScoring.cs" />
     <Compile Include="Source\General\AutomaticGrouping.cs" />
     <Compile Include="Source\General\Symbols.cs" />
     <Compile Include="Source\Languages\BasicSupport\PrototypeDetection.cs" />
@@ -86,7 +85,6 @@
     <Compile Include="Source\Languages\CSharp\LanguageParsing.cs" />
     <Compile Include="Source\Framework\BaseTestTypes\SourceToClassTopics.cs" />
     <Compile Include="Source\Framework\TestList.cs" />
-    <Compile Include="Source\Framework\TestTypes\LinkScoring.cs" />
     <Compile Include="Source\Framework\TestTypes\Symbols.cs" />
     <Compile Include="Source\Framework\TestTypes\Summaries.cs" />
     <Compile Include="Source\Framework\BaseTestTypes\TextCommands.cs" />

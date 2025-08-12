@@ -41,6 +41,8 @@ namespace CodeClear.NaturalDocs.Tests
 					return new TestRunners.XMLIterator();
 				case "link interpretations":
 					return new TestRunners.LinkInterpretations();
+				case "link scoring":
+					return new TestRunners.LinkScoring();
 
 				default:
 					return null;
