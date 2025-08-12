@@ -25,22 +25,39 @@ namespace CodeClear.NaturalDocs.Tests
 		// __________________________________________________________________________
 
 
+		/* Enum: InputMode
+		 *
+		 * How the test runner will format the input for the derived test to interpret.
+		 *
+		 * Values:
+		 *
+		 *		String - The test runner will read the input file contents as a flat string and send it to <RunTest(string)>.
+		 *		Lines - The test runner will read the input file contents as an array of strings, one per line, and send them to
+		 *				   <RunTest(string[])>.
+		 *
+		 */
+		protected enum InputMode
+			{  String, Lines  }
+
+
 		/* Enum: EngineMode
 		 *
 		 * Whether the test runner needs a functioning <Engine.Instance> and also whether it needs fully built HTML documentation
 		 * prior to running.  Test execution will be faster if you only use the minimum level necessary.
 		 *
-		 * NotNeeded - The test runner doesn't need an <Engine.Instance> at all.  This is good for tests that can be run against
-		 *					   internal classes that don't rely on it, such as <Engine.IDObjects.NumberSet>.
+		 * Values:
 		 *
-		 * InstanceOnly - The test runner needs an active <Engine.Instance> but it doesn't need to build a complete set of HTML
-		 *						  documentation beforehand.  This is good for tests that rely on the settings in <Comments.txt> and
-		 *						  <Languages.txt>, like prototype parsing.  HTML tests can also use this if the HTML can be generated on
-		 *						  demand by directly calling internal functions.
+		 *		NotNeeded - The test runner doesn't need an <Engine.Instance> at all.  This is good for tests that can be run against
+		 *						   internal classes that don't rely on it, such as <Engine.IDObjects.NumberSet>.
 		 *
-		 * InstanceAndGeneratedDocs - The test runner needs an active <Engine.Instance> and also to build a complete set of HTML
-		 *											   documentation prior to running.  This is also good for tests where you want to keep the
-		 *											   generated HTML so it can be opened and inspected manually.
+		 *		InstanceOnly - The test runner needs an active <Engine.Instance> but it doesn't need to build a complete set of HTML
+		 *							  documentation beforehand.  This is good for tests that rely on the settings in <Comments.txt> and
+		 *							  <Languages.txt>, like prototype parsing.  HTML tests can also use this if the HTML can be generated on
+		 *							  demand by directly calling internal functions.
+		 *
+		 *		InstanceAndGeneratedDocs - The test runner needs an active <Engine.Instance> and also to build a complete set of
+		 *												   HTML documentation prior to running.  This is also good for tests where you want to keep
+		 *												   the generated HTML so it can be opened and inspected manually.
 		 */
 		protected enum EngineMode
 			{  NotNeeded, InstanceOnly, InstanceAndGeneratedDocs  }
@@ -52,14 +69,15 @@ namespace CodeClear.NaturalDocs.Tests
 
 
 		/* Constructor: TestRunner
-		 * Constructor.  Derived classes need to specify the <EngineMode> needed for the test.  Since it's intrinsic to how the tests
-		 * function it should always be set by the derived class and not exposed as an option for general use.
+		 * Constructor.  Derived classes need to specify the <InputMode> and <EngineMode> needed for the test.  Since it's intrinsic
+		 * to how the tests function they should always be set by the derived class and not exposed as an option for general use.
 		 */
-		protected TestRunner (EngineMode engineMode)
+		protected TestRunner (InputMode inputMode, EngineMode engineMode = EngineMode.NotNeeded)
 			{
 			this.testFolder = null;
 			this.engineManager = null;
 			this.engineMode = engineMode;
+			this.inputMode = inputMode;
 			}
 
 
@@ -305,21 +323,42 @@ namespace CodeClear.NaturalDocs.Tests
 		 *
 		 * Default Implementation:
 		 *
-		 *		The default implementation reads the contents of <Test.InputFile>, passes it to <RunTest(string)>, and saves the result
-		 *		to <Test.ActualOutputFile>.  This allows derived classes to override <RunTest(string)> which is simpler than overriding
-		 *		this function.  It then compares the result to the contents of <Test.ExpectedOutputFile> and if it's different the test fails.
+		 *		The default implementation reads the <InputMode> and handles the contents of <Test.InputFile> according to that, passing
+		 *		it to one of the other RunTest() functions such as <RunTest(string)>.  This allows derived classes to override one of those
+		 *		functions which is simpler than overriding this one.
 		 *
-		 *		If an exception is thrown by <RunTest(string)> it will be saved to <Test.ActualOutputFile> along with a stack trace.
+		 *		The results are saved to <Test.ActualOutputFile>.  It then compares the result to the contents of <Test.ExpectedOutputFile>
+		 *		and if it's different the test fails.  If an exception was thrown by the RunTest() function it will be saved to <Test.ActualOutputFile>
+		 *		along with a stack trace.
 		 *
 		 */
 		protected virtual bool RunTest (Test test)
 			{
-			string input = System.IO.File.ReadAllText(test.InputFile);
 			string actualOutput = null;
 
 			try
 				{
-				actualOutput = RunTest(input);
+
+				// String
+
+				if (inputMode == InputMode.String)
+					{
+					string input = System.IO.File.ReadAllText(test.InputFile);
+					actualOutput = RunTest(input);
+					}
+
+
+				// Lines
+
+				else if (inputMode == InputMode.Lines)
+					{
+					string[] input = System.IO.File.ReadAllLines(test.InputFile);
+					actualOutput = RunTest(input);
+					}
+
+
+				else
+					{  throw new NotImplementedException();  }
 				}
 			catch (Exception e)
 				{
@@ -360,19 +399,42 @@ namespace CodeClear.NaturalDocs.Tests
 			}
 
 
-		/* Function: RunTest
+		/* Function: RunTest (string)
 		 *
-		 * Converts the test input to output and returns it.  This is only relevant if you're using the default implementation of
-		 * <RunTest(Test)>.  It will not be called otherwise, unless your implementation of <RunTest(Test)> also calls it.
+		 * Converts the test input to output and returns it.  The input will be a string with the contents of <Test.InputFile>.
+		 *
+		 * This is only relevant if you're using the default implementation of <RunTest(Test)> with <InputMode.String>.  It will not be
+		 * called otherwise, unless your implementation of <RunTest(Test)> also calls it.
 		 *
 		 * Default Implementation:
 		 *
 		 *		The default implementation throws a NotImplementException because you need to define it if you're not overriding
-		 *		<RunTest(Test)>.  We do this instead of making it abstract so that if you do override <RunTest(Test)> you're not
-		 *		forced to define this as well.
+		 *		<RunTest(Test)>.  We do this instead of making it abstract so that if you do override <RunTest(Test)> you're not forced
+		 *		to define this as well.
 		 *
 		 */
 		protected virtual string RunTest (string input)
+			{
+			throw new NotImplementedException();
+			}
+
+
+		/* Function: RunTest (string[])
+		 *
+		 * Converts the test input to output and returns it.  The input will be an array of strings with the contents of <Test.InputFile>,
+		 * one line per string.
+		 *
+		 * This is only relevant if you're using the default implementation of <RunTest(Test)> with <InputMode.Lines>.  It will not be
+		 * called otherwise, unless your implementation of <RunTest(Test)> also calls it.
+		 *
+		 * Default Implementation:
+		 *
+		 *		The default implementation throws a NotImplementException because you need to define it if you're not overriding
+		 *		<RunTest(Test)>.  We do this instead of making it abstract so that if you do override <RunTest(Test)> you're not forced
+		 *		to define this as well.
+		 *
+		 */
+		protected virtual string RunTest (string[] input)
 			{
 			throw new NotImplementedException();
 			}
@@ -454,18 +516,21 @@ namespace CodeClear.NaturalDocs.Tests
 		 */
 		protected TestFolder testFolder;
 
-
 		/* var: engineManager
 		 * An <EngineManager> to handle the <Engine.Instance> for the tests.
 		 */
 		protected EngineManager engineManager;
-
 
 		/* var: engineMode
 		 * Engine options such as whether the test runner requires an <Engine.Instance> and the full HTML documentation
 		 * to be built.
 		 */
 		protected EngineMode engineMode;
+
+		/* var: inputMode
+		 * Input options on how the input will be formatted and which <RunTest()> function is called.
+		 */
+		protected InputMode inputMode;
 
 		}
 	}
