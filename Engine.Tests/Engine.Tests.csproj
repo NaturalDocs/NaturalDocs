@@ -62,10 +62,8 @@
     <Compile Include="Source\Framework\TestTypes\HTML.cs" />
     <Compile Include="Source\Framework\TestTypes\TopicBodies.cs" />
     <Compile Include="Source\General\FileEncodings\Manual.cs" />
-    <Compile Include="Source\General\Symbols.cs" />
     <Compile Include="Source\Framework\BaseTestTypes\SourceToClassTopics.cs" />
     <Compile Include="Source\Framework\TestList.cs" />
-    <Compile Include="Source\Framework\TestTypes\Symbols.cs" />
     <Compile Include="Source\Framework\BaseTestTypes\SourceToCommentsAndTopics.cs" />
     <Compile Include="Source\Framework\BaseTestTypes\SourceToHTML.cs" />
     <Compile Include="Source\Framework\Test.cs" />
