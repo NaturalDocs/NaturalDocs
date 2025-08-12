@@ -43,6 +43,8 @@ namespace CodeClear.NaturalDocs.Tests
 					return new TestRunners.LinkInterpretations();
 				case "link scoring":
 					return new TestRunners.LinkScoring();
+				case "attribute inheritance":
+					return new TestRunners.AttributeInheritance();
 
 				default:
 					return null;

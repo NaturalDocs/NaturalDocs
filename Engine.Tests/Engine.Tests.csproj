@@ -64,7 +64,6 @@
     <Compile Include="Source\Framework\TestTypes\ClassCombining.cs" />
     <Compile Include="Source\Framework\TestTypes\CommentDetection.cs" />
     <Compile Include="Source\Framework\TestTypes\ClassPrototypeParsing.cs" />
-    <Compile Include="Source\Framework\TestTypes\AttributeInheritance.cs" />
     <Compile Include="Source\Framework\TestTypes\CommentMerging.cs" />
     <Compile Include="Source\Framework\BaseTestTypes\SourceToElements.cs" />
     <Compile Include="Source\Framework\TestTypes\CommentTypeDetection.cs" />
@@ -98,10 +97,8 @@
     <Compile Include="Source\Framework\TestTypes\PrototypeDetection.cs" />
     <Compile Include="Source\General\ClassCombining.cs" />
     <Compile Include="Source\General\FileEncodings\UnicodeAuto.cs" />
-    <Compile Include="Source\Languages\BasicSupport\AttributeInheritance.cs" />
     <Compile Include="Source\Languages\BasicSupport\ClassPrototypeParsing.cs" />
     <Compile Include="Source\Languages\BasicSupport\CommentDetection.cs" />
-    <Compile Include="Source\Languages\CSharp\AttributeInheritance.cs" />
     <Compile Include="Source\Languages\CSharp\CommentDetection.cs" />
     <Compile Include="Source\Languages\CSharp\CommentMerging.cs" />
     <Compile Include="Source\Languages\CSharp\Enums.cs" />
