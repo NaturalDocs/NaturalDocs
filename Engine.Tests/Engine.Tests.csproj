@@ -55,7 +55,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Source\Comments\NaturalDocs\Summaries.cs" />
     <Compile Include="Source\Framework\TestTypes\Elements.cs" />
     <Compile Include="Source\Framework\TestTypes\ClassCombining.cs" />
     <Compile Include="Source\Framework\TestTypes\CommentDetection.cs" />
@@ -67,7 +66,6 @@
     <Compile Include="Source\Framework\BaseTestTypes\SourceToClassTopics.cs" />
     <Compile Include="Source\Framework\TestList.cs" />
     <Compile Include="Source\Framework\TestTypes\Symbols.cs" />
-    <Compile Include="Source\Framework\TestTypes\Summaries.cs" />
     <Compile Include="Source\Framework\BaseTestTypes\SourceToCommentsAndTopics.cs" />
     <Compile Include="Source\Framework\BaseTestTypes\SourceToHTML.cs" />
     <Compile Include="Source\Framework\Test.cs" />

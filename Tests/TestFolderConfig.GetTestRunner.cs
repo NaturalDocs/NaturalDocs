@@ -67,6 +67,8 @@ namespace CodeClear.NaturalDocs.Tests
 					return new TestRunners.PrototypeParsing();
 				case "search keywords":
 					return new TestRunners.SearchKeywords();
+				case "summaries":
+					return new TestRunners.Summaries();
 
 				default:
 					return null;
