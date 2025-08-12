@@ -1,0 +1,3 @@
+Format: 2.3
+
+Test Type: Comment Merging
