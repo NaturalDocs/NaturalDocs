@@ -55,7 +55,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Source\Comments\Javadoc\Iterator.cs" />
     <Compile Include="Source\Comments\Javadoc\Parsing.cs" />
     <Compile Include="Source\Comments\NaturalDocs\LinkInterpretations.cs" />
     <Compile Include="Source\Comments\NaturalDocs\Parsing.cs" />
@@ -78,7 +77,6 @@
     <Compile Include="Source\Framework\TestTypes\LinkInterpretations.cs" />
     <Compile Include="Source\Framework\TestTypes\SearchKeywords.cs" />
     <Compile Include="Source\Framework\TestTypes\Grouping.cs" />
-    <Compile Include="Source\Framework\TestTypes\JavadocIterator.cs" />
     <Compile Include="Source\Framework\TestTypes\XMLIterator.cs" />
     <Compile Include="Source\Framework\TestTypes\LanguageDetection.cs" />
     <Compile Include="Source\General\FileEncodings\Manual.cs" />
