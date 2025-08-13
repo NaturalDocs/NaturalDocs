@@ -80,6 +80,8 @@ namespace CodeClear.NaturalDocs.Tests
 
 				case "html anchors":
 					return new TestRunners.HTMLAnchors();
+				case "html class prototypes":
+					return new TestRunners.HTMLClassPrototypes();
 
 				default:
 					return null;
