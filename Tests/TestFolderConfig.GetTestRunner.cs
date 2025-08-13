@@ -71,6 +71,8 @@ namespace CodeClear.NaturalDocs.Tests
 					return new TestRunners.Summaries();
 				case "symbols":
 					return new TestRunners.Symbols();
+				case "topic bodies":
+					return new TestRunners.TopicBodies();
 
 				default:
 					return null;
