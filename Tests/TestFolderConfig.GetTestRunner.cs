@@ -78,6 +78,9 @@ namespace CodeClear.NaturalDocs.Tests
 				case "comment detection":
 					return new TestRunners.CommentDetection();
 
+				case "html anchors":
+					return new TestRunners.HTMLAnchors();
+
 				default:
 					return null;
 				}
