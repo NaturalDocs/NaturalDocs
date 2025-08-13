@@ -1,0 +1,7 @@
+Format: 2.3
+
+Test Type: HTML Anchors
+
+Keep HTML: yes
+
+	Title: Anchor Tests
