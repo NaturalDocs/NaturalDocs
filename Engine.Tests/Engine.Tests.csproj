@@ -59,7 +59,6 @@
     <Compile Include="Source\Framework\TestTypes\HTML.cs" />
     <Compile Include="Source\Framework\BaseTestTypes\SourceToClassTopics.cs" />
     <Compile Include="Source\Framework\TestList.cs" />
-    <Compile Include="Source\Framework\BaseTestTypes\SourceToCommentsAndTopics.cs" />
     <Compile Include="Source\Framework\BaseTestTypes\SourceToHTML.cs" />
     <Compile Include="Source\Framework\Test.cs" />
     <Compile Include="Source\Framework\EngineInstanceWrapper.cs" />
