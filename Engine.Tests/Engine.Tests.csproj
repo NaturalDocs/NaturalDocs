@@ -70,7 +70,7 @@
     <Compile Include="Source\General\ClassCombining.cs" />
     <Compile Include="Source\Languages\BasicSupport\CommentDetection.cs" />
     <Compile Include="Source\Languages\CSharp\CommentDetection.cs" />
-    <Compile Include="Source\Languages\CSharp\PrototypeParsing.cs" />
+    <Compile Include="Source\Languages\CSharp\LanguageParsing.cs" />
     <Compile Include="Source\Languages\PowerShell\CommentDetection.cs" />
     <Compile Include="Source\Languages\Lua\CommentDetection.cs" />
     <Compile Include="Source\Languages\Perl\CommentDetection.cs" />

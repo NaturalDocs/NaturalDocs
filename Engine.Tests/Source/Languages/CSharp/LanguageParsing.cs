@@ -11,13 +11,13 @@ using NUnit.Framework;
 namespace CodeClear.NaturalDocs.Engine.Tests.Languages.CSharp
 	{
 	[TestFixture]
-	public class PrototypeParsing : Framework.TestTypes.PrototypeParsing
+	public class LanguageParsing : Framework.TestTypes.Elements
 		{
 
 		[Test]
 		public void All ()
 			{
-			TestFolder("Languages/C#/Prototype Parsing");
+			TestFolder("Languages/C#/Language Parsing");
 			}
 
 		}
