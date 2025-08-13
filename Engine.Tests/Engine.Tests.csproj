@@ -57,7 +57,6 @@
   <ItemGroup>
     <Compile Include="Source\Framework\TestTypes\ClassCombining.cs" />
     <Compile Include="Source\Framework\TestTypes\CommentDetection.cs" />
-    <Compile Include="Source\Framework\BaseTestTypes\SourceToElements.cs" />
     <Compile Include="Source\Framework\TestTypes\HTML.cs" />
     <Compile Include="Source\Framework\BaseTestTypes\SourceToClassTopics.cs" />
     <Compile Include="Source\Framework\TestList.cs" />
