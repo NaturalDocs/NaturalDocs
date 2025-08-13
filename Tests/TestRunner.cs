@@ -52,9 +52,12 @@ namespace CodeClear.NaturalDocs.Tests
 		 *		CodeElements - The test runner will parse the input file as a source file and send the resulting code
 		 *								<Elements> to <RunTest(Element)>.  Requires at least <EngineMode.InstanceOnly>.
 		 *
+		 *		HTML - The test runner will read the contents of the input file's generated HTML output file and send it to
+		 *				   <RunTest(string)>.  Requires at least <EngineMode.InstanceAndGeneratedDocs>.
+		 *
 		 */
 		protected enum InputMode
-			{  String, Lines, Topics, CommentsAndTopics, CodeElements  }
+			{  String, Lines, Topics, CommentsAndTopics, CodeElements, HTML  }
 
 
 		/* Enum: EngineMode
@@ -432,6 +435,25 @@ namespace CodeClear.NaturalDocs.Tests
 					}
 
 
+				// HTML
+
+				else if (inputMode == InputMode.HTML)
+					{
+					var fileInfo = EngineInstance.Files.FromPath(test.InputFile);
+
+					if (fileInfo == null)
+						{  throw new Exception("Could not get file info of " + test.InputFile);  }
+
+					var fileContext = new Engine.Output.HTML.Context(engineManager.HTMLBuilder, fileInfo.ID);
+
+					Path htmlFile = fileContext.OutputFile;
+
+					string html = System.IO.File.ReadAllText(htmlFile);
+
+					actualOutput = RunTest(html);
+					}
+
+
 				else
 					{  throw new NotImplementedException();  }
 				}
@@ -476,10 +498,11 @@ namespace CodeClear.NaturalDocs.Tests
 
 		/* Function: RunTest (string)
 		 *
-		 * Converts the test input to output and returns it.  The input will be a string with the contents of <Test.InputFile>.
+		 * Converts the test input to output and returns it.  When using <InputMode.String>, the input will be a string with the contents of
+		 * <Test.InputFile>.  When using <InputMode.HTML>, the input will be the contents of the input file's generated HTML file.
 		 *
-		 * This is only relevant if you're using the default implementation of <RunTest(Test)> with <InputMode.String>.  It will not be
-		 * called otherwise, unless your implementation of <RunTest(Test)> also calls it.
+		 * This is only relevant if you're using the default implementation of <RunTest(Test)> with <InputMode.String> or <InputMode.HTML>.
+		 * It will not be called otherwise, unless your implementation of <RunTest(Test)> also calls it.
 		 *
 		 * Default Implementation:
 		 *
