@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using CodeClear.NaturalDocs.Engine;
+using CodeClear.NaturalDocs.Engine.Comments;
 using CodeClear.NaturalDocs.Engine.Languages;
 using CodeClear.NaturalDocs.Engine.Links;
 using CodeClear.NaturalDocs.Engine.Tokenization;
@@ -43,12 +44,17 @@ namespace CodeClear.NaturalDocs.Tests
 		 *		Topics - The test runner will parse the input file as a source file and send the resulting <Topics> to
 		 *					<RunTest(Topic)>.  Requires at least <EngineMode.InstanceOnly>.
 		 *
+		 *		CommentsAndTopics - The test runner will parse the input file as a source file and send the resulting
+		 *										 <PossibleDocumentationComments> and <Topics> to
+		 *										 <RunTest(PossibleDocumentationComment, Topic)>.  Requires at least
+		 *										 <EngineMode.InstanceOnly>.
+		 *
 		 *		CodeElements - The test runner will parse the input file as a source file and send the resulting code
 		 *								<Elements> to <RunTest(Element)>.  Requires at least <EngineMode.InstanceOnly>.
 		 *
 		 */
 		protected enum InputMode
-			{  String, Lines, Topics, CodeElements  }
+			{  String, Lines, Topics, CommentsAndTopics, CodeElements  }
 
 
 		/* Enum: EngineMode
@@ -385,6 +391,27 @@ namespace CodeClear.NaturalDocs.Tests
 					}
 
 
+				// Comments and Topics
+
+				else if (inputMode == InputMode.CommentsAndTopics)
+					{
+					Language language = EngineInstance.Languages.FromFileExtension(test.InputFile.Extension);
+
+					if (language == null)
+						{  throw new Exception("Extension " + test.InputFile.Extension + " did not resolve to a language.");  }
+
+					string code = System.IO.File.ReadAllText(test.InputFile);
+
+					IList<PossibleDocumentationComment> comments = language.Parser.GetPossibleDocumentationComments(code);
+
+					IList<Topic> topics;
+					LinkSet classParentLinks;
+					language.Parser.Parse(test.InputFile, -1, Engine.Delegates.NeverCancel, out topics, out classParentLinks);
+
+					actualOutput = RunTest(comments, topics);
+					}
+
+
 				// Code Elements
 
 				else if (inputMode == InputMode.CodeElements)
@@ -504,6 +531,28 @@ namespace CodeClear.NaturalDocs.Tests
 		 *
 		 */
 		protected virtual string RunTest (IList<Topic> topics)
+			{
+			throw new NotImplementedException();
+			}
+
+
+		/* Function: RunTest (PossibleDocumentationComment, Topic)
+		 *
+		 * Generates output from the test input <PossibleDocumentationComments> and <Topics> and returns it.  The input files will be
+		 * parsed as source files to generate the <PossibleDocumentationComments> and <Topics>.  The output will be whatever properties
+		 * from them are relevant to the test.
+		 *
+		 * This function is only relevant if you're using the default implementation of <RunTest(Test)> with <InputMode.CommentsAndTopics>.
+		 * It will not be called otherwise, unless your implementation of <RunTest(Test)> also calls it.
+		 *
+		 * Default Implementation:
+		 *
+		 *		The default implementation throws a NotImplementException because you need to define it if you're not overriding
+		 *		<RunTest(Test)>.  We do this instead of making it abstract so that if you do override <RunTest(Test)> you're not forced
+		 *		to define this as well.
+		 *
+		 */
+		protected virtual string RunTest (IList<PossibleDocumentationComment> comments, IList<Topic> topics)
 			{
 			throw new NotImplementedException();
 			}
