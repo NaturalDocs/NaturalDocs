@@ -1,2 +1,0 @@
-File Encodings
-   Body: <p>Accented characters áéíóúñ</p>
