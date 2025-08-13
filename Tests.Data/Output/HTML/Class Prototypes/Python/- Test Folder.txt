@@ -1,0 +1,7 @@
+Format: 2.3
+
+Test Type: HTML Class Prototypes
+
+Keep HTML: yes
+
+	Title: Python Class Prototype Tests

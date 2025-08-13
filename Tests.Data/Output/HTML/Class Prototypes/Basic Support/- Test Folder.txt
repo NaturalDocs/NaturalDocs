@@ -1,0 +1,10 @@
+Format: 2.3
+
+Test Type: HTML Class Prototypes
+
+Keep HTML: yes
+
+	Title: BLS Class Prototype Tests
+	Subtitle: Basic Language Support
+
+Engine Config: ..\..\..\..\- Shared Engine Configs\Basic Language Support
