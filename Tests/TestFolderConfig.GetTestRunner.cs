@@ -73,6 +73,8 @@ namespace CodeClear.NaturalDocs.Tests
 					return new TestRunners.Symbols();
 				case "topic bodies":
 					return new TestRunners.TopicBodies();
+				case "language parsing":
+					return new TestRunners.LanguageParsing();
 
 				default:
 					return null;
