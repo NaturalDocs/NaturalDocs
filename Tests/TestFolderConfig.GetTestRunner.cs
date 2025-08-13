@@ -75,6 +75,8 @@ namespace CodeClear.NaturalDocs.Tests
 					return new TestRunners.TopicBodies();
 				case "language parsing":
 					return new TestRunners.LanguageParsing();
+				case "comment detection":
+					return new TestRunners.CommentDetection();
 
 				default:
 					return null;

@@ -1,26 +1,9 @@
 ﻿/*
- * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes.CommentDetection
+ * Class: CodeClear.NaturalDocs.Tests.TestRunners.CommentDetection
  * ____________________________________________________________________________
  *
- * File-based tests to make sure Natural Docs can detect comments in a source file, including distinguishing
- * between Natural Docs, Javadoc, and XML-formatted comments.
- *
- *
- * Deriving a Test Class:
- *
- *		- Derive a class and add the [TestFixture] attribute.
- *
- *		- Create a function with the [Test] attribute that calls TestFolder(), pointing it to the input files.
- *
- *
- * Input and Output Files:
- *
- *		- All files in the test folder in the format "[Test Name] - Input.[extension]" will be tested when NUnit runs.
- *
- *		- A corresponding file "[Test Name] - Actual Output.txt" will be created for each one.
- *
- *		- If it matches the contents of the file "[Test Name] - Expected Output.txt", the test will pass.  If it doesn't,
- *		  that file doesn't exist, or an exception was thrown, the test will fail.
+ * Tests to make sure Natural Docs can detect comments in a source file, including distinguishing between Natural Docs,
+ * Javadoc, and XML-formatted comments.
  *
  */
 
@@ -36,12 +19,16 @@ using CodeClear.NaturalDocs.Engine.Comments;
 using CodeClear.NaturalDocs.Engine.Topics;
 
 
-namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
+namespace CodeClear.NaturalDocs.Tests.TestRunners
 	{
-	public class CommentDetection : Framework.BaseTestTypes.SourceToCommentsAndTopics
+	public class CommentDetection : TestRunner
 		{
 
-		public override string OutputOf (IList<PossibleDocumentationComment> comments, IList<Topic> topics)
+		public CommentDetection ()
+			: base (InputMode.CommentsAndTopics, EngineMode.InstanceOnly)
+			{  	}
+
+		protected override string RunTest (IList<PossibleDocumentationComment> comments, IList<Topic> topics)
 			{
 			if (comments == null || comments.Count == 0)
 				{  return "(No comments found)";  }
