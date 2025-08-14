@@ -92,6 +92,8 @@ namespace CodeClear.NaturalDocs.Tests
 					return new TestRunners.HTMLPrototypes();
 				case "html syntax highlighting":
 					return new TestRunners.HTMLSyntaxHighlighting();
+				case "html topic titles":
+					return new TestRunners.HTMLTopicTitles();
 
 				default:
 					return null;
