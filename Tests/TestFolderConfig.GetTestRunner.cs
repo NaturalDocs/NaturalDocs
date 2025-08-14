@@ -84,6 +84,8 @@ namespace CodeClear.NaturalDocs.Tests
 					return new TestRunners.HTMLClassPrototypes();
 				case "html code sections":
 					return new TestRunners.HTMLCodeSections();
+				case "html links":
+					return new TestRunners.HTMLLinks();
 
 				default:
 					return null;
