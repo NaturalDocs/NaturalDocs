@@ -2481,7 +2481,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		/* Function: GetClassByID
 		 *
 		 * Retrieves the class with the passed ID.  Even if a class has been deleted this will still return a <ClassString> until
-		 * <Cleanup()> is called.
+		 * <CodeDB.Manager.Cleanup()> is called.
 		 *
 		 * Requirements:
 		 *
@@ -2510,7 +2510,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		 *
 		 * Retrieves a list of all the classes defined in the database within the passed NumberSet.  Pass a <CancelDelegate> if you'd
 		 * like to be able to interrupt this process, or <Delegates.NeverCancel> if not.  If some of the classes have been deleted this
-		 * will still return values for them until <Cleanup()> is called.
+		 * will still return values for them until <CodeDB.Manager.Cleanup()> is called.
 		 *
 		 * Requirements:
 		 *
