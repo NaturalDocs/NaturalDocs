@@ -1,0 +1,7 @@
+Format: 2.3
+
+Test Type: HTML Code Sections
+
+Keep HTML: yes
+
+	Title: Code Section Tests
