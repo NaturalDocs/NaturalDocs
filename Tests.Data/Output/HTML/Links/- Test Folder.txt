@@ -1,0 +1,7 @@
+Format: 2.3
+
+Test Type: HTML Links
+
+Keep HTML: yes
+
+	Title: Link Tests
