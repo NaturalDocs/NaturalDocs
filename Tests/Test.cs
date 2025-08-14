@@ -117,6 +117,8 @@ namespace CodeClear.NaturalDocs.Tests
 			this.inputFile = inputFile;
 			this.expectedOutputFile = expectedOutputFile;
 			this.actualOutputFile = actualOutputFile;
+
+			classID = 0;
 			}
 
 
@@ -318,6 +320,19 @@ namespace CodeClear.NaturalDocs.Tests
 			}
 
 
+		/* Proeprty: ClassID
+		 * An optional class ID associated with the test.  This is useful for class-based tests that may not have a single
+		 * input file.  Can be ignored for everything else.
+		 */
+		public int ClassID
+			{
+			get
+				{  return classID;  }
+			protected internal set
+				{  classID = value;  }
+			}
+
+
 
 		// Group: Variables
 		// _________________________________________________________________________
@@ -352,6 +367,12 @@ namespace CodeClear.NaturalDocs.Tests
 		 * The full path of the actual output file.
 		 */
 		protected AbsolutePath actualOutputFile;
+
+		/* var: classID
+		 * An optional class ID associated with the test.  This is useful for class-based tests that may not have a single
+		 * input file.  Can be ignored for everything else.
+		 */
+		protected int classID;
 
 		}
 	}
