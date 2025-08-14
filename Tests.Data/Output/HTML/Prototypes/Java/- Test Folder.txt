@@ -1,0 +1,10 @@
+Format: 2.3
+
+Test Type: HTML Prototypes
+
+Keep HTML: yes
+
+	Title: Java Prototype Tests
+	Style: Prominent Prototype Grid on Black
+
+Engine Config: ..\..\..\..\- Shared Engine Configs\HTML Structure

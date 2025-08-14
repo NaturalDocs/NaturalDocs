@@ -1,0 +1,11 @@
+Format: 2.3
+
+Test Type: HTML Prototypes
+
+Keep HTML: yes
+
+	Title: BLS Prototype Tests
+	Subtitle: Basic Language Support
+	Style: Prominent Prototype Grid on Black
+
+Engine Config: ..\..\..\..\- Shared Engine Configs\Basic Language Support plus HTML Structure
