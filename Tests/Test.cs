@@ -156,7 +156,7 @@ namespace CodeClear.NaturalDocs.Tests
 		/* Function: ExpectedOutputFileOf
 		 * Returns the expected output file of the passed test name and folder.
 		 */
-		protected static AbsolutePath ExpectedOutputFileOf (string testName, AbsolutePath testFolder)
+		public static AbsolutePath ExpectedOutputFileOf (string testName, AbsolutePath testFolder)
 			{
 			return testFolder + '/' + testName + " - Expected Output.txt";
 			}
@@ -165,7 +165,7 @@ namespace CodeClear.NaturalDocs.Tests
 		/* Function: ActualOutputFileOf
 		 * Returns the actual output file of the passed test name and folder.
 		 */
-		protected static AbsolutePath ActualOutputFileOf (string testName, AbsolutePath testFolder)
+		public static AbsolutePath ActualOutputFileOf (string testName, AbsolutePath testFolder)
 			{
 			return testFolder + '/' + testName + " - Actual Output.txt";
 			}
@@ -174,7 +174,7 @@ namespace CodeClear.NaturalDocs.Tests
 		/* Function: NameFromInputFile
 		 * Extracts the name of the test from an input file path.
 		 */
-		protected static string NameFromInputFile (Path inputFile)
+		public static string NameFromInputFile (Path inputFile)
 			{
 			string name = inputFile.NameWithoutPathOrExtension;
 
@@ -188,7 +188,7 @@ namespace CodeClear.NaturalDocs.Tests
 		/* Function: NameFromExpectedOutputFile
 		 * Extracts the name of the test from an expected output file path.
 		 */
-		protected static string NameFromExpectedOutputFile (Path outputFile)
+		public static string NameFromExpectedOutputFile (Path outputFile)
 			{
 			string name = outputFile.NameWithoutPath;
 
@@ -202,7 +202,7 @@ namespace CodeClear.NaturalDocs.Tests
 		/* Function: NameFromActualOutputFile
 		 * Extracts the name of the test from an actual output file path.
 		 */
-		protected static string NameFromActualOutputFile (Path outputFile)
+		public static string NameFromActualOutputFile (Path outputFile)
 			{
 			string name = outputFile.NameWithoutPath;
 
