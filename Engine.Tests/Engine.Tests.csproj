@@ -64,13 +64,6 @@
     <Compile Include="Source\Framework\EngineInstanceWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Source\General\ClassCombining.cs" />
-    <Compile Include="Source\Output\HTML\SyntaxHighlighting\BasicSupport.cs" />
-    <Compile Include="Source\Output\HTML\SyntaxHighlighting\Python.cs" />
-    <Compile Include="Source\Output\HTML\SyntaxHighlighting\PowerBuilder.cs" />
-    <Compile Include="Source\Output\HTML\SyntaxHighlighting\PowerShell.cs" />
-    <Compile Include="Source\Output\HTML\SyntaxHighlighting\Pascal.cs" />
-    <Compile Include="Source\Output\HTML\SyntaxHighlighting\SystemVerilog.cs" />
-    <Compile Include="Source\Output\HTML\SyntaxHighlighting\CSharp.cs" />
     <Compile Include="Source\Output\HTML\TopicTitles.cs" />
   </ItemGroup>
   <ItemGroup>
