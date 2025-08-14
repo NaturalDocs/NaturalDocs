@@ -104,6 +104,22 @@ namespace CodeClear.NaturalDocs.Tests
 			}
 
 
+		/* Constructor: Test
+		 * This is a protected constructor.  Use one of the Create functions instead.
+		 */
+		protected Test (string name, AbsolutePath inputFile, AbsolutePath expectedOutputFile, AbsolutePath actualOutputFile)
+			{
+			this.name = name;
+
+			status = Status.NotRun;
+			failureReason = FailureReasons.Null;
+
+			this.inputFile = inputFile;
+			this.expectedOutputFile = expectedOutputFile;
+			this.actualOutputFile = actualOutputFile;
+			}
+
+
 
 		// Group: Path Functions
 		// __________________________________________________________________________
@@ -137,54 +153,21 @@ namespace CodeClear.NaturalDocs.Tests
 			}
 
 
-
-		// Group: State Functions
-		// __________________________________________________________________________
-
-
-		/* Function: MarkAsPassed
-		 * Sets the test to passed.
+		/* Function: ExpectedOutputFileOf
+		 * Returns the expected output file of the passed test name and folder.
 		 */
-		internal void MarkAsPassed ()
+		protected static AbsolutePath ExpectedOutputFileOf (string testName, AbsolutePath testFolder)
 			{
-			status = Status.Passed;
-			failureReason = FailureReasons.Null;
+			return testFolder + '/' + testName + " - Expected Output.txt";
 			}
 
 
-		/* Function: MarkAsFailed
-		 * Sets the test to failed.  If you call this multiple times only the first reason will be used.
+		/* Function: ActualOutputFileOf
+		 * Returns the actual output file of the passed test name and folder.
 		 */
-		internal void MarkAsFailed (FailureReasons reason)
+		protected static AbsolutePath ActualOutputFileOf (string testName, AbsolutePath testFolder)
 			{
-			if (reason == FailureReasons.Null)
-				{  throw new InvalidOperationException("Must provide a reason when marking a test as failed.");  }
-
-			status = Status.Failed;
-
-			if (this.failureReason == FailureReasons.Null)
-				{  this.failureReason = reason;  }
-			}
-
-
-
-		// Group: Support Functions
-		// __________________________________________________________________________
-
-
-		/* Constructor: Test
-		 * This is a protected constructor.  Use one of the Create functions instead.
-		 */
-		protected Test (string name, AbsolutePath inputFile, AbsolutePath expectedOutputFile, AbsolutePath actualOutputFile)
-			{
-			this.name = name;
-
-			status = Status.NotRun;
-			failureReason = FailureReasons.Null;
-
-			this.inputFile = inputFile;
-			this.expectedOutputFile = expectedOutputFile;
-			this.actualOutputFile = actualOutputFile;
+			return testFolder + '/' + testName + " - Actual Output.txt";
 			}
 
 
@@ -230,21 +213,33 @@ namespace CodeClear.NaturalDocs.Tests
 			}
 
 
-		/* Function: ExpectedOutputFileOf
-		 * Returns the expected output file of the passed test name and folder.
+
+		// Group: State Functions
+		// __________________________________________________________________________
+
+
+		/* Function: MarkAsPassed
+		 * Sets the test to passed.
 		 */
-		protected static AbsolutePath ExpectedOutputFileOf (string testName, AbsolutePath testFolder)
+		internal void MarkAsPassed ()
 			{
-			return testFolder + '/' + testName + " - Expected Output.txt";
+			status = Status.Passed;
+			failureReason = FailureReasons.Null;
 			}
 
 
-		/* Function: ActualOutputFileOf
-		 * Returns the actual output file of the passed test name and folder.
+		/* Function: MarkAsFailed
+		 * Sets the test to failed.  If you call this multiple times only the first reason will be used.
 		 */
-		protected static AbsolutePath ActualOutputFileOf (string testName, AbsolutePath testFolder)
+		internal void MarkAsFailed (FailureReasons reason)
 			{
-			return testFolder + '/' + testName + " - Actual Output.txt";
+			if (reason == FailureReasons.Null)
+				{  throw new InvalidOperationException("Must provide a reason when marking a test as failed.");  }
+
+			status = Status.Failed;
+
+			if (this.failureReason == FailureReasons.Null)
+				{  this.failureReason = reason;  }
 			}
 
 
