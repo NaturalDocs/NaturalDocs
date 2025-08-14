@@ -1,25 +1,11 @@
 ﻿/*
- * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes.ClassCombining
+ * Class: CodeClear.NaturalDocs.Tests.TestRunners.ClassCombining
  * ____________________________________________________________________________
  *
- * File-based tests to make sure Natural Docs can merge topics from multiple files into a single coherent list
- * for a class view.
+ * Tests to make sure Natural Docs can merge topics from multiple files into a single coherent list for a class view.
  *
- *
- * Deriving a Test Class:
- *
- *		- Derive a class and add the [TestFixture] attribute.
- *
- *		- Create a function with the [Test] attribute that calls TestFolder(), pointing it to the input files.
- *
- *
- * Input and Output Files:
- *
- *		- Since the input files and output files will not match 1:1, the generated output files will be in the format
- *		  "[Class Name] - Actual Output.txt".
- *
- *		- If it matches the contents of the file "[Class Name] - Expected Output.txt", the test will pass.  If it doesn't,
- *		  that file doesn't exist, or an exception was thrown, the test will fail.
+ * Since the input files and output files will not match 1:1, the generated output files will be in the format
+ *	"[Class Name] - Actual Output.txt".
  *
  */
 
@@ -34,12 +20,16 @@ using System.Text;
 using CodeClear.NaturalDocs.Engine.Topics;
 
 
-namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
+namespace CodeClear.NaturalDocs.Tests.TestRunners
 	{
-	public class ClassCombining : Framework.BaseTestTypes.SourceToClassTopics
+	public class ClassCombining : TestRunner
 		{
 
-		public override string OutputOf (int classID, IList<Topic> topics)
+		public ClassCombining ()
+			: base (InputMode.ClassTopics, EngineMode.InstanceAndGeneratedDocs)
+			{  	}
+
+		protected override string RunTest (IList<Topic> topics)
 			{
 			if (topics == null || topics.Count == 0)
 				{  return "(No topics generated)";  }

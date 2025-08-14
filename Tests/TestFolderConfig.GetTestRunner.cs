@@ -77,6 +77,8 @@ namespace CodeClear.NaturalDocs.Tests
 					return new TestRunners.LanguageParsing();
 				case "comment detection":
 					return new TestRunners.CommentDetection();
+				case "class combining":
+					return new TestRunners.ClassCombining();
 
 				case "html anchors":
 					return new TestRunners.HTMLAnchors();

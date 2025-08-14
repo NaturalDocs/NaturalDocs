@@ -55,13 +55,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Source\Framework\TestTypes\ClassCombining.cs" />
-    <Compile Include="Source\Framework\BaseTestTypes\SourceToClassTopics.cs" />
     <Compile Include="Source\Framework\TestList.cs" />
     <Compile Include="Source\Framework\Test.cs" />
     <Compile Include="Source\Framework\EngineInstanceWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Source\General\ClassCombining.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="nunit.framework, Version=3.11.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
