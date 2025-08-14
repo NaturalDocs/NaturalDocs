@@ -88,6 +88,8 @@ namespace CodeClear.NaturalDocs.Tests
 					return new TestRunners.HTMLLinks();
 				case "html parameter lists":
 					return new TestRunners.HTMLParameterLists();
+				case "html prototypes":
+					return new TestRunners.HTMLPrototypes();
 
 				default:
 					return null;
