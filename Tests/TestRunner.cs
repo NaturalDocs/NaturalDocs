@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using CodeClear.NaturalDocs.Engine;
+using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.Comments;
 using CodeClear.NaturalDocs.Engine.Languages;
 using CodeClear.NaturalDocs.Engine.Links;
@@ -38,11 +39,20 @@ namespace CodeClear.NaturalDocs.Tests
 		 *
 		 *		String - The test runner will read the input file contents as a flat string and send it to <RunTest(string)>.
 		 *
-		 *		Lines - The test runner will read the input file contents as an array of strings, one per line, and send them to
-		 *				   <RunTest(string[])>.
+		 *		Lines - The test runner will read the input file contents as an array of strings, one per line, and send them
+		 *				   to <RunTest(string[])>.
 		 *
 		 *		Topics - The test runner will parse the input file as a source file and send the resulting <Topics> to
 		 *					<RunTest(Topic)>.  Requires at least <EngineMode.InstanceOnly>.
+		 *
+		 *		ClassTopics - The test runner will parse all of the source files in the folder and send each class's resulting
+		 *							<Topics> to <RunTest(Topic)>, regardless of how many source files contributed to each class.
+		 *
+		 *							One <Test> will be automatically generated for each class, not each source file.  <Tests> will
+		 *							also be generated for any expected output files that do not have corresponding actual output
+		 *							files so that they can fail.
+		 *
+		 *							Requires at least <EngineMode.InstanceAndGeneratedDocs>.
 		 *
 		 *		CommentsAndTopics - The test runner will parse the input file as a source file and send the resulting
 		 *										 <PossibleDocumentationComments> and <Topics> to
@@ -57,7 +67,7 @@ namespace CodeClear.NaturalDocs.Tests
 		 *
 		 */
 		protected enum InputMode
-			{  String, Lines, Topics, CommentsAndTopics, CodeElements, HTML  }
+			{  String, Lines, Topics, ClassTopics, CommentsAndTopics, CodeElements, HTML  }
 
 
 		/* Enum: EngineMode
@@ -306,21 +316,92 @@ namespace CodeClear.NaturalDocs.Tests
 		 *
 		 * Default Implementation:
 		 *
-		 *		The default implementation creates a list of all the files in the <TestFolder> which match against <Test.IsInputFile()>.
-		 *		It does not recurse into subfolders.
+		 *		In most cases the default implementation creates a list of all the files in the <TestFolder> which match against
+		 *		<Test.IsInputFile()>.  It does not recurse into subfolders.
+		 *
+		 *		For <InputMode.ClassTopics> the default implementation instead iterates though all the classes and creates a test for
+		 *		each one, regardless of how many source files contributed to each class.  It will also create tests for each expected
+		 *		output file that doesn't have a corresponding actual output file so that they can fail.
 		 *
 		 */
 		protected virtual bool FindTests (out List<Test> tests)
 			{
 			tests = new List<Test>();
 
-			string[] files = System.IO.Directory.GetFiles(testFolder.Path);
 
-			foreach (AbsolutePath file in files)
+			// Class Topics
+
+			if (inputMode == InputMode.ClassTopics)
 				{
-				if (Test.IsInputFile(file))
+				StringSet expectedOutputFiles = new StringSet();
+
+
+				// First go through all the classes in CodeDB and create tests for them
+
+				using (Engine.CodeDB.Accessor accessor = EngineInstance.CodeDB.GetAccessor())
 					{
-					tests.Add( Test.CreateFromInputFile(file) );
+					// Class IDs should be assigned sequentially.  It's not an ideal way to do this though.
+					int classID = 1;
+					accessor.GetReadOnlyLock();
+
+					try
+						{
+						for (;;)
+							{
+							List<Topic> classTopics =  accessor.GetTopicsInClass(classID, Delegates.NeverCancel);
+							ClassView.Merge(ref classTopics, EngineInstance);
+
+							if (classTopics == null || classTopics.Count == 0)
+								{  break;  }
+
+							string className = classTopics[0].ClassString.Symbol.FormatWithSeparator(".");
+
+							AbsolutePath expectedOutputFilePath = Test.ExpectedOutputFileOf(className, testFolder.Path);
+							expectedOutputFiles.Add(expectedOutputFilePath);
+
+							Test test = Test.CreateFromExpectedOutputFile(expectedOutputFilePath);
+							test.ClassID = classID;
+							tests.Add(test);
+
+							classID++;
+							}
+						}
+					finally
+						{  accessor.ReleaseLock();  }
+					}
+
+
+				// Now search for any existing expected output files that we didn't find in CodeDB.  We want tests for these as well
+				// so they can fail.
+
+				string[] files = System.IO.Directory.GetFiles(testFolder.Path);
+
+				foreach (string file in files)
+					{
+					if (Test.IsExpectedOutputFile(file) && expectedOutputFiles.Contains(file) == false)
+						{
+						Test test = Test.CreateFromExpectedOutputFile(file);
+						test.ClassID = -1;
+						tests.Add(test);
+
+						expectedOutputFiles.Add(file);
+						}
+					}
+				}
+
+
+			// All other input modes are by source file
+
+			else
+				{
+				string[] files = System.IO.Directory.GetFiles(testFolder.Path);
+
+				foreach (AbsolutePath file in files)
+					{
+					if (Test.IsInputFile(file))
+						{
+						tests.Add( Test.CreateFromInputFile(file) );
+						}
 					}
 				}
 
@@ -391,6 +472,34 @@ namespace CodeClear.NaturalDocs.Tests
 					language.Parser.Parse(test.InputFile, -1, Engine.Delegates.NeverCancel, out topics, out classParentLinks);
 
 					actualOutput = RunTest(topics);
+					}
+
+
+				// Class Topics
+
+				else if (inputMode == InputMode.ClassTopics)
+					{
+					if (test.ClassID <= 0)
+						{  actualOutput = "(No class " + test.Name + " was found)";  }
+					else
+						{
+						List<Topic> classTopics = null;
+
+						using (Engine.CodeDB.Accessor accessor = EngineInstance.CodeDB.GetAccessor())
+							{
+							accessor.GetReadOnlyLock();
+
+							try
+								{
+								classTopics =  accessor.GetTopicsInClass(test.ClassID, Delegates.NeverCancel);
+								ClassView.Merge(ref classTopics, EngineInstance);
+								}
+							finally
+								{  accessor.ReleaseLock();  }
+							}
+
+						actualOutput = RunTest(classTopics);
+						}
 					}
 
 
@@ -540,11 +649,12 @@ namespace CodeClear.NaturalDocs.Tests
 
 		/* Function: RunTest (Topic)
 		 *
-		 * Generates output from the test input <Topics> and returns it.  The input files will be parsed as source files to generate the
-		 * <Topics>.  The output will be whatever properties from them are relevant to the test.
+		 * Generates output from the test input <Topics> and returns it.  When using <InputMode.Topics>, the input files will be parsed
+		 * as source files to generate the <Topics>.  When using <InputMode.ClassTopics>, the function will be called per class instead
+		 * of per source file.  The output will be whatever <Topic> properties are relevant to the test.
 		 *
-		 * This function is only relevant if you're using the default implementation of <RunTest(Test)> with <InputMode.Topics>.  It will
-		 * not be called otherwise, unless your implementation of <RunTest(Test)> also calls it.
+		 * This function is only relevant if you're using the default implementation of <RunTest(Test)> with <InputMode.Topics> or
+		 * <InputMode.ClassTopics>.  It will not be called otherwise, unless your implementation of <RunTest(Test)> also calls it.
 		 *
 		 * Default Implementation:
 		 *
