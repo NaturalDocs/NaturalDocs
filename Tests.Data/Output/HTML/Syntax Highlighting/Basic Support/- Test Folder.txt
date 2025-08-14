@@ -1,0 +1,11 @@
+Format: 2.3
+
+Test Type: HTML Syntax Highlighting
+
+Keep HTML: yes
+
+	Title: BLS Syntax Highlighting Tests
+	Subtitle: Basic Language Support
+	Style: Prominent Syntax Highlighting
+
+Engine Config: ..\..\..\..\- Shared Engine Configs\Basic Language Support plus HTML Structure

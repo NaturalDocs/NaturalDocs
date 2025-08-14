@@ -1,0 +1,10 @@
+Format: 2.3
+
+Test Type: HTML Syntax Highlighting
+
+Keep HTML: yes
+
+	Title: Python Syntax Highlighting Tests
+	Style: Prominent Syntax Highlighting
+
+Engine Config: ..\..\..\..\- Shared Engine Configs\HTML Structure
