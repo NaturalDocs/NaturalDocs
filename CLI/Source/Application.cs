@@ -120,6 +120,30 @@ namespace CodeClear.NaturalDocs.CLI
 						}
 
 
+					// Set up live vs. simple console output and related settings
+
+					simpleOutput = System.Console.IsOutputRedirected;
+
+					try
+						{
+						// Also test if we're in an environment where we can get and set the cursor position.  Checking IsOutputRedirected
+						// *should* be enough, but check for exceptions just in case and we can fall back to simple output if one is thrown.
+						int x = System.Console.CursorLeft;
+						System.Console.CursorLeft = x;
+						}
+					catch
+						{  simpleOutput = true;  }
+
+					// Different status intervals for different output settings
+					statusInterval = (simpleOutput ? SimpleOutputStatusInterval : LiveOutputStatusInterval);
+
+					// Try to hide the cursor during execution, which isn't supported on all platforms
+					try
+						{  System.Console.CursorVisible = false;  }
+					catch
+						{  }
+
+
 					// Create project configuration files only
 
 					if (commandLineConfig.ProjectConfigFolderPropertyLocation.IsDefined &&
@@ -139,6 +163,13 @@ namespace CodeClear.NaturalDocs.CLI
 						if (!BuildDocumentation(startupErrors))
 							{  HandleErrorList(startupErrors);  }
 						}
+
+
+					// Restore the cursor
+					try
+						{  System.Console.CursorVisible = true;  }
+					catch
+						{  }
 					}
 
 				gracefulExit = true;
@@ -180,28 +211,6 @@ namespace CodeClear.NaturalDocs.CLI
 
 		private static bool BuildDocumentation (ErrorList errorList)
 			{
-			simpleOutput = System.Console.IsOutputRedirected;
-
-			try
-				{
-				// Also test if we're in an environment where we can get and set the cursor position.  Checking IsOutputRedirected
-				// *should* be enough, but check for exceptions just in case and we can fall back to simple output if one is thrown.
-				int x = System.Console.CursorLeft;
-				System.Console.CursorLeft = x;
-				}
-			catch
-				{  simpleOutput = true;  }
-
-			statusInterval = (simpleOutput ? SimpleOutputStatusInterval : LiveOutputStatusInterval);
-
-			try
-				{
-				// Not supported on all platforms
-				System.Console.CursorVisible = false;
-				}
-			catch
-				{  }
-
 			bool successful = true;
 
 
@@ -331,11 +340,6 @@ namespace CodeClear.NaturalDocs.CLI
 
 
 			ShowConsoleFooter(successful);
-
-			try
-				{  System.Console.CursorVisible = true;  }
-			catch
-				{  }
 
 			return successful;
 			}
