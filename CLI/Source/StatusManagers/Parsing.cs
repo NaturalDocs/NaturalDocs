@@ -225,9 +225,9 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 					System.Console.WriteLine(Application.SecondaryStatusIndent + fileName);
 					}
-
-				System.Console.WriteLine();
 				}
+
+			System.Console.WriteLine();
 
 
 			//
@@ -268,9 +268,9 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 					if (count == 0)
 						{  break;  }
 					}
-
-				System.Console.WriteLine();
 				}
+
+			System.Console.WriteLine();
 
 
 			// Deleted files waiting
@@ -283,12 +283,37 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 				}
 			else
 				{
+				int maxCount = 8;
+
+				string messageID = (status.DeletedFileIDsRemaining.Count <= maxCount ?
+											  "DetailedStatus.DeletedFilesWaiting.ShowingAll(count)" :
+											  "DetailedStatus.DeletedFilesWaiting.ShowingSome(count)");
+
 				System.Console.WriteLine(
-					Engine.Locale.Get("NaturalDocs.CLI", "DetailedStatus.DeletedFilesWaiting(count)", status.FileIDsBeingProcessed.Count)
+					Engine.Locale.Get("NaturalDocs.CLI", messageID, status.DeletedFileIDsRemaining.Count)
 					);
+
+				int count = maxCount;
+				foreach (var deletedFileID in status.DeletedFileIDsRemaining)
+					{
+					string fileName = null;
+
+					try
+						{  fileName = process.EngineInstance.Files.FromID(deletedFileID).FileName;  }
+					catch
+						{  fileName = "File ID " + deletedFileID;  }
+
+					System.Console.WriteLine(Application.SecondaryStatusIndent + fileName);
+
+					count--;
+					if (count == 0)
+						{  break;  }
+					}
 				}
 
 			System.Console.WriteLine();
+
+
 			ShowProgressLine();
 
 			if (!Application.SimpleOutput)

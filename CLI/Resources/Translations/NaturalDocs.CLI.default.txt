@@ -59,7 +59,8 @@ DetailedStatus.NewOrChangedFilesWaiting.ShowingAll(count): {0:#,0} new or change
 DetailedStatus.NewOrChangedFilesWaiting.ShowingSome(count): {0:#,0} new or changed {0s?files:file} waiting to be processed, including:
 
 DetailedStatus.NoDeletedFiles: No deleted files waiting to be processed.
-DetailedStatus.DeletedFilesWaiting(count): {0:#,0} deleted {0s?files:file} waiting to be processed:
+DetailedStatus.DeletedFilesWaiting.ShowingAll(count): {0:#,0} deleted {0s?files:file} waiting to be processed:
+DetailedStatus.DeletedFilesWaiting.ShowingSome(count): {0:#,0} deleted {0s?files:file} waiting to be processed, including:
 
 Encodings.CodePage: Code Page
 Encodings.Name: Name
