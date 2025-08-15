@@ -755,7 +755,7 @@ namespace CodeClear.NaturalDocs.CLI
 			{
 			var errorOutput = Console.Error;
 
-			errorOutput.Write ("\n\n------------------------------------------------------------\n");
+			System.Console.Write ("\n\n------------------------------------------------------------\n");
 			errorOutput.WriteLine (Locale.SafeGet("NaturalDocs.CLI", "Crash.Exception",
 																	"Natural Docs has closed because of the following error:"));
 			errorOutput.WriteLine();
@@ -799,7 +799,7 @@ namespace CodeClear.NaturalDocs.CLI
 					}
 				}
 
-			errorOutput.Write ("------------------------------------------------------------\n\n");
+			System.Console.Write ("------------------------------------------------------------\n\n");
 			}
 
 
@@ -815,7 +815,7 @@ namespace CodeClear.NaturalDocs.CLI
 			// Write them to the console.
 
 			var errorOutput = Console.Error;
-			errorOutput.WriteLine();
+			System.Console.WriteLine();
 
 			Path lastErrorFile = null;
 			bool hasNonFileErrors = false;
@@ -846,7 +846,7 @@ namespace CodeClear.NaturalDocs.CLI
 			if (hasNonFileErrors == true)
 				{  errorOutput.WriteLine( Locale.Get("NaturalDocs.CLI", "CommandLine.HowToGetCommandLineRef") );  }
 
-			errorOutput.WriteLine();
+			System.Console.WriteLine();
 			}
 
 
