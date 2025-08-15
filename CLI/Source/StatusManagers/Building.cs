@@ -105,9 +105,6 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 		protected override void ShowEndMessage ()
 			{
-			if (totalWork == 0)
-				{  return;  }
-
 			if (!Application.SimpleOutput)
 				{
 				System.Console.CursorLeft = percentagePositionLeft;
