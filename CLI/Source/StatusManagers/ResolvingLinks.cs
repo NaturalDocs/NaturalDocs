@@ -39,6 +39,10 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 			process.GetStatus(ref status);
 			totalChanges = status.ChangesBeingProcessed + status.ChangesRemaining;
 
+			// Skip the output entirely when there are no changes
+			if (totalChanges == 0)
+				{  return;  }
+
 			System.Console.Write(
 				Engine.Locale.Get("NaturalDocs.CLI", "Status.StartLinkResolving")
 				);
@@ -96,6 +100,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 		protected override void ShowEndMessage ()
 			{
+			// Skip the output entirely when there are no changes
 			if (totalChanges == 0)
 				{  return;  }
 
