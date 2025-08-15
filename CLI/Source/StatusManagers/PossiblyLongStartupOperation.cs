@@ -27,6 +27,9 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 			{
 			operationName = null;
 			lastOperationName = null;
+
+			progressPositionLeft = 0;
+			progressPositionTop = 0;
 			}
 
 		public void Start (string operationName)
@@ -48,8 +51,33 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 			string message = Engine.Locale.SafeGet("NaturalDocs.CLI", "Status.LongStartupOperation.Start" + operationName, null);
 
 			if (message != null)
-				{  System.Console.WriteLine(message);  }
+				{
+				System.Console.Write(message);
+
+				if (Application.SimpleOutput)
+					{  System.Console.WriteLine();  }
+				else
+					{
+					System.Console.Write(' ');
+					progressPositionLeft = System.Console.CursorLeft;
+					progressPositionTop = System.Console.CursorTop;
+					}
+				}
 			}
+
+		protected override void ShowEndMessage ()
+			{
+			if (!Application.SimpleOutput)
+				{
+				System.Console.CursorLeft = progressPositionLeft;
+				System.Console.CursorTop = progressPositionTop;
+
+				System.Console.WriteLine(
+					Engine.Locale.Get("NaturalDocs.CLI", "Status.End")
+					);
+				}
+			}
+
 
 
 		// Group: Variables
@@ -57,6 +85,9 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 		protected string operationName;
 		protected string lastOperationName;
+
+		protected int progressPositionLeft;
+		protected int progressPositionTop;
 
 		}
 	}
