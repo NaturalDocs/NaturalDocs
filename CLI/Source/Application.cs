@@ -201,10 +201,11 @@ namespace CodeClear.NaturalDocs.CLI
 			if (pauseBeforeExit || (pauseOnError && (!gracefulExit || startupErrors.Count > 0)))
 				{
 				System.Console.WriteLine();
-				System.Console.WriteLine(
+				System.Console.Write(
 					Engine.Locale.SafeGet("NaturalDocs.CLI", "Status.PressAnyKeyToContinue", "Press any key to continue...")
 					);
 				System.Console.ReadKey(true);
+				System.Console.WriteLine();
 				}
 			}
 
