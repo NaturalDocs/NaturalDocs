@@ -176,6 +176,17 @@ namespace CodeClear.NaturalDocs.CLI
 		private static bool BuildDocumentation (ErrorList errorList)
 			{
 			simpleOutput = System.Console.IsOutputRedirected;
+
+			try
+				{
+				// Also test if we're in an environment where we can get and set the cursor position.  Checking IsOutputRedirected
+				// *should* be enough, but check for exceptions just in case and we can fall back to simple output if one is thrown.
+				int x = System.Console.CursorLeft;
+				System.Console.CursorLeft = x;
+				}
+			catch
+				{  simpleOutput = true;  }
+
 			statusInterval = (simpleOutput ? SimpleOutputStatusInterval : LiveOutputStatusInterval);
 
 			try
