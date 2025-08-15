@@ -25,8 +25,8 @@ Status.Start(version): Natural Docs {0}
 Status.End: Done.
 
 Status.StartFileSearch: Searching for files...
-Status.FileSearchUpdate(files, folders): ...{0:#,0} source {0s?files:file} in {1:#,0} {1s?folders:folder} so far
-Status.EndFileSearch(files, folders): Found {0:#,0} source {0s?files:file} in {1:#,0} {1s?folders:folder}.
+Status.NumberFound(files, folders): Found {0:#,0} source {0s?files:file} in {1:#,0} {1s?folders:folder}.
+Status.SimpleOutput.UpdateNumberFound(files, folders): ...{0:#,0} source {0s?files:file} in {1:#,0} {1s?folders:folder} so far
 
 Status.RebuildEverythingByRequest: All documentation will be rebuilt.
 Status.RebuildEverythingAutomatically: All documentation needs to be rebuilt.

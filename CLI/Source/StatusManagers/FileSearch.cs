@@ -29,13 +29,34 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 			lastSourceFilesFound = 0;
 			lastSourceFoldersFound = 0;
+
+			firstLinePositionLeft = 0;
+			firstLinePositionTop = 0;
+
+			secondLinePositionLeft = 0;
+			secondLinePositionTop = 0;
 			}
 
 		protected override void ShowStartMessage ()
 			{
-			System.Console.WriteLine(
+			System.Console.Write(
 				Engine.Locale.Get("NaturalDocs.CLI", "Status.StartFileSearch")
 				);
+
+			if (!Application.SimpleOutput)
+				{
+				System.Console.Write(' ');
+				firstLinePositionLeft = System.Console.CursorLeft;
+				firstLinePositionTop = System.Console.CursorTop;
+				}
+
+			System.Console.WriteLine();
+
+			if (!Application.SimpleOutput)
+				{
+				secondLinePositionLeft = System.Console.CursorLeft;
+				secondLinePositionTop = System.Console.CursorTop;
+				}
 			}
 
 		protected override void ShowUpdateMessage ()
@@ -44,9 +65,21 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 			if (lastSourceFilesFound != status.SourceFilesFound || lastSourceFoldersFound != status.SourceFoldersFound)
 				{
-				System.Console.WriteLine(
-					Engine.Locale.Get("NaturalDocs.CLI", "Status.FileSearchUpdate(files, folders)", status.SourceFilesFound, status.SourceFoldersFound)
-					);
+				if (Application.SimpleOutput)
+					{
+					System.Console.WriteLine(
+						Engine.Locale.Get("NaturalDocs.CLI", "Status.SimpleOutput.UpdateNumberFound(files, folders)", status.SourceFilesFound, status.SourceFoldersFound)
+						);
+					}
+				else
+					{
+					System.Console.CursorLeft = secondLinePositionLeft;
+					System.Console.CursorTop = secondLinePositionTop;
+
+					System.Console.WriteLine(
+						Engine.Locale.Get("NaturalDocs.CLI", "Status.NumberFound(files, folders)", status.SourceFilesFound, status.SourceFoldersFound)
+						);
+					}
 
 				lastSourceFilesFound = status.SourceFilesFound;
 				lastSourceFoldersFound = status.SourceFoldersFound;
@@ -57,8 +90,21 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 			{
 			process.GetStatus(ref status);
 
+			if (!Application.SimpleOutput)
+				{
+				System.Console.CursorLeft = firstLinePositionLeft;
+				System.Console.CursorTop = firstLinePositionTop;
+
+				System.Console.WriteLine(
+					Engine.Locale.Get("NaturalDocs.CLI", "Status.End")
+					);
+
+				System.Console.CursorLeft = secondLinePositionLeft;
+				System.Console.CursorTop = secondLinePositionTop;
+				}
+
 			System.Console.WriteLine(
-				Engine.Locale.Get("NaturalDocs.CLI", "Status.EndFileSearch(files, folders)", status.SourceFilesFound, status.SourceFoldersFound)
+				Engine.Locale.Get("NaturalDocs.CLI", "Status.NumberFound(files, folders)", status.SourceFilesFound, status.SourceFoldersFound)
 				);
 			}
 
@@ -71,6 +117,12 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 		protected int lastSourceFoldersFound;
 		protected int lastSourceFilesFound;
+
+		protected int firstLinePositionLeft;
+		protected int firstLinePositionTop;
+
+		protected int secondLinePositionLeft;
+		protected int secondLinePositionTop;
 
 		}
 	}
