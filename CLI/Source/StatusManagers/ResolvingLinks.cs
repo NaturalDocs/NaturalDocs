@@ -64,6 +64,10 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 			int changesComplete = totalChanges - status.ChangesRemaining - status.ChangesBeingProcessed;
 			int newPercentage = (int)((100 * changesComplete) / totalChanges);
 
+			// Never display "100%" in an update message.  Reserve that for the end message.
+			if (newPercentage == 100)
+				{  newPercentage = 99;  }
+
 			// Sanity check.  We use > instead of != because we don't want the percentage to ever go down.  It's better
 			// for the percentage to just stall until it catches up again as that's less confusing to the user.
 			if (newPercentage > lastPercentage)

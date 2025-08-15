@@ -115,6 +115,10 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 			int completed = totalFilesToProcess - status.NewOrChangedFilesRemaining - status.DeletedFilesRemaining - status.FilesBeingProcessed;
 			int newPercentage = (completed * 100) / totalFilesToProcess;
 
+			// Never display "100%" in an update message.  Reserve that for the end message.
+			if (newPercentage == 100)
+				{  newPercentage = 99;  }
+
 			if (newPercentage != lastPercentage)
 				{
 				if (Application.SimpleOutput)
