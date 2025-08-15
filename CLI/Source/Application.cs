@@ -361,7 +361,7 @@ namespace CodeClear.NaturalDocs.CLI
 				return false;
 				}
 
-			System.Console.WriteLine(
+			System.Console.Write(
 				Engine.Locale.Get("NaturalDocs.CLI", "Status.CreatingProjectConfigFiles")
 				);
 
@@ -386,11 +386,18 @@ namespace CodeClear.NaturalDocs.CLI
 
 			if (errorList.Count > priorErrorCount)
 				{
+				System.Console.WriteLine();
 				ShowConsoleFooter(false);
 				return false;
 				}
 			else
 				{
+				// Make the "Done" position consistent with how it would look in a normal build
+				if (SimpleOutput)
+					{  System.Console.WriteLine();  }
+				else
+					{  System.Console.Write(' ');  }
+
 				System.Console.WriteLine(
 					Engine.Locale.Get("NaturalDocs.CLI", "Status.End")
 					);
