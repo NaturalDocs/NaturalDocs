@@ -54,6 +54,7 @@ namespace CodeClear.NaturalDocs.CLI
 			engineInstance = null;
 
 			quiet = false;
+			simpleOutput = true;
 			dashLength = 15;
 			workerThreadCount = DefaultWorkerThreadCount;
 			totalFileChanges = 0;
@@ -168,6 +169,7 @@ namespace CodeClear.NaturalDocs.CLI
 
 		private static bool BuildDocumentation (ErrorList errorList)
 			{
+			simpleOutput = System.Console.IsOutputRedirected;
 			ShowConsoleHeader();
 
 			EngineInstance.AddStartupWatcher(new EngineStartupWatcher());
@@ -826,6 +828,15 @@ namespace CodeClear.NaturalDocs.CLI
 				}
 			}
 
+		/* Property: SimpleOutput
+		 * Whether the application should only use simple console output commands.
+		 */
+		public static bool SimpleOutput
+			{
+			get
+				{  return simpleOutput;  }
+			}
+
 
 
 		// Group: Variables
@@ -839,6 +850,11 @@ namespace CodeClear.NaturalDocs.CLI
 		 * Whether the application should suppress all non-error output.
 		 */
 		static private bool quiet;
+
+		/* var: simpleOutput
+		 * Whether the application should only use simple console output commands.
+		 */
+		static private bool simpleOutput;
 
 		/* var: dashLength
 		 * The number of dashes to include in horizontal lines in the output.
