@@ -27,10 +27,15 @@ namespace CodeClear.NaturalDocs.CLI
 		// __________________________________________________________________________
 
 
-		/* Constant: StatusInterval
-		 * The amount of time in milliseconds that must go by before a status update.
+		/* Constant: SimpleOutputStatusInterval
+		 * The amount of time in milliseconds that must go by before a status update when using <SimpleOutput>.
 		 */
-		public const int StatusInterval = 5000;
+		public const int SimpleOutputStatusInterval = 500;
+
+		/* Constant: LiveOutputStatusInterval
+		 * The amount of time in milliseconds that must go by before a status update when not using <SimpleOutput>.
+		 */
+		public const int LiveOutputStatusInterval = 100;
 
 		/* Constant: DelayedMessageThreshold
 		 * The amount of time in milliseconds that certain operations must take before they warrant a status update.
@@ -55,6 +60,7 @@ namespace CodeClear.NaturalDocs.CLI
 
 			quiet = false;
 			simpleOutput = true;
+			statusInterval = SimpleOutputStatusInterval;
 			dashLength = 15;
 			workerThreadCount = DefaultWorkerThreadCount;
 			totalFileChanges = 0;
@@ -170,6 +176,9 @@ namespace CodeClear.NaturalDocs.CLI
 		private static bool BuildDocumentation (ErrorList errorList)
 			{
 			simpleOutput = System.Console.IsOutputRedirected;
+			statusInterval = (simpleOutput ? SimpleOutputStatusInterval : LiveOutputStatusInterval);
+
+
 			ShowConsoleHeader();
 
 			EngineInstance.AddStartupWatcher(new EngineStartupWatcher());
@@ -837,6 +846,15 @@ namespace CodeClear.NaturalDocs.CLI
 				{  return simpleOutput;  }
 			}
 
+		/* Property: StatusInterval
+		 * The amount of time in milliseconds that must go by before a status update.
+		 */
+		public static int StatusInterval
+			{
+			get
+				{  return statusInterval;  }
+			}
+
 
 
 		// Group: Variables
@@ -855,6 +873,11 @@ namespace CodeClear.NaturalDocs.CLI
 		 * Whether the application should only use simple console output commands.
 		 */
 		static private bool simpleOutput;
+
+		/* var: statusInterval
+		 * The amount of time in milliseconds that must go by before a status update.
+		 */
+		static private int statusInterval;
 
 		/* var: dashLength
 		 * The number of dashes to include in horizontal lines in the output.
