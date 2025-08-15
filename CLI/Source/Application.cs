@@ -251,18 +251,18 @@ namespace CodeClear.NaturalDocs.CLI
 
 				// Rebuild notice
 
-				string alternativeStartMessage = null;
+				string alternativeSummaryMessage = null;
 
 				if (EngineInstance.Config.UserWantsEverythingRebuilt ||
 					EngineInstance.Config.UserWantsOutputRebuilt)
 					{
-					alternativeStartMessage = "Status.RebuildEverythingByRequest";
+					alternativeSummaryMessage = "Status.RebuildEverythingByRequest";
 					}
 				else if (EngineInstance.HasIssues(StartupIssues.NeedToStartFresh |
 																  StartupIssues.NeedToReparseAllFiles |
 																  StartupIssues.NeedToRebuildAllOutput))
 					{
-					alternativeStartMessage = "Status.RebuildEverythingAutomatically";
+					alternativeSummaryMessage = "Status.RebuildEverythingAutomatically";
 					}
 
 
@@ -272,7 +272,7 @@ namespace CodeClear.NaturalDocs.CLI
 
 				var changeProcessor = EngineInstance.Files.CreateChangeProcessor();
 
-				using ( StatusManagers.Parsing statusManager = new StatusManagers.Parsing(changeProcessor, alternativeStartMessage) )
+				using ( StatusManagers.Parsing statusManager = new StatusManagers.Parsing(changeProcessor, alternativeSummaryMessage) )
 					{
 					statusManager.Start();
 					totalFileChanges = statusManager.TotalFilesToProcess;

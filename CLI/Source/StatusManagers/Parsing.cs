@@ -11,6 +11,7 @@
 
 
 using System;
+using System.Text;
 
 
 namespace CodeClear.NaturalDocs.CLI.StatusManagers
@@ -22,7 +23,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 		// __________________________________________________________________________
 
 
-		public Parsing (Engine.Files.ChangeProcessor process, string alternativeStartMessage = null)
+		public Parsing (Engine.Files.ChangeProcessor process, string alternativeSummaryMessage = null)
 			: base (Application.StatusInterval, acceptsInput: true)
 			{
 			this.process = process;
@@ -30,7 +31,11 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 			totalFilesToProcess = 0;
 			lastPercentage = 0;
-			this.alternativeStartMessage = alternativeStartMessage;
+			lastProgressLineLength = 0;
+			this.alternativeSummaryMessage = alternativeSummaryMessage;
+
+			progressLinePositionLeft = 0;
+			progressLinePositionTop= 0;
 
 			percentagePositionLeft = 0;
 			percentagePositionTop = 0;
@@ -41,16 +46,19 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 			process.GetStatus(ref status);
 			totalFilesToProcess = status.NewOrChangedFilesRemaining + status.DeletedFilesRemaining;
 
+			ShowChangeSummary();
+			ShowProgressLine();
+			}
 
-			// First status message to show the number of changes or whether everything needs to be rebuilt
-
+		protected void ShowChangeSummary ()
+			{
 			if (!Application.SimpleOutput)
 				{  System.Console.Write(Application.SecondaryStatusIndent);  }
 
-			if (alternativeStartMessage != null)
+			if (alternativeSummaryMessage != null)
 				{
 				System.Console.WriteLine(
-					Engine.Locale.Get("NaturalDocs.CLI", alternativeStartMessage)
+					Engine.Locale.Get("NaturalDocs.CLI", alternativeSummaryMessage)
 					);
 				}
 			else if (status.NewOrChangedFilesRemaining == 0 && status.DeletedFilesRemaining == 0)
@@ -78,32 +86,41 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 											 status.NewOrChangedFilesRemaining, status.DeletedFilesRemaining)
 					);
 				}
+			}
 
-
-			// Second status message to begin tracking the percentage
-
+		protected void ShowProgressLine ()
+			{
 			if (totalFilesToProcess > 0)
 				{
+				if (!Application.SimpleOutput)
+					{
+					progressLinePositionLeft = System.Console.CursorLeft;
+					progressLinePositionTop = System.Console.CursorTop;
+					}
+
+				string progressLine = null;
+
 				if (status.NewOrChangedFilesRemaining > 0)
 					{
-					System.Console.Write(
-						Engine.Locale.Get("NaturalDocs.CLI", "Status.StartParsingFiles")
-						);
+					progressLine = Engine.Locale.Get("NaturalDocs.CLI", "Status.StartParsingFiles");
 					}
 				else if (status.DeletedFilesRemaining > 0)
 					{
-					System.Console.Write(
-						Engine.Locale.Get("NaturalDocs.CLI", "Status.StartProcessingChanges")
-						);
+					progressLine = Engine.Locale.Get("NaturalDocs.CLI", "Status.StartProcessingChanges");
 					}
+
+				System.Console.Write(progressLine);
 
 				if (Application.SimpleOutput)
 					{  System.Console.WriteLine();  }
 				else
 					{
 					System.Console.Write(' ');
+
 					percentagePositionLeft = System.Console.CursorLeft;
 					percentagePositionTop = System.Console.CursorTop;
+
+					lastProgressLineLength = progressLine.Length + 4;  // Space + "99%"
 					}
 				}
 			}
@@ -167,6 +184,17 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 			Engine.Files.ChangeProcessorDetailedStatus status = new Engine.Files.ChangeProcessorDetailedStatus();
 			process.GetStatus(ref status);
 
+			if (!Application.SimpleOutput)
+				{
+				System.Console.CursorLeft = progressLinePositionLeft;
+				System.Console.CursorTop = progressLinePositionTop;
+
+				StringBuilder blank = new StringBuilder(lastProgressLineLength);
+				blank.Append(' ', lastProgressLineLength);
+
+				System.Console.Write(blank.ToString());
+				}
+
 			System.Console.WriteLine();
 
 
@@ -195,7 +223,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 					catch
 						{  fileName = "File ID " + fileIDBeingProcessed;  }
 
-					System.Console.WriteLine("- " + fileName);
+					System.Console.WriteLine(Application.SecondaryStatusIndent + fileName);
 					}
 
 				System.Console.WriteLine();
@@ -234,7 +262,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 					catch
 						{  fileName = "File ID " + newOrChangedFileID;  }
 
-					System.Console.WriteLine("- " + fileName);
+					System.Console.WriteLine(Application.SecondaryStatusIndent + fileName);
 
 					count--;
 					if (count == 0)
@@ -261,6 +289,13 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 				}
 
 			System.Console.WriteLine();
+			ShowProgressLine();
+
+			if (!Application.SimpleOutput)
+				{
+				lastPercentage = 0;
+				ShowUpdateMessage();
+				}
 			}
 
 
@@ -281,8 +316,13 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 		protected Engine.Files.ChangeProcessorStatus status;
 
 		protected int totalFilesToProcess;
+
 		protected int lastPercentage;
-		protected string alternativeStartMessage;
+		protected int lastProgressLineLength;
+		protected string alternativeSummaryMessage;
+
+		protected int progressLinePositionLeft;
+		protected int progressLinePositionTop;
 
 		protected int percentagePositionLeft;
 		protected int percentagePositionTop;

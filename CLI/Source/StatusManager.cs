@@ -209,7 +209,10 @@ namespace CodeClear.NaturalDocs.CLI
 				if (keyPress.Key == ConsoleKey.S ||
 					keyPress.Key == ConsoleKey.D)
 					{
-					ShowDetailedStatus();
+					lock (statusLock)
+						{
+						ShowDetailedStatus();
+						}
 					}
 				}
 
