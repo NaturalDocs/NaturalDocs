@@ -178,6 +178,16 @@ namespace CodeClear.NaturalDocs.CLI
 			simpleOutput = System.Console.IsOutputRedirected;
 			statusInterval = (simpleOutput ? SimpleOutputStatusInterval : LiveOutputStatusInterval);
 
+			try
+				{
+				// Not supported on all platforms
+				System.Console.CursorVisible = false;
+				}
+			catch
+				{  }
+
+			bool successful = true;
+
 
 			ShowConsoleHeader();
 
@@ -294,18 +304,24 @@ namespace CodeClear.NaturalDocs.CLI
 				// End
 
 				EngineInstance.Cleanup(Delegates.NeverCancel);
-
-				ShowConsoleFooter(true);
-				return true;
+				successful = true;
 				}
 
 			else // engine did not start correctly
 				{
 				executionTimer.End("Engine Startup");
-
-				ShowConsoleFooter(false);
-				return false;
+				successful = false;
 				}
+
+
+			ShowConsoleFooter(successful);
+
+			try
+				{  System.Console.CursorVisible = true;  }
+			catch
+				{  }
+
+			return successful;
 			}
 
 		private static bool CreateProjectConfiguration (ErrorList errorList)
