@@ -64,6 +64,7 @@ namespace CodeClear.NaturalDocs.CLI
 		 *		- --worker-threads, --threads
 		 *		- --pause-before-exit, --pause
 		 *		- --pause-on-error
+		 *		- --simple-console-output
 		 *		- --dont-shrink-files
 		 *		- -h, --help
 		 *		- -?
@@ -107,6 +108,9 @@ namespace CodeClear.NaturalDocs.CLI
 			commandLine.AddAliases("--pause-before-exit", "--pausebeforexit", "--pause");
 			commandLine.AddAliases("--pause-on-error", "--pauseonerror");
 			commandLine.AddAliases("--dont-shrink-files", "--dontshrinkfiles", "--dont-shrink-output", "--dontshrinkoutput", "--dont-shrink", "--dontshrink");
+			commandLine.AddAliases("--simple-console-output", "--simpleconsoleoutput", "--simple-output", "--simpleoutput",
+												 "--simple-console-status", "--simpleconsolestatus", "--simple-status", "--simplestatus",
+												 "--simple-console-updates", "--simpleconsoleupdates", "--simple-updates", "--simpleupdates");
 			commandLine.AddAliases("--worker-threads", "--threads");
 			// no aliases for --benchmark
 			commandLine.AddAliases("--help", "-h", "-?");
@@ -628,6 +632,26 @@ namespace CodeClear.NaturalDocs.CLI
 					else
 						{
 						quiet = true;
+						}
+					}
+
+
+
+				// Simple Console Output
+
+				else if (parameter == "--simple-console-output")
+					{
+					if (!commandLine.NoValue())
+						{
+						errorList.Add(
+							Locale.Get("NaturalDocs.CLI", "CommandLine.ExpectedNoValue(param)", parameterAsEntered)
+							);
+
+						commandLine.SkipToNextParameter();
+						}
+					else
+						{
+						simpleOutput = true;
 						}
 					}
 

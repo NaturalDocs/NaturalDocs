@@ -64,7 +64,7 @@ namespace CodeClear.NaturalDocs.CLI
 			engineInstance = null;
 
 			quiet = false;
-			simpleOutput = true;
+			simpleOutput = false;
 			statusInterval = SimpleOutputStatusInterval;
 			dashLength = 15;
 			workerThreadCount = DefaultWorkerThreadCount;
@@ -122,7 +122,8 @@ namespace CodeClear.NaturalDocs.CLI
 
 					// Set up live vs. simple console output and related settings
 
-					simpleOutput = System.Console.IsOutputRedirected;
+					if (System.Console.IsOutputRedirected)
+						{  simpleOutput = true;  }
 
 					try
 						{

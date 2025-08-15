@@ -233,6 +233,11 @@ Execution Parameters
     that closes automatically and you would like it to stay open if there are
     error messages.
 
+--simple-console-output
+    Make Natural Docs only use simple line-by-line methods to show progress
+    updates instead of using live-updating numbers and percentages.  This is
+    automatically applied when the console output is captured or redirected.
+
 --worker-threads
     Sets the number of worker threads Natural Docs should use for processing.
     By default it is calculated based on the number of cores present.
