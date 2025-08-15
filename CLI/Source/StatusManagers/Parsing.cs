@@ -44,6 +44,9 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 			// First status message to show the number of changes or whether everything needs to be rebuilt
 
+			if (!Application.SimpleOutput)
+				{  System.Console.Write(Application.SecondaryStatusIndent);  }
+
 			if (alternativeStartMessage != null)
 				{
 				System.Console.WriteLine(

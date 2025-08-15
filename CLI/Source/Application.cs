@@ -42,6 +42,11 @@ namespace CodeClear.NaturalDocs.CLI
 		 */
 		public const int DelayedMessageThreshold = 1500;
 
+		/* Constant: SecondaryStatusIndent
+		 * The string to use to indent secondary status messages when not using <SimpleOutput>.
+		 */
+		public const string SecondaryStatusIndent = " - ";
+
 
 
 		// Group: Primary Execution Paths

@@ -76,6 +76,8 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 					System.Console.CursorLeft = secondLinePositionLeft;
 					System.Console.CursorTop = secondLinePositionTop;
 
+					System.Console.Write(Application.SecondaryStatusIndent);
+
 					System.Console.WriteLine(
 						Engine.Locale.Get("NaturalDocs.CLI", "Status.NumberFound(files, folders)", status.SourceFilesFound, status.SourceFoldersFound)
 						);
@@ -101,6 +103,8 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 				System.Console.CursorLeft = secondLinePositionLeft;
 				System.Console.CursorTop = secondLinePositionTop;
+
+				System.Console.Write(Application.SecondaryStatusIndent);
 				}
 
 			System.Console.WriteLine(
