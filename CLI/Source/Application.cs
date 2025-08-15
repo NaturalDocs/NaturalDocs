@@ -329,6 +329,11 @@ namespace CodeClear.NaturalDocs.CLI
 				// End
 
 				EngineInstance.Cleanup(Delegates.NeverCancel);
+
+				System.Console.WriteLine(
+					Engine.Locale.Get("NaturalDocs.CLI", "Status.End")
+					);
+
 				successful = true;
 				}
 
@@ -386,6 +391,10 @@ namespace CodeClear.NaturalDocs.CLI
 				}
 			else
 				{
+				System.Console.WriteLine(
+					Engine.Locale.Get("NaturalDocs.CLI", "Status.End")
+					);
+
 				ShowConsoleFooter(true);
 				return true;
 				}
@@ -618,10 +627,6 @@ namespace CodeClear.NaturalDocs.CLI
 			{
 			if (successful)
 				{
-				System.Console.WriteLine(
-					Engine.Locale.Get("NaturalDocs.CLI", "Status.End")
-					);
-
 				StringBuilder dashedLine = new StringBuilder(dashLength);
 				dashedLine.Append('-', dashLength);
 
