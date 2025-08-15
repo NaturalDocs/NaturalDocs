@@ -89,6 +89,15 @@ namespace CodeClear.NaturalDocs.Tests.CLI
 
 		private static bool RunTests ()
 			{
+			try
+				{
+				// Not supported on all platforms
+				System.Console.CursorVisible = false;
+				}
+			catch
+				{  }
+
+
 			WriteLine();
 			WriteConsoleHeader();
 			WriteDashedLine();
@@ -149,6 +158,11 @@ namespace CodeClear.NaturalDocs.Tests.CLI
 				{  WriteLine("There were failures.");  }
 
 			WriteLine();
+
+			try
+				{  System.Console.CursorVisible = true;  }
+			catch
+				{  }
 
 			return success;
 			}
