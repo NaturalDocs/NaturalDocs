@@ -30,7 +30,7 @@ namespace CodeClear.NaturalDocs.CLI
 		/* Constant: SimpleOutputStatusInterval
 		 * The amount of time in milliseconds that must go by before a status update when using <SimpleOutput>.
 		 */
-		public const int SimpleOutputStatusInterval = 500;
+		public const int SimpleOutputStatusInterval = 5000;
 
 		/* Constant: LiveOutputStatusInterval
 		 * The amount of time in milliseconds that must go by before a status update when not using <SimpleOutput>.
