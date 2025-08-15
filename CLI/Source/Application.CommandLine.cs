@@ -27,7 +27,7 @@ namespace CodeClear.NaturalDocs.CLI
 		 * Error - There was an error on the command line.
 		 * ShowCommandLineReference - The user asked for the command line reference to be displayed.
 		 * ShowVersion - The user asked for the version number to be displayed.
-		 * ShowAllVersions - The user asked for the version number of Natural Docs and all supporting systems like .NET and Mono to be displayed.
+		 * ShowAllVersions - The user asked for the version number of Natural Docs and all supporting systems like .NET and SQLite to be displayed.
 		 * ShowEncodings - The user asked for all the supported character encodings to be displayed.
 		 */
 		public enum ParseCommandLineResult : byte
