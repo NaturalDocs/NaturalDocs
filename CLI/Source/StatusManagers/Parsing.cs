@@ -31,12 +31,18 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 			totalFilesToProcess = 0;
 			lastPercentage = 0;
 			this.alternativeStartMessage = alternativeStartMessage;
+
+			percentagePositionLeft = 0;
+			percentagePositionTop = 0;
 			}
 
 		protected override void ShowStartMessage ()
 			{
 			process.GetStatus(ref status);
 			totalFilesToProcess = status.NewOrChangedFilesRemaining + status.DeletedFilesRemaining;
+
+
+			// First status message to show the number of changes or whether everything needs to be rebuilt
 
 			if (alternativeStartMessage != null)
 				{
@@ -53,21 +59,49 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 			else if (status.NewOrChangedFilesRemaining == 0)
 				{
 				System.Console.WriteLine(
-					Engine.Locale.Get("NaturalDocs.CLI", "Status.StartFileParsing(deleted)", status.DeletedFilesRemaining)
+					Engine.Locale.Get("NaturalDocs.CLI", "Status.NumberOfChanges(deleted)", status.DeletedFilesRemaining)
 					);
 				}
 			else if (status.DeletedFilesRemaining == 0)
 				{
 				System.Console.WriteLine(
-					Engine.Locale.Get("NaturalDocs.CLI", "Status.StartFileParsing(changed)", status.NewOrChangedFilesRemaining)
+					Engine.Locale.Get("NaturalDocs.CLI", "Status.NumberOfChanges(changed)", status.NewOrChangedFilesRemaining)
 					);
 				}
 			else
 				{
 				System.Console.WriteLine(
-					Engine.Locale.Get("NaturalDocs.CLI", "Status.StartFileParsing(changed, deleted)",
+					Engine.Locale.Get("NaturalDocs.CLI", "Status.NumberOfChanges(changed, deleted)",
 											 status.NewOrChangedFilesRemaining, status.DeletedFilesRemaining)
 					);
+				}
+
+
+			// Second status message to begin tracking the percentage
+
+			if (totalFilesToProcess > 0)
+				{
+				if (status.NewOrChangedFilesRemaining > 0)
+					{
+					System.Console.Write(
+						Engine.Locale.Get("NaturalDocs.CLI", "Status.StartParsingFiles")
+						);
+					}
+				else if (status.DeletedFilesRemaining > 0)
+					{
+					System.Console.Write(
+						Engine.Locale.Get("NaturalDocs.CLI", "Status.StartUpdatingFiles")
+						);
+					}
+
+				if (Application.SimpleOutput)
+					{  System.Console.WriteLine();  }
+				else
+					{
+					System.Console.Write(' ');
+					percentagePositionLeft = System.Console.CursorLeft;
+					percentagePositionTop = System.Console.CursorTop;
+					}
 				}
 			}
 
@@ -83,11 +117,41 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 			if (newPercentage != lastPercentage)
 				{
-				System.Console.WriteLine(
-					Engine.Locale.Get("NaturalDocs.CLI", "Status.FileParsingUpdate(percent)", newPercentage)
-					);
+				if (Application.SimpleOutput)
+					{
+					System.Console.WriteLine(
+						Engine.Locale.Get("NaturalDocs.CLI", "Status.SimpleOutput.Update(percent)", newPercentage)
+						);
+					}
+				else
+					{
+					System.Console.CursorLeft = percentagePositionLeft;
+					System.Console.CursorTop = percentagePositionTop;
+
+					if (newPercentage < 10)
+						{  System.Console.Write(' ');  }
+
+					System.Console.Write(newPercentage);
+					System.Console.Write('%');
+					}
 
 				lastPercentage = newPercentage;
+				}
+			}
+
+		protected override void ShowEndMessage ()
+			{
+			if (totalFilesToProcess == 0)
+				{  return;  }
+
+			if (!Application.SimpleOutput)
+				{
+				System.Console.CursorLeft = percentagePositionLeft;
+				System.Console.CursorTop = percentagePositionTop;
+
+				System.Console.WriteLine(
+					Engine.Locale.Get("NaturalDocs.CLI", "Status.End")
+					);
 				}
 			}
 
@@ -212,6 +276,9 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 		protected int totalFilesToProcess;
 		protected int lastPercentage;
 		protected string alternativeStartMessage;
+
+		protected int percentagePositionLeft;
+		protected int percentagePositionTop;
 
 		}
 	}

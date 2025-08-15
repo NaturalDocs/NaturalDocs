@@ -28,6 +28,9 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 			totalWork = 0;
 			lastPercentageDone = 0;
+
+			percentagePositionLeft = 0;
+			percentagePositionTop = 0;
 			}
 
 		protected override void ShowStartMessage ()
@@ -37,9 +40,18 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 			totalWork = workInProgress + workRemaining;
 
-			System.Console.WriteLine(
+			System.Console.Write(
 				Engine.Locale.Get("NaturalDocs.CLI", "Status.StartOutputBuilding")
 				);
+
+			if (Application.SimpleOutput)
+				{  System.Console.WriteLine();  }
+			else
+				{
+				System.Console.Write(' ');
+				percentagePositionLeft = System.Console.CursorLeft;
+				percentagePositionTop = System.Console.CursorTop;
+				}
 			}
 
 		protected override void ShowUpdateMessage ()
@@ -65,11 +77,41 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 			// for the percentage to just stall until it catches up again as that's less confusing to the user.
 			if (newPercentage > lastPercentageDone)
 				{
-				System.Console.WriteLine(
-					Engine.Locale.Get("NaturalDocs.CLI", "Status.OutputBuildingUpdate(percent)", newPercentage)
-					);
+				if (Application.SimpleOutput)
+					{
+					System.Console.WriteLine(
+						Engine.Locale.Get("NaturalDocs.CLI", "Status.SimpleOutput.Update(percent)", newPercentage)
+						);
+					}
+				else
+					{
+					System.Console.CursorLeft = percentagePositionLeft;
+					System.Console.CursorTop = percentagePositionTop;
+
+					if (newPercentage < 10)
+						{  System.Console.Write(' ');  }
+
+					System.Console.Write(newPercentage);
+					System.Console.Write('%');
+					}
 
 				lastPercentageDone = newPercentage;
+				}
+			}
+
+		protected override void ShowEndMessage ()
+			{
+			if (totalWork == 0)
+				{  return;  }
+
+			if (!Application.SimpleOutput)
+				{
+				System.Console.CursorLeft = percentagePositionLeft;
+				System.Console.CursorTop = percentagePositionTop;
+
+				System.Console.WriteLine(
+					Engine.Locale.Get("NaturalDocs.CLI", "Status.End")
+					);
 				}
 			}
 
@@ -81,6 +123,9 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 		protected long totalWork;
 		protected int lastPercentageDone;
+
+		protected int percentagePositionLeft;
+		protected int percentagePositionTop;
 
 		}
 	}

@@ -29,6 +29,9 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 			lastPercentage = 0;
 			totalChanges = 0;
+
+			percentagePositionLeft = 0;
+			percentagePositionTop = 0;
 			}
 
 		protected override void ShowStartMessage ()
@@ -36,9 +39,18 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 			process.GetStatus(ref status);
 			totalChanges = status.ChangesBeingProcessed + status.ChangesRemaining;
 
-			System.Console.WriteLine(
+			System.Console.Write(
 				Engine.Locale.Get("NaturalDocs.CLI", "Status.StartLinkResolving")
 				);
+
+			if (Application.SimpleOutput)
+				{  System.Console.WriteLine();  }
+			else
+				{
+				System.Console.Write(' ');
+				percentagePositionLeft = System.Console.CursorLeft;
+				percentagePositionTop = System.Console.CursorTop;
+				}
 			}
 
 		protected override void ShowUpdateMessage ()
@@ -56,11 +68,41 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 			// for the percentage to just stall until it catches up again as that's less confusing to the user.
 			if (newPercentage > lastPercentage)
 				{
-				System.Console.WriteLine(
-					Engine.Locale.Get("NaturalDocs.CLI", "Status.LinkResolvingUpdate(percent)", newPercentage)
-					);
+				if (Application.SimpleOutput)
+					{
+					System.Console.WriteLine(
+						Engine.Locale.Get("NaturalDocs.CLI", "Status.SimpleOutput.Update(percent)", newPercentage)
+						);
+					}
+				else
+					{
+					System.Console.CursorLeft = percentagePositionLeft;
+					System.Console.CursorTop = percentagePositionTop;
+
+					if (newPercentage < 10)
+						{  System.Console.Write(' ');  }
+
+					System.Console.Write(newPercentage);
+					System.Console.Write('%');
+					}
 
 				lastPercentage = newPercentage;
+				}
+			}
+
+		protected override void ShowEndMessage ()
+			{
+			if (totalChanges == 0)
+				{  return;  }
+
+			if (!Application.SimpleOutput)
+				{
+				System.Console.CursorLeft = percentagePositionLeft;
+				System.Console.CursorTop = percentagePositionTop;
+
+				System.Console.WriteLine(
+					Engine.Locale.Get("NaturalDocs.CLI", "Status.End")
+					);
 				}
 			}
 
@@ -73,6 +115,9 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 		protected int lastPercentage;
 		protected int totalChanges;
+
+		protected int percentagePositionLeft;
+		protected int percentagePositionTop;
 
 		}
 	}
