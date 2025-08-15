@@ -67,6 +67,9 @@ namespace CodeClear.NaturalDocs.CLI
 		 */
 		public StatusManager (int updateInterval, int hideIfShorterThan = 0, bool acceptsInput = false)
 			{
+			inProgress = false;
+			statusLock = new object();
+
 			this.updateInterval = updateInterval;
 			this.hideIfShorterThan = hideIfShorterThan;
 
@@ -101,14 +104,19 @@ namespace CodeClear.NaturalDocs.CLI
 		 */
 		virtual public void Start ()
 			{
-			if (hideIfShorterThan == 0)
-				{  ShowStartMessage();  }
+			lock (statusLock)
+				{
+				if (hideIfShorterThan == 0)
+					{  ShowStartMessage();  }
 
-			if (updateTimer != null)
-				{  updateTimer.Start();  }
+				inProgress = true;
 
-			if (inputTimer != null)
-				{  inputTimer.Start();  }
+				if (updateTimer != null)
+					{  updateTimer.Start();  }
+
+				if (inputTimer != null)
+					{  inputTimer.Start();  }
+				}
 			}
 
 
@@ -118,38 +126,50 @@ namespace CodeClear.NaturalDocs.CLI
 		 */
 		protected void Update (Object sender, System.Timers.ElapsedEventArgs args)
 			{
-			if (hideIfShorterThan > 0)
+			lock (statusLock)
 				{
-				ShowStartMessage();
-				hideIfShorterThan = 0;
+				// It's possible this function was fired after the task ended, so recheck that things are still in progress before
+				// doing anything
+				if (!inProgress)
+					{  return;  }
 
-				if (updateInterval > 0)
+				if (hideIfShorterThan > 0)
 					{
-					updateTimer.Interval = updateInterval;
+					ShowStartMessage();
+					hideIfShorterThan = 0;
+
+					if (updateInterval > 0)
+						{
+						updateTimer.Interval = updateInterval;
+						updateTimer.Start();
+						}
+					}
+				else
+					{
+					ShowUpdateMessage();
 					updateTimer.Start();
 					}
 				}
-			else
-				{
-				ShowUpdateMessage();
-				updateTimer.Start();
-				}
 			}
-
 
 		/* Function: End
 		 * Ends monitoring.
 		 */
 		public void End ()
 			{
-			if (inputTimer != null)
-				{  inputTimer.Stop();  }
+			lock (statusLock)
+				{
+				inProgress = false;
 
-			if (updateTimer != null)
-				{  updateTimer.Stop();  }
+				if (inputTimer != null)
+					{  inputTimer.Stop();  }
 
-			if (hideIfShorterThan == 0)
-				{  ShowEndMessage();  }
+				if (updateTimer != null)
+					{  updateTimer.Stop();  }
+
+				if (hideIfShorterThan == 0)
+					{  ShowEndMessage();  }
+				}
 			}
 
 
@@ -157,18 +177,21 @@ namespace CodeClear.NaturalDocs.CLI
 		 */
 		public void Dispose ()
 			{
-			if (updateTimer != null)
+			lock (statusLock)
 				{
-				updateTimer.Stop();
-				updateTimer.Dispose();
-				updateTimer = null;
-				}
+				if (updateTimer != null)
+					{
+					updateTimer.Stop();
+					updateTimer.Dispose();
+					updateTimer = null;
+					}
 
-			if (inputTimer != null)
-				{
-				inputTimer.Stop();
-				inputTimer.Dispose();
-				inputTimer = null;
+				if (inputTimer != null)
+					{
+					inputTimer.Stop();
+					inputTimer.Dispose();
+					inputTimer = null;
+					}
 				}
 			}
 
@@ -235,6 +258,12 @@ namespace CodeClear.NaturalDocs.CLI
 		// __________________________________________________________________________
 
 
+		/* var: inProgress
+		 * Whether the action being tracked is in progress or not.  Will be false if it hasn't been started yet or if it has
+		 * completed.
+		 */
+		protected bool inProgress;
+
 		/* var: updateTimer
 		 * The timer used to call <Update()>.
 		 */
@@ -256,6 +285,11 @@ namespace CodeClear.NaturalDocs.CLI
 		 * The timer used to check for keyboard input, or null if one isn't needed.
 		 */
 		protected System.Timers.Timer inputTimer;
+
+		/* var: statusLock
+		 * An object for the status functions to use for locking so that no two are executing at the same time.
+		 */
+		protected object statusLock;
 
 		}
 	}
