@@ -35,7 +35,7 @@ namespace CodeClear.NaturalDocs.CLI
 		/* Constant: LiveOutputStatusInterval
 		 * The amount of time in milliseconds that must go by before a status update when not using <SimpleOutput>.
 		 */
-		public const int LiveOutputStatusInterval = 100;
+		public const int LiveOutputStatusInterval = 200;
 
 		/* Constant: DelayedMessageThreshold
 		 * The amount of time in milliseconds that certain operations must take before they warrant a status update.
