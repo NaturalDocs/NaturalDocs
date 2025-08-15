@@ -90,7 +90,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 				else if (status.DeletedFilesRemaining > 0)
 					{
 					System.Console.Write(
-						Engine.Locale.Get("NaturalDocs.CLI", "Status.StartUpdatingFiles")
+						Engine.Locale.Get("NaturalDocs.CLI", "Status.StartProcessingChanges")
 						);
 					}
 
