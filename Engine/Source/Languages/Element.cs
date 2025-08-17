@@ -15,6 +15,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text;
 using CodeClear.NaturalDocs.Engine.Links;
 using CodeClear.NaturalDocs.Engine.Tokenization;
 using CodeClear.NaturalDocs.Engine.Topics;
@@ -23,6 +25,7 @@ using CodeClear.NaturalDocs.Engine.Topics;
 namespace CodeClear.NaturalDocs.Engine.Languages
 	{
 
+	[DebuggerDisplay("{DebuggerDisplay,nq}")]
 	public class Element
 		{
 
@@ -171,6 +174,42 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					{  flags |= Flags.InCode;  }
 				else
 					{  flags &= ~Flags.InCode;  }
+				}
+			}
+
+
+		/* Property: DebuggerDisplay
+		 * Shows information about the element when debugging Natural Docs.
+		 */
+		internal string DebuggerDisplay
+			{
+			get
+				{
+				StringBuilder debuggerDisplay = new StringBuilder();
+
+				if (this is ParentElement)
+					{
+					if ((this as ParentElement).IsRootElement)
+						{  debuggerDisplay.Append("Root ");  }
+					else
+						{  debuggerDisplay.Append("Parent ");  }
+					}
+
+				if (InCode && InComments)
+					{  debuggerDisplay.Append("Code+Comment ");  }
+				else if (InCode)
+					{  debuggerDisplay.Append("Code ");  }
+				else if (InComments)
+					{  debuggerDisplay.Append("Comment ");  }
+
+				debuggerDisplay.Append("Element - ");
+
+				if (topic == null)
+					{  debuggerDisplay.Append("(no topic)");  }
+				else
+					{  debuggerDisplay.Append(topic.DebuggerDisplay);  }
+
+				return debuggerDisplay.ToString();
 				}
 			}
 

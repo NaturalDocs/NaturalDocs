@@ -11,12 +11,15 @@
 
 
 using System;
+using System.Diagnostics;
+using System.Text;
 using CodeClear.NaturalDocs.Engine.Prototypes;
 using CodeClear.NaturalDocs.Engine.Symbols;
 
 
 namespace CodeClear.NaturalDocs.Engine.Topics
 	{
+	[DebuggerDisplay("{DebuggerDisplay,nq}")]
 	public class Topic
 		{
 
@@ -414,20 +417,6 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 
 			return tagIDs.Contains(tagID);
 			}
-
-
-		/* Function: ToString
-		 * This is only available to aid debugging in Visual Studio.  When you have a list of objects it puts the result of
-		 * ToString() next to each one.  You should not rely on it for anything else.
-		 */
-		override public string ToString ()
-			{
-			if (isEmbedded)
-				{  return "> " + title;  }
-			else
-				{  return title;  }
-			}
-
 
 
 
@@ -1404,6 +1393,35 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 				var commentType = CommentTypes.FromID(commentTypeID);
 
 				return (commentType.InHierarchy && isList == false);
+				}
+			}
+
+
+		/* Property: DebuggerDisplay
+		 * Shows the comment type and title when debugging Natural Docs.
+		 */
+		internal string DebuggerDisplay
+			{
+			get
+				{
+				StringBuilder debuggerDisplay = new StringBuilder();
+
+				var commentType = EngineInstance.CommentTypes.FromID(commentTypeID);
+
+				if (commentType != null)
+					{  debuggerDisplay.Append(commentType.Name + ": ");  }
+				else
+					{  debuggerDisplay.Append("Comment Type ID " + commentTypeID + ": ");  }
+
+				if (title != null)
+					{  debuggerDisplay.Append(title);  }
+				else
+					{  debuggerDisplay.Append("(no title)");  }
+
+				if (isEmbedded)
+					{  debuggerDisplay.Append(" (embedded)");  }
+
+				return debuggerDisplay.ToString();
 				}
 			}
 
