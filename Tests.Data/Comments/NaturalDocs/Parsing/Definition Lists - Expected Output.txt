@@ -11,3 +11,5 @@
 <p>zzz zzz zzz.  A - aaa aaa aaa.</p>
 -----
 <dl><de>-i</de><dd><p>This is a definition list, not a bullet list.</p></dd></dl>
+-----
+<dl><de>This should work</de><dd><p>as a definition list.</p></dd></dl><p>This should not &quot;work - as a&quot; definition list.</p><p>This should not (work - as a) definition list.</p><p>This should not &quot;[work] - [as a]&quot; definition list.</p><dl><de>This should [work]</de><dd><p>&quot;as a&quot; definition list.</p></dd><de>This should [work</de><dd><p>as a&quot; definition list.</p></dd><de>This should &quot;work</de><dd><p>as a definition list since the close&quot; is on a different line.</p></dd><de>This should [work</de><dd><p>as a definition list since the close] is on a different line.</p></dd></dl>

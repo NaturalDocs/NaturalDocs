@@ -51,3 +51,24 @@ Topic: Blank line above list is required
 Topic: Traps
 
 	-i - This is a definition list, not a bullet list.
+
+
+Topic: Quotes and braces
+
+	This should work - as a definition list.
+
+	This should not "work - as a" definition list.
+
+	This should not (work - as a) definition list.
+
+	This should not "[work] - [as a]" definition list.
+
+	This should [work] - "as a" definition list.
+
+	This should [work - as a" definition list.
+
+	This should "work - as a definition list
+	since the close" is on a different line.
+
+	This should [work - as a definition list
+	since the close] is on a different line.
