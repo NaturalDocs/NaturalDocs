@@ -15,7 +15,6 @@
     <FileVersion>2.4.0.11</FileVersion>
     <PackageProjectUrl>https://www.naturaldocs.org</PackageProjectUrl>
     <RunPostBuildEvent></RunPostBuildEvent>
-    <NuGetAuditMode>all</NuGetAuditMode>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <LangVersion>default</LangVersion>
     <WarningLevel>9999</WarningLevel>
@@ -29,30 +28,35 @@
     <AppendTargetFrameworkToIntermediateOutputPath>false</AppendTargetFrameworkToIntermediateOutputPath>
     <AppendRuntimeIdentifierToIntermediateOutputPath>false</AppendRuntimeIdentifierToIntermediateOutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <Optimize>False</Optimize>
     <DebugType>pdbonly</DebugType>
+    <NuGetAudit>False</NuGetAudit>
     <WarningsNotAsErrors>NU1900;CS0219;CS0162</WarningsNotAsErrors>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>True</Optimize>
     <DebugType>pdbonly</DebugType>
+    <NuGetAudit>True</NuGetAudit>
+    <NuGetAuditMode>all</NuGetAuditMode>
     <WarningsNotAsErrors>NU1900</WarningsNotAsErrors>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Publish'">
+  <PropertyGroup Condition="'$(Configuration)' == 'Publish'">
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>True</Optimize>
     <DebugType>none</DebugType>
+    <NuGetAudit>True</NuGetAudit>
+    <NuGetAuditMode>all</NuGetAuditMode>
     <WarningsNotAsErrors>NU1900</WarningsNotAsErrors>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Platform)'=='Windows x64'">
+  <PropertyGroup Condition="'$(Platform)' == 'Windows x64'">
 	<RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <PlatformTarget>x64</PlatformTarget>
     <DefineConstants>WINDOWS;X64</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Platform)'=='Windows ARM64'">
+  <PropertyGroup Condition="'$(Platform)' == 'Windows ARM64'">
 	<RuntimeIdentifier>win-arm64</RuntimeIdentifier>
     <PlatformTarget>ARM64</PlatformTarget>
     <DefineConstants>WINDOWS;ARM64</DefineConstants>
