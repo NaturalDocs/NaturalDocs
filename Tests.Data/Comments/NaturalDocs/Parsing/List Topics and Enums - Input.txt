@@ -39,4 +39,3 @@ Enum: Enumeration
 		G - Switching to another heading should still create symbols.
 		H - hhh hhh hhh.
 		I - iii iii iii.
-s
