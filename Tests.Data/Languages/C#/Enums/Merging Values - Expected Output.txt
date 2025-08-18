@@ -1,0 +1,170 @@
+
+Group: Descriptions in Comment
+
+-----
+
+Enum: DescriptionsInCommentA
+
+   Prototype: enum DescriptionsInCommentA
+
+   Members:
+      A - <p>Comment description of A</p>
+      B - <p>Comment description of B</p>
+      C - <p>Comment description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Comment description of A</p></dd><ds>B</ds><dd><p>Comment description of B</p></dd><ds>C</ds><dd><p>Comment description of C</p></dd></dl>
+
+-----
+
+Enum: DescriptionsInCommentB
+
+   Prototype: enum DescriptionsInCommentB
+
+   Members:
+      A - <p>Comment description of A</p>
+      B - <p>Comment description of B</p>
+      C - <p>Comment description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Comment description of A</p></dd><ds>B</ds><dd><p>Comment description of B</p></dd><ds>C</ds><dd><p>Comment description of C</p></dd></dl>
+
+-----
+
+Enum: DescriptionsInCommentC
+
+   Prototype: [Flags] enum DescriptionsInCommentC : byte
+
+   Members:
+      A - <p>Comment description of A</p>
+      B - <p>Comment description of B</p>
+      C - <p>Comment description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Comment description of A</p></dd><ds>B</ds><dd><p>Comment description of B</p></dd><ds>C</ds><dd><p>Comment description of C</p></dd></dl>
+
+-----
+
+Group: Descriptions Inline
+
+-----
+
+Enum: DescriptionsInlineA
+
+   Prototype: enum DescriptionsInlineA
+
+   Members:
+      A - <p>Inline description of A</p>
+      B - <p>Inline description of B</p>
+      C - <p>Inline description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Inline description of A</p></dd><ds>B</ds><dd><p>Inline description of B</p></dd><ds>C</ds><dd><p>Inline description of C</p></dd></dl>
+
+-----
+
+Enum: DescriptionsInlineB
+
+   Prototype: enum DescriptionsInlineB
+
+   Members:
+      A - <p>Inline description of A</p>
+      B - <p>Inline description of B</p>
+      C - <p>Inline description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Inline description of A</p></dd><ds>B</ds><dd><p>Inline description of B</p></dd><ds>C</ds><dd><p>Inline description of C</p></dd></dl>
+
+-----
+
+Enum: DescriptionsInlineC
+
+   Prototype: [Flags] enum DescriptionsInlineC : byte
+
+   Members:
+      A - <p>Inline description of A</p>
+      B - <p>Inline description of B</p>
+      C - <p>Inline description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Inline description of A</p></dd><ds>B</ds><dd><p>Inline description of B</p></dd><ds>C</ds><dd><p>Inline description of C</p></dd></dl>
+
+-----
+
+Group: Descriptions in Both
+
+-----
+
+Enum: DescriptionsInBothA
+
+   Prototype: enum DescriptionsInBothA
+
+   Members:
+      A - <p>Comment description of A</p>
+      B - <p>Comment description of B</p>
+      C - <p>Comment description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Comment description of A</p></dd><ds>B</ds><dd><p>Comment description of B</p></dd><ds>C</ds><dd><p>Comment description of C</p></dd></dl>
+
+-----
+
+Enum: DescriptionsInBothB
+
+   Prototype: enum DescriptionsInBothB
+
+   Members:
+      A - <p>Comment description of A</p>
+      B - <p>Comment description of B</p>
+      C - <p>Comment description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Comment description of A</p></dd><ds>B</ds><dd><p>Comment description of B</p></dd><ds>C</ds><dd><p>Comment description of C</p></dd></dl>
+
+-----
+
+Enum: DescriptionsInBothC
+
+   Prototype: [Flags] enum DescriptionsInBothC : byte
+
+   Members:
+      A - <p>Comment description of A</p>
+      B - <p>Comment description of B</p>
+      C - <p>Comment description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Comment description of A</p></dd><ds>B</ds><dd><p>Comment description of B</p></dd><ds>C</ds><dd><p>Comment description of C</p></dd></dl>
+
+-----
+
+Group: Mixed Descriptions
+
+-----
+
+Enum: MixedDescriptionsA
+
+   Prototype: enum MixedDescriptionsA
+
+   Members:
+      A - <p>Comment description of A</p>
+      B - <p>Inline description of B</p>
+      C - <p>Inline description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Comment description of A</p></dd><ds>B</ds><dd><p>Inline description of B</p></dd><ds>C</ds><dd><p>Inline description of C</p></dd></dl>
+
+-----
+
+Enum: MixedDescriptionsB
+
+   Prototype: enum MixedDescriptionsB
+
+   Members:
+      A - <p>Inline description of A</p>
+      B - <p>Inline description of B</p>
+      C - <p>Comment description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Inline description of A</p></dd><ds>B</ds><dd><p>Inline description of B</p></dd><ds>C</ds><dd><p>Comment description of C</p></dd></dl>
+
+-----
+
+Enum: MixedDescriptionsC
+
+   Prototype: [Flags] enum MixedDescriptionsC : byte
+
+   Members:
+      A - <p>Comment description of A</p>
+      B - <p>Inline description of B</p>
+      C - <p>Comment description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Comment description of A</p></dd><ds>B</ds><dd><p>Inline description of B</p></dd><ds>C</ds><dd><p>Comment description of C</p></dd></dl>

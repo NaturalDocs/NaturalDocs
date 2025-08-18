@@ -1,0 +1,112 @@
+
+Enum: MultilineLineCommentsA
+
+   Prototype: enum MultilineLineCommentsA
+
+   Members:
+      A - <p>Line comment description of A line 1.  Line comment description of A line 2.</p>
+      B - <p>Line comment description of B line 1.</p><p>Line comment description of B line 3, new paragraph.</p>
+      C - <p>Line comment description of C line 1.</p>
+      D - <p>Line comment description of D line 1.  Line comment description of D line 2.</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Line comment description of A line 1.  Line comment description of A line 2.</p></dd><ds>B</ds><dd><p>Line comment description of B line 1.</p><p>Line comment description of B line 3, new paragraph.</p></dd><ds>C</ds><dd><p>Line comment description of C line 1.</p></dd><ds>D</ds><dd><p>Line comment description of D line 1.  Line comment description of D line 2.</p></dd></dl>
+
+-----
+
+Enum: MultilineLineCommentsB
+
+   Prototype: enum MultilineLineCommentsB
+
+   Members:
+      A - <p>Line comment description of A line 1.  Line comment description of A line 2.</p>
+      B - <p>Line comment description of B line 1.</p><p>Line comment description of B line 3, new paragraph.</p>
+      C - <p>Line comment description of C line 1.</p>
+      D - <p>Line comment description of D line 1.  Line comment description of D line 2.</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Line comment description of A line 1.  Line comment description of A line 2.</p></dd><ds>B</ds><dd><p>Line comment description of B line 1.</p><p>Line comment description of B line 3, new paragraph.</p></dd><ds>C</ds><dd><p>Line comment description of C line 1.</p></dd><ds>D</ds><dd><p>Line comment description of D line 1.  Line comment description of D line 2.</p></dd></dl>
+
+-----
+
+Enum: MultilineBlockCommentsA
+
+   Prototype: enum MultilineBlockCommentsA
+
+   Members:
+      A - <p>Block comment description of A line 1.  Block comment description of A line 2.</p>
+      B - <p>Block comment description of B line 1.  Block comment description of B line 2.</p>
+      C - <p>Block comment description of C line 1.</p><p>Block comment description of C line 3, new paragraph.</p>
+      D - <p>Block comment description of D line 1.</p><p>Block comment description of D line 3, new paragraph.</p>
+      E - <p>Block comment description of E line 1.</p><p>Block comment description of E line 3, new paragraph.</p>
+      F - <p>Block comment description of F line 1.</p><p>Block comment description of F line 3, new paragraph.</p>
+      G - <p>Block comment description of G line 1.</p>
+      H - <p>Block comment description of H line 1.</p>
+      I - <p>Block comment description of I line 1.  Block comment description of I line 2.</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Block comment description of A line 1.  Block comment description of A line 2.</p></dd><ds>B</ds><dd><p>Block comment description of B line 1.  Block comment description of B line 2.</p></dd><ds>C</ds><dd><p>Block comment description of C line 1.</p><p>Block comment description of C line 3, new paragraph.</p></dd><ds>D</ds><dd><p>Block comment description of D line 1.</p><p>Block comment description of D line 3, new paragraph.</p></dd><ds>E</ds><dd><p>Block comment description of E line 1.</p><p>Block comment description of E line 3, new paragraph.</p></dd><ds>F</ds><dd><p>Block comment description of F line 1.</p><p>Block comment description of F line 3, new paragraph.</p></dd><ds>G</ds><dd><p>Block comment description of G line 1.</p></dd><ds>H</ds><dd><p>Block comment description of H line 1.</p></dd><ds>I</ds><dd><p>Block comment description of I line 1.  Block comment description of I line 2.</p></dd></dl>
+
+-----
+
+Enum: MultilineBlockCommentsB
+
+   Prototype: enum MultilineBlockCommentsB
+
+   Members:
+      A - <p>Block comment description of A line 1.  Block comment description of A line 2.</p>
+      B - <p>Block comment description of B line 1.  Block comment description of B line 2.</p>
+      C - <p>Block comment description of C line 1.</p><p>Block comment description of C line 3, new paragraph.</p>
+      D - <p>Block comment description of D line 1.</p><p>Block comment description of D line 3, new paragraph.</p>
+      E - <p>Block comment description of E line 1.</p><p>Block comment description of E line 3, new paragraph.</p>
+      F - <p>Block comment description of F line 1.</p><p>Block comment description of F line 3, new paragraph.</p>
+      G - <p>Block comment description of G line 1.</p>
+      H - <p>Block comment description of H line 1.</p>
+      I - <p>Block comment description of I line 1.  Block comment description of I line 2.</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Block comment description of A line 1.  Block comment description of A line 2.</p></dd><ds>B</ds><dd><p>Block comment description of B line 1.  Block comment description of B line 2.</p></dd><ds>C</ds><dd><p>Block comment description of C line 1.</p><p>Block comment description of C line 3, new paragraph.</p></dd><ds>D</ds><dd><p>Block comment description of D line 1.</p><p>Block comment description of D line 3, new paragraph.</p></dd><ds>E</ds><dd><p>Block comment description of E line 1.</p><p>Block comment description of E line 3, new paragraph.</p></dd><ds>F</ds><dd><p>Block comment description of F line 1.</p><p>Block comment description of F line 3, new paragraph.</p></dd><ds>G</ds><dd><p>Block comment description of G line 1.</p></dd><ds>H</ds><dd><p>Block comment description of H line 1.</p></dd><ds>I</ds><dd><p>Block comment description of I line 1.  Block comment description of I line 2.</p></dd></dl>
+
+-----
+
+Enum: VerticalLinesAndExtraSymbolsA
+
+   Prototype: enum VerticalLinesAndExtraSymbolsA
+
+   Members:
+      A - <p>Description of A line 1.  Description of A line 2.  Description of A line 3.</p>
+      B - <p>Description of B line 1.  Description of B line 2.  Description of B line 3.</p>
+      C - <p>Description of C line 1.  Description of C line 2.  Description of C line 3.</p>
+      D - <p>Description of D line 1.  Description of D line 2.  Description of D line 3.</p>
+      E - <p>Description of E line 1.  Description of E line 2.  Description of E line 3.</p>
+      F - <p>Description of F line 1.  Description of F line 2.  Description of F line 3.</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Description of A line 1.  Description of A line 2.  Description of A line 3.</p></dd><ds>B</ds><dd><p>Description of B line 1.  Description of B line 2.  Description of B line 3.</p></dd><ds>C</ds><dd><p>Description of C line 1.  Description of C line 2.  Description of C line 3.</p></dd><ds>D</ds><dd><p>Description of D line 1.  Description of D line 2.  Description of D line 3.</p></dd><ds>E</ds><dd><p>Description of E line 1.  Description of E line 2.  Description of E line 3.</p></dd><ds>F</ds><dd><p>Description of F line 1.  Description of F line 2.  Description of F line 3.</p></dd></dl>
+
+-----
+
+Enum: VerticalLinesAndExtraSymbolsB
+
+   Prototype: enum VerticalLinesAndExtraSymbolsB
+
+   Members:
+      A - <p>Description of A line 1.</p><p>Description of A line 3.</p>
+      B - <p>Description of B line 1.</p><p>Description of B line 3.</p>
+      C - <p>Description of C line 1.</p><p>Description of C line 3.</p>
+      D - <p>Description of D line 1.</p><p>Description of D line 3.</p>
+      E - <p>Description of E line 1.</p><p>Description of E line 3.</p>
+      F - <p>Description of F line 1.</p><p>Description of F line 3.</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Description of A line 1.</p><p>Description of A line 3.</p></dd><ds>B</ds><dd><p>Description of B line 1.</p><p>Description of B line 3.</p></dd><ds>C</ds><dd><p>Description of C line 1.</p><p>Description of C line 3.</p></dd><ds>D</ds><dd><p>Description of D line 1.</p><p>Description of D line 3.</p></dd><ds>E</ds><dd><p>Description of E line 1.</p><p>Description of E line 3.</p></dd><ds>F</ds><dd><p>Description of F line 1.</p><p>Description of F line 3.</p></dd></dl>
+
+-----
+
+Enum: VerticalLinesAndExtraSymbolsC
+
+   Prototype: enum VerticalLinesAndExtraSymbolsC
+
+   Members:
+      A - <p>Description of A.</p>
+      B - <p>Description of B.</p>
+      C - <p>Description of C.</p>
+      D - <p>Description of D.</p>
+      E - <p>Description of E.</p>
+      F - <p>Description of F.</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Description of A.</p></dd><ds>B</ds><dd><p>Description of B.</p></dd><ds>C</ds><dd><p>Description of C.</p></dd><ds>D</ds><dd><p>Description of D.</p></dd><ds>E</ds><dd><p>Description of E.</p></dd><ds>F</ds><dd><p>Description of F.</p></dd></dl>

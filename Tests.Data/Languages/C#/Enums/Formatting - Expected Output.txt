@@ -1,0 +1,11 @@
+
+Enum: BasicFormatting
+
+   Prototype: enum BasicFormatting
+
+   Members:
+      A - <p>Comment description of A with <b>bold</b> and <u>underline</u> and <link type="email" target="email@addresses.com"> and <link type="url" target="https://www.naturaldocs.org"> and <link type="url" target="https://www.naturaldocs.org" text="named links">.</p>
+      B - <p>Inline description of B with <b>bold</b> and <u>underline</u> and <link type="email" target="email@addresses.com"> and <link type="url" target="https://www.naturaldocs.org"> and <link type="url" target="https://www.naturaldocs.org" text="named links">.</p>
+      C - <p>Inline description of C with <b>bold</b> and <u>underline</u> and <link type="email" target="email@addresses.com"> and <link type="url" target="https://www.naturaldocs.org"> and <link type="url" target="https://www.naturaldocs.org" text="named links">.</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Comment description of A with <b>bold</b> and <u>underline</u> and <link type="email" target="email@addresses.com"> and <link type="url" target="https://www.naturaldocs.org"> and <link type="url" target="https://www.naturaldocs.org" text="named links">.</p></dd><ds>B</ds><dd><p>Inline description of B with <b>bold</b> and <u>underline</u> and <link type="email" target="email@addresses.com"> and <link type="url" target="https://www.naturaldocs.org"> and <link type="url" target="https://www.naturaldocs.org" text="named links">.</p></dd><ds>C</ds><dd><p>Inline description of C with <b>bold</b> and <u>underline</u> and <link type="email" target="email@addresses.com"> and <link type="url" target="https://www.naturaldocs.org"> and <link type="url" target="https://www.naturaldocs.org" text="named links">.</p></dd></dl>

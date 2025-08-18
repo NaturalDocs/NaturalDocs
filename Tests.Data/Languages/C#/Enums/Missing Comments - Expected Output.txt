@@ -1,0 +1,91 @@
+
+Enum: NoComments
+
+   Prototype: enum NoComments
+
+   Members:
+      A
+      B
+      C
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Enum: NoValueCommentsA
+
+   Prototype: enum NoValueCommentsA
+
+   Members:
+      A
+      B
+      C
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Enum: NoValueCommentsB
+
+   Prototype: enum NoValueCommentsB
+
+   Members:
+      A
+      B
+      C
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Enum: NoValueCommentsC
+
+   Prototype: [Flags] enum NoValueCommentsC : byte
+
+   Members:
+      A
+      B
+      C
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Enum: NoParentCommentsA
+
+   Prototype: enum NoParentCommentsA
+
+   Members:
+      A - <p>Inline description of A</p>
+      B - <p>Inline description of B</p>
+      C - <p>Inline description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Inline description of A</p></dd><ds>B</ds><dd><p>Inline description of B</p></dd><ds>C</ds><dd><p>Inline description of C</p></dd></dl>
+
+-----
+
+Enum: NoParentCommentsB
+
+   Prototype: [Flags] enum NoParentCommentsB : byte
+
+   Members:
+      A - <p>Inline description of A</p>
+      B
+      C - <p>Inline description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Inline description of A</p></dd><ds>B</ds><dd></dd><ds>C</ds><dd><p>Inline description of C</p></dd></dl>
+
+-----
+
+Enum: EmptyInlineComments
+
+   Prototype: enum EmptyInlineComments
+
+   Members:
+      A
+      B
+      C
+      D
+      E
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd><ds>D</ds><dd></dd><ds>E</ds><dd></dd></dl>

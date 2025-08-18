@@ -1,0 +1,11 @@
+
+Enum: HeaderlessComments
+
+   Prototype: enum HeaderlessComments
+
+   Members:
+      A - <p>Comment description of A</p>
+      B - <p>Comment description of B</p>
+      C - <p>Inline description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Comment description of A</p></dd><ds>B</ds><dd><p>Comment description of B</p></dd><ds>C</ds><dd><p>Inline description of C</p></dd></dl>
