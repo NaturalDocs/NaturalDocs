@@ -37,6 +37,8 @@ namespace CodeClear.NaturalDocs.Tests.CLI
 
 		static Application ()
 			{
+			testFolderPath = null;
+			testFolders = null;
 			dashedLineLength = 15;
 			longestPrettyTestPathLength = 0;
 			pauseOnError = false;
@@ -103,7 +105,6 @@ namespace CodeClear.NaturalDocs.Tests.CLI
 			WriteDashedLine();
 			WriteLine();
 
-			List<TestFolder> testFolders;
 			ErrorList errorList = new ErrorList ();
 			bool success = true;
 			bool lastFolderSucceeded = true;
@@ -172,14 +173,24 @@ namespace CodeClear.NaturalDocs.Tests.CLI
 			{
 			string prettyTestFolderPath = PrettifyTestFolderPath(testFolder.Path);
 
-			Write("  " + prettyTestFolderPath + " ");
+			Write("  " + prettyTestFolderPath);
 
-			int dotCount = 2 + (longestPrettyTestPathLength - prettyTestFolderPath.Length);
-			StringBuilder dots = new StringBuilder(dotCount);
-			dots.Append('.', dotCount);
-			Write(dots.ToString(), ConsoleColor.Dots);
+			if (testFolders.Count == 1)
+				{
+				Write("... ");
+				}
+			else
+				{
+				Write(" ");
 
-			Write(" ");
+				int dotCount = 2 + (longestPrettyTestPathLength - prettyTestFolderPath.Length);
+
+				StringBuilder dots = new StringBuilder(dotCount);
+				dots.Append('.', dotCount);
+				Write(dots.ToString(), ConsoleColor.Dots);
+
+				Write(" ");
+				}
 
 			int statusLeft = System.Console.CursorLeft;
 			int statusTop = System.Console.CursorTop;
@@ -503,6 +514,8 @@ namespace CodeClear.NaturalDocs.Tests.CLI
 		 * The folder of files being tested, plus all its subfolders.
 		 */
 		static private AbsolutePath testFolderPath;
+
+		static private List<TestFolder> testFolders;
 
 		/* var: dashedLineLength
 		 * The number of dashes to include in horizontal lines in the output.
