@@ -27,7 +27,7 @@ namespace CodeClear.NaturalDocs.Tests.CLI
 
 
 		private enum ConsoleColor
-			{  Default, TestSucceeded, TestFailed  }
+			{  Default, TestSucceeded, TestFailed, Dots  }
 
 
 
@@ -172,15 +172,19 @@ namespace CodeClear.NaturalDocs.Tests.CLI
 			{
 			string prettyTestFolderPath = PrettifyTestFolderPath(testFolder.Path);
 
-			Write("  " + prettyTestFolderPath + "... ");
+			Write("  " + prettyTestFolderPath + " ");
 
-			if (prettyTestFolderPath.Length < longestPrettyTestPathLength)
-				{
-				int extraSpaceCount = longestPrettyTestPathLength - prettyTestFolderPath.Length;
-				StringBuilder extraSpaces = new StringBuilder(extraSpaceCount);
-				extraSpaces.Append(' ', extraSpaceCount);
-				Write(extraSpaces.ToString());
-				}
+			int dotCount = 2 + (longestPrettyTestPathLength - prettyTestFolderPath.Length);
+			StringBuilder dots = new StringBuilder(dotCount);
+			dots.Append('.', dotCount);
+			Write(dots.ToString(), ConsoleColor.Dots);
+
+			Write(" ");
+
+			int statusLeft = System.Console.CursorLeft;
+			int statusTop = System.Console.CursorTop;
+
+			Write("Running");
 
 
 			// Get the test runner
@@ -207,13 +211,18 @@ namespace CodeClear.NaturalDocs.Tests.CLI
 
 			// Display the results
 
+			System.Console.CursorLeft = statusLeft;
+			System.Console.CursorTop = statusTop;
+
 			if (testFolder.Passed)
 				{
-				WriteLine("Passed", ConsoleColor.TestSucceeded);
+				// Extra space to overwrite "Running"
+				WriteLine("Passed ", ConsoleColor.TestSucceeded);
 				}
 			else
 				{
-				WriteLine("Failed", ConsoleColor.TestFailed);
+				// Extra space to overwrite "Running"
+				WriteLine("Failed ", ConsoleColor.TestFailed);
 				WriteErrorLine("    " + testFolder.FailureMessage);
 
 				var tests = testFolder.Tests;
@@ -473,6 +482,10 @@ namespace CodeClear.NaturalDocs.Tests.CLI
 
 				case ConsoleColor.TestFailed:
 					System.Console.ForegroundColor = System.ConsoleColor.Red;
+					break;
+
+				case ConsoleColor.Dots:
+					System.Console.ForegroundColor= System.ConsoleColor.DarkGray;
 					break;
 
 				default:
