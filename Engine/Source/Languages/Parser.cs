@@ -2601,18 +2601,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 								// If the code element had a scope, we have to remove all its members.  This is so if you document a class as part of
 								// a list topic (maybe documenting a lot of little structs?) you don't get the members appearing independently.
-
 								if (codeElements[matchingCodeIndex] is ParentElement)
 									{
 									ParentElement parentElement = (ParentElement)codeElements[matchingCodeIndex];
 
-									while (matchingCodeIndex + 1 < codeElements.Count && parentElement.Contains(codeElements[matchingCodeIndex + 1]))
+									if (RemoveChildElements(parentElement,
+																		 commentElements, commentIndex, commentIndex + commentCount,
+																		 codeElements, matchingCodeIndex + 1, codeIndex + codeCount,
+																		 out int commentElementsRemovedFromBlock, out int commentElementsRemovedAfterBlock,
+																		 out int codeElementsRemovedFromBlock, out int codeElementsRemovedAfterBlock))
 										{
-										codeElements.RemoveAt(matchingCodeIndex + 1);
-
-										// The child elements may extend past the current block of code elements.
-										if (matchingCodeIndex + 1 < codeIndex + codeCount)
-											{  codeCount--;  }
+										commentCount -= commentElementsRemovedFromBlock;
+										codeCount -= codeElementsRemovedFromBlock;
 										}
 									}
 
@@ -2851,6 +2851,64 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				embeddedCodeElementsMerged = codeEmbeddedTopicCount;
 				return true;
 				}
+			}
+
+
+		/* Function: RemoveChildElements
+		 *
+		 * Removes all the <Elements> from both lists which are a child of the passed <ParentElement>.  Returns whether it
+		 * removed anything, with specific counts in separate variables.
+		 *
+		 * Since this is called from code that processes <Elements> in blocks, you can specify the index of the end of each block
+		 * to separate the counts into those removed from inside the block and after.  This is useful because only the ones removed
+		 * from inside it will shrink the size of the block.
+		 */
+		protected bool RemoveChildElements (ParentElement parent,
+																List<Element> commentElements, int firstCommentChildIndex, int endOfCommentBlockIndex,
+																List<Element> codeElements, int firstCodeChildIndex, int endOfCodeBlockIndex,
+																out int commentElementsRemovedFromBlock, out int commentElementsRemovedAfterBlock,
+																out int codeElementsRemovedFromBlock, out int codeElementsRemovedAfterBlock)
+			{
+			commentElementsRemovedFromBlock = 0;
+			commentElementsRemovedAfterBlock = 0;
+
+			while (firstCommentChildIndex < commentElements.Count &&
+					  parent.Contains(commentElements[firstCommentChildIndex]))
+				{
+				if (firstCommentChildIndex < endOfCommentBlockIndex)
+					{
+					commentElementsRemovedFromBlock++;
+					endOfCommentBlockIndex--;
+					}
+				else
+					{  commentElementsRemovedAfterBlock++;  }
+
+				commentElements.RemoveAt(firstCommentChildIndex);
+				}
+
+
+			codeElementsRemovedFromBlock = 0;
+			codeElementsRemovedAfterBlock = 0;
+
+			while (firstCodeChildIndex < codeElements.Count &&
+					  parent.Contains(codeElements[firstCodeChildIndex]))
+				{
+				if (firstCodeChildIndex < endOfCodeBlockIndex)
+					{
+					codeElementsRemovedFromBlock++;
+					endOfCodeBlockIndex--;
+					}
+				else
+					{  codeElementsRemovedAfterBlock++;  }
+
+				codeElements.RemoveAt(firstCodeChildIndex);
+				}
+
+
+			return (commentElementsRemovedFromBlock > 0 ||
+					   commentElementsRemovedAfterBlock > 0 ||
+					   codeElementsRemovedFromBlock > 0 ||
+					   codeElementsRemovedAfterBlock > 0);
 			}
 
 
