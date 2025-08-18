@@ -61,10 +61,11 @@ class Class
 
 /* Classes: ListOfClasses
 	If you're documenting something with child elements, like classes, in a list topic, its members
-	should not be documented.
+	should not be documented, even if manually included.
 
 	ClassA - Description
 	ClassB - Description
+	ClassD - Description
 */
 class ClassA
 	{
@@ -82,4 +83,20 @@ class ClassC_NotInList
 	{
 	int variableA;
 	int variableB;
+	}
+
+class ClassD
+	{
+	// Topic: Manual Member A
+
+	// var: variableA
+	int variableA;
+
+	// Topic: Manual Member B
+
+	/** Headerless Comment
+	*/
+	int variableB;
+
+	// Topic: Manual Member C
 	}

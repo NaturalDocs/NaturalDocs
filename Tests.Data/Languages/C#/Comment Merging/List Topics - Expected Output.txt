@@ -58,21 +58,25 @@ Function: FunctionJ
 -----
 Class List: ListOfClasses
 (comment line 62)
-<p>If you're documenting something with child elements, like classes, in a list topic, its members should not be documented.</p><dl><ds>ClassA</ds><dd><p>Description</p></dd><ds>ClassB</ds><dd><p>Description</p></dd></dl>
+<p>If you're documenting something with child elements, like classes, in a list topic, its members should not be documented, even if manually included.</p><dl><ds>ClassA</ds><dd><p>Description</p></dd><ds>ClassB</ds><dd><p>Description</p></dd><ds>ClassD</ds><dd><p>Description</p></dd></dl>
 -----
 Embedded Class: ClassA
-(comment line 62, code line 69)
+(comment line 62, code line 70)
 <p>Description</p>
 -----
 Embedded Class: ClassB
-(comment line 62, code line 75)
+(comment line 62, code line 76)
+<p>Description</p>
+-----
+Embedded Class: ClassD
+(comment line 62, code line 88)
 <p>Description</p>
 -----
 Class: ClassC_NotInList
-(code line 81)
+(code line 82)
 -----
 Variable: variableA
-(code line 83)
+(code line 84)
 -----
 Variable: variableB
-(code line 84)
+(code line 85)
