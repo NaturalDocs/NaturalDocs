@@ -2468,7 +2468,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					// If the merged element is an enum, that means any definition list entries in its body should be symbols to represent
 					// the enum's values.  However, since it was orginally a headerless topic, it wasn't known that it was an enum when it
 					// was first parsed and they were treated as regular definition list entries.  Convert them to symbol entries.
-					if (EngineInstance.CommentTypes.FromID(mergedElement.Topic.CommentTypeID).IsEnum)
+					if (mergedElement.Topic.IsEnum)
 						{
 						var commentParser = EngineInstance.Comments.NaturalDocsParser;
 
@@ -3109,7 +3109,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				// If the topic is an enum...
 				if (elements[elementIndex].Topic != null &&
 					elements[elementIndex].Topic.IsList == false &&
-					EngineInstance.CommentTypes.FromID(elements[elementIndex].Topic.CommentTypeID).IsEnum)
+					elements[elementIndex].Topic.IsEnum)
 					{
 					var enumElement = elements[elementIndex];
 					var enumTopic = enumElement.Topic;
