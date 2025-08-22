@@ -34,7 +34,7 @@
     <Optimize>False</Optimize>
     <DebugType>pdbonly</DebugType>
     <NuGetAudit>False</NuGetAudit>
-    <WarningsNotAsErrors>NU1900;CS0219;CS0162</WarningsNotAsErrors>
+    <WarningsNotAsErrors>NU1900;CS0168;CS0219;CS0162</WarningsNotAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <DefineConstants>TRACE</DefineConstants>
