@@ -1,0 +1,127 @@
+
+Group: Stray Comments
+
+-----
+
+Enum: StrayCommentsA
+
+   Prototype: enum StrayCommentsA
+
+   Members:
+      A
+      B
+      C
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Enum: StrayCommentsB
+
+   Prototype: enum StrayCommentsB
+
+   Members:
+      A
+      B
+      C
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Enum: StrayCommentsC
+
+   Prototype: enum StrayCommentsC
+
+   Members:
+      A
+      B
+      C
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Group: Stray Comments (Headerless)
+
+-----
+
+Enum: StrayComments_HeaderlessA
+
+   Prototype: enum StrayComments_HeaderlessA
+
+   Members:
+      A
+      B
+      C
+
+   Body: <p>Description</p><h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Enum: StrayComments_HeaderlessB
+
+   Prototype: enum StrayComments_HeaderlessB
+
+   Members:
+      A
+      B
+      C
+
+   Body: <p>Description</p><h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Enum: StrayComments_HeaderlessC
+
+   Prototype: enum StrayComments_HeaderlessC
+
+   Members:
+      A
+      B
+      C
+
+   Body: <p>Description</p><h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Group: Stray Comments (Undocumented)
+
+-----
+
+Enum: StrayComments_UndocumentedA
+
+   Prototype: enum StrayComments_UndocumentedA
+
+   Members:
+      A
+      B
+      C
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Enum: StrayComments_UndocumentedB
+
+   Prototype: enum StrayComments_UndocumentedB
+
+   Members:
+      A
+      B
+      C
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Enum: StrayComments_UndocumentedC
+
+   Prototype: enum StrayComments_UndocumentedC
+
+   Members:
+      A
+      B
+      C
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>

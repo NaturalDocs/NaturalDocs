@@ -1,0 +1,62 @@
+
+Group: Full Comments for Values
+
+-----
+
+Enum: FullCommentsForValues
+
+   Prototype: enum FullCommentsForValues
+
+   Members:
+      A
+      B
+      C
+      D
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd><ds>D</ds><dd></dd></dl>
+
+-----
+
+Enum: FullCommentsForValues_Headerless
+
+   Prototype: enum FullCommentsForValues_Headerless
+
+   Members:
+      A
+      B
+      C
+      D
+
+   Body: <p>Description</p><h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd><ds>D</ds><dd></dd></dl>
+
+-----
+
+Enum: FullCommentsForValues_Undocumented
+
+   Prototype: enum FullCommentsForValues_Undocumented
+
+   Members:
+      A
+      B
+      C
+      D
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd><ds>D</ds><dd></dd></dl>
+
+-----
+
+Group: Formatting
+
+-----
+
+Enum: BlockFormatting
+
+   Prototype: enum BlockFormatting
+
+   Members:
+      A
+      B
+      C
+      D
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd><ds>D</ds><dd></dd></dl>

@@ -1,0 +1,127 @@
+
+Group: Group Comments
+
+-----
+
+Enum: GroupCommentsA
+
+   Prototype: enum GroupCommentsA
+
+   Members:
+      A
+      B
+      C
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Enum: GroupCommentsB
+
+   Prototype: enum GroupCommentsB
+
+   Members:
+      A
+      B
+      C
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Enum: GroupCommentsC
+
+   Prototype: enum GroupCommentsC
+
+   Members:
+      A
+      B
+      C
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Group: Group Comments (Headerless)
+
+-----
+
+Enum: GroupComments_HeaderlessA
+
+   Prototype: enum GroupComments_HeaderlessA
+
+   Members:
+      A
+      B
+      C
+
+   Body: <p>Description</p><h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Enum: GroupComments_HeaderlessB
+
+   Prototype: enum GroupComments_HeaderlessB
+
+   Members:
+      A
+      B
+      C
+
+   Body: <p>Description</p><h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Enum: GroupComments_HeaderlessC
+
+   Prototype: enum GroupComments_HeaderlessC
+
+   Members:
+      A
+      B
+      C
+
+   Body: <p>Description</p><h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Group: Group Comments (Undocumented)
+
+-----
+
+Enum: GroupComments_UndocumentedA
+
+   Prototype: enum GroupComments_UndocumentedA
+
+   Members:
+      A
+      B
+      C
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Enum: GroupComments_UndocumentedB
+
+   Prototype: enum GroupComments_UndocumentedB
+
+   Members:
+      A
+      B
+      C
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Enum: GroupComments_UndocumentedC
+
+   Prototype: enum GroupComments_UndocumentedC
+
+   Members:
+      A
+      B
+      C
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
