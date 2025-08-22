@@ -2888,10 +2888,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				// Start by adding every code element.  If there is a matching comment element we'll use its Topic since its description
 				// should be used.
 
-				StringComparison comparisonType =
-					(EngineInstance.Languages.FromID(codeElements[codeElementIndex].Topic.LanguageID).CaseSensitive ?
-					 StringComparison.InvariantCulture :
-					 StringComparison.InvariantCultureIgnoreCase);
+				StringComparison comparisonType =(this.Language.CaseSensitive ?
+																	  StringComparison.InvariantCulture :
+																	  StringComparison.InvariantCultureIgnoreCase);
 
 				for (int codeEmbeddedElementIndex = codeElementIndex;
 					  codeEmbeddedElementIndex < codeElementIndex + codeEmbeddedTopicCount;
