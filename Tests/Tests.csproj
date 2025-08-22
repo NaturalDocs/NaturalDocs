@@ -34,6 +34,10 @@
     <DebugType>pdbonly</DebugType>
     <NuGetAudit>False</NuGetAudit>
     <WarningsNotAsErrors>NU1900;CS0168;CS0219;CS0162</WarningsNotAsErrors>
+		<!-- NU1900: NuGet vulnerability data couldn't be downloaded, probably just means you're offline -->
+		<!-- CS0168: Variable declared but never used -->
+		<!-- CS0219: Variable assigned but never used -->
+		<!-- CS0162: Unreachable code detected -->
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <DefineConstants>TRACE</DefineConstants>
