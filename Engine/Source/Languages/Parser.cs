@@ -187,7 +187,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{  return ParseResult.Cancelled;  }
 
 
-			// Apply comment prototypes.
+			// Apply prototypes manually defined inside comments.
 
 			ApplyCommentPrototypes(commentElements);
 
@@ -234,6 +234,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				// Fill in the declared access levels.  This is done before merging so code elements aren't affected by comment settings.
 
 				ApplyDeclaredAccessLevels(codeElements);
+
+				if (cancelDelegate())
+					{  return ParseResult.Cancelled;  }
+
+
+				// Preprocess enums to prevent issues that may otherwise occur in the merging process.
+
+				PreprocessEnumComments(commentElements, codeElements);
 
 				if (cancelDelegate())
 					{  return ParseResult.Cancelled;  }
@@ -2354,6 +2362,95 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					if (element is ParentElement)
 						{  (element as ParentElement).MaximumEffectiveChildAccessLevel = element.Topic.DeclaredAccessLevel;  }
 					}
+				}
+			}
+
+
+		/* Function: PreprocessEnumElements
+		 *
+		 * Finds any enums in the code <Elements> and adjusts any comment <Elements> appearing inside their bodies.  This is
+		 * done because standard comments and/or comments of the wrong type appearing with the values can throw off merging.
+		 *
+		 * For now all comments inside an enum's body will be removed.  In the future appropriate comments will be merged into
+		 * the code elements like inline comments are, with adjustments if necessary, and others will either be deleted or moved
+		 * to outside the enum's scope.
+		 */
+		protected void PreprocessEnumComments (List<Element> commentElements, List<Element> codeElements)
+			{
+			int commentIndex = 0;
+			int codeIndex =0;
+
+			// Group comments create ParentElements that have a scope of what should be included in the group.  They end at the
+			// next group comment or any other comment that affects scope.  We want group comments appearing inside enum bodies
+			// to be handled differently and not affect other groups' range, so we may have to fix them.  Thus we keep track of the last
+			// non-enum group comment we found in case we need to extend the end of its range.
+			ParentElement lastNonEnumGroup = null;
+
+			while (codeIndex < codeElements.Count)
+				{
+				if (codeElements[codeIndex] is ParentElement &&
+					codeElements[codeIndex].Topic != null &&
+					codeElements[codeIndex].Topic.IsEnum)
+					{
+					ParentElement enumElement = (ParentElement)codeElements[codeIndex];
+
+					// Find the value elements in the enum body
+					int firstValueIndex = codeIndex + 1;
+					int endOfValuesIndex = firstValueIndex;
+
+					while (endOfValuesIndex < codeElements.Count &&
+							  enumElement.Contains(codeElements[endOfValuesIndex]))
+						{  endOfValuesIndex++;  }
+
+					// Walk past the comments that appear before the enum's body
+					while (commentIndex < commentElements.Count &&
+							  commentElements[commentIndex].FilePosition <= enumElement.FilePosition)
+						{
+						var commentElement = commentElements[commentIndex];
+
+						if (commentElement.Topic != null &&
+							commentElement.Topic.IsGroup)
+							{  lastNonEnumGroup = (ParentElement)commentElement;  }
+
+						commentIndex++;
+						}
+
+					// Walk through comments that appear inside the enum's body
+					while (commentIndex < commentElements.Count &&
+							  commentElements[commentIndex].FilePosition <= enumElement.EndingFilePosition)
+						{
+						var commentElement = commentElements[commentIndex];
+
+						if (commentElement.Topic == null)
+							{  commentIndex++;  continue;  }
+
+						var commentTopic = commentElement.Topic;
+
+
+						// If the topic is a group, remove it (for now)
+
+						if (commentTopic.IsGroup)
+							{
+							// The group may have ended a previous group.  If so, extend the previous group.
+							if (lastNonEnumGroup != null &&
+								lastNonEnumGroup.EndingFilePosition == commentElement.FilePosition)
+								{  lastNonEnumGroup.EndingFilePosition = (commentElement as ParentElement).EndingFilePosition;  }
+
+							commentElements.RemoveAt(commentIndex);
+							}
+
+
+						// If the topic is any other type, remove it (for now)
+
+						else
+							{  commentElements.RemoveAt(commentIndex);  }
+						}
+
+					codeIndex = endOfValuesIndex;
+					}
+
+				else // not an enum topic
+					{  codeIndex++;  }
 				}
 			}
 
