@@ -896,6 +896,18 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 				{  Next(value - tokenIndex);  }
 			}
 
+		/* Property: TokenLength
+		 * The length of the current token in characters, or zero if the iterator is out of bounds.
+		 */
+		public int TokenLength
+			{
+			get
+				{
+				// Same as RawTextLength
+				return RawTextLength;
+				}
+			}
+
 		/* Property: IsInBounds
 		 * Whether the iterator is not past the beginning or end of the list of tokens.
 		 */
