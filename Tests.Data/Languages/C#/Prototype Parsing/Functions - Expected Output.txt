@@ -113,9 +113,9 @@
     - Link Candidates: string
     - Default Value: (not detected)
 
-  - Parameter 2: [param:something("don't trip on this:)]) { ")][AnotherOne] int y,
+  - Parameter 2: [param: something("don't trip on this: )]){")][AnotherOne] int y,
     - Name: y
-    - Full Type: [param:something("don't trip on this:)]) { ")][AnotherOne] int
+    - Full Type: [param: something("don't trip on this:)]) { ")][AnotherOne] int
     - Base Type: int
     - Link Candidates: int
     - Default Value: (not detected)
