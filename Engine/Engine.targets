@@ -165,28 +165,13 @@
 		<Target Name="Engine_CopyForBuild_SQLite">
 
 			<Copy
-				Condition="'$(Platform)'=='Windows x86'"
-				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\SQLite.Win.x86.dll"
-				DestinationFolder="$(TargetDir)"
-				/>
-			<Copy
 				Condition="'$(Platform)'=='Windows x64'"
 				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\SQLite.Win.x64.dll"
 				DestinationFolder="$(TargetDir)"
 				/>
 			<Copy
-				Condition="'$(Platform)'=='macOS x86'"
-				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libSQLite.Mac.x86.so"
-				DestinationFolder="$(TargetDir)"
-				/>
-			<Copy
 				Condition="'$(Platform)'=='macOS x64'"
 				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libSQLite.Mac.x64.so"
-				DestinationFolder="$(TargetDir)"
-				/>
-			<Copy
-				Condition="'$(Platform)'=='Linux x86'"
-				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libSQLite.Linux.x86.so"
 				DestinationFolder="$(TargetDir)"
 				/>
 			<Copy
@@ -204,28 +189,13 @@
 		<Target Name="Engine_CopyForPublish_SQLite">
 
 			<Copy
-				Condition="'$(Platform)'=='Windows x86'"
-				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\SQLite.Win.x86.dll"
-				DestinationFolder="$(PublishDir)"
-				/>
-			<Copy
 				Condition="'$(Platform)'=='Windows x64'"
 				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\SQLite.Win.x64.dll"
 				DestinationFolder="$(PublishDir)"
 				/>
 			<Copy
-				Condition="'$(Platform)'=='macOS x86'"
-				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libSQLite.Mac.x86.so"
-				DestinationFolder="$(PublishDir)"
-				/>
-			<Copy
 				Condition="'$(Platform)'=='macOS x64'"
 				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libSQLite.Mac.x64.so"
-				DestinationFolder="$(PublishDir)"
-				/>
-			<Copy
-				Condition="'$(Platform)'=='Linux x86'"
-				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libSQLite.Linux.x86.so"
 				DestinationFolder="$(PublishDir)"
 				/>
 			<Copy
@@ -242,12 +212,16 @@
 		-->
 		<Target Name="Engine_CleanForBuild_SQLite">
 
-			<Delete Files="$(TargetDir)SQLite.Win.x86.dll" />
 			<Delete Files="$(TargetDir)SQLite.Win.x64.dll" />
-			<Delete Files="$(TargetDir)libSQLite.Mac.x86.so" />
 			<Delete Files="$(TargetDir)libSQLite.Mac.x64.so" />
-			<Delete Files="$(TargetDir)libSQLite.Linux.x86.so" />
 			<Delete Files="$(TargetDir)libSQLite.Linux.x64.so" />
+
+
+			<!-- x86 builds, not in use anymore -->
+
+			<Delete Files="$(TargetDir)SQLite.Win.x86.dll" />
+			<Delete Files="$(TargetDir)libSQLite.Mac.x86.so" />
+			<Delete Files="$(TargetDir)libSQLite.Linux.x86.so" />
 
 
 			<!-- Old file names, not in use anymore -->
@@ -271,12 +245,16 @@
 		-->
 		<Target Name="Engine_CleanForPublish_SQLite">
 
-			<Delete Files="$(PublishDir)SQLite.Win.x86.dll" />
 			<Delete Files="$(PublishDir)SQLite.Win.x64.dll" />
-			<Delete Files="$(PublishDir)libSQLite.Mac.x86.so" />
 			<Delete Files="$(PublishDir)libSQLite.Mac.x64.so" />
-			<Delete Files="$(PublishDir)libSQLite.Linux.x86.so" />
 			<Delete Files="$(PublishDir)libSQLite.Linux.x64.so" />
+
+
+			<!-- x86 builds, not in use anymore -->
+
+			<Delete Files="$(PublishDir)SQLite.Win.x86.dll" />
+			<Delete Files="$(PublishDir)libSQLite.Mac.x86.so" />
+			<Delete Files="$(PublishDir)libSQLite.Linux.x86.so" />
 
 
 			<!-- Old file names, not in use anymore -->

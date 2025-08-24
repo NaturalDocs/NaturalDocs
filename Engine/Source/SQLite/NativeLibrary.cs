@@ -22,18 +22,12 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 	internal static class NativeLibrary
 		{
 
-		#if WINDOWS && X86
-		internal const string NativeLibraryPath = "SQLite.Win.x86.dll";
-		#elif WINDOWS && X64
-		internal const string NativeLibraryPath = "SQLite.Win.x64.dll";
-		#elif MAC && X86
-		internal const string NativeLibraryPath = "libSQLite.Mac.x86.so";
+		#if WINDOWS && X64
+			internal const string NativeLibraryPath = "SQLite.Win.x64.dll";
 		#elif MAC && X64
-		internal const string NativeLibraryPath = "libSQLite.Mac.x64.so";
-		#elif LINUX && X86
-		internal const string NativeLibraryPath = "libSQLite.Linux.x86.so";
+			internal const string NativeLibraryPath = "libSQLite.Mac.x64.so";
 		#elif LINUX && X64
-		internal const string NativeLibraryPath = "libSQLite.Linux.x64.so";
+			internal const string NativeLibraryPath = "libSQLite.Linux.x64.so";
 		#else
 			#error No SQLite native library for this platform.
 		#endif
