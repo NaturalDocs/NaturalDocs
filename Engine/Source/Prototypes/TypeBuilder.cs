@@ -255,15 +255,24 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 							iterator.Character == '_')
 							{  iterator.Next();  }
 						else
-							{  return false;  }
+							{  break;  }
 						}
 					}
 
 				else // token isn't text
-					{  return false;  }
+					{  break;  }
 				}
 
-			return true;
+			// Also allow these symbols immediately after the type name, since they're easy to include
+			if (iterator < end &&
+				(iterator.Character == '*' ||
+				 iterator.Character == '&' ||
+				 iterator.Character == '?'))
+				{
+				iterator.Next();
+				}
+
+			return (iterator == end);
 			}
 
 
