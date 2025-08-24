@@ -96,21 +96,34 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 				// Add a space between a symbol followed by text, minus certain exceptions.
 				else if (lastTokenType == FundamentalType.Symbol &&
-						   thisTokenType == FundamentalType.Text &&
-						   lastCharacter != '.' &&  // exclude dot separators like Class.Member
-						   lastCharacter != ':' &&  // exclude colon separators like Class::Member
-						   lastCharacter != '%' &&  // exclude keywords in Oracle's PL/SQL like MyVar%TYPE or MyTable%ROWTYPE
-						   lastCharacter != '"' &&  // exclude strings in Java annotations like @copyright("me")
-						   lastCharacter != '\'' &&
-						   lastCharacter != '@' &&  // exclude tags in Java annotations like @copyright
-						   lastCharacter != '$' &&  // exclude keywords in SystemVerilog like $unit
-						   lastCharacter != '(' &&  // exclude opening symbols except braces
-						   lastCharacter != '[' &&
-						   lastCharacter != '<' &&
-						   lastCharacter != '=' &&  // exclude assignments in SystemVerilog enum bodies like enum { x=2 }
-						   lastCharacter != '`')  // exclude macro invocations in SystemVerilog like `MacroName
+						   thisTokenType == FundamentalType.Text)
 					{
-					addSpaceBeforeToken = true;
+					// Space after a single colon like Name: Value, but not after double colon separators like Class::Member
+					if (lastCharacter == ':')
+						{
+						TokenIterator lookbehind = lastTokenIterator;
+						lookbehind.Previous();
+
+						if (lookbehind.Character != ':')
+							{
+							addSpaceBeforeToken = true;
+							}
+						}
+
+					else if (lastCharacter != '.' &&  // no space after dot separators like Class.Member
+							   lastCharacter != '%' &&  // no space after keywords in Oracle's PL/SQL like MyVar%TYPE or MyTable%ROWTYPE
+							   lastCharacter != '"' &&  // no space after strings in Java annotations like @copyright("me")
+							   lastCharacter != '\'' &&
+							   lastCharacter != '@' &&  // no space after tags in Java annotations like @copyright
+							   lastCharacter != '$' &&  // no space after keywords in SystemVerilog like $unit
+							   lastCharacter != '(' &&  // no space after opening symbols except braces
+							   lastCharacter != '[' &&
+							   lastCharacter != '<' &&
+							   lastCharacter != '=' &&  // no space after assignments in SystemVerilog enum bodies like enum { x=2 }
+							   lastCharacter != '`')  // no space after macro invocations in SystemVerilog like `MacroName
+						{
+						addSpaceBeforeToken = true;
+						}
 					}
 
 				// Always add a space around braces.
