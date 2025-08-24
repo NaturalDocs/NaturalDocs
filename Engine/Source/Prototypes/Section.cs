@@ -299,8 +299,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 				if (fullTypeStart.TextBetween(fullTypeEnd) != tempTokenizer.RawText)
 					{
-					throw new Exception("Continuous and built types don't match: \"" + fullTypeStart.TextBetween(fullTypeEnd) +
-													"\", \"" + tempTokenizer.RawText + "\"");
+					throw new Exception("Continuous and built types don't match.  Continuous: \"" + fullTypeStart.TextBetween(fullTypeEnd) +
+													"\", TypeBuilder: \"" + tempTokenizer.RawText + "\"");
 					}
 				#endif
 
