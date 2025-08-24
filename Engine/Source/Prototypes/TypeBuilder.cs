@@ -24,6 +24,13 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 	public class TypeBuilder
 		{
 
+		// Group: Types
+		// __________________________________________________________________________
+
+		public enum Spacing
+			{  Auto, SpaceBefore, NoSpaceBefore  };
+
+
 		// Group: Functions
 		// __________________________________________________________________________
 
@@ -58,10 +65,10 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 *
 		 * Adds a single token to the type builder.
 		 *
-		 * You can optionally force it to include a space before the token.  Normally you should leave this false so it will
-		 * add spaces according to its own rules.
+		 * You can optionally force it to include or not include a space before the token.  Normally you should leave this on
+		 * <Spacing.Auto> so it will add spaces according to its own rules.
 		 */
-		public void AddToken (TokenIterator iterator, bool alwaysSpaceBefore = false)
+		public void AddToken (TokenIterator iterator, Spacing spacing = Spacing.Auto)
 			{
 			char thisCharacter = iterator.Character;
 			FundamentalType thisTokenType = (thisCharacter == '_' ? FundamentalType.Text : iterator.FundamentalType);
@@ -75,8 +82,10 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				// The conditionals are broken out for clarity and ease of documentation.  The compiler should be able to optimize them
 				// for us.  This is better than having one big unwieldy mess of an if statement.
 
-				if (alwaysSpaceBefore)
+				if (spacing == Spacing.SpaceBefore)
 					{  addSpaceBeforeToken = true;  }
+				else if (spacing == Spacing.NoSpaceBefore)
+					{  addSpaceBeforeToken = false;  }
 
 				// Add a space between two non-consecutive text tokens.  It's possible the two iterators come from different tokenizers
 				// so check for that.
@@ -147,20 +156,21 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 *
 		 * Adds a group of tokens to the type builder.
 		 *
-		 * You can optionally force it to include a space before the token.  Normally you should leave this false so it will
-		 * add spaces according to its own rules.
+		 * You can optionally force it to include or not include a space before the first token.  Normally you should leave this on
+		 * <Spacing.Auto> so it will add spaces according to its own rules.  This will only apply to the first token, the rest will be
+		 * added with <Spacing.Auto>.
 		 */
-		public void AddTokens (TokenIterator iterator, TokenIterator end, bool alwaysSpaceBefore = false)
+		public void AddTokens (TokenIterator iterator, TokenIterator end, Spacing firstTokenSpacing = Spacing.Auto)
 			{
 			if (iterator < end)
 				{
-				AddToken(iterator, alwaysSpaceBefore);
+				AddToken(iterator, firstTokenSpacing);
 				iterator.Next();
 				}
 
 			while (iterator < end)
 				{
-				AddToken(iterator);
+				AddToken(iterator, Spacing.Auto);
 				iterator.Next();
 				}
 			}
