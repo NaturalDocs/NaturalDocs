@@ -105,7 +105,9 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 				argumentLimit = API.Limit(handle, API.LimitID.FunctionArguments, -1);
 
 				// No point in using SQLite's case-insensitivity since it only applies to ASCII characters.
-				Execute("PRAGMA case_sensitive_like = 1");
+				// Execute("PRAGMA case_sensitive_like = 1");
+				// Note: This is disabled because it's deprecated as of SQLite 3.44.0.  It was used purely for optimization and is safe to remove.
+				// We're leaving the code here just to document this change and the rationale.
 
 				// This allows SQLite to support transactions but keeps the rollback journal in memory instead of on disk.  Corruption
 				// caused by a crash isn't a concern because the database is expendable and Natural Docs would rebuild everything the
