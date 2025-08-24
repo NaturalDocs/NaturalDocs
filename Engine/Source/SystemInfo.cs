@@ -12,7 +12,9 @@
 
 
 using System;
+using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
+using System.Text;
 
 namespace CodeClear.NaturalDocs.Engine
 	{
@@ -256,10 +258,6 @@ namespace CodeClear.NaturalDocs.Engine
 						string compatOSVersion = SysCtlByName("kern.osproductversioncompat");  // if osVersion is the same, we may be getting a fake compatibility value
 						string darwinVersion = SysCtlByName("kern.osrelease");
 						string cpu = SysCtlByName("machdep.cpu.brand_string");
-
-						if (cpu.Contains("Intel"))
-							{  cpu = "Intel " + (Is64Bit ? "x64" : "x86");  }
-						// Apple silicon already returns a clean value so we can use it unedited
 
 						result = "macOS";
 
