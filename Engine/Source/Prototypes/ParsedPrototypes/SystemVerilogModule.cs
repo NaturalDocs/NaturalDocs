@@ -1277,9 +1277,19 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 						{  afterBody = true;  }
 
 					GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock);
+					bool lastTokenWasColon = false;
 
-					typeBuilder.AddTokens(iterator, endOfBlock);
-					iterator = endOfBlock;
+					while (iterator < endOfBlock)
+						{
+						// Dimensions can appear between the body and the enum, or inside the body itself.  Just always avoid spaces
+						// after colons for the whole thing.
+						var spacing = (lastTokenWasColon ? TypeBuilder.Spacing.NoSpaceBefore : TypeBuilder.Spacing.Auto);
+
+						typeBuilder.AddToken(iterator, spacing);
+
+						lastTokenWasColon = (iterator.Character == ':');
+						iterator.Next();
+						}
 					}
 
 				else
@@ -1333,11 +1343,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 			if (FindPackedDimensions(parameterSection, parameterIndex, out iterator, out endOfParameter))
 				{
-				TokenIterator closingSymbol, endOfBlock;
-				GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock);
-
-				typeBuilder.AddTokens(iterator, endOfBlock, alwaysSpaceBefore: true);
-				iterator = endOfBlock;
+				AppendDimension(ref iterator, endOfParameter, typeBuilder, TypeBuilder.Spacing.SpaceBefore);
 
 				// Add any consecutive packed dimensions.
 				while (iterator < endOfParameter)
@@ -1345,10 +1351,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 					if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier &&
 						iterator.Character == '[')
 						{
-						GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock);
-
-						typeBuilder.AddTokens(iterator, endOfBlock, alwaysSpaceBefore: false);
-						iterator = endOfBlock;
+						AppendDimension(ref iterator, endOfParameter, typeBuilder, TypeBuilder.Spacing.NoSpaceBefore);
 						}
 
 					// If there's null whitespace tokens, move past them to see if there's any more dimensions on the other side.
@@ -1398,11 +1401,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				if (addStandInForName)
 					{  typeBuilder.AddToken(NameStandInToken.FirstToken);  }
 
-				TokenIterator closingSymbol, endOfBlock;
-				GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock);
-
-				typeBuilder.AddTokens(iterator, endOfBlock);
-				iterator = endOfBlock;
+				AppendDimension(ref iterator, endOfParameter, typeBuilder);
 
 				// Add any consecutive unpacked dimensions.
 				while (iterator < endOfParameter)
@@ -1410,10 +1409,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 					if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier &&
 						iterator.Character == '[')
 						{
-						GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock);
-
-						typeBuilder.AddTokens(iterator, endOfBlock);
-						iterator = endOfBlock;
+						AppendDimension(ref iterator, endOfParameter, typeBuilder, TypeBuilder.Spacing.NoSpaceBefore);
 						}
 
 					// If there's null whitespace tokens, move past them to see if there's any more dimensions on the other side.
@@ -1432,6 +1428,41 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				}
 			else
 				{  return false;  }
+			}
+
+
+		/* Function: AppendDimension
+		 * If the passed iterator is on a dimension it will add it to the <TypeBuilder>, move the iterator past it,  and return true.
+		 * Returns false otherwise.  This will only add a single dimension, it will not add consecutive ones automatically.
+		 */
+		protected bool AppendDimension (ref TokenIterator iterator, TokenIterator endOfParameter, TypeBuilder typeBuilder,
+														 TypeBuilder.Spacing spacing = TypeBuilder.Spacing.Auto)
+			{
+			if (iterator.Character != '[')
+				{  return false;  }
+
+			TokenIterator closingSymbol, endOfBlock;
+
+			if (!GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock))
+				{  return false;  }
+
+			typeBuilder.AddToken(iterator, spacing);
+			iterator.Next();
+
+			bool lastTokenWasColon = false;
+
+			while (iterator < endOfBlock)
+				{
+				// No space following a colon because we want "[7:0]" and not "[7: 0]" like we would get for "Property: Value"
+				spacing = (lastTokenWasColon ? TypeBuilder.Spacing.NoSpaceBefore : TypeBuilder.Spacing.Auto);
+
+				typeBuilder.AddToken(iterator, spacing);
+
+				lastTokenWasColon = (iterator.Character == ':');
+				iterator.Next();
+				}
+
+			return true;
 			}
 
 
@@ -1455,7 +1486,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			// First dot
 
 			// Include a space because otherwise you may get "output.portA(x)" instead of "output .portA(x)".
-			typeBuilder.AddToken(iterator, alwaysSpaceBefore: true);
+			typeBuilder.AddToken(iterator, TypeBuilder.Spacing.SpaceBefore);
 			iterator.Next();
 
 
@@ -1490,9 +1521,18 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				{
 				TokenIterator closingSymbol, endOfBlock;
 				GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock);
+				bool lastTokenWasColon = false;
 
-				typeBuilder.AddTokens(iterator, endOfBlock);
-				iterator = endOfBlock;
+				while (iterator < endOfBlock)
+					{
+					// Dimensions can appear inside the parenthetical, so just always avoid spaces after colons
+					var spacing = (lastTokenWasColon ? TypeBuilder.Spacing.NoSpaceBefore : TypeBuilder.Spacing.Auto);
+
+					typeBuilder.AddToken(iterator, spacing);
+
+					lastTokenWasColon = (iterator.Character == ':');
+					iterator.Next();
+					}
 				}
 
 			return true;
