@@ -262,15 +262,40 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				}
 
 			// Also allow these symbols immediately after the type name, since they're easy to include
-			if (iterator < end &&
-				(iterator.Character == '*' ||
-				 iterator.Character == '&' ||
-				 iterator.Character == '?'))
+			if (iterator < end)
 				{
-				iterator.Next();
+				if (iterator.Character == '*' ||
+					iterator.Character == '&' ||
+					iterator.Character == '?')
+					{
+					iterator.Next();
+					}
+				else if (iterator.MatchesAcrossTokens("[]"))
+					{
+					iterator.Next(2);
+					}
+				else if (iterator.Character == '<')
+					{
+					iterator.Next();
+
+					while (iterator < end)
+						{
+						if (iterator.FundamentalType == FundamentalType.Text ||
+							iterator.Character == '_' ||
+							iterator.Character == '.')
+							{  iterator.Next();  }
+						else if (iterator.MatchesAcrossTokens("::"))
+							{  iterator.Next(2);  }
+						else
+							{  break;  }
+						}
+
+					if (iterator.Character == '>')
+						{  iterator.Next();  }
+					}
 				}
 
-			return (iterator == end);
+			return (iterator >= end);
 			}
 
 
