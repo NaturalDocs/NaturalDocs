@@ -5,7 +5,7 @@
     <Platforms>Windows x64;Windows ARM64;macOS x64;macOS ARM64</Platforms>
     <RootNamespace>CodeClear.NaturalDocs.CLI</RootNamespace>
     <AssemblyName>NaturalDocs</AssemblyName>
-    <Configurations>Debug;Release;Publish</Configurations>
+    <Configurations>Debug;Release</Configurations>
     <StartupObject>CodeClear.NaturalDocs.CLI.Application</StartupObject>
     <AssemblyTitle>Natural Docs</AssemblyTitle>
     <Company>Code Clear LLC</Company>
@@ -44,14 +44,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>True</Optimize>
     <DebugType>pdbonly</DebugType>
-    <NuGetAudit>True</NuGetAudit>
-    <NuGetAuditMode>all</NuGetAuditMode>
-    <WarningsNotAsErrors>NU1900</WarningsNotAsErrors>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Publish'">
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>True</Optimize>
-    <DebugType>none</DebugType>
     <NuGetAudit>True</NuGetAudit>
     <NuGetAuditMode>all</NuGetAuditMode>
     <WarningsNotAsErrors>NU1900</WarningsNotAsErrors>
