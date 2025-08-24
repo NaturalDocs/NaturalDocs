@@ -209,98 +209,57 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 
 		/* Function: HasSimilarSpacing
-		 * Returns whether the spacing of the tokens between the two iterators matches what would have been built by this
-		 * class if the tokens were passed through it.
+		 * Returns whether the spacing of the tokens between the two iterators matches what would have been built by this class
+		 * if the tokens were passed through it.  If it returns true you can use the tokens themselves instead of a TypeBuilder.
 		 */
 		public static bool HasSimilarSpacing (TokenIterator start, TokenIterator end)
 			{
-			// ::Package::Name* array of const*[]
-			// Single spaces only between words, and between words and prior symbols except for leading symbols and package separators
+			// We're going to keep this function simple instead of trying to recreate all the logic in AddToken() faithfully.  This should
+			// cover 90% of the types people use and that should be good enough.
 
 			TokenIterator iterator = start;
-
-			bool pastFirstText = false;
-			FundamentalType lastTokenType = FundamentalType.Null;
-			bool dontAddSpaceAfterSymbol = false;
-			bool lastSymbolWasBlock = false;
 
 			while (iterator < end)
 				{
 				if (iterator.FundamentalType == FundamentalType.Text ||
 					iterator.Character == '_')
 					{
-					if (lastTokenType == FundamentalType.Null ||
-						lastTokenType == FundamentalType.Text ||
-						(lastTokenType == FundamentalType.Symbol && (dontAddSpaceAfterSymbol || (!pastFirstText && !lastSymbolWasBlock))) ||
-						lastTokenType == FundamentalType.Whitespace)
-						{
-						pastFirstText = true;
-						lastTokenType = FundamentalType.Text;
+					iterator.Next();
+					bool mustBeFollowedByText = false;
 
-						if (!ParsedPrototype.TryToSkipBlock(ref iterator))
-							{  iterator.Next();  }
-						}
-					else
-						{  return false;  }
-					}
-				else if (iterator.FundamentalType == FundamentalType.Symbol)
-					{
-					if (iterator.Character == ',')
+					// Allow a dot following text if it's also followed by text, such as ClassA.ClassB
+					if (iterator.Character == '.')
 						{
-						// Quit early on commas, since it could be x[,,] or (x, y), in which case it's not clear whether there should be
-						// a space without making this logic even more complicated.  Just fail out and build a new one.
-						return false;
-						}
-
-					if (lastTokenType == FundamentalType.Null ||
-						lastTokenType == FundamentalType.Text ||
-						lastTokenType == FundamentalType.Symbol)
-						{
-						lastTokenType = FundamentalType.Symbol;
-
-						if (iterator.MatchesAcrossTokens("::"))
-							{
-							lastSymbolWasBlock = false;
-							dontAddSpaceAfterSymbol = true;
-							iterator.NextByCharacters(2);
-							}
-						else if (iterator.Character == '.' || iterator.Character == '%' ||
-								   iterator.Character == '"' || iterator.Character == '\'' || iterator.Character == '@' ||
-								   iterator.Character == '(')
-							{
-							lastSymbolWasBlock = false;
-							dontAddSpaceAfterSymbol = true;
-							iterator.Next();
-							}
-						else if (ParsedPrototype.TryToSkipBlock(ref iterator))
-							{
-							lastSymbolWasBlock = true;
-							dontAddSpaceAfterSymbol = false;
-							// already moved iterator
-							}
-						else
-							{
-							lastSymbolWasBlock = false;
-							dontAddSpaceAfterSymbol = false;
-							iterator.Next();
-							}
-						}
-					else
-						{  return false;  }
-					}
-				else if (iterator.FundamentalType == FundamentalType.Whitespace &&
-						  iterator.Character == ' ' && iterator.RawTextLength == 1)
-					{
-					if ((lastTokenType == FundamentalType.Symbol && !dontAddSpaceAfterSymbol && (pastFirstText || lastSymbolWasBlock)) ||
-						lastTokenType == FundamentalType.Text)
-						{
-						lastTokenType = FundamentalType.Whitespace;
 						iterator.Next();
+						mustBeFollowedByText = true;
 						}
-					else
-						{  return false;  }
+
+					// Allow two colons following text if it's also followed by text, such as ClassA::ClassB
+					else if (iterator.MatchesAcrossTokens("::"))
+						{
+						iterator.Next(2);
+						mustBeFollowedByText = true;
+						}
+
+					// Allow a single space following text if it's also followed by text, such as "unsigned int"
+					else if (iterator.Character == ' ' &&
+							   iterator.TokenLength == 1)
+						{
+						iterator.Next();
+						mustBeFollowedByText = true;
+						}
+
+					if (mustBeFollowedByText)
+						{
+						if (iterator.FundamentalType == FundamentalType.Text ||
+							iterator.Character == '_')
+							{  iterator.Next();  }
+						else
+							{  return false;  }
+						}
 					}
-				else
+
+				else // token isn't text
 					{  return false;  }
 				}
 
