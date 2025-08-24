@@ -2,7 +2,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
-    <Platforms>Windows x64;Windows ARM64</Platforms>
+    <Platforms>Windows x64;Windows ARM64;macOS x64;macOS ARM64</Platforms>
     <RootNamespace>CodeClear.NaturalDocs.CLI</RootNamespace>
     <AssemblyName>NaturalDocs</AssemblyName>
     <Configurations>Debug;Release;Publish</Configurations>
@@ -65,6 +65,16 @@
 	<RuntimeIdentifier>win-arm64</RuntimeIdentifier>
     <PlatformTarget>ARM64</PlatformTarget>
     <DefineConstants>WINDOWS;ARM64</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)' == 'macOS x64'">
+	<RuntimeIdentifier>osx-x64</RuntimeIdentifier>
+    <PlatformTarget>x64</PlatformTarget>
+    <DefineConstants>MAC;X64</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)' == 'macOS ARM64'">
+	<RuntimeIdentifier>osx-arm64</RuntimeIdentifier>
+    <PlatformTarget>ARM64</PlatformTarget>
+    <DefineConstants>MAC;ARM64</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="Resources\Icons\Application.ico" />
