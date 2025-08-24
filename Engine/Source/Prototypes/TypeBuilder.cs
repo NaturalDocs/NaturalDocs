@@ -249,13 +249,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 						mustBeFollowedByText = true;
 						}
 
-					if (mustBeFollowedByText)
+					if (mustBeFollowedByText &&
+						iterator.FundamentalType != FundamentalType.Text &&
+						iterator.Character != '_')
 						{
-						if (iterator.FundamentalType == FundamentalType.Text ||
-							iterator.Character == '_')
-							{  iterator.Next();  }
-						else
-							{  break;  }
+						return false;
 						}
 					}
 
