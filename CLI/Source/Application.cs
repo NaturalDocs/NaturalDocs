@@ -201,6 +201,10 @@ namespace CodeClear.NaturalDocs.CLI
 
 			if (pauseBeforeExit || (pauseOnError && (!gracefulExit || startupErrors.Count > 0)))
 				{
+				// Flush any buffered input.  We only want to respond to new keypresses.
+				while (Console.KeyAvailable)
+					{  Console.ReadKey(true);  }
+
 				System.Console.WriteLine();
 				System.Console.Write(
 					Engine.Locale.SafeGet("NaturalDocs.CLI", "Status.PressAnyKeyToContinue", "Press any key to continue...")

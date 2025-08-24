@@ -82,6 +82,10 @@ namespace CodeClear.NaturalDocs.Tests.CLI
 
 			if (pauseBeforeExit || (pauseOnError && errorList.Count > 0))
 				{
+				// Flush any buffered input.  We only want to respond to new keypresses.
+				while (Console.KeyAvailable)
+					{  Console.ReadKey(true);  }
+
 				WriteLine();
 				WriteLine("Press any key to continue...");
 				System.Console.ReadKey(true);
