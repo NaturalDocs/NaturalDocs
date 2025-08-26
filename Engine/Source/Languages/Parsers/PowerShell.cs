@@ -47,7 +47,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				else if (TryToSkipKeyword(ref iterator, ParseMode.SyntaxHighlight) ||
 						   TryToSkipLineComment(ref iterator, ParseMode.SyntaxHighlight) ||
 						   TryToSkipString(ref iterator, ParseMode.SyntaxHighlight) ||
-						   TryToSkipNumber(ref iterator, ParseMode.SyntaxHighlight))
+						   TryToSkipNumber(ref iterator, ParseMode.SyntaxHighlight) ||
+						   TryToSkipAttribute(ref iterator, ParseMode.SyntaxHighlight))
 					{
 					}
 				else
@@ -147,6 +148,32 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (mode == ParseMode.SyntaxHighlight)
 				{  iterator.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.String);  }
+
+			iterator = lookahead;
+			return true;
+			}
+
+
+		/* Function: TryToSkipAttribute
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipAttribute (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			if (iterator.Character != '[')
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+
+			if (!TryToSkipBlock(ref lookahead, false))
+				{  return false;  }
+
+			if (mode == ParseMode.SyntaxHighlight)
+				{  iterator.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.Metadata);  }
 
 			iterator = lookahead;
 			return true;
