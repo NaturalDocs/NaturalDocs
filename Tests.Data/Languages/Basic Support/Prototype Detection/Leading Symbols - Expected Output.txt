@@ -1,0 +1,47 @@
+my $WithString
+-----
+my $WithoutString
+-----
+my @WithAt
+-----
+my @WithoutAt
+-----
+my %WithPercent
+-----
+my %WithoutPercent
+-----
+my $WithStringAndTitleScope
+-----
+my $WithoutStringAndTitleScope
+-----
+my @WithAtAndTitleScope
+-----
+my @WithoutAtAndTitleScope
+-----
+my %WithPercentAndTitleScope
+-----
+my %WithoutPercentAndTitleScope
+-----
+my $Scope::WithStringAndValueScope
+-----
+my $Scope::WithoutStringAndValueScope
+-----
+my @Scope::WithAtAndValueScope
+-----
+my @Scope::WithoutAtAndValueScope
+-----
+my %Scope::WithPercentAndValueScope
+-----
+my %Scope::WithoutPercentAndValueScope
+-----
+my $Scope::WithStringAndBothScopes
+-----
+my $Scope::WithoutStringAndBothScopes
+-----
+my @Scope::WithAtAndBothScopes
+-----
+my @Scope::WithoutAtAndBothScopes
+-----
+my %Scope::WithPercentAndBothScopes
+-----
+my %Scope::WithoutPercentAndBothScopes

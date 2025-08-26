@@ -1,0 +1,81 @@
+
+# Leading Symbols
+# ___________________________________________________________________________
+#
+# Symbols should match if we exclude leading symbols like $
+#
+
+# Variable: $WithString
+my $WithString;
+
+# Variable: WithoutString
+my $WithoutString;
+
+# Variable: @WithAt
+my @WithAt;
+
+# Variable: WithoutAt
+my @WithoutAt;
+
+# Variable: %WithPercent
+my %WithPercent;
+
+# Variable: WithoutPercent
+my %WithoutPercent;
+
+
+# Variable: $Scope::WithStringAndTitleScope
+my $WithStringAndTitleScope;
+
+# Variable: Scope::WithoutStringAndTitleScope
+my $WithoutStringAndTitleScope;
+
+# Variable: @Scope::WithAtAndTitleScope
+my @WithAtAndTitleScope;
+
+# Variable: Scope::WithoutAtAndTitleScope
+my @WithoutAtAndTitleScope;
+
+# Variable: %Scope::WithPercentAndTitleScope
+my %WithPercentAndTitleScope;
+
+# Variable: Scope::WithoutPercentAndTitleScope
+my %WithoutPercentAndTitleScope;
+
+
+# Variable: $WithStringAndValueScope
+my $Scope::WithStringAndValueScope;
+
+# Variable: WithoutStringAndValueScope
+my $Scope::WithoutStringAndValueScope;
+
+# Variable: @WithAtAndValueScope
+my @Scope::WithAtAndValueScope;
+
+# Variable: WithoutAtAndValueScope
+my @Scope::WithoutAtAndValueScope;
+
+# Variable: %WithPercentAndValueScope
+my %Scope::WithPercentAndValueScope;
+
+# Variable: WithoutPercentAndValueScope
+my %Scope::WithoutPercentAndValueScope;
+
+
+# Variable: $Scope::WithStringAndBothScopes
+my $Scope::WithStringAndBothScopes;
+
+# Variable: Scope::WithoutStringAndBothScopes
+my $Scope::WithoutStringAndBothScopes;
+
+# Variable: @Scope::WithAtAndBothScopes
+my @Scope::WithAtAndBothScopes;
+
+# Variable: Scope::WithoutAtAndBothScopes
+my @Scope::WithoutAtAndBothScopes;
+
+# Variable: %Scope::WithPercentAndBothScopes
+my %Scope::WithPercentAndBothScopes;
+
+# Variable: Scope::WithoutPercentAndBothScopes
+my %Scope::WithoutPercentAndBothScopes;
