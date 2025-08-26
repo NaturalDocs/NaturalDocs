@@ -33,7 +33,7 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 		#elif LINUX && X64
 			internal const string NativeLibraryPath = "libSQLite.Linux.x64.so";
 		#else
-			#error No SQLite native library for this platform.
+			#error No SQLite native library for this platform or platform constants aren't defined.
 		#endif
 
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
