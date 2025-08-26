@@ -46,7 +46,7 @@
 
 			> [NaturalDocsSourceDir]\CLI
 			> [NaturalDocsSourceDir]\Engine
-			> [NaturalDocsSourceDir]\Engine.Tests
+			> [NaturalDocsSourceDir]\Tests
 			> etc.
 
 			If this property is not defined it assumes you're building part of Natural Docs itself and thus only have to go up one
