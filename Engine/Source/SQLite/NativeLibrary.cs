@@ -24,6 +24,8 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 
 		#if WINDOWS && X64
 			internal const string NativeLibraryPath = "SQLite.Win.x64.dll";
+		#elif WINDOWS && ARM64
+			internal const string NativeLibraryPath = "SQLite.Win.ARM64.dll";
 		#elif MAC && X64
 			internal const string NativeLibraryPath = "libSQLite.Mac.x64.dylib";
 		#elif MAC && ARM64

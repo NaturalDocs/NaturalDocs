@@ -170,6 +170,11 @@
 				DestinationFolder="$(TargetDir)"
 				/>
 			<Copy
+				Condition="'$(Platform)'=='Windows ARM64'"
+				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\SQLite.Win.ARM64.dll"
+				DestinationFolder="$(TargetDir)"
+				/>
+			<Copy
 				Condition="'$(Platform)'=='macOS x64'"
 				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libSQLite.Mac.x64.dylib"
 				DestinationFolder="$(TargetDir)"
@@ -199,6 +204,11 @@
 				DestinationFolder="$(PublishDir)"
 				/>
 			<Copy
+				Condition="'$(Platform)'=='Windows ARM64'"
+				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\SQLite.Win.ARM64.dll"
+				DestinationFolder="$(PublishDir)"
+				/>
+			<Copy
 				Condition="'$(Platform)'=='macOS x64'"
 				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libSQLite.Mac.x64.dylib"
 				DestinationFolder="$(PublishDir)"
@@ -223,6 +233,7 @@
 		<Target Name="Engine_CleanForBuild_SQLite">
 
 			<Delete Files="$(TargetDir)SQLite.Win.x64.dll" />
+			<Delete Files="$(TargetDir)SQLite.Win.ARM64.dll" />
 			<Delete Files="$(TargetDir)libSQLite.Mac.x64.dylib" />
 			<Delete Files="$(TargetDir)libSQLite.Mac.ARM64.dylib" />
 			<Delete Files="$(TargetDir)libSQLite.Linux.x64.so" />
@@ -258,6 +269,7 @@
 		<Target Name="Engine_CleanForPublish_SQLite">
 
 			<Delete Files="$(PublishDir)SQLite.Win.x64.dll" />
+			<Delete Files="$(PublishDir)SQLite.Win.ARM64.dll" />
 			<Delete Files="$(PublishDir)libSQLite.Mac.x64.dylib" />
 			<Delete Files="$(PublishDir)libSQLite.Mac.ARM64.dylib" />
 			<Delete Files="$(PublishDir)libSQLite.Linux.x64.so" />
