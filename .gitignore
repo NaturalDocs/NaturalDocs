@@ -13,6 +13,7 @@ obj/
 # Ignore projects for packaging
 CLI.Package.MSI/
 CLI.Package.ZIP/
+Packager/
 
 # Ignore solution files
 /Natural Docs 2.sln
