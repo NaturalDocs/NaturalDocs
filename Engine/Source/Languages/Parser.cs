@@ -2025,6 +2025,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			if (separatorCutPoint != -1)
 				{  undecoratedTitle = undecoratedTitle.Substring(separatorCutPoint);  }
 
+			// If the title starts with a common variable prefix like $ strip it off.  This lets "x" and "$x" match.  This also lets both of them
+			// match "$scope::x" since the $ would be stripped off with the scope.
+			if (undecoratedTitle.Length > 1 &&
+				(undecoratedTitle[0] == '$' || undecoratedTitle[0] == '@' || undecoratedTitle[0] == '%'))
+				{  undecoratedTitle = undecoratedTitle.Substring(1);  }
+
 			Tokenizer tokenizer = prototypeStart.Tokenizer;
 
 			if (tokenizer.ContainsTextBetween(undecoratedTitle, true, prototypeStart, prototypeEnd))
