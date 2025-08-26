@@ -233,6 +233,7 @@ Language: PowerShell
    Case Sensitive: No
 
    Function Prototype Ender: {
+   Variable Prototype Ender: = \n ,
 
 
 Language: Python
