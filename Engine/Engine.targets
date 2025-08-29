@@ -189,6 +189,11 @@
 				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libSQLite.Linux.x64.so"
 				DestinationFolder="$(TargetDir)"
 				/>
+			<Copy
+				Condition="'$(Platform)'=='Linux_ARM64'"
+				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libSQLite.Linux.ARM64.so"
+				DestinationFolder="$(TargetDir)"
+				/>
 
 		</Target>
 
@@ -223,6 +228,11 @@
 				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libSQLite.Linux.x64.so"
 				DestinationFolder="$(PublishDir)"
 				/>
+			<Copy
+				Condition="'$(Platform)'=='Linux_ARM64'"
+				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libSQLite.Linux.ARM64.so"
+				DestinationFolder="$(PublishDir)"
+				/>
 
 		</Target>
 
@@ -237,6 +247,7 @@
 			<Delete Files="$(TargetDir)libSQLite.Mac.x64.dylib" />
 			<Delete Files="$(TargetDir)libSQLite.Mac.ARM64.dylib" />
 			<Delete Files="$(TargetDir)libSQLite.Linux.x64.so" />
+			<Delete Files="$(TargetDir)libSQLite.Linux.ARM64.so" />
 
 
 			<!-- x86 builds, not in use anymore -->
@@ -273,6 +284,7 @@
 			<Delete Files="$(PublishDir)libSQLite.Mac.x64.dylib" />
 			<Delete Files="$(PublishDir)libSQLite.Mac.ARM64.dylib" />
 			<Delete Files="$(PublishDir)libSQLite.Linux.x64.so" />
+			<Delete Files="$(PublishDir)libSQLite.Linux.ARM64.so" />
 
 
 			<!-- x86 builds, not in use anymore -->

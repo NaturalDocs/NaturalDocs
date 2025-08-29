@@ -32,6 +32,8 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 			internal const string NativeLibraryPath = "libSQLite.Mac.ARM64.dylib";
 		#elif LINUX && X64
 			internal const string NativeLibraryPath = "libSQLite.Linux.x64.so";
+		#elif LINUX && ARM64
+			internal const string NativeLibraryPath = "libSQLite.Linux.ARM64.so";
 		#else
 			#error No SQLite native library for this platform or platform constants aren't defined.
 		#endif
