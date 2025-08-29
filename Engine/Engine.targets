@@ -165,27 +165,27 @@
 		<Target Name="Engine_CopyForBuild_SQLite">
 
 			<Copy
-				Condition="'$(Platform)'=='Windows x64'"
+				Condition="'$(Platform)'=='Windows_x64'"
 				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\SQLite.Win.x64.dll"
 				DestinationFolder="$(TargetDir)"
 				/>
 			<Copy
-				Condition="'$(Platform)'=='Windows ARM64'"
+				Condition="'$(Platform)'=='Windows_ARM64'"
 				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\SQLite.Win.ARM64.dll"
 				DestinationFolder="$(TargetDir)"
 				/>
 			<Copy
-				Condition="'$(Platform)'=='macOS x64'"
+				Condition="'$(Platform)'=='macOS_x64'"
 				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libSQLite.Mac.x64.dylib"
 				DestinationFolder="$(TargetDir)"
 				/>
 			<Copy
-				Condition="'$(Platform)'=='macOS ARM64'"
+				Condition="'$(Platform)'=='macOS_ARM64'"
 				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libSQLite.Mac.ARM64.dylib"
 				DestinationFolder="$(TargetDir)"
 				/>
 			<Copy
-				Condition="'$(Platform)'=='Linux x64'"
+				Condition="'$(Platform)'=='Linux_x64'"
 				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libSQLite.Linux.x64.so"
 				DestinationFolder="$(TargetDir)"
 				/>
@@ -199,27 +199,27 @@
 		<Target Name="Engine_CopyForPublish_SQLite">
 
 			<Copy
-				Condition="'$(Platform)'=='Windows x64'"
+				Condition="'$(Platform)'=='Windows_x64'"
 				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\SQLite.Win.x64.dll"
 				DestinationFolder="$(PublishDir)"
 				/>
 			<Copy
-				Condition="'$(Platform)'=='Windows ARM64'"
+				Condition="'$(Platform)'=='Windows_ARM64'"
 				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\SQLite.Win.ARM64.dll"
 				DestinationFolder="$(PublishDir)"
 				/>
 			<Copy
-				Condition="'$(Platform)'=='macOS x64'"
+				Condition="'$(Platform)'=='macOS_x64'"
 				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libSQLite.Mac.x64.dylib"
 				DestinationFolder="$(PublishDir)"
 				/>
 			<Copy
-				Condition="'$(Platform)'=='macOS ARM64'"
+				Condition="'$(Platform)'=='macOS_ARM64'"
 				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libSQLite.Mac.ARM64.dylib"
 				DestinationFolder="$(PublishDir)"
 				/>
 			<Copy
-				Condition="'$(Platform)'=='Linux x64'"
+				Condition="'$(Platform)'=='Linux_x64'"
 				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libSQLite.Linux.x64.so"
 				DestinationFolder="$(PublishDir)"
 				/>

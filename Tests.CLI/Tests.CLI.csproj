@@ -2,7 +2,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
-    <Platforms>Windows x64;Windows ARM64;macOS x64;macOS ARM64</Platforms>
+    <Platforms>Windows_x64;Windows_ARM64;macOS_x64;macOS_ARM64;Linux_x64;Linux_ARM64</Platforms>
     <RootNamespace>CodeClear.NaturalDocs.Tests</RootNamespace>
     <AssemblyName>Tests</AssemblyName>
     <Configurations>Debug;Release</Configurations>
@@ -21,10 +21,10 @@
     <NoWarn />
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     <IsAotCompatible>True</IsAotCompatible>
-    <OutputPath>bin\$(Platform) $(Configuration)\</OutputPath>
+    <OutputPath>bin\$(Platform)_$(Configuration)\</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-    <IntermediateOutputPath>obj\$(Platform) $(Configuration)\</IntermediateOutputPath>
+    <IntermediateOutputPath>obj\$(Platform)_$(Configuration)\</IntermediateOutputPath>
     <AppendTargetFrameworkToIntermediateOutputPath>false</AppendTargetFrameworkToIntermediateOutputPath>
     <AppendRuntimeIdentifierToIntermediateOutputPath>false</AppendRuntimeIdentifierToIntermediateOutputPath>
   </PropertyGroup>
@@ -47,25 +47,35 @@
     <NuGetAuditMode>all</NuGetAuditMode>
     <WarningsNotAsErrors>NU1900</WarningsNotAsErrors>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Platform)' == 'Windows x64'">
+  <PropertyGroup Condition="'$(Platform)' == 'Windows_x64'">
 	<RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <PlatformTarget>x64</PlatformTarget>
     <DefineConstants>WINDOWS;X64</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Platform)' == 'Windows ARM64'">
+  <PropertyGroup Condition="'$(Platform)' == 'Windows_ARM64'">
 	<RuntimeIdentifier>win-arm64</RuntimeIdentifier>
     <PlatformTarget>ARM64</PlatformTarget>
     <DefineConstants>WINDOWS;ARM64</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Platform)' == 'macOS x64'">
+  <PropertyGroup Condition="'$(Platform)' == 'macOS_x64'">
 	<RuntimeIdentifier>osx-x64</RuntimeIdentifier>
     <PlatformTarget>x64</PlatformTarget>
     <DefineConstants>MAC;X64</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Platform)' == 'macOS ARM64'">
+  <PropertyGroup Condition="'$(Platform)' == 'macOS_ARM64'">
 	<RuntimeIdentifier>osx-arm64</RuntimeIdentifier>
     <PlatformTarget>ARM64</PlatformTarget>
     <DefineConstants>MAC;ARM64</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)' == 'Linux_x64'">
+	<RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+    <PlatformTarget>x64</PlatformTarget>
+    <DefineConstants>LINUX;X64</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)' == 'Linux_ARM64'">
+	<RuntimeIdentifier>linux-arm64</RuntimeIdentifier>
+    <PlatformTarget>ARM64</PlatformTarget>
+    <DefineConstants>LINUX;ARM64</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Tests\Tests.csproj" />
