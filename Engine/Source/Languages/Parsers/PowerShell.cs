@@ -189,6 +189,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		static protected StringSet powershellKeywords = new StringSet (KeySettings.IgnoreCase, new string[] {
 
 			"function", "if", "else", "elseif", "switch", "try", "catch", "throw", "for", "foreach", "in", "while", "break", "param",
+			"return",
 
 			"-eq", "-ieq", "-ceq", "-ne", "-ine", "-cne", "-gt", "-igt", "-cgt", "-ge", "-ige", "-cge", "-lt", "-ilt", "-clt",
 			"-le", "-ile", "-cle", "-like", "-ilike", "-clike", "-notlike", "-inotlike", "-cnotlike", "-match", "-imatch",
