@@ -38,6 +38,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			{  GlobalOnly, LocalOnly, Any  }
 
 
+		/* Enum: StringType
+		 */
+		public enum StringType : byte
+			{  Character, Quoted, Verbatim, Raw  }
+
+
 
 		// Group: Functions
 		// __________________________________________________________________________
@@ -3544,40 +3550,89 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// String opening
 
+			StringType type;
+			char closingCharacter;
+			int closingCharacterCount = 1;
 			bool interpolated = false;
-			bool verbatim = false;
 
-			if (lookahead.MatchesAcrossTokens("$@") ||
-				lookahead.MatchesAcrossTokens("@$"))
+			if (lookahead.Character == '\'')
 				{
+				type = StringType.Character;
+				closingCharacter = '\'';
+
+				lookahead.Next();
+				}
+			else if (lookahead.MatchesAcrossTokens("$\"\"\""))
+				{
+				type = StringType.Raw;
 				interpolated = true;
-				verbatim = true;
+
+				lookahead.Next();
+
+				closingCharacter = '"';
+				closingCharacterCount = ConsecutiveCharacterCount(lookahead);
+
+				lookahead.Next(closingCharacterCount);
+				}
+			else if (lookahead.MatchesAcrossTokens("\"\"\""))
+				{
+				type = StringType.Raw;
+				closingCharacter = '"';
+				closingCharacterCount = ConsecutiveCharacterCount(lookahead);
+
+				lookahead.Next(closingCharacterCount);
+				}
+			else if (lookahead.MatchesAcrossTokens("$@\"") ||
+					   lookahead.MatchesAcrossTokens("@$\""))
+				{
+				type = StringType.Verbatim;
+				closingCharacter = '"';
+				interpolated = true;
+
+				lookahead.Next(3);
+				}
+			else if (lookahead.MatchesAcrossTokens("$@\"") ||
+					   lookahead.MatchesAcrossTokens("@$\""))
+				{
+				type = StringType.Verbatim;
+				closingCharacter = '"';
+				interpolated = true;
+
+				lookahead.Next(3);
+				}
+			else if (lookahead.MatchesAcrossTokens("@\""))
+				{
+				type = StringType.Verbatim;
+				closingCharacter = '"';
+
 				lookahead.Next(2);
 				}
-			else if (lookahead.Character == '@')
+			else if (lookahead.MatchesAcrossTokens("$\""))
 				{
-				verbatim = true;
-				lookahead.Next();
-				}
-			else if (lookahead.Character == '$')
-				{
+				type = StringType.Quoted;
+				closingCharacter = '"';
 				interpolated = true;
+
+				lookahead.Next(2);
+				}
+			else if (lookahead.Character == '"')
+				{
+				type = StringType.Quoted;
+				closingCharacter = '"';
+
 				lookahead.Next();
 				}
-
-			if (lookahead.Character != '\"' && lookahead.Character != '\'')
+			else
 				{  return false;  }
-
-			char closingChar = lookahead.Character;
-			lookahead.Next();
 
 
 			// String body
 
 			while (lookahead.IsInBounds)
 				{
-				if ( (verbatim && lookahead.MatchesAcrossTokens("\"\"")) ||
-					 (!verbatim && lookahead.Character == '\\') ||
+				if ( (type == StringType.Verbatim && lookahead.MatchesAcrossTokens("\"\"")) ||
+					 (type == StringType.Quoted && lookahead.Character == '\\') ||
+					 (type == StringType.Character && lookahead.Character == '\\') ||
 					 (interpolated && lookahead.MatchesAcrossTokens("{{")) )
 					{
 					// Two characters for "" and {{, two tokens for \x
@@ -3600,10 +3655,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					startOfLastStringSegment = lookahead;
 					}
 
-				else if (lookahead.Character == closingChar)
+				else if (lookahead.Character == closingCharacter)
 					{
-					lookahead.Next();
-					break;
+					if (closingCharacterCount == 1 ||
+						ConsecutiveCharacterCount(lookahead) >= closingCharacterCount)
+						{
+						lookahead.NextByCharacters(closingCharacterCount);
+						break;
+						}
+					else
+						{  lookahead.Next();  }
 					}
 
 				else
@@ -3739,6 +3800,26 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{  startOfNumber.SetSyntaxHighlightingTypeBetween(iterator, SyntaxHighlightingType.Number);  }
 
 			return true;
+			}
+
+
+		/* Function: ConsecutiveCharacterCount
+		 * Returns how many times the character at the iterator appears in a row.
+		 */
+		protected int ConsecutiveCharacterCount (TokenIterator iterator)
+			{
+			char character = iterator.Character;
+
+			string rawText = iterator.Tokenizer.RawText;
+			int indexOfEnd = iterator.RawTextIndex + 1;
+
+			while (indexOfEnd < rawText.Length &&
+					  rawText[indexOfEnd] == character)
+				{
+				indexOfEnd++;
+				}
+
+			return (indexOfEnd - iterator.RawTextIndex);
 			}
 
 
