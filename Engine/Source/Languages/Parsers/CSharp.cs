@@ -243,11 +243,19 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		override public void SyntaxHighlight (Tokenizer source)
 			{
-			TokenIterator iterator = source.FirstToken;
+			SyntaxHighlight(source.FirstToken, source.EndOfTokens);
+			}
+
+
+		/* Function: SyntaxHighlight
+		 */
+		public void SyntaxHighlight (TokenIterator start, TokenIterator end)
+			{
+			TokenIterator iterator = start;
 
 			TokenIterator lastCodeToken = iterator.Tokenizer.EndOfTokens;  // Default to out of bounds
 
-			while (iterator.IsInBounds)
+			while (iterator < end)
 				{
 				if (TryToSkipPreprocessingDirective(ref iterator, ParseMode.SyntaxHighlight) ||
 					TryToSkipComment(ref iterator, ParseMode.SyntaxHighlight))
@@ -317,7 +325,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					while (endOfIdentifier.FundamentalType == FundamentalType.Text ||
 							endOfIdentifier.Character == '_');
 
-					string identifier = source.TextBetween(iterator, endOfIdentifier);
+					string identifier = iterator.TextBetween(endOfIdentifier);
 
 					if (Keywords.Contains(identifier))
 						{  iterator.SetSyntaxHighlightingTypeByCharacters(SyntaxHighlightingType.Keyword, identifier.Length);  }
@@ -3507,7 +3515,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToSkipString
 		 *
-		 * This covers string, $string, @string, $@string, and character constants.
+		 * This covers:
+		 *
+		 *		- Character constants like 'x'
+		 *		- Strings like "abc"
+		 *		- Verbatim strings like @"abc"
+		 *		- Interpolated strings like $"abc"
+		 *		- Inteprolated verbatim strings like $@"abc" and @$"abc"
 		 *
 		 * Supported Modes:
 		 *
@@ -3522,6 +3536,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{  return false;  }
 
 			TokenIterator lookahead = iterator;
+
+			// This will be the start of the last string segment.  For non-interpolated strings, this will always be the start of the string.
+			// For interpolated strings, this will be the start of the last one, such as the closing brace in "abc{def}ghi".
+			TokenIterator startOfLastStringSegment = iterator;
 
 
 			// String opening
@@ -3568,8 +3586,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 				else if (interpolated && lookahead.Character == '{')
 					{
+					if (mode == ParseMode.SyntaxHighlight)
+						{  startOfLastStringSegment.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.String);  }
+
+					TokenIterator startOfInterpolatedCode = lookahead;
+
 					lookahead.Next();
 					GenericSkipUntilAfter(ref lookahead, '}');
+
+					if (mode == ParseMode.SyntaxHighlight)
+						{  SyntaxHighlight(startOfInterpolatedCode, lookahead);  }
+
+					startOfLastStringSegment = lookahead;
 					}
 
 				else if (lookahead.Character == closingChar)
@@ -3586,13 +3614,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			if (lookahead.IsInBounds)
 				{
 				if (mode == ParseMode.SyntaxHighlight)
-					{  iterator.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.String);  }
+					{  startOfLastStringSegment.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.String);  }
 
 				iterator = lookahead;
 				return true;
 				}
 			else
-				{  return false;  }
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
 			}
 
 
