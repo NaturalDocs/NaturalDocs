@@ -19,13 +19,14 @@
 
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 
 namespace CodeClear.NaturalDocs.Engine.Tokenization
 	{
+	[DebuggerDisplay("{DebuggerDisplay,nq}")]
 	public struct TokenIterator
 		{
 
@@ -727,7 +728,6 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 
 
 
-
 		// Group: Properties
 		// __________________________________________________________________________
 
@@ -933,6 +933,18 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 			{
 			get
 				{  return tokenizer;  }
+			}
+
+
+		/* Property: DebuggerDisplay
+		 * Shows the string and position when debugging Natural Docs.
+		 */
+		 internal string DebuggerDisplay
+			{
+			get
+				{
+				return ("\"" + this.String + "\" (line " + this.LineNumber + ", char " + this.CharNumber + ")");
+				}
 			}
 
 
