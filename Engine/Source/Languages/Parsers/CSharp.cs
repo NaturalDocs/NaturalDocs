@@ -3545,18 +3545,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// String opening
 
 			bool interpolated = false;
-			bool literal = false;
+			bool verbatim = false;
 
 			if (lookahead.MatchesAcrossTokens("$@") ||
 				lookahead.MatchesAcrossTokens("@$"))
 				{
 				interpolated = true;
-				literal = true;
+				verbatim = true;
 				lookahead.Next(2);
 				}
 			else if (lookahead.Character == '@')
 				{
-				literal = true;
+				verbatim = true;
 				lookahead.Next();
 				}
 			else if (lookahead.Character == '$')
@@ -3576,8 +3576,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			while (lookahead.IsInBounds)
 				{
-				if ( (literal && lookahead.MatchesAcrossTokens("\"\"")) ||
-					 (!literal && lookahead.Character == '\\') ||
+				if ( (verbatim && lookahead.MatchesAcrossTokens("\"\"")) ||
+					 (!verbatim && lookahead.Character == '\\') ||
 					 (interpolated && lookahead.MatchesAcrossTokens("{{")) )
 					{
 					// Two characters for "" and {{, two tokens for \x
