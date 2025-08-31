@@ -57,12 +57,10 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 				secondLinePositionLeft = System.Console.CursorLeft;
 				secondLinePositionTop = System.Console.CursorTop;
 
-				#if MAC || LINUX
-				// On Windows these coordinates will be stable even if the second line of text causes the terminal window to scroll.
-				// On Linux and macOS this isn't the case, so detect whether the second line caused a scroll and adjust.
+				// Check whether the second line caused the terminal window to scroll, in which case we have to adjust the
+				// coordinates of the first
 				if (secondLinePositionTop == firstLinePositionTop)
 					{  firstLinePositionTop--;  }
-				#endif
 				}
 			}
 
