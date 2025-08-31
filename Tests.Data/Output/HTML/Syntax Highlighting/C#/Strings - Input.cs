@@ -8,9 +8,9 @@
 
 		string embeddedQuotes = "int \" int \" int";
 
-		string atString = @"abc def";
+		string verbatimString = @"abc def";
 
-		string atStringEmbeddedQuotes = @"int "" int "" int ";
+		string verbatimStringEmbeddedQuotes = @"int "" int "" int ";
 
 		string backslashTrap1 = "abc\\";
 
@@ -44,21 +44,23 @@
 
 	Topic: Interpolated Strings
 
+		Both $@"" and @$"" are explicitly supported according to the language specification.
+
 		(code)
 
         string interpolatedString1 = $"abc {def} ghi";
 
-        string interpolatedString2 = $@"abc {def} ghi";
+        string interpolatedString2 = $"abc {obj.Function(12, false)} ghi";
 
-        string interpolatedString3 = @$"abc {4+5} ghi";
+		string interpolatedVerbatimString1 = $@"abc {def} ghi";
 
-        string interpolatedString4 = $"abc {obj.Function(12, false)} ghi";
+        string interpolatedVerbatimString2 = @$"abc {4+5} ghi";
 
-        string interpolatedString5 = $@"abc { (x == y ? "y" : "n") } ghi";
+        string interpolatedVerbatimString3 = $@"abc { (x == y ? "y" : "n") } ghi";
 
-        string interpolatedString6 = @$"abc {{ def";
+        string interpolatedVerbatimString4 = @$"abc {{ def";
 
-        string invalidInterpolatedString = $"abc { def";
+		string invalidInterpolatedString = $"abc { def";
 
 		(end)
 
