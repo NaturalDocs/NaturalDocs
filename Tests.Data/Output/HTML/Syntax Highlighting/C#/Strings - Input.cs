@@ -1,41 +1,8 @@
 
 /*
-	Topic: Strings
-
-		(code)
-
-		string test = "abc def";
-
-		string embeddedQuotes = "int \" int \" int";
-
-		string verbatimString = @"abc def";
-
-		string verbatimStringEmbeddedQuotes = @"int "" int "" int ";
-
-		string rawString1 = """abc def""";
-
-		string rawString2 = """"abc def"""";
-
-		string rawString3 = """"""abc def"""""";
-
-		string rawStringEmbeddedQuotes1 = """int " int "" int""";
-
-		string rawStringEmbeddedQuotes2 = """"int " int "" int """ int"""";
-
-		string rawStringEmbeddedQuotes3 = """"""int " int "" int """ int """" int """"" int"""""";
-
-		string backslashTrap1 = "abc\\";
-
-		string backslashTrap2 = "int \\\" int \\\" int";
-
-		string backslashTrap3 = @"int \"" int \"" int";
-
-		(end)
-
-
 	Topic: Chars
 
-		(code)
+		--- code
 
 		char test = 'x';
 
@@ -51,54 +18,115 @@
 
 		char hex2 = '\xABCD';
 
-		(end)
+		---
 
 
-	Topic: Interpolated Strings
+	Topic: Quoted Strings
 
-		Both $@"" and @$"" are explicitly supported according to the language specification.
+		--- code
 
-		(code)
+		string quotedString = "abc def";
 
-		string interpolatedString1 = $"abc {def} ghi";
+		string quotedStringEscaping1 = "int \" int \" int";
 
-		string interpolatedString2 = @$"abc {4+5} ghi";
+		string quotedStringEscaping2 = "abc\\";
 
-		string interpolatedString3 = $"abc {obj.Function(12, false)} ghi";
+		string quotedStringEscaping3 = "int \\\" int \\\" int";
 
-		string interpolatedString4 = $@"abc { (x == y ? "y" : "n") } ghi";
+		---
 
-		string interpolatedString5 = $"abc {{ def";
 
-		string interpolatedString6 = $"abc {{ def } ghi";
+	Topic: Verbatim Strings
 
-		string interpolatedString7 = $"abc { def }} ghi";
+		--- code
 
-		string interpolatedString8 = $"abc {{ def }} ghi";
+		string verbatimString = @"abc def";
 
-		string interpolatedString9 = $"abc {{{ def }}} ghi";
+		string verbatimStringEscaping1 = @"int "" int "" int ";
 
-		string interpolatedString10 = $"abc {{{{ def }}}} ghi";
+		string verbatimStringEscaping2 = @"int \"" int \"" int";
+
+		---
+
+
+	Topic: Raw Strings
+
+		--- code
+
+		string rawString1 = """abc def""";
+
+		string rawString2 = """"abc def"""";
+
+		string rawString3 = """"""abc def"""""";
+
+		string rawStringEscaping1 = """int " int "" int""";
+
+		string rawStringEscaping2 = """"int " int "" int """ int"""";
+
+		string rawStringEscaping3 = """"""int " int "" int """ int """" int """"" int"""""";
+
+		---
+
+
+	Topic: Interpolated Quoted Strings
+
+		--- code
+
+		string interpolatedQuotedString1 = $"abc {def} ghi";
+
+		string interpolatedQuotedString2 = $"abc {4+5} ghi";
+
+		string interpolatedQuotedString3 = $"abc {obj.Function(12, false)} ghi";
+
+		string interpolatedQuotedString4 = $"abc { (x == y ? "y" : "n") } ghi";
+
+		string interpolatedQuotedString5 = $"abc {{ def";
+
+		string interpolatedQuotedString6 = $"abc {{ def } ghi";
+
+		string interpolatedQuotedString7 = $"abc { def }} ghi";
+
+		string interpolatedQuotedString8 = $"abc {{ def }} ghi";
+
+		string interpolatedQuotedString9 = $"abc {{{ def }}} ghi";
+
+		string interpolatedQuotedString10 = $"abc {{{{ def }}}} ghi";
+
+		---
+
+
+	Topic: Interpolated Verbatim Strings
+
+		Both $@ and @$ are explicitly supported according to the language specification.
+
+		--- code
 
 		string interpolatedVerbatimString1 = $@"abc {def} ghi";
 
 		string interpolatedVerbatimString2 = @$"abc {4+5} ghi";
 
-		string interpolatedVerbatimString3 = $"abc {obj.Function(12, false)} ghi";
+		string interpolatedVerbatimString3 = $@"abc {obj.Function(12, false)} ghi";
 
-		string interpolatedVerbatimString4 = $@"abc { (x == y ? "y" : "n") } ghi";
+		string interpolatedVerbatimString4 = @$"abc { (x == y ? "y" : "n") } ghi";
 
-		string interpolatedVerbatimString5 = @$"abc {{ def";
+		string interpolatedVerbatimString5 = $@"abc {{ def";
 
-		string interpolatedVerbatimString6 = $@"abc {{ def } ghi";
+		string interpolatedVerbatimString6 = @$"abc {{ def } ghi";
 
-		string interpolatedVerbatimString7 = @$"abc { def }} ghi";
+		string interpolatedVerbatimString7 = $@"abc { def }} ghi";
 
-		string interpolatedVerbatimString8 = $@"abc {{ def }} ghi";
+		string interpolatedVerbatimString8 = @$"abc {{ def }} ghi";
 
-		string interpolatedVerbatimString9 = @$"abc {{{ def }}} ghi";
+		string interpolatedVerbatimString9 = $@"abc {{{ def }}} ghi";
 
-		string interpolatedVerbatimString10 = $@"abc {{{{ def }}}} ghi";
+		string interpolatedVerbatimString10 = @$"abc {{{{ def }}}} ghi";
+
+		---
+
+
+	Topic: Interpolated Raw Strings
+
+		--- code
 
 		string interpolatedRawString1 = $"""abc {def} ghi""";
 
@@ -116,22 +144,16 @@
 
 		string interpolatedRawString8 = $""""""abc {{ def }} ghi"""""";
 
-		string interpolatedRawString9 = $""""""abc {{{ def }}} ghi"""""";
+		string interpolatedRawString9 = $"""""""abc {{{ def }}} ghi""""""";
 
-		string interpolatedRawString10 = $""""""abc {{{{ def }}}} ghi"""""";
+		string interpolatedRawString10 = $""""""""abc {{{{ def }}}} ghi"""""""";
 
-		string invalidInterpolatedString1 = $"abc { def";
-
-		string invalidInterpolatedString2 = @$"abc { def";
-
-		string invalidInterpolatedString3 = $"""abc { def""";
-
-		(end)
+		---
 
 
-	Topic: Multiline Strings
+	Topic: Multiline Verbatim Strings
 
-		(code)
+		--- code
 
 		string multilineVerbatimString1 = @"abc
 			def
@@ -154,6 +176,13 @@
 				 "n" )
 			} jkl
 			mno";
+
+		---
+
+
+	Topic: Multiline Raw Strings
+
+		--- code
 
 		string multilineRawString1 = $"""
 			abc
@@ -184,5 +213,5 @@
 			mno
 			"""""";
 
-		(end)
+		---
 */
