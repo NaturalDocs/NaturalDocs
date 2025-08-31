@@ -76,6 +76,10 @@
 
 		string interpolatedString8 = $"abc {{ def }} ghi";
 
+		string interpolatedString9 = $"abc {{{ def }}} ghi";
+
+		string interpolatedString10 = $"abc {{{{ def }}}} ghi";
+
 		string interpolatedVerbatimString1 = $@"abc {def} ghi";
 
 		string interpolatedVerbatimString2 = @$"abc {4+5} ghi";
@@ -92,6 +96,10 @@
 
 		string interpolatedVerbatimString8 = $@"abc {{ def }} ghi";
 
+		string interpolatedVerbatimString9 = @$"abc {{{ def }}} ghi";
+
+		string interpolatedVerbatimString10 = $@"abc {{{{ def }}}} ghi";
+
 		string interpolatedRawString1 = $"""abc {def} ghi""";
 
 		string interpolatedRawString2 = $""""abc {4+5} ghi"""";
@@ -107,6 +115,10 @@
 		string interpolatedRawString7 = $"""""abc { def }} ghi""""";
 
 		string interpolatedRawString8 = $""""""abc {{ def }} ghi"""""";
+
+		string interpolatedRawString9 = $""""""abc {{{ def }}} ghi"""""";
+
+		string interpolatedRawString10 = $""""""abc {{{{ def }}}} ghi"""""";
 
 		string invalidInterpolatedString1 = $"abc { def";
 
