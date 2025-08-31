@@ -62,15 +62,6 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 				// On Linux and macOS this isn't the case, so detect whether the second line caused a scroll and adjust.
 				if (secondLinePositionTop == firstLinePositionTop)
 					{  firstLinePositionTop--;  }
-
-				// Also write a blank line as a placeholder for the second status line and detect if that causes it to scroll again.
-				System.Console.WriteLine();
-
-				if (System.Console.CursorTop == secondLinePositionTop)
-					{
-					firstLinePositionTop--;
-					secondLinePositionTop--;
-					}
 				#endif
 				}
 			}
@@ -94,7 +85,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 					System.Console.Write(Application.SecondaryStatusIndent);
 
-					System.Console.WriteLine(
+					System.Console.Write(
 						Engine.Locale.Get("NaturalDocs.CLI", "Status.NumberFound(files, folders)", status.SourceFilesFound, status.SourceFoldersFound)
 						);
 					}
@@ -113,7 +104,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 				System.Console.CursorLeft = firstLinePositionLeft;
 				System.Console.CursorTop = firstLinePositionTop;
 
-				System.Console.WriteLine(
+				System.Console.Write(
 					Engine.Locale.Get("NaturalDocs.CLI", "Status.End")
 					);
 
