@@ -12,6 +12,18 @@
 
 		string verbatimStringEmbeddedQuotes = @"int "" int "" int ";
 
+		string rawString1 = """abc def""";
+
+		string rawString2 = """"abc def"""";
+
+		string rawString3 = """"""abc def"""""";
+
+		string rawStringEmbeddedQuotes1 = """int " int "" int""";
+
+		string rawStringEmbeddedQuotes2 = """"int " int "" int """ int"""";
+
+		string rawStringEmbeddedQuotes3 = """"""int " int "" int """ int """" int """"" int"""""";
+
 		string backslashTrap1 = "abc\\";
 
 		string backslashTrap2 = "int \\\" int \\\" int";
@@ -80,9 +92,27 @@
 
 		string interpolatedVerbatimString8 = $@"abc {{ def }} ghi";
 
+		string interpolatedRawString1 = $"""abc {def} ghi""";
+
+		string interpolatedRawString2 = $""""abc {4+5} ghi"""";
+
+		string interpolatedRawString3 = $"""""abc {obj.Function(12, false)} ghi""""";
+
+		string interpolatedRawString4 = $""""""abc { (x == y ? "y" : "n") } ghi"""""";
+
+		string interpolatedRawString5 = $"""abc {{ def""";
+
+		string interpolatedRawString6 = $""""abc {{ def } ghi"""";
+
+		string interpolatedRawString7 = $"""""abc { def }} ghi""""";
+
+		string interpolatedRawString8 = $""""""abc {{ def }} ghi"""""";
+
 		string invalidInterpolatedString1 = $"abc { def";
 
 		string invalidInterpolatedString2 = @$"abc { def";
+
+		string invalidInterpolatedString3 = $"""abc { def""";
 
 		(end)
 
@@ -112,6 +142,35 @@
 				 "n" )
 			} jkl
 			mno";
+
+		string multilineRawString1 = $"""
+			abc
+			def
+			""";
+
+		string multilineRawInterpolatedString1 = $""""
+			abc
+			def { ghi } jkl
+			mno
+			"""";
+
+		string multilineRawInterpolatedString2 = $"""""
+			abc
+			def { (x > 2 ?
+					 "y" :
+					 "n") } jkl
+			mno
+			""""";
+
+		string multilineRawInterpolatedString3 = $""""""
+			abc
+			def {
+				(x > 2 ?
+				 "y" :
+				 "n" )
+			} jkl
+			mno
+			"""""";
 
 		(end)
 */
