@@ -13,6 +13,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.Prototypes;
 using CodeClear.NaturalDocs.Engine.Symbols;
@@ -360,6 +361,80 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		override public bool IsBuiltInType (string type)
 			{
 			return BuiltInTypes.Contains(type);
+			}
+
+
+		/* Function: NormalizePrototype
+		 */
+		override protected string NormalizePrototype (string input)
+			{
+			// If the prototype contains a GeneratedRegex attribute we want to remove the implementation.  Like the value
+			// of a constant it shouldn't really be included in the HTML.
+			if (input.Contains("GeneratedRegex", StringComparison.InvariantCulture))
+				{
+				Tokenizer tokenizer = new Tokenizer(input);
+				TokenIterator iterator = tokenizer.FirstToken;
+				TokenIterator lookahead = iterator;
+
+				StringBuilder newPrototype = new StringBuilder(input.Length);
+
+				while (iterator.IsInBounds)
+					{
+					if (TryToSkipAttribute(ref lookahead))
+						{
+						TokenIterator endOfAttribute = lookahead;
+						bool addedGeneratedRegex = false;
+
+						lookahead = iterator;
+						lookahead.Next();
+						lookahead.NextPastWhitespace(endOfAttribute);
+
+						if (lookahead.MatchesToken("GeneratedRegex") &&
+							lookahead.IsStandaloneWord())
+							{
+							lookahead.Next();
+							lookahead.NextPastWhitespace(endOfAttribute);
+
+							if (lookahead.Character == '(')
+								{
+								TokenIterator cutPoint = lookahead;
+								lookahead.Next();
+
+								GenericSkipUntilAfter(ref lookahead, ')');
+
+								if (lookahead <= endOfAttribute)
+									{
+									iterator.AppendTextBetweenTo(cutPoint, newPrototype);
+									newPrototype.Append("(...)");
+									lookahead.AppendTextBetweenTo(endOfAttribute, newPrototype);
+
+									addedGeneratedRegex = true;
+									}
+								}
+							}
+
+						if (!addedGeneratedRegex)
+							{  iterator.AppendTextBetweenTo(endOfAttribute, newPrototype);  }
+
+						iterator = endOfAttribute;
+						}
+
+					else // not on attribute
+						{
+						lookahead = iterator;
+						GenericSkip(ref lookahead);
+						iterator.AppendTextBetweenTo(lookahead, newPrototype);
+						iterator = lookahead;
+						}
+					}
+
+				return base.NormalizePrototype(newPrototype.ToString());
+				}
+
+			else // doesn't contain "GeneratedRegex"
+				{
+				return base.NormalizePrototype(input);
+				}
 			}
 
 
