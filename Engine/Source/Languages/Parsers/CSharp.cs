@@ -3554,6 +3554,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			char closingCharacter;
 			int closingCharacterCount = 1;
 			bool interpolated = false;
+			int interpolatedCharacterCount = 1;
+
+			if (lookahead.Character == '$')
+				{
+				interpolated = true;
+				interpolatedCharacterCount = ConsecutiveCharacterCount(lookahead);
+
+				lookahead.Next(interpolatedCharacterCount);
+				}
 
 			if (lookahead.Character == '\'')
 				{
@@ -3561,18 +3570,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				closingCharacter = '\'';
 
 				lookahead.Next();
-				}
-			else if (lookahead.MatchesAcrossTokens("$\"\"\""))
-				{
-				type = StringType.Raw;
-				interpolated = true;
-
-				lookahead.Next();
-
-				closingCharacter = '"';
-				closingCharacterCount = ConsecutiveCharacterCount(lookahead);
-
-				lookahead.Next(closingCharacterCount);
 				}
 			else if (lookahead.MatchesAcrossTokens("\"\"\""))
 				{
@@ -3582,17 +3579,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 				lookahead.Next(closingCharacterCount);
 				}
-			else if (lookahead.MatchesAcrossTokens("$@\"") ||
-					   lookahead.MatchesAcrossTokens("@$\""))
-				{
-				type = StringType.Verbatim;
-				closingCharacter = '"';
-				interpolated = true;
-
-				lookahead.Next(3);
-				}
-			else if (lookahead.MatchesAcrossTokens("$@\"") ||
-					   lookahead.MatchesAcrossTokens("@$\""))
+			else if (lookahead.MatchesAcrossTokens("@$\""))
 				{
 				type = StringType.Verbatim;
 				closingCharacter = '"';
@@ -3604,14 +3591,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{
 				type = StringType.Verbatim;
 				closingCharacter = '"';
-
-				lookahead.Next(2);
-				}
-			else if (lookahead.MatchesAcrossTokens("$\""))
-				{
-				type = StringType.Quoted;
-				closingCharacter = '"';
-				interpolated = true;
 
 				lookahead.Next(2);
 				}
@@ -3630,29 +3609,86 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			while (lookahead.IsInBounds)
 				{
-				if ( (type == StringType.Verbatim && lookahead.MatchesAcrossTokens("\"\"")) ||
-					 (type == StringType.Quoted && lookahead.Character == '\\') ||
-					 (type == StringType.Character && lookahead.Character == '\\') ||
-					 (interpolated && lookahead.MatchesAcrossTokens("{{")) )
+				if ((type == StringType.Quoted || type == StringType.Character) &&
+					lookahead.Character == '\\')
 					{
-					// Two characters for "" and {{, two tokens for \x
 					lookahead.Next(2);
 					}
 
-				else if (interpolated && lookahead.Character == '{')
+				else if (type == StringType.Verbatim &&
+						   lookahead.MatchesAcrossTokens("\"\""))
 					{
-					if (mode == ParseMode.SyntaxHighlight)
-						{  startOfLastStringSegment.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.String);  }
+					lookahead.Next(2);
+					}
 
-					TokenIterator startOfInterpolatedCode = lookahead;
+				else if (interpolated &&
+						   lookahead.Character == '{')
+					{
+					int count = ConsecutiveCharacterCount(lookahead);
 
-					lookahead.Next();
-					GenericSkipUntilAfter(ref lookahead, '}');
+					if (type == StringType.Quoted || type == StringType.Verbatim)
+						{
+						if (count >= 2)
+							{  lookahead.Next(2);  }
+						else
+							{
+							if (mode == ParseMode.SyntaxHighlight)
+								{  startOfLastStringSegment.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.String);  }
 
-					if (mode == ParseMode.SyntaxHighlight)
-						{  SyntaxHighlight(startOfInterpolatedCode, lookahead);  }
+							TokenIterator startOfInterpolatedCode = lookahead;
 
-					startOfLastStringSegment = lookahead;
+							lookahead.Next(interpolatedCharacterCount);
+							GenericSkipUntilAfter(ref lookahead, '}');
+
+							if (mode == ParseMode.SyntaxHighlight)
+								{  SyntaxHighlight(startOfInterpolatedCode, lookahead);  }
+
+							startOfLastStringSegment = lookahead;
+							}
+						}
+
+					else if (type == StringType.Raw)
+						{
+						if (count < interpolatedCharacterCount)
+							{
+							lookahead.Next(count);
+							}
+						else
+							{
+							lookahead.Next(count - interpolatedCharacterCount);
+
+							if (mode == ParseMode.SyntaxHighlight)
+								{  startOfLastStringSegment.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.String);  }
+
+							TokenIterator startOfInterpolatedCode = lookahead;
+
+							lookahead.Next(interpolatedCharacterCount);
+
+							do
+								{
+								GenericSkipUntilAfter(ref lookahead, '}');
+
+								TokenIterator lookbehind = lookahead;
+								lookbehind.Previous();
+
+								if (lookbehind.Character == '}' &&
+									ConsecutiveCharacterCount(lookbehind) >= interpolatedCharacterCount)
+									{
+									lookahead.Next(interpolatedCharacterCount - 1);
+									break;
+									}
+								}
+							while (lookahead.IsInBounds);
+
+							if (mode == ParseMode.SyntaxHighlight)
+								{  SyntaxHighlight(startOfInterpolatedCode, lookahead);  }
+
+							startOfLastStringSegment = lookahead;
+							}
+						}
+
+					else
+						{  throw new NotImplementedException();  }
 					}
 
 				else if (lookahead.Character == closingCharacter)
@@ -3660,7 +3696,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					if (closingCharacterCount == 1 ||
 						ConsecutiveCharacterCount(lookahead) >= closingCharacterCount)
 						{
-						lookahead.NextByCharacters(closingCharacterCount);
+						lookahead.Next(closingCharacterCount);
 						break;
 						}
 					else
