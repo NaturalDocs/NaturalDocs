@@ -1,0 +1,19 @@
+(No prototype detected)
+-----
+[GeneratedRegex(...)] static private partial Regex RegularExpressionWithQuotedString()
+-----
+[GeneratedRegex(...)] static private partial Regex RegularExpressionWithVerbatimString()
+-----
+[GeneratedRegex(...)] static private partial Regex RegularExpressionWithRawTextString()
+-----
+[Attribute] [GeneratedRegex(...)] [AnotherAttribute("some other string")] static private partial Regex RegularExpressionWithOtherAttributes()
+-----
+[ GeneratedRegex (...) ] static private partial Regex RegularExpressionWithSpaces()
+-----
+[Attribute("GeneratedRegex")] static private partial Regex RegularExpressionWithFakeoutAttribute()
+-----
+[Attribute(@"GeneratedRegex("fake regex content")")] static private partial Regex RegularExpressionWithFakeoutAttribute2()
+-----
+[Attribute(@" [GeneratedRegex("fake regex content")] ")] static private partial Regex RegularExpressionWithFakeoutAttribute3()
+-----
+static private partial Regex GeneratedRegex(string x = "fakeout")
