@@ -20,7 +20,7 @@ Language: Text File
 
 Language: Shebang Script
 
-   Extension: cgi
+   Extension: cgi sh command
 
 
 Language: ActionScript
