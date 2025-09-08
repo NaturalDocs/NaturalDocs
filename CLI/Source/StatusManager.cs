@@ -211,12 +211,22 @@ namespace CodeClear.NaturalDocs.CLI
 					{
 					lock (statusLock)
 						{
-						ShowDetailedStatus();
+						if (inProgress)
+							{
+							ShowDetailedStatus();
+							}
 						}
 					}
 				}
 
-			inputTimer.Start();
+			lock (statusLock)
+				{
+				if (inProgress &&
+					inputTimer != null)
+					{
+					inputTimer.Start();
+					}
+				}
 			}
 
 
