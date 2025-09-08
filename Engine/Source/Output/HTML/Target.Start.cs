@@ -209,6 +209,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			// Compare to the previous list of FileSources.
 			//
 
+			bool fileSourceNamesChanged = false;
+
 			if (!hasBinaryConfigFile)
 				{
 				// If we don't have the binary config file we need to rebuild all the output because we don't know which FileSource was
@@ -258,7 +260,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					}
 
 
-				// Check if any FileSources were added
+				// Check if any FileSources were added or had their names changed
 
 				foreach (var fileSource in EngineInstance.Files.FileSources)
 					{
@@ -271,6 +273,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 							if (previousFileSourceInfo.IsSameFundamentalFileSource(fileSource))
 								{
 								foundMatch = true;
+
+								if (fileSource.Name != previousFileSourceInfo.Name)
+									{  fileSourceNamesChanged = true;  }
+
 								break;
 								}
 							}
@@ -278,7 +284,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 						if (!foundMatch)
 							{
 							hasAdditions = true;
-							break;
 							}
 						}
 					}
@@ -458,7 +463,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					{  unprocessedChanges.AddHomePage();  }
 
 				// May need to update the home page stored in tabs.js
-				if (!hasBinaryConfigFile || homePageChanged)
+				if (!hasBinaryConfigFile || homePageChanged || fileSourceNamesChanged)
 					{  unprocessedChanges.AddMenu();  }
 				}
 
