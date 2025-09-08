@@ -56,7 +56,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 					{
 					result = false;
 					}
-				else if (!binaryFile.Version.IsAtLeastRelease("2.2") &&  // we can support the change in 2.3
+				else if (!binaryFile.Version.IsAtLeastRelease("2.4") &&
 						  !binaryFile.Version.IsSamePreRelease(Engine.Instance.Version))
 					{
 					binaryFile.Close();
@@ -140,16 +140,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 
 						while (onLoadStatement != null)
 							{
-							string onLoadAfterSubstitutions;
-
-							// OnLoad After Substitutions is new for 2.3.  Since there were no substitutions in earlier versions, use
-							// the same value for them.
-							if (binaryFile.Version.IsAtLeastRelease("2.3") ||
-								binaryFile.Version.IsSamePreRelease(Engine.Instance.Version))
-								{  onLoadAfterSubstitutions = binaryFile.ReadString();  }
-							else
-								{  onLoadAfterSubstitutions = onLoadStatement;  }
-
+							string onLoadAfterSubstitutions = binaryFile.ReadString();
 							Engine.Styles.PageType pageType = (Engine.Styles.PageType)binaryFile.ReadByte();
 
 							style.AddOnLoad(onLoadStatement, onLoadAfterSubstitutions, Config.PropertySource.PreviousRun, pageType);
@@ -187,8 +178,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 					overridableSettings.StyleNamePropertyLocation = Config.PropertySource.PreviousRun;
 
 
-					// [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
-					// [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
+					// [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString] [String: Source FileSource Name]
+					// [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString] [String: Source FileSource Name]
 					// ...
 					// [Int32: 0]
 
@@ -203,6 +194,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 							{  break;  }
 
 						fileSourceInfo.UniqueIDString = binaryFile.ReadString();
+						fileSourceInfo.Name = binaryFile.ReadString();
 						fileSourceInfoList.Add(fileSourceInfo);
 						}
 
@@ -334,8 +326,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 				binaryFile.WriteString(null);
 
 
-				// [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
-				// [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
+				// [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString] [String: Source FileSource Name]
+				// [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString] [String: Source FileSource Name]
 				// ...
 				// [Int32: 0]
 
@@ -345,6 +337,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 						{
 						binaryFile.WriteInt32(fileSourceInfo.Number);
 						binaryFile.WriteString(fileSourceInfo.UniqueIDString);
+						binaryFile.WriteString(fileSourceInfo.Name);
 						}
 					}
 

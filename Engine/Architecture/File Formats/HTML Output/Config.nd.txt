@@ -53,8 +53,8 @@ _______________________________________________________________________________
 
 	Topic: File Source Info
 
-		> [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
-		> [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
+		> [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString] [String: Source FileSource Name]
+		> [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString] [String: Source FileSource Name]
 		> ...
 		> [Int32: 0]
 		>
@@ -70,6 +70,9 @@ _______________________________________________________________________________
 
 Group: Revisions
 _______________________________________________________________________________
+
+	Topic: 2.4;
+		- Added Source FileSource Name
 
 	Topic: 2.3
 		- Added OnLoad After Substitutions
