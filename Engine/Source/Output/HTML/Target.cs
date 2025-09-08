@@ -360,27 +360,4 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 		}
 
-
-	public struct FileSourceInfo
-		{
-		public bool IsSameFundamentalFileSource (Files.FileSource other)
-			{
-			return (Number == other.Number &&
-					   Type == other.Type &&
-					   UniqueIDString == other.UniqueIDString);
-			}
-
-		public void CopyFrom (Files.FileSource other)
-			{
-			Number = other.Number;
-			Type = other.Type;
-			UniqueIDString = other.UniqueIDString;
-			Name = other.Name;
-			}
-
-		public int Number;
-		public Files.InputType Type;
-		public string UniqueIDString;
-		public string Name;
-		}
 	}
