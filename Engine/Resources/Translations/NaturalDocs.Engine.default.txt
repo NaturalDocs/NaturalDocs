@@ -146,7 +146,6 @@ CrashReport.GeneratedOn(date): Generated on {0}
 CrashReport.Versions: Versions
 CrashReport.CommandLine: Command Line
 
-CrashReport.OutdatedMono(currentVersion, minimumVersion): You appear to be using Mono {0}, which is very outdated.  This has been known to cause Natural Docs to crash.  Please update it to version {1} or higher.
 
 Thread.ParentThread: Parent Thread
 Thread.ThreadPoolThread: Thread Pool Member

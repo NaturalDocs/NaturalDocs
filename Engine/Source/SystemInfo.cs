@@ -2,7 +2,9 @@
  * Class: CodeClear.NaturalDocs.Engine.SystemInfo
  * ____________________________________________________________________________
  *
- * A static class to gather information about the operating system we're running on.
+ * A static class to gather information about the operating system we're running on.  Since it's important to collect this data in
+ * the event of a crash or Natural Docs not functioning on a system, none of these properties will throw an exception.  They will
+ * all either return a value or null.
  *
  */
 
@@ -21,48 +23,17 @@ namespace CodeClear.NaturalDocs.Engine
 	public static class SystemInfo
 		{
 
-		// Group: Native Functions
+		// Group: Functions
 		// __________________________________________________________________________
 
 
-		#if MAC || LINUX
-		/* Function: sysctlbyname
-		 * Used to get OS properties on macOS and Linux.  The library will only be loaded on the first usage attempt,
-		 * so it's safe to have this in Windows as long as it's not called.
 		 */
-		[DllImport ("libc")]
-		static private extern int sysctlbyname ( [MarshalAs(UnmanagedType.LPStr)] string property, byte[] valueBuffer, ref Int64 valueBufferLength, IntPtr newValueBuffer, uint newValueBufferLength);
-
-
-		/* Function: SysCtlByName
-		 * A version of <sysctlbyname> that encapsulates all the native conversions.  It will return null if it can't retrieve
-		 * a value or you're not on macOS or Linux.
-		 */
-		static private string SysCtlByName (string property)
 			{
-		    try
-				{
-				byte[] valueBuffer;
-				Int64 valueBufferLength = 0;
 
-				// First pass with valueBuffer as null just retrieves the value length
-				if (sysctlbyname(property, null, ref valueBufferLength, IntPtr.Zero, 0) == 0)
-					{
-					valueBuffer = new byte[valueBufferLength];
 
-					// Second pass gets the actual value
-					if (sysctlbyname(property, valueBuffer, ref valueBufferLength, IntPtr.Zero, 0) == 0)
-						{
-						return Encoding.UTF8.GetString(valueBuffer);
-						}
-					}
+
 				}
-			catch
-				{  	}
-
-			return null;
-			}
-		#endif
+			#endif
 
 
 
@@ -82,7 +53,7 @@ namespace CodeClear.NaturalDocs.Engine
 				#elif MAC || LINUX
 					return '/';
 				#else
-					throw new Exception("Unsupported platform");
+					#error SystemInfo needs to be updated for this platform or platform constants aren't defined.
 				#endif
 				}
 			}
@@ -100,15 +71,62 @@ namespace CodeClear.NaturalDocs.Engine
 				#elif MAC || LINUX
 					return false;
 				#else
-					throw new Exception("Unsupported platform");
+					#error SystemInfo needs to be updated for this platform or platform constants aren't defined.
+				#endif
+				}
+			}
+
+
+		/* Property: NaturalDocsVersion
+		 * The current version of Natural Docs.
+		 */
+		static public Version NaturalDocsVersion
+			{
+			get
+				{  return Engine.Instance.Version;  }
+			}
+
+
+		/* Property: NaturalDocsOSBuild
+		 * The operating system this version of Natural Docs was built for.
+		 */
+		static public string NaturalDocsOSBuild
+			{
+			get
+				{
+				#if WINDOWS
+					return "Windows";
+				#elif MAC
+					return "macOS";
+				#elif LINUX
+					return "Linux";
+				#else
+					#error SystemInfo needs to be updated for this platform or platform constants aren't defined.
+				#endif
+				}
+			}
+
+
+		/* Property: NaturalDocsProcessorArchitectureBuild
+		 * The processor architecture this version of Natural Docs was built for, such as "x64" or "ARM64".
+		 */
+		static public string NaturalDocsProcessorArchitectureBuild
+			{
+			get
+				{
+				#if X64
+					return "x64";
+				#elif ARM64
+					return "ARM64";
+				#else
+					#error SystemInfo needs to be updated for this platform or platform constants aren't defined.
 				#endif
 				}
 			}
 
 
 		/* Property: dotNETVersion
-		 * The version of .NET we're running on, or null if it can't be determined.  This will probably return a value for Mono so check
-		 * <MonoVersion> first if you only want it for actual .NET.
+		 * The version of .NET we're running on, or null if it can't be determined.
 		 */
 		static public string dotNETVersion
 			{
@@ -123,7 +141,8 @@ namespace CodeClear.NaturalDocs.Engine
 
 
 		/* Property: OSNameAndVersion
-		 * Returns the full OS name and version, such as "Windows 10 Home version 1909".  Works for both Windows and Unix.
+		 * Returns the full OS name and version, such as "Windows 10 Home version 1909", to the extent that it can be determined,
+		 * or null if it cannot.
 		 */
 		static public string OSNameAndVersion
 			{
@@ -132,12 +151,55 @@ namespace CodeClear.NaturalDocs.Engine
 				#pragma warning disable CA1416
 					#if WINDOWS
 						return WindowsNameAndVersion;
-					#elif MAC || LINUX
-						return UnixNameAndVersion;
+					#elif MAC
+						return macOSNameAndVersion;
+					#elif LINUX
+						return LinuxNameAndVersion;
 					#else
-						throw new Exception("Unsupported platform");
+						#error SystemInfo needs to be updated for this platform or platform constants aren't defined.
 					#endif
 				#pragma warning restore CA1416
+				}
+			}
+
+
+		/* Property: ProcessorName
+		 * Returns the processor name, such as "Apple M1", to the extent that it can be determined, or null if it cannot.
+		 */
+		static public string ProcessorName
+			{
+			get
+				{
+				#pragma warning disable CA1416
+					#if WINDOWS
+						string processorName = WindowsProcessorName;
+					#elif MAC
+						string processorName = macOSProcessorName;
+					#elif LINUX
+						string processorName = LinuxProcessorName;
+					#else
+						#error SystemInfo needs to be updated for this platform or platform constants aren't defined.
+					#endif
+				#pragma warning restore CA1416
+
+				if (processorName != null)
+					{
+					// Clean up the value to be nicer
+					processorName = processorName.Replace("(r)", "", StringComparison.InvariantCultureIgnoreCase);
+					processorName = processorName.Replace("(tm)", "", StringComparison.InvariantCultureIgnoreCase);
+					processorName = processorName.CondenseWhitespace();
+
+					// Strip the end off of "Intel Core i7-6700 CPU @ 3.40GHz"
+					int cutPoint = processorName.IndexOf(" CPU @");
+
+					if (cutPoint != -1)
+						{  processorName = processorName.Substring(0, cutPoint);  }
+
+					// Strip the end off of "AMD Ryzen 9 9950X 16-Core Processor"
+					processorName = System.Text.RegularExpressions.Regex.Replace(processorName, " [0-9]+-Core Processor.*$", "");
+					}
+
+				return processorName;
 				}
 			}
 
@@ -158,11 +220,11 @@ namespace CodeClear.NaturalDocs.Engine
 
 
 
-		// Group: Native Properties
+		// Group: Windows Properties
 		// __________________________________________________________________________
 
-
 		#if WINDOWS
+
 		/* Property: WindowsNameAndVersion
 		 * Returns the full Windows name and version, such as "Windows 10 Home 1909" or "Windows 7 Professional with Service Pack 1".
 		 */
@@ -234,16 +296,85 @@ namespace CodeClear.NaturalDocs.Engine
 				return result;
 				}
 			}
+
+
+		/* Property: WindowsProcessorName
+		 * Returns the processor name to the extent that it can be determined, or null if it cannot.
+		 */
+		[SupportedOSPlatform("Windows")]
+		static public string WindowsProcessorName
+			{
+			get
+				{
+				string result = null;
+
+				try
+					{
+					var key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0");
+
+					if (key != null)
+						{
+						result = key.GetValue("ProcessorNameString")?.ToString();
+						}
+					}
+				catch
+					{  }
+
+				return result;
+				}
+			}
+
 		#endif
 
 
-		#if MAC || LINUX
-		/* Property: UnixNameAndVersion
-		 * Returns the Unix name and version to the degree that it can be determined.
+
+		// Group: macOS Properties and Functions
+		// __________________________________________________________________________
+
+		#if MAC
+
+		/* Function: sysctlbyname
+		 * Used to get OS properties on macOS.
+		 */
+		[DllImport ("libc")]
+		static private extern int sysctlbyname ( [MarshalAs(UnmanagedType.LPStr)] string property, byte[] valueBuffer, ref Int64 valueBufferLength, IntPtr newValueBuffer, uint newValueBufferLength);
+
+
+		/* Function: SysCtlByName
+		 * A version of <sysctlbyname> that encapsulates all the native conversions.  It will return null if it can't retrieve a value.
 		 */
 		[SupportedOSPlatform("macOS")]
-		[SupportedOSPlatform("Linux")]
-		static public string UnixNameAndVersion
+		static private string SysCtlByName (string property)
+			{
+		    try
+				{
+				byte[] valueBuffer;
+				Int64 valueBufferLength = 0;
+
+				// First pass with valueBuffer as null just retrieves the value length
+				if (sysctlbyname(property, null, ref valueBufferLength, IntPtr.Zero, 0) == 0)
+					{
+					valueBuffer = new byte[valueBufferLength];
+
+					// Second pass gets the actual value
+					if (sysctlbyname(property, valueBuffer, ref valueBufferLength, IntPtr.Zero, 0) == 0)
+						{
+						return Encoding.UTF8.GetString(valueBuffer);
+						}
+					}
+				}
+			catch
+				{  	}
+
+			return null;
+			}
+
+
+		/* Property: macOSNameAndVersion
+		 * Returns the macOS name and version to the extent that it can be determined.
+		 */
+		[SupportedOSPlatform("macOS")]
+		static public string macOSNameAndVersion
 			{
 			get
 				{
@@ -251,32 +382,35 @@ namespace CodeClear.NaturalDocs.Engine
 
 		        try
 					{
-					// Are we on a Mac?
-					if (SysCtlByName("kern.ostype").Contains("Darwin"))
+					string osVersion = SysCtlByName("kern.osproductversion");  // may be null
+					string compatOSVersion = SysCtlByName("kern.osproductversioncompat");  // if osVersion is the same, we may be getting a fake compatibility value
+					string darwinVersion = SysCtlByName("kern.osrelease");
+
+					result = "macOS";
+
+					if (osVersion != null && (compatOSVersion == null || osVersion != compatOSVersion))
 						{
-						string osVersion = SysCtlByName("kern.osproductversion");  // may be null
-						string compatOSVersion = SysCtlByName("kern.osproductversioncompat");  // if osVersion is the same, we may be getting a fake compatibility value
-						string darwinVersion = SysCtlByName("kern.osrelease");
-						string cpu = SysCtlByName("machdep.cpu.brand_string");
+						result += " " + osVersion;
 
-						result = "macOS";
-
-						if (osVersion != null && (compatOSVersion == null || osVersion != compatOSVersion))
-							{
-							result += " " + osVersion;
-
-							if (cpu != null)
-								{  result += " (" + cpu + ")";  }
-							}
-						else // no osVersion
-							{
-							result += " (Darwin " + darwinVersion;
-
-							if (cpu != null)
-								{  result += ", " + cpu;  }
-
-							result += ")";
-							}
+						// There's no way to get the marketing name from an API, but we can add the known ones ourself
+						if (osVersion.StartsWith("10.15."))
+							{  result += " Catalina";  }
+						else if (osVersion.StartsWith("11."))
+							{  result += " Big Sur";  }
+						else if (osVersion.StartsWith("12."))
+							{  result += " Monterey";  }
+						else if (osVersion.StartsWith("13."))
+							{  result += " Ventura";  }
+						else if (osVersion.StartsWith("14."))
+							{  result += " Sonoma";  }
+						else if (osVersion.StartsWith("15."))
+							{  result += " Sequoia";  }
+						else if (osVersion.StartsWith("26."))
+							{  result += " Tahoe";  }
+						}
+					else // no osVersion
+						{
+						result += " (Darwin " + darwinVersion + ")";
 						}
 					}
 				catch
@@ -286,6 +420,147 @@ namespace CodeClear.NaturalDocs.Engine
 				return result ?? Environment.OSVersion.VersionString;
 				}
 			}
+
+
+		/* Property: macOSProcessorName
+		 * Returns the processor name to the extent that it can be determined.
+		 */
+		[SupportedOSPlatform("macOS")]
+		static public string macOSProcessorName
+			{
+			get
+				{
+				string result = null;
+
+		        try
+					{
+					result = SysCtlByName("machdep.cpu.brand_string");
+					}
+				catch
+					{  	}
+
+				return result;
+				}
+			}
+
+		#endif
+
+
+
+		// Group: Linux Properties and Functions
+		// __________________________________________________________________________
+
+		#if LINUX
+
+		/* Function: gnu_get_libc_version
+		 * Used to get the glibc version on Linux.
+		 */
+		[DllImport ("c")]
+		static private extern IntPtr gnu_get_libc_version();
+
+
+		/* Function: GNUGetLibCVersion
+		 * A version of <gnu_get_libc_version> that encapsulates all the native conversions.  It will return null if it can't retrieve a value.
+		 */
+		[SupportedOSPlatform("Linux")]
+		static private string GNUGetLibCVersion ()
+			{
+			return Marshal.PtrToStringAnsi(gnu_get_libc_version());
+			}
+
+
+		/* Property: LinuxNameAndVersion
+		 * Returns the Linux name and version to the extent that it can be determined.
+		 */
+		[SupportedOSPlatform("Linux")]
+		static public string LinuxNameAndVersion
+			{
+			get
+				{
+				string result = null;
+
+				try
+					{
+					var lines = System.IO.File.ReadAllLines("/etc/os-release");
+
+					foreach (var line in lines)
+						{
+						if (line.StartsWith("PRETTY_NAME=\""))
+							{
+							result = line.Substring(13, line.Length - 14);
+							break;
+							}
+						}
+					}
+				catch
+					{  }
+
+				return result;
+				}
+			}
+
+
+		/* Property: LinuxKernelVersion
+		 * Returns the Linux kernel version to the extent that it can be determined.
+		 */
+		[SupportedOSPlatform("Linux")]
+		static public string LinuxKernelVersion
+			{
+			get
+				{
+				return Environment.OSVersion.Version.ToString();
+				}
+			}
+
+
+		/* Property: LinuxGLibCVersion
+		 * Returns the Linux glibc version to the extent that it can be determined.
+		 */
+		[SupportedOSPlatform("Linux")]
+		static public string LinuxGLibCVersion
+			{
+			get
+				{
+				try
+					{  return GNUGetLibCVersion();  }
+				catch
+					{  return null;  }
+				}
+			}
+
+
+		/* Property: LinuxProcessorName
+		 * Returns the processor name to the extent that it can be determined.
+		 */
+		[SupportedOSPlatform("Linux")]
+		static public string LinuxProcessorName
+			{
+			get
+				{
+				string result = null;
+
+				try
+					{
+					var lines = System.IO.File.ReadAllLines("/proc/cpuinfo");
+
+					foreach (var line in lines)
+						{
+						if (line.StartsWith("model name"))
+							{
+							int cutPoint = line.IndexOf(':');
+							result = line.Substring(cutPoint + 1);
+							result = result.Trim();
+							break;
+							}
+						}
+					}
+				catch
+					{  }
+
+				return result;
+				}
+			}
+
 		#endif
 
 		}
