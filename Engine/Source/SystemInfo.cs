@@ -27,13 +27,146 @@ namespace CodeClear.NaturalDocs.Engine
 		// __________________________________________________________________________
 
 
+		/* Function: BuildDiagnosticSummary
+		 * Builds a multi-line summary of Natural Docs and system properties to include in crash reports and similar things.  It will
+		 * be multiple lines and end with a line break.  You can optionally include a string to appear at the beginning of each line if
+		 * you need it to be indented.
 		 */
+		static public string BuildDiagnosticSummary (string linePrefix = null)
 			{
+			StringBuilder summary = new StringBuilder();
+
+			if (linePrefix == null)
+				{  linePrefix = "";  }
 
 
+			// Natural Docs version
 
+			summary.AppendLine(linePrefix + "Natural Docs " + SystemInfo.NaturalDocsVersion.ToString());
+
+
+			// Natural Docs OS and architecture build
+
+			summary.Append(linePrefix + " - ");
+
+			summary.AppendLine(
+				Locale.SafeGet("NaturalDocs.Engine", "Diagnostics.NaturalDocsBuild(os, architecture)", "{0} {1} build",
+									  SystemInfo.NaturalDocsOSBuild,
+									  SystemInfo.NaturalDocsProcessorArchitectureBuild));
+
+
+			// .NET version
+
+			string dotNetVersion = SystemInfo.dotNETVersion;
+			summary.Append(linePrefix + " - ");
+
+			if (dotNetVersion != null)
+				{
+				summary.AppendLine(
+					Locale.SafeGet("NaturalDocs.Engine", "Diagnostics.dotNETVersion(version)", ".NET {0}", dotNetVersion));
 				}
+			else
+				{
+				summary.AppendLine(
+					Locale.SafeGet("NaturalDocs.Engine", "Diagnostics.NoDotNETVersion", "Couldn't get .NET version"));
+				}
+
+
+			// SQLite version
+
+			string sqliteVersion = SystemInfo.SQLiteVersion;
+			summary.Append(linePrefix + " - ");
+
+			if (sqliteVersion != null)
+				{
+				summary.AppendLine(
+					Locale.SafeGet("NaturalDocs.Engine", "Diagnostics.SQLiteVersion(version)", "SQLite {0}", sqliteVersion));
+				}
+			else
+				{
+				summary.AppendLine(
+					Locale.SafeGet("NaturalDocs.Engine", "Diagnostics.NoSQLiteVersion", "Couldn't get SQLite version"));
+				}
+
+
+			summary.AppendLine();
+
+
+			// Operating system version
+
+			string osVersion = SystemInfo.OSNameAndVersion;
+			summary.Append(linePrefix);
+
+			if (osVersion != null)
+				{
+				summary.AppendLine(
+					Locale.SafeGet("NaturalDocs.Engine", "Diagnostics.OSNameAndVersion(value)", "{0}", osVersion));
+				}
+			else
+				{
+				summary.AppendLine(
+					Locale.SafeGet("NaturalDocs.Engine", "Diagnostics.NoOSNameAndVersion", "Couldn't get OS name and version"));
+				}
+
+
+			#if LINUX
+				#pragma warning disable CA1416
+
+				// glibc version
+
+				string glibcVersion = SystemInfo.LinuxGLibCVersion;
+				summary.Append(linePrefix + " - ");
+
+				if (glibcVersion != null)
+					{
+					summary.AppendLine(
+						Locale.SafeGet("NaturalDocs.Engine", "Diagnostics.glibcVersion(version)", "glibc {0}", glibcVersion));
+					}
+				else
+					{
+					summary.AppendLine(
+						Locale.SafeGet("NaturalDocs.Engine", "Diagnostics.NoGLibCVersion", "Couldn't get glibc version"));
+					}
+
+
+				// Kernel version
+
+				string kernelVersion = SystemInfo.LinuxKernelVersion;
+				summary.Append(linePrefix + " - ");
+
+				if (kernelVersion != null)
+					{
+					summary.AppendLine(
+						Locale.SafeGet("NaturalDocs.Engine", "Diagnostics.KernelVersion(version)", "Kernel {0}", kernelVersion));
+					}
+				else
+					{
+					summary.AppendLine(
+						Locale.SafeGet("NaturalDocs.Engine", "Diagnostics.NoKernelVersion", "Couldn't get kernel version"));
+					}
+
+				#pragma warning restore CA1416
 			#endif
+
+
+			// Processor name
+
+			string processor = SystemInfo.ProcessorName;
+			summary.Append(linePrefix + " - ");
+
+			if (processor != null)
+				{
+				summary.AppendLine(
+					Locale.SafeGet("NaturalDocs.Engine", "Diagnostics.Processor(name)", "{0}", processor));
+				}
+			else
+				{
+				summary.AppendLine(
+					Locale.SafeGet("NaturalDocs.Engine", "Diagnostics.NoProcessor", "Couldn't get processor name"));
+				}
+
+			return summary.ToString();
+			}
 
 
 

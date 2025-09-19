@@ -303,18 +303,6 @@ namespace CodeClear.NaturalDocs.Engine
 			{
 			StringBuilder output = new StringBuilder();
 
-
-			// Gather platform information
-
-			string dotNETVersion = null;
-			string osNameAndVersion = null;
-			string sqliteVersion = null;
-
-			try { dotNETVersion = Engine.SystemInfo.dotNETVersion; } catch {  }
-			try { osNameAndVersion = Engine.SystemInfo.OSNameAndVersion; } catch {  }
-			try { sqliteVersion = Engine.SystemInfo.SQLiteVersion; } catch {  }
-
-
 			try
 				{
 
@@ -447,22 +435,7 @@ namespace CodeClear.NaturalDocs.Engine
 				output.AppendLine ();
 				output.AppendLine ( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.Versions", "Versions") + ':' );
 				output.AppendLine ();
-				output.AppendLine ( "   Natural Docs " + Instance.VersionString );
-
-				if (osNameAndVersion != null)
-					{  output.AppendLine( "   " + osNameAndVersion);  }
-				else
-					{  output.AppendLine( "   Couldn't get OS name and version");  }
-
-				if (dotNETVersion != null)
-					{  output.AppendLine("   .NET " + dotNETVersion);  }
-				else
-					{  output.AppendLine("   Couldn't get .NET version");  }
-
-				if (sqliteVersion != null)
-					{  output.AppendLine( "   SQLite " + sqliteVersion);  }
-				else
-					{  output.AppendLine ( "   Couldn't get SQLite version" );  }
+				output.Append (Engine.SystemInfo.BuildDiagnosticSummary("   ") );
 				}
 
 			// If the information building crashes out at any time, that's fine.  We'll just return what we managed to build before that happened.

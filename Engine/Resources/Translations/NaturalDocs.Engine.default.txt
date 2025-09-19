@@ -146,6 +146,19 @@ CrashReport.GeneratedOn(date): Generated on {0}
 CrashReport.Versions: Versions
 CrashReport.CommandLine: Command Line
 
+Diagnostics.NaturalDocsBuild(os, architecture): {0} {1} binary
+Diagnostics.dotNETVersion(version): .NET {0}
+Diagnostics.NoDotNETVersion: Couldn't get .NET version
+Diagnostics.SQLiteVersion(version): SQLite {0}
+Diagnostics.NoSQLiteVersion: Couldn't get SQLite version
+Diagnostics.OSNameAndVersion(value): {0}
+Diagnostics.NoOSNameAndVersion: Couldn't get OS name and version
+Diagnostics.glibcVersion(version): glibc {0}
+Diagnostics.NoGLibCVersion: Couldn't get glibc version
+Diagnostics.KernelVersion(version): Kernel {0}
+Diagnostics.NoKernelVersion: Couldn't get kernel version
+Diagnostics.Processor(name): {0}
+Diagnostics.NoProcessor: Couldn't get processor name
 
 Thread.ParentThread: Parent Thread
 Thread.ThreadPoolThread: Thread Pool Member

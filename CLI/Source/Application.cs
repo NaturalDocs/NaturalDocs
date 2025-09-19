@@ -429,36 +429,7 @@ namespace CodeClear.NaturalDocs.CLI
 
 		private static void ShowAllVersions ()
 			{
-
-			// Collect versions in try blocks in case there are any errors
-
-			string dotNETVersion = null;
-			string osNameAndVersion = null;
-			string sqliteVersion = null;
-
-			try { dotNETVersion = Engine.SystemInfo.dotNETVersion; } catch {  }
-			try { osNameAndVersion = Engine.SystemInfo.OSNameAndVersion; } catch {  }
-			try { sqliteVersion = Engine.SystemInfo.SQLiteVersion; } catch {  }
-
-
-			// Output versions
-
-			Console.WriteLine("Natural Docs " + Instance.VersionString);
-
-			if (osNameAndVersion != null)
-				{  Console.WriteLine(osNameAndVersion);  }
-			else
-				{  Console.WriteLine("Couldn't get OS name and version");  }
-
-			if (dotNETVersion != null)
-				{  Console.WriteLine(".NET " + dotNETVersion);  }
-			else
-				{  Console.WriteLine("Couldn't get .NET version");  }
-
-			if (sqliteVersion != null)
-				{  Console.WriteLine("SQLite " + sqliteVersion);  }
-			else
-				{  Console.WriteLine("Couldn't get SQLite version");  }
+			Console.Write( SystemInfo.BuildDiagnosticSummary() );
 			}
 
 
