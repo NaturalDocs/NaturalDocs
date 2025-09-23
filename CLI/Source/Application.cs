@@ -56,7 +56,7 @@ namespace CodeClear.NaturalDocs.CLI
 		/* Function: Main
 		 * The program entry point.
 		 */
-		public static void Main (string[] commandLine)
+		public static int Main (string[] commandLine)
 			{
 			executionTimer = new ExecutionTimer();
 			executionTimer.Start("Total Execution");
@@ -199,7 +199,10 @@ namespace CodeClear.NaturalDocs.CLI
 					{  System.Console.SetOut(standardOutput);  }
 				}
 
-			if (pauseBeforeExit || (pauseOnError && (!gracefulExit || startupErrors.Count > 0)))
+
+			bool failed = (!gracefulExit || startupErrors.Count > 0);
+
+			if (pauseBeforeExit || (pauseOnError && failed))
 				{
 				// Flush any buffered input.  We only want to respond to new keypresses.
 				while (Console.KeyAvailable)
@@ -212,6 +215,8 @@ namespace CodeClear.NaturalDocs.CLI
 				System.Console.ReadKey(true);
 				System.Console.WriteLine();
 				}
+
+			return (failed ? 99 : 0);
 			}
 
 
