@@ -61,6 +61,46 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
+		/* Function: TryToFindBasicPrototype
+		 * A temporary implementation to allow SystemVerilog to use the full language support functions to find prototypes following
+		 * comments.  Natural Docs will still otherwise behave as if SystemVerilog has basic language support.
+		 */
+		override protected bool TryToFindBasicPrototype (Topic topic, LineIterator startCode, LineIterator endCode,
+																			   out TokenIterator prototypeStart, out TokenIterator prototypeEnd)
+			{
+			if (topic.CommentTypeID != 0 &&
+				( topic.CommentTypeID == EngineInstance.CommentTypes.IDFromKeyword("module", language.ID) ||
+				  topic.CommentTypeID == EngineInstance.CommentTypes.IDFromKeyword("systemverilog module", language.ID) ))
+				{
+				TokenIterator startToken = startCode.FirstToken(LineBoundsMode.ExcludeWhitespace);
+				TokenIterator endToken = endCode.FirstToken(LineBoundsMode.Everything);
+
+				TokenIterator iterator = startToken;
+
+				if (TryToSkipModule(ref iterator, ParseMode.IterateOnly) &&
+					iterator <= endToken &&
+					iterator.Tokenizer.ContainsTextBetween(topic.Title, true, startToken, iterator))
+					{
+					prototypeStart = startToken;
+					prototypeEnd = iterator;
+					return true;
+					}
+				else
+					{
+					prototypeStart = iterator;
+					prototypeEnd = iterator;
+					return false;
+					}
+				}
+
+			// Fall back to the default implementation for everything else
+			else
+				{
+				return base.TryToFindBasicPrototype(topic, startCode, endCode, out prototypeStart, out prototypeEnd);
+				}
+			}
+
+
 		/* Function: GetCodeElements
 		 */
 		override public List<Element> GetCodeElements (Tokenizer source)
@@ -638,8 +678,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 				// Body, not in CreateElements mode
 
-				GenericSkipUntilAfterKeyword(ref lookahead, "endmodule");
+				//GenericSkipUntilAfterKeyword(ref lookahead, "endmodule");
 
+				// Don't want to include semicolon
+				lookahead.Previous();
 				}
 
 			iterator = lookahead;
