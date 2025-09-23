@@ -49,7 +49,7 @@ namespace CodeClear.NaturalDocs.Tests.CLI
 		/* Function: Main
 		 * The program entry point.
 		 */
-		public static void Main (string[] commandLine)
+		public static int Main (string[] commandLine)
 			{
 			var errorList = new ErrorList ();
 
@@ -80,7 +80,9 @@ namespace CodeClear.NaturalDocs.Tests.CLI
 				WriteLine();
 				}
 
-			if (pauseBeforeExit || (pauseOnError && errorList.Count > 0))
+			bool failed = (errorList.Count > 0);
+
+			if (pauseBeforeExit || (pauseOnError && failed))
 				{
 				// Flush any buffered input.  We only want to respond to new keypresses.
 				while (Console.KeyAvailable)
@@ -90,6 +92,8 @@ namespace CodeClear.NaturalDocs.Tests.CLI
 				WriteLine("Press any key to continue...");
 				System.Console.ReadKey(true);
 				}
+
+			return (failed ? 99 : 0);
 			}
 
 
