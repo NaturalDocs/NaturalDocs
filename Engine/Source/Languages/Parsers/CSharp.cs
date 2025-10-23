@@ -2826,6 +2826,19 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					}
 				else
 					{  break;  }
+
+
+				// Nullable can appear after and between brackets, like int?[], int[]?, or int?[]?[]?
+
+				if (lookahead.Character == '?')
+					{
+					if (mode == ParseMode.ParsePrototype)
+						{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
+
+					lookahead.Next();
+					iterator = lookahead;
+					TryToSkipWhitespace(ref lookahead);
+					}
 				}
 
 			return true;
