@@ -60,3 +60,12 @@ static ref int MultipleParameterModifiers<T>(this ref int x, T y) where T:unmana
 	{
 	}
 
+public void NullableWithOtherModifiers (int[]? a,
+														  int?[] b,
+														  int?[,,]?[]? c,
+														  List<T>? d,
+														  List<T?> e,
+														  List<T?>?[]? f,
+														  List<T?[,,]?>?[]? g)
+	{
+	}
