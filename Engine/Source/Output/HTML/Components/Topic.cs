@@ -23,6 +23,7 @@ using System.Text.RegularExpressions;
 using CodeClear.NaturalDocs.Engine.Links;
 using CodeClear.NaturalDocs.Engine.Prototypes;
 using CodeClear.NaturalDocs.Engine.Tokenization;
+using CodeClear.NaturalDocs.Engine.Files;
 
 
 namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
@@ -189,8 +190,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			else
 				{  mode = WrappedTitleMode.None;  }
 
+			File file = EngineInstance.Files.FromID(context.Topic.FileID);
+			var fileSource = EngineInstance.Files.FileSourceOf(file);
+			string fileUrl = (fileSource as Files.FileSources.SourceFolder).Url;
+			string filePath = fileSource.MakeRelative(file.FileName);
+			int lineNum = context.Topic.CommentLineNumber;
+
 			output.Append("<div class=\"CTitle\">");
 			AppendWrappedTitle(context.Topic.Title, mode, output);
+			if (fileUrl != null && lineNum != 0) {
+				string url = fileUrl.Replace("{filePath}", filePath).Replace("{lineNum}", lineNum.ToString());
+				output.Append("<a class=\"ExternalFileUrl\" target=\"_blank\" href=\""+url+"\">🡕</a>");
+			}
 			output.Append("</div>");
 			}
 

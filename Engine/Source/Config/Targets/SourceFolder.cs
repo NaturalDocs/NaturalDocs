@@ -29,18 +29,22 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 			{
 			folder = null;
 			name = null;
+			url = null;
 
 			folderPropertyLocation = PropertySource.NotDefined;
 			namePropertyLocation = PropertySource.NotDefined;
+			urlPropertyLocation = PropertySource.NotDefined;
 			}
 
 		public SourceFolder (SourceFolder toCopy) : base (toCopy)
 			{
 			folder = toCopy.folder;
 			name = toCopy.name;
+			url = toCopy.url;
 
 			folderPropertyLocation = toCopy.folderPropertyLocation;
 			namePropertyLocation = toCopy.namePropertyLocation;
+			urlPropertyLocation = toCopy.urlPropertyLocation;
 			}
 
 		override public Input Duplicate ()
@@ -148,6 +152,16 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 				{  name = value;  }
 			}
 
+		/* Property: Url
+		 * 
+		 */
+		public string Url
+			{
+			get
+				{  return url;  }
+			set
+				{  url = value;  }
+			}
 
 
 		// Group: Property Locations
@@ -177,6 +191,16 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		        {  namePropertyLocation = value;  }
 		    }
 
+		/* Property: UrlPropertyLocation
+		 * Where <Url> is defined, or <PropertySource.NotDefined> if it isn't.
+		 */
+		public PropertyLocation UrlPropertyLocation
+		    {
+		    get
+		        {  return urlPropertyLocation;  }
+		    set
+		        {  urlPropertyLocation = value;  }
+		    }
 
 
 		// Group: Variables
@@ -185,9 +209,11 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 
 		protected AbsolutePath folder;
 		protected string name;
+		protected string url;
 
 		protected PropertyLocation folderPropertyLocation;
 		protected PropertyLocation namePropertyLocation;
+		protected PropertyLocation urlPropertyLocation;
 
 
 

@@ -223,6 +223,23 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				}
 
 
+			else if (lcIdentifier == "url")
+				{
+				 if (inputTarget is Targets.SourceFolder &&
+					(inputTarget as Targets.SourceFolder).Type == Files.InputType.Source)
+					{
+					(inputTarget as Targets.SourceFolder).Url = value;
+					(inputTarget as Targets.SourceFolder).UrlPropertyLocation = propertyLocation;
+					}
+				else
+					{
+					errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.UrlOnlyAppliesToSourceFolders"),
+									   propertyLocation.FileName, propertyLocation.LineNumber );
+					}
+
+				return true;
+				}
+
 			// Encoding
 
 			else if (IsEncodingRegexLC().IsMatch(lcIdentifier))
@@ -925,6 +942,10 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			bool hasName = (target.NamePropertyLocation.IsDefined &&
 									 target.NamePropertyLocation.Source != PropertySource.SystemDefault);
 
+
+			bool hasUrl = (target.UrlPropertyLocation.IsDefined &&
+									 target.UrlPropertyLocation.Source != PropertySource.SystemDefault);
+
 			int encodingRules = 0;
 			if (projectConfig.InputSettings.HasCharacterEncodingRules)
 				{
@@ -953,7 +974,10 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			if (hasName)
 				{  output.AppendLine("   Name: " + target.Name);  }
 
-			if (hasName && encodingRules > 1)
+			if (hasUrl)
+				{  output.AppendLine("   Url: " + target.Url);  }
+
+			if ((hasName||hasUrl) && encodingRules > 1)
 				{  output.AppendLine();  }
 
 			AppendOverriddenInputSettings(target, output);
