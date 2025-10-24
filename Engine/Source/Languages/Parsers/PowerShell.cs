@@ -59,6 +59,72 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
+		/* Function: NormalizePrototype
+		 */
+		override protected string NormalizePrototype (Tokenizer input)
+			{
+			string normalizedInput = base.NormalizePrototype(input);
+
+			// Rearrange attributes with types so that the type is last.  This lets prototypes format better.
+			if (normalizedInput.IndexOf('[') != -1)
+				{
+				StringBuilder stringBuilder = new StringBuilder(normalizedInput.Length);
+				Tokenizer tokenizer = new Tokenizer(normalizedInput);
+				TokenIterator iterator = tokenizer.FirstToken;
+
+				while (iterator.IsInBounds)
+					{
+					TokenIterator lookahead = iterator;
+
+					if (TryToSkipAttributesWithType(ref lookahead, out int numberOfAttributes, out bool foundType,
+																  out TokenIterator typeStart, out TokenIterator typeEnd))
+						{
+						// If it has a type and there's multiple attributes and the type isn't already the last one, rearrange them
+						if (foundType && numberOfAttributes > 1 && typeEnd != lookahead)
+							{
+							// If the type isn't the first attribute, copy what's before it
+							if (typeStart != iterator)
+								{
+								stringBuilder.Append(normalizedInput, iterator.RawTextIndex, typeStart.RawTextIndex - iterator.RawTextIndex);
+								}
+
+							// We already know it's not the last one, so copy what's after it
+							stringBuilder.Append(normalizedInput, typeEnd.RawTextIndex, lookahead.RawTextIndex - typeEnd.RawTextIndex);
+
+							// Now copy the type itself at the end
+							stringBuilder.Append(normalizedInput, typeStart.RawTextIndex, typeEnd.RawTextIndex - typeStart.RawTextIndex);
+							}
+
+						// Don't need to rearrange anything, add it as is
+						else
+							{
+							stringBuilder.Append(normalizedInput, iterator.RawTextIndex, lookahead.RawTextIndex - iterator.RawTextIndex);
+							}
+
+						iterator = lookahead;
+						}
+
+					else if (TryToSkipComment(ref lookahead) ||
+							  TryToSkipString(ref lookahead))
+						{
+						stringBuilder.Append(normalizedInput, iterator.RawTextIndex, lookahead.RawTextIndex - iterator.RawTextIndex);
+						iterator = lookahead;
+						}
+
+					else
+						{
+						stringBuilder.Append(normalizedInput, iterator.RawTextIndex, iterator.RawTextLength);
+						iterator.Next();
+						}
+					}
+
+				normalizedInput = stringBuilder.ToString();
+				}
+
+			return normalizedInput;
+			}
+
+
 		/* Function: ParsePrototype
 		 * Converts a raw text prototype into a <ParsedPrototype>.
 		 */
