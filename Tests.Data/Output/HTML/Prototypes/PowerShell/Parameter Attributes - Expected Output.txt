@@ -1,0 +1,111 @@
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/4/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/4/2"><span class="SHKeyword">function</span> BareParameters (</div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">$a,</div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3">$b,</div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="3/2/4/3" data-NarrowGridArea="4/1/5/2" style="grid-area:3/2/4/3">$c</div>
+         <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="3/3/4/4" data-NarrowGridArea="5/1/6/3" style="grid-area:3/3/4/4">)</div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/8/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/8/2"><span class="SHKeyword">function</span> ParameterTypes (</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHMetadata">[</span><span class="SHMetadata">string</span><span class="SHMetadata">]</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">$a,</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHMetadata">[</span><span class="SHMetadata">int</span><span class="SHMetadata">]</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4">$b,</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="3/2/4/3" data-NarrowGridArea="4/1/5/2" style="grid-area:3/2/4/3"><span class="SHMetadata">[</span><span class="SHMetadata">switch</span><span class="SHMetadata">]</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="3/3/4/4" data-NarrowGridArea="4/2/5/3" style="grid-area:3/3/4/4">$c,</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="4/2/5/3" data-NarrowGridArea="5/1/6/2" style="grid-area:4/2/5/3"><span class="SHMetadata">[</span><span class="SHMetadata">DateTime</span><span class="SHMetadata">]</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="4/3/5/4" data-NarrowGridArea="5/2/6/3" style="grid-area:4/3/5/4">$d,</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="5/2/6/3" data-NarrowGridArea="6/1/7/2" style="grid-area:5/2/6/3"><span class="SHMetadata">[</span><span class="SHMetadata">PSCredential</span><span class="SHMetadata">]</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="5/3/6/4" data-NarrowGridArea="6/2/7/3" style="grid-area:5/3/6/4">$e,</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="6/2/7/3" data-NarrowGridArea="7/1/8/2" style="grid-area:6/2/7/3"><span class="SHMetadata">[</span><span class="SHMetadata">object[]</span><span class="SHMetadata">]</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="6/3/7/4" data-NarrowGridArea="7/2/8/3" style="grid-area:6/3/7/4">$f,</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="7/2/8/3" data-NarrowGridArea="8/1/9/2" style="grid-area:7/2/8/3"><span class="SHMetadata">[</span><span class="SHMetadata">System.IO.FileInfo</span><span class="SHMetadata">]</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="7/3/8/4" data-NarrowGridArea="8/2/9/3" style="grid-area:7/3/8/4">$g</div>
+         <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="7/4/8/5" data-NarrowGridArea="9/1/10/4" style="grid-area:7/4/8/5">)</div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/8/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/8/2"><span class="SHKeyword">function</span> ParameterModifiers (</div>
+         <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHMetadata">[Parameter(Mandatory=$true)]</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">$a,</div>
+         <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHMetadata">[Parameter(Position=2)]</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4">$b,</div>
+         <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="3/2/4/3" data-NarrowGridArea="4/1/5/2" style="grid-area:3/2/4/3"><span class="SHMetadata">[Parameter(Mandatory=$true, Position=3)]</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="3/3/4/4" data-NarrowGridArea="4/2/5/3" style="grid-area:3/3/4/4">$c,</div>
+         <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="4/2/5/3" data-NarrowGridArea="5/1/6/2" style="grid-area:4/2/5/3"><span class="SHMetadata">[ValidateRange(0,10)]</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="4/3/5/4" data-NarrowGridArea="5/2/6/3" style="grid-area:4/3/5/4">$d,</div>
+         <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="5/2/6/3" data-NarrowGridArea="6/1/7/2" style="grid-area:5/2/6/3"><span class="SHMetadata">[ValidateNotNull]</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="5/3/6/4" data-NarrowGridArea="6/2/7/3" style="grid-area:5/3/6/4">$e,</div>
+         <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="6/2/7/3" data-NarrowGridArea="7/1/8/2" style="grid-area:6/2/7/3"><span class="SHMetadata">[Alias(&quot;f&quot;)]</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="6/3/7/4" data-NarrowGridArea="7/2/8/3" style="grid-area:6/3/7/4">$f,</div>
+         <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="7/2/8/3" data-NarrowGridArea="8/1/9/2" style="grid-area:7/2/8/3"><span class="SHMetadata">[Parameter(Mandatory=$true, Position=7)][ValidateNotNull][Alias('g',&quot;ggg&quot;)][ValidateRange(0,10)]</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="7/3/8/4" data-NarrowGridArea="8/2/9/3" style="grid-area:7/3/8/4">$g</div>
+         <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="7/4/8/5" data-NarrowGridArea="9/1/10/4" style="grid-area:7/4/8/5">)</div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/4/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/4/2"><span class="SHKeyword">function</span> DetermineTypeA (</div>
+         <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHMetadata">[Parameter(Mandatory=$true)][Alias(&quot;a&quot;)][ValidateNotNull]</span></div>
+         <div class="PType" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4"><span class="SHMetadata">[</span><span class="SHMetadata">string</span><span class="SHMetadata">]</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5">$a,</div>
+         <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHMetadata">[Parameter(Mandatory=$true)][Alias(&quot;a&quot;)][ValidateNotNull]</span></div>
+         <div class="PType" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4"><span class="SHMetadata">[</span><span class="SHMetadata">string</span><span class="SHMetadata">]</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5">$b,</div>
+         <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="3/2/4/3" data-NarrowGridArea="4/1/5/2" style="grid-area:3/2/4/3"><span class="SHMetadata">[Parameter(Mandatory=$true)][Alias(&quot;a&quot;)][ValidateNotNull]</span></div>
+         <div class="PType" data-WideGridArea="3/3/4/4" data-NarrowGridArea="4/2/5/3" style="grid-area:3/3/4/4"><span class="SHMetadata">[</span><span class="SHMetadata">string</span><span class="SHMetadata">]</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="3/4/4/5" data-NarrowGridArea="4/3/5/4" style="grid-area:3/4/4/5">$c</div>
+         <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="3/5/4/6" data-NarrowGridArea="5/1/6/5" style="grid-area:3/5/4/6">)</div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/4/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/4/2"><span class="SHKeyword">function</span> DetermineTypeB (</div>
+         <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHMetadata">[Parameter(Mandatory=$true)][Alias(&quot;b&quot;)][ValidateNotNull]</span></div>
+         <div class="PType" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4"><span class="SHMetadata">[</span><span class="SHMetadata">DateTime</span><span class="SHMetadata">]</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5">$a,</div>
+         <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHMetadata">[Parameter(Mandatory=$true)][Alias(&quot;b&quot;)][ValidateNotNull]</span></div>
+         <div class="PType" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4"><span class="SHMetadata">[</span><span class="SHMetadata">DateTime</span><span class="SHMetadata">]</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5">$b,</div>
+         <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="3/2/4/3" data-NarrowGridArea="4/1/5/2" style="grid-area:3/2/4/3"><span class="SHMetadata">[Parameter(Mandatory=$true)][Alias(&quot;b&quot;)][ValidateNotNull]</span></div>
+         <div class="PType" data-WideGridArea="3/3/4/4" data-NarrowGridArea="4/2/5/3" style="grid-area:3/3/4/4"><span class="SHMetadata">[</span><span class="SHMetadata">DateTime</span><span class="SHMetadata">]</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="3/4/4/5" data-NarrowGridArea="4/3/5/4" style="grid-area:3/4/4/5">$c</div>
+         <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="3/5/4/6" data-NarrowGridArea="5/1/6/5" style="grid-area:3/5/4/6">)</div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/4/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/4/2"><span class="SHKeyword">function</span> DetermineTypeC (</div>
+         <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHMetadata">[Parameter(Mandatory=$true)][Alias(&quot;c&quot;)][ValidateNotNull]</span></div>
+         <div class="PType" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4"><span class="SHMetadata">[</span><span class="SHMetadata">System.IO.FileInfo[]</span><span class="SHMetadata">]</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5">$a,</div>
+         <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHMetadata">[Parameter(Mandatory=$true)][Alias(&quot;c&quot;)][ValidateNotNull]</span></div>
+         <div class="PType" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4"><span class="SHMetadata">[</span><span class="SHMetadata">System.IO.FileInfo[]</span><span class="SHMetadata">]</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5">$b,</div>
+         <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="3/2/4/3" data-NarrowGridArea="4/1/5/2" style="grid-area:3/2/4/3"><span class="SHMetadata">[Parameter(Mandatory=$true)][Alias(&quot;c&quot;)][ValidateNotNull]</span></div>
+         <div class="PType" data-WideGridArea="3/3/4/4" data-NarrowGridArea="4/2/5/3" style="grid-area:3/3/4/4"><span class="SHMetadata">[</span><span class="SHMetadata">System.IO.FileInfo[]</span><span class="SHMetadata">]</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="3/4/4/5" data-NarrowGridArea="4/3/5/4" style="grid-area:3/4/4/5">$c</div>
+         <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="3/5/4/6" data-NarrowGridArea="5/1/6/5" style="grid-area:3/5/4/6">)</div>
+      </div>
+   </div>
+</div>
