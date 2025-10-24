@@ -3,3 +3,8 @@
   - Topic "Line comment", line 2:
     - (No body detected)
 
+- Plain comment, line 6:
+
+  - Topic "Block comment", line 6:
+    - (No body detected)
+
