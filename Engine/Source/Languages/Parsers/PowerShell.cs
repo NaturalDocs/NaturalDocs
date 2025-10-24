@@ -188,14 +188,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		static protected StringSet powershellKeywords = new StringSet (KeySettings.IgnoreCase, new string[] {
 
-			"function", "if", "else", "elseif", "switch", "try", "catch", "throw", "for", "foreach", "in", "while", "break", "param",
-			"return",
+			"begin", "break", "catch", "class", "continue", "data", "define", "do", "dynamicparam", "else", "elseif", "end",
+			"exit", "filter", "finally", "for", "foreach", "from", "function", "if", "in", "inlinescript", "parallel", "param", "process",
+			"return", "switch", "throw", "trap", "try", "until", "using", "var", "while", "workflow",
 
-			"-eq", "-ieq", "-ceq", "-ne", "-ine", "-cne", "-gt", "-igt", "-cgt", "-ge", "-ige", "-cge", "-lt", "-ilt", "-clt",
-			"-le", "-ile", "-cle", "-like", "-ilike", "-clike", "-notlike", "-inotlike", "-cnotlike", "-match", "-imatch",
-			"-cmatch", "-notmatch", "-inotmatch", "-cnotmatch", "-replace", "-ireplace", "-creplace", "-contains",
-			"-icontains", "-ccontains", "-notcontains", "-inotcontains", "-cnotcontains", "-in", "-notin", "-is", "-isnot",
-			"-and", "-or", "-xor", "-not", "-split", "-join", "-as",
+			"-and", "-band", "-bnot", "-bor", "-bxor", "-not", "-or", "-xor",
+
+			"-as", "-ccontains", "-ceq", "-cge", "-cgt", "-cle", "-clike", "-clt", "-cmatch", "-cne", "-cnotcontains", "-cnotlike",
+			"-cnotmatch", "-contains", "-creplace", "-csplit", "-eq", "-ge", "-gt", "-icontains", "-ieq", "-ige", "-igt", "-ile", "-ilike",
+			"-ilt", "-imatch", "-in", "-ine", "-inotcontains", "-inotlike", "-inotmatch", "-ireplace", "-is", "-isnot", "-isplit", "-join",
+			"-le", "-like", "-lt", "-match", "-ne", "-notcontains", "-notin", "-notlike", "-notmatch", "-replace", "-shr", "-split",
 
 			"$true", "$false", "$null", "$args", "$this"
 
