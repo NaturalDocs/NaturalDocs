@@ -20,7 +20,7 @@ Language: Text File
 
 Language: Shebang Script
 
-   Extension: cgi sh command
+   Extensions: cgi sh command
 
 
 Language: ActionScript
@@ -233,7 +233,7 @@ Language: PowerShell
    Case Sensitive: No
 
    Function Prototype Ender: {
-   Variable Prototype Ender: = \n ,
+   Variable Prototype Enders: = \n ,
 
 
 Language: Python
