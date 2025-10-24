@@ -1,0 +1,239 @@
+- Parameter Section:
+  - Before Parameters: function BareParameters (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: $a,
+    - Name: $a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: $b,
+    - Name: $b
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: $c
+    - Name: $c
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function ParameterTypes (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: [string] $a,
+    - Name: $a
+    - Full Type: [string]
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value: (not detected)
+
+  - Parameter 2: [int] $b,
+    - Name: $b
+    - Full Type: [int]
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 3: [switch] $c,
+    - Name: $c
+    - Full Type: [switch]
+    - Base Type: switch
+    - Link Candidates: switch
+    - Default Value: (not detected)
+
+  - Parameter 4: [DateTime] $d,
+    - Name: $d
+    - Full Type: [DateTime]
+    - Base Type: DateTime
+    - Link Candidates: DateTime
+    - Default Value: (not detected)
+
+  - Parameter 5: [PSCredential] $e,
+    - Name: $e
+    - Full Type: [PSCredential]
+    - Base Type: PSCredential
+    - Link Candidates: PSCredential
+    - Default Value: (not detected)
+
+  - Parameter 6: [object[]] $f,
+    - Name: $f
+    - Full Type: [object[]]
+    - Base Type: object[]
+    - Link Candidates: object[]
+    - Default Value: (not detected)
+
+  - Parameter 7: [System.IO.FileInfo] $g
+    - Name: $g
+    - Full Type: [System.IO.FileInfo]
+    - Base Type: System.IO.FileInfo
+    - Link Candidates: System.IO.FileInfo
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function ParameterModifiers (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: [Parameter(Mandatory=$true)] $a,
+    - Name: $a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: [Parameter(Position=2)] $b,
+    - Name: $b
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: [Parameter(Mandatory=$true, Position=3)] $c,
+    - Name: $c
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 4: [ValidateRange(0,10)] $d,
+    - Name: $d
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 5: [ValidateNotNull] $e,
+    - Name: $e
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 6: [Alias("f")] $f,
+    - Name: $f
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 7: [Parameter(Mandatory=$true, Position=7)][ValidateNotNull][Alias('g',"ggg")][ValidateRange(0,10)] $g
+    - Name: $g
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function DetermineTypeA (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: [Parameter(Mandatory=$true)][Alias("a")][ValidateNotNull][string] $a,
+    - Name: $a
+    - Full Type: [Parameter(Mandatory=$true)][Alias("a")][ValidateNotNull][string]
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value: (not detected)
+
+  - Parameter 2: [Parameter(Mandatory=$true)][Alias("a")][ValidateNotNull][string] $b,
+    - Name: $b
+    - Full Type: [Parameter(Mandatory=$true)][Alias("a")][ValidateNotNull][string]
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value: (not detected)
+
+  - Parameter 3: [Parameter(Mandatory=$true)][Alias("a")][ValidateNotNull][string] $c
+    - Name: $c
+    - Full Type: [Parameter(Mandatory=$true)][Alias("a")][ValidateNotNull][string]
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function DetermineTypeB (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: [Parameter(Mandatory=$true)][Alias("b")][ValidateNotNull][DateTime] $a,
+    - Name: $a
+    - Full Type: [Parameter(Mandatory=$true)][Alias("b")][ValidateNotNull][DateTime]
+    - Base Type: DateTime
+    - Link Candidates: DateTime
+    - Default Value: (not detected)
+
+  - Parameter 2: [Parameter(Mandatory=$true)][Alias("b")][ValidateNotNull][DateTime] $b,
+    - Name: $b
+    - Full Type: [Parameter(Mandatory=$true)][Alias("b")][ValidateNotNull][DateTime]
+    - Base Type: DateTime
+    - Link Candidates: DateTime
+    - Default Value: (not detected)
+
+  - Parameter 3: [Parameter(Mandatory=$true)][Alias("b")][ValidateNotNull][DateTime] $c
+    - Name: $c
+    - Full Type: [Parameter(Mandatory=$true)][Alias("b")][ValidateNotNull][DateTime]
+    - Base Type: DateTime
+    - Link Candidates: DateTime
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function DetermineTypeC (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: [Parameter(Mandatory=$true)][Alias("c")][ValidateNotNull][System.IO.FileInfo[]] $a,
+    - Name: $a
+    - Full Type: [Parameter(Mandatory=$true)][Alias("c")][ValidateNotNull][System.IO.FileInfo[]]
+    - Base Type: System.IO.FileInfo[]
+    - Link Candidates: System.IO.FileInfo[]
+    - Default Value: (not detected)
+
+  - Parameter 2: [Parameter(Mandatory=$true)][Alias("c")][ValidateNotNull][System.IO.FileInfo[]] $b,
+    - Name: $b
+    - Full Type: [Parameter(Mandatory=$true)][Alias("c")][ValidateNotNull][System.IO.FileInfo[]]
+    - Base Type: System.IO.FileInfo[]
+    - Link Candidates: System.IO.FileInfo[]
+    - Default Value: (not detected)
+
+  - Parameter 3: [Parameter(Mandatory=$true)][Alias("c")][ValidateNotNull][System.IO.FileInfo[]] $c
+    - Name: $c
+    - Full Type: [Parameter(Mandatory=$true)][Alias("c")][ValidateNotNull][System.IO.FileInfo[]]
+    - Base Type: System.IO.FileInfo[]
+    - Link Candidates: System.IO.FileInfo[]
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
