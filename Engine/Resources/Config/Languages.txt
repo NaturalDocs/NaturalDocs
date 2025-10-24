@@ -230,6 +230,7 @@ Language: PowerShell
    Extensions: ps1 psm1
 
    Line Comment: #
+   Block Comment: <# #>
    Case Sensitive: No
 
    Function Prototype Ender: {

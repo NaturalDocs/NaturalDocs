@@ -45,7 +45,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					{  iterator.Next(2);  }
 
 				else if (TryToSkipKeyword(ref iterator, ParseMode.SyntaxHighlight) ||
-						   TryToSkipLineComment(ref iterator, ParseMode.SyntaxHighlight) ||
+						   TryToSkipComment(ref iterator, ParseMode.SyntaxHighlight) ||
 						   TryToSkipString(ref iterator, ParseMode.SyntaxHighlight) ||
 						   TryToSkipNumber(ref iterator, ParseMode.SyntaxHighlight) ||
 						   TryToSkipAttribute(ref iterator, ParseMode.SyntaxHighlight))
