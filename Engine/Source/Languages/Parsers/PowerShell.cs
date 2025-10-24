@@ -88,7 +88,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			lookahead.Next();
 
 			if (lookahead.FundamentalType == FundamentalType.Text ||
-				lookahead.Character == '_')
+				lookahead.Character == '_' ||
+				lookahead.Character == '-')
 				{  return false;  }
 
 			TokenIterator lookbehind = iterator;
