@@ -959,6 +959,11 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 			return false;
 			}
 
+		public override string ToString ()
+			{
+			return this.String;
+			}
+
 		public override int GetHashCode ()
 			{
 			return tokenIndex.GetHashCode();
