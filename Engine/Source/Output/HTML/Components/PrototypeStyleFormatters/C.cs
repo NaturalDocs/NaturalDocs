@@ -99,6 +99,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 						{  break;  }
 					}
 
+				// If the last character is [ then leave it for the type column.  This allows types defined like PowerShell's [string] to have the opening
+				// bracket format better.
+				if (iterator > startOfCell)
+					{
+					TokenIterator lookbehind = iterator;
+					lookbehind.Previous();
+
+					if (lookbehind.Character == '[')
+						{  iterator = lookbehind;  }
+					}
+
 				endOfCell = iterator;
 
 				cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
@@ -115,8 +126,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 					{
 					PrototypeParsingType type = iterator.PrototypeParsingType;
 
-					// The previous loop already got any modifiers before the type, so this will only cover the type
-					// plus any modifiers following it.
+					// This will cover the type plus any modifiers following it.
 					if (type == PrototypeParsingType.Type ||
 						type == PrototypeParsingType.TypeModifier ||
 						type == PrototypeParsingType.ParamModifier ||
