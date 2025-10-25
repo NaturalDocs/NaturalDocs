@@ -155,8 +155,6 @@ Diagnostics.OSNameAndVersion(value): {0}
 Diagnostics.NoOSNameAndVersion: Couldn't get OS name and version
 Diagnostics.glibcVersion(version): glibc {0}
 Diagnostics.NoGLibCVersion: Couldn't get glibc version
-Diagnostics.KernelVersion(version): Kernel {0}
-Diagnostics.NoKernelVersion: Couldn't get kernel version
 Diagnostics.Processor(name): {0}
 Diagnostics.NoProcessor: Couldn't get processor name
 

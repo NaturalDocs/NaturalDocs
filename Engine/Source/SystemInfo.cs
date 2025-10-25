@@ -128,23 +128,6 @@ namespace CodeClear.NaturalDocs.Engine
 						Locale.SafeGet("NaturalDocs.Engine", "Diagnostics.NoGLibCVersion", "Couldn't get glibc version"));
 					}
 
-
-				// Kernel version
-
-				string kernelVersion = SystemInfo.LinuxKernelVersion;
-				summary.Append(linePrefix + " - ");
-
-				if (kernelVersion != null)
-					{
-					summary.AppendLine(
-						Locale.SafeGet("NaturalDocs.Engine", "Diagnostics.KernelVersion(version)", "Kernel {0}", kernelVersion));
-					}
-				else
-					{
-					summary.AppendLine(
-						Locale.SafeGet("NaturalDocs.Engine", "Diagnostics.NoKernelVersion", "Couldn't get kernel version"));
-					}
-
 				#pragma warning restore CA1416
 			#endif
 
@@ -629,19 +612,6 @@ namespace CodeClear.NaturalDocs.Engine
 					{  }
 
 				return result;
-				}
-			}
-
-
-		/* Property: LinuxKernelVersion
-		 * Returns the Linux kernel version to the extent that it can be determined.
-		 */
-		[SupportedOSPlatform("Linux")]
-		static public string LinuxKernelVersion
-			{
-			get
-				{
-				return Environment.OSVersion.Version.ToString();
 				}
 			}
 
