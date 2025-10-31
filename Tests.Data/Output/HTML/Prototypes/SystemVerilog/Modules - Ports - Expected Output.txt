@@ -34,19 +34,25 @@
          <div class="PPortAttributes InFirstParameterColumn" data-WideGridArea="8/2/9/3" data-NarrowGridArea="9/1/10/2" style="grid-area:8/2/9/3"><span class="SHMetadata">(* x, y, z = 12 *)</span>&nbsp;</div>
          <div class="PType" data-WideGridArea="8/3/9/4" data-NarrowGridArea="9/2/10/3" style="grid-area:8/3/9/4"><span class="SHKeyword">logic</span>&nbsp;</div>
          <div class="PName InLastParameterColumn" data-WideGridArea="8/4/9/5" data-NarrowGridArea="9/3/10/4" style="grid-area:8/4/9/5">portH,</div>
-         <div class="PPortAttributes InFirstParameterColumn" data-WideGridArea="9/2/10/3" data-NarrowGridArea="10/1/11/2" style="grid-area:9/2/10/3"><span class="SHMetadata">(*x*)(*y*)(*z=12*)</span>&nbsp;</div>
-         <div class="PType" data-WideGridArea="9/3/10/4" data-NarrowGridArea="10/2/11/3" style="grid-area:9/3/10/4"><span class="SHKeyword">logic</span>&nbsp;</div>
-         <div class="PName InLastParameterColumn" data-WideGridArea="9/4/10/5" data-NarrowGridArea="10/3/11/4" style="grid-area:9/4/10/5">portI,</div>
-         <div class="PPortAttributes InFirstParameterColumn" data-WideGridArea="10/2/11/3" data-NarrowGridArea="11/1/12/2" style="grid-area:10/2/11/3"><span class="SHMetadata">(* x *) (* y *) (* z = 12 *)</span>&nbsp;</div>
-         <div class="PType" data-WideGridArea="10/3/11/4" data-NarrowGridArea="11/2/12/3" style="grid-area:10/3/11/4"><span class="SHKeyword">logic</span>&nbsp;</div>
-         <div class="PName InLastParameterColumn" data-WideGridArea="10/4/11/5" data-NarrowGridArea="11/3/12/4" style="grid-area:10/4/11/5">portJ,</div>
-         <div class="PPortAttributes InFirstParameterColumn" data-WideGridArea="11/2/12/3" data-NarrowGridArea="12/1/13/2" style="grid-area:11/2/12/3"><span class="SHMetadata">(* x, y *)(* z=12 *)</span>&nbsp;</div>
+         <div class="PPortAttributes InFirstParameterColumn ExtraTopSpace" data-WideGridArea="9/2/10/3" data-NarrowGridArea="10/1/11/2" style="grid-area:9/2/10/3"><span class="SHMetadata">(*x*)</span>&nbsp;</div>
+         <div class="PPortAttributes InFirstParameterColumn" data-WideGridArea="10/2/11/3" data-NarrowGridArea="11/1/12/2" style="grid-area:10/2/11/3"><span class="SHMetadata">(*y*)</span>&nbsp;</div>
+         <div class="PPortAttributes InFirstParameterColumn" data-WideGridArea="11/2/12/3" data-NarrowGridArea="12/1/13/2" style="grid-area:11/2/12/3"><span class="SHMetadata">(*z=12*)</span>&nbsp;</div>
          <div class="PType" data-WideGridArea="11/3/12/4" data-NarrowGridArea="12/2/13/3" style="grid-area:11/3/12/4"><span class="SHKeyword">logic</span>&nbsp;</div>
-         <div class="PName InLastParameterColumn" data-WideGridArea="11/4/12/5" data-NarrowGridArea="12/3/13/4" style="grid-area:11/4/12/5">portK,</div>
-         <div class="PPortAttributes InFirstParameterColumn" data-WideGridArea="12/2/13/3" data-NarrowGridArea="13/1/14/2" style="grid-area:12/2/13/3"><span class="SHMetadata">(* x *) (* y, z=12 *)</span>&nbsp;</div>
-         <div class="PType" data-WideGridArea="12/3/13/4" data-NarrowGridArea="13/2/14/3" style="grid-area:12/3/13/4"><span class="SHKeyword">logic</span>&nbsp;</div>
-         <div class="PName InLastParameterColumn" data-WideGridArea="12/4/13/5" data-NarrowGridArea="13/3/14/4" style="grid-area:12/4/13/5">portL</div>
-         <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="12/5/13/6" data-NarrowGridArea="14/1/15/5" style="grid-area:12/5/13/6">)</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="11/4/12/5" data-NarrowGridArea="12/3/13/4" style="grid-area:11/4/12/5">portI,</div>
+         <div class="PPortAttributes InFirstParameterColumn ExtraTopSpace" data-WideGridArea="12/2/13/3" data-NarrowGridArea="13/1/14/2" style="grid-area:12/2/13/3"><span class="SHMetadata">(* x *)</span>&nbsp;</div>
+         <div class="PPortAttributes InFirstParameterColumn" data-WideGridArea="13/2/14/3" data-NarrowGridArea="14/1/15/2" style="grid-area:13/2/14/3"><span class="SHMetadata">(* y *)</span>&nbsp;</div>
+         <div class="PPortAttributes InFirstParameterColumn" data-WideGridArea="14/2/15/3" data-NarrowGridArea="15/1/16/2" style="grid-area:14/2/15/3"><span class="SHMetadata">(* z = 12 *)</span>&nbsp;</div>
+         <div class="PType" data-WideGridArea="14/3/15/4" data-NarrowGridArea="15/2/16/3" style="grid-area:14/3/15/4"><span class="SHKeyword">logic</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="14/4/15/5" data-NarrowGridArea="15/3/16/4" style="grid-area:14/4/15/5">portJ,</div>
+         <div class="PPortAttributes InFirstParameterColumn ExtraTopSpace" data-WideGridArea="15/2/16/3" data-NarrowGridArea="16/1/17/2" style="grid-area:15/2/16/3"><span class="SHMetadata">(* x, y *)</span>&nbsp;</div>
+         <div class="PPortAttributes InFirstParameterColumn" data-WideGridArea="16/2/17/3" data-NarrowGridArea="17/1/18/2" style="grid-area:16/2/17/3"><span class="SHMetadata">(* z=12 *)</span>&nbsp;</div>
+         <div class="PType" data-WideGridArea="16/3/17/4" data-NarrowGridArea="17/2/18/3" style="grid-area:16/3/17/4"><span class="SHKeyword">logic</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="16/4/17/5" data-NarrowGridArea="17/3/18/4" style="grid-area:16/4/17/5">portK,</div>
+         <div class="PPortAttributes InFirstParameterColumn ExtraTopSpace" data-WideGridArea="17/2/18/3" data-NarrowGridArea="18/1/19/2" style="grid-area:17/2/18/3"><span class="SHMetadata">(* x *)</span>&nbsp;</div>
+         <div class="PPortAttributes InFirstParameterColumn" data-WideGridArea="18/2/19/3" data-NarrowGridArea="19/1/20/2" style="grid-area:18/2/19/3"><span class="SHMetadata">(* y, z=12 *)</span>&nbsp;</div>
+         <div class="PType" data-WideGridArea="18/3/19/4" data-NarrowGridArea="19/2/20/3" style="grid-area:18/3/19/4"><span class="SHKeyword">logic</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="18/4/19/5" data-NarrowGridArea="19/3/20/4" style="grid-area:18/4/19/5">portL</div>
+         <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="18/5/19/6" data-NarrowGridArea="20/1/21/5" style="grid-area:18/5/19/6">)</div>
       </div>
    </div>
 </div>
