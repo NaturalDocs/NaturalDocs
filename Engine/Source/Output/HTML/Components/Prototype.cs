@@ -932,7 +932,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				// The order for grid-area is grid-row-start/grid-column-start/grid-row-end/grid-column-end
 
-				// Put it in the first column, full height.
+				// Put it in the first column, full height.  This will miss any extra rows created by multi-row parameter cells
+				// but that should be okay.
 				string wideGridArea = wideRowStart +
 												"/1/" +
 												(wideRowStart + Math.Max(parameterLayout.NumberOfParameters, 1)) +
@@ -964,7 +965,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				// Parameters
 
-				AppendParameters(parameterLayout, columnLayout, wideRowStart, 2, narrowRowStart, 1, output);
+				int extraRowsAdded;
+				AppendParameters(parameterLayout, columnLayout, wideRowStart, 2, narrowRowStart, 1, out extraRowsAdded, output);
 
 
 				// After parameters
@@ -978,9 +980,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					start.NextPastWhitespace(end);
 
 					// Put it in the last row, last column
-					wideGridArea = (wideRowStart + Math.Max(parameterLayout.NumberOfParameters, 1) - 1) + "/" +
+					wideGridArea = (wideRowStart + Math.Max(parameterLayout.NumberOfParameters, 1) - 1 + extraRowsAdded) + "/" +
 											(2 + columnLayout.UsedCount) + "/" +
-											(wideRowStart + Math.Max(parameterLayout.NumberOfParameters, 1)) + "/" +
+											(wideRowStart + Math.Max(parameterLayout.NumberOfParameters, 1) + extraRowsAdded) + "/" +
 											(3 + columnLayout.UsedCount);
 
 					if (allBeforeAndAfterParametersSectionsAreShort)
@@ -990,18 +992,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						// This lets things like { } and (* *) not move at all but keeps the old behavior for things like
 						// "void Function (" and ")".  Also, only do this when it applies to ALL of the sections because we don't
 						// want a mix of styles.
-						narrowGridArea = (narrowRowStart + Math.Max(parameterLayout.NumberOfParameters, 1) - 1) + "/" +
+						narrowGridArea = (narrowRowStart + Math.Max(parameterLayout.NumberOfParameters, 1) - 1 + extraRowsAdded) + "/" +
 													(2 + columnLayout.UsedCount) + "/" +
-													(narrowRowStart + Math.Max(parameterLayout.NumberOfParameters, 1)) + "/" +
+													(narrowRowStart + Math.Max(parameterLayout.NumberOfParameters, 1) + extraRowsAdded) + "/" +
 													(3 + columnLayout.UsedCount);
 						}
 					else
 						{
 						// Put it in the last row, all columns.  Add one more column than the parameters use so the cells don't get
 						// stretched out if this is longer than them.
-						narrowGridArea = (narrowRowStart + parameterLayout.NumberOfParameters) +
+						narrowGridArea = (narrowRowStart + parameterLayout.NumberOfParameters + extraRowsAdded) +
 													"/1/" +
-													(narrowRowStart + parameterLayout.NumberOfParameters + 1) + "/" +
+													(narrowRowStart + parameterLayout.NumberOfParameters + 1 + extraRowsAdded) + "/" +
 													(1 + columnLayout.UsedCount + 1);
 						}
 
@@ -1038,8 +1040,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				// Update position for next section
 
-				wideRowStart += Math.Max(parameterLayout.NumberOfParameters, 1);
-				narrowRowStart += parameterLayout.NumberOfParameters;
+				wideRowStart += Math.Max(parameterLayout.NumberOfParameters, 1) + extraRowsAdded;
+				narrowRowStart += parameterLayout.NumberOfParameters + extraRowsAdded;
 
 				if (hasAfterParameters)
 					{  narrowRowStart++;  }
@@ -1181,7 +1183,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				// Parameters
 
-				AppendParameters(parameterLayout, parameterLayout.Columns, 1, 1, 1, 1, output);
+				int extraRowsAdded;
+				AppendParameters(parameterLayout, parameterLayout.Columns, 1, 1, 1, 1, out extraRowsAdded, output);
 
 
 				// After parameters
@@ -1195,9 +1198,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					start.NextPastWhitespace(end);
 
 					// Put it in the last row, last column
-					wideGridArea = (1 + Math.Max(parameterLayout.NumberOfParameters, 1) - 1) + "/" +
+					wideGridArea = (1 + Math.Max(parameterLayout.NumberOfParameters, 1) - 1 + extraRowsAdded) + "/" +
 											(1 + parameterLayout.Columns.UsedCount) + "/" +
-											(1 + Math.Max(parameterLayout.NumberOfParameters, 1)) + "/" +
+											(1 + Math.Max(parameterLayout.NumberOfParameters, 1) + extraRowsAdded) + "/" +
 											(2 + parameterLayout.Columns.UsedCount);
 
 					if (allBeforeAndAfterParametersSectionsAreShort)
@@ -1213,9 +1216,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						{
 						// Put it in the last row, all columns.  Add one more column than the parameters use so the cells don't get
 						// stretched out if this is longer than them.
-						narrowGridArea = (1 + parameterLayout.NumberOfParameters) +
+						narrowGridArea = (1 + parameterLayout.NumberOfParameters + extraRowsAdded) +
 													"/1/" +
-													(1 + parameterLayout.NumberOfParameters + 1) + "/" +
+													(1 + parameterLayout.NumberOfParameters + 1 + extraRowsAdded) + "/" +
 													(1 + parameterLayout.Columns.UsedCount + 1);
 						}
 
@@ -1268,9 +1271,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 		/* Function: AppendParameters
 		 */
-		protected void AppendParameters (PrototypeParameterLayout parameters, PrototypeColumnLayout columnLayout, int wideRowStart,
-														  int wideColumnStart, int narrowRowStart, int narrowColumnStart, StringBuilder output)
+		protected void AppendParameters (PrototypeParameterLayout parameters, PrototypeColumnLayout columnLayout,
+														  int wideRowStart, int wideColumnStart, int narrowRowStart, int narrowColumnStart,
+														  out int extraRowsAdded, StringBuilder output)
 			{
+			extraRowsAdded = 0;
+
 			int firstUsedColumn = columnLayout.FirstUsed;
 			int lastUsedColumn = columnLayout.LastUsed;
 
@@ -1298,26 +1304,38 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 						if (parameters.HasContent(parameterIndex, columnIndex))
 							{
-							// The order for grid-area is grid-row-start/grid-column-start/grid-row-end/grid-column-end
+							TokenIterator iterator, end;
+							parameters.GetContent(parameterIndex, columnIndex, out iterator, out end);
 
-							string wideGridArea = (wideRowStart + parameterIndex) + "/" +
-															 (wideColumnStart + columnLayout.UsedColumnIndexOf(columnIndex)) + "/" +
-															 (wideRowStart + parameterIndex + 1) + "/" +
-															 (wideColumnStart + columnLayout.UsedColumnIndexOf(columnIndex) + 1);
+							for (;;)
+								{
+								// The order for grid-area is grid-row-start/grid-column-start/grid-row-end/grid-column-end
 
-							string narrowGridArea = (narrowRowStart + parameterIndex) + "/" +
-																(narrowColumnStart + columnLayout.UsedColumnIndexOf(columnIndex)) + "/" +
-																(narrowRowStart + parameterIndex + 1) + "/" +
-																(narrowColumnStart + columnLayout.UsedColumnIndexOf(columnIndex) + 1);
+								string wideGridArea = (wideRowStart + parameterIndex + extraRowsAdded) + "/" +
+																 (wideColumnStart + columnLayout.UsedColumnIndexOf(columnIndex)) + "/" +
+																 (wideRowStart + parameterIndex + 1 + extraRowsAdded) + "/" +
+																 (wideColumnStart + columnLayout.UsedColumnIndexOf(columnIndex) + 1);
 
-							output.Append("<div class=\"P" + columnLayout.TypeOf(columnIndex).ToString() + (extraCSSClass != null ? ' ' + extraCSSClass : "") + "\" " +
-														"data-WideGridArea=\"" + wideGridArea + "\" " +
-														"data-NarrowGridArea=\"" + narrowGridArea + "\" " +
-														"style=\"grid-area:" + wideGridArea + "\">");
+								string narrowGridArea = (narrowRowStart + parameterIndex + extraRowsAdded) + "/" +
+																	(narrowColumnStart + columnLayout.UsedColumnIndexOf(columnIndex)) + "/" +
+																	(narrowRowStart + parameterIndex + 1 + extraRowsAdded) + "/" +
+																	(narrowColumnStart + columnLayout.UsedColumnIndexOf(columnIndex) + 1);
 
-							AppendParameterCell(parameters, parameterIndex, columnIndex, output);
+								output.Append("<div class=\"P" + columnLayout.TypeOf(columnIndex).ToString() + (extraCSSClass != null ? ' ' + extraCSSClass : "") + "\" " +
+															"data-WideGridArea=\"" + wideGridArea + "\" " +
+															"data-NarrowGridArea=\"" + narrowGridArea + "\" " +
+															"style=\"grid-area:" + wideGridArea + "\">");
 
-							output.Append("</div>");
+								bool needAnotherRow;
+								AppendParameterCell(parameters, parameterIndex, columnIndex, ref iterator, out needAnotherRow, output);
+
+								output.Append("</div>");
+
+								if (needAnotherRow)
+									{  extraRowsAdded++;  }
+								else
+									{  break;  }
+								}
 							}
 						}
 					}
@@ -1326,22 +1344,73 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: AppendParameterCell
+		 * Appends part of a parameter cell.  In most cases this will add the entire cell's contents.  If the content needs  to be broken into
+		 * multiple rows it will add one row's worth of content, advance the iterator, and set needAnotherRow to true to indicate that there
+		 * is still more to add.
 		 */
-		protected void AppendParameterCell (PrototypeParameterLayout parameters, int parameterIndex, int columnIndex, StringBuilder output)
+		protected void AppendParameterCell (PrototypeParameterLayout parameters, int parameterIndex, int columnIndex,
+															  ref TokenIterator iterator, out bool needAnotherRow, StringBuilder output)
 			{
 			TokenIterator start, end;
 			parameters.GetContent(parameterIndex, columnIndex, out start, out end);
+
+
+			// Find the end of the content for this row.
+
+			TokenIterator endOfRow;
+
+			// If it's on the start of a metadata block, this row gets until the end of the block
+			if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier &&
+				iterator.SyntaxHighlightingType == SyntaxHighlightingType.Metadata)
+				{
+				endOfRow = iterator;
+
+				for (;;)
+					{
+					endOfRow.Next();
+
+					if (endOfRow >= end)
+						{  break;  }
+
+					if (endOfRow.PrototypeParsingType == PrototypeParsingType.ClosingTypeModifier)
+						{
+						do
+							{  endOfRow.Next();  }
+						while (endOfRow.PrototypeParsingType == PrototypeParsingType.ClosingExtensionSymbol);
+
+						break;
+						}
+					}
+				}
+
+			// If it's on anything else, it gets the rest of the cell
+			else
+				{  endOfRow = end;  }
+
+
+			// Add the content of the row
 
 			if (parameters.HasLeadingSpace(parameterIndex, columnIndex))
 				{  output.Append("&nbsp");  }
 
 			if (addLinks)
-				{  AppendSyntaxHighlightedTextWithTypeLinks(start, end, output, links, linkTargets, extendTypeSearch: true);  }
+				{  AppendSyntaxHighlightedTextWithTypeLinks(iterator, endOfRow, output, links, linkTargets, extendTypeSearch: true);  }
 			else
-				{  AppendSyntaxHighlightedText(start, end, output);  }
+				{  AppendSyntaxHighlightedText(iterator, endOfRow, output);  }
 
 			if (parameters.HasTrailingSpace(parameterIndex, columnIndex))
 				{  output.Append("&nbsp;");  }
+
+
+			// Advance the iterator
+
+			iterator = endOfRow;
+			iterator.NextPastWhitespace(end);
+
+
+			// Return whether there's anything left to add for another row.
+
+			needAnotherRow = (iterator < end);
 			}
 
 
