@@ -58,7 +58,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 
 		/* Property: Source
-		 * The <Config.Source> of the entire configuration.
+		 * The <Config.PropertySource> of the entire configuration.
 		 */
 		public Config.PropertySource Source
 			{
