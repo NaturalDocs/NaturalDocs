@@ -1916,6 +1916,10 @@ td {
 		/* Seems to ignore padding-right, so just shrink the width */
 		.NarrowForm .FitIntoLeftIndentOnNarrow.RightSpaceOnNarrow { width: 2ch; }
 
+		.ExtraTopSpace {
+			padding-top: .5em;
+			}
+
 
 	/* Links default back to black so we don't screw up the syntax highlighting. */
 	.NDPrototype a:link,

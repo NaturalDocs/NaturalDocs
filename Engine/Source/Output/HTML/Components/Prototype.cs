@@ -1307,6 +1307,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 							TokenIterator iterator, end;
 							parameters.GetContent(parameterIndex, columnIndex, out iterator, out end);
 
+							bool extraTopSpace = (parameterIndex > 0 && ParameterCellHasMultipleRows(parameters, parameterIndex, columnIndex));
+
 							for (;;)
 								{
 								// The order for grid-area is grid-row-start/grid-column-start/grid-row-end/grid-column-end
@@ -1321,7 +1323,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 																	(narrowRowStart + parameterIndex + 1 + extraRowsAdded) + "/" +
 																	(narrowColumnStart + columnLayout.UsedColumnIndexOf(columnIndex) + 1);
 
-								output.Append("<div class=\"P" + columnLayout.TypeOf(columnIndex).ToString() + (extraCSSClass != null ? ' ' + extraCSSClass : "") + "\" " +
+								output.Append("<div class=\"P" + columnLayout.TypeOf(columnIndex).ToString() +
+																				  (extraCSSClass != null ? ' ' + extraCSSClass : "") +
+																				  (extraTopSpace ? " ExtraTopSpace" : "") + "\" " +
 															"data-WideGridArea=\"" + wideGridArea + "\" " +
 															"data-NarrowGridArea=\"" + narrowGridArea + "\" " +
 															"style=\"grid-area:" + wideGridArea + "\">");
@@ -1332,7 +1336,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 								output.Append("</div>");
 
 								if (needAnotherRow)
-									{  extraRowsAdded++;  }
+									{
+									extraRowsAdded++;
+									extraTopSpace = false;
+									}
 								else
 									{  break;  }
 								}
@@ -1340,6 +1347,48 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						}
 					}
 				}
+			}
+
+
+		/* Function: ParameterCellHasMultipleRows
+		 * Returns whether <AppendParameterCell()> will require multiple rows.
+		 */
+		protected bool ParameterCellHasMultipleRows (PrototypeParameterLayout parameters, int parameterIndex, int columnIndex)
+			{
+			TokenIterator start, end;
+			parameters.GetContent(parameterIndex, columnIndex, out start, out end);
+
+			// If it's on the start of a metadata block, it will get its own row if there is anything following it
+			if (start.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier &&
+				start.SyntaxHighlightingType == SyntaxHighlightingType.Metadata)
+				{
+				TokenIterator iterator = start;
+
+				for (;;)
+					{
+					iterator.Next();
+
+					if (iterator >= end)
+						{  return false;  }
+
+					if (iterator.PrototypeParsingType == PrototypeParsingType.ClosingTypeModifier)
+						{
+						do
+							{  iterator.Next();  }
+						while (iterator.PrototypeParsingType == PrototypeParsingType.ClosingExtensionSymbol);
+
+						break;
+						}
+					}
+
+				iterator.NextPastWhitespace(end);
+
+				return (iterator < end);
+				}
+
+			// If it's on anything else, there are no extra rows
+			else
+				{  return false;  }
 			}
 
 
