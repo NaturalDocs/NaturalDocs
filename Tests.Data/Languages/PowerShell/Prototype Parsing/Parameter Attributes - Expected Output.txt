@@ -159,16 +159,16 @@
     - Link Candidates: string
     - Default Value: (not detected)
 
-  - Parameter 2: [Parameter(Mandatory=$true)][Alias("a")][ValidateNotNull][string] $b,
+  - Parameter 2: [Parameter(Mandatory=$true)][Alias("b")][ValidateNotNull][string] $b,
     - Name: $b
-    - Full Type: [Parameter(Mandatory=$true)][Alias("a")][ValidateNotNull][string]
+    - Full Type: [Parameter(Mandatory=$true)][Alias("b")][ValidateNotNull][string]
     - Base Type: string
     - Link Candidates: string
     - Default Value: (not detected)
 
-  - Parameter 3: [Parameter(Mandatory=$true)][Alias("a")][ValidateNotNull][string] $c
+  - Parameter 3: [Parameter(Mandatory=$true)][Alias("c")][ValidateNotNull][string] $c
     - Name: $c
-    - Full Type: [Parameter(Mandatory=$true)][Alias("a")][ValidateNotNull][string]
+    - Full Type: [Parameter(Mandatory=$true)][Alias("c")][ValidateNotNull][string]
     - Base Type: string
     - Link Candidates: string
     - Default Value: (not detected)
@@ -183,9 +183,9 @@
     - Access Level: Unknown
     - Link Candidates: (none)
 
-  - Parameter 1: [Parameter(Mandatory=$true)][Alias("b")][ValidateNotNull][DateTime] $a,
+  - Parameter 1: [Parameter(Mandatory=$true)][Alias("a")][ValidateNotNull][DateTime] $a,
     - Name: $a
-    - Full Type: [Parameter(Mandatory=$true)][Alias("b")][ValidateNotNull][DateTime]
+    - Full Type: [Parameter(Mandatory=$true)][Alias("a")][ValidateNotNull][DateTime]
     - Base Type: DateTime
     - Link Candidates: DateTime
     - Default Value: (not detected)
@@ -197,9 +197,9 @@
     - Link Candidates: DateTime
     - Default Value: (not detected)
 
-  - Parameter 3: [Parameter(Mandatory=$true)][Alias("b")][ValidateNotNull][DateTime] $c
+  - Parameter 3: [Parameter(Mandatory=$true)][Alias("c")][ValidateNotNull][DateTime] $c
     - Name: $c
-    - Full Type: [Parameter(Mandatory=$true)][Alias("b")][ValidateNotNull][DateTime]
+    - Full Type: [Parameter(Mandatory=$true)][Alias("c")][ValidateNotNull][DateTime]
     - Base Type: DateTime
     - Link Candidates: DateTime
     - Default Value: (not detected)
@@ -214,16 +214,16 @@
     - Access Level: Unknown
     - Link Candidates: (none)
 
-  - Parameter 1: [Parameter(Mandatory=$true)][Alias("c")][ValidateNotNull][System.IO.FileInfo[]] $a,
+  - Parameter 1: [Parameter(Mandatory=$true)][Alias("a")][ValidateNotNull][System.IO.FileInfo[]] $a,
     - Name: $a
-    - Full Type: [Parameter(Mandatory=$true)][Alias("c")][ValidateNotNull][System.IO.FileInfo[]]
+    - Full Type: [Parameter(Mandatory=$true)][Alias("a")][ValidateNotNull][System.IO.FileInfo[]]
     - Base Type: System.IO.FileInfo[]
     - Link Candidates: System.IO.FileInfo[]
     - Default Value: (not detected)
 
-  - Parameter 2: [Parameter(Mandatory=$true)][Alias("c")][ValidateNotNull][System.IO.FileInfo[]] $b,
+  - Parameter 2: [Parameter(Mandatory=$true)][Alias("b")][ValidateNotNull][System.IO.FileInfo[]] $b,
     - Name: $b
-    - Full Type: [Parameter(Mandatory=$true)][Alias("c")][ValidateNotNull][System.IO.FileInfo[]]
+    - Full Type: [Parameter(Mandatory=$true)][Alias("b")][ValidateNotNull][System.IO.FileInfo[]]
     - Base Type: System.IO.FileInfo[]
     - Link Candidates: System.IO.FileInfo[]
     - Default Value: (not detected)

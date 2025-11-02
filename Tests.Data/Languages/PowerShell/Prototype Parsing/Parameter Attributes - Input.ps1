@@ -28,21 +28,21 @@ function ParameterModifiers ([Parameter(Mandatory=$true)] $a,
 
 # Function: DetermineTypeA
 function DetermineTypeA ([Parameter(Mandatory=$true)][Alias("a")][ValidateNotNull][string] $a,
-										[string][Parameter(Mandatory=$true)][Alias("a")][ValidateNotNull] $b,
-										[Parameter(Mandatory=$true)][string][Alias("a")][ValidateNotNull] $c)
+										[string][Parameter(Mandatory=$true)][Alias("b")][ValidateNotNull] $b,
+										[Parameter(Mandatory=$true)][string][Alias("c")][ValidateNotNull] $c)
 	{
 	}
 
 # Function: DetermineTypeB
-function DetermineTypeB ([Parameter(Mandatory=$true)][Alias("b")][ValidateNotNull][DateTime] $a,
+function DetermineTypeB ([Parameter(Mandatory=$true)][Alias("a")][ValidateNotNull][DateTime] $a,
 										[DateTime][Parameter(Mandatory=$true)][Alias("b")][ValidateNotNull] $b,
-										[Parameter(Mandatory=$true)][DateTime][Alias("b")][ValidateNotNull] $c)
+										[Parameter(Mandatory=$true)][DateTime][Alias("c")][ValidateNotNull] $c)
 	{
 	}
 
 # Function: DetermineTypeC
-function DetermineTypeC ([Parameter(Mandatory=$true)][Alias("c")][ValidateNotNull][System.IO.FileInfo[]] $a,
-										[System.IO.FileInfo[]][Parameter(Mandatory=$true)][Alias("c")][ValidateNotNull] $b,
+function DetermineTypeC ([Parameter(Mandatory=$true)][Alias("a")][ValidateNotNull][System.IO.FileInfo[]] $a,
+										[System.IO.FileInfo[]][Parameter(Mandatory=$true)][Alias("b")][ValidateNotNull] $b,
 										[Parameter(Mandatory=$true)][System.IO.FileInfo[]][Alias("c")][ValidateNotNull] $c)
 	{
 	}
