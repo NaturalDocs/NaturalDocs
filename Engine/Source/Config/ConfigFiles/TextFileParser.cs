@@ -1430,7 +1430,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 		 * Will match if the entire string is the property name "encoding" or one of its acceptable variants.  Assumes the
 		 * input string is already in lowercase.
 		 */
-		[GeneratedRegex("""(?:char|character)?[ \-]?(?:encoding|set)""",
+		[GeneratedRegex("""^(?:char|character)?[ \-]?(?:encoding|set)$""",
 								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
 		static internal partial Regex IsEncodingRegexLC();
 
