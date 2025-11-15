@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Platforms>Windows_x64;Windows_ARM64;macOS_x64;macOS_ARM64;Linux_x64;Linux_ARM64</Platforms>
     <RootNamespace>CodeClear.NaturalDocs.Engine</RootNamespace>
     <AssemblyName>NaturalDocs.Engine</AssemblyName>
