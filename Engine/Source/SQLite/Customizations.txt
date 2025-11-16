@@ -1,0 +1,84 @@
+
+Title: SQLite Library Customizations
+_______________________________________________________________________________
+
+These are the customizations applied to the SQLite library that is bundled with Natural Docs.
+
+
+Group: Preprocessor Directives
+_______________________________________________________________________________
+
+These flags are added to the top of the sqlite3.c amalgamation before compilation.  They are documented at
+https://www.sqlite.org/compile.html.
+
+
+	Topic: SQLITE_DQS
+
+		--- Prototype
+		#define SQLITE_DQS 0
+		---
+
+		Setting this to zero disables support for double-quoted string literals, which has been deprecated since
+		3.29.0 and the author recommends against using.  We don't use them and we don't want to ever rely on
+		deprecated features.
+
+
+	Topic: SQLITE_DEFAULT_MEMSTATUS
+
+		--- Prototype
+		#define SQLITE_DEFAULT_MEMSTATUS 0
+		---
+
+		Setting this to zero disables the sqlite3_status() interfaces that track memory and other memory usage
+		tracking functions.  We don't expose these functions at all, and the documentation says omitting this
+		makes memory allocation much faster and thus the entire library faster.
+
+
+	Topic: SQLITE_LIKE_DOESNT_MATCH_BLOBS
+
+		--- Prototype
+		#define SQLITE_LIKE_DOESNT_MATCH_BLOBS
+		---
+
+		This makes LIKE always return false when applied to BLOBs, which simplifies and speeds up LIKE queries.
+		We use LIKE but we don't use BLOBs, so this gets set.
+
+
+	Topic: SQLITE_OMIT_DECLTYPE
+
+		--- Prototype
+		#define SQLITE_OMIT_DECLTYPE
+		---
+
+		This omits support for sqlite3_column_decltype() and _decltype16().  We don't expose these functions at
+		all, and the documentation says omitting them allows prepared statements to use less memory.
+
+
+	Topic: SQLITE_OMIT_DEPRECATED
+
+		--- Prototype
+		#define SQLITE_OMIT_DEPRECATED
+		---
+
+		Self-explanitory.  We don't want to ever rely on deprecated features and this will shrink the library size.
+
+
+	Topic: SQLITE_OMIT_PROGRESS_CALLBACK
+
+		--- Prototype
+		#define SQLITE_OMIT_PROGRESS_CALLBACK
+		---
+
+		This omits support for sqlite3_progress_handler().  We don't expose this function at all, and the
+		documentation says this will help SQL statements execute slightly faster.
+
+
+	Topic: SQLITE_OMIT_SHARED_CACHE
+
+		--- Prototype
+		#define SQLITE_OMIT_SHARED_CACHE
+		---
+
+		This omits support for shared cache mode, which isn't enabled by default and the author recommends
+		against using.  We don't use this mode and the documentation says omitting it can give a noticeable
+		performance improvement.
