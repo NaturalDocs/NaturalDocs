@@ -38,93 +38,118 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 			#error No SQLite native library for this platform or platform constants aren't defined.
 		#endif
 
+		[DefaultDllImportSearchPaths (DllImportSearchPath.AssemblyDirectory)]
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
 		extern static internal API.Result sqlite3_initialize ();
 
+		[DefaultDllImportSearchPaths (DllImportSearchPath.AssemblyDirectory)]
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
 		extern static internal API.Result sqlite3_shutdown ();
 
+		[DefaultDllImportSearchPaths (DllImportSearchPath.AssemblyDirectory)]
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
 		extern static internal API.Result sqlite3_open_v2 ([MarshalAs(UnmanagedType.LPUTF8Str)] string filename,
 																			   out IntPtr connectionHandle, API.OpenOption options, IntPtr vfs);
 
+		[DefaultDllImportSearchPaths (DllImportSearchPath.AssemblyDirectory)]
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
 		extern static internal API.Result sqlite3_close_v2 (IntPtr connectionHandle);
 
+		[DefaultDllImportSearchPaths (DllImportSearchPath.AssemblyDirectory)]
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
 		extern static internal int sqlite3_limit(IntPtr connectionHandle, API.LimitID id, int newValue);
 
+		[DefaultDllImportSearchPaths (DllImportSearchPath.AssemblyDirectory)]
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
 		extern static internal API.Result sqlite3_extended_result_codes(IntPtr connectionHandle, int onoff);
 
+		[DefaultDllImportSearchPaths (DllImportSearchPath.AssemblyDirectory)]
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
 		extern static internal API.Result sqlite3_busy_timeout(IntPtr connectionHandle, int milliseconds);
 
 		#if SQLITE_UTF16
+		[DefaultDllImportSearchPaths (DllImportSearchPath.AssemblyDirectory)]
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
 		extern static internal API.Result sqlite3_prepare16_v2 (IntPtr connectionHandle,
 																					  [MarshalAs(UnmanagedType.LPWStr)] string statementText,
 																					  int statementTextByteLength, out IntPtr statementHandle, out IntPtr unusedStatementText);
 		#elif SQLITE_UTF8
+		[DefaultDllImportSearchPaths (DllImportSearchPath.AssemblyDirectory)]
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
 		extern static internal API.Result sqlite3_prepare_v2 (IntPtr connectionHandle,
 																				   [MarshalAs(UnmanagedType.LPUTF8Str)] string statementText,
 																				   int statementTextByteLength, out IntPtr statementHandle, out IntPtr unusedStatementText);
 		#endif
 
+		[DefaultDllImportSearchPaths (DllImportSearchPath.AssemblyDirectory)]
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
 		extern static internal API.Result sqlite3_bind_int (IntPtr statementHandle, int index, int value);
 
+		[DefaultDllImportSearchPaths (DllImportSearchPath.AssemblyDirectory)]
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
 		extern static internal API.Result sqlite3_bind_int64 (IntPtr statementHandle, int index, long value);
 
 		#if SQLITE_UTF16
+		[DefaultDllImportSearchPaths (DllImportSearchPath.AssemblyDirectory)]
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
 		extern static internal API.Result sqlite3_bind_text16 (IntPtr statementHandle, int index,
 																				    [MarshalAs(UnmanagedType.LPWStr)] string value,
 																				    int valueByteLength, IntPtr destructor);
 		#elif SQLITE_UTF8
+		[DefaultDllImportSearchPaths (DllImportSearchPath.AssemblyDirectory)]
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
 		extern static internal API.Result sqlite3_bind_text (IntPtr statementHandle, int index,
 																				[MarshalAs(UnmanagedType.LPUTF8Str)] string value,
 																				int valueByteLength, IntPtr destructor);
 		#endif
 
+		[DefaultDllImportSearchPaths (DllImportSearchPath.AssemblyDirectory)]
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
 		extern static internal API.Result sqlite3_bind_double (IntPtr statementHandle, int index, double value);
 
+		[DefaultDllImportSearchPaths (DllImportSearchPath.AssemblyDirectory)]
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
 		extern static internal API.Result sqlite3_bind_null (IntPtr  statementHandle, int index);
 
+		[DefaultDllImportSearchPaths (DllImportSearchPath.AssemblyDirectory)]
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
 		extern static internal API.Result sqlite3_step (IntPtr statementHandle);
 
+		[DefaultDllImportSearchPaths (DllImportSearchPath.AssemblyDirectory)]
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
 		extern static internal int sqlite3_column_int (IntPtr statementHandle, int column);
 
+		[DefaultDllImportSearchPaths (DllImportSearchPath.AssemblyDirectory)]
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
 		extern static internal long sqlite3_column_int64 (IntPtr statementHandle, int column);
 
 		#if SQLITE_UTF16
+		[DefaultDllImportSearchPaths (DllImportSearchPath.AssemblyDirectory)]
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
 		extern static internal IntPtr sqlite3_column_text16 (IntPtr statementHandle, int column);
 		#elif SQLITE_UTF8
+		[DefaultDllImportSearchPaths (DllImportSearchPath.AssemblyDirectory)]
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
 		extern static internal IntPtr sqlite3_column_text (IntPtr statementHandle, int column);
 		#endif
 
+		[DefaultDllImportSearchPaths (DllImportSearchPath.AssemblyDirectory)]
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
 		extern static internal double sqlite3_column_double (IntPtr statementHandle, int column);
 
+		[DefaultDllImportSearchPaths (DllImportSearchPath.AssemblyDirectory)]
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
 		extern static internal API.Result sqlite3_reset (IntPtr statementHandle);
 
+		[DefaultDllImportSearchPaths (DllImportSearchPath.AssemblyDirectory)]
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
 		extern static internal API.Result sqlite3_clear_bindings (IntPtr statementHandle);
 
+		[DefaultDllImportSearchPaths (DllImportSearchPath.AssemblyDirectory)]
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
 		extern static internal API.Result sqlite3_finalize (IntPtr statementHandle);
 
+		[DefaultDllImportSearchPaths (DllImportSearchPath.AssemblyDirectory)]
 		[DllImport (NativeLibraryPath, CallingConvention = CallingConvention.Cdecl)]
 		extern static internal IntPtr sqlite3_libversion ();
 
