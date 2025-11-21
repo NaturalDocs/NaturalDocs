@@ -639,9 +639,9 @@ namespace CodeClear.NaturalDocs.CLI
 
 				if (!csvFileExisted)
 					{
-					csvFile.Write("\"Name\",\"Date\",\"Threads Used\",\"Cores Available\",\"File Changes\",");
+					csvFile.Write("\"Name\",\"Date\",\"File Changes\",");
 					csvFile.Write(executionTimer.BuildCSVHeadings());
-					csvFile.Write(",\"Version\",\"Build\"");
+					csvFile.Write(",\"Version\",\"Build\",\"Threads Used\",\"Cores Available\"");
 					csvFile.WriteLine();
 					}
 
@@ -657,10 +657,6 @@ namespace CodeClear.NaturalDocs.CLI
 					);
 
 				csvFile.Write(',');
-				csvFile.Write(workerThreadCount);
-				csvFile.Write(',');
-				csvFile.Write(System.Environment.ProcessorCount);
-				csvFile.Write(',');
 				csvFile.Write(totalFileChanges);
 				csvFile.Write(',');
 				csvFile.Write(executionTimer.BuildCSVValues());
@@ -668,6 +664,10 @@ namespace CodeClear.NaturalDocs.CLI
 				csvFile.Write("\"" + Engine.Instance.VersionString + "\"");
 				csvFile.Write(',');
 				csvFile.Write("\"" + Engine.SystemInfo.NaturalDocsOSBuild + " " + Engine.SystemInfo.NaturalDocsProcessorArchitectureBuild + "\"");
+				csvFile.Write(',');
+				csvFile.Write(workerThreadCount);
+				csvFile.Write(',');
+				csvFile.Write(System.Environment.ProcessorCount);
 				csvFile.WriteLine();
 
 				Console.WriteLine();
