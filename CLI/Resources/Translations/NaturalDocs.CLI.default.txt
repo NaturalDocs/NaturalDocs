@@ -267,9 +267,10 @@ Information Parameters
     Displays all the character encodings that are available on the current
     system.
 
---benchmark
+--benchmark [name]
     Collects and displays statistics on how long it takes Natural Docs to
-    execute.
+    execute.  You can optionally add a name to distinguish this run from
+    others in the CSV file.
 }}}
 
 

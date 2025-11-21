@@ -70,6 +70,7 @@ namespace CodeClear.NaturalDocs.CLI
 			workerThreadCount = DefaultWorkerThreadCount;
 			totalFileChanges = 0;
 			benchmark = false;
+			benchmarkName = null;
 			pauseOnError = false;
 			pauseBeforeExit = false;
 
@@ -638,10 +639,17 @@ namespace CodeClear.NaturalDocs.CLI
 
 				if (!csvFileExisted)
 					{
-					csvFile.Write("\"Date\",\"Threads Used\",\"Cores Available\",\"File Changes\",");
+					csvFile.Write("\"Name\",\"Date\",\"Threads Used\",\"Cores Available\",\"File Changes\",");
 					csvFile.Write(executionTimer.BuildCSVHeadings());
 					csvFile.WriteLine();
 					}
+
+				if (benchmarkName != null)
+					{  csvFile.Write("\"" + benchmarkName + "\"");  }
+				else
+					{  csvFile.Write("\"\"");  }
+
+				csvFile.Write(',');
 
 				csvFile.Write(
 					string.Format("\"{0:yyyy-MM-dd HH:mm:ss}\"", DateTime.Now)
@@ -921,6 +929,12 @@ namespace CodeClear.NaturalDocs.CLI
 		 * Whether the application should show how long it takes to execute various sections of code.
 		 */
 		static private bool benchmark;
+
+		/* var: benchmarkName
+		 * If <benchmark> is set, what the benchmark name should be, or null if not set.  A benchmark
+		 * name is not required.
+		 */
+		static private string benchmarkName;
 
 		static private bool pauseOnError;
 		static private bool pauseBeforeExit;

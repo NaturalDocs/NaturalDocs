@@ -691,17 +691,12 @@ namespace CodeClear.NaturalDocs.CLI
 
 				else if (parameter == "--benchmark")
 					{
-					if (!commandLine.NoValue())
-						{
-						errorList.Add(
-							Locale.Get("NaturalDocs.CLI", "CommandLine.ExpectedNoValue(param)", parameterAsEntered)
-							);
+					benchmark = true;
 
-						commandLine.SkipToNextParameter();
-						}
-					else
+					string value;
+					if (commandLine.GetBareOrQuotedWordsValue(out value))
 						{
-						benchmark = true;
+						benchmarkName = value;
 						}
 					}
 
