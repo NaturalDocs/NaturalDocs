@@ -639,7 +639,7 @@ namespace CodeClear.NaturalDocs.CLI
 
 				if (!csvFileExisted)
 					{
-					csvFile.Write("\"Name\",\"Date\",\"File Changes\",");
+					csvFile.Write("\"Name\",\"Run Date\",\"File Changes\",");
 					csvFile.Write(executionTimer.BuildCSVHeadings());
 					csvFile.Write(",\"Version\",\"Build\",\"Threads Used\",\"Cores Available\"");
 					csvFile.WriteLine();
