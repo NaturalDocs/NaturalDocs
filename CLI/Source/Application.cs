@@ -641,6 +641,7 @@ namespace CodeClear.NaturalDocs.CLI
 					{
 					csvFile.Write("\"Name\",\"Date\",\"Threads Used\",\"Cores Available\",\"File Changes\",");
 					csvFile.Write(executionTimer.BuildCSVHeadings());
+					csvFile.Write(",\"Version\",\"Build\"");
 					csvFile.WriteLine();
 					}
 
@@ -663,6 +664,10 @@ namespace CodeClear.NaturalDocs.CLI
 				csvFile.Write(totalFileChanges);
 				csvFile.Write(',');
 				csvFile.Write(executionTimer.BuildCSVValues());
+				csvFile.Write(',');
+				csvFile.Write("\"" + Engine.Instance.VersionString + "\"");
+				csvFile.Write(',');
+				csvFile.Write("\"" + Engine.SystemInfo.NaturalDocsOSBuild + " " + Engine.SystemInfo.NaturalDocsProcessorArchitectureBuild + "\"");
 				csvFile.WriteLine();
 
 				Console.WriteLine();
