@@ -926,9 +926,9 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 									 target.NamePropertyLocation.Source != PropertySource.SystemDefault);
 
 			int encodingRules = 0;
-			if (projectConfig.InputSettings.HasCharacterEncodingRules)
+			if (target.HasCharacterEncodingRules)
 				{
-				foreach (var encodingRule in projectConfig.InputSettings.CharacterEncodingRules)
+				foreach (var encodingRule in target.CharacterEncodingRules)
 					{
 					if (encodingRule.PropertyLocation.Source != PropertySource.SystemDefault &&
 						encodingRule.PropertyLocation.Source != PropertySource.CommandLine)
