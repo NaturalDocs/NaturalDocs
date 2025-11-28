@@ -225,9 +225,6 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{
 				foreach (var encodingRule in combinedConfig.InputSettings.CharacterEncodingRules)
 					{
-					if (encodingRule.ValidateAndLookupID(errorList) == false)
-						{  success = false;  }
-
 					if (encodingRule.Folder != null)
 						{
 						errorList.Add(
@@ -236,6 +233,9 @@ namespace CodeClear.NaturalDocs.Engine.Config
 							);
 						success = false;
 						}
+
+					else if (encodingRule.ValidateAndLookupID(errorList) == false)
+						{  success = false;  }
 					}
 				}
 
