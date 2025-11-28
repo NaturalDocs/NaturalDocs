@@ -17,6 +17,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using CodeClear.NaturalDocs.Engine.Errors;
@@ -798,56 +799,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			if (hasEncodingRules)
 				{
-				foreach (var encodingRule in projectConfig.InputSettings.CharacterEncodingRules)
-					{
-					if (encodingRule.PropertyLocation.Source != PropertySource.SystemDefault &&
-						encodingRule.PropertyLocation.Source != PropertySource.CommandLine)
-						{
-						output.Append("Encoding: ");
-
-						if (encodingRule.CharacterEncodingName != null)
-							{  output.Append(encodingRule.CharacterEncodingName);  }
-						else
-							{  output.Append(encodingRule.CharacterEncodingID);  }
-
-						Path displayFolder = null;
-
-						if (encodingRule.Folder != null)
-							{
-							displayFolder = encodingRule.Folder.MakeRelativeTo(projectFolder);
-
-							// If the rule's folder isn't relative to the project folder, display as is
-							if (displayFolder == null)
-								{  displayFolder = encodingRule.Folder;  }
-
-							// If the rule's folder is the same as the project folder it will reduce to ".", so omit it
-							else if (displayFolder == ".")
-								{  displayFolder = null;  }
-
-							// Otherwise we have a relative folder in displayFolder which we'll use
-							}
-
-						if (displayFolder != null)
-							{
-							output.Append(' ');
-							output.Append(displayFolder);
-							}
-
-						if (encodingRule.FileExtension != null)
-							{
-							if (displayFolder != null)
-								{  output.Append(SystemInfo.PathSeparatorCharacter);  }
-							else
-								{  output.Append(' ');  }
-
-							output.Append("*.");
-							output.Append(encodingRule.FileExtension);
-							}
-
-						output.AppendLine();
-						}
-					}
-
+				AppendCharacterEncodingRules(projectConfig.InputSettings.CharacterEncodingRules, output, indent: false);
 				output.AppendLine();
 				}
 
@@ -953,71 +905,74 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			if (hasName)
 				{  output.AppendLine("   Name: " + target.Name);  }
 
-			if (hasName && encodingRules > 1)
-				{  output.AppendLine();  }
+			if (encodingRules > 1)
+				{
+				if (hasName)
+					{  output.AppendLine();  }
 
-			AppendOverriddenInputSettings(target, output);
+				AppendCharacterEncodingRules(target.CharacterEncodingRules, output, indent: true, foldersRelativeTo: target.Folder);
+				}
 			}
 
 
-		/* Function: AppendOverriddenInputSettings
-		 * Appends any <OverridableInputSettings> defined in the input target to the passed string.
+		/* Function: AppendCharacterEncodingRules
+		 * Appends any <CharacterEncodingRules> to the passed string.
 		 */
-		protected void AppendOverriddenInputSettings (Targets.Input inputTarget, StringBuilder output)
+		protected void AppendCharacterEncodingRules (IList<CharacterEncodingRule> encodingRules, StringBuilder output, bool indent,
+																			 AbsolutePath foldersRelativeTo = default)
 			{
-			if (inputTarget.HasCharacterEncodingRules)
+			foreach (var encodingRule in encodingRules)
 				{
-				foreach (var encodingRule in inputTarget.CharacterEncodingRules)
+				if (encodingRule.PropertyLocation.Source != PropertySource.SystemDefault &&
+					encodingRule.PropertyLocation.Source != PropertySource.CommandLine)
 					{
-					if (encodingRule.PropertyLocation.Source != PropertySource.SystemDefault &&
-						encodingRule.PropertyLocation.Source != PropertySource.CommandLine)
+					if (indent)
+						{  output.Append("   ");  }
+
+					output.Append("Encoding: ");
+
+					if (encodingRule.CharacterEncodingName != null)
+						{  output.Append(encodingRule.CharacterEncodingName);  }
+					else
+						{  output.Append(encodingRule.CharacterEncodingID);  }
+
+					Path encodingFolder = encodingRule.Folder;
+
+					// Make a relative version of the encoding folder
+					if (encodingFolder != null && foldersRelativeTo != null)
 						{
-						output.Append("   Encoding: ");
+						Path relativeFolder = encodingRule.Folder.MakeRelativeTo(foldersRelativeTo);
 
-						if (encodingRule.CharacterEncodingName != null)
-							{  output.Append(encodingRule.CharacterEncodingName);  }
+						// If the folder isn't relative to the passed one, leave it as is
+						if (relativeFolder == null)
+							{  }
+
+						// If it's the same as the passed folder it will reduce to ".", so omit it entirely
+						else if (relativeFolder == ".")
+							{  encodingFolder = null;  }
+
 						else
-							{  output.Append(encodingRule.CharacterEncodingID);  }
-
-						Path displayFolder = null;
-
-						if (encodingRule.Folder != null)
-							{
-							if (inputTarget is Targets.SourceFolder)
-								{
-								displayFolder = encodingRule.Folder.MakeRelativeTo( (inputTarget as Targets.SourceFolder).Folder );
-
-								// If the rule's folder isn't relative to the source folder, display as is
-								if (displayFolder == null)
-									{  displayFolder = encodingRule.Folder;  }
-
-								// If the rule's folder is the same as the source folder it will reduce to ".", so omit it
-								else if (displayFolder == ".")
-									{  displayFolder = null;  }
-
-								// Otherwise we have a relative folder in displayFolder which we'll use
-								}
-							}
-
-						if (displayFolder != null)
-							{
-							output.Append(' ');
-							output.Append(displayFolder);
-							}
-
-						if (encodingRule.FileExtension != null)
-							{
-							if (displayFolder != null)
-								{  output.Append(SystemInfo.PathSeparatorCharacter);  }
-							else
-								{  output.Append(' ');  }
-
-							output.Append("*.");
-							output.Append(encodingRule.FileExtension);
-							}
-
-						output.AppendLine();
+							{  encodingFolder = relativeFolder;  }
 						}
+
+					if (encodingFolder != null)
+						{
+						output.Append(' ');
+						output.Append(encodingFolder);
+						}
+
+					if (encodingRule.FileExtension != null)
+						{
+						if (encodingFolder != null)
+							{  output.Append(SystemInfo.PathSeparatorCharacter);  }
+						else
+							{  output.Append(' ');  }
+
+						output.Append("*.");
+						output.Append(encodingRule.FileExtension);
+						}
+
+					output.AppendLine();
 					}
 				}
 			}
