@@ -19,17 +19,17 @@
     ---------------
     Operator: this []
     Symbol: TestClass.this
-    Prototype: protected int this [int x] { get; private set }
+    Prototype: protected int this [int x] { get, private set }
     (line 10, char 2, child of TestClass)
     ---------------
     Operator: this []
     Symbol: TestClass.this
-    Prototype: [Attribute] internal System.Text.StringBuilder this [int x, int y] { [SetAttribute] protected internal set; [GetAttribute] internal get }
+    Prototype: [Attribute] internal System.Text.StringBuilder this [int x, int y] { [SetAttribute] protected internal set, [GetAttribute] internal get }
     (line 18, char 2, child of TestClass)
     ---------------
     Operator: this []
     Symbol: TestClass.this
-    Prototype: abstract int this [int x] { get; set }
+    Prototype: abstract int this [int x] { get, set }
     (line 30, char 2, child of TestClass)
     ---------------
     Operator: this []
@@ -39,5 +39,5 @@
     ---------------
     Operator: this []
     Symbol: TestClass.this
-    Prototype: public int this [int x] { get; set }
+    Prototype: public int this [int x] { get, set }
     (line 35, char 2, child of TestClass)

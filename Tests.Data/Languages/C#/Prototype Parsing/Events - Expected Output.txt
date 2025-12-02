@@ -29,7 +29,7 @@
     - Access Level: Internal
     - Link Candidates: Delegate
 
-  - Parameter 1: add;
+  - Parameter 1: add,
     - Name: add
     - Full Type: (not detected)
     - Base Type: (not detected)
@@ -57,7 +57,7 @@
     - Access Level: Internal
     - Link Candidates: Delegate
 
-  - Parameter 1: [AddAttribute] add;
+  - Parameter 1: [AddAttribute] add,
     - Name: add
     - Full Type: (not detected)
     - Base Type: (not detected)

@@ -12,7 +12,7 @@
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/3/2"><span class="SHKeyword">protected</span> <span class="SHKeyword">int</span> PropertyB {</div>
-         <div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4"><span class="SHKeyword">get</span>;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4"><span class="SHKeyword">get</span>,</div>
          <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHKeyword">private</span>&nbsp;</div>
          <div class="PName InLastParameterColumn" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4"><span class="SHKeyword">set</span></div>
          <div class="PAfterParameters" data-WideGridArea="2/4/3/5" data-NarrowGridArea="4/1/5/4" style="grid-area:2/4/3/5">}</div>
@@ -26,7 +26,7 @@
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/3/2"><span class="SHKeyword">internal</span> System.Text.StringBuilder PropertyC {</div>
          <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHMetadata">[SetAttribute]</span> <span class="SHKeyword">protected internal</span>&nbsp;</div>
-         <div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4"><span class="SHKeyword">set</span>;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4"><span class="SHKeyword">set</span>,</div>
          <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHMetadata">[GetAttribute]</span> <span class="SHKeyword">internal</span>&nbsp;</div>
          <div class="PName InLastParameterColumn" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4"><span class="SHKeyword">get</span></div>
          <div class="PAfterParameters" data-WideGridArea="2/4/3/5" data-NarrowGridArea="4/1/5/4" style="grid-area:2/4/3/5">}</div>
@@ -38,7 +38,7 @@
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/3/2"><span class="SHKeyword">abstract</span> <span class="SHKeyword">int</span> PropertyD {</div>
-         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">get</span>;</div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">get</span>,</div>
          <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHKeyword">set</span></div>
          <div class="PAfterParameters" data-WideGridArea="2/3/3/4" data-NarrowGridArea="4/1/5/3" style="grid-area:2/3/3/4">}</div>
       </div>
@@ -49,7 +49,7 @@
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/3/2"><span class="SHKeyword">unsafe abstract</span> <span class="SHKeyword">void</span>* PropertyE {</div>
-         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">get</span>;</div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">get</span>,</div>
          <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHKeyword">set</span></div>
          <div class="PAfterParameters" data-WideGridArea="2/3/3/4" data-NarrowGridArea="4/1/5/3" style="grid-area:2/3/3/4">}</div>
       </div>
@@ -81,7 +81,7 @@
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/3/2"><span class="SHKeyword">public</span> <span class="SHKeyword">int</span> PropertyH {</div>
          <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">readonly</span>&nbsp;</div>
-         <div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4"><span class="SHKeyword">get</span>;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4"><span class="SHKeyword">get</span>,</div>
          <div class="PName InLastParameterColumn" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4"><span class="SHKeyword">set</span></div>
          <div class="PAfterParameters" data-WideGridArea="2/4/3/5" data-NarrowGridArea="4/1/5/4" style="grid-area:2/4/3/5">}</div>
       </div>
@@ -92,7 +92,7 @@
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/3/2"><span class="SHKeyword">public</span> <span class="SHKeyword">string</span> PropertyI {</div>
-         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">get</span>;</div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">get</span>,</div>
          <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHKeyword">set</span></div>
          <div class="PAfterParameters" data-WideGridArea="2/3/3/4" data-NarrowGridArea="4/1/5/3" style="grid-area:2/3/3/4">}</div>
       </div>
@@ -113,7 +113,7 @@
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/3/2"><span class="SHKeyword">public</span> <span class="SHKeyword">string</span> PropertyK {</div>
-         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">get</span>;</div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">get</span>,</div>
          <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHKeyword">init</span></div>
          <div class="PAfterParameters LeftSpaceOnWide" data-WideGridArea="2/3/3/4" data-NarrowGridArea="4/1/5/3" style="grid-area:2/3/3/4">}</div>
       </div>
@@ -124,7 +124,7 @@
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/3/2"><span class="SHKeyword">public</span> <span class="SHKeyword">string</span> ProperyL {</div>
-         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">get</span>;</div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">get</span>,</div>
          <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHKeyword">init</span></div>
          <div class="PAfterParameters LeftSpaceOnWide" data-WideGridArea="2/3/3/4" data-NarrowGridArea="4/1/5/3" style="grid-area:2/3/3/4">}</div>
       </div>
@@ -135,7 +135,7 @@
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/3/2"><span class="SHKeyword">public</span> <span class="SHKeyword">string</span> PropertyM {</div>
-         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">get</span>;</div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">get</span>,</div>
          <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHKeyword">init</span></div>
          <div class="PAfterParameters LeftSpaceOnWide" data-WideGridArea="2/3/3/4" data-NarrowGridArea="4/1/5/3" style="grid-area:2/3/3/4">}</div>
       </div>

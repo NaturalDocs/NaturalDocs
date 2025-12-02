@@ -20,7 +20,7 @@
     - Access Level: Protected
     - Link Candidates: int
 
-  - Parameter 1: get;
+  - Parameter 1: get,
     - Name: get
     - Full Type: (not detected)
     - Base Type: (not detected)
@@ -48,7 +48,7 @@
     - Access Level: Internal
     - Link Candidates: System.Text.StringBuilder
 
-  - Parameter 1: [SetAttribute] protected internal set;
+  - Parameter 1: [SetAttribute] protected internal set,
     - Name: set
     - Full Type: (not detected)
     - Base Type: (not detected)
@@ -72,7 +72,7 @@
     - Access Level: Unknown
     - Link Candidates: int
 
-  - Parameter 1: get;
+  - Parameter 1: get,
     - Name: get
     - Full Type: (not detected)
     - Base Type: (not detected)
@@ -96,7 +96,7 @@
     - Access Level: Unknown
     - Link Candidates: void
 
-  - Parameter 1: get;
+  - Parameter 1: get,
     - Name: get
     - Full Type: (not detected)
     - Base Type: (not detected)
@@ -154,7 +154,7 @@
     - Access Level: Public
     - Link Candidates: int
 
-  - Parameter 1: readonly get;
+  - Parameter 1: readonly get,
     - Name: get
     - Full Type: (not detected)
     - Base Type: (not detected)
@@ -178,7 +178,7 @@
     - Access Level: Public
     - Link Candidates: string
 
-  - Parameter 1: get;
+  - Parameter 1: get,
     - Name: get
     - Full Type: (not detected)
     - Base Type: (not detected)
@@ -219,7 +219,7 @@
     - Access Level: Public
     - Link Candidates: string
 
-  - Parameter 1: get;
+  - Parameter 1: get,
     - Name: get
     - Full Type: (not detected)
     - Base Type: (not detected)
@@ -243,7 +243,7 @@
     - Access Level: Public
     - Link Candidates: string
 
-  - Parameter 1: get;
+  - Parameter 1: get,
     - Name: get
     - Full Type: (not detected)
     - Base Type: (not detected)
@@ -267,7 +267,7 @@
     - Access Level: Public
     - Link Candidates: string
 
-  - Parameter 1: get;
+  - Parameter 1: get,
     - Name: get
     - Full Type: (not detected)
     - Base Type: (not detected)

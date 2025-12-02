@@ -11,22 +11,22 @@
   ---------------
   Property: PropertyB
   Symbol: PropertyB
-  Prototype: protected int PropertyB { get; private set }
+  Prototype: protected int PropertyB { get, private set }
   (line 8, char 1)
   ---------------
   Property: PropertyC
   Symbol: PropertyC
-  Prototype: [Attribute] internal System.Text.StringBuilder PropertyC { [SetAttribute] protected internal set; [GetAttribute] internal get }
+  Prototype: [Attribute] internal System.Text.StringBuilder PropertyC { [SetAttribute] protected internal set, [GetAttribute] internal get }
   (line 16, char 1)
   ---------------
   Property: PropertyD
   Symbol: PropertyD
-  Prototype: abstract int PropertyD { get; set }
+  Prototype: abstract int PropertyD { get, set }
   (line 28, char 1)
   ---------------
   Property: PropertyE
   Symbol: PropertyE
-  Prototype: unsafe abstract void* PropertyE { get; set }
+  Prototype: unsafe abstract void* PropertyE { get, set }
   (line 31, char 1)
   ---------------
   Property: PropertyF
@@ -41,12 +41,12 @@
   ---------------
   Property: PropertyH
   Symbol: PropertyH
-  Prototype: public int PropertyH { readonly get; set }
+  Prototype: public int PropertyH { readonly get, set }
   (line 41, char 1)
   ---------------
   Property: PropertyI
   Symbol: PropertyI
-  Prototype: public string PropertyI { get; set }
+  Prototype: public string PropertyI { get, set }
   (line 50, char 1)
   ---------------
   Property: PropertyJ
@@ -56,15 +56,15 @@
   ---------------
   Property: PropertyK
   Symbol: PropertyK
-  Prototype: public string PropertyK { get; init }
+  Prototype: public string PropertyK { get, init }
   (line 60, char 1)
   ---------------
   Property: ProperyL
   Symbol: ProperyL
-  Prototype: public string ProperyL { get; init }
+  Prototype: public string ProperyL { get, init }
   (line 62, char 1)
   ---------------
   Property: PropertyM
   Symbol: PropertyM
-  Prototype: public string PropertyM { get; init }
+  Prototype: public string PropertyM { get, init }
   (line 70, char 1)

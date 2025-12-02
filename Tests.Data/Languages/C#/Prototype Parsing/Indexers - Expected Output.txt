@@ -50,7 +50,7 @@
     - Access Level: Unknown
     - Link Candidates: (none)
 
-  - Parameter 1: get;
+  - Parameter 1: get,
     - Name: get
     - Full Type: (not detected)
     - Base Type: (not detected)
@@ -100,7 +100,7 @@
     - Access Level: Unknown
     - Link Candidates: (none)
 
-  - Parameter 1: [SetAttribute] protected internal set;
+  - Parameter 1: [SetAttribute] protected internal set,
     - Name: set
     - Full Type: (not detected)
     - Base Type: (not detected)
@@ -139,7 +139,7 @@
     - Access Level: Unknown
     - Link Candidates: (none)
 
-  - Parameter 1: get;
+  - Parameter 1: get,
     - Name: get
     - Full Type: (not detected)
     - Base Type: (not detected)
@@ -210,7 +210,7 @@
     - Access Level: Unknown
     - Link Candidates: (none)
 
-  - Parameter 1: get;
+  - Parameter 1: get,
     - Name: get
     - Full Type: (not detected)
     - Base Type: (not detected)

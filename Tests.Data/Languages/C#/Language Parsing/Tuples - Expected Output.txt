@@ -69,7 +69,7 @@
     ---------------
     Property: PropertyB
     Symbol: TestClass.PropertyB
-    Prototype: public (string a, int b) PropertyB { get; set }
+    Prototype: public (string a, int b) PropertyB { get, set }
     (line 40, char 2, child of TestClass)
     ---------------
     Property: PropertyC
@@ -79,7 +79,7 @@
     ---------------
     Property: PropertyD
     Symbol: TestClass.PropertyD
-    Prototype: public (string a, (int m, float n) b) PropertyD { get; set }
+    Prototype: public (string a, (int m, float n) b) PropertyD { get, set }
     (line 46, char 2, child of TestClass)
     ---------------
     Property: PropertyE

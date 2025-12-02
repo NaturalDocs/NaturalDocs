@@ -29,10 +29,10 @@
     ---------------
     Event: EventD
     Symbol: TestClass.EventD
-    Prototype: internal event Delegate EventD { add; remove }
+    Prototype: internal event Delegate EventD { add, remove }
     (line 9, char 2, child of TestClass)
     ---------------
     Event: EventE
     Symbol: TestClass.EventE
-    Prototype: [Attribute] internal event Delegate EventE { [AddAttribute] add; [RemoveAttribute] remove }
+    Prototype: [Attribute] internal event Delegate EventE { [AddAttribute] add, [RemoveAttribute] remove }
     (line 15, char 2, child of TestClass)

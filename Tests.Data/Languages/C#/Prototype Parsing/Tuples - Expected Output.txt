@@ -141,7 +141,7 @@
     - Access Level: Public
     - Link Candidates: string, int
 
-  - Parameter 1: get;
+  - Parameter 1: get,
     - Name: get
     - Full Type: (not detected)
     - Base Type: (not detected)
@@ -182,7 +182,7 @@
     - Access Level: Public
     - Link Candidates: string, int, float
 
-  - Parameter 1: get;
+  - Parameter 1: get,
     - Name: get
     - Full Type: (not detected)
     - Base Type: (not detected)
