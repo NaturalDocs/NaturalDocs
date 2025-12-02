@@ -1965,7 +1965,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						lookahead.Next();
 
 						if (!firstAccessor)
-							{  prototype.Append("; ");  }
+							{  prototype.Append(", ");  }
 						else
 							{  firstAccessor = false;  }
 
@@ -2051,7 +2051,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 							lookahead.Next();
 							break;
 							}
-						else if (lookahead.Character == ';')
+						else if (lookahead.Character == ',')
 							{
 							if (mode == ParseMode.ParsePrototype)
 								{  lookahead.PrototypeParsingType = PrototypeParsingType.ParamSeparator;  }
