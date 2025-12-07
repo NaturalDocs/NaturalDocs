@@ -95,3 +95,10 @@ _______________________________________________________________________________
 
 		Whether automatic grouping is turned on or off.  It is normally turned off to prevent unnecessary topics from appearing in the
 		output, but can be turned on to test the automatic grouping code itself.  Optional, defaults to no.
+
+
+	Topic: Documented Only
+
+		> Documented Only: [yes/no]
+
+		Whether only documented code elements should appear in the output.  Optional, defaults to no.

@@ -169,6 +169,9 @@ namespace CodeClear.NaturalDocs.Tests
 			engineConfig.AutoGroup = testFolder.Config.AutoGroup;
 				engineConfig.AutoGroupPropertyLocation = Engine.Config.PropertySource.CommandLine;
 
+			engineConfig.DocumentedOnly = testFolder.Config.DocumentedOnly;
+				engineConfig.DocumentedOnlyPropertyLocation = Engine.Config.PropertySource.CommandLine;
+
 
 			// Attempt to start the engine
 

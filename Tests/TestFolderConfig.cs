@@ -97,6 +97,16 @@ namespace CodeClear.NaturalDocs.Tests
 							{  configFile.AddError("Unrecognized value \"" + value + "\" for Auto-Group.", lcIdentifier);  }
 						}
 
+					else if (lcIdentifier == "documented only")
+						{
+						if (ConfigFile.IsYes(value))
+							{  testFolderConfig.documentedOnly = true;  }
+						else if (ConfigFile.IsNo(value))
+							{  testFolderConfig.documentedOnly = false;  }
+						else
+							{  configFile.AddError("Unrecognized value \"" + value + "\" for Documented Only.", lcIdentifier);  }
+						}
+
 					else
 						{  configFile.AddError("Unrecognized identifier \"" + lcIdentifier + "\".", lcIdentifier);  }
 					}
@@ -130,6 +140,8 @@ namespace CodeClear.NaturalDocs.Tests
 
 			// Defaults to false to prevent unnecessary topics from appearing in the output
 			autoGroup = false;
+
+			documentedOnly = false;
 			}
 
 
@@ -203,6 +215,15 @@ namespace CodeClear.NaturalDocs.Tests
 				{  return autoGroup;  }
 			}
 
+		/* Property: DocumentedOnly
+		 * Whether only documented code elements should appear in the output.
+		 */
+		public bool DocumentedOnly
+			{
+			get
+				{  return documentedOnly;  }
+			}
+
 
 
 		// Group: Variables
@@ -245,6 +266,11 @@ namespace CodeClear.NaturalDocs.Tests
 		 * Whether automatic grouping is turned on or off.
 		 */
 		protected bool autoGroup;
+
+		/* var: documentedOnly
+		 * Whether only documented code elements should appear in the output.
+		 */
+		protected bool documentedOnly;
 
 		}
 	}
