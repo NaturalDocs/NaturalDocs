@@ -275,15 +275,40 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				#endif
 
 
-				// Remove code topics if --documented-only is on.  We do this after merging and keep all the original elements so that the
-				// code's effects still apply.
+				// Remove code-only topics if --documented-only is on.  We do this after merging and keep all the original elements so that
+				// the code's effects still apply.
 
 				if (EngineInstance.Config.DocumentedOnly)
 					{
-					foreach (var element in elements)
+					int i = 0;
+					while (i < elements.Count)
 						{
-						if (element.Topic != null && element.InComments == false)
-							{  element.Topic = null;  }
+						if (elements[i].Topic != null &&
+							elements[i].InComments == false)
+							{
+							elements[i].Topic = null;
+							i++;
+
+							// Remove all embedded topics for consistency, even if they're documented
+							while (i < elements.Count &&
+									 elements[i].Topic != null &&
+									 elements[i].Topic.IsEmbedded)
+								{
+								elements[i].Topic = null;
+								i++;
+								}
+							}
+
+						else
+							{
+							i++;
+
+							// Skip embedded topics as well
+							while (i < elements.Count &&
+									 elements[i].Topic != null &&
+									 elements[i].Topic.IsEmbedded)
+								{  i++;  }
+							}
 						}
 					}
 				}
