@@ -1,0 +1,27 @@
+<div class="CTopic TEnumeration LCSharp first">
+
+   <div class="CTitle">DocumentedEnumWithCommentValues</div>
+
+   <div class="NDPrototype">
+      <div class="PSection PPlainSection"><span class="SHKeyword">enum</span> DocumentedEnumWithCommentValues</div>
+   </div>
+
+   <div class="CBody">
+      <div class="CHeading">Values</div><table class="CDefinitionList"><tr><td class="CDLEntry"><a name="DocumentedEnumWithCommentValues.DocumentedEnumWithCommentValues_UndocumentedValue"></a><a name="Topic2"></a>DocumentedEnumWithCommentValues_UndocumentedValue</td><td class="CDLDefinition"><p>Comment description</p></td></tr><tr><td class="CDLEntry"><a name="DocumentedEnumWithCommentValues.DocumentedEnumWithCommentValues_QuickDocumentedValue"></a><a name="Topic3"></a>DocumentedEnumWithCommentValues_QuickDocumentedValue</td><td class="CDLDefinition"><p>Comment description</p></td></tr></table>
+   </div>
+
+</div>
+-----
+<div class="CTopic TEnumeration LCSharp last">
+
+   <div class="CTitle">DocumentedEnumWithoutCommentValues</div>
+
+   <div class="NDPrototype">
+      <div class="PSection PPlainSection"><span class="SHKeyword">enum</span> DocumentedEnumWithoutCommentValues</div>
+   </div>
+
+   <div class="CBody">
+      <div class="CHeading">Values</div><table class="CDefinitionList"><tr><td class="CDLEntry"><a name="DocumentedEnumWithoutCommentValues.DocumentedEnumWithoutCommentValues_UndocumentedValue"></a><a name="Topic5"></a>DocumentedEnumWithoutCommentValues_UndocumentedValue</td><td class="CDLDefinition"></td></tr><tr><td class="CDLEntry"><a name="DocumentedEnumWithoutCommentValues.DocumentedEnumWithoutCommentValues_QuickDocumentedValue"></a><a name="Topic6"></a>DocumentedEnumWithoutCommentValues_QuickDocumentedValue</td><td class="CDLDefinition"><p>Quick description</p></td></tr></table>
+   </div>
+
+</div>
