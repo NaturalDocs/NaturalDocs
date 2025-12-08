@@ -6299,14 +6299,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				Element element = elements[i];
 
 
-				// Generate a name for error messages
-
-				string elementName = "(line " + element.LineNumber + ", char " + element.CharNumber + ")";
-
-				if (element.Topic != null && element.Topic.Title != null)
-					{  elementName = element.Topic.Title + " " + elementName;  }
-
-
 				// Make sure they have either InCode or InComments set.  We don't do this form ValidateElementsMode.Final because
 				// automatic grouping will be applied which doesn't appear in either.  However, prior to that point every Element needs
 				// one or the other set.
@@ -6314,7 +6306,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				if (mode != ValidateElementsMode.Final)
 					{
 					if (element.InCode == false && element.InComments == false)
-						{  throw new Exception("Element " + elementName + " doesn't have the InComments or InCode flag set.");  }
+						{  throw new Exception("Element " + ElementName(element) + " doesn't have the InComments or InCode flag set.");  }
 					}
 
 
@@ -6323,7 +6315,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				if (element.LineNumber < lastLineNumber ||
 					 (element.LineNumber == lastLineNumber && element.CharNumber < lastCharNumber))
 					{
-					throw new Exception("Element " + elementName + " doesn't appear in order.  " +
+					throw new Exception("Element " + ElementName(element) + " doesn't appear in order.  " +
 															 "The previous element was at line " + lastLineNumber + ", char " + lastCharNumber + ".");
 					}
 
@@ -6340,7 +6332,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 					if (elementAsParent.IsRootElement == true && i != 0)
 						{
-						throw new Exception("IsRootElement was set on " + elementName + " which is at position " + i + " in the list.  " +
+						throw new Exception("IsRootElement was set on " + ElementName(element) + " which is at position " + i + " in the list.  " +
 																 "IsRootElement can only be set on the first member of a list.");
 						}
 
@@ -6348,12 +6340,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					// Make sure parents have their ending values set.
 
 					if (elementAsParent.EndingLineNumber == -1 || elementAsParent.EndingCharNumber == -1)
-						{  throw new Exception(elementName + " did not have its ending position properties set.");  }
+						{  throw new Exception(ElementName(element) + " did not have its ending position properties set.");  }
 
 					if (elementAsParent.EndingLineNumber < elementAsParent.LineNumber ||
 						 (elementAsParent.EndingLineNumber == elementAsParent.LineNumber &&
 						  elementAsParent.EndingCharNumber < elementAsParent.CharNumber))
-						{  throw new Exception(elementName + "'s ending position was before its starting position.");  }
+						{  throw new Exception(ElementName(element) + "'s ending position was before its starting position.");  }
 
 
 					// Make sure ranges don't overlap badly.
@@ -6374,12 +6366,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 									 (elementAsParent.EndingLineNumber == previousParent.EndingLineNumber &&
 									  elementAsParent.EndingCharNumber > previousParent.EndingCharNumber))
 									{
-									string previousParentName = "(line " + previousParent.LineNumber + ", char " + previousParent.CharNumber + ")";
-
-									if (previousParent.Topic != null && previousParent.Topic.Title != null)
-										{  previousParentName = previousParent.Topic.Title + " " + previousParentName;  }
-
-									throw new Exception(elementName + " starts in " + previousParentName + "'s range but extends past it.");
+									throw new Exception(ElementName(element) + " starts in " + ElementName(previousParent) + "'s range but extends past it.");
 									}
 								}
 							}
@@ -6428,7 +6415,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 						if (bodyEmbeddedTopics != elementEmbeddedTopics)
 							{
-							throw new Exception("Element " + elementName + " had " + bodyEmbeddedTopics + " embedded topics in its body but " +
+							throw new Exception("Element " + ElementName(element) + " had " + bodyEmbeddedTopics + " embedded topics in its body but " +
 														  elementEmbeddedTopics + " embedded topics following it in the elements.");
 							}
 						}
@@ -6449,7 +6436,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 							}
 
 						if (foundParent == false)
-							{  throw new Exception("Embedded element " + elementName + " did not follow a list or enum topic.");  }
+							{  throw new Exception("Embedded element " + ElementName(element) + " did not follow a list or enum topic.");  }
 						}
 					}
 
@@ -6473,6 +6460,20 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						{  throw new Exception("Generated Topic is missing properties:" + missingProperties);  }
 					}
 				}
+			}
+
+
+		/* Function: ElementName
+		 * Generates a name for the passed <Element> to use in debugging messages.
+		 */
+		protected string ElementName (Element element)
+			{
+			string elementName = "(line " + element.LineNumber + ", char " + element.CharNumber + ")";
+
+			if (element.Topic != null && element.Topic.Title != null)
+				{  elementName = element.Topic.Title + " " + elementName;  }
+
+			return elementName;
 			}
 
 		#endif
