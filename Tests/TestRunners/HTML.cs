@@ -263,6 +263,10 @@ namespace CodeClear.NaturalDocs.Tests.TestRunners
 			// Remove ID numbers from tags
 			outputString = IDNumbersRegex.Replace(outputString, "");
 
+			// Replace empty lines that only include a single space.  This can happen when reformatting the entire topic's HTML because there's
+			// some indents that appear in the regular output.
+			outputString = outputString.Replace("\r\n \r\n", "\r\n\r\n");
+
 			return outputString;
 			}
 
