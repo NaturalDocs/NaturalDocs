@@ -6279,9 +6279,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 
-		// Group: Other Support Functions
+		// Group: Validation Support Functions
 		// __________________________________________________________________________
 
+
+		#if DEBUG
 
 		/* Function: ValidateElements
 		 * Validates a list of <Elements> to make sure all the properties are set correctly, throwing an exception if not.  This
@@ -6289,8 +6291,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 */
 		protected void ValidateElements (List<Element> elements, ValidateElementsMode mode)
 			{
-			#if DEBUG
-
 			int lastLineNumber = 0;
 			int lastCharNumber = 0;
 
@@ -6473,9 +6473,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						{  throw new Exception("Generated Topic is missing properties:" + missingProperties);  }
 					}
 				}
-
-			#endif
 			}
+
+		#endif
 
 
 
