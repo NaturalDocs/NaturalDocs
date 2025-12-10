@@ -2329,6 +2329,22 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 							if (lookahead.LineNumber == endOfValue.LineNumber)
 								{  endOfValue = lookahead;  }
 
+							// The last value is allowed to have a comma, such as "enum X { A, B, }", so check if a closing
+							// brace appears after it.  This is the only place a stray comma is allowed.
+							if (endCharacter == ',')
+								{
+								TryToSkipWhitespace(ref lookahead, mode);
+
+								if (lookahead.Character == '}')
+									{
+									lookahead.Next();
+									endCharacter = '}';
+
+									if (lookahead.LineNumber == endOfValue.LineNumber)
+										{  endOfValue = lookahead;  }
+									}
+								}
+
 							if (mode == ParseMode.CreateElements &&
 								valueTopic != null)
 								{
@@ -2342,10 +2358,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 									}
 								}
 
-							if (endCharacter == ',')
-								{  TryToSkipWhitespace(ref lookahead, mode);  }
-							else // endCharacter == '}'
+							if (endCharacter == '}')
 								{  break;  }
+							// Continue if endCharacter was a comma.  Already skipped whitespace.
 							}
 						else
 							{
