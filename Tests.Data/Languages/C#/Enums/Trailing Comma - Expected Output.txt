@@ -1,0 +1,76 @@
+
+Enum: NoComments
+
+   Prototype: enum NoComments
+
+   Members:
+      A
+      B
+      C
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Enum: NoCommentsWithValues
+
+   Prototype: enum NoCommentsWithValues
+
+   Members:
+      A
+      B
+      C
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Enum: InlineCommentAfterComma
+
+   Prototype: enum InlineCommentAfterComma
+
+   Members:
+      A
+      B
+      C - <p>Inline description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd><p>Inline description of C</p></dd></dl>
+
+-----
+
+Enum: InlineCommentAfterCommaWithValues
+
+   Prototype: enum InlineCommentAfterCommaWithValues
+
+   Members:
+      A
+      B
+      C - <p>Inline description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd><p>Inline description of C</p></dd></dl>
+
+-----
+
+Enum: InlineCommentAfterCommaAndBrace
+
+   Prototype: enum InlineCommentAfterCommaAndBrace
+
+   Members:
+      A
+      B
+      C - <p>Inline description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd><p>Inline description of C</p></dd></dl>
+
+-----
+
+Enum: InlineCommentAfterCommaAndBraceWithValues
+
+   Prototype: enum InlineCommentAfterCommaAndBraceWithValues
+
+   Members:
+      A
+      B
+      C - <p>Inline description of C</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd><p>Inline description of C</p></dd></dl>

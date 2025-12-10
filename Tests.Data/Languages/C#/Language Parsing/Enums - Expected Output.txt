@@ -49,3 +49,22 @@
       Constant: C
       Symbol: TestClass.EnumB.C
       (line 12, char 3, child of EnumB)
+    ---------------
+    Enumeration: EnumC
+    Symbol: TestClass.EnumC
+    Prototype: public enum EnumC
+    (line 15, char 2, child of TestClass)
+    - Maximum Effective Child Access Level: Public
+    - Child Scope: TestClass.EnumC
+      ---------------
+      Constant: A
+      Symbol: TestClass.EnumC.A
+      (line 17, char 3, child of EnumC)
+      ---------------
+      Constant: B
+      Symbol: TestClass.EnumC.B
+      (line 18, char 3, child of EnumC)
+      ---------------
+      Constant: ExtraCommaAfterLastIsValid
+      Symbol: TestClass.EnumC.ExtraCommaAfterLastIsValid
+      (line 19, char 3, child of EnumC)

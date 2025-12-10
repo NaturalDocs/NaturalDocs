@@ -11,4 +11,11 @@ class TestClass
 		B,
 		C = A | B
 		}
+
+	public enum EnumC
+		{
+		A,
+		B,
+		ExtraCommaAfterLastIsValid,
+		}
 	}
