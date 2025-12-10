@@ -2329,12 +2329,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 							if (lookahead.LineNumber == endOfValue.LineNumber)
 								{  endOfValue = lookahead;  }
 
-							if (mode == ParseMode.CreateElements)
+							if (mode == ParseMode.CreateElements &&
+								valueTopic != null)
 								{
 								var inlineComment = GetInlineDocumentationComment(endOfValue);
 
-								if (inlineComment != null &&
-									valueTopic != null)
+								if (inlineComment != null)
 									{
 									Topic inlineTopic = EngineInstance.Comments.Parse(inlineComment);
 									valueTopic.Body = inlineTopic.Body;
