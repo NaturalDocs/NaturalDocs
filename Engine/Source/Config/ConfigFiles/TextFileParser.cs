@@ -229,10 +229,20 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			else if (IsEncodingRegexLC().IsMatch(lcIdentifier))
 				{
-				var inputSettings = inputTarget ?? projectConfig.InputSettings;
+				if (inputTarget == null ||
+					(inputTarget is Targets.SourceFolder &&
+					 (inputTarget as Targets.SourceFolder).Type == Files.InputType.Source))
+					{
+					var inputSettings = inputTarget ?? projectConfig.InputSettings;
 
-				var encodingRule = GetEncodingRule (value, propertyLocation, inputTarget);
-				inputSettings.AddCharacterEncodingRule(encodingRule);
+					var encodingRule = GetEncodingRule (value, propertyLocation, inputTarget);
+					inputSettings.AddCharacterEncodingRule(encodingRule);
+					}
+				else
+					{
+					errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.PropertyOnlyAppliesToSourceFolders(property)", "Encoding"),
+										 propertyLocation.FileName, propertyLocation.LineNumber );
+					}
 
 				return true;
 				}
