@@ -201,7 +201,7 @@ Project.txt.EncodingCodePageDoesNotExist(codePage): The encoding code page {0} d
 Project.txt.EncodingFolderNotPartOfSourceFolder: Encoding statements can only have folders when they are part of Source Folder sections.
 Project.txt.EncodingFolderNotPartOfSourceFolder(ruleFolder, sourceFolder): The encoding folder {0} is not part of source folder {1}.
 Project.txt.FolderNumberMustBeGreaterThanZero: Folders must have a number greater than zero.
-Project.txt.NameOnlyAppliesToSourceFolders: The Name property only applies to source folders.
+Project.txt.PropertyOnlyAppliesToSourceFolders(property): The {0} property only applies to source folders.
 Project.txt.StyleOnlyAppliesToHTMLOutputFolders: The Style property only applies to HTML output folders.
 Project.txt.UnrecognizedValue(keyword, value): "{1}" is not a valid value for {0}.
 Project.txt.CantFindHomePageFile(name): Can't find home page file {0}.

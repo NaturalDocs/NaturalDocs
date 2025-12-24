@@ -217,8 +217,8 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 					}
 				else
 					{
-					errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.NameOnlyAppliesToSourceFolders"),
-									   propertyLocation.FileName, propertyLocation.LineNumber );
+					errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.PropertyOnlyAppliesToSourceFolders(property)", "Name"),
+										 propertyLocation.FileName, propertyLocation.LineNumber );
 					}
 
 				return true;
