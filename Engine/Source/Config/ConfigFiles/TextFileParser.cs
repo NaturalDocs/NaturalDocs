@@ -208,7 +208,8 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			if (lcIdentifier == "name")
 				{
-				 if (inputTarget is Targets.SourceFolder &&
+				if (inputTarget != null &&
+					inputTarget is Targets.SourceFolder &&
 					(inputTarget as Targets.SourceFolder).Type == Files.InputType.Source)
 					{
 					(inputTarget as Targets.SourceFolder).Name = value;
