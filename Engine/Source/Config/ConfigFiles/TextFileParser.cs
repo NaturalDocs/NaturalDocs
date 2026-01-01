@@ -208,12 +208,13 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			if (lcIdentifier == "name")
 				{
-				if (inputTarget != null &&
-					inputTarget is Targets.SourceFolder &&
-					(inputTarget as Targets.SourceFolder).Type == Files.InputType.Source)
+				// This is safe to use if inputTarget is null or isn't a SourceFolder.  It will return null in both cases, not throw an exception.
+				var sourceFolder = (inputTarget as Targets.SourceFolder);
+
+				if (sourceFolder != null)
 					{
-					(inputTarget as Targets.SourceFolder).Name = value;
-					(inputTarget as Targets.SourceFolder).NamePropertyLocation = propertyLocation;
+					sourceFolder.Name = value;
+					sourceFolder.NamePropertyLocation = propertyLocation;
 					}
 				else
 					{
@@ -229,9 +230,8 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			else if (IsEncodingRegexLC().IsMatch(lcIdentifier))
 				{
-				if (inputTarget == null ||
-					(inputTarget is Targets.SourceFolder &&
-					 (inputTarget as Targets.SourceFolder).Type == Files.InputType.Source))
+				// Can apply to the main project section (inputTarget == null) or an individual source folder
+				if (inputTarget == null || inputTarget is Targets.SourceFolder)
 					{
 					var inputSettings = inputTarget ?? projectConfig.InputSettings;
 
