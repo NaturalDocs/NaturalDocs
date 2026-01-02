@@ -85,7 +85,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			if (projectURL[projectURL.Length - 1] == '/')
 				{
 				#if DEBUG
-				if (RepositorySubstitutions.ProjectURL.Length != 0)
+				if (RepositorySubstitutions.ProjectURL.Length != 1)
 					{  throw new Exception ("Assumed RepositorySubstitutions.ProjectURL was a single character.");  }
 				#endif
 
