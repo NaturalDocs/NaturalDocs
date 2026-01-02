@@ -32,6 +32,16 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 
 			folderPropertyLocation = PropertySource.NotDefined;
 			namePropertyLocation = PropertySource.NotDefined;
+
+			repositoryName = null;
+			repositoryBranch = null;
+			repositoryProjectURL = null;
+			repositorySourceURLTemplate = null;
+
+			repositoryNamePropertyLocation = PropertySource.NotDefined;
+			repositoryBranchPropertyLocation = PropertySource.NotDefined;
+			repositoryProjectURLPropertyLocation = PropertySource.NotDefined;
+			repositorySourceURLTemplatePropertyLocation = PropertySource.NotDefined;
 			}
 
 		public SourceFolder (SourceFolder toCopy) : base (toCopy)
@@ -41,6 +51,16 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 
 			folderPropertyLocation = toCopy.folderPropertyLocation;
 			namePropertyLocation = toCopy.namePropertyLocation;
+
+			repositoryName = toCopy.repositoryName;
+			repositoryBranch = toCopy.repositoryBranch;
+			repositoryProjectURL = toCopy.repositoryProjectURL;
+			repositorySourceURLTemplate = toCopy.repositorySourceURLTemplate;
+
+			repositoryNamePropertyLocation = toCopy.repositoryNamePropertyLocation;
+			repositoryBranchPropertyLocation = toCopy.repositoryBranchPropertyLocation;
+			repositoryProjectURLPropertyLocation = toCopy.repositoryProjectURLPropertyLocation;
+			repositorySourceURLTemplatePropertyLocation = toCopy.repositorySourceURLTemplatePropertyLocation;
 			}
 
 		override public Input Duplicate ()
@@ -63,8 +83,8 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 			if (System.IO.Directory.Exists(folder) == false)
 				{
 				errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.SourceFolderDoesNotExist(folder)", folder),
-								     folderPropertyLocation,
-								     "InputTargets[" + targetIndex + "].Folder" );
+									 folderPropertyLocation,
+									 "InputTargets[" + targetIndex + "].Folder" );
 				valid = false;
 				}
 
@@ -128,12 +148,12 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		 * The <AbsolutePath> that should be searched for source files.
 		 */
 		public AbsolutePath Folder
-		    {
-		    get
-		        {  return folder;  }
+			{
+			get
+				{  return folder;  }
 			set
 				{  folder = value;  }
-		    }
+			}
 
 
 		/* Property: Name
@@ -149,6 +169,71 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 			}
 
 
+		/* Property: HasRepositoryInfo
+		 * A simple way to determine if any of the repository properties are defined.
+		 */
+		public bool HasRepositoryInfo
+			{
+			get
+				{
+				// This is the one that must be defined, so this is all we need to check.
+				return repositoryProjectURLPropertyLocation.IsDefined;
+				}
+			}
+
+
+		/* Property: RepositoryName
+		 * The name of the repository the source code is in, or null if it's not set.  This is the name of the site, such as GitHub, rather
+		 * than the name of the project.
+		 */
+		public string RepositoryName
+			{
+			get
+				{  return repositoryName;  }
+			set
+				{  repositoryName = value;  }
+			}
+
+
+		/* Property: RepositoryBranch
+		 * The name of the repository branch to use for links, or null if it's not set.
+		 */
+		public string RepositoryBranch
+			{
+			get
+				{  return repositoryBranch;  }
+			set
+				{  repositoryBranch = value;  }
+			}
+
+
+		/* Property: RepositoryProjectURL
+		 * The URL for the project in the repository, or null if it's not set.
+		 */
+		public string RepositoryProjectURL
+			{
+			get
+				{  return repositoryProjectURL;  }
+			set
+				{  repositoryProjectURL = value;  }
+			}
+
+
+		/* Property: RepositorySourceURLTemplate
+		 * The URL template for source files in the repository, or null if it's not set.  The template should mark substitution points with
+		 * <RepositorySubstitutions.FilePath> and <RepositorySubstitutions.LineNumber>.
+		 */
+		public string RepositorySourceURLTemplate
+			{
+			get
+				{  return repositorySourceURLTemplate;  }
+			set
+				{
+				repositorySourceURLTemplate = value;
+				}
+			}
+
+
 
 		// Group: Property Locations
 		// __________________________________________________________________________
@@ -158,24 +243,72 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		 * Where <Folder> is defined.
 		 */
 		public PropertyLocation FolderPropertyLocation
-		    {
-		    get
-		        {  return folderPropertyLocation;  }
-		    set
-		        {  folderPropertyLocation = value;  }
-		    }
+			{
+			get
+				{  return folderPropertyLocation;  }
+			set
+				{  folderPropertyLocation = value;  }
+			}
 
 
 		/* Property: NamePropertyLocation
 		 * Where <Name> is defined, or <PropertySource.NotDefined> if it isn't.
 		 */
 		public PropertyLocation NamePropertyLocation
-		    {
-		    get
-		        {  return namePropertyLocation;  }
-		    set
-		        {  namePropertyLocation = value;  }
-		    }
+			{
+			get
+				{  return namePropertyLocation;  }
+			set
+				{  namePropertyLocation = value;  }
+			}
+
+
+		/* Property: RepositoryNamePropertyLocation
+		 * Where the <RepositoryName> property is defined, or <PropertySource.NotDefined> if it isn't.
+		 */
+		public PropertyLocation RepositoryNamePropertyLocation
+			{
+			get
+				{  return repositoryNamePropertyLocation;  }
+			set
+				{  repositoryNamePropertyLocation = value;  }
+			}
+
+
+		/* Property: RepositoryBranchPropertyLocation
+		 * Where the <RepositoryBranch> property is defined, or <PropertySource.NotDefined> if it isn't.
+		 */
+		public PropertyLocation RepositoryBranchPropertyLocation
+			{
+			get
+				{  return repositoryBranchPropertyLocation;  }
+			set
+				{  repositoryBranchPropertyLocation = value;  }
+			}
+
+
+		/* Property: RepositoryProjectURLPropertyLocation
+		 * Where the <RepositoryProjectURL> property is defined, or <PropertySource.NotDefined> if it isn't.
+		 */
+		public PropertyLocation RepositoryProjectURLPropertyLocation
+			{
+			get
+				{  return repositoryProjectURLPropertyLocation;  }
+			set
+				{  repositoryProjectURLPropertyLocation = value;  }
+			}
+
+
+		/* Property: RepositorySourceURLTemplatePropertyLocation
+		 * Where the <RepositorySourceURLTemplate> property is defined, or <PropertySource.NotDefined> if it isn't.
+		 */
+		public PropertyLocation RepositorySourceURLTemplatePropertyLocation
+			{
+			get
+				{  return repositorySourceURLTemplatePropertyLocation;  }
+			set
+				{  repositorySourceURLTemplatePropertyLocation = value;  }
+			}
 
 
 
@@ -188,6 +321,16 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 
 		protected PropertyLocation folderPropertyLocation;
 		protected PropertyLocation namePropertyLocation;
+
+		protected string repositoryName;
+		protected string repositoryBranch;
+		protected string repositoryProjectURL;
+		protected string repositorySourceURLTemplate;
+
+		protected PropertyLocation repositoryNamePropertyLocation;
+		protected PropertyLocation repositoryBranchPropertyLocation;
+		protected PropertyLocation repositoryProjectURLPropertyLocation;
+		protected PropertyLocation repositorySourceURLTemplatePropertyLocation;
 
 
 
