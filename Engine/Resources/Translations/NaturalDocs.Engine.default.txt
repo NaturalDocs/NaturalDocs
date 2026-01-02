@@ -205,6 +205,9 @@ Project.txt.OneRepositoryPerSourceFolder: Only one repository may be defined per
 Project.txt.PropertyOnlyAppliesToSourceFolders(property): The {0} property only applies to source folders.
 Project.txt.PropertyOnlyAppliesToRepositories(property): The {0} property only applies to repositories.
 Project.txt.StyleOnlyAppliesToHTMLOutputFolders: The Style property only applies to HTML output folders.
+Project.txt.RepositoryRequiresLinkTemplate: This repository must have a Link Template property.
+Project.txt.RepositoryRequiresBranch: This repository must have a Branch property.
+Project.txt.RepositoryURLMustBeToProjectPage(example): The repository URL must be to the project page, such as "{0}".
 Project.txt.UnrecognizedValue(keyword, value): "{1}" is not a valid value for {0}.
 Project.txt.CantFindHomePageFile(name): Can't find home page file {0}.
 

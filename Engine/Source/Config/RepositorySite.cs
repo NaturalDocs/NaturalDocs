@@ -126,6 +126,16 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			}
 
 
+		/* Property: RequiresBranch
+		 * Whether <SourceURLTemplate()> can be called without a branch name.
+		 */
+		public bool RequiresBranch
+			{
+			get
+				{  return (sourceURLTemplate_WithoutBranch == null);  }
+			}
+
+
 		/* Property: ExampleProjectURL
 		 * A string to use as an example project URL in error messages, such as "https://github.com/username/projectname/"
 		 */

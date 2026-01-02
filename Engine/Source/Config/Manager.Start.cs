@@ -381,6 +381,80 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 
 			//
+			// Validate repository configurations and fill in implied properties
+			//
+
+			foreach (var target in combinedConfig.InputTargets)
+				{
+				if (target.Type == Files.InputType.Source)
+					{
+					Targets.SourceFolder sourceTarget = (Targets.SourceFolder)target;
+
+					if (sourceTarget.HasRepositoryInfo)
+						{
+						// See if it's a known repository site.  Get it from the project URL rather than the declared name.
+						var knownRepositorySite = RepositorySites.FromURL(sourceTarget.RepositoryProjectURL);
+
+						// If it's a known repository site and the name isn't declared, add it.
+						if (knownRepositorySite != null &&
+							sourceTarget.RepositoryName == null)
+							{
+							sourceTarget.RepositoryName = knownRepositorySite.Name;
+							sourceTarget.RepositoryNamePropertyLocation = PropertySource.SystemGenerated;
+							}
+
+						// If it's a known repository site, make sure the project URL is correct
+						if (knownRepositorySite != null &&
+							!knownRepositorySite.IsProjectURL(sourceTarget.RepositoryProjectURL))
+							{
+							errorList.Add(
+								Locale.Get("NaturalDocs.Engine", "Project.txt.RepositoryURLMustBeToProjectPage(example)",
+												knownRepositorySite.ExampleProjectURL),
+								sourceTarget.RepositoryProjectURLPropertyLocation
+								);
+							success = false;
+							}
+
+						// If the source URL template isn't declared...
+						if (sourceTarget.RepositorySourceURLTemplate == null)
+							{
+							// If it's not a known repository site, the source URL template must be explicitly declared
+							if (knownRepositorySite == null)
+								{
+								errorList.Add(
+									Locale.Get("NaturalDocs.Engine", "Project.txt.RepositoryRequiresLinkTemplate"),
+									sourceTarget.RepositoryProjectURLPropertyLocation
+									);
+								success = false;
+								}
+
+							// If the site requires a branch, it must be explicitly declared
+							else if (knownRepositorySite.RequiresBranch &&
+									  sourceTarget.RepositoryBranch == null)
+								{
+								errorList.Add(
+									Locale.Get("NaturalDocs.Engine", "Project.txt.RepositoryRequiresBranch"),
+									sourceTarget.RepositoryProjectURLPropertyLocation
+									);
+								success = false;
+								}
+
+							// Otherwise we can generate the source URL template
+							else
+								{
+								sourceTarget.RepositorySourceURLTemplate = knownRepositorySite.SourceURLTemplate(sourceTarget.RepositoryProjectURL, sourceTarget.RepositoryBranch);
+								sourceTarget.RepositorySourceURLTemplatePropertyLocation = PropertySource.SystemGenerated;
+								}
+							}
+						}
+					}
+				}
+
+			if (success == false)
+				{  return false;  }
+
+
+			//
 			// Apply global settings.
 			//
 
