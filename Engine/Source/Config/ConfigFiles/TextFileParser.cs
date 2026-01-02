@@ -1060,7 +1060,9 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				if (indent)
 					{  output.Append("   ");  }
 
-				if (sourceFolder.RepositoryName != null)
+				if (sourceFolder.RepositoryName != null &&
+					sourceFolder.RepositoryNamePropertyLocation.Source != PropertySource.SystemDefault &&
+					sourceFolder.RepositoryNamePropertyLocation.Source != PropertySource.SystemGenerated)
 					{
 					output.Append(sourceFolder.RepositoryName);
 					output.Append(' ');
@@ -1069,7 +1071,9 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				output.Append("Repository: ");
 				output.AppendLine(sourceFolder.RepositoryProjectURL);
 
-				if (sourceFolder.RepositoryBranchPropertyLocation.IsDefined)
+				if (sourceFolder.RepositoryBranch != null &&
+					sourceFolder.RepositoryBranchPropertyLocation.Source != PropertySource.SystemDefault &&
+					sourceFolder.RepositoryBranchPropertyLocation.Source != PropertySource.SystemGenerated)
 					{
 					if (indent)
 						{  output.Append("   ");  }
@@ -1078,7 +1082,9 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 					output.AppendLine(sourceFolder.RepositoryBranch);
 					}
 
-				if (sourceFolder.RepositorySourceURLTemplatePropertyLocation.IsDefined)
+				if (sourceFolder.RepositorySourceURLTemplate != null &&
+					sourceFolder.RepositorySourceURLTemplatePropertyLocation.Source != PropertySource.SystemDefault &&
+					sourceFolder.RepositorySourceURLTemplatePropertyLocation.Source != PropertySource.SystemGenerated)
 					{
 					if (indent)
 						{  output.Append("   ");  }
