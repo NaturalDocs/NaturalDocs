@@ -24,7 +24,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 		/* Constructor: PropertyLocation
 		 */
-		public PropertyLocation (Config.PropertySource source, Path fileName = default(Path), int lineNumber = 0)
+		public PropertyLocation (PropertySource source, Path fileName = default, int lineNumber = 0)
 			{
 			#if DEBUG
 			if (IsFileBased(source))
@@ -46,11 +46,11 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 
 		/* Operator: operator PropertyLocation
-		 * Allows non-file based <Config.Sources> to be cast directly to a PropertyLocation.
+		 * Allows non-file based <PropertySources> to be cast directly to a PropertyLocation.
 		 */
-		public static implicit operator PropertyLocation (Config.PropertySource configSource)
+		public static implicit operator PropertyLocation (PropertySource source)
 			{
-			return new PropertyLocation(configSource);
+			return new PropertyLocation(source);
 			}
 
 
@@ -60,12 +60,12 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 
 		/* Function: IsFileBased
-		 * Returns whether the passed <Config.Source> is file-based.
+		 * Returns whether the passed <PropertySource> is file-based.
 		 */
-		public static bool IsFileBased (Config.PropertySource configSource)
+		public static bool IsFileBased (PropertySource source)
 			{
-			return (configSource >= PropertySource.LowestFileValue &&
-					   configSource <= PropertySource.HighestFileValue);
+			return (source >= PropertySource.LowestFileValue &&
+					   source <= PropertySource.HighestFileValue);
 			}
 
 
@@ -85,9 +85,9 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 
 		/* Property: Source
-		 * The <Config.PropertySource> where this property is defined, or <PropertySource.NotDefined> if it hasn't been set.
+		 * The <PropertySource> where this property is defined, or <PropertySource.NotDefined> if it hasn't been set.
 		 */
-		public Config.PropertySource Source
+		public PropertySource Source
 			{
 			get
 				{  return source;  }
