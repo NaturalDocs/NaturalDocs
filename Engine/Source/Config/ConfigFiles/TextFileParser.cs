@@ -64,19 +64,19 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				// We don't condense value whitespace because some things like title, subtitle, and copyright may want multiple spaces.
 				bool openResult = configFile.Open(path,
 																  PropertySource.ProjectFile,
-																  ConfigFile.FileFormatFlags.CondenseIdentifierWhitespace |
-																  ConfigFile.FileFormatFlags.MakeIdentifiersLowercase,
+																  ConfigFile.FileFormatFlags.CondenseIdentifierWhitespace,
 																  errorList);
 
 				if (openResult == false)
 					{  return false;  }
 
-				string lcIdentifier, value;
+				string identifier, value;
 				Targets.Input currentInputTarget = null;
 				Targets.Output currentOutputTarget =  null;
 
-				while (configFile.Get(out lcIdentifier, out value))
+				while (configFile.Get(out identifier, out value))
 					{
+					string lcIdentifier = identifier.ToLowerInvariant();
 					var propertyLocation = new PropertyLocation(PropertySource.ProjectFile, configFile.FileName, configFile.LineNumber);
 
 					if (GetInputTargetHeader(lcIdentifier, value, propertyLocation, out var inputTarget, errorList))
@@ -94,7 +94,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 						currentInputTarget = null;
 						currentOutputTarget = outputTarget;
 						}
-					else if (GetInputProperty(lcIdentifier, value, propertyLocation, currentInputTarget, errorList) ||
+					else if (GetInputProperty(identifier, lcIdentifier, value, propertyLocation, currentInputTarget, errorList) ||
 							   GetOutputProperty(lcIdentifier, value, propertyLocation, currentOutputTarget, errorList))
 						{  }
 					else if (GetGlobalProperty(lcIdentifier, value, propertyLocation, errorList))
@@ -189,7 +189,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				newTarget = null;
 				return false;
 				}
-		    }
+			}
 
 
 		/* Function: GetInputProperty
@@ -200,7 +200,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 		 * If it's a recognized identifier but there's a syntax error in the value it will add an error to <errorList> and still return true.
 		 * It only returns false for unrecognized identifiers.
 		 */
-		protected bool GetInputProperty (string lcIdentifier, string value, PropertyLocation propertyLocation,
+		protected bool GetInputProperty (string identifier, string lcIdentifier, string value, PropertyLocation propertyLocation,
 														Targets.Input inputTarget, ErrorList errorList)
 			{
 
@@ -247,8 +247,123 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				return true;
 				}
 
+
+			// Repository Branch
+
+			else if (IsRepositoryBranchNameRegexLC().IsMatch(lcIdentifier))
+				{
+				var sourceFolder = (inputTarget as Targets.SourceFolder);
+
+				if (sourceFolder != null && sourceFolder.HasRepositoryInfo)
+					{
+					sourceFolder.RepositoryBranch = value;
+					sourceFolder.RepositoryBranchPropertyLocation = propertyLocation;
+					}
+				else
+					{
+					errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.PropertyOnlyAppliesToRepositories(property)", identifier),
+										 propertyLocation.FileName, propertyLocation.LineNumber );
+					}
+
+				return true;
+				}
+
+
+			// Repository Link Template
+
+			else if (IsRepositorySourceURLTemplateRegexLC().IsMatch(lcIdentifier))
+				{
+				var sourceFolder = (inputTarget as Targets.SourceFolder);
+
+				if (sourceFolder != null && sourceFolder.HasRepositoryInfo)
+					{
+					value = FindRepositorySourceURLTemplateFilePathSubstitutionRegex().Replace(value, RepositorySubstitutions.FilePath);
+					value = FindRepositorySourceURLTemplateLineNumberSubstitutionRegex().Replace(value, RepositorySubstitutions.LineNumber);
+
+					sourceFolder.RepositorySourceURLTemplate = value;
+					sourceFolder.RepositorySourceURLTemplatePropertyLocation = propertyLocation;
+					}
+				else
+					{
+					errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.PropertyOnlyAppliesToRepositories(property)", identifier),
+										 propertyLocation.FileName, propertyLocation.LineNumber );
+					}
+
+				return true;
+				}
+
+
+			// Unnamed Repository
+
+			else if (IsUnnamedRepositoryProjectURLRegexLC().IsMatch(lcIdentifier))
+				{
+				var sourceFolder = (inputTarget as Targets.SourceFolder);
+
+				if (sourceFolder != null)
+					{
+					if (!sourceFolder.HasRepositoryInfo)
+						{
+						sourceFolder.RepositoryName = null;
+						sourceFolder.RepositoryNamePropertyLocation = propertyLocation;
+
+						sourceFolder.RepositoryProjectURL = value;
+						sourceFolder.RepositoryProjectURLPropertyLocation = propertyLocation;
+						}
+					else // sourceFolder.HasRepositoryInfo
+						{
+						errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.OneRepositoryPerSourceFolder"),
+												propertyLocation.FileName, propertyLocation.LineNumber );
+						}
+					}
+				else // sourceFolder == null
+					{
+					errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.PropertyOnlyAppliesToSourceFolders(property)", "Repository"),
+										 propertyLocation.FileName, propertyLocation.LineNumber );
+					}
+
+				return true;
+				}
+
+
+			// Named Repository
+
 			else
-				{  return false;  }
+				{
+				// Use identifier instead of lcIdentifier so we can get the respository name with its case preserved.
+				var match = IsNamedRepositoryProjectURLRegex().Match(identifier);
+
+				if (match.Success)
+					{
+					var sourceFolder = (inputTarget as Targets.SourceFolder);
+
+					if (sourceFolder != null)
+						{
+						if (!sourceFolder.HasRepositoryInfo)
+							{
+							sourceFolder.RepositoryName = match.Groups[1].Value.Trim();
+							sourceFolder.RepositoryNamePropertyLocation = propertyLocation;
+
+							sourceFolder.RepositoryProjectURL = value;
+							sourceFolder.RepositoryProjectURLPropertyLocation = propertyLocation;
+							}
+						else // sourceFolder.HasRepositoryInfo
+							{
+							errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.OneRepositoryPerSourceFolder"),
+												 propertyLocation.FileName, propertyLocation.LineNumber );
+							}
+						}
+					else // sourceFolder == null
+						{
+						errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.PropertyOnlyAppliesToSourceFolders(property)", "Repository"),
+											 propertyLocation.FileName, propertyLocation.LineNumber );
+						}
+
+					return true;
+					}
+
+				else
+					{  return false;  }
+				}
 			}
 
 
@@ -432,7 +547,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				newTarget = null;
 				return false;
 				}
-		    }
+			}
 
 
 		/* Function: GetOutputTargetHeader
@@ -467,7 +582,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				newTarget = null;
 				return false;
 				}
-		    }
+			}
 
 
 		/* Function: GetOutputProperty
@@ -886,7 +1001,8 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				{  return;  }
 
 			bool hasName = (target.NamePropertyLocation.IsDefined &&
-									 target.NamePropertyLocation.Source != PropertySource.SystemDefault);
+									  target.NamePropertyLocation.Source != PropertySource.SystemDefault);
+			bool hasRepository = target.HasRepositoryInfo;
 
 			int encodingRules = 0;
 			if (target.HasCharacterEncodingRules)
@@ -916,12 +1032,65 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			if (hasName)
 				{  output.AppendLine("   Name: " + target.Name);  }
 
-			if (encodingRules > 1)
+			if (hasRepository)
 				{
 				if (hasName)
 					{  output.AppendLine();  }
 
+				AppendRepositoryInfo(target, output, indent: true);
+				}
+
+			if (encodingRules > 1)
+				{
+				if (hasName || hasRepository)
+					{  output.AppendLine();  }
+
 				AppendCharacterEncodingRules(target.CharacterEncodingRules, output, indent: true, foldersRelativeTo: target.Folder);
+				}
+			}
+
+
+		/* Function: AppendRepositoryInfo
+		 * Appends any repository-related properties to the passed string.
+		 */
+		protected void AppendRepositoryInfo (Targets.SourceFolder sourceFolder, StringBuilder output, bool indent)
+			{
+			if (sourceFolder.HasRepositoryInfo)
+				{
+				if (indent)
+					{  output.Append("   ");  }
+
+				if (sourceFolder.RepositoryName != null)
+					{
+					output.Append(sourceFolder.RepositoryName);
+					output.Append(' ');
+					}
+
+				output.Append("Repository: ");
+				output.AppendLine(sourceFolder.RepositoryProjectURL);
+
+				if (sourceFolder.RepositoryBranchPropertyLocation.IsDefined)
+					{
+					if (indent)
+						{  output.Append("   ");  }
+
+					output.Append("   Branch: ");
+					output.AppendLine(sourceFolder.RepositoryBranch);
+					}
+
+				if (sourceFolder.RepositorySourceURLTemplatePropertyLocation.IsDefined)
+					{
+					if (indent)
+						{  output.Append("   ");  }
+
+					output.Append("   Link Template: ");
+
+					var template = sourceFolder.RepositorySourceURLTemplate;
+					template = template.Replace(RepositorySubstitutions.FilePath, "{File}");
+					template = template.Replace(RepositorySubstitutions.LineNumber, "{LineNumber}");
+
+					output.AppendLine(template);
+					}
 				}
 			}
 
@@ -1399,6 +1568,59 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 		[GeneratedRegex("""^(?:char|character)?[ \-]?(?:encoding|set)$""",
 								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
 		static internal partial Regex IsEncodingRegexLC();
+
+
+		/* Regex: IsUnnamedRepositoryProjectURLRegexLC
+		 * Will match if the entire string is the property name "Repository" or one of its acceptable variants.  Assumes the
+		 * input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^repository(?: project)?(?: (url|link))?$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static internal partial Regex IsUnnamedRepositoryProjectURLRegexLC();
+
+
+		/* Regex: IsNamedRepositoryProjectURLRegex
+		 * Will match if the entire string is the property name "GitHub Repository" or one of its acceptable variants.  Unlike
+		 * other functions here, it does NOT assume the string is already in lowercase because it must preserve the case of
+		 * the repository name.
+		 */
+		[GeneratedRegex("""^(.+?) repository(?: project)?(?: (url|link))?$""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static internal partial Regex IsNamedRepositoryProjectURLRegex();
+
+
+		/* Regex: IsRepositorySourceURLTemplateRegexLC
+		 * Will match if the entire string is the property name "link template" or one of its acceptable variants.  Assumes
+		 * the input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^(?:repository )?(?:source )?(?:url|link) (?:template|format)$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static internal partial Regex IsRepositorySourceURLTemplateRegexLC();
+
+
+		/* Regex: IsRepositoryBranchNameRegexLC
+		 * Will match if the entire string is the property name "branch" or one of its acceptable variants.  Assumes the input
+		 * string is already in lowercase.
+		 */
+		[GeneratedRegex("""^branch(?: name)?$""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static internal partial Regex IsRepositoryBranchNameRegexLC();
+
+
+		/* Regex: FindRepositorySourceURLTemplateFilePathSubstitutionRegex
+		 * Will match instances of "{file}" in the source URL template or any of its acceptable variants.
+		 */
+		[GeneratedRegex("""\{ *(?:file|source|path|file[ \-_]?path|source[ \-_]?path) *\}""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static internal partial Regex FindRepositorySourceURLTemplateFilePathSubstitutionRegex();
+
+
+		/* Regex: FindRepositorySourceURLTemplateLineNumberSubstitutionRegex
+		 * Will match instances of "{line}" in the source URL template or any of its acceptable variants.
+		 */
+		[GeneratedRegex("""\{ *line(?:[ \-_]?number) *\}""",
+								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+		static internal partial Regex FindRepositorySourceURLTemplateLineNumberSubstitutionRegex();
 
 		}
 	}

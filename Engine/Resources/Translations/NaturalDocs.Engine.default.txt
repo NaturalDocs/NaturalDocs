@@ -201,7 +201,9 @@ Project.txt.EncodingCodePageDoesNotExist(codePage): The encoding code page {0} d
 Project.txt.EncodingFolderNotPartOfSourceFolder: Encoding statements can only have folders when they are part of Source Folder sections.
 Project.txt.EncodingFolderNotPartOfSourceFolder(ruleFolder, sourceFolder): The encoding folder {0} is not part of source folder {1}.
 Project.txt.FolderNumberMustBeGreaterThanZero: Folders must have a number greater than zero.
+Project.txt.OneRepositoryPerSourceFolder: Only one repository may be defined per source folder.
 Project.txt.PropertyOnlyAppliesToSourceFolders(property): The {0} property only applies to source folders.
+Project.txt.PropertyOnlyAppliesToRepositories(property): The {0} property only applies to repositories.
 Project.txt.StyleOnlyAppliesToHTMLOutputFolders: The Style property only applies to HTML output folders.
 Project.txt.UnrecognizedValue(keyword, value): "{1}" is not a valid value for {0}.
 Project.txt.CantFindHomePageFile(name): Can't find home page file {0}.
@@ -305,6 +307,26 @@ Project.txt.SourceFolderSyntax.multiline {{{
 #    Name: [name]
 #       How this source folder will appear in the menu if you have more than
 #       one.
+#
+#    [name] Repository: [url]
+#       The web-based repository for the source files.  The URL should go to
+#       the main project page, such as "https://github.com/User/MyProject".
+#       You can optionally include the name of the repository site, such as
+#       "GitHub".
+#
+#       Additional repository properties can be added as needed:
+#
+#       Branch: [name]
+#          If you're using GitHub, CodeBerg, or Gitea and want the links to go
+#          to a specific branch, add its name here.  If you're using GitLab
+#          you must always include the branch name, which could be "main" or
+#          "master" for the trunk.
+#
+#       Link Template: [url]
+#          If you're not using GitHub, GitLab, CodeBerg, or Gitea, add the URL
+#          used to link to source files.  Include {File} to represent where
+#          the file path goes and {LineNumber} for where the line number goes.
+#          For example, "https://mysite.com/repo/src/{File}#L{LineNumber}".
 #
 #    Encoding: [name or code page number]
 #    Encoding: [name or code page number] *.[extension]
