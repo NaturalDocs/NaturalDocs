@@ -1459,18 +1459,36 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 				return false;
 				}
 
-			file = betweenParens.Substring(spaceIndex + 1);
 
-			if (file.Extension != null && Files.Manager.ImageExtensions.Contains(file.Extension))
-				{
-				return true;
-				}
-			else
+			// Extract the image path
+
+			Path fileAsEntered = betweenParens.Substring(spaceIndex + 1);
+
+
+			// Check that it's using a recognized extension
+
+			string extension = fileAsEntered.Extension;
+
+			if (extension == null || !Files.Manager.ImageExtensions.Contains(extension))
 				{
 				keyword = null;
 				file = null;
 				return false;
 				}
+
+
+			// Make sure it's a relative path
+
+			if (fileAsEntered.IsAbsolute)
+				{
+				keyword = null;
+				file = null;
+				return false;
+				}
+
+
+			file = (RelativePath)fileAsEntered;
+			return true;
 		    }
 
 
