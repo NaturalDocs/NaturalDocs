@@ -574,7 +574,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 					// ignore ImageLinkID
 					imageLink.OriginalText = iterator.Property("originaltext");
-					imageLink.Path = new Path( iterator.Property("target") );
+					imageLink.Path = new RelativePath( iterator.Property("target") );
 					// ignore FileName, generated from Path
 					imageLink.FileID = topic.FileID;
 					imageLink.ClassString = topic.ClassString;

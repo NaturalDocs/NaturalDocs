@@ -53,7 +53,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			{
 			imageLinkID = 0;
 			originalText = null;
-			path = default(Path);
+			path = default;
 			fileID = 0;
 			classString = new ClassString();
 			classID = 0;
@@ -184,7 +184,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		/* Property: Path
 		 * The path of the link.  For "(see folder\image.jpg)", this would be "folder\image.jpg".
 		 */
-		public Path Path
+		public RelativePath Path
 			{
 			get
 				{
@@ -411,7 +411,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		/* var: path
 		 * The path of the link.  In "(see folder\image.jpg)" this would be "folder\image.jpg".
 		 */
-		protected Path path;
+		protected RelativePath path;
 
 		/* var: fileID
 		 * The ID number of the file that defines this link.

@@ -45,28 +45,28 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		/* Function: Contains
 		 * Returns whether this file source contains the passed file.
 		 */
-		abstract public bool Contains (Path file);
+		abstract public bool Contains (AbsolutePath file);
 
 
 		/* Function: MakeRelative
 		 * Converts the passed absolute path to one relative to this source.  If this source doesn't contain the path, it will
 		 * return null.
 		 */
-		abstract public Path MakeRelative (Path path);
+		abstract public RelativePath MakeRelative (AbsolutePath path);
 
 
 		/* Function: MakeAbsolute
 		 * Converts the passed relative path to an absolute one based on this source.  This may or may not result in a path
 		 * that actually maps to an existing file.
 		 */
-		abstract public Path MakeAbsolute (Path path);
+		abstract public AbsolutePath MakeAbsolute (RelativePath path);
 
 
 		/* Function: CharacterEncodingID
 		 * Returns the character encoding ID of the passed file.  Zero means it's not a text file or use Unicode auto-detection,
 		 * which will handle all forms of UTF-8, UTF-16, and UTF-32.  It's assumed that the file belongs to this file source.
 		 */
-		virtual public int CharacterEncodingID (Path file)
+		virtual public int CharacterEncodingID (AbsolutePath file)
 			{
 			#if DEBUG
 			if (!Contains(file))

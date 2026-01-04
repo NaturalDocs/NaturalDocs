@@ -42,7 +42,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		/* Function: Contains
 		 * Returns whether this file source contains the passed file.
 		 */
-		override public bool Contains (Path file)
+		override public bool Contains (AbsolutePath file)
 			{
 			var styles = EngineInstance.Styles.LoadedStyles;
 
@@ -59,7 +59,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		/* Function: MakeRelative
 		 * If the passed absolute <Path> is contained by this file source, returns a relative path to it.  Otherwise returns null.
 		 */
-		override public Path MakeRelative (Path file)
+		override public RelativePath MakeRelative (AbsolutePath file)
 			{
 			var styles = EngineInstance.Styles.LoadedStyles;
 
@@ -73,7 +73,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 			}
 
 
-		override public Path MakeAbsolute (Path path)
+		override public AbsolutePath MakeAbsolute (RelativePath path)
 			{
 			throw new InvalidOperationException();
 			}

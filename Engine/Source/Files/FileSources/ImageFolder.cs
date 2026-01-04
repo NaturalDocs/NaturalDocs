@@ -68,7 +68,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 		/* Property: Path
 		 * The path to the FileSource's folder.
 		 */
-		override public Path Path
+		override public AbsolutePath Path
 			{
 			get
 				{  return config.Folder;  }

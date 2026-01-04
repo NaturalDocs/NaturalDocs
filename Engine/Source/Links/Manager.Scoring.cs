@@ -872,7 +872,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			// See if the target path is the same as the path relative to the source file.  This is our best choice.
 			// We always ignore case regardless of the underlying file system's case sensitivity.
 
-			Path pathRelativeToSourceFile = EngineInstance.Files.FromID(imageLink.FileID).FileName.ParentFolder + '/' + imageLink.Path;
+			AbsolutePath pathRelativeToSourceFile = EngineInstance.Files.FromID(imageLink.FileID).FileName.ParentFolder + '/' + imageLink.Path;
 
 			if (string.Compare(pathRelativeToSourceFile, file.FileName, true) == 0)
 				{  return int.MaxValue;  }
@@ -890,7 +890,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				{
 				if (fileSource.Type == InputType.Image)
 					{
-					Path pathRelativeToFileSource = fileSource.MakeAbsolute(imageLink.Path);
+					AbsolutePath pathRelativeToFileSource = fileSource.MakeAbsolute(imageLink.Path);
 
 					if (string.Compare(pathRelativeToFileSource, file.FileName, true) == 0)
 						{

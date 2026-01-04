@@ -331,7 +331,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 			// First try the path relative to the source file.
 
-			Path pathRelativeToSourceFile = EngineInstance.Files.FromID(imageLink.FileID).FileName.ParentFolder + '/' + imageLink.Path;
+			AbsolutePath pathRelativeToSourceFile = EngineInstance.Files.FromID(imageLink.FileID).FileName.ParentFolder + '/' + imageLink.Path;
 			File fileRelativeToSourceFile = EngineInstance.Files.FromPath(pathRelativeToSourceFile);
 
 			if (fileRelativeToSourceFile != null && fileRelativeToSourceFile.Deleted == false)
@@ -352,7 +352,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				{
 				if (fileSource.Type == InputType.Image)
 					{
-					Path pathRelativeToFileSource = fileSource.MakeAbsolute(imageLink.Path);
+					AbsolutePath pathRelativeToFileSource = fileSource.MakeAbsolute(imageLink.Path);
 					File fileRelativeToFileSource = EngineInstance.Files.FromPath(pathRelativeToFileSource);
 
 					if (fileRelativeToFileSource != null && fileRelativeToFileSource.Deleted == false)

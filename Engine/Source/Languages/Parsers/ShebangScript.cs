@@ -28,8 +28,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			{
 			}
 
-		override public ParseResult Parse (Path filePath, int fileID, CancelDelegate cancelDelegate,
-													  out IList<Topic> topics, out LinkSet classParentLinks)
+		override public ParseResult Parse (AbsolutePath filePath, int fileID, CancelDelegate cancelDelegate,
+														  out IList<Topic> topics, out LinkSet classParentLinks)
 			{
 			topics = null;
 			classParentLinks = null;

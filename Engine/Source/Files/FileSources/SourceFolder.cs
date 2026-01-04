@@ -36,7 +36,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 		 * Returns the character encoding ID of the passed file.  Zero means it's not a text file or use Unicode auto-detection,
 		 * which will handle all forms of UTF-8, UTF-16, and UTF-32.  It's assumed that the file belongs to this file source.
 		 */
-		override public int CharacterEncodingID (Path file)
+		override public int CharacterEncodingID (AbsolutePath file)
 			{
 			#if DEBUG
 			if (!Contains(file))
@@ -104,7 +104,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 		/* Property: Path
 		 * The path to the FileSource's folder.
 		 */
-		override public Path Path
+		override public AbsolutePath Path
 			{
 			get
 				{  return config.Folder;  }

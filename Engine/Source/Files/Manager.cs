@@ -233,11 +233,8 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 * Returns the <File> associated with the passed file <Path>, or null if there isn't one.  The <Path> must be
 		 * absolute.
 		 */
-		public File FromPath (Path filePath)
+		public File FromPath (AbsolutePath filePath)
 			{
-			if (filePath.IsRelative)
-				{  throw new InvalidOperationException();  }
-
 			lock (accessLock)
 				{
 				return files[filePath];
@@ -257,7 +254,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		/* Function: FileSourceOf
 		 * Returns the <FileSource> which contains the passed <Path>, or null if none.
 		 */
-		public FileSource FileSourceOf (Path file)
+		public FileSource FileSourceOf (AbsolutePath file)
 			{
 			lock (accessLock)
 				{
@@ -292,7 +289,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 * However, it still requires the file's path to be part of a <FileSource> to apply encoding rules.  Otherwise it will
 		 * always return zero.
 		 */
-		public int CharacterEncodingID (Path file)
+		public int CharacterEncodingID (AbsolutePath file)
 			{
 			var fileSource = FileSourceOf(file);
 

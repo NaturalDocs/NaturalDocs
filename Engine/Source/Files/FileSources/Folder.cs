@@ -52,7 +52,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 		/* Function: Contains
 		 * Returns whether this folder contains the passed file.
 		 */
-		override public bool Contains (Path file)
+		override public bool Contains (AbsolutePath file)
 			{
 			return Path.Contains(file);
 			}
@@ -62,7 +62,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 		 * Converts the passed absolute path to one relative to this source.  If this source doesn't contain the path, it will
 		 * return null.
 		 */
-		override public Path MakeRelative (Path path)
+		override public RelativePath MakeRelative (AbsolutePath path)
 			{
 			if (this.Path.Contains(path))
 				{  return path.MakeRelativeTo(this.Path);  }
@@ -75,7 +75,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 		 * Converts the passed relative path to an absolute one based on this source.  This may or may not result in a path
 		 * that actually maps to an existing file.
 		 */
-		override public Path MakeAbsolute (Path path)
+		override public AbsolutePath MakeAbsolute (RelativePath path)
 			{
 			return (this.Path + "/" + path);
 			}
@@ -89,7 +89,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 		/* Property: Path
 		 * The path to the FileSource's folder.
 		 */
-		abstract public Path Path
+		abstract public AbsolutePath Path
 			{  get;  }
 
 		}

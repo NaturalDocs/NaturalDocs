@@ -1432,7 +1432,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 		 * the registered extensions in <Files.Manager.ImageExtensions>.  The string must not contain the parentheses.  If it is tag
 		 * content it will also returns the keyword and file name.
 		 */
-		protected bool IsImageTagContent (string betweenParens, out string keyword, out Path file)
+		protected bool IsImageTagContent (string betweenParens, out string keyword, out RelativePath file)
 		    {
 			// The compiler doesn't believe keyword is always set before returning otherwise.
 			keyword = null;
@@ -1496,7 +1496,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 		 * Returns whether the line specified by <LineIterator> is a standalone image line, like "(see image.jpg)".  If so also returns
 		 * the file name.
 		 */
-		protected bool IsStandaloneImage (LineIterator lineIterator, out Path file)
+		protected bool IsStandaloneImage (LineIterator lineIterator, out RelativePath file)
 			{
 			string betweenParens, ignore;
 			if (!IsParenTagLine(lineIterator, out betweenParens))
@@ -1830,7 +1830,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 			int indent;
 			char leadingCharacter;
 			string tempString, tempString2;
-			Path filePath;
+			RelativePath relativeFilePath;
 			Language language;
 			HeadingType headingType;
 
@@ -1941,7 +1941,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 				// (see image.jpg)
 
 				else if (!inlineFormattingOnly &&
-						  IsStandaloneImage(line, out filePath))
+						  IsStandaloneImage(line, out relativeFilePath))
 					{
 					CloseAllBlocks(ref paragraph, ref definitionIndent, ref bulletIndents, body);
 
@@ -1951,7 +1951,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 					body.Append("<image type=\"standalone\" originaltext=\"");
 					body.EntityEncodeAndAppend(line.Tokenizer.RawText, rawTextStart, rawTextEnd - rawTextStart);
 					body.Append("\" target=\"");
-					body.EntityEncodeAndAppend(filePath);
+					body.EntityEncodeAndAppend(relativeFilePath);
 					body.Append("\">");
 
 					prevLineBlank = false;
@@ -2672,7 +2672,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 								{
 								string betweenParens = tokenizer.TextBetween(contentStart, lookahead);
 
-								Path ignoreFile;
+								RelativePath ignoreFile;
 								string ignoreString;
 								acceptable = IsImageTagContent(betweenParens, out ignoreString, out ignoreFile);
 								}
@@ -2951,7 +2951,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 
 						if (tokenIterator.Character == '(')
 							{
-							Path file;
+							RelativePath file;
 							string keyword;
 							IsImageTagContent(tagContent, out keyword, out file);
 							string name = file.NameWithoutPathOrExtension;
