@@ -453,13 +453,22 @@ namespace CodeClear.NaturalDocs.Engine
 
 		/* Function: ToURL
 		 * Converts the path to an URL string, meaning it will always use slashes as separators, even on Windows.
+		 * Certain characters will also be URL-encoded, such as spaces converting to "%20".
 		 */
 		public string ToURL ()
 			{
-			if (Engine.SystemInfo.PathSeparatorCharacter == '/')
-				{  return pathString;  }
-			else
-				{  return pathString.Replace(Engine.SystemInfo.PathSeparatorCharacter, '/');  }
+            string url = pathString;
+
+			if (SystemInfo.PathSeparatorCharacter != '/')
+				{  url = url.Replace(SystemInfo.PathSeparatorCharacter, '/');  }
+
+			url = url.Replace("%", "%25");
+			url = url.Replace(" ", "%20");
+			url = url.Replace("#", "%23");
+			url = url.Replace("?", "%3F");
+			url = url.Replace("&", "%26");
+
+			return url;
 			}
 
 
