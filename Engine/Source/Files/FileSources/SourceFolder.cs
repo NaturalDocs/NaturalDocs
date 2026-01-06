@@ -68,6 +68,25 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 			}
 
 
+		/* Function: RepositorySourceFileURLOf
+		 * Returns the repository URL to the passed source file and line number, or null if there isn't one or the file isn't
+		 * part of this FileSource.
+		 */
+		public string RepositorySourceFileURLOf (AbsolutePath file, int lineNumber)
+			{
+			if (this.Contains(file) == false ||
+				config.RepositorySourceURLTemplate == null)
+				{  return null;  }
+
+			string relativeURLPath = this.MakeRelative(file).ToURL();
+
+			string url = config.RepositorySourceURLTemplate.Replace( Config.RepositorySubstitutions.FilePath, relativeURLPath );
+			url = url.Replace( Config.RepositorySubstitutions.LineNumber, lineNumber.ToString() );
+
+			return url;
+			}
+
+
 
 		// Group: Processes
 		// __________________________________________________________________________
@@ -135,6 +154,34 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 			{
 			get
 				{  return config.Name;  }
+			}
+
+		/* Property: RepositoryName
+		 * The name of the repository site, such as "GitHub", or null if there isn't one.
+		 */
+		public string RepositoryName
+			{
+			get
+				{  return config.RepositoryName;  }
+			}
+
+		/* Property: RepositoryProjectURL
+		 * The URL to the repository project page, or null if there isn't one.
+		 */
+		public string RepositoryProjectURL
+			{
+			get
+				{  return config.RepositoryProjectURL;  }
+			}
+
+		/* Property: CanMakeRepositorySourceFileURLs
+		 * Returns whether it's possible to create URLs with <RepositorySourceFileURLOf()>, meaning all the properties
+		 * required to do so are defined.
+		 */
+		public bool CanMakeRepositorySourceFileURLs
+			{
+			get
+				{  return (config.RepositorySourceURLTemplate != null);  }
 			}
 
 

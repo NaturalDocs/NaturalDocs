@@ -222,7 +222,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				if (prototypeBuilder == null)
 					{  prototypeBuilder = new HTML.Components.Prototype(context);  }
 
-				prototypeBuilder.AppendPrototype(context.Topic.ParsedPrototype, context, output, links, linkTargets);
+				prototypeBuilder.AppendPrototype(context.Topic.ParsedPrototype, context, output, forTooltip: false, links, linkTargets);
 				}
 			}
 

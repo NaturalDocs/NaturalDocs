@@ -1613,6 +1613,9 @@ td {
 	.CTopic .NDClassPrototype {
 		margin: .6rem $Indent $DiagramSpacing $Indent;
 		}
+	.CTopic .NDPrototype.ButtonPanel {
+		margin: calc(-$DiagramSpacing - 1px) $Indent $DiagramSpacing $Indent;
+		}
 
 	.CHeading {
 		font: $semibold 1.2rem $HeadingFontFamily;
@@ -1824,6 +1827,33 @@ td {
 			}
 			.BlackTheme .NDPrototype::-webkit-scrollbar-track {  background-color: $ContentBackgroundColor_Black;  }
 			.BlackTheme .NDPrototype::-webkit-scrollbar-thumb {  background-color: #686868;  }
+
+
+	.NDPrototype.ButtonPanel {
+		font: $semibold 9pt $ContentFontFamily;
+		border-top-style: dashed;
+		padding: 0;
+
+		display: inline-block;
+		position: absolute;
+		visibility: hidden;
+		text-align: right;
+		}
+
+		.NDPrototype.ButtonPanel a {
+			display: inline-block;
+			padding: .45rem .725rem .5rem .85rem;
+			}
+
+		.NDPrototype.ButtonPanel .PLinkIcon {
+			background: transparent url("images/prototype-button-arrow.svg") center center no-repeat;
+			width: 5px; height: 7px;
+			margin: 0 0 .2ex 1ex;
+			display: inline-block;
+			}
+		.DarkTheme .NDPrototype.ButtonPanel .PLinkIcon { background-image: url("images/prototype-button-arrow-dark.svg"); }
+		.BlackTheme .NDPrototype.ButtonPanel .PLinkIcon { background-image: url("images/prototype-button-arrow-black.svg"); }
+
 
 
 	.PParameterCells {

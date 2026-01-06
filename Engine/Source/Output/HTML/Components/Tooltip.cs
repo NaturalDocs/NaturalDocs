@@ -141,7 +141,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				if (prototypeBuilder == null)
 					{  prototypeBuilder = new HTML.Components.Prototype(context);  }
 
-				prototypeBuilder.AppendPrototype(context.Topic.ParsedPrototype, context, output);
+				prototypeBuilder.AppendPrototype(context.Topic.ParsedPrototype, context, output, forTooltip: true);
 				}
 			}
 

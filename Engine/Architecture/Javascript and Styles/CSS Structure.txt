@@ -282,11 +282,15 @@ Frame:
 
 	</NDPrototype #NDPrototype[ID] WideForm/NarrowForm?>
 
+	buttons?
+
 	----------
 
 	Prototypes are a frame and then a series of sections within it.  The sections are formatted differently depending on their type.
 
 	The prototype will only have a WideForm or NarrowForm attribute if it contains a parameter section.
+
+	Buttons may or may not appear depending on things such as whether a repository has been defined.
 
 
 Plain Section:
@@ -396,6 +400,27 @@ Parameter Section:
 		FitIntoLeftIndentOnNarrow - The cell is overlaid on another cell with a left indent, and so should fit itself
 												  into that width.
 		FitIntoRightIndentOnNarrow - The cell is short enough to fit into an indent.
+
+
+Buttons:
+
+	--- text ---
+
+	<NDPrototype ButtonPanel #NDPrototypeButtonPanel[ID]>
+
+		<PRepositoryLinks>
+			<a href>link text<PLinkIcon></a>
+		</PRepositoryLinks>
+		...
+
+	</NDPrototype ButtonPanel #NDPrototypeButtonPanel[ID]>
+
+	----------
+
+	NDPrototype ButtonPanel is a separate floating panel that appears when the prototype is hovered over.
+	It is a separate entity, not appearing inside the main NDPrototype DOM object, but still uses NDPrototype
+	to inherit the colors without additional rules.
+
 
 
 Topic: Class Prototype

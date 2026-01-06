@@ -19,6 +19,8 @@ $ToolTipHorizontalMargin = 5;
 $ToolTipHorizontalMarginX2 = 10;
 $ToolTipBottomMargin = 25;  /* leave space for link address pop-up */
 
+$PrototypeButtonBarDelay = 750;
+
 "use strict";
 
 
@@ -272,6 +274,63 @@ var NDContentPage = new function ()
 		};
 
 
+	/* Function: OnPrototypeMouseEnter
+	*/
+	this.OnPrototypeMouseEnter = function (event, prototypeID)
+		{
+		clearTimeout(this.prototypeButtonPanelTimeout);
+
+		if (this.showingPrototypeButtonPanel)
+			{
+			if (this.showingPrototypeButtonPanel == prototypeID)
+				{  return;  }
+			else
+				{  this.HidePrototypeButtonPanel(this.showingPrototypeButtonPanel);  }
+			}
+
+		this.ShowPrototypeButtonPanel(prototypeID);
+		};
+
+
+	/* Function: OnPrototypeMouseLeave
+	*/
+	this.OnPrototypeMouseLeave = function (event, prototypeID)
+		{
+		this.prototypeButtonPanelTimeout = setTimeout("NDContentPage.HidePrototypeButtonPanel(" + prototypeID + ");", $PrototypeButtonBarDelay);
+		};
+
+
+	/* Function: ShowPrototypeButtonPanel
+	*/
+	this.ShowPrototypeButtonPanel = function (prototypeID)
+		{
+		var buttonPanel = document.getElementById("NDPrototypeButtonPanel" + prototypeID);
+
+		if (buttonPanel)
+			{
+			buttonPanel.style.visibility = "visible";
+			this.showingPrototypeButtonPanel = prototypeID;
+			}
+		};
+
+
+	/* Function: HidePrototypeButtonPanel
+	*/
+	this.HidePrototypeButtonPanel = function (prototypeID)
+		{
+		var buttonPanel = document.getElementById("NDPrototypeButtonPanel" + prototypeID);
+
+		if (buttonPanel)
+			{
+			buttonPanel.style.visibility = "hidden";
+
+			if (this.showingPrototypeButtonPanel == prototypeID)
+				{  this.showingPrototypeButtonPanel = undefined;  }
+			}
+		};
+
+
+
 
 	// Group: Tool Tip Functions
 	// ________________________________________________________________________
@@ -441,13 +500,27 @@ var NDContentPage = new function ()
 
 
 
-	// Group: Variables
+	// Group: Prototype Variables
 	// ________________________________________________________________________
 
 
 	/* var: reformatPrototypesTimeout
 		The ID of the prototype reflow timeout if one is running.
 	*/
+
+	/* var: showingPrototypeButtonPanel
+		The ID of the visible prototype button panel, or undefined ifnone.
+	*/
+
+	/* var: prototypeButtonPanelTimeout
+		The timeout used before hiding the button panel.
+	*/
+
+
+
+	// Group: Tooltip Variables
+	// ________________________________________________________________________
+
 
 	/* var: toolTips
 		A hash mapping topic IDs to the complete HTML of the tooltip.  Will be undefined if they haven't

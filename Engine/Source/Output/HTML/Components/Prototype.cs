@@ -96,11 +96,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 *		- The <Context>'s topic must be set.
 		 *		- If type links are being generated, the <Context>'s page must also be set.
 		 */
-		public string BuildPrototype (ParsedPrototype parsedPrototype, Context context, IList<Link> links = null,
-												  IList<Topics.Topic> linkTargets = null)
+		public string BuildPrototype (ParsedPrototype parsedPrototype, Context context, bool forTooltip = false,
+												  IList<Link> links = null, IList<Topics.Topic> linkTargets = null)
 			{
 			StringBuilder output = new StringBuilder();
-			AppendPrototype(parsedPrototype, context, output, links, linkTargets);
+			AppendPrototype(parsedPrototype, context, output, forTooltip, links, linkTargets);
 			return output.ToString();
 			}
 
@@ -119,7 +119,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 *		- If type links are being generated, the <Context>'s page must also be set.
 		 */
 		public void AppendPrototype (ParsedPrototype parsedPrototype, Context context, StringBuilder output,
-												   IList<Link> links = null, IList<Topics.Topic> linkTargets = null)
+												   bool forTooltip = false, IList<Link> links = null, IList<Topics.Topic> linkTargets = null)
 			{
 
 			//
@@ -136,7 +136,24 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			this.links = links;
 			this.linkTargets = linkTargets;
-			this.addLinks = (links != null && linkTargets != null);
+			this.addLinks = (!forTooltip && links != null && linkTargets != null);
+
+			bool addButtonPanel = false;
+
+			Files.FileSources.SourceFolder repositorySource = null;
+			Files.File repositoryFile = null;
+
+			if (!forTooltip)
+				{
+				repositoryFile = EngineInstance.Files.FromID(context.Topic.FileID);
+
+				// If the FileSource isn't a SourceFolder it will be null without throwing an exception
+				repositorySource = EngineInstance.Files.FileSourceOf(repositoryFile) as Files.FileSources.SourceFolder;
+
+				if (repositorySource != null &&
+					repositorySource.CanMakeRepositorySourceFileURLs)
+					{  addButtonPanel = true;  }
+				}
 
 			#if DEBUG
 			if (this.addLinks && context.Page.IsNull)
@@ -189,13 +206,20 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 			//
-			// Add the outer tag to the output
+			// Add the outer prototype tag to the output
 			//
 
 			// We always build the wide form by default, but only include the extra CSS class if there's parameters
 			output.Append("<div id=\"NDPrototype" + Context.Topic.TopicID + "\" class=\"NDPrototype" +
-								  (hasParameters ? " WideForm" : "") + "\">");
+								  (hasParameters ? " WideForm" : "") + "\"");
 
+			if (addButtonPanel)
+				{
+				output.Append(" onmouseenter=\"NDContentPage.OnPrototypeMouseEnter(event," + context.Topic.TopicID + ");\"" +
+									   " onmouseleave=\"NDContentPage.OnPrototypeMouseLeave(event," + context.Topic.TopicID + ");\"");
+				}
+
+				output.Append(">");
 
 			//
 			// Add the content sections to the output
@@ -226,10 +250,45 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 			//
-			// Close the outer tag in the output
+			// Close the outer prototype tag in the output
 			//
 
 			output.Append("</div>");
+
+
+			//
+			// Add repository buttons if necessary
+			//
+
+			if (addButtonPanel)
+				{
+				string linkText;
+
+				if (repositorySource.RepositoryName == null)
+					{
+					linkText = Locale.Get("NaturalDocs.Engine", "HTML.ViewSourceInRepository");
+					}
+				else
+					{
+					linkText = Locale.Get("NaturalDocs.Engine", "HTML.ViewSourceInRepository(name)", repositorySource.RepositoryName);
+					}
+
+				output.Append(
+					"<div id=\"NDPrototypeButtonPanel" + Context.Topic.TopicID + "\" class=\"NDPrototype ButtonPanel\" " +
+						"onmouseenter=\"NDContentPage.OnPrototypeMouseEnter(event," + context.Topic.TopicID + ");\" " +
+						"onmouseleave=\"NDContentPage.OnPrototypeMouseLeave(event," + context.Topic.TopicID + ");\">" +
+
+						"<div class=\"PRepositoryLinks\">" +
+
+							"<a href=\"" + repositorySource.RepositorySourceFileURLOf(repositoryFile.FileName, context.Topic.CodeLineNumber) + "\" " +
+								"target=\"_blank\">" +
+								linkText.ToHTML() + "<span class=\"PLinkIcon\"></span>" +
+							"</a>" +
+
+						"</div>" +
+
+					"</div>");
+				}
 			}
 
 
