@@ -121,9 +121,6 @@
 	$TextLinkColor: #880000;
 		$TextLinkColor_Dark: #F0B0B0;
 		$TextLinkColor_Black: #F8B8B8;
-	$TextLinkActiveColor: #F04040;
-		$TextLinkActiveColor_Dark: #FFE0E0;
-		$TextLinkActiveColor_Black: #FFE8E8;
 
 	$SearchResultsTextColor: #000000;
 		/* Half way between content and menu colors */
@@ -1633,27 +1630,21 @@ td {
 
 	.CTopic a:link,
 	.CTopic a:visited,
-	.CTopic a:hover {
+	.CTopic a:hover,
+	.CTopic a:active {
 		color: $TextLinkColor;
 		}
 		.DarkTheme .CTopic a:link,
 		.DarkTheme .CTopic a:visited,
-		.DarkTheme .CTopic a:hover {
+		.DarkTheme .CTopic a:hover,
+		.DarkTheme .CTopic a:active {
 			color: $TextLinkColor_Dark;
 			}
 		.BlackTheme .CTopic a:link,
 		.BlackTheme .CTopic a:visited,
-		.BlackTheme .CTopic a:hover {
-			color: $TextLinkColor_Black;
-			}
-	.CTopic a:active {
-		color: $TextLinkActiveColor;
-		}
-		.DarkTheme .CTopic a:active {
-			color: $TextLinkActiveColor_Dark;
-			}
+		.BlackTheme .CTopic a:hover,
 		.BlackTheme .CTopic a:active {
-			color: $TextLinkActiveColor_Black;
+			color: $TextLinkColor_Black;
 			}
 
 	.CTopic ul {
