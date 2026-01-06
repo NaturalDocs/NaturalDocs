@@ -653,7 +653,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 		/* Function: FindDuplicateTopic
 		 * Returns the index of a topic that defines the same code element as the passed one, or -1 if there isn't
-		 * any.  Topics are considered duplicates if <Language.IsSameCodeElement> returns true.
+		 * any.  Topics are considered duplicates if <Languages.Parser.IsSameCodeElement> returns true.
 		 */
 		private static int FindDuplicateTopic (Topic topic, List<Topic> listToSearch, Engine.Instance engineInstance)
 			{
