@@ -274,13 +274,13 @@ Frame:
 
 	--- text ---
 
-	<NDPrototype #NDPrototype[ID] WideForm/NarrowForm?>
+	<NDPrototype #NDPrototype[ID] Main WideForm/NarrowForm?>
 
 		section
 		section
 		...
 
-	</NDPrototype #NDPrototype[ID] WideForm/NarrowForm?>
+	</NDPrototype #NDPrototype[ID] Main WideForm/NarrowForm?>
 
 	buttons?
 
@@ -290,7 +290,8 @@ Frame:
 
 	The prototype will only have a WideForm or NarrowForm attribute if it contains a parameter section.
 
-	Buttons may or may not appear depending on things such as whether a repository has been defined.
+	The button panel may or may not appear depending on things such as whether a repository has been defined.  Since they both
+	use NDPrototype, the Main class is used to distinguish the main section from the button panel.
 
 
 Plain Section:
