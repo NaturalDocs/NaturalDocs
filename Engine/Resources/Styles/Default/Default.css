@@ -1975,10 +1975,10 @@ td {
 			}
 
 	/* Underline all links when hovering over the prototype since it may not be obvious that you can click things. */
-	.NDPrototype:hover a:link,
-	.NDPrototype:hover a:visited,
-	.NDPrototype:hover a:hover,
-	.NDPrototype:hover a:active,
+	.NDPrototype.Main:hover a:link,
+	.NDPrototype.Main:hover a:visited,
+	.NDPrototype.Main:hover a:hover,
+	.NDPrototype.Main:hover a:active,
 	.CDLEntry:hover .CDLParameterType a:link,
 	.CDLEntry:hover .CDLParameterType a:visited,
 	.CDLEntry:hover .CDLParameterType a:hover,
