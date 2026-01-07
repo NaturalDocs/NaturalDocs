@@ -1837,22 +1837,43 @@ td {
 		display: inline-block;
 		position: absolute;
 		visibility: hidden;
-		text-align: right;
 		}
 
-		.NDPrototype.ButtonPanel a {
+		.PRepository.SingleLink a {
 			display: inline-block;
 			padding: .45rem .725rem .5rem .85rem;
 			}
+		.PRepository.MultipleLinks {
+			padding: .45rem 0 .5rem .85rem;
+			}
+			.PRepository.MultipleLinks .PRLinks a {
+				display: block;
+				font-weight: normal;
+				padding: 0 .725rem 0 1ex;
+				}
 
-		.NDPrototype.ButtonPanel .PLinkIcon {
+		.PRepository.MultipleLinks {
+			display: grid;
+			}
+			.PRepository.MultipleLinks .PRHeader {
+				grid-row: 1; grid-column: 1;
+				}
+			.PRepository.MultipleLinks .PRLinks {
+				grid-row: 1; grid-column: 2;
+				}
+
+		.PRepository .PLinkIcon {
 			background: transparent url("images/prototype-button-arrow.svg") center center no-repeat;
 			width: 5px; height: 7px;
 			margin: 0 0 .2ex 1ex;
 			display: inline-block;
 			}
-		.DarkTheme .NDPrototype.ButtonPanel .PLinkIcon { background-image: url("images/prototype-button-arrow-dark.svg"); }
-		.BlackTheme .NDPrototype.ButtonPanel .PLinkIcon { background-image: url("images/prototype-button-arrow-black.svg"); }
+			.PRepository.MultipleLinks .PLinkIcon {
+				opacity: .66;
+				}
+
+		.DarkTheme .PRepository .PLinkIcon { background-image: url("images/prototype-button-arrow-dark.svg"); }
+		.BlackTheme .PRepository .PLinkIcon { background-image: url("images/prototype-button-arrow-black.svg"); }
 
 
 

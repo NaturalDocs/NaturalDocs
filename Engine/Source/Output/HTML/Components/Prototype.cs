@@ -138,22 +138,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			this.linkTargets = linkTargets;
 			this.addLinks = (!forTooltip && links != null && linkTargets != null);
 
-			bool addButtonPanel = false;
+			List<RepositoryLink> repositoryLinks = null;
 
-			Files.FileSources.SourceFolder repositorySource = null;
-			Files.File repositoryFile = null;
-
+			// No button panels for tooltip prototypes, so we can skip this when building them
 			if (!forTooltip)
-				{
-				repositoryFile = EngineInstance.Files.FromID(context.Topic.FileID);
+				{  repositoryLinks = BuildRepositoryLinks(context.Topic);  }
 
-				// If the FileSource isn't a SourceFolder it will be null without throwing an exception
-				repositorySource = EngineInstance.Files.FileSourceOf(repositoryFile) as Files.FileSources.SourceFolder;
+			bool addButtonPanel = (!forTooltip && repositoryLinks != null);
 
-				if (repositorySource != null &&
-					repositorySource.CanMakeRepositorySourceFileURLs)
-					{  addButtonPanel = true;  }
-				}
 
 			#if DEBUG
 			if (this.addLinks && context.Page.IsNull)
@@ -213,13 +205,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			output.Append("<div id=\"NDPrototype" + Context.Topic.TopicID + "\" class=\"NDPrototype Main" +
 								  (hasParameters ? " WideForm" : "") + "\"");
 
-			if (addButtonPanel)
-				{
-				output.Append(" onmouseenter=\"NDContentPage.OnPrototypeMouseEnter(event," + context.Topic.TopicID + ");\"" +
-									   " onmouseleave=\"NDContentPage.OnPrototypeMouseLeave(event," + context.Topic.TopicID + ");\"");
-				}
+				if (addButtonPanel)
+					{
+					output.Append(" onmouseenter=\"NDContentPage.OnPrototypeMouseEnter(event," + context.Topic.TopicID + ");\"" +
+										   " onmouseleave=\"NDContentPage.OnPrototypeMouseLeave(event," + context.Topic.TopicID + ");\"");
+					}
 
 				output.Append(">");
+
 
 			//
 			// Add the content sections to the output
@@ -257,48 +250,56 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 			//
-			// Add repository buttons if necessary
+			// Add button panel if necessary
 			//
 
 			if (addButtonPanel)
 				{
-				string linkText;
-
-				if (repositorySource.RepositoryName == null)
-					{
-					linkText = Locale.Get("NaturalDocs.Engine", "HTML.ViewSourceInRepository");
-					}
-				else
-					{
-					linkText = Locale.Get("NaturalDocs.Engine", "HTML.ViewSourceInRepository(name)", repositorySource.RepositoryName);
-					}
-
-				int lineNumber = context.Topic.CodeLineNumber;
-
-				if (lineNumber < 1)
-					{  lineNumber = context.Topic.CommentLineNumber;  }
-
-				// xxx
-				if (context.Topic.OtherDefinitions == null)
-					{  linkText += " (1)";  }
-				else
-					{  linkText += " (" + (1 + context.Topic.OtherDefinitions.Count) + " definitions!)";  }
-
 				output.Append(
 					"<div id=\"NDPrototypeButtonPanel" + Context.Topic.TopicID + "\" class=\"NDPrototype ButtonPanel\" " +
 						"onmouseenter=\"NDContentPage.OnPrototypeMouseEnter(event," + context.Topic.TopicID + ");\" " +
-						"onmouseleave=\"NDContentPage.OnPrototypeMouseLeave(event," + context.Topic.TopicID + ");\">" +
+						"onmouseleave=\"NDContentPage.OnPrototypeMouseLeave(event," + context.Topic.TopicID + ");\">");
 
-						"<div class=\"PRepositoryLinks\">" +
+					if (repositoryLinks != null)
+						{
+						if (repositoryLinks.Count == 1)
+							{
+							output.Append(
+								"<div class=\"PRepository SingleLink\">" +
 
-							"<a href=\"" + repositorySource.RepositorySourceFileURLOf(repositoryFile.FileName, lineNumber) + "\" " +
-								"target=\"_blank\">" +
-								linkText.ToHTML() + "<span class=\"PLinkIcon\"></span>" +
-							"</a>" +
+									"<a href=\"" + repositoryLinks[0].URL + "\" target=\"_blank\">" +
+										Locale.Get("NaturalDocs.Engine", "HTML.ViewSourceInRepository").ToHTML() +
+										"<span class=\"PLinkIcon\"></span>" +
+									"</a>" +
 
-						"</div>" +
+								"</div>");
+							}
+						else
+							{
+							output.Append(
+								"<div class=\"PRepository MultipleLinks\">" +
 
-					"</div>");
+									"<div class=\"PRHeader\">" +
+										Locale.Get("NaturalDocs.Engine", "HTML.ViewSourceInRepository").ToHTML() + ":" +
+									"</div>" +
+
+									"<div class=\"PRLinks\">");
+
+									foreach (var repositoryLink in repositoryLinks)
+										{
+										output.Append(
+											"<a href=\"" + repositoryLink.URL + "\" target=\"_blank\">" +
+												repositoryLink.Title.ToHTML() + "<span class=\"PLinkIcon\"></span>" +
+											"</a>");
+										}
+
+								output.Append(
+									"</div>" + // PRLinks
+								"</div>"); // PRepository
+							}
+						}
+
+				output.Append("</div>"); // ButtonPanel
 				}
 			}
 
@@ -1530,6 +1531,84 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			// Return whether there's anything left to add for another row.
 
 			needAnotherRow = (iterator < end);
+			}
+
+
+		/* Function: BuildRepositoryLinks
+		 * Returns a list of <RepositoryLinks> defining the passed <Topic>, or null if there aren't any.  Note that <RepositoryLink.Title>
+		 * will only be defined if there's more than one, since it's not needed otherwise.
+		 */
+		protected List<RepositoryLink> BuildRepositoryLinks (Engine.Topics.Topic topic)
+			{
+			List<RepositoryLink> links = null;
+
+
+			// First check the topic's main definition
+
+			var definitionFile = EngineInstance.Files.FromID(topic.FileID);
+
+			// If the FileSource isn't a SourceFolder this will be null without throwing an exception
+			var definitionFileSource = EngineInstance.Files.FileSourceOf(definitionFile) as Files.FileSources.SourceFolder;
+
+			if (definitionFileSource != null &&
+				definitionFileSource.CanMakeRepositorySourceFileURLs)
+				{
+				var link = new RepositoryLink();
+
+				link.Topic = topic;
+				link.File = definitionFile;
+
+				link.LineNumber = topic.CodeLineNumber;
+				if (link.LineNumber <= 0)
+					{  link.LineNumber = topic.CommentLineNumber;  }
+
+				link.URL = definitionFileSource.RepositorySourceFileURLOf(definitionFile.FileName, link.LineNumber);
+				// Leave Title null for now
+
+				link.Title = definitionFile.FileName.NameWithoutPath; //xxx
+
+				links = new List<RepositoryLink>();
+				links.Add(link);
+				}
+
+
+			// Now check its other definitions, if any
+
+			if (topic.HasOtherDefinitions)
+				{
+				foreach (var definitionTopic in topic.OtherDefinitions)
+					{
+					definitionFile = EngineInstance.Files.FromID(definitionTopic.FileID);
+
+					// If the FileSource isn't a SourceFolder it will be null without throwing an exception
+					definitionFileSource = EngineInstance.Files.FileSourceOf(definitionFile) as Files.FileSources.SourceFolder;
+
+					if (definitionFileSource != null &&
+						definitionFileSource.CanMakeRepositorySourceFileURLs)
+						{
+						var definitionLink = new RepositoryLink();
+
+						definitionLink.Topic = definitionTopic;
+						definitionLink.File = definitionFile;
+
+						definitionLink.LineNumber = definitionTopic.CodeLineNumber;
+						if (definitionLink.LineNumber <= 0)
+							{  definitionLink.LineNumber = definitionTopic.CommentLineNumber;  }
+
+						definitionLink.URL = definitionFileSource.RepositorySourceFileURLOf(definitionFile.FileName, definitionLink.LineNumber);
+						// Leave Title null for now
+
+						definitionLink.Title = definitionFile.FileName.NameWithoutPath; //xxx
+
+						if (links == null)
+							{  links = new List<RepositoryLink>();  }
+
+						links.Add(definitionLink);
+						}
+					}
+				}
+
+			return links;
 			}
 
 

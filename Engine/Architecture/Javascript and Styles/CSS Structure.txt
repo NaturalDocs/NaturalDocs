@@ -282,7 +282,7 @@ Frame:
 
 	</NDPrototype #NDPrototype[ID] Main WideForm/NarrowForm?>
 
-	buttons?
+	button panel?
 
 	----------
 
@@ -403,16 +403,23 @@ Parameter Section:
 		FitIntoRightIndentOnNarrow - The cell is short enough to fit into an indent.
 
 
-Buttons:
+Button Panel:
 
 	--- text ---
 
 	<NDPrototype ButtonPanel #NDPrototypeButtonPanel[ID]>
 
-		<PRepositoryLinks>
+		<PRepository SingleLink>
 			<a href>link text<PLinkIcon></a>
-		</PRepositoryLinks>
-		...
+		</PRepository SingleLink>
+
+		<PRepository MultipleLinks>
+			<PRHeader>text</PRHeader>
+			<PRLinks>
+				<a href>link text<PLinkIcon></a>
+				...
+			</PRLinks>
+		</PRepository MultipleLinks>
 
 	</NDPrototype ButtonPanel #NDPrototypeButtonPanel[ID]>
 
@@ -421,6 +428,8 @@ Buttons:
 	NDPrototype ButtonPanel is a separate floating panel that appears when the prototype is hovered over.
 	It is a separate entity, not appearing inside the main NDPrototype DOM object, but still uses NDPrototype
 	to inherit the colors without additional rules.
+
+	The PRepository section will be either the SingleLink or the MultipleLinks form as appropriate.
 
 
 
