@@ -143,7 +143,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			Files.FileSources.SourceFolder repositorySource = null;
 			Files.File repositoryFile = null;
 
-			if (!forTooltip)
+			if (!forTooltip &&
+				context.Topic.CodeLineNumber > 0)  // ignore comment-only topics with manual prototypes
 				{
 				repositoryFile = EngineInstance.Files.FromID(context.Topic.FileID);
 
