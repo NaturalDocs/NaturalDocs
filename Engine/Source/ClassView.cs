@@ -39,6 +39,9 @@ namespace CodeClear.NaturalDocs.Engine
 		 * Takes a list of <Topics> that come from the same class but multiple source files and rearranges them into a
 		 * single coherent list.  Some topics may be removed or merged with others.  The original topic list will be changed.
 		 *
+		 * When two topics define the same element one will be chosen to serve as the definition and remain in the list.
+		 * The other will be removed from the list and added in <Topic.OtherDefinitions>.
+		 *
 		 * Each file's topics should appear consecutively in the list and ideally in source order.  The order of the files is not
 		 * important but should ideally be consistent from one run to the next.
 		 *
@@ -200,12 +203,15 @@ namespace CodeClear.NaturalDocs.Engine
 					}
 
 
-				// Delete all the other topics that define the class.  We don't need them anymore.
+				// Remove all the other topics that define the class.  We don't need them anymore.
 
 				for (int i = 1; i < topics.Count; /* don't auto increment */)
 					{
 					if (topics[i].DefinesClass)
-						{  topics.RemoveAt(i);  }
+						{
+						topics[0].AddOtherDefinition(topics[i]);
+						topics.RemoveAt(i);
+						}
 					else
 						{  i++;  }
 					}
@@ -215,7 +221,10 @@ namespace CodeClear.NaturalDocs.Engine
 					for (int i = 0; i < remainingTopics.Count; /* don't auto increment */)
 						{
 						if (remainingTopics[i].DefinesClass)
-							{  remainingTopics.RemoveAt(i);  }
+							{
+							topics[0].AddOtherDefinition(remainingTopics[i]);
+							remainingTopics.RemoveAt(i);
+							}
 						else
 							{  i++;  }
 						}
@@ -268,8 +277,13 @@ namespace CodeClear.NaturalDocs.Engine
 										 ( embeddedTopicCount == duplicateEmbeddedTopicCount &&
 											engineInstance.Links.IsBetterTopicDefinition(remainingTopic, topics[duplicateIndex]) == false ) )
 										{
+										remainingTopic.AddOtherDefinition(topics[duplicateIndex]);
 										topics.RemoveRange(duplicateIndex, 1 + duplicateEmbeddedTopicCount);
 										topics.InsertRange(duplicateIndex, remainingTopics.GetRange(remainingTopicIndex, 1 + embeddedTopicCount));
+										}
+									else
+										{
+										topics[duplicateIndex].AddOtherDefinition(remainingTopic);
 										}
 
 									remainingTopics.RemoveRange(remainingTopicIndex, 1 + embeddedTopicCount);
@@ -294,12 +308,16 @@ namespace CodeClear.NaturalDocs.Engine
 										}
 									else
 										{
+										remainingTopic.AddOtherDefinition(topics[duplicateIndex]);
 										topics[duplicateIndex] = remainingTopic;
 										remainingTopics.RemoveAt(remainingTopicIndex);
 										}
 									}
 								else
-									{  remainingTopics.RemoveAt(remainingTopicIndex);  }
+									{
+									topics[duplicateIndex].AddOtherDefinition(remainingTopic);
+									remainingTopics.RemoveAt(remainingTopicIndex);
+									}
 								}
 
 
@@ -547,6 +565,7 @@ namespace CodeClear.NaturalDocs.Engine
 										// If the duplicate is not embedded we can remove it.
 										else
 											{
+											embeddedTopic.AddOtherDefinition(potentialDuplicateTopic);
 											topics.RemoveAt(potentialDuplicateTopicIndex);
 
 											if (potentialDuplicateTopicIndex < topicIndex)
