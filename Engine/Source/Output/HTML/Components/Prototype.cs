@@ -143,8 +143,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			Files.FileSources.SourceFolder repositorySource = null;
 			Files.File repositoryFile = null;
 
-			if (!forTooltip &&
-				context.Topic.CodeLineNumber > 0)  // ignore comment-only topics with manual prototypes
+			if (!forTooltip)
 				{
 				repositoryFile = EngineInstance.Files.FromID(context.Topic.FileID);
 
@@ -274,6 +273,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					linkText = Locale.Get("NaturalDocs.Engine", "HTML.ViewSourceInRepository(name)", repositorySource.RepositoryName);
 					}
 
+				int lineNumber = context.Topic.CodeLineNumber;
+
+				if (lineNumber < 1)
+					{  lineNumber = context.Topic.CommentLineNumber;  }
+
+				// xxx
+				if (context.Topic.OtherDefinitions == null)
+					{  linkText += " (1)";  }
+				else
+					{  linkText += " (" + (1 + context.Topic.OtherDefinitions.Count) + " definitions!)";  }
+
 				output.Append(
 					"<div id=\"NDPrototypeButtonPanel" + Context.Topic.TopicID + "\" class=\"NDPrototype ButtonPanel\" " +
 						"onmouseenter=\"NDContentPage.OnPrototypeMouseEnter(event," + context.Topic.TopicID + ");\" " +
@@ -281,7 +291,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 						"<div class=\"PRepositoryLinks\">" +
 
-							"<a href=\"" + repositorySource.RepositorySourceFileURLOf(repositoryFile.FileName, context.Topic.CodeLineNumber) + "\" " +
+							"<a href=\"" + repositorySource.RepositorySourceFileURLOf(repositoryFile.FileName, lineNumber) + "\" " +
 								"target=\"_blank\">" +
 								linkText.ToHTML() + "<span class=\"PLinkIcon\"></span>" +
 							"</a>" +
