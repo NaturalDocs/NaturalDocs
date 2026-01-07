@@ -11,6 +11,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using CodeClear.NaturalDocs.Engine.Prototypes;
@@ -178,6 +179,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 
 			ignoredFields = IgnoreFields.None;
 			buildFlags = BuildFlags.None;
+			otherDefinitions = null;
 			}
 
 
@@ -416,6 +418,27 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 				{  return false;  }
 
 			return tagIDs.Contains(tagID);
+			}
+
+
+		/* Function: AddOtherDefinition
+		 *
+		 * Adds the passed topic as an alternative definition to this one.  It will be added to <OtherDefinitions>.
+		 *
+		 * If the other topic already has <OtherDefinitions>, they will be merged into this one ensuring a flat list.
+		 */
+		public void AddOtherDefinition (Topic otherTopic)
+			{
+			if (otherDefinitions == null)
+				{  otherDefinitions = new List<Topic>();  }
+
+			otherDefinitions.Add(otherTopic);
+
+			if (otherTopic.otherDefinitions != null)
+				{
+				otherDefinitions.AddRange(otherTopic.otherDefinitions);
+				otherTopic.otherDefinitions = null;
+				}
 			}
 
 
@@ -1397,6 +1420,26 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 			}
 
 
+		/* Property: HasOtherDefinitions
+		 * Whether <OtherDefinitions> are defined.
+		 */
+		public bool HasOtherDefinitions
+			{
+			get
+				{  return (otherDefinitions != null);  }
+			}
+
+
+		/* Property: OtherDefinitions
+		 * A list of other Topics defining the same element, if relevant.  Null if none.
+		 */
+		public List<Topic> OtherDefinitions
+			{
+			get
+				{  return otherDefinitions;  }
+			}
+
+
 		/* Property: DebuggerDisplay
 		 * Shows the comment type and title when debugging Natural Docs.
 		 */
@@ -1601,6 +1644,10 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		 */
 		protected BuildFlags buildFlags;
 
+		/* var: otherDefinitions
+		 * A list of other Topics defining the same element, if relevant.  Null if none.
+		 */
+		protected List<Topic> otherDefinitions;
 
 		}
 	}
