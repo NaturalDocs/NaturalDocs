@@ -1,8 +1,8 @@
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> TestClass ()</div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
          <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">private</span> TestClass (</div>
@@ -13,7 +13,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
          <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/3/2"><span class="SHKeyword">private</span> TestClass (</div>
@@ -26,11 +26,11 @@
    </div>
 </div>
 -----
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection">~TestClass ()</div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
          <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">extern static</span> TestClass (</div>
@@ -41,6 +41,6 @@
    </div>
 </div>
 -----
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">extern</span> ~TestClass ()</div>
 </div>

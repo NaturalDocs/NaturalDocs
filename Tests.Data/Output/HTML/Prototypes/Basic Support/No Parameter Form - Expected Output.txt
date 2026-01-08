@@ -1,11 +1,11 @@
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> FunctionA ()</div>
 </div>
 -----
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">int</span> VarA</div>
 </div>
 -----
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">public static</span> <span class="SHKeyword">int</span> VarB</div>
 </div>

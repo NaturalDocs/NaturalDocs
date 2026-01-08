@@ -1,4 +1,4 @@
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
          <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/7" style="grid-area:1/1/3/2">Function SimpleA (</div>
@@ -15,7 +15,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
          <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/7" style="grid-area:1/1/3/2">Function SimpleB (</div>
@@ -32,7 +32,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
          <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/7" style="grid-area:1/1/3/2">Function SimpleC (</div>
@@ -49,7 +49,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
          <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/7" style="grid-area:1/1/3/2">Function SimpleD (</div>
@@ -66,7 +66,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
          <div class="PBeforeParameters" data-WideGridArea="1/1/4/2" data-NarrowGridArea="1/1/2/7" style="grid-area:1/1/4/2">Function MultipleA (</div>
@@ -88,7 +88,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
          <div class="PBeforeParameters" data-WideGridArea="1/1/4/2" data-NarrowGridArea="1/1/2/7" style="grid-area:1/1/4/2">Function MultipleB (</div>
@@ -110,7 +110,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
          <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/7" style="grid-area:1/1/3/2">Function UniformityA (</div>
@@ -127,7 +127,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
          <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/7" style="grid-area:1/1/3/2">Function UniformityB (</div>
@@ -144,7 +144,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
          <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/7" style="grid-area:1/1/3/2">Function UniformityC (</div>
@@ -161,7 +161,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
          <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/7" style="grid-area:1/1/3/2">Function UniformityD (</div>
@@ -178,7 +178,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
          <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/7" style="grid-area:1/1/3/2">Function UniformityE (</div>
@@ -195,7 +195,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
          <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/7" style="grid-area:1/1/3/2">Function UniformityF (</div>
@@ -212,7 +212,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
          <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/7" style="grid-area:1/1/3/2">Function UniformityG (</div>
@@ -229,7 +229,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
          <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/7" style="grid-area:1/1/3/2">Function UniformityH (</div>
@@ -246,7 +246,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
          <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/7" style="grid-area:1/1/3/2">Function UniformityI (</div>

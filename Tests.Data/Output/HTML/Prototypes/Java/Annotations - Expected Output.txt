@@ -1,24 +1,24 @@
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHMetadata">@Preliminary</span></div>
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Marker_Annotation1 ()</div>
 </div>
 -----
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHMetadata">@ Preliminary</span></div>
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Marker_Annotation2 ()</div>
 </div>
 -----
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHMetadata">@Preliminary()</span></div>
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Marker_Annotation3 ()</div>
 </div>
 -----
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHMetadata">@ Preliminary ()</span></div>
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Marker_Annotation4 ()</div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
          <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/2/2"><span class="SHMetadata">@Copyright(</span></div>
@@ -29,7 +29,7 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Single_Element_Annotation1 ()</div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
          <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/2/2"><span class="SHMetadata">@Endorsers(</span></div>
@@ -40,7 +40,7 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Single_Element_Annotation2 ()</div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters" data-WideGridArea="1/1/4/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/4/2"><span class="SHMetadata">@RequestForEnhancement(</span></div>
@@ -59,7 +59,7 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">public static</span> <span class="SHKeyword">void</span> Key_Value_Annotation1 ()</div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PPlainSection"><span class="SHMetadata">@Preliminary</span></div>
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
@@ -93,7 +93,7 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">public static</span> <span class="SHKeyword">void</span> Multiple_Annotations ()</div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PPlainSection"><span class="SHMetadata">@GET</span></div>
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">

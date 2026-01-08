@@ -1,14 +1,14 @@
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">FUNCTION</span> Returns1</div>
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div>
 </div>
 -----
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">CREATE FUNCTION</span> Returns2</div>
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> SCHEMA.INTEGER(<span class="SHNumber">2</span>,<span class="SHNumber">3</span>)</div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PPlainSection"><span class="SHKeyword">CREATE OR ALTER FUNCTION</span> Returns3</div>
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -24,7 +24,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/7/2" data-NarrowGridArea="1/1/2/7" style="grid-area:1/1/7/2"><span class="SHKeyword">FUNCTION</span> Params1</div>
@@ -56,7 +56,7 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
          <div class="PBeforeParameters" data-WideGridArea="1/1/5/2" data-NarrowGridArea="1/1/2/7" style="grid-area:1/1/5/2"><span class="SHKeyword">CREATE FUNCTION</span> Params2 (</div>
@@ -78,7 +78,7 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PPlainSection"><span class="SHKeyword">FUNCTION</span> With1</div>
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div>
    <div class="PSection PParameterSection PascalStyle">
@@ -91,7 +91,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PPlainSection"><span class="SHKeyword">FUNCTION</span> With2</div>
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div>
    <div class="PSection PParameterSection PascalStyle">
@@ -104,7 +104,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PPlainSection"><span class="SHKeyword">CREATE OR ALTER FUNCTION</span> With3</div>
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS TABLE</span></div>
    <div class="PSection PParameterSection PascalStyle">
@@ -115,7 +115,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">ALTER FUNCTION</span> @Something.@Complex</div>
@@ -147,7 +147,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/4/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/4/2"><span class="SHKeyword">CREATE FUNCTION</span> Fakeout</div>

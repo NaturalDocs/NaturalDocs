@@ -1,4 +1,4 @@
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/3/2"><span class="SHKeyword">FUNCTION</span> FunctionA</div>
@@ -11,7 +11,7 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2"><span class="SHKeyword">FUNCTION</span> FunctionB</div>
@@ -25,7 +25,7 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2"><span class="SHKeyword">FUNCTION</span> FunctionC</div>
@@ -39,7 +39,7 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2"><span class="SHKeyword">FUNCTION</span> FunctionD</div>
@@ -54,7 +54,7 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/3/2"><span class="SHKeyword">FUNCTION</span> FunctionA2</div>
@@ -67,7 +67,7 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/3/2"><span class="SHKeyword">FUNCTION</span> FunctionA3</div>
@@ -80,7 +80,7 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/3/2"><span class="SHKeyword">FUNCTION</span> FunctionA4</div>
@@ -93,7 +93,7 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/3/2"><span class="SHKeyword">FUNCTION</span> FunctionA5</div>
@@ -106,7 +106,7 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2"><span class="SHKeyword">FUNCTION</span> FunctionB2</div>
@@ -120,7 +120,7 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2"><span class="SHKeyword">FUNCTION</span> FunctionB3</div>
@@ -134,7 +134,7 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2"><span class="SHKeyword">FUNCTION</span> FunctionB4</div>
@@ -148,7 +148,7 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2"><span class="SHKeyword">FUNCTION</span> FunctionB5</div>
@@ -162,7 +162,7 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2"><span class="SHKeyword">FUNCTION</span> FunctionC2</div>
@@ -176,7 +176,7 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2"><span class="SHKeyword">FUNCTION</span> FunctionC3</div>
@@ -190,7 +190,7 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2"><span class="SHKeyword">FUNCTION</span> FunctionC4</div>
@@ -204,7 +204,7 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2"><span class="SHKeyword">FUNCTION</span> FunctionC5</div>
@@ -218,7 +218,7 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2"><span class="SHKeyword">FUNCTION</span> FunctionD2</div>
@@ -233,7 +233,7 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2"><span class="SHKeyword">FUNCTION</span> FunctionD3</div>
@@ -248,7 +248,7 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2"><span class="SHKeyword">FUNCTION</span> FunctionD4</div>
@@ -263,7 +263,7 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2"><span class="SHKeyword">FUNCTION</span> FunctionD5</div>

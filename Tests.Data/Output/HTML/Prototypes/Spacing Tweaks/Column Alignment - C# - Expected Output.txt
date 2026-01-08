@@ -1,4 +1,4 @@
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
          <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/2" style="grid-area:1/1/2/2"><span class="SHKeyword">public</span> <span class="SHKeyword">int</span> <span class="SHKeyword">this</span> [</div>

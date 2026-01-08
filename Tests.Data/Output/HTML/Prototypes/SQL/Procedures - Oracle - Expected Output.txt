@@ -1,4 +1,4 @@
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
          <div class="PBeforeParameters" data-WideGridArea="1/1/5/2" data-NarrowGridArea="1/1/2/6" style="grid-area:1/1/5/2"><span class="SHKeyword">PROCEDURE</span> Params1 (</div>
@@ -19,7 +19,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
          <div class="PBeforeParameters" data-WideGridArea="1/1/5/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/5/2"><span class="SHKeyword">CREATE PROCEDURE</span> Params2 (</div>
@@ -36,7 +36,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
          <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/6" style="grid-area:1/1/3/2"><span class="SHKeyword">CREATE OR REPLACE PROCEDURE</span> Params3 (</div>
@@ -51,7 +51,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
          <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">CREATE OR REPLACE EDITIONABLE RANDOM_WORD PROCEDURE</span> ExtraKeywords (</div>
@@ -62,14 +62,14 @@
    </div>
 </div>
 -----
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">CREATE PROCEDURE</span> Modifiers1</div>
    <div class="PSection PPlainSection"><span class="SHMetadata">SHARING = NONE</span></div>
    <div class="PSection PPlainSection"><span class="SHMetadata">AUTHID DEFINER</span></div>
    <div class="PSection PPlainSection"><span class="SHMetadata">ACCESSIBLE BY (FUNCTION Func1, PACKAGE A.B)</span></div>
 </div>
 -----
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">CREATE PROCEDURE</span> Modifiers2</div>
    <div class="PSection PPlainSection"><span class="SHMetadata">SHARING = METADATA</span></div>
    <div class="PSection PPlainSection"><span class="SHMetadata">AUTHID CURRENT_USER</span></div>

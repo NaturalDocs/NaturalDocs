@@ -1,4 +1,4 @@
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters RightSpaceOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow RightSpaceOnNarrow" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/2/2"><span class="SHMetadata">(*</span></div>
@@ -24,7 +24,7 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">module</span> Attributes1 ()</div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters RightSpaceOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow RightSpaceOnNarrow" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/2/2"><span class="SHMetadata">(*</span></div>
@@ -45,7 +45,7 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">module</span> NoValue1 ()</div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters RightSpaceOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow RightSpaceOnNarrow" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/2/2"><span class="SHMetadata">(*</span></div>
@@ -61,7 +61,7 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">module</span> NoValue2 ()</div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters RightSpaceOnWide FitIntoLeftIndentOnNarrow RightAlignOnNarrow RightSpaceOnNarrow" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/2/2"><span class="SHMetadata">(*</span></div>

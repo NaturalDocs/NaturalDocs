@@ -1,4 +1,4 @@
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PPlainSection"><span class="SHKeyword">module</span> ImportPackage</div>
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
@@ -14,7 +14,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PPlainSection"><span class="SHKeyword">module</span> ImportMember</div>
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
@@ -30,7 +30,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PPlainSection"><span class="SHKeyword">module</span> ImportMultiple1</div>
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="2" data-NarrowColumnCount="1">
@@ -47,7 +47,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PPlainSection"><span class="SHKeyword">module</span> ImportMultiple2</div>
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
@@ -69,7 +69,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PPlainSection"><span class="SHKeyword">module</span> ImportMultiple3</div>
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">

@@ -1,4 +1,4 @@
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/7/2" data-NarrowGridArea="1/1/2/6" style="grid-area:1/1/7/2"><span class="SHKeyword">PROCEDURE</span> Params1</div>
@@ -26,7 +26,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
          <div class="PBeforeParameters" data-WideGridArea="1/1/5/2" data-NarrowGridArea="1/1/2/6" style="grid-area:1/1/5/2"><span class="SHKeyword">CREATE PROC</span> Params2 (</div>
@@ -45,7 +45,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">ALTER PROC</span> Something.Complex</div>
@@ -65,7 +65,7 @@
    <div class="PSection PPlainSection"><span class="SHMetadata">FOR REPLICATION</span></div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/4/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/4/2"><span class="SHKeyword">CREATE PROCEDURE</span> Fakeout</div>

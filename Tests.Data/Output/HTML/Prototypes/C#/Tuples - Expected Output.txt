@@ -1,4 +1,4 @@
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
          <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span>, <span class="SHKeyword">int</span>) FunctionA (</div>
@@ -9,7 +9,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
          <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span> a, <span class="SHKeyword">int</span> b) FunctionB (</div>
@@ -20,7 +20,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
          <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span>, (<span class="SHKeyword">int</span>, <span class="SHKeyword">float</span>)) FunctionC (</div>
@@ -31,7 +31,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
          <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span> a, (<span class="SHKeyword">int</span> m, <span class="SHKeyword">float</span> n) b) FunctionD (</div>
@@ -42,7 +42,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
          <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span>[,,] a, (Namespace.MyClass&lt;<span class="SHKeyword">int</span>&gt; m, <span class="SHKeyword">float</span>? n) b) FunctionE (</div>
@@ -53,27 +53,27 @@
    </div>
 </div>
 -----
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span>, <span class="SHKeyword">int</span>) varA</div>
 </div>
 -----
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span> a, <span class="SHKeyword">int</span> b) varB</div>
 </div>
 -----
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span>, (<span class="SHKeyword">int</span>, <span class="SHKeyword">float</span>)) varC</div>
 </div>
 -----
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span> a, (<span class="SHKeyword">int</span> m, <span class="SHKeyword">float</span> n) b) varD</div>
 </div>
 -----
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span>[,,] a, (Namespace.MyClass&lt;<span class="SHKeyword">int</span>&gt; m, <span class="SHKeyword">float</span>? n) b) varE</div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/2/2"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span>, <span class="SHKeyword">int</span>) PropertyA {</div>
@@ -83,7 +83,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/3/2"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span> a, <span class="SHKeyword">int</span> b) PropertyB {</div>
@@ -94,7 +94,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/2/2"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span>, (<span class="SHKeyword">int</span>, <span class="SHKeyword">float</span>)) PropertyC {</div>
@@ -104,7 +104,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/3/2"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span> a, (<span class="SHKeyword">int</span> m, <span class="SHKeyword">float</span> n) b) PropertyD {</div>
@@ -115,7 +115,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
          <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/2/2"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span>[,,] a, (Namespace.MyClass&lt;<span class="SHKeyword">int</span>&gt; m, <span class="SHKeyword">float</span>? n) b) PropertyE {</div>
@@ -125,7 +125,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
          <div class="PBeforeParameters" data-WideGridArea="1/1/7/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/7/2"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> TypeSpacing (</div>

@@ -1,59 +1,59 @@
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection">Simple <span class="SHKeyword">INTEGER</span></div>
 </div>
 -----
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection">Attributes <span class="SHKeyword">CONSTANT</span> <span class="SHKeyword">INTEGER</span> <span class="SHKeyword">NOT NULL</span></div>
 </div>
 -----
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection">DefaultValue1 <span class="SHKeyword">INTEGER</span></div>
 </div>
 -----
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection">DefaultValue2 <span class="SHKeyword">VARCHAR</span></div>
 </div>
 -----
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection">DefaultValue3 <span class="SHKeyword">INTEGER</span></div>
 </div>
 -----
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection">DefaultValue4 <span class="SHKeyword">Real</span></div>
 </div>
 -----
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection">DefaultValue5 <span class="SHKeyword">real</span></div>
 </div>
 -----
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection">DefaultValue6 <span class="SHKeyword">VarChar</span>(<span class="SHNumber">12</span>)</div>
 </div>
 -----
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection">TypeParens1 <span class="SHKeyword">INTEGER</span>(<span class="SHNumber">6</span>)</div>
 </div>
 -----
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection">TypeParens2 <span class="SHKeyword">INTEGER</span>(<span class="SHNumber">6</span>, <span class="SHNumber">8</span>)</div>
 </div>
 -----
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection">IndirectType1 SomethingElse<span class="SHKeyword">%TYPE</span></div>
 </div>
 -----
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection">IndirectType2 MyTable.Column<span class="SHKeyword">%TYPE</span></div>
 </div>
 -----
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection">IndirectType3 MyTable<span class="SHKeyword">%ROWTYPE</span></div>
 </div>
 -----
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection">AllCombined1 <span class="SHKeyword">CONSTANT</span> <span class="SHKeyword">INTEGER</span>(<span class="SHNumber">1</span>,<span class="SHNumber">2</span>) <span class="SHKeyword">NOT NULL</span></div>
 </div>
 -----
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection">AllCombined2 <span class="SHKeyword">CONSTANT</span> Package.SomethingElse<span class="SHKeyword">%TYPE NOT NULL</span></div>
 </div>

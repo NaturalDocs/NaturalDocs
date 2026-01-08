@@ -1,12 +1,12 @@
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">module</span> EmptyA ()</div>
 </div>
 -----
-<div class="NDPrototype">
+<div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">module</span> EmptyB ( )</div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters" data-WideGridArea="1/1/13/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/13/2"><span class="SHKeyword">module</span> Attributes (</div>
@@ -57,7 +57,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters" data-WideGridArea="1/1/9/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/9/2"><span class="SHKeyword">module</span> Directions (</div>
@@ -86,7 +86,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters" data-WideGridArea="1/1/12/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/12/2"><span class="SHKeyword">module</span> NetTypes (</div>
@@ -121,7 +121,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters" data-WideGridArea="1/1/9/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/9/2"><span class="SHKeyword">module</span> UserDefinedNetTypes (</div>
@@ -150,7 +150,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters" data-WideGridArea="1/1/9/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/9/2"><span class="SHKeyword">module</span> VarKeyword (</div>
@@ -179,7 +179,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
          <div class="PBeforeParameters" data-WideGridArea="1/1/9/2" data-NarrowGridArea="1/1/2/6" style="grid-area:1/1/9/2"><span class="SHKeyword">module</span> VarAndDirectionKeywords (</div>
@@ -216,7 +216,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
          <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">module</span> Interconnects (</div>
@@ -227,7 +227,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
          <div class="PBeforeParameters" data-WideGridArea="1/1/5/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/5/2"><span class="SHKeyword">module</span> InterfacesAndModPorts (</div>
@@ -244,7 +244,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
          <div class="PBeforeParameters" data-WideGridArea="1/1/15/2" data-NarrowGridArea="1/1/2/6" style="grid-area:1/1/15/2"><span class="SHKeyword">module</span> VariableTypes (</div>
@@ -296,7 +296,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
          <div class="PBeforeParameters" data-WideGridArea="1/1/13/2" data-NarrowGridArea="1/1/2/6" style="grid-area:1/1/13/2"><span class="SHKeyword">module</span> StructsAndUnions (</div>
@@ -345,7 +345,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
          <div class="PBeforeParameters" data-WideGridArea="1/1/22/2" data-NarrowGridArea="1/1/2/6" style="grid-area:1/1/22/2"><span class="SHKeyword">module</span> Enums (</div>
@@ -427,7 +427,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters" data-WideGridArea="1/1/22/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/22/2"><span class="SHKeyword">module</span> QualifiedAndParameterizedTypes (</div>
@@ -481,7 +481,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
          <div class="PBeforeParameters" data-WideGridArea="1/1/8/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/8/2"><span class="SHKeyword">module</span> DoubleParameterizedTypes (</div>
@@ -504,7 +504,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
          <div class="PBeforeParameters" data-WideGridArea="1/1/6/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/6/2"><span class="SHKeyword">module</span> TypeReferences (</div>
@@ -523,7 +523,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
          <div class="PBeforeParameters" data-WideGridArea="1/1/4/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/4/2"><span class="SHKeyword">module</span> PortBinding (</div>
@@ -537,7 +537,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
          <div class="PBeforeParameters" data-WideGridArea="1/1/6/2" data-NarrowGridArea="1/1/2/7" style="grid-area:1/1/6/2"><span class="SHKeyword">module</span> Macros (</div>
@@ -558,7 +558,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters" data-WideGridArea="1/1/31/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/31/2"><span class="SHKeyword">module</span> NetTypesAndDataTypes (</div>
@@ -641,7 +641,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters" data-WideGridArea="1/1/17/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/17/2"><span class="SHKeyword">module</span> UserNetTypesAndDataTypes (</div>
@@ -690,7 +690,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters" data-WideGridArea="1/1/17/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/17/2"><span class="SHKeyword">module</span> NetTypesAndUserDataTypes (</div>
@@ -739,7 +739,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters" data-WideGridArea="1/1/9/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/9/2"><span class="SHKeyword">module</span> UserNetTypesAndUserDataTypes (</div>
@@ -768,7 +768,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
          <div class="PBeforeParameters" data-WideGridArea="1/1/9/2" data-NarrowGridArea="1/1/2/7" style="grid-area:1/1/9/2"><span class="SHKeyword">module</span> ImpliedTypesA (</div>
@@ -807,7 +807,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
          <div class="PBeforeParameters" data-WideGridArea="1/1/7/2" data-NarrowGridArea="1/1/2/6" style="grid-area:1/1/7/2"><span class="SHKeyword">module</span> ImpliedTypesB (</div>
@@ -837,7 +837,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
          <div class="PBeforeParameters" data-WideGridArea="1/1/15/2" data-NarrowGridArea="1/1/2/7" style="grid-area:1/1/15/2"><span class="SHKeyword">module</span> ImpliedTypesC (</div>
@@ -907,7 +907,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
          <div class="PBeforeParameters" data-WideGridArea="1/1/7/2" data-NarrowGridArea="1/1/2/7" style="grid-area:1/1/7/2"><span class="SHKeyword">module</span> ImpliedTypesD (</div>
@@ -941,7 +941,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
          <div class="PBeforeParameters" data-WideGridArea="1/1/5/2" data-NarrowGridArea="1/1/2/6" style="grid-area:1/1/5/2"><span class="SHKeyword">module</span> ImpliedTypesE (</div>
@@ -964,7 +964,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
          <div class="PBeforeParameters" data-WideGridArea="1/1/9/2" data-NarrowGridArea="1/1/2/6" style="grid-area:1/1/9/2"><span class="SHKeyword">module</span> ImpliedDirectionA (</div>
@@ -1001,7 +1001,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
          <div class="PBeforeParameters" data-WideGridArea="1/1/9/2" data-NarrowGridArea="1/1/2/7" style="grid-area:1/1/9/2"><span class="SHKeyword">module</span> ImpliedDirectionB (</div>
@@ -1046,7 +1046,7 @@
    </div>
 </div>
 -----
-<div class="NDPrototype WideForm">
+<div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="8" data-NarrowColumnCount="7">
          <div class="PBeforeParameters" data-WideGridArea="1/1/9/2" data-NarrowGridArea="1/1/2/8" style="grid-area:1/1/9/2"><span class="SHKeyword">module</span> ImpliedDirectionC (</div>

@@ -2,7 +2,7 @@
 
    <div class="CTitle">DocumentedEnumWithCommentValues</div>
 
-   <div class="NDPrototype">
+   <div class="NDPrototype PContent">
       <div class="PSection PPlainSection"><span class="SHKeyword">enum</span> DocumentedEnumWithCommentValues</div>
    </div>
 
@@ -16,7 +16,7 @@
 
    <div class="CTitle">DocumentedEnumWithoutCommentValues</div>
 
-   <div class="NDPrototype">
+   <div class="NDPrototype PContent">
       <div class="PSection PPlainSection"><span class="SHKeyword">enum</span> DocumentedEnumWithoutCommentValues</div>
    </div>
 

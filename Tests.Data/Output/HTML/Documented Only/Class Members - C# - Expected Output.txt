@@ -2,7 +2,7 @@
 
    <div class="CTitle">UndocumentedClass_NDDocumentedFunction</div>
 
-   <div class="NDPrototype">
+   <div class="NDPrototype PContent">
       <div class="PSection PPlainSection"><span class="SHKeyword">void</span> UndocumentedClass_NDDocumentedFunction ()</div>
    </div>
 
@@ -12,7 +12,7 @@
 
    <div class="CTitle">UndocumentedClass_NDHeaderlessDocumentedFunction</div>
 
-   <div class="NDPrototype">
+   <div class="NDPrototype PContent">
       <div class="PSection PPlainSection"><span class="SHKeyword">void</span> UndocumentedClass_NDHeaderlessDocumentedFunction ()</div>
    </div>
 
@@ -24,7 +24,7 @@
 
    <div class="CTitle">UndocumentedClass_JavadocDocumentedFunction</div>
 
-   <div class="NDPrototype">
+   <div class="NDPrototype PContent">
       <div class="PSection PPlainSection"><span class="SHKeyword">void</span> UndocumentedClass_JavadocDocumentedFunction ()</div>
    </div>
 
@@ -38,7 +38,7 @@
 
    <div class="CTitle">UndocumentedClass_XMLDocumentedFunction</div>
 
-   <div class="NDPrototype">
+   <div class="NDPrototype PContent">
       <div class="PSection PPlainSection"><span class="SHKeyword">void</span> UndocumentedClass_XMLDocumentedFunction ()</div>
    </div>
 
@@ -62,7 +62,7 @@
 
    <div class="CTitle">NDDocumentedClass_NDDocumentedFunction</div>
 
-   <div class="NDPrototype">
+   <div class="NDPrototype PContent">
       <div class="PSection PPlainSection"><span class="SHKeyword">void</span> NDDocumentedClass_NDDocumentedFunction ()</div>
    </div>
 
@@ -72,7 +72,7 @@
 
    <div class="CTitle">NDDocumentedClass_NDHeaderlessDocumentedFunction</div>
 
-   <div class="NDPrototype">
+   <div class="NDPrototype PContent">
       <div class="PSection PPlainSection"><span class="SHKeyword">void</span> NDDocumentedClass_NDHeaderlessDocumentedFunction ()</div>
    </div>
 
@@ -84,7 +84,7 @@
 
    <div class="CTitle">NDDocumentedClass_JavadocDocumentedFunction</div>
 
-   <div class="NDPrototype">
+   <div class="NDPrototype PContent">
       <div class="PSection PPlainSection"><span class="SHKeyword">void</span> NDDocumentedClass_JavadocDocumentedFunction ()</div>
    </div>
 
@@ -98,7 +98,7 @@
 
    <div class="CTitle">NDDocumentedClass_XMLDocumentedFunction</div>
 
-   <div class="NDPrototype">
+   <div class="NDPrototype PContent">
       <div class="PSection PPlainSection"><span class="SHKeyword">void</span> NDDocumentedClass_XMLDocumentedFunction ()</div>
    </div>
 
@@ -124,7 +124,7 @@
 
    <div class="CTitle">NDHeaderlessDocumentedClass_NDDocumentedFunction</div>
 
-   <div class="NDPrototype">
+   <div class="NDPrototype PContent">
       <div class="PSection PPlainSection"><span class="SHKeyword">void</span> NDHeaderlessDocumentedClass_NDDocumentedFunction ()</div>
    </div>
 
@@ -134,7 +134,7 @@
 
    <div class="CTitle">NDHeaderlessDocumentedClass_NDHeaderlessDocumentedFunction</div>
 
-   <div class="NDPrototype">
+   <div class="NDPrototype PContent">
       <div class="PSection PPlainSection"><span class="SHKeyword">void</span> NDHeaderlessDocumentedClass_NDHeaderlessDocumentedFunction ()</div>
    </div>
 
@@ -146,7 +146,7 @@
 
    <div class="CTitle">NDHeaderlessDocumentedClass_JavadocDocumentedFunction</div>
 
-   <div class="NDPrototype">
+   <div class="NDPrototype PContent">
       <div class="PSection PPlainSection"><span class="SHKeyword">void</span> NDHeaderlessDocumentedClass_JavadocDocumentedFunction ()</div>
    </div>
 
@@ -160,7 +160,7 @@
 
    <div class="CTitle">NDHeaderlessDocumentedClass_XMLDocumentedFunction</div>
 
-   <div class="NDPrototype">
+   <div class="NDPrototype PContent">
       <div class="PSection PPlainSection"><span class="SHKeyword">void</span> NDHeaderlessDocumentedClass_XMLDocumentedFunction ()</div>
    </div>
 
@@ -188,7 +188,7 @@
 
    <div class="CTitle">JavadocDocumentedClass_NDDocumentedFunction</div>
 
-   <div class="NDPrototype">
+   <div class="NDPrototype PContent">
       <div class="PSection PPlainSection"><span class="SHKeyword">void</span> JavadocDocumentedClass_NDDocumentedFunction ()</div>
    </div>
 
@@ -198,7 +198,7 @@
 
    <div class="CTitle">JavadocDocumentedClass_NDHeaderlessDocumentedFunction</div>
 
-   <div class="NDPrototype">
+   <div class="NDPrototype PContent">
       <div class="PSection PPlainSection"><span class="SHKeyword">void</span> JavadocDocumentedClass_NDHeaderlessDocumentedFunction ()</div>
    </div>
 
@@ -210,7 +210,7 @@
 
    <div class="CTitle">JavadocDocumentedClass_JavadocDocumentedFunction</div>
 
-   <div class="NDPrototype">
+   <div class="NDPrototype PContent">
       <div class="PSection PPlainSection"><span class="SHKeyword">void</span> JavadocDocumentedClass_JavadocDocumentedFunction ()</div>
    </div>
 
@@ -224,7 +224,7 @@
 
    <div class="CTitle">JavadocDocumentedClass_XMLDocumentedFunction</div>
 
-   <div class="NDPrototype">
+   <div class="NDPrototype PContent">
       <div class="PSection PPlainSection"><span class="SHKeyword">void</span> JavadocDocumentedClass_XMLDocumentedFunction ()</div>
    </div>
 
@@ -250,7 +250,7 @@
 
    <div class="CTitle">XMLDocumentedClass_NDDocumentedFunction</div>
 
-   <div class="NDPrototype">
+   <div class="NDPrototype PContent">
       <div class="PSection PPlainSection"><span class="SHKeyword">void</span> XMLDocumentedClass_NDDocumentedFunction ()</div>
    </div>
 
@@ -260,7 +260,7 @@
 
    <div class="CTitle">XMLDocumentedClass_NDHeaderlessDocumentedFunction</div>
 
-   <div class="NDPrototype">
+   <div class="NDPrototype PContent">
       <div class="PSection PPlainSection"><span class="SHKeyword">void</span> XMLDocumentedClass_NDHeaderlessDocumentedFunction ()</div>
    </div>
 
@@ -272,7 +272,7 @@
 
    <div class="CTitle">XMLDocumentedClass_JavadocDocumentedFunction</div>
 
-   <div class="NDPrototype">
+   <div class="NDPrototype PContent">
       <div class="PSection PPlainSection"><span class="SHKeyword">void</span> XMLDocumentedClass_JavadocDocumentedFunction ()</div>
    </div>
 
@@ -286,7 +286,7 @@
 
    <div class="CTitle">XMLDocumentedClass_XMLDocumentedFunction</div>
 
-   <div class="NDPrototype">
+   <div class="NDPrototype PContent">
       <div class="PSection PPlainSection"><span class="SHKeyword">void</span> XMLDocumentedClass_XMLDocumentedFunction ()</div>
    </div>
 
