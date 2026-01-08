@@ -274,13 +274,13 @@ Frame:
 
 	--- text ---
 
-	<NDPrototype #NDPrototype[ID] Main WideForm/NarrowForm?>
+	<NDPrototype #NDPrototype[ID] PContent WideForm/NarrowForm?>
 
 		section
 		section
 		...
 
-	</NDPrototype #NDPrototype[ID] Main WideForm/NarrowForm?>
+	</NDPrototype #NDPrototype[ID] PContent WideForm/NarrowForm?>
 
 	button panel?
 
@@ -291,7 +291,7 @@ Frame:
 	The prototype will only have a WideForm or NarrowForm attribute if it contains a parameter section.
 
 	The button panel may or may not appear depending on things such as whether a repository has been defined.  Since they both
-	use NDPrototype, the Main class is used to distinguish the main section from the button panel.
+	use NDPrototype, the PContent class is used to distinguish the main content section from the button panel.
 
 
 Plain Section:
@@ -407,7 +407,7 @@ Button Panel:
 
 	--- text ---
 
-	<NDPrototype ButtonPanel #NDPrototypeButtonPanel[ID]>
+	<NDPrototype PButtonPanel #NDPrototypeButtonPanel[ID]>
 
 		<PRepository SingleLink>
 			<a href>link text<PLinkIcon></a>
@@ -421,13 +421,13 @@ Button Panel:
 			</PRLinks>
 		</PRepository MultipleLinks>
 
-	</NDPrototype ButtonPanel #NDPrototypeButtonPanel[ID]>
+	</NDPrototype PButtonPanel #NDPrototypeButtonPanel[ID]>
 
 	----------
 
-	NDPrototype ButtonPanel is a separate floating panel that appears when the prototype is hovered over.
-	It is a separate entity, not appearing inside the main NDPrototype DOM object, but still uses NDPrototype
-	to inherit the colors without additional rules.
+	The button panel is a separate floating panel that appears when the prototype is hovered over.  It is a
+	separate entity, not appearing inside the main NDPrototype DOM object, but still uses NDPrototype to
+	inherit the colors without additional rules.
 
 	The PRepository section will be either the SingleLink or the MultipleLinks form as appropriate.
 

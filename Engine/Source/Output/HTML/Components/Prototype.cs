@@ -202,7 +202,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			//
 
 			// We always build the wide form by default, but only include the extra CSS class if there's parameters
-			output.Append("<div id=\"NDPrototype" + Context.Topic.TopicID + "\" class=\"NDPrototype Main" +
+			output.Append("<div id=\"NDPrototype" + Context.Topic.TopicID + "\" class=\"NDPrototype PContent" +
 								  (hasParameters ? " WideForm" : "") + "\"");
 
 				if (addButtonPanel)
@@ -256,7 +256,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			if (addButtonPanel)
 				{
 				output.Append(
-					"<div id=\"NDPrototypeButtonPanel" + Context.Topic.TopicID + "\" class=\"NDPrototype ButtonPanel\" " +
+					"<div id=\"NDPrototypeButtonPanel" + Context.Topic.TopicID + "\" class=\"NDPrototype PButtonPanel\" " +
 						"onmouseenter=\"NDContentPage.OnPrototypeMouseEnter(event," + context.Topic.TopicID + ");\" " +
 						"onmouseleave=\"NDContentPage.OnPrototypeMouseLeave(event," + context.Topic.TopicID + ");\">");
 

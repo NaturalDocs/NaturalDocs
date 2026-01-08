@@ -1613,7 +1613,7 @@ td {
 	.CTopic .NDClassPrototype {
 		margin: .6rem $Indent $DiagramSpacing $Indent;
 		}
-	.CTopic .NDPrototype.ButtonPanel {
+	.CTopic .NDPrototype.PButtonPanel {
 		margin: calc(-$DiagramSpacing - 1px) $Indent $DiagramSpacing $Indent;
 		}
 
@@ -1800,15 +1800,10 @@ td {
 	/*  Sizing and Spacing  */
 
 	.NDPrototype {
-		font: $CodeFontSize $CodeFontFamily;
 		background-color: $ContentBackgroundColor;
 		border: 1px solid #C0C0C0;
-		padding: $CodePadding;
-		overflow: auto;
-		scrollbar-width: thin;
 		scrollbar-color: #C0C0C0 $ContentBackgroundColor;
 		}
-		.NDPrototype::-webkit-scrollbar {  height: 7px;  }
 		.NDPrototype::-webkit-scrollbar-track {  background-color: $ContentBackgroundColor;  }
 		.NDPrototype::-webkit-scrollbar-thumb {  background-color: #C0C0C0;  }
 
@@ -1829,10 +1824,18 @@ td {
 			.BlackTheme .NDPrototype::-webkit-scrollbar-thumb {  background-color: #686868;  }
 
 
-	.NDPrototype.ButtonPanel {
+	.PContent {
+		font: $CodeFontSize $CodeFontFamily;
+		padding: $CodePadding;
+		overflow: auto;
+		scrollbar-width: thin;
+		}
+		.PContent::-webkit-scrollbar {  height: 7px;  }
+
+
+	.PButtonPanel {
 		font: $semibold 9pt $ContentFontFamily;
 		border-top-style: dashed;
-		padding: 0;
 
 		display: inline-block;
 		position: absolute;
@@ -1996,10 +1999,10 @@ td {
 			}
 
 	/* Underline all links when hovering over the prototype since it may not be obvious that you can click things. */
-	.NDPrototype.Main:hover a:link,
-	.NDPrototype.Main:hover a:visited,
-	.NDPrototype.Main:hover a:hover,
-	.NDPrototype.Main:hover a:active,
+	.PContent:hover a:link,
+	.PContent:hover a:visited,
+	.PContent:hover a:hover,
+	.PContent:hover a:active,
 	.CDLEntry:hover .CDLParameterType a:link,
 	.CDLEntry:hover .CDLParameterType a:visited,
 	.CDLEntry:hover .CDLParameterType a:hover,
