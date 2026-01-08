@@ -361,6 +361,7 @@ namespace CodeClear.NaturalDocs.Tests
 
 							Test test = Test.CreateFromExpectedOutputFile(expectedOutputFilePath);
 							test.ClassID = classID;
+							test.ClassString = classTopics[0].ClassString;
 							tests.Add(test);
 
 							classID++;

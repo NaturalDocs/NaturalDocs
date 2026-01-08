@@ -14,6 +14,7 @@
 
 using System;
 using CodeClear.NaturalDocs.Engine;
+using CodeClear.NaturalDocs.Engine.Symbols;
 
 
 namespace CodeClear.NaturalDocs.Tests
@@ -119,6 +120,7 @@ namespace CodeClear.NaturalDocs.Tests
 			this.actualOutputFile = actualOutputFile;
 
 			classID = 0;
+			classString = default;
 			}
 
 
@@ -333,6 +335,19 @@ namespace CodeClear.NaturalDocs.Tests
 			}
 
 
+		/* Property: ClassString
+		 * An optional <ClassString> associated with the test.  This is useful for class-based tests that may not have a
+		 * single input file.  Can be ignored for everything else.
+		 */
+		public ClassString ClassString
+			{
+			get
+				{  return classString;  }
+			protected internal set
+				{  classString = value;  }
+			}
+
+
 
 		// Group: Variables
 		// _________________________________________________________________________
@@ -373,6 +388,12 @@ namespace CodeClear.NaturalDocs.Tests
 		 * input file.  Can be ignored for everything else.
 		 */
 		protected int classID;
+
+		/* var: classString
+		 * An optional <ClassString> associated with the test.  This is useful for class-based tests that may not have a
+		 * single input file.  Can be ignored for everything else.
+		 */
+		protected ClassString classString;
 
 		}
 	}
