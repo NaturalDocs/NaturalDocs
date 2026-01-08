@@ -320,7 +320,7 @@ namespace CodeClear.NaturalDocs.Tests
 			}
 
 
-		/* Proeprty: ClassID
+		/* Property: ClassID
 		 * An optional class ID associated with the test.  This is useful for class-based tests that may not have a single
 		 * input file.  Can be ignored for everything else.
 		 */
