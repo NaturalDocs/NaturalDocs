@@ -65,9 +65,21 @@ namespace CodeClear.NaturalDocs.Tests
 		 *		HTML - The test runner will read the contents of the input file's generated HTML output file and send it to
 		 *				   <RunTest(string)>.  Requires at least <EngineMode.InstanceAndGeneratedDocs>.
 		 *
+		 *		ClassHTML - The test runner will parse all of the source files in the folder, read the contents of each class's
+		 *						   HTML output file, and send it to <RunTest(string)>.
+		 *
+		 *						   This is similar to <ClassTopics> and <HTML>.  It will send each class's resulting HTML output
+		 *						   to <RunTest(string)>, regardless of how many source files contributed to each one.
+		 *
+		 *						   One <Test> will be automatically generated for each class, not each source file.  <Tests> will
+		 *						   also be generated for any expected output files that do not have corresponding actual output
+		 *						   files so that they can fail.
+		 *
+		 *						   Requires at least <EngineMode.InstanceAndGeneratedDocs>.
+		 *
 		 */
 		protected enum InputMode
-			{  String, Lines, Topics, ClassTopics, CommentsAndTopics, CodeElements, HTML  }
+			{  String, Lines, Topics, ClassTopics, CommentsAndTopics, CodeElements, HTML, ClassHTML  }
 
 
 		/* Enum: EngineMode
@@ -319,9 +331,9 @@ namespace CodeClear.NaturalDocs.Tests
 		 *		In most cases the default implementation creates a list of all the files in the <TestFolder> which match against
 		 *		<Test.IsInputFile()>.  It does not recurse into subfolders.
 		 *
-		 *		For <InputMode.ClassTopics> the default implementation instead iterates though all the classes and creates a test for
-		 *		each one, regardless of how many source files contributed to each class.  It will also create tests for each expected
-		 *		output file that doesn't have a corresponding actual output file so that they can fail.
+		 *		For <InputMode.ClassTopics> and <InputMode.ClassHTML> the default implementation instead iterates though all the
+		 *		classes and creates a test for each one, regardless of how many source files contributed to each class.  It will also create
+		 *		tests for each expected output file that doesn't have a corresponding actual output file so that they can fail.
 		 *
 		 */
 		protected virtual bool FindTests (out List<Test> tests)
@@ -329,9 +341,10 @@ namespace CodeClear.NaturalDocs.Tests
 			tests = new List<Test>();
 
 
-			// Class Topics
+			// Class Topics and HTML
 
-			if (inputMode == InputMode.ClassTopics)
+			if (inputMode == InputMode.ClassTopics ||
+				inputMode == InputMode.ClassHTML)
 				{
 				StringSet expectedOutputFiles = new StringSet();
 
@@ -492,7 +505,7 @@ namespace CodeClear.NaturalDocs.Tests
 
 							try
 								{
-								classTopics =  accessor.GetTopicsInClass(test.ClassID, Delegates.NeverCancel);
+								classTopics = accessor.GetTopicsInClass(test.ClassID, Delegates.NeverCancel);
 								ClassView.Merge(ref classTopics, EngineInstance);
 								}
 							finally
@@ -561,6 +574,31 @@ namespace CodeClear.NaturalDocs.Tests
 					string html = System.IO.File.ReadAllText(htmlFile);
 
 					actualOutput = RunTest(html);
+					}
+
+
+				// Class HTML
+
+				else if (inputMode == InputMode.ClassHTML)
+					{
+					if (test.ClassID <= 0)
+						{  actualOutput = "(No class " + test.Name + " was found)";  }
+					else
+						{
+						var classContext = new Engine.Output.HTML.Context(engineManager.HTMLBuilder, test.ClassID, test.ClassString);
+
+						Path htmlFile = classContext.OutputFile;
+
+						string html = null;
+
+						try
+							{  html = System.IO.File.ReadAllText(htmlFile);  }
+						catch (Exception e)
+							{  actualOutput = "Could not read " + htmlFile + ": " + e.Message + " (" + e.GetType().Name + " exception)";  }
+
+						if (html != null)
+							{  actualOutput = RunTest(html);  }
+						}
 					}
 
 
