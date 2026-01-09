@@ -31,8 +31,8 @@ namespace CodeClear.NaturalDocs.Tests.TestRunners
 	public abstract class HTML : TestRunner
 		{
 
-		protected HTML ()
-			: base (InputMode.HTML, EngineMode.InstanceAndGeneratedDocs)
+		protected HTML (InputMode inputMode = InputMode.HTML)
+			: base (inputMode, EngineMode.InstanceAndGeneratedDocs)
 			{  	}
 
 
