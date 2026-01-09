@@ -133,6 +133,20 @@ namespace CodeClear.NaturalDocs.Tests
 				inputTarget.Folder = inputFolder;
 				inputTarget.FolderPropertyLocation = Engine.Config.PropertySource.CommandLine;
 
+				if (testFolder.Config.SimulateRepository)
+					{
+					inputTarget.RepositoryName = "RepoSite";
+					inputTarget.RepositoryBranchPropertyLocation = Engine.Config.PropertySource.CommandLine;
+
+					inputTarget.RepositoryProjectURL = "https://reposite.com/MyProject/";
+					inputTarget.RepositoryProjectURLPropertyLocation = Engine.Config.PropertySource.CommandLine;
+
+					inputTarget.RepositorySourceURLTemplate =
+						"https://reposite.com/MyProject/src/" + Engine.Config.RepositorySubstitutions.FilePath +
+						"#Line" + Engine.Config.RepositorySubstitutions.LineNumber;
+					inputTarget.RepositorySourceURLTemplatePropertyLocation = Engine.Config.PropertySource.CommandLine;
+					}
+
 				engineConfig.InputTargets.Add(inputTarget);
 
 			engineConfig.ProjectConfigFolder = projectFolder;

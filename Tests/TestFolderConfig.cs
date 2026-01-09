@@ -107,6 +107,16 @@ namespace CodeClear.NaturalDocs.Tests
 							{  configFile.AddError("Unrecognized value \"" + value + "\" for Documented Only.", lcIdentifier);  }
 						}
 
+					else if (lcIdentifier == "simulate repository")
+						{
+						if (ConfigFile.IsYes(value))
+							{  testFolderConfig.simulateRepository = true;  }
+						else if (ConfigFile.IsNo(value))
+							{  testFolderConfig.simulateRepository = false;  }
+						else
+							{  configFile.AddError("Unrecognized value \"" + value + "\" for Simulate Repository.", lcIdentifier);  }
+						}
+
 					else
 						{  configFile.AddError("Unrecognized identifier \"" + lcIdentifier + "\".", lcIdentifier);  }
 					}
@@ -142,6 +152,7 @@ namespace CodeClear.NaturalDocs.Tests
 			autoGroup = false;
 
 			documentedOnly = false;
+			simulateRepository = false;
 			}
 
 
@@ -224,6 +235,15 @@ namespace CodeClear.NaturalDocs.Tests
 				{  return documentedOnly;  }
 			}
 
+		/* Property: SimulateRepository
+		 * Whether sample repository info should be generated for the source.
+		 */
+		public bool SimulateRepository
+			{
+			get
+				{  return simulateRepository;  }
+			}
+
 
 
 		// Group: Variables
@@ -271,6 +291,11 @@ namespace CodeClear.NaturalDocs.Tests
 		 * Whether only documented code elements should appear in the output.
 		 */
 		protected bool documentedOnly;
+
+		/* var: simulateRepository
+		 * Whether sample repository information should be generated for the source.
+		 */
+		protected bool simulateRepository;
 
 		}
 	}
