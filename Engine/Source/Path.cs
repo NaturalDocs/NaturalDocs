@@ -457,10 +457,7 @@ namespace CodeClear.NaturalDocs.Engine
 		 */
 		public string ToURL ()
 			{
-            string url = pathString;
-
-			if (SystemInfo.PathSeparatorCharacter != '/')
-				{  url = url.Replace(SystemInfo.PathSeparatorCharacter, '/');  }
+            string url = this.ToString('/');
 
 			url = url.Replace("%", "%25");
 			url = url.Replace(" ", "%20");
@@ -522,6 +519,20 @@ namespace CodeClear.NaturalDocs.Engine
 			{
 			return pathString;
 			}
+
+		/* Function: ToString (separator)
+		 * Returns the Path as a string, but using the specified separator character instead of the platform-native one.
+		 */
+		public string ToString (char separator)
+			{
+            string result = pathString;
+
+			if (SystemInfo.PathSeparatorCharacter != separator)
+				{  result = result.Replace(SystemInfo.PathSeparatorCharacter, separator);  }
+
+			return result;
+			}
+
 
 		/* Function: GetHashCode
 		 */

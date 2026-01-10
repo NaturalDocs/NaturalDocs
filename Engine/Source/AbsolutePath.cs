@@ -241,6 +241,14 @@ namespace CodeClear.NaturalDocs.Engine
 			return path.ToString();
 			}
 
+		/* Function: ToString (separator)
+		 * Returns the Path as a string, but using the specified separator character instead of the platform-native one.
+		 */
+		public string ToString (char separator)
+			{
+			return path.ToString(separator);
+			}
+
 		/* Function: GetHashCode
 		 */
 		public override int GetHashCode ()
