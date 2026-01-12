@@ -102,3 +102,10 @@ _______________________________________________________________________________
 		> Documented Only: [yes/no]
 
 		Whether only documented code elements should appear in the output.  Optional, defaults to no.
+
+
+	Topic: Repository
+
+		> Simulate Repository: [yes/no]
+
+		Whether sample repository info should be generated for the input.  The specific settings will be handled automatically.
