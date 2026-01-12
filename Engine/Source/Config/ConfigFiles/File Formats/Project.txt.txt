@@ -72,6 +72,21 @@ _______________________________________________________________________________
 		Name can optionally be specified.  It's not required if there is only one source folder.  If there's more than one and it's
 		not specified it will be automatically generated.
 
+		> [name] Repository: [url]
+		>    Branch: [name]
+		>    Link Template: [url]
+
+		The web-based repository for the source files.  The URL should go to the main project page, such as
+		"https://github.com/User/MyProject". You can optionally include the name of the repository site, such as "GitHub".
+
+		When using GitHub, CodeBerg, or Gitea and the links should to go to a specific branch, the branch name can be specified.
+		When using GitLab it must always include the branch name, which could be "main" or "master" for the trunk.
+
+		When not using GitHub, GitLab, CodeBerg, or Gitea, the URL used to link to source files must be specified.  "{File}"
+		represents where the file path goes and "{LineNumber}" where the line number goes.  For example,
+		"https://mysite.com/repo/src/{File}#L{LineNumber}".
+
+
 		Overridden Properties:
 
 			> Encoding: [name or number]
