@@ -1,0 +1,1 @@
+<div class="PRepository SingleLink"><a href="https://reposite.com/MyProject/src/OneDefinition%20-%20Input.cs#Line10" target="_blank">View source<span class="PLinkIcon"></span></a></div>

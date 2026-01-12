@@ -1,0 +1,9 @@
+Format: 2.3
+
+Test Type: HTML Repository Links
+
+Keep HTML: yes
+
+	Title: Repository Link Tests
+
+Simulate Repository: yes

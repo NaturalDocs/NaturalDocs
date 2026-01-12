@@ -1,0 +1,3 @@
+<div class="PRepository SingleLink"><a href="https://reposite.com/MyProject/src/TwoDefinitions_SameFile%20-%20Input.cs#Line10" target="_blank">View source<span class="PLinkIcon"></span></a></div>
+-----
+<div class="PRepository SingleLink"><a href="https://reposite.com/MyProject/src/TwoDefinitions_SameFile%20-%20Input.cs#Line20" target="_blank">View source<span class="PLinkIcon"></span></a></div>

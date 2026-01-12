@@ -1,0 +1,4 @@
+<div class="PRepository MultipleLinks">
+   <div class="PRHeader">View source:</div>
+   <div class="PRLinks"><a href="https://reposite.com/MyProject/src/Folder_Test_2%20-%20Input.cs#Line10" target="_blank">Folder_Test_2 - Input.cs<span class="PLinkIcon"></span></a><a href="https://reposite.com/MyProject/src/FolderA/Folder_Test_2B%20-%20Input.cs#Line10" target="_blank">Folder_Test_2B - Input.cs<span class="PLinkIcon"></span></a></div>
+</div>
