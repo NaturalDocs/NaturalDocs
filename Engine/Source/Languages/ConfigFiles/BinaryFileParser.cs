@@ -427,7 +427,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		 * A helper function used only by <Save()> which writes a list of symbol strings to the file.  The strings are written in
 		 * sequence and followed by a null string.  It is okay to pass null to this function, it will be treated as an empty list.
 		 */
-		private void SaveSymbolList (IList<string> symbolList)
+		protected void SaveSymbolList (IList<string> symbolList)
 			{
 			if (symbolList != null)
 				{
@@ -443,7 +443,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		 * are written in sequence and followed by a null string.  It is okay to pass null to this function, it will be treated
 		 * as an empty array.
 		 */
-		private void SaveLineCommentSymbolsList (IList<LineCommentSymbols> lineCommentSymbolsList)
+		protected void SaveLineCommentSymbolsList (IList<LineCommentSymbols> lineCommentSymbolsList)
 			{
 			if (lineCommentSymbolsList != null)
 				{
@@ -462,7 +462,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		 * are written in sequence and followed by a null string.  It is okay to pass null to this function, it will be treated
 		 * as an empty array.
 		 */
-		private void SaveBlockCommentSymbolsList (IList<BlockCommentSymbols> blockCommentSymbolsList)
+		protected void SaveBlockCommentSymbolsList (IList<BlockCommentSymbols> blockCommentSymbolsList)
 			{
 			if (blockCommentSymbolsList != null)
 				{
