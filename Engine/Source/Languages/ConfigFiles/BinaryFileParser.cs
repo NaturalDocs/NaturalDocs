@@ -33,6 +33,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		 */
 		public BinaryFileParser ()
 			{
+			binaryFile = null;
 			}
 
 
@@ -47,7 +48,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		 */
 		public bool Load (Path filename, out Config config)
 			{
-			BinaryFile binaryFile = new BinaryFile();
+			binaryFile = new BinaryFile();
 
 			try
 				{
@@ -130,23 +131,23 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 						// [String: Javadoc Opening Block Comment Symbol] [String: Javadoc Closing Block Comment Symbol] [] [] ... [String: null]
 						// [String: XML Line Comment Symbol] [] ... [String: null]
 
-						var lineCommentSymbols = LoadSymbolList(binaryFile);
+						var lineCommentSymbols = LoadSymbolList();
 						if (lineCommentSymbols != null)
 							{  language.LineCommentSymbols = lineCommentSymbols;  }
 
-						var blockCommentSymbols = LoadBlockCommentSymbolsList(binaryFile);
+						var blockCommentSymbols = LoadBlockCommentSymbolsList();
 						if (blockCommentSymbols != null)
 							{  language.BlockCommentSymbols = blockCommentSymbols;  }
 
-						var javadocLineCommentSymbols = LoadLineCommentSymbolsList(binaryFile);
+						var javadocLineCommentSymbols = LoadLineCommentSymbolsList();
 						if (javadocLineCommentSymbols != null)
 							{  language.JavadocLineCommentSymbols = javadocLineCommentSymbols;  }
 
-						var javadocBlockCommentSymbols = LoadBlockCommentSymbolsList(binaryFile);
+						var javadocBlockCommentSymbols = LoadBlockCommentSymbolsList();
 						if (javadocBlockCommentSymbols != null)
 							{  language.JavadocBlockCommentSymbols = javadocBlockCommentSymbols;  }
 
-						var xmlLineCommentSymbols = LoadSymbolList(binaryFile);
+						var xmlLineCommentSymbols = LoadSymbolList();
 						if (xmlLineCommentSymbols != null)
 							{  language.XMLLineCommentSymbols = xmlLineCommentSymbols;  }
 
@@ -162,7 +163,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 						while (commentTypeID != 0)
 							{
 							bool includeLineBreaks = (binaryFile.ReadByte() == 1);
-							var enderSymbols = LoadSymbolList(binaryFile);
+							var enderSymbols = LoadSymbolList();
 
 							language.AddPrototypeEnders( new PrototypeEnders(commentTypeID, enderSymbols, includeLineBreaks) );
 
@@ -220,6 +221,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 				{
 				if (binaryFile.IsOpen)
 					{  binaryFile.Close();  }
+
+				binaryFile = null;
 				}
 
 			return true;
@@ -231,9 +234,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		 * string is encountered.  If there are no strings in the sequence (the first one is null) it returns null instead of an empty
 		 * list.
 		 */
-		protected List<string> LoadSymbolList (BinaryFile file)
+		protected List<string> LoadSymbolList ()
 			{
-			string symbol = file.ReadString();
+			string symbol = binaryFile.ReadString();
 
 			if (symbol == null)
 				{  return null;  }
@@ -243,7 +246,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			do
 				{
 				symbolList.Add(symbol);
-				symbol = file.ReadString();
+				symbol = binaryFile.ReadString();
 				}
 			while (symbol != null);
 
@@ -256,9 +259,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		 * when a null string is encountered.  If there are no strings in the sequence (the first one is null) it returns null instead
 		 * of an empty list.
 		 */
-		protected List<LineCommentSymbols> LoadLineCommentSymbolsList (BinaryFile file)
+		protected List<LineCommentSymbols> LoadLineCommentSymbolsList ()
 			{
-			string symbol = file.ReadString();
+			string symbol = binaryFile.ReadString();
 
 			if (symbol == null)
 				{  return null;  }
@@ -267,8 +270,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 
 			do
 				{
-				symbolList.Add( new LineCommentSymbols(symbol, file.ReadString()) );
-				symbol = file.ReadString();
+				symbolList.Add( new LineCommentSymbols(symbol, binaryFile.ReadString()) );
+				symbol = binaryFile.ReadString();
 				}
 			while (symbol != null);
 
@@ -281,9 +284,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		 * when a null string is encountered.  If there are no strings in the sequence (the first one is null) it returns null instead
 		 * of an empty list.
 		 */
-		protected List<BlockCommentSymbols> LoadBlockCommentSymbolsList (BinaryFile file)
+		protected List<BlockCommentSymbols> LoadBlockCommentSymbolsList ()
 			{
-			string symbol = file.ReadString();
+			string symbol = binaryFile.ReadString();
 
 			if (symbol == null)
 				{  return null;  }
@@ -292,8 +295,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 
 			do
 				{
-				symbolList.Add( new BlockCommentSymbols(symbol, file.ReadString()) );
-				symbol = file.ReadString();
+				symbolList.Add( new BlockCommentSymbols(symbol, binaryFile.ReadString()) );
+				symbol = binaryFile.ReadString();
 				}
 			while (symbol != null);
 
@@ -311,7 +314,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		 */
 		public void Save (Path filename, Config config)
 			{
-			BinaryFile binaryFile = new BinaryFile();
+			binaryFile = new BinaryFile();
 			binaryFile.OpenForWriting(filename);
 
 			try
@@ -350,11 +353,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// [String: Javadoc Opening Block Comment Symbol] [String: Javadoc Closing Block Comment Symbol] [] [] ... [String: null]
 					// [String: XML Line Comment Symbol] [] ... [String: null]
 
-					SaveSymbolList(binaryFile, language.LineCommentSymbols);
-					SaveBlockCommentSymbolsList(binaryFile, language.BlockCommentSymbols);
-					SaveLineCommentSymbolsList(binaryFile, language.JavadocLineCommentSymbols);
-					SaveBlockCommentSymbolsList(binaryFile, language.JavadocBlockCommentSymbols);
-					SaveSymbolList(binaryFile, language.XMLLineCommentSymbols);
+					SaveSymbolList(language.LineCommentSymbols);
+					SaveBlockCommentSymbolsList(language.BlockCommentSymbols);
+					SaveLineCommentSymbolsList(language.JavadocLineCommentSymbols);
+					SaveBlockCommentSymbolsList(language.JavadocBlockCommentSymbols);
+					SaveSymbolList(language.XMLLineCommentSymbols);
 
 					// Prototype Enders:
 					// [Int32: Comment Type ID]
@@ -369,7 +372,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 							{
 							binaryFile.WriteInt32( prototypeEnders.CommentTypeID );
 							binaryFile.WriteByte( (byte)(prototypeEnders.IncludeLineBreaks ? 1 : 0) );
-							SaveSymbolList(binaryFile, prototypeEnders.Symbols);
+							SaveSymbolList(prototypeEnders.Symbols);
 							}
 						}
 
@@ -415,6 +418,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			finally
 				{
 				binaryFile.Close();
+				binaryFile = null;
 				}
 			}
 
@@ -423,15 +427,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		 * A helper function used only by <Save()> which writes a list of symbol strings to the file.  The strings are written in
 		 * sequence and followed by a null string.  It is okay to pass null to this function, it will be treated as an empty list.
 		 */
-		private void SaveSymbolList (BinaryFile file, IList<string> symbolList)
+		private void SaveSymbolList (IList<string> symbolList)
 			{
 			if (symbolList != null)
 				{
 				foreach (var symbol in symbolList)
-					{  file.WriteString(symbol);  }
+					{  binaryFile.WriteString(symbol);  }
 				}
 
-			file.WriteString(null);
+			binaryFile.WriteString(null);
 			}
 
 		/* Function: SaveLineCommentSymbolsList
@@ -439,18 +443,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		 * are written in sequence and followed by a null string.  It is okay to pass null to this function, it will be treated
 		 * as an empty array.
 		 */
-		private void SaveLineCommentSymbolsList (BinaryFile file, IList<LineCommentSymbols> lineCommentSymbolsList)
+		private void SaveLineCommentSymbolsList (IList<LineCommentSymbols> lineCommentSymbolsList)
 			{
 			if (lineCommentSymbolsList != null)
 				{
 				foreach (var lineCommentSymbols in lineCommentSymbolsList)
 					{
-					file.WriteString(lineCommentSymbols.FirstLineSymbol);
-					file.WriteString(lineCommentSymbols.FollowingLinesSymbol);
+					binaryFile.WriteString(lineCommentSymbols.FirstLineSymbol);
+					binaryFile.WriteString(lineCommentSymbols.FollowingLinesSymbol);
 					}
 				}
 
-			file.WriteString(null);
+			binaryFile.WriteString(null);
 			}
 
 		/* Function: SaveBlockCommentSymbolsList
@@ -458,19 +462,26 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		 * are written in sequence and followed by a null string.  It is okay to pass null to this function, it will be treated
 		 * as an empty array.
 		 */
-		private void SaveBlockCommentSymbolsList (BinaryFile file, IList<BlockCommentSymbols> blockCommentSymbolsList)
+		private void SaveBlockCommentSymbolsList (IList<BlockCommentSymbols> blockCommentSymbolsList)
 			{
 			if (blockCommentSymbolsList != null)
 				{
 				foreach (var blockCommentSymbols in blockCommentSymbolsList)
 					{
-					file.WriteString(blockCommentSymbols.OpeningSymbol);
-					file.WriteString(blockCommentSymbols.ClosingSymbol);
+					binaryFile.WriteString(blockCommentSymbols.OpeningSymbol);
+					binaryFile.WriteString(blockCommentSymbols.ClosingSymbol);
 					}
 				}
 
-			file.WriteString(null);
+			binaryFile.WriteString(null);
 			}
+
+
+
+		// Group: Variables
+		// __________________________________________________________________________
+
+		protected BinaryFile binaryFile;
 
 		}
 	}

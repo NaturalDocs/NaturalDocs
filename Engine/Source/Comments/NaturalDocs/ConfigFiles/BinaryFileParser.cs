@@ -34,6 +34,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 		 */
 		public BinaryFileParser ()
 			{
+			binaryFile = null;
 			}
 
 
@@ -48,7 +49,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 		 */
 		public bool Load (Path filename, out Config config)
 		    {
-		    BinaryFile binaryFile = new BinaryFile();
+		    binaryFile = new BinaryFile();
 
 		    try
 		        {
@@ -76,12 +77,12 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 					// - URLProtocols
 					// - AcceptableLinkSuffixes
 
-					LoadSet(binaryFile, config.StartBlockKeywords);
-					LoadSet(binaryFile, config.EndBlockKeywords);
-					LoadSet(binaryFile, config.SeeImageKeywords);
-					LoadSet(binaryFile, config.AtLinkKeywords);
-					LoadSet(binaryFile, config.URLProtocols);
-					LoadSet(binaryFile, config.AcceptableLinkSuffixes);
+					LoadSet(config.StartBlockKeywords);
+					LoadSet(config.EndBlockKeywords);
+					LoadSet(config.SeeImageKeywords);
+					LoadSet(config.AtLinkKeywords);
+					LoadSet(config.URLProtocols);
+					LoadSet(config.AcceptableLinkSuffixes);
 
 
 					// Tables:
@@ -89,17 +90,17 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 					// - SpecialHeadings
 					// - AccessLevel
 
-					LoadBlockTypesTable(binaryFile, config.BlockTypes);
-					LoadHeadingTypesTable(binaryFile, config.SpecialHeadings);
-					LoadAccessLevelTable(binaryFile, config.AccessLevel);
+					LoadBlockTypesTable(config.BlockTypes);
+					LoadHeadingTypesTable(config.SpecialHeadings);
+					LoadAccessLevelTable(config.AccessLevel);
 
 
 					// Conversion Lists:
 					// - PluralConversions
 					// - PossessiveConversions
 
-					LoadConversionList(binaryFile, config.PluralConversions);
-					LoadConversionList(binaryFile, config.PossessiveConversions);
+					LoadConversionList(config.PluralConversions);
+					LoadConversionList(config.PossessiveConversions);
 
 					return true;
 		            }
@@ -113,6 +114,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 		        {
 				if (binaryFile.IsOpen)
 					{  binaryFile.Close();  }
+
+				binaryFile = null;
 				}
 		    }
 
@@ -120,7 +123,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 		/* Function: LoadSet
 		 * Loads values into the passed <StringSet> until it reaches a null string.
 		 */
-		protected void LoadSet (BinaryFile binaryFile, StringSet set)
+		protected void LoadSet (StringSet set)
 		    {
 			//	[String: value] [] ... [String: null]
 
@@ -139,18 +142,18 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 		/* Function: LoadBlockTypesTable
 		 * Loads values into the passed <StringTable> until it reaches a null string.
 		 */
-		protected void LoadBlockTypesTable (BinaryFile file, StringTable<NaturalDocs.Parser.BlockType> table)
+		protected void LoadBlockTypesTable (StringTable<NaturalDocs.Parser.BlockType> table)
 		    {
 			// [String: key] [Byte: value] [] [] ... [String: null]
 
 		    for (;;)
 		        {
-		        string key = file.ReadString();
+		        string key = binaryFile.ReadString();
 
 		        if (key == null)
 		            {  return;  }
 
-		        NaturalDocs.Parser.BlockType value = (NaturalDocs.Parser.BlockType)file.ReadByte();
+		        NaturalDocs.Parser.BlockType value = (NaturalDocs.Parser.BlockType)binaryFile.ReadByte();
 
 		        table.Add(key, value);
 		        }
@@ -160,18 +163,18 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 		/* Function: LoadHeadingTypesTable
 		 * Loads values into the passed <StringTable> until it reaches a null string.
 		 */
-		protected void LoadHeadingTypesTable (BinaryFile file, StringTable<NaturalDocs.Parser.HeadingType> table)
+		protected void LoadHeadingTypesTable (StringTable<NaturalDocs.Parser.HeadingType> table)
 		    {
 			// [String: key] [Byte: value] [] [] ... [String: null]
 
 		    for (;;)
 		        {
-		        string key = file.ReadString();
+		        string key = binaryFile.ReadString();
 
 		        if (key == null)
 		            {  return;  }
 
-		        NaturalDocs.Parser.HeadingType value = (NaturalDocs.Parser.HeadingType)file.ReadByte();
+		        NaturalDocs.Parser.HeadingType value = (NaturalDocs.Parser.HeadingType)binaryFile.ReadByte();
 
 		        table.Add(key, value);
 		        }
@@ -181,18 +184,18 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 		/* Function: LoadAccessLevelTable
 		 * Loads values into the passed <StringTable> until it reaches a null string.
 		 */
-		protected void LoadAccessLevelTable (BinaryFile file, StringTable<Languages.AccessLevel> table)
+		protected void LoadAccessLevelTable (StringTable<Languages.AccessLevel> table)
 		    {
 			// [String: key] [Byte: value] [] [] ... [String: null]
 
 		    for (;;)
 		        {
-		        string key = file.ReadString();
+		        string key = binaryFile.ReadString();
 
 		        if (key == null)
 		            {  return;  }
 
-		        Languages.AccessLevel value = (Languages.AccessLevel)file.ReadByte();
+		        Languages.AccessLevel value = (Languages.AccessLevel)binaryFile.ReadByte();
 
 		        table.Add(key, value);
 		        }
@@ -202,18 +205,18 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 		/* Function: LoadConversionList
 		 * Loads values into the passed conversion list until it reaches a null string.
 		 */
-		protected void LoadConversionList (BinaryFile file, List<KeyValuePair<string, string>> conversionList)
+		protected void LoadConversionList (List<KeyValuePair<string, string>> conversionList)
 		    {
 			// [String: key] [String: value] [] [] ... [String: null]
 
 		    for (;;)
 		        {
-		        string key = file.ReadString();
+		        string key = binaryFile.ReadString();
 
 		        if (key == null)
 		            {  return;  }
 
-		        string value = file.ReadString();
+		        string value = binaryFile.ReadString();
 
 		        conversionList.Add( new KeyValuePair<string, string>(key, value));
 		        }
@@ -230,7 +233,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 		 */
 		public void Save (Path filename, Config config)
 		    {
-		    BinaryFile binaryFile = new BinaryFile();
+		    binaryFile = new BinaryFile();
 		    binaryFile.OpenForWriting(filename);
 
 		    try
@@ -243,12 +246,12 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 				// - URLProtocols
 				// - AcceptableLinkSuffixes
 
-				SaveSet(binaryFile, config.StartBlockKeywords);
-				SaveSet(binaryFile, config.EndBlockKeywords);
-				SaveSet(binaryFile, config.SeeImageKeywords);
-				SaveSet(binaryFile, config.AtLinkKeywords);
-				SaveSet(binaryFile, config.URLProtocols);
-				SaveSet(binaryFile, config.AcceptableLinkSuffixes);
+				SaveSet(config.StartBlockKeywords);
+				SaveSet(config.EndBlockKeywords);
+				SaveSet(config.SeeImageKeywords);
+				SaveSet(config.AtLinkKeywords);
+				SaveSet(config.URLProtocols);
+				SaveSet(config.AcceptableLinkSuffixes);
 
 
 				// Tables:
@@ -256,22 +259,23 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 				// - SpecialHeadings
 				// - AccessLevel
 
-				SaveBlockTypesTable(binaryFile, config.BlockTypes);
-				SaveHeadingTypesTable(binaryFile, config.SpecialHeadings);
-				SaveAccessLevelTable(binaryFile, config.AccessLevel);
+				SaveBlockTypesTable(config.BlockTypes);
+				SaveHeadingTypesTable(config.SpecialHeadings);
+				SaveAccessLevelTable(config.AccessLevel);
 
 
 				// Conversion Lists:
 				// - PluralConversions
 				// - PossessiveConversions
 
-				SaveConversionList(binaryFile, config.PluralConversions);
-				SaveConversionList(binaryFile, config.PossessiveConversions);
+				SaveConversionList(config.PluralConversions);
+				SaveConversionList(config.PossessiveConversions);
 		        }
 
 		    finally
 		        {
 		        binaryFile.Close();
+				binaryFile = null;
 		        }
 		    }
 
@@ -279,73 +283,80 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 		/* Function: SaveSet
 		 * Writes the <StringSet> values followed by a null string.
 		 */
-		protected void SaveSet (BinaryFile file, StringSet set)
+		protected void SaveSet (StringSet set)
 		    {
 		    foreach (string value in set)
-		        {  file.WriteString(value);  }
+		        {  binaryFile.WriteString(value);  }
 
-		    file.WriteString(null);
+		    binaryFile.WriteString(null);
 		    }
 
 
 		/* Function: SaveBlockTypesTable
 		 * Writes the <StringTable> values followed by a null string.
 		 */
-		protected void SaveBlockTypesTable (BinaryFile file, StringTable<NaturalDocs.Parser.BlockType> table)
+		protected void SaveBlockTypesTable (StringTable<NaturalDocs.Parser.BlockType> table)
 		    {
 		    foreach (KeyValuePair<string, NaturalDocs.Parser.BlockType> pair in table)
 		        {
-		        file.WriteString(pair.Key);
-		        file.WriteByte((byte)pair.Value);
+		        binaryFile.WriteString(pair.Key);
+		        binaryFile.WriteByte((byte)pair.Value);
 		        }
 
-		    file.WriteString(null);
+		    binaryFile.WriteString(null);
 		    }
 
 
 		/* Function: SaveHeadingTypesTable
 		 * Writes the <StringTable> values followed by a null string.
 		 */
-		protected void SaveHeadingTypesTable (BinaryFile file, StringTable<NaturalDocs.Parser.HeadingType> table)
+		protected void SaveHeadingTypesTable (StringTable<NaturalDocs.Parser.HeadingType> table)
 		    {
 		    foreach (KeyValuePair<string, NaturalDocs.Parser.HeadingType> pair in table)
 		        {
-		        file.WriteString(pair.Key);
-		        file.WriteByte((byte)pair.Value);
+		        binaryFile.WriteString(pair.Key);
+		        binaryFile.WriteByte((byte)pair.Value);
 		        }
 
-		    file.WriteString(null);
+		    binaryFile.WriteString(null);
 		    }
 
 
 		/* Function: SaveAccessLevelTable
 		 * Writes the <StringTable> values followed by a null string.
 		 */
-		protected void SaveAccessLevelTable (BinaryFile file, StringTable<Languages.AccessLevel> table)
+		protected void SaveAccessLevelTable (StringTable<Languages.AccessLevel> table)
 		    {
 		    foreach (KeyValuePair<string, Languages.AccessLevel> pair in table)
 		        {
-		        file.WriteString(pair.Key);
-		        file.WriteByte((byte)pair.Value);
+		        binaryFile.WriteString(pair.Key);
+		        binaryFile.WriteByte((byte)pair.Value);
 		        }
 
-		    file.WriteString(null);
+		    binaryFile.WriteString(null);
 		    }
 
 
 		/* Function: SaveConversionList
 		 * Writes the conversion list values followed by a null string.
 		 */
-		protected void SaveConversionList (BinaryFile file, List<KeyValuePair<string, string>> conversionList)
+		protected void SaveConversionList (List<KeyValuePair<string, string>> conversionList)
 		    {
 		    foreach (KeyValuePair<string, string> pair in conversionList)
 		        {
-				file.WriteString(pair.Key);
-				file.WriteString(pair.Value);
+				binaryFile.WriteString(pair.Key);
+				binaryFile.WriteString(pair.Value);
 				}
 
-		    file.WriteString(null);
+		    binaryFile.WriteString(null);
 		    }
+
+
+
+		// Group: Variables
+		// __________________________________________________________________________
+
+		protected BinaryFile binaryFile;
 
 		}
 	}
