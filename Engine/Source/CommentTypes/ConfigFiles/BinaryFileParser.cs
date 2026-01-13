@@ -164,10 +164,11 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 		public void Save (Path filename, Config config)
 			{
 			BinaryFile binaryFile = new BinaryFile();
-			binaryFile.OpenForWriting(filename);
 
 			try
 				{
+				binaryFile.OpenForWriting(filename);
+
 
 				// [String: Tag Name]
 				// [Int32: ID]
@@ -229,7 +230,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 
 			finally
 				{
-				binaryFile.Close();
+				if (binaryFile.IsOpen)
+					{  binaryFile.Close();  }
 				}
 			}
 

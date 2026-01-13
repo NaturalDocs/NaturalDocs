@@ -234,10 +234,11 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 		public void Save (Path filename, Config config)
 		    {
 		    binaryFile = new BinaryFile();
-		    binaryFile.OpenForWriting(filename);
 
 		    try
 		        {
+			    binaryFile.OpenForWriting(filename);
+
 				// Sets:
 				// - StartBlockKeywords
 				// - EndBlockKeywords
@@ -274,7 +275,9 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs.ConfigFiles
 
 		    finally
 		        {
-		        binaryFile.Close();
+				if (binaryFile.IsOpen)
+					{  binaryFile.Close();  }
+
 				binaryFile = null;
 		        }
 		    }

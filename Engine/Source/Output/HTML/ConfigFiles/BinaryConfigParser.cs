@@ -244,9 +244,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 		public void Save (Path filename, Config.OverridableOutputSettings overridableSettings, List<Style> styles,
 								  List<FileSourceInfo> fileSourceInfoList)
 			{
-			using (BinaryFile binaryFile = new BinaryFile())
-				{
+		    BinaryFile binaryFile = new BinaryFile();
+
+		    try
+		        {
 				binaryFile.OpenForWriting(filename);
+
 
 				// [String: Project Title or null]
 				// [String: Project Subtitle or null]
@@ -359,6 +362,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 
 				binaryFile.WriteInt32(0);
 				}
+
+		    finally
+		        {
+				if (binaryFile.IsOpen)
+					{  binaryFile.Close();  }
+		        }
 			}
 
 		}

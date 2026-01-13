@@ -174,10 +174,11 @@ namespace CodeClear.NaturalDocs.Engine.Files.ConfigFiles
 		public void Save (Path filename, IDObjects.Manager<File> files)
 			{
 			BinaryFile binaryFile = new BinaryFile();
-			binaryFile.OpenForWriting(filename);
 
 			try
 				{
+				binaryFile.OpenForWriting(filename);
+
 				foreach (File file in files)
 					{
 					// [Int32: ID]
@@ -216,8 +217,12 @@ namespace CodeClear.NaturalDocs.Engine.Files.ConfigFiles
 				// [Int32: 0]
 				binaryFile.WriteInt32(0);
 				}
-			finally
-				{  binaryFile.Close();  }
+
+		    finally
+		        {
+				if (binaryFile.IsOpen)
+					{  binaryFile.Close();  }
+		        }
 			}
 
 		}

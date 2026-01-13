@@ -315,10 +315,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		public void Save (Path filename, Config config)
 			{
 			binaryFile = new BinaryFile();
-			binaryFile.OpenForWriting(filename);
 
 			try
 				{
+				binaryFile.OpenForWriting(filename);
+
 
 				// [String: Language Name]
 				// [[Language Attributes]]
@@ -417,7 +418,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 
 			finally
 				{
-				binaryFile.Close();
+				if (binaryFile.IsOpen)
+					{  binaryFile.Close();  }
+
 				binaryFile = null;
 				}
 			}

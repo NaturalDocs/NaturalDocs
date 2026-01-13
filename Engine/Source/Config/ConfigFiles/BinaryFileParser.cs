@@ -197,10 +197,11 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 		public void Save (Path filename, ProjectConfig projectConfig)
 		    {
 		    binaryFile = new BinaryFile();
-		    binaryFile.OpenForWriting(filename);
 
 		    try
 		        {
+			    binaryFile.OpenForWriting(filename);
+
 
 		        // [Int32: Tab Width]
 		        // [Byte: Documented Only (0 or 1)]
@@ -242,7 +243,9 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 		    finally
 		        {
-		        binaryFile.Close();
+				if (binaryFile.IsOpen)
+					{  binaryFile.Close();  }
+
 				binaryFile = null;
 		        }
 		    }

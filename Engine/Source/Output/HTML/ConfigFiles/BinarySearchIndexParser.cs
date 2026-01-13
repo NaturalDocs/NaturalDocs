@@ -90,9 +90,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 		 */
 		public void Save (Path filename, StringTable<IDObjects.NumberSet> prefixTopicIDs)
 			{
-			using (BinaryFile binaryFile = new BinaryFile())
-				{
+		    BinaryFile binaryFile = new BinaryFile();
+
+		    try
+		        {
 				binaryFile.OpenForWriting(filename);
+
 
 				// [String: Prefix]
 				// [NumberSet: Prefix Topic IDs]
@@ -107,6 +110,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 
 				binaryFile.WriteString(null);
 				}
+
+		    finally
+		        {
+				if (binaryFile.IsOpen)
+					{  binaryFile.Close();  }
+		        }
 			}
 
 		}

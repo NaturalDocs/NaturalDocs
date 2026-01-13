@@ -191,9 +191,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 			// We're assuming no other code is accessing these variables at the point at which we'd be saving them so we don't
 			// need to call Lock() and Unlock().
 
-			using (BinaryFile binaryFile = new BinaryFile())
-				{
+		    BinaryFile binaryFile = new BinaryFile();
+
+		    try
+		        {
 				binaryFile.OpenForWriting(filename);
+
 
 				// Build Flags
 
@@ -292,6 +295,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 				binaryFile.WriteString(buildState.GeneratedTimestamp);
 				binaryFile.WriteByte( (byte)(buildState.HomePageUsesTimestamp ? 1 : 0) );
 				}
+
+		    finally
+		        {
+				if (binaryFile.IsOpen)
+					{  binaryFile.Close();  }
+		        }
 			}
 
 		}
