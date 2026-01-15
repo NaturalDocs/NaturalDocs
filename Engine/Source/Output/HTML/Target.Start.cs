@@ -226,6 +226,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				{
 				bool hasDeletions = false;
 				bool hasAdditions = false;
+				bool hasRepositoryURLTemplateChange = false;
+				bool hasRepositoryProjectInfoChange = false;
 
 
 				// Purge the output folders of any deleted FileSources
@@ -260,7 +262,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					}
 
 
-				// Check if any FileSources were added or had their names changed
+				// Check if any FileSources were added, had their names changed, or had their repository settings changed
 
 				foreach (var fileSource in EngineInstance.Files.FileSources)
 					{
@@ -276,6 +278,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 								if (fileSource.Name != previousFileSourceConfig.Name)
 									{  fileSourceNamesChanged = true;  }
+
+								if (fileSource is Files.FileSources.SourceFolder)
+									{
+									var sourceFolder = fileSource as Files.FileSources.SourceFolder;
+
+									if (sourceFolder.RepositoryName != previousFileSourceConfig.RepositoryName ||
+										sourceFolder.RepositoryProjectURL != previousFileSourceConfig.RepositoryProjectURL)
+										{  hasRepositoryProjectInfoChange = true;  }
+
+									if (sourceFolder.RepositorySourceURLTemplate != previousFileSourceConfig.RepositorySourceURLTemplate)
+										{  hasRepositoryURLTemplateChange = true;  }
+									}
 
 								break;
 								}
@@ -295,6 +309,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				// files in the child folder.
 
 				if (hasAdditions && hasDeletions)
+					{  newStartupIssues |= StartupIssues.NeedToRebuildAllOutput;  }
+
+
+				// If there were repository URL template changes, force a rebuild.  This covers if a repository config was added for the
+				// first time, changed, or removed completely.
+
+				if (hasRepositoryURLTemplateChange)
 					{  newStartupIssues |= StartupIssues.NeedToRebuildAllOutput;  }
 				}
 
