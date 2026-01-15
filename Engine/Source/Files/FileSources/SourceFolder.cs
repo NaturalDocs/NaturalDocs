@@ -174,6 +174,17 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 				{  return config.RepositoryProjectURL;  }
 			}
 
+		/* Property: RepositorySourceURLTemplate
+		 * The URL template for source files in the repository, or null if it's not set.  Substitution points will be marked with
+		 * <RepositorySubstitutions.FilePath> and <RepositorySubstitutions.LineNumber>.  Generally you should use
+		 * <RepositorySourceFileURLOf()> instead of reading this directly.
+		 */
+		public string RepositorySourceURLTemplate
+			{
+			get
+				{  return config.RepositorySourceURLTemplate;  }
+			}
+
 		/* Property: CanMakeRepositorySourceFileURLs
 		 * Returns whether it's possible to create URLs with <RepositorySourceFileURLOf()>, meaning all the properties
 		 * required to do so are defined.
