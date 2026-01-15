@@ -90,9 +90,15 @@ _______________________________________________________________________________
 			> [Int32: Source FileSource Number]
 			>    [String: Source FileSource UniqueIDString]
 			>    [String: Source FileSource Name]
+			>    [String: Repository Name]
+			>    [String: Repository Project URL]
+			>    [String: Repository Source URL Template]
 
 			The unique ID string allows us to identify the file source from one run to the next, even if its number changes.
 
+			The source URL template will contain substitution characters as documented in
+			<CodeClear.NaturalDocs.Engine.Config.RepositorySubstitutions>.  The repository branch name isn't stored because
+			it should be reflected in the source URL template.
 
 
 		Image File Source Properties:
@@ -107,8 +113,8 @@ _______________________________________________________________________________
 Group: Revisions
 _______________________________________________________________________________
 
-		- Added Source FileSource Name
 	Topic: 2.4:
+		- Added Source FileSource Name, Repository Name, Repository Project URL, and Repository Source URL Template.
 
 	Topic: 2.3
 		- Added OnLoad After Substitutions

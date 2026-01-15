@@ -287,6 +287,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 			fileSourceConfig.UniqueIDString = binaryFile.ReadString();
 			fileSourceConfig.Name = binaryFile.ReadString();
 
+
+			// [String: Repository Name]
+			// [String: Repository Project URL]
+			// [String: Repository Source URL Template]
+
+			fileSourceConfig.RepositoryName = binaryFile.ReadString();
+			fileSourceConfig.RepositoryProjectURL = binaryFile.ReadString();
+			fileSourceConfig.RepositorySourceURLTemplate = binaryFile.ReadString();
+
+
 			return fileSourceConfig;
 			}
 
@@ -487,6 +497,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 			binaryFile.WriteInt32(fileSourceConfig.Number);
 			binaryFile.WriteString(fileSourceConfig.UniqueIDString);
 			binaryFile.WriteString(fileSourceConfig.Name);
+
+
+			// [String: Repository Name]
+			// [String: Repository Project URL]
+			// [String: Repository Source URL Template]
+
+			binaryFile.WriteString(fileSourceConfig.RepositoryName);
+			binaryFile.WriteString(fileSourceConfig.RepositoryProjectURL);
+			binaryFile.WriteString(fileSourceConfig.RepositorySourceURLTemplate);
 			}
 
 

@@ -43,7 +43,8 @@ _______________________________________________________________________________
 		> [String: Absolute Path]
 		> [Int32: Number]
 
-		The Name property isn't stored because that's only used for presentation in the output.
+		The Name and repository properties aren't stored because they're only used for presentation in the output.  They will be
+		tracked in the output target's <Config.nd>.
 
 
 		Image Folders:
