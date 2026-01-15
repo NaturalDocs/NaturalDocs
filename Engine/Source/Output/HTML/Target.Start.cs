@@ -93,19 +93,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			ConfigFiles.BinaryConfigParser binaryConfigParser = new ConfigFiles.BinaryConfigParser();
 			Config.OverridableOutputSettings previousOutputSettings;
 			List<Style> previousStyles;
-			List<FileSourceInfo> previousFileSourceInfoList;
+			List<ConfigFiles.FileSourceConfig> previousFileSourceConfigs;
 			bool hasBinaryConfigFile = false;
 
 			if (!EngineInstance.HasIssues( StartupIssues.NeedToStartFresh ))
 				{
 				hasBinaryConfigFile = binaryConfigParser.Load(WorkingDataFolder + "/Config.nd", out previousOutputSettings,
-																					out previousStyles, out previousFileSourceInfoList);
+																					out previousStyles, out previousFileSourceConfigs);
 				}
 			else // start fresh
 				{
 				previousOutputSettings = new Config.OverridableOutputSettings();
 				previousStyles = new List<Style>();
-				previousFileSourceInfoList = new List<FileSourceInfo>();
+				previousFileSourceConfigs = new List<ConfigFiles.FileSourceConfig>();
 				}
 
 
@@ -230,13 +230,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 				// Purge the output folders of any deleted FileSources
 
-				foreach (var previousFileSourceInfo in previousFileSourceInfoList)
+				foreach (var previousFileSourceConfig in previousFileSourceConfigs)
 					{
 					bool stillExists = false;
 
 					foreach (var fileSource in EngineInstance.Files.FileSources)
 						{
-						if (previousFileSourceInfo.IsSameFundamentalFileSource(fileSource))
+						if (previousFileSourceConfig.IsSameFundamentalFileSource(fileSource))
 							{
 							stillExists = true;
 							break;
@@ -248,10 +248,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 						hasDeletions = true;
 						Path outputFolder;
 
-						if (previousFileSourceInfo.Type == InputType.Source)
-							{  outputFolder = Paths.SourceFile.OutputFolder(OutputFolder, previousFileSourceInfo.Number);  }
-						else if (previousFileSourceInfo.Type == InputType.Image)
-							{  outputFolder = Paths.Image.OutputFolder(OutputFolder, previousFileSourceInfo.Number, previousFileSourceInfo.Type);  }
+						if (previousFileSourceConfig.Type == InputType.Source)
+							{  outputFolder = Paths.SourceFile.OutputFolder(OutputFolder, previousFileSourceConfig.Number);  }
+						else if (previousFileSourceConfig.Type == InputType.Image)
+							{  outputFolder = Paths.Image.OutputFolder(OutputFolder, previousFileSourceConfig.Number, previousFileSourceConfig.Type);  }
 						else
 							{  throw new NotImplementedException();  }
 
@@ -268,13 +268,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 						{
 						bool foundMatch = false;
 
-						foreach (var previousFileSourceInfo in previousFileSourceInfoList)
+						foreach (var previousFileSourceConfig in previousFileSourceConfigs)
 							{
-							if (previousFileSourceInfo.IsSameFundamentalFileSource(fileSource))
+							if (previousFileSourceConfig.IsSameFundamentalFileSource(fileSource))
 								{
 								foundMatch = true;
 
-								if (fileSource.Name != previousFileSourceInfo.Name)
+								if (fileSource.Name != previousFileSourceConfig.Name)
 									{  fileSourceNamesChanged = true;  }
 
 								break;
@@ -369,19 +369,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			if (!System.IO.Directory.Exists(WorkingDataFolder))
 				{  System.IO.Directory.CreateDirectory(WorkingDataFolder);  }
 
-			List<FileSourceInfo> fileSourceInfoList = new List<FileSourceInfo>();
+			List<ConfigFiles.FileSourceConfig> fileSourceConfigs = new List<ConfigFiles.FileSourceConfig>();
 
 			foreach (var fileSource in EngineInstance.Files.FileSources)
 				{
 				if (fileSource.Type == Files.InputType.Source || fileSource.Type == Files.InputType.Image)
 					{
-					FileSourceInfo fileSourceInfo = new FileSourceInfo();
-					fileSourceInfo.CopyFrom(fileSource);
-					fileSourceInfoList.Add(fileSourceInfo);
+					ConfigFiles.FileSourceConfig fileSourceConfig = new ConfigFiles.FileSourceConfig();
+					fileSourceConfig.CopyFrom(fileSource);
+					fileSourceConfigs.Add(fileSourceConfig);
 					};
 				}
 
-			binaryConfigParser.Save(WorkingDataFolder + "/Config.nd", Config, stylesWithInheritance, fileSourceInfoList);
+			binaryConfigParser.Save(WorkingDataFolder + "/Config.nd", Config, stylesWithInheritance, fileSourceConfigs);
 
 
 			//

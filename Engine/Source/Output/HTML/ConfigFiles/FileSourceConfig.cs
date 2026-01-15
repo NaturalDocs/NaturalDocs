@@ -1,8 +1,8 @@
 ﻿/*
- * Struct: CodeClear.NaturalDocs.Engine.Output.HTML.FileSourceInfo
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles.FileSourceConfig
  * ____________________________________________________________________________
  *
- * A simple struct for storing information about the previous run's <Files.FileSources>.
+ * A simple class for storing information about the previous run's <Files.FileSources>.
  *
  */
 
@@ -14,11 +14,23 @@
 using System;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.HTML
+namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 	{
 
-	public struct FileSourceInfo
+	public class FileSourceConfig
 		{
+
+		// Group: Functions
+		// __________________________________________________________________________
+
+		public FileSourceConfig ()
+			{
+			Number = 0;
+			Type = Files.InputType.Source;
+			UniqueIDString = null;
+			Name = null;
+			}
+
 		public bool IsSameFundamentalFileSource (Files.FileSource other)
 			{
 			return (Number == other.Number &&
@@ -34,10 +46,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			Name = other.Name;
 			}
 
+
+		// Group: Variables
+		// __________________________________________________________________________
+
 		public int Number;
 		public Files.InputType Type;
 		public string UniqueIDString;
 		public string Name;
-		}
 
+		}
 	}

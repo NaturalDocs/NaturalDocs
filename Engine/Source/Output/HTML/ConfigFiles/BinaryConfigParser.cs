@@ -46,12 +46,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 		 * Loads the information in <Config.nd> and returns whether it was successful.  If not all the out parameters will still
 		 * return objects, they will just be empty.
 		 */
-		public bool Load (Path filename, out Config.OverridableOutputSettings overridableSettings, out List<Style> styles,
-								 out List<FileSourceInfo> fileSourceInfoList)
+		public bool Load (Path filename, out Config.OverridableOutputSettings settings, out List<Style> styles,
+								 out List<FileSourceConfig> fileSources)
 			{
-			overridableSettings = new Config.OverridableOutputSettings();
+			settings = new Config.OverridableOutputSettings();
 			styles = new List<Style>();
-			fileSourceInfoList = new List<FileSourceInfo>();
+			fileSources = new List<FileSourceConfig>();
 
 			binaryFile = new BinaryFile();
 			bool result = true;
@@ -76,20 +76,20 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 					// [String: Project Timestamp Code or null]
 					// [String: Project Home Page Path (absolute) or null]
 
-					overridableSettings.Title = binaryFile.ReadString();
-					overridableSettings.TitlePropertyLocation = Config.PropertySource.PreviousRun;
+					settings.Title = binaryFile.ReadString();
+					settings.TitlePropertyLocation = Config.PropertySource.PreviousRun;
 
-					overridableSettings.Subtitle = binaryFile.ReadString();
-					overridableSettings.SubtitlePropertyLocation = Config.PropertySource.PreviousRun;
+					settings.Subtitle = binaryFile.ReadString();
+					settings.SubtitlePropertyLocation = Config.PropertySource.PreviousRun;
 
-					overridableSettings.Copyright = binaryFile.ReadString();
-					overridableSettings.CopyrightPropertyLocation = Config.PropertySource.PreviousRun;
+					settings.Copyright = binaryFile.ReadString();
+					settings.CopyrightPropertyLocation = Config.PropertySource.PreviousRun;
 
-					overridableSettings.TimestampCode = binaryFile.ReadString();
-					overridableSettings.TimestampCodePropertyLocation = Config.PropertySource.PreviousRun;
+					settings.TimestampCode = binaryFile.ReadString();
+					settings.TimestampCodePropertyLocation = Config.PropertySource.PreviousRun;
 
-					overridableSettings.HomePage = (AbsolutePath)binaryFile.ReadString();
-					overridableSettings.HomePagePropertyLocation= Config.PropertySource.PreviousRun;
+					settings.HomePage = (AbsolutePath)binaryFile.ReadString();
+					settings.HomePagePropertyLocation= Config.PropertySource.PreviousRun;
 
 
 					// [String: Style Path]
@@ -97,11 +97,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
  					// ...
  					// [String: null]
 
-					while (LoadStyle(styles))
-						{  }
+					var style = LoadStyle(styles);
 
-					overridableSettings.StyleName = styles[styles.Count - 1].Name;
-					overridableSettings.StyleNamePropertyLocation = Config.PropertySource.PreviousRun;
+					while (style != null)
+						{
+						styles.Add(style);
+						style = LoadStyle(styles);
+						}
+
+					settings.StyleName = styles[styles.Count - 1].Name;
+					settings.StyleNamePropertyLocation = Config.PropertySource.PreviousRun;
 
 
 					// [Int32: Source FileSource Number]
@@ -109,16 +114,26 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 					// ...
 					// [Int32: 0]
 
-					while (LoadSourceFileSourceInfo(fileSourceInfoList))
-						{  }
+					var fileSourceConfig = LoadSourceFileSourceConfig();
+
+					while (fileSourceConfig != null)
+						{
+						fileSources.Add(fileSourceConfig);
+						fileSourceConfig = LoadSourceFileSourceConfig();
+						}
 
 					// [Int32: Image FileSource Number]
 					//    (properties)
 					// ...
 					// [Int32: 0]
 
-					while (LoadImageFileSourceInfo(fileSourceInfoList))
-						{  }
+					fileSourceConfig = LoadImageFileSourceConfig();
+
+					while (fileSourceConfig != null)
+						{
+						fileSources.Add(fileSourceConfig);
+						fileSourceConfig = LoadImageFileSourceConfig();
+						}
 
 					}
 				}
@@ -136,9 +151,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 
 			if (result == false)
 				{
-				overridableSettings = new Config.OverridableOutputSettings();
+				settings = new Config.OverridableOutputSettings();
 				styles.Clear();
-				fileSourceInfoList.Clear();
+				fileSources.Clear();
 				}
 
 			return result;
@@ -146,10 +161,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 
 
 		/* Function: LoadStyle
-		 * Loads a <Style> from the current point in the binary file.  If successful it will add a <Style> to the list and return true.  If it's
-		 * at a null indicating the end of the list it will move past it and return false.
+		 * Loads a <Style> from the current point in the binary file.  If successful it will return a new <Style> object.  If it's at the null
+		 * at the end of the list it will move past it return null.
 		 */
-		public bool LoadStyle (List<Style> styles)
+		public Style LoadStyle (List<Style> styles)
 			{
 			// [String: Style Path]
 			//    (properties)
@@ -157,7 +172,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 			string stylePath = binaryFile.ReadString();
 
 			if (stylePath == null)
-				{  return false;  }
+				{  return null;  }
 
 
 			Style style;
@@ -241,16 +256,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 				{  style.SetHomePage((AbsolutePath)homePage, Config.PropertySource.PreviousRun);  }
 
 
-			styles.Add(style);
-			return true;
+			return style;
 			}
 
 
-		/* Function: LoadSourceFileSourceInfo
-		 * Loads a source-based <FileSourceInfo> record from the current point in the binary file.  If successful it will add it to the list
-		 * and return true.  If it's at a zero indicating the end of the list it will move past it and return false.
+		/* Function: LoadSourceFileSourceConfig
+		 * Loads a source-based <FileSourceConfig> record from the current point in the binary file.  If successful it will return it
+		 * as a new <FileSourceConfig> object.  If it's at the zero indicating the end of the list it will move past it and return null.
 		 */
-		public bool LoadSourceFileSourceInfo (List<FileSourceInfo> fileSourceInfoList)
+		public FileSourceConfig LoadSourceFileSourceConfig ()
 			{
 			// [Int32: Source FileSource Number]
 			//    (properties)
@@ -260,29 +274,28 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 			int fileSourceNumber = binaryFile.ReadInt32();
 
 			if (fileSourceNumber == 0)
-				{  return false;  }
+				{  return null;  }
 
-			FileSourceInfo fileSourceInfo = new FileSourceInfo();
-			fileSourceInfo.Number = fileSourceNumber;
-			fileSourceInfo.Type = Files.InputType.Source;
+			FileSourceConfig fileSourceConfig = new FileSourceConfig();
+			fileSourceConfig.Number = fileSourceNumber;
+			fileSourceConfig.Type = Files.InputType.Source;
 
 
 			// [String: Source FileSource UniqueIDString]
 			// [String: Source FileSource Name]
 
-			fileSourceInfo.UniqueIDString = binaryFile.ReadString();
-			fileSourceInfo.Name = binaryFile.ReadString();
+			fileSourceConfig.UniqueIDString = binaryFile.ReadString();
+			fileSourceConfig.Name = binaryFile.ReadString();
 
-			fileSourceInfoList.Add(fileSourceInfo);
-			return true;
+			return fileSourceConfig;
 			}
 
 
-		/* Function: LoadImageFileSourceInfo
-		 * Loads a image-based <FileSourceInfo> record from the current point in the binary file.  If successful it will add it to the list
-		 * and return true.  If it's at a zero indicating the end of the list it will move past it and return false.
+		/* Function: LoadImageFileSourceConfig
+		 * Loads an image-based <FileSourceConfig> record from the current point in the binary file.  If successful it will return it
+		 * as a new <FileSourceConfig> object.  If it's at the zero indicating the end of the list it will move past it and return null.
 		 */
-		public bool LoadImageFileSourceInfo (List<FileSourceInfo> fileSourceInfoList)
+		public FileSourceConfig LoadImageFileSourceConfig ()
 			{
 			// [Int32: Source FileSource Number]
 			//    (properties)
@@ -292,19 +305,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 			int fileSourceNumber = binaryFile.ReadInt32();
 
 			if (fileSourceNumber == 0)
-				{  return false;  }
+				{  return null;  }
 
-			FileSourceInfo fileSourceInfo = new FileSourceInfo();
-			fileSourceInfo.Number = fileSourceNumber;
-			fileSourceInfo.Type = Files.InputType.Image;
+			FileSourceConfig fileSourceConfig = new FileSourceConfig();
+			fileSourceConfig.Number = fileSourceNumber;
+			fileSourceConfig.Type = Files.InputType.Image;
 
 
 			// [String: Source FileSource UniqueIDString]
 
-			fileSourceInfo.UniqueIDString = binaryFile.ReadString();
+			fileSourceConfig.UniqueIDString = binaryFile.ReadString();
 
-			fileSourceInfoList.Add(fileSourceInfo);
-			return true;
+			return fileSourceConfig;
 			}
 
 
@@ -316,8 +328,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 		/* Function: Save
 		 * Saves the passed information in <Config.nd>.
 		 */
-		public void Save (Path filename, Config.OverridableOutputSettings overridableSettings, List<Style> styles,
-								  List<FileSourceInfo> fileSourceInfoList)
+		public void Save (Path filename, Config.OverridableOutputSettings settings, List<Style> styles,
+								 List<FileSourceConfig> fileSources)
 			{
 		    binaryFile = new BinaryFile();
 
@@ -331,11 +343,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 				// [String: Project Timestamp Code or null]
 				// [String: Project Home Page Path (absolute) or null]
 
-				binaryFile.WriteString(overridableSettings.Title);
-				binaryFile.WriteString(overridableSettings.Subtitle);
-				binaryFile.WriteString(overridableSettings.Copyright);
-				binaryFile.WriteString(overridableSettings.TimestampCode);
-				binaryFile.WriteString(overridableSettings.HomePage);
+				binaryFile.WriteString(settings.Title);
+				binaryFile.WriteString(settings.Subtitle);
+				binaryFile.WriteString(settings.Copyright);
+				binaryFile.WriteString(settings.TimestampCode);
+				binaryFile.WriteString(settings.HomePage);
 
 
 				// [String: Style Path]
@@ -355,10 +367,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 				// ...
 				// [Int32: 0]
 
-				foreach (FileSourceInfo fileSourceInfo in fileSourceInfoList)
+				foreach (var fileSourceConfig in fileSources)
 					{
-					if (fileSourceInfo.Type == Files.InputType.Source)
-						{  SaveSourceFileSourceInfo(fileSourceInfo);  }
+					if (fileSourceConfig.Type == Files.InputType.Source)
+						{  SaveSourceFileSourceConfig(fileSourceConfig);  }
 					}
 
 				binaryFile.WriteInt32(0);
@@ -369,10 +381,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 				// ...
 				// [Int32: 0]
 
-				foreach (FileSourceInfo fileSourceInfo in fileSourceInfoList)
+				foreach (var fileSourceConfig in fileSources)
 					{
-					if (fileSourceInfo.Type == Files.InputType.Image)
-						{  SaveImageFileSourceInfo(fileSourceInfo);  }
+					if (fileSourceConfig.Type == Files.InputType.Image)
+						{  SaveImageFileSourceConfig(fileSourceConfig);  }
 					}
 
 				binaryFile.WriteInt32(0);
@@ -387,7 +399,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 
 
 		/* Function: SaveStyle
-		 * Saves the passed information in <Config.nd>.
+		 * Saves the passed style in <Config.nd>.
 		 */
 		public void SaveStyle (Style style)
 			{
@@ -457,13 +469,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 			}
 
 
-		/* Function: SaveSourceFileSourceInfo
-		 * Saves a source-based <FileSourceInfo> in <Config.nd>.
+		/* Function: SaveSourceFileSourceConfig
+		 * Saves a source-based <FileSourceConfig> in <Config.nd>.
 		 */
-		public void SaveSourceFileSourceInfo (FileSourceInfo fileSourceInfo)
+		public void SaveSourceFileSourceConfig (FileSourceConfig fileSourceConfig)
 			{
 			#if DEBUG
-			if (fileSourceInfo.Type != Files.InputType.Source)
+			if (fileSourceConfig.Type != Files.InputType.Source)
 				{  throw new InvalidOperationException();  }
 			#endif
 
@@ -472,19 +484,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 			//    [String: Source FileSource UniqueIDString]
 			//    [String: Source FileSource Name]
 
-			binaryFile.WriteInt32(fileSourceInfo.Number);
-			binaryFile.WriteString(fileSourceInfo.UniqueIDString);
-			binaryFile.WriteString(fileSourceInfo.Name);
+			binaryFile.WriteInt32(fileSourceConfig.Number);
+			binaryFile.WriteString(fileSourceConfig.UniqueIDString);
+			binaryFile.WriteString(fileSourceConfig.Name);
 			}
 
 
-		/* Function: SaveImageFileSourceInfo
-		 * Saves an image-based <FileSourceInfo> in <Config.nd>.
+		/* Function: SaveImageFileSourceConfig
+		 * Saves an image-based <FileSourceConfig> in <Config.nd>.
 		 */
-		public void SaveImageFileSourceInfo (FileSourceInfo fileSourceInfo)
+		public void SaveImageFileSourceConfig (FileSourceConfig fileSourceConfig)
 			{
 			#if DEBUG
-			if (fileSourceInfo.Type != Files.InputType.Image)
+			if (fileSourceConfig.Type != Files.InputType.Image)
 				{  throw new InvalidOperationException();  }
 			#endif
 
@@ -492,8 +504,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 			// [Int32: Source FileSource Number]
 			//    [String: Source FileSource UniqueIDString]
 
-			binaryFile.WriteInt32(fileSourceInfo.Number);
-			binaryFile.WriteString(fileSourceInfo.UniqueIDString);
+			binaryFile.WriteInt32(fileSourceConfig.Number);
+			binaryFile.WriteString(fileSourceConfig.UniqueIDString);
 			}
 
 
