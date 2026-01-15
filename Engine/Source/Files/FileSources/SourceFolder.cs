@@ -185,16 +185,6 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 				{  return config.RepositorySourceURLTemplate;  }
 			}
 
-		/* Property: CanMakeRepositorySourceFileURLs
-		 * Returns whether it's possible to create URLs with <RepositorySourceFileURLOf()>, meaning all the properties
-		 * required to do so are defined.
-		 */
-		public bool CanMakeRepositorySourceFileURLs
-			{
-			get
-				{  return (config.RepositorySourceURLTemplate != null);  }
-			}
-
 
 
 		// Group: Variables

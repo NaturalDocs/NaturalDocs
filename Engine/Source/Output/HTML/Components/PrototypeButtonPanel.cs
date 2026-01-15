@@ -128,7 +128,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			var definitionFileSource = EngineInstance.Files.FileSourceOf(definitionFile) as Files.FileSources.SourceFolder;
 
 			if (definitionFileSource != null &&
-				definitionFileSource.CanMakeRepositorySourceFileURLs)
+				definitionFileSource.RepositorySourceURLTemplate != null)
 				{  return true;  }
 
 
@@ -144,7 +144,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					definitionFileSource = EngineInstance.Files.FileSourceOf(definitionFile) as Files.FileSources.SourceFolder;
 
 					if (definitionFileSource != null &&
-						definitionFileSource.CanMakeRepositorySourceFileURLs)
+						definitionFileSource.RepositorySourceURLTemplate != null)
 						{  return true;  }
 					}
 				}
@@ -170,7 +170,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			var definitionFileSource = EngineInstance.Files.FileSourceOf(definitionFile) as Files.FileSources.SourceFolder;
 
 			if (definitionFileSource != null &&
-				definitionFileSource.CanMakeRepositorySourceFileURLs)
+				definitionFileSource.RepositorySourceURLTemplate != null)
 				{
 				var link = new RepositoryLink();
 
@@ -202,7 +202,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					definitionFileSource = EngineInstance.Files.FileSourceOf(definitionFile) as Files.FileSources.SourceFolder;
 
 					if (definitionFileSource != null &&
-						definitionFileSource.CanMakeRepositorySourceFileURLs)
+						definitionFileSource.RepositorySourceURLTemplate != null)
 						{
 						var definitionLink = new RepositoryLink();
 
