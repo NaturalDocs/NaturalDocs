@@ -29,6 +29,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 			Type = Files.InputType.Source;
 			UniqueIDString = null;
 			Name = null;
+
+			RepositoryName = null;
+			RepositoryProjectURL = null;
+			RepositorySourceURLTemplate = null;
 			}
 
 		public bool IsSameFundamentalFileSource (Files.FileSource other)
@@ -44,6 +48,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 			Type = other.Type;
 			UniqueIDString = other.UniqueIDString;
 			Name = other.Name;
+
+			if (other is Files.FileSources.SourceFolder)
+				{
+				var sourceFolder = other as Files.FileSources.SourceFolder;
+
+				RepositoryName = sourceFolder.RepositoryName;
+				RepositoryProjectURL = sourceFolder.RepositoryProjectURL;
+				RepositorySourceURLTemplate = sourceFolder.RepositorySourceURLTemplate;
+				}
 			}
 
 
@@ -54,6 +67,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 		public Files.InputType Type;
 		public string UniqueIDString;
 		public string Name;
+
+		public string RepositoryName;
+		public string RepositoryProjectURL;
+		public string RepositorySourceURLTemplate;
 
 		}
 	}
