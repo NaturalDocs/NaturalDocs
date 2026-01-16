@@ -128,13 +128,47 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 		public void OnUpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags, CodeDB.EventAccessor eventAccessor)
 			{
-			// We don't care about line number changes.  They don't affect the output.  We also don't care about context
-			// changes.  They might affect links but if they do it will be handled in OnChangeLinkTarget().
-			changeFlags &= ~(Topic.ChangeFlags.CommentLineNumber | Topic.ChangeFlags.CodeLineNumber |
-									   Topic.ChangeFlags.PrototypeContext | Topic.ChangeFlags.BodyContext);
+			// We don't care about context changes.  They might affect links but if they do it will be handled in OnChangeLinkTarget().
+			// Remove them and see if we still need to do anything.
+
+			changeFlags &= ~(Topic.ChangeFlags.PrototypeContext | Topic.ChangeFlags.BodyContext);
 
 			if (changeFlags == 0)
 				{  return;  }
+
+
+			// Are line numbers the only remaining changes?
+
+			if ((changeFlags & ~(Topic.ChangeFlags.CodeLineNumber | Topic.ChangeFlags.CommentLineNumber)) == 0)
+				{
+
+				// If we're here it means one or both of the line numbers changed but nothing else.  We only care about them for repository
+				// links, which only appear on prototypes, so if the topic doesn't have a prototype we can ignore it.
+
+				if (oldTopic.Prototype == null)
+					{  return;  }
+
+
+				// Next check if the line number we actually use for the repository link changed, because if only the other one changed we can
+				// still ignore it.
+
+				if (RepositoryLinks.EffectiveLineNumber(oldTopic) == RepositoryLinks.EffectiveLineNumber(newTopic))
+					{  return;  }
+
+
+				// Does the file source even have a repository link template?  If not we don't care about line number changes.  We do this test
+				// last because it requires more effort to look up.
+
+				File file = EngineInstance.Files.FromID(oldTopic.FileID);
+				Files.FileSource fileSource = EngineInstance.Files.FileSourceOf(file);
+
+				if (fileSource is not Files.FileSources.SourceFolder ||
+					(fileSource as Files.FileSources.SourceFolder).RepositorySourceURLTemplate == null)
+					{  return;  }
+				}
+
+
+			// Rebuild the file and classes associated with the topic.
 
 			unprocessedChanges.Lock();
 			try
@@ -157,7 +191,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			// If the summary or prototype changed this means its tooltip changed.  Rebuild any file that contains links
 			// to this topic.
 			if ((changeFlags & (Topic.ChangeFlags.Prototype | Topic.ChangeFlags.Summary |
-												Topic.ChangeFlags.LanguageID | Topic.ChangeFlags.CommentTypeID)) != 0)
+										Topic.ChangeFlags.LanguageID | Topic.ChangeFlags.CommentTypeID)) != 0)
 				{
 				IDObjects.NumberSet linkFileIDs, linkClassIDs;
 				eventAccessor.GetInfoOnLinksThatResolveToTopicID(oldTopic.TopicID, out linkFileIDs, out linkClassIDs);
