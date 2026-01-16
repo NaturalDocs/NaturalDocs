@@ -1843,41 +1843,41 @@ td {
 		visibility: hidden;
 		}
 
-		.PRepository.SingleLink a {
+		.BPRepositoryLinks.Single a {
 			display: inline-block;
 			padding: .45rem .725rem .5rem .85rem;
 			}
-		.PRepository.MultipleLinks {
+		.BPRepositoryLinks.Multiple {
 			padding: .45rem 0 .5rem .85rem;
 			}
-			.PRepository.MultipleLinks .PRLinks a {
+			.BPRepositoryLinks.Multiple .RLLinks a {
 				display: block;
 				font-weight: normal;
 				padding: 0 .725rem 0 1ex;
 				}
 
-		.PRepository.MultipleLinks {
+		.BPRepositoryLinks.Multiple {
 			display: grid;
 			}
-			.PRepository.MultipleLinks .PRHeader {
+			.BPRepositoryLinks.Multiple .RLHeader {
 				grid-row: 1; grid-column: 1;
 				}
-			.PRepository.MultipleLinks .PRLinks {
+			.BPRepositoryLinks.Multiple .RLLinks {
 				grid-row: 1; grid-column: 2;
 				}
 
-		.PRepository .PLinkIcon {
+		.BPRepositoryLinks .RLLinkIcon {
 			background: transparent url("images/prototype-button-arrow.svg") center center no-repeat;
 			width: 5px; height: 7px;
 			margin: 0 0 .2ex 1ex;
 			display: inline-block;
 			}
-			.PRepository.MultipleLinks .PLinkIcon {
+			.BPRepositoryLinks.Multiple .RLLinkIcon {
 				opacity: .66;
 				}
 
-		.DarkTheme .PRepository .PLinkIcon { background-image: url("images/prototype-button-arrow-dark.svg"); }
-		.BlackTheme .PRepository .PLinkIcon { background-image: url("images/prototype-button-arrow-black.svg"); }
+		.DarkTheme .BPRepositoryLinks .RLLinkIcon { background-image: url("images/prototype-button-arrow-dark.svg"); }
+		.BlackTheme .BPRepositoryLinks .RLLinkIcon { background-image: url("images/prototype-button-arrow-black.svg"); }
 
 
 

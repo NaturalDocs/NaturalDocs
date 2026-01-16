@@ -409,17 +409,17 @@ Button Panel:
 
 	<NDPrototype PButtonPanel #NDPrototypeButtonPanel[ID]>
 
-		<PRepository SingleLink>
+		<BPRepositoryLinks Single>
 			<a href>link text<PLinkIcon></a>
-		</PRepository SingleLink>
+		</BPRepositoryLinks Single>
 
-		<PRepository MultipleLinks>
-			<PRHeader>text</PRHeader>
-			<PRLinks>
-				<a href>link text<PLinkIcon></a>
+		<BPRepositoryLinks Multiple>
+			<RLHeader>text</RLHeader>
+			<RLLinks>
+				<a href>link text<RLLinkIcon></a>
 				...
-			</PRLinks>
-		</PRepository MultipleLinks>
+			</RLLinks>
+		</BPRepositoryLinks Multiple>
 
 	</NDPrototype PButtonPanel #NDPrototypeButtonPanel[ID]>
 

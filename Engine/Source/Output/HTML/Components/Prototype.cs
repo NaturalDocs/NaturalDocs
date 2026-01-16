@@ -215,8 +215,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				if (addButtonPanel)
 					{
-					output.Append(" onmouseenter=\"NDContentPage.OnPrototypeMouseEnter(event," + context.Topic.TopicID + ");\"" +
-										   " onmouseleave=\"NDContentPage.OnPrototypeMouseLeave(event," + context.Topic.TopicID + ");\"");
+					output.Append(" onmouseenter=\"NDContentPage.OnPrototypeMouseEnter(event,'NDPrototypeButtonPanel" + context.Topic.TopicID + "');\"" +
+										   " onmouseleave=\"NDContentPage.OnPrototypeMouseLeave(event,'NDPrototypeButtonPanel" + context.Topic.TopicID + "');\"");
 					}
 
 				output.Append(">");

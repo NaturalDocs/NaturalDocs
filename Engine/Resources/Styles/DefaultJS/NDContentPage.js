@@ -296,7 +296,7 @@ var NDContentPage = new function ()
 	*/
 	this.OnPrototypeMouseLeave = function (event, prototypeID)
 		{
-		this.prototypeButtonPanelTimeout = setTimeout("NDContentPage.HidePrototypeButtonPanel(" + prototypeID + ");", $PrototypeButtonBarDelay);
+		this.prototypeButtonPanelTimeout = setTimeout("NDContentPage.HidePrototypeButtonPanel('" + prototypeID + "');", $PrototypeButtonBarDelay);
 		};
 
 
@@ -304,7 +304,7 @@ var NDContentPage = new function ()
 	*/
 	this.ShowPrototypeButtonPanel = function (prototypeID)
 		{
-		var buttonPanel = document.getElementById("NDPrototypeButtonPanel" + prototypeID);
+		var buttonPanel = document.getElementById(prototypeID);
 
 		if (buttonPanel)
 			{
@@ -318,7 +318,7 @@ var NDContentPage = new function ()
 	*/
 	this.HidePrototypeButtonPanel = function (prototypeID)
 		{
-		var buttonPanel = document.getElementById("NDPrototypeButtonPanel" + prototypeID);
+		var buttonPanel = document.getElementById(prototypeID);
 
 		if (buttonPanel)
 			{
@@ -509,7 +509,7 @@ var NDContentPage = new function ()
 	*/
 
 	/* var: showingPrototypeButtonPanel
-		The ID of the visible prototype button panel, or undefined ifnone.
+		The ID of the visible prototype button panel, or undefined if none.
 	*/
 
 	/* var: prototypeButtonPanelTimeout
