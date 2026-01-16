@@ -47,6 +47,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			links = null;
 			linkTargets = null;
 			isToolTip = false;
+
+			buttonPanelBuilder = null;
 			}
 
 
@@ -384,7 +386,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			// Main tag
 
-			string entryClass = "CPEntry Parent";
+			string entryClass = "CPEntry CPContent Parent";
 			if (parentCommentType != null)
 				{  entryClass += " T" + parentCommentType.SimpleIdentifier;  }
 
@@ -461,11 +463,33 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 */
 		protected void AppendCurrentClassPrototype (StringBuilder output)
 			{
+			bool addButtonPanel;
+
+			if (isToolTip)
+				{  addButtonPanel = false;  }
+			else
+				{
+				if (buttonPanelBuilder == null)
+					{  buttonPanelBuilder = new ClassPrototypeButtonPanel(context);  }
+				else
+					{  buttonPanelBuilder.Context = context;  }
+
+				addButtonPanel = buttonPanelBuilder.IsNeededFor(context.Topic);
+				}
+
 
 			// Main tag
 
 			string simpleTypeIdentifier = EngineInstance.CommentTypes.FromID(context.Topic.CommentTypeID).SimpleIdentifier;
-			output.Append("<div class=\"CPEntry T" + simpleTypeIdentifier +" Current\">");
+			output.Append("<div class=\"CPEntry CPContent T" + simpleTypeIdentifier +" Current\"");
+
+				if (addButtonPanel)
+					{
+					output.Append(" onmouseenter=\"NDContentPage.OnPrototypeMouseEnter(event,'NDClassPrototypeButtonPanel" + context.Topic.TopicID + "');\"" +
+										   " onmouseleave=\"NDContentPage.OnPrototypeMouseLeave(event,'NDClassPrototypeButtonPanel" + context.Topic.TopicID + "');\"");
+					}
+
+				output.Append('>');
 
 
 			// Pre-prototype lines
@@ -584,6 +608,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				}
 
 			output.Append("</div>");
+
+
+			// Add button panel if necessary
+
+			if (addButtonPanel)
+				{
+				buttonPanelBuilder.AppendButtonPanel(context.Topic, output, extraCSSClasses: "T" + simpleTypeIdentifier);
+				}
 			}
 
 
@@ -594,7 +626,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			CommentType childCommentType = EngineInstance.CommentTypes.FromID(childTopic.CommentTypeID);
 			string memberOperator = language.MemberOperator;
 
-			AppendOpeningLinkTag(childTopic, output, "CPEntry Child T" + childCommentType.SimpleIdentifier);
+			AppendOpeningLinkTag(childTopic, output, "CPEntry CPContent Child T" + childCommentType.SimpleIdentifier);
 
 				output.Append("<div class=\"CPName\">");
 
@@ -644,6 +676,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		/* var: isToolTip
 		 */
 		protected bool isToolTip;
+
+		/* var: buttonPanelBuilder
+		 * An object for building prototypes button panels, or null if one hasn't been created yet.  Since this class can be
+		 * reused to build multiple prototypes, one is stored with the class so it can be reused between runs.
+		 */
+		protected HTML.Components.ClassPrototypeButtonPanel buttonPanelBuilder;
 
 
 		/* __________________________________________________________________________

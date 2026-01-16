@@ -201,6 +201,7 @@
 	$NDSizerZIndex: 101;
 	$NDContentCoverZIndex: 100;
 
+	$NDButtonPanelZIndex: 22;
 	$NDToolTipZIndex: 21;
 
 	$NDMenuArrowZIndex: 6;
@@ -1614,8 +1615,15 @@ td {
 		margin: .6rem $Indent $DiagramSpacing $Indent;
 		}
 	.CTopic .NDPrototype.PButtonPanel {
-		margin: calc(-$DiagramSpacing - 1px) $Indent $DiagramSpacing $Indent;
+		margin-top: calc(-$DiagramSpacing - 1px);
 		}
+	.CTopic .NDClassPrototype .CPButtonPanel {
+		margin-top: calc(-.35rem - 2px);
+		}
+		.DarkTheme .CTopic .NDClassPrototype .CPButtonPanel,
+		.BlackTheme .CTopic .NDClassPrototype .CPButtonPanel {
+			margin-top: calc(-.35rem - 1px);
+			}
 
 	.CHeading {
 		font: $semibold 1.2rem $HeadingFontFamily;
@@ -1841,6 +1849,7 @@ td {
 		display: inline-block;
 		position: absolute;
 		visibility: hidden;
+		z-index: $NDButtonPanelZIndex;
 		}
 
 		.BPRepositoryLinks.Single a {
@@ -2048,14 +2057,10 @@ td {
 */
 
 	.CPEntry {
-		border-width: 1px 2px 2px 1px; border-style: solid; border-color: $ContentTextColor;
-		padding: .25rem .5rem;
-		margin-bottom: .35rem;
-		border-radius: .5rem;
-
 		background-color: $ContentBackgroundColor;
-		overflow: auto;
-		scrollbar-width: thin;
+		border-width: 1px 2px 2px 1px; border-style: solid; border-color: $ContentTextColor;
+		border-radius: .5rem;
+		margin-bottom: .35rem;
 		}
 		.DarkTheme .CPEntry,
 		.BlackTheme .CPEntry {
@@ -2077,7 +2082,12 @@ td {
 			background-color: $ContentBackgroundColor_Black;
 			}
 
-		.CPEntry::-webkit-scrollbar {
+	.CPContent {
+		padding: .25rem .5rem;
+		overflow: auto;
+		scrollbar-width:thin;
+		}
+		.CPContent::-webkit-scrollbar {
 			height: 7px;
 			}
 
@@ -2109,6 +2119,21 @@ td {
 	a.CPEntry:active .CPName {
 		text-decoration: underline;
 		}
+
+	.CPButtonPanel {
+		font: $semibold 9pt $ContentFontFamily;
+		border-top-style: dashed;
+		border-radius: 0 0 .5rem .5rem;
+
+		display: inline-block;
+		position: absolute;
+		visibility: hidden;
+		z-index: $NDButtonPanelZIndex;
+		}
+		.DarkTheme .CPButtonPanel,
+		.BlackTheme .CPButtonPanel {
+			border-top-width: 1px;
+			}
 
 	.NDClassPrototype .CPEntry.Parent {
 		margin-right: $ClassPrototypeIndent;
@@ -2164,6 +2189,25 @@ td {
 		.BlackTheme .CPEntry.Parent .CPName,
 		.BlackTheme .CPEntry.Child .CPName {
 			opacity: .7;
+			}
+
+	.NDClassPrototype a:link,
+	.NDClassPrototype a:visited,
+	.NDClassPrototype a:hover,
+	.NDClassPrototype a:active {
+		color: $ContentTextColor;
+		}
+		.DarkTheme .NDClassPrototype a:link,
+		.DarkTheme .NDClassPrototype a:visited,
+		.DarkTheme .NDClassPrototype a:hover,
+		.DarkTheme .NDClassPrototype a:active {
+			color: $ContentTextColor_Dark;
+			}
+		.BlackTheme .NDClassPrototype a:link,
+		.BlackTheme .NDClassPrototype a:visited,
+		.BlackTheme .NDClassPrototype a:hover,
+		.BlackTheme .NDClassPrototype a:active {
+			color: $ContentTextColor_Black;
 			}
 
 	.CPEntry .CPPrePrototypeLine,

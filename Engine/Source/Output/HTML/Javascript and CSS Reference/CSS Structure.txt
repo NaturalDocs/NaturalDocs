@@ -429,7 +429,7 @@ Button Panel:
 	separate entity, not appearing inside the main NDPrototype DOM object, but still uses NDPrototype to
 	inherit the colors without additional rules.
 
-	The PRepository section will be either the SingleLink or the MultipleLinks form as appropriate.
+	The BPRepository section will be either the SingleLink or the MultipleLinks form as appropriate.
 
 
 
@@ -440,7 +440,7 @@ _______________________________________________________________________________
 
 	<NDClassPrototype HasParents? HasChildren?>
 
-		<CPEntry T[CommentType] Current/Parent/Child>
+		<CPEntry CPContent T[CommentType] Current/Parent/Child>
 
 			<CPPrePrototypeLine>
 				...
@@ -458,6 +458,8 @@ _______________________________________________________________________________
 
 		</CPEntry T[CommentType] Current/Parent/Child>
 
+		button panel?
+
 		<a CPAdditionalChildrenNotice>Text</a CPAdditionalChildrenNotice>
 
 		<CPAdditionalChildren>
@@ -470,6 +472,38 @@ _______________________________________________________________________________
 
 ----------
 
+	The button panel may or may not appear after the Current CPEntry depending on things such as whether a repository has been
+	defined.  Since they both use NDClassPrototype, the CPContent class is used to distinguish the main content section from the
+	button panel.
+
+
+Button Panel:
+
+	--- text ---
+
+	<NDClassPrototype CPButtonPanel #NDClassPrototypeButtonPanel[ID]>
+
+		<BPRepositoryLinks Single>
+			<a href>link text<PLinkIcon></a>
+		</BPRepositoryLinks Single>
+
+		<BPRepositoryLinks Multiple>
+			<RLHeader>text</RLHeader>
+			<RLLinks>
+				<a href>link text<RLLinkIcon></a>
+				...
+			</RLLinks>
+		</BPRepositoryLinks Multiple>
+
+	</NDClassPrototype CPButtonPanel #NDClassPrototypeButtonPanel[ID]>
+
+	----------
+
+	The button panel is a separate floating panel that appears when the prototype is hovered over.  It is a separate
+	entity, not appearing inside the main NDClassPrototype DOM object, but still uses NDClassPrototype to inherit
+	the colors without additional rules.
+
+	The BPRepository section will be either the SingleLink or the MultipleLinks form as appropriate.
 
 
 Topic: Tool Tip
