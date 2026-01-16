@@ -276,56 +276,65 @@ var NDContentPage = new function ()
 
 	/* Function: OnPrototypeMouseEnter
 	*/
-	this.OnPrototypeMouseEnter = function (event, prototypeID)
+	this.OnPrototypeMouseEnter = function (event, buttonPanelID, parentID)
 		{
 		clearTimeout(this.prototypeButtonPanelTimeout);
 
 		if (this.showingPrototypeButtonPanel)
 			{
-			if (this.showingPrototypeButtonPanel == prototypeID)
+			if (this.showingPrototypeButtonPanel == buttonPanelID)
 				{  return;  }
 			else
-				{  this.HidePrototypeButtonPanel(this.showingPrototypeButtonPanel);  }
+				{  this.HidePrototypeButtonPanel(this.showingPrototypeButtonPanel, this.showingPrototypeButtonPanelParent);  }
 			}
 
-		this.ShowPrototypeButtonPanel(prototypeID);
+		this.ShowPrototypeButtonPanel(buttonPanelID, parentID);
 		};
 
 
 	/* Function: OnPrototypeMouseLeave
 	*/
-	this.OnPrototypeMouseLeave = function (event, prototypeID)
+	this.OnPrototypeMouseLeave = function (event, buttonPanelID, parentID)
 		{
-		this.prototypeButtonPanelTimeout = setTimeout("NDContentPage.HidePrototypeButtonPanel('" + prototypeID + "');", $PrototypeButtonBarDelay);
+		this.prototypeButtonPanelTimeout = setTimeout("NDContentPage.HidePrototypeButtonPanel('" + buttonPanelID + "','" + parentID + "');", $PrototypeButtonBarDelay);
 		};
 
 
 	/* Function: ShowPrototypeButtonPanel
 	*/
-	this.ShowPrototypeButtonPanel = function (prototypeID)
+	this.ShowPrototypeButtonPanel = function (buttonPanelID, parentID)
 		{
-		var buttonPanel = document.getElementById(prototypeID);
+		var buttonPanel = document.getElementById(buttonPanelID);
+		var parent = document.getElementById(parentID);
 
 		if (buttonPanel)
 			{
 			buttonPanel.style.visibility = "visible";
-			this.showingPrototypeButtonPanel = prototypeID;
+			parent.classList.add("ButtonPanelOpen");
+
+			this.showingPrototypeButtonPanel = buttonPanelID;
+			this.showingPrototypeButtonPanelParent = parentID;
 			}
 		};
 
 
 	/* Function: HidePrototypeButtonPanel
 	*/
-	this.HidePrototypeButtonPanel = function (prototypeID)
+	this.HidePrototypeButtonPanel = function (buttonPanelID, parentID)
 		{
-		var buttonPanel = document.getElementById(prototypeID);
+		var buttonPanel = document.getElementById(buttonPanelID);
+		var parent = document.getElementById(parentID);
 
 		if (buttonPanel)
 			{
 			buttonPanel.style.visibility = "hidden";
+			parent.classList.remove("ButtonPanelOpen");
 
-			if (this.showingPrototypeButtonPanel == prototypeID)
-				{  this.showingPrototypeButtonPanel = undefined;  }
+			if (this.showingPrototypeButtonPanel == buttonPanelID)
+				{
+				this.showingPrototypeButtonPanel = undefined;
+				this.showingPrototypeButtonPanelParent = undefined;
+				}
 			}
 		};
 
@@ -510,6 +519,10 @@ var NDContentPage = new function ()
 
 	/* var: showingPrototypeButtonPanel
 		The ID of the visible prototype button panel, or undefined if none.
+	*/
+
+	/* var: showingPrototypeButtonPanelParent
+		The ID of the parent object of the visible prototype button panel, or undefined if none.
 	*/
 
 	/* var: prototypeButtonPanelTimeout

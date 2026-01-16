@@ -61,8 +61,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			output.Append(
 				"<div id=\"NDClassPrototypeButtonPanel" + topic.TopicID + "\" " +
 					"class=\"CPEntry Current CPButtonPanel" + (extraCSSClasses != null ? " " + extraCSSClasses : "") + "\" " +
-					"onmouseenter=\"NDContentPage.OnPrototypeMouseEnter(event,'NDClassPrototypeButtonPanel" + topic.TopicID + "');\" " +
-					"onmouseleave=\"NDContentPage.OnPrototypeMouseLeave(event,'NDClassPrototypeButtonPanel" + topic.TopicID + "');\">");
+					"onmouseenter=\"NDContentPage.OnPrototypeMouseEnter(event,'NDClassPrototypeButtonPanel" + topic.TopicID + "','NDClassPrototype" + topic.TopicID + "');\" " +
+					"onmouseleave=\"NDContentPage.OnPrototypeMouseLeave(event,'NDClassPrototypeButtonPanel" + topic.TopicID + "','NDClassPrototype" + topic.TopicID + "');\">");
 
 				repositoryLinksBuilder.AppendRepositoryLinks(topic, output);
 

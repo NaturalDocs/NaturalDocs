@@ -485,8 +485,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				if (addButtonPanel)
 					{
-					output.Append(" onmouseenter=\"NDContentPage.OnPrototypeMouseEnter(event,'NDClassPrototypeButtonPanel" + context.Topic.TopicID + "');\"" +
-										   " onmouseleave=\"NDContentPage.OnPrototypeMouseLeave(event,'NDClassPrototypeButtonPanel" + context.Topic.TopicID + "');\"");
+					output.Append(" onmouseenter=\"NDContentPage.OnPrototypeMouseEnter(event,'NDClassPrototypeButtonPanel" + context.Topic.TopicID + "','NDClassPrototype" + context.Topic.TopicID + "');\"" +
+										  " onmouseleave=\"NDContentPage.OnPrototypeMouseLeave(event,'NDClassPrototypeButtonPanel" + context.Topic.TopicID + "','NDClassPrototype" + context.Topic.TopicID + "');\"");
 					}
 
 				output.Append('>');

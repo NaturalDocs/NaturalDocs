@@ -60,8 +60,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			output.Append(
 				"<div id=\"NDPrototypeButtonPanel" + topic.TopicID + "\" class=\"NDPrototype PButtonPanel\" " +
-					"onmouseenter=\"NDContentPage.OnPrototypeMouseEnter(event,'NDPrototypeButtonPanel" + topic.TopicID + "');\" " +
-					"onmouseleave=\"NDContentPage.OnPrototypeMouseLeave(event,'NDPrototypeButtonPanel" + topic.TopicID + "');\">");
+					"onmouseenter=\"NDContentPage.OnPrototypeMouseEnter(event,'NDPrototypeButtonPanel" + topic.TopicID + "','NDPrototype" + topic.TopicID + "');\" " +
+					"onmouseleave=\"NDContentPage.OnPrototypeMouseLeave(event,'NDPrototypeButtonPanel" + topic.TopicID + "','NDPrototype" + topic.TopicID + "');\">");
 
 				repositoryLinksBuilder.AppendRepositoryLinks(topic, output);
 

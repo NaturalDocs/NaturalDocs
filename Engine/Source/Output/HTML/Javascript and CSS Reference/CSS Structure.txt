@@ -274,13 +274,13 @@ Frame:
 
 	--- text ---
 
-	<NDPrototype #NDPrototype[ID] PContent WideForm/NarrowForm?>
+	<NDPrototype #NDPrototype[ID] PContent WideForm/NarrowForm? ButtonPanelOpen?>
 
 		section
 		section
 		...
 
-	</NDPrototype #NDPrototype[ID] PContent WideForm/NarrowForm?>
+	</NDPrototype #NDPrototype[ID] PContent WideForm/NarrowForm? ButtonPanelOpen?>
 
 	button panel?
 
@@ -440,7 +440,7 @@ _______________________________________________________________________________
 
 	<NDClassPrototype HasParents? HasChildren?>
 
-		<CPEntry CPContent T[CommentType] Current/Parent/Child>
+		<CPEntry CPContent T[CommentType] Current/Parent/Child ButtonPanelOpen?>
 
 			<CPPrePrototypeLine>
 				...
@@ -456,7 +456,7 @@ _______________________________________________________________________________
 				...
 			</CPPostPrototypeLine>
 
-		</CPEntry T[CommentType] Current/Parent/Child>
+		</CPEntry T[CommentType] Current/Parent/Child ButtonPanelOpen?>
 
 		button panel?
 
