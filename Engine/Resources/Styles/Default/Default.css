@@ -1836,6 +1836,7 @@ td {
 	.PButtonPanel {
 		font: $semibold 9pt $ContentFontFamily;
 		border-top-style: dashed;
+		border-radius: 0 0 .5rem .5rem;
 
 		display: inline-block;
 		position: absolute;
