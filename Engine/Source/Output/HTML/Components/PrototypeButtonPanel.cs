@@ -177,12 +177,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				link.FileID = topic.FileID;
 				link.FileSourceName = definitionFileSource.Name;
 				link.RelativeFilePath = definitionFileSource.MakeRelative(definitionFile.FileName);
-				link.LineNumber = topic.CodeLineNumber;
+				link.LineNumber = RepositoryLinks.EffectiveLineNumber(topic);
 
-				if (link.LineNumber <= 0)
-					{  link.LineNumber = topic.CommentLineNumber;  }
-
-				link.URL = definitionFileSource.RepositorySourceFileURLOf(definitionFile.FileName, link.LineNumber);
+				link.URL = RepositoryLinks.ToSourceFile(definitionFileSource.RepositorySourceURLTemplate, link.RelativeFilePath, link.LineNumber);
 				// link.Title stays null for now
 
 				links = new List<RepositoryLink>();
@@ -209,12 +206,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						definitionLink.FileID = definitionTopic.FileID;
 						definitionLink.FileSourceName = definitionFileSource.Name;
 						definitionLink.RelativeFilePath = definitionFileSource.MakeRelative(definitionFile.FileName);
-						definitionLink.LineNumber = definitionTopic.CodeLineNumber;
+						definitionLink.LineNumber = RepositoryLinks.EffectiveLineNumber(definitionTopic);
 
-						if (definitionLink.LineNumber <= 0)
-							{  definitionLink.LineNumber = definitionTopic.CommentLineNumber;  }
-
-						definitionLink.URL = definitionFileSource.RepositorySourceFileURLOf(definitionFile.FileName, definitionLink.LineNumber);
+						definitionLink.URL = RepositoryLinks.ToSourceFile(definitionFileSource.RepositorySourceURLTemplate,
+																							   definitionLink.RelativeFilePath, definitionLink.LineNumber);
 						// definitionLink.Title stays null for now
 
 						if (links == null)

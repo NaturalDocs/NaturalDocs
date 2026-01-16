@@ -68,25 +68,6 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 			}
 
 
-		/* Function: RepositorySourceFileURLOf
-		 * Returns the repository URL to the passed source file and line number, or null if there isn't one or the file isn't
-		 * part of this FileSource.
-		 */
-		public string RepositorySourceFileURLOf (AbsolutePath file, int lineNumber)
-			{
-			if (this.Contains(file) == false ||
-				config.RepositorySourceURLTemplate == null)
-				{  return null;  }
-
-			string relativeURLPath = this.MakeRelative(file).ToURL();
-
-			string url = config.RepositorySourceURLTemplate.Replace( Config.RepositorySubstitutions.FilePath, relativeURLPath );
-			url = url.Replace( Config.RepositorySubstitutions.LineNumber, lineNumber.ToString() );
-
-			return url;
-			}
-
-
 
 		// Group: Processes
 		// __________________________________________________________________________
