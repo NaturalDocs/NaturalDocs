@@ -3,18 +3,18 @@
  */
 enum ExtraCommentTrapsA
 	{
-	A /* ignore */ = /* ignore */ 10, /* Inline description of A */
+	A /** ignore */ = /** ignore */ 10, /** Inline description of A */
 
-	/* ignore */ B = (5 + /* ignore */ 6) // Inline description of B
+	/** ignore */ B = (5 + /** ignore */ 6) /// Inline description of B
 	}
 
 /* Enum: ExtraCommentTrapsB
  */
 enum ExtraCommentTrapsB
 	{
-	A /* ignore */ = /* ignore */ 10,
+	A /** ignore */ = /** ignore */ 10,
 
-	/* ignore */ B = (5 + /* ignore */ 6)
+	/** ignore */ B = (5 + /** ignore */ 6)
 	}
 
 /* Enum: LineBreakTraps
@@ -22,25 +22,25 @@ enum ExtraCommentTrapsB
 enum LineBreakTraps
 	{
 	A =
-		2, /* Acceptable description of A */
+		2, /** Acceptable description of A */
 
 	B
-	= 4, /* Acceptable description of B */
+	= 4, /** Acceptable description of B */
 
-	C = // Unacceptable because the definition continues
+	C = /// Unacceptable because the definition continues
 		6,
 
-	D // Unacceptable because the definition continues
+	D /// Unacceptable because the definition continues
 	= 8,
 
-	E = // Unacceptable because the definition continues
-		10, // Acceptable description of E
+	E = /// Unacceptable because the definition continues
+		10, /// Acceptable description of E
 
-	F // Unacceptable because the definition continues
-	= 12, // Acceptable description of F
+	F /// Unacceptable because the definition continues
+	= 12, /// Acceptable description of F
 
 	G = 14
-		// Unacceptable description on next line
+		/// Unacceptable description on next line
 
 	}
 
@@ -49,21 +49,21 @@ enum LineBreakTraps
 enum CommentAfterCloseA {
 	A,
 	B,
-	C } // Description of C
+	C } /// Description of C
 
 /* Enum: CommentAfterCloseB
  */
 enum CommentAfterCloseB {
 	A,
 	B,
-	C } /* Description of C */
+	C } /** Description of C */
 
 /* Enum: CommentAfterCloseC
  */
 enum CommentAfterCloseC {
 	A,
 	B,
-	C } // Description of C.
+	C } /// Description of C.
 	// Continuation of description of C.
 
 /* Enum: CommentAfterCloseD
@@ -71,17 +71,17 @@ enum CommentAfterCloseC {
 enum CommentAfterCloseD {
 	A,
 	B,
-	C } /* Description of C.
+	C } /** Description of C.
 	Continuation of description of C. */
 
 /* Enum: MixedCommentTypes
  */
 enum MixedCommentTypes {
-	A, // Description of A
-	/* Not included because different comment type */
+	A, /// Description of A
+	/** Not included because different comment type */
 
-	B /* Description of B */
-	// Not included because different comment type
+	B /** Description of B */
+	/// Not included because different comment type
 	}
 
 /* Enum: ExtraInCode_InOrderA
@@ -165,9 +165,9 @@ enum ExtraInCode_OutOfOrderC {
  *    D - Comment description of non-existent D
  */
 enum ExtraInComment {
-	A, // Inline description of A
-	B, // Inline description of B
-	C  // Inline descroption of C
+	A, /// Inline description of A
+	B, /// Inline description of B
+	C  /// Inline descroption of C
 	}
 
 /* Enum: ContentSurroundingList_InOrder
@@ -181,7 +181,7 @@ enum ExtraInComment {
  */
 enum ContentSurroundingList_InOrder {
 	A,
-	B, // Inline description of B
+	B, /// Inline description of B
 	C
 	}
 
@@ -196,7 +196,7 @@ enum ContentSurroundingList_InOrder {
  */
 enum ContentSurroundingList_OutOfOrder {
 	A,
-	B, // Inline description of B
+	B, /// Inline description of B
 	C
 	}
 
@@ -216,17 +216,17 @@ enum ContentSurroundingList_OutOfOrder {
  */
 enum ListEnumA {
 	A,
-	B, // Inline description of B, but it's not valid to document them this way
-	C // Inline description of C, but it's not valid to document them this way
+	B, /// Inline description of B, but it's not valid to document them this way
+	C /// Inline description of C, but it's not valid to document them this way
 	}
 enum ListEnumB {
-	D, // Inline description of D, but it's not valid to document them this way
+	D, /// Inline description of D, but it's not valid to document them this way
 	E,
-	F // Inline description of F, but it's not valid to document them this way
+	F /// Inline description of F, but it's not valid to document them this way
 	}
 enum ListEnumC {
-	G, // Inline description of G, but it's not valid to document them this way
-	H, // Inline description of H, but it's not valid to document them this way
+	G, /// Inline description of G, but it's not valid to document them this way
+	H, /// Inline description of H, but it's not valid to document them this way
 	I
 	}
 
@@ -240,7 +240,7 @@ enum ListEnumC {
  */
 enum DuplicatesInComment {
 	A,
-	B // Inline description of B
+	B /// Inline description of B
 	}
 
 /* Enum: DuplicatesInCodeA
@@ -256,12 +256,12 @@ enum DuplicatesInComment {
 enum DuplicatesInCodeA {
 	A,
 	A,
-	B, // First inline description of B
-	B, // Second inline description of B
-	C, // Inline description of C
+	B, /// First inline description of B
+	B, /// Second inline description of B
+	C, /// Inline description of C
 	C,
 	D,
-	D // Inline description of D
+	D /// Inline description of D
 	}
 
 /* Enum: DuplicatesInCodeB
@@ -271,12 +271,12 @@ enum DuplicatesInCodeA {
 enum DuplicatesInCodeB {
 	A,
 	A,
-	B, // First inline description of B
-	B, // Second inline description of B
-	C, // Inline description of C
+	B, /// First inline description of B
+	B, /// Second inline description of B
+	C, /// Inline description of C
 	C,
 	D,
-	D // Inline description of D
+	D /// Inline description of D
 	}
 
 /* Enum: MissingValuesA

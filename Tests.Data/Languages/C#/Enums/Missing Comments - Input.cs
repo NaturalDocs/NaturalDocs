@@ -22,26 +22,26 @@ enum NoValueCommentsC : byte
 
 enum NoParentCommentsA
 	{
-	A, // Inline description of A
-	B, // Inline description of B
-	C  /* Inline description of C */
+	A, /// Inline description of A
+	B, /// Inline description of B
+	C  /** Inline description of C */
 	}
 
 [Flags]
 enum NoParentCommentsB : byte
 	{
-	A = 10, // Inline description of A
+	A = 10, /// Inline description of A
 	B = (5 + 6),
-	C  /* Inline description of C */
+	C  /** Inline description of C */
 	}
 
 
 enum EmptyInlineComments {
-	A, //
-	B, /**/
-	C, /* */
-	D, //
+	A, ///
+	B, /***/
+	C, /** */
+	D, ///
 	//
-	E /*
+	E /**
 	*/
 	}

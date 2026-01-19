@@ -6,6 +6,6 @@
  */
 enum HeaderlessComments {
 	A,
-	B, // Inline description of B
-	C /* Inline description of C */
+	B, /// Inline description of B
+	C /** Inline description of C */
 	}

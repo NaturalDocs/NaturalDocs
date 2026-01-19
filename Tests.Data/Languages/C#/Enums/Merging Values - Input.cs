@@ -44,18 +44,18 @@ enum DescriptionsInCommentC : byte
  */
 enum DescriptionsInlineA
 	{
-	A, // Inline description of A
-	B, // Inline description of B
-	C  /* Inline description of C */
+	A, /// Inline description of A
+	B, /// Inline description of B
+	C  /** Inline description of C */
 	}
 
 /* Enum: DescriptionsInlineB
  */
 enum DescriptionsInlineB
 	{
-	A = 10, // Inline description of A
-	B = (5 + 6), // Inline description of B
-	C  /* Inline description of C */
+	A = 10, /// Inline description of A
+	B = (5 + 6), /// Inline description of B
+	C  /** Inline description of C */
 	}
 
 /* Enum: DescriptionsInlineC
@@ -63,9 +63,9 @@ enum DescriptionsInlineB
 [Flags]
 enum DescriptionsInlineC : byte
 	{
-	A = 0x01, // Inline description of A
-	B, // Inline description of B
-	C  /* Inline description of C */
+	A = 0x01, /// Inline description of A
+	B, /// Inline description of B
+	C  /** Inline description of C */
 	}
 
 
@@ -83,9 +83,9 @@ enum DescriptionsInlineC : byte
  */
 enum DescriptionsInBothA
 	{
-	A, // Inline description of A
-	B, // Inline description of B
-	C  /* Inline description of C */
+	A, /// Inline description of A
+	B, /// Inline description of B
+	C  /** Inline description of C */
 	}
 
 /* Enum: DescriptionsInBothB
@@ -97,9 +97,9 @@ enum DescriptionsInBothA
  */
 enum DescriptionsInBothB
 	{
-	A = 10, // Inline description of A
-	B = (5 + 6), // Inline description of B
-	C  /* Inline description of C */
+	A = 10, /// Inline description of A
+	B = (5 + 6), /// Inline description of B
+	C  /** Inline description of C */
 	}
 
 /* Enum: DescriptionsInBothC
@@ -112,9 +112,9 @@ enum DescriptionsInBothB
 [Flags]
 enum DescriptionsInBothC : byte
 	{
-	A = 0x01, // Inline description of A
-	B, // Inline description of B
-	C  /* Inline description of C */
+	A = 0x01, /// Inline description of A
+	B, /// Inline description of B
+	C  /** Inline description of C */
 	}
 
 
@@ -131,8 +131,8 @@ enum DescriptionsInBothC : byte
 enum MixedDescriptionsA
 	{
 	A,
-	B, // Inline description of B
-	C  /* Inline description of C */
+	B, /// Inline description of B
+	C  /** Inline description of C */
 	}
 
 /* Enum: MixedDescriptionsB
@@ -142,8 +142,8 @@ enum MixedDescriptionsA
  */
 enum MixedDescriptionsB
 	{
-	A = 10, // Inline description of A
-	B = (5 + 6), // Inline description of B
+	A = 10, /// Inline description of A
+	B = (5 + 6), /// Inline description of B
 	C
 	}
 
@@ -157,7 +157,7 @@ enum MixedDescriptionsB
 enum MixedDescriptionsC : byte
 	{
 	A = 0x01,
-	B, // Inline description of B
-	C  /* Inline description of C */
+	B, /// Inline description of B
+	C  /** Inline description of C */
 	}
 
