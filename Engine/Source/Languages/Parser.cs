@@ -1411,7 +1411,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 *
 		 * Default Implementation:
 		 *
-		 *		The default implementation uses the comment symbols found in <Language>.
+		 *		The default implementation uses the Javadoc and XML comment symbols found in <Language>.  It will not return a
+		 *		<InlineDocumentationComment> for standard comment symbols.
 		 *
 		 *		The comment must be at the end of a line to be a candidate for documentation, so the comment symbol must be the
 		 *		next non-whitespace character on the line, and in the case of block comments, nothing but whitespace may trail the
@@ -1432,9 +1433,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			// Javadoc block comments
 
-			// We test for these before regular block comments because they are usually extended versions of them, such
-			// as /** and /*.
-
 			if (language.HasJavadocBlockCommentSymbols)
 				{
 				foreach (var javadocBlockCommentSymbols in language.JavadocBlockCommentSymbols)
@@ -1443,24 +1441,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 															javadocBlockCommentSymbols.OpeningSymbol,
 															javadocBlockCommentSymbols.ClosingSymbol,
 															true, out InlineDocumentationComment comment))
-						{  return comment;  }
-					}
-				}
-
-
-			// Plain block comments
-
-			// We test block comments ahead of line comments because in Lua the line comments are a substring of them: --
-			// versus --[[ and ]].
-
-			if (language.HasBlockCommentSymbols)
-				{
-				foreach (var blockCommentSymbols in language.BlockCommentSymbols)
-					{
-					if (TryToGetBlockComment(ref iterator,
-															blockCommentSymbols.OpeningSymbol,
-															blockCommentSymbols.ClosingSymbol,
-															false, out InlineDocumentationComment comment))
 						{  return comment;  }
 					}
 				}
@@ -1501,25 +1481,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 														  javadocLineCommentSymbol.FirstLineSymbol,
 														  javadocLineCommentSymbol.FollowingLinesSymbol,
 														  true, out InlineDocumentationComment comment))
-						{
-						if (longestLineComment == null ||
-							comment.End > longestLineComment.End)
-							{  longestLineComment = comment;  }
-						}
-					}
-				}
-
-
-			// Plain line comments
-
-			if (language.HasLineCommentSymbols)
-				{
-				foreach (var lineCommentSymbol in language.LineCommentSymbols)
-					{
-					TokenIterator temp = iterator;
-
-					if (TryToGetLineComment(ref temp, lineCommentSymbol, lineCommentSymbol,
-														  false, out InlineDocumentationComment comment))
 						{
 						if (longestLineComment == null ||
 							comment.End > longestLineComment.End)
