@@ -227,7 +227,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				bool hasDeletions = false;
 				bool hasAdditions = false;
 				bool hasRepositoryURLTemplateChange = false;
-				bool hasRepositoryProjectInfoChange = false;
 
 
 				// Purge the output folders of any deleted FileSources
@@ -282,10 +281,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 								if (fileSource is Files.FileSources.SourceFolder)
 									{
 									var sourceFolder = fileSource as Files.FileSources.SourceFolder;
-
-									if (sourceFolder.RepositoryName != previousFileSourceConfig.RepositoryName ||
-										sourceFolder.RepositoryProjectURL != previousFileSourceConfig.RepositoryProjectURL)
-										{  hasRepositoryProjectInfoChange = true;  }
 
 									if (sourceFolder.RepositorySourceURLTemplate != previousFileSourceConfig.RepositorySourceURLTemplate)
 										{  hasRepositoryURLTemplateChange = true;  }
