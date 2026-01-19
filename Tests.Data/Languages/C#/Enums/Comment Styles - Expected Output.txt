@@ -1,0 +1,25 @@
+
+Enum: CommentStylesA
+
+   Prototype: enum CommentStylesA
+
+   Members:
+      A
+      B - <p>Documentation comment, should be included</p>
+      C - <p>Documentation comment, should be included</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd><p>Documentation comment, should be included</p></dd><ds>C</ds><dd><p>Documentation comment, should be included</p></dd></dl>
+
+-----
+
+Enum: CommentStylesB
+
+   Prototype: enum CommentStylesB
+
+   Members:
+      A
+      B - <p>Multi-line documentation comment, should be included</p>
+      C - <p>Multi-line documentation comment, should be included</p>
+      D - <p>Multi-line documentation comment, should be included</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd><p>Multi-line documentation comment, should be included</p></dd><ds>C</ds><dd><p>Multi-line documentation comment, should be included</p></dd><ds>D</ds><dd><p>Multi-line documentation comment, should be included</p></dd></dl>
