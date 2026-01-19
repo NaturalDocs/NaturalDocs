@@ -37,6 +37,7 @@ HTML.MoreResults: More Results...
 HTML.AdditionalChildren(number): and {0} other {0s?children:child}
 
 HTML.ViewSourceInRepository: View source
+HTML.SourceAndLineNumber(file, linenumber): {0}, Line {1}
 
 HTML.JavaScriptRequiredNotice: Please enable JavaScript to view this documentation.
 

@@ -320,7 +320,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.ButtonPanels
 						if ( (i + 1 < links.Count && links[i+1].FileID == links[i].FileID) ||
 							 (i > 0 && links[i-1].FileID == links[i].FileID) )
 							{
-							links[i].Title += " (" + links[i].LineNumber + ")";
+							links[i].Title = Locale.Get("NaturalDocs.Engine", "HTML.SourceAndLineNumber(file, linenumber)",
+																  links[i].Title, links[i].LineNumber);
 							}
 						}
 					}
