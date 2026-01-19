@@ -4,7 +4,7 @@ enum UndocumentedEnum
 
 	UndocumentedEnum_UndocumentedValue,
 
-	UndocumentedEnum_QuickDocumentedValue // Quick description
+	UndocumentedEnum_QuickDocumentedValue /// Quick description
 
 	}
 
@@ -21,7 +21,7 @@ enum DocumentedEnumWithCommentValues
 
 	DocumentedEnumWithCommentValues_UndocumentedValue,
 
-	DocumentedEnumWithCommentValues_QuickDocumentedValue // Quick description
+	DocumentedEnumWithCommentValues_QuickDocumentedValue /// Quick description
 
 	}
 
@@ -32,6 +32,6 @@ enum DocumentedEnumWithoutCommentValues
 
 	DocumentedEnumWithoutCommentValues_UndocumentedValue,
 
-	DocumentedEnumWithoutCommentValues_QuickDocumentedValue // Quick description
+	DocumentedEnumWithoutCommentValues_QuickDocumentedValue /// Quick description
 
 	}
