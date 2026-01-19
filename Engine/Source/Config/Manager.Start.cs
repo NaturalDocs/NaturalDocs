@@ -987,6 +987,26 @@ namespace CodeClear.NaturalDocs.Engine.Config
 					primarySourceFolder.Number = secondarySourceFolder.Number;
 					primarySourceFolder.NumberPropertyLocation = secondarySourceFolder.NumberPropertyLocation;
 					}
+				if (!primarySourceFolder.RepositoryNamePropertyLocation.IsDefined)
+					{
+					primarySourceFolder.RepositoryName = secondarySourceFolder.RepositoryName;
+					primarySourceFolder.RepositoryNamePropertyLocation = secondarySourceFolder.RepositoryNamePropertyLocation;
+					}
+				if (!primarySourceFolder.RepositoryBranchPropertyLocation.IsDefined)
+					{
+					primarySourceFolder.RepositoryBranch = secondarySourceFolder.RepositoryBranch;
+					primarySourceFolder.RepositoryBranchPropertyLocation = secondarySourceFolder.RepositoryBranchPropertyLocation;
+					}
+				if (!primarySourceFolder.RepositoryProjectURLPropertyLocation.IsDefined)
+					{
+					primarySourceFolder.RepositoryProjectURL = secondarySourceFolder.RepositoryProjectURL;
+					primarySourceFolder.RepositoryProjectURLPropertyLocation = secondarySourceFolder.RepositoryProjectURLPropertyLocation;
+					}
+				if (!primarySourceFolder.RepositorySourceURLTemplatePropertyLocation.IsDefined)
+					{
+					primarySourceFolder.RepositorySourceURLTemplate = secondarySourceFolder.RepositorySourceURLTemplate;
+					primarySourceFolder.RepositorySourceURLTemplatePropertyLocation = secondarySourceFolder.RepositorySourceURLTemplatePropertyLocation;
+					}
 				}
 
 			else if (primaryTarget is Targets.ImageFolder)
