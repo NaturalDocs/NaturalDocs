@@ -1,7 +1,7 @@
 
 // Class: Folder_Test_2
 //
-// Two files defining the same function, one in a subfolder with a different file name.
+// Two files defining the same class and function, one in a subfolder with a different file name.
 //
 public partial class Folder_Test_2
 	{

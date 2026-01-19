@@ -1,3 +1,8 @@
-<div class="PRepository SingleLink"><a href="https://reposite.com/MyProject/src/TwoDefinitions_SameFile%20-%20Input.cs#Line10" target="_blank">View source<span class="PLinkIcon"></span></a></div>
+<div class="BPRepositoryLinks Multiple">
+   <div class="RLHeader">View source:</div>
+   <div class="RLLinks"><a href="https://reposite.com/MyProject/src/TwoDefinitions_SameFile%20-%20Input.cs#Line6" target="_blank">TwoDefinitions_SameFile - Input.cs, Line 6<span class="RLLinkIcon"></span></a><a href="https://reposite.com/MyProject/src/TwoDefinitions_SameFile%20-%20Input.cs#Line16" target="_blank">TwoDefinitions_SameFile - Input.cs, Line 16<span class="RLLinkIcon"></span></a></div>
+</div>
 -----
-<div class="PRepository SingleLink"><a href="https://reposite.com/MyProject/src/TwoDefinitions_SameFile%20-%20Input.cs#Line20" target="_blank">View source<span class="PLinkIcon"></span></a></div>
+<div class="BPRepositoryLinks Single"><a href="https://reposite.com/MyProject/src/TwoDefinitions_SameFile%20-%20Input.cs#Line10" target="_blank">View source<span class="RLLinkIcon"></span></a></div>
+-----
+<div class="BPRepositoryLinks Single"><a href="https://reposite.com/MyProject/src/TwoDefinitions_SameFile%20-%20Input.cs#Line20" target="_blank">View source<span class="RLLinkIcon"></span></a></div>

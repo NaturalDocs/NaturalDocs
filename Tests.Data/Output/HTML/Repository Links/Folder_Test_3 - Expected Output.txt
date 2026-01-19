@@ -1,4 +1,9 @@
-<div class="PRepository MultipleLinks">
-   <div class="PRHeader">View source:</div>
-   <div class="PRLinks"><a href="https://reposite.com/MyProject/src/FolderA/FolderB/Folder_Test_3.cs#Line10" target="_blank">FolderB/Folder_Test_3.cs<span class="PLinkIcon"></span></a><a href="https://reposite.com/MyProject/src/FolderA/FolderC/Folder_Test_3.cs#Line10" target="_blank">FolderC/Folder_Test_3.cs<span class="PLinkIcon"></span></a></div>
+<div class="BPRepositoryLinks Multiple">
+   <div class="RLHeader">View source:</div>
+   <div class="RLLinks"><a href="https://reposite.com/MyProject/src/FolderA/FolderB/Folder_Test_3.cs#Line6" target="_blank">FolderB/Folder_Test_3.cs<span class="RLLinkIcon"></span></a><a href="https://reposite.com/MyProject/src/FolderA/FolderC/Folder_Test_3.cs#Line6" target="_blank">FolderC/Folder_Test_3.cs<span class="RLLinkIcon"></span></a></div>
+</div>
+-----
+<div class="BPRepositoryLinks Multiple">
+   <div class="RLHeader">View source:</div>
+   <div class="RLLinks"><a href="https://reposite.com/MyProject/src/FolderA/FolderB/Folder_Test_3.cs#Line10" target="_blank">FolderB/Folder_Test_3.cs<span class="RLLinkIcon"></span></a><a href="https://reposite.com/MyProject/src/FolderA/FolderC/Folder_Test_3.cs#Line10" target="_blank">FolderC/Folder_Test_3.cs<span class="RLLinkIcon"></span></a></div>
 </div>

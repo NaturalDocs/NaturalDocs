@@ -1,4 +1,9 @@
-<div class="PRepository MultipleLinks">
-   <div class="PRHeader">View source:</div>
-   <div class="PRLinks"><a href="https://reposite.com/MyProject/src/HeaderAndSource_SameFolder%20-%20Input.c#Line6" target="_blank">HeaderAndSource_SameFolder - Input.c<span class="PLinkIcon"></span></a><a href="https://reposite.com/MyProject/src/HeaderAndSource_SameFolder%20-%20Input.h#Line6" target="_blank">HeaderAndSource_SameFolder - Input.h<span class="PLinkIcon"></span></a></div>
+<div class="BPRepositoryLinks Multiple">
+   <div class="RLHeader">View source:</div>
+   <div class="RLLinks"><a href="https://reposite.com/MyProject/src/HeaderAndSource_SameFolder%20-%20Input.c#Line2" target="_blank">HeaderAndSource_SameFolder - Input.c<span class="RLLinkIcon"></span></a><a href="https://reposite.com/MyProject/src/HeaderAndSource_SameFolder%20-%20Input.h#Line2" target="_blank">HeaderAndSource_SameFolder - Input.h<span class="RLLinkIcon"></span></a></div>
+</div>
+-----
+<div class="BPRepositoryLinks Multiple">
+   <div class="RLHeader">View source:</div>
+   <div class="RLLinks"><a href="https://reposite.com/MyProject/src/HeaderAndSource_SameFolder%20-%20Input.c#Line6" target="_blank">HeaderAndSource_SameFolder - Input.c<span class="RLLinkIcon"></span></a><a href="https://reposite.com/MyProject/src/HeaderAndSource_SameFolder%20-%20Input.h#Line6" target="_blank">HeaderAndSource_SameFolder - Input.h<span class="RLLinkIcon"></span></a></div>
 </div>

@@ -26,7 +26,7 @@ namespace CodeClear.NaturalDocs.Tests.TestRunners
 			{
 			return ExtractHTML(input,
 										tagName: "div",
-										className: "PRepository",
+										className: "BPRepositoryLinks",
 										reformatHTML: true);
 			}
 
