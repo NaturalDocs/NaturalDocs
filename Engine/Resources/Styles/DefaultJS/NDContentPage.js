@@ -19,7 +19,7 @@ $ToolTipHorizontalMargin = 5;
 $ToolTipHorizontalMarginX2 = 10;
 $ToolTipBottomMargin = 25;  /* leave space for link address pop-up */
 
-$PrototypeButtonBarDelay = 750;
+$HideButtonPanelDelay = 750;
 
 "use strict";
 
@@ -274,21 +274,24 @@ var NDContentPage = new function ()
 		};
 
 
+
+	// Group: Button Panel Functions
+	// ________________________________________________________________________
+
+
 	/* Function: OnPrototypeMouseEnter
 	*/
 	this.OnPrototypeMouseEnter = function (event, buttonPanelID, parentID)
 		{
-		clearTimeout(this.prototypeButtonPanelTimeout);
+		clearTimeout(this.buttonPanelTimeout);
 
-		if (this.showingPrototypeButtonPanel)
+		if (this.openButtonPanelID != buttonPanelID)
 			{
-			if (this.showingPrototypeButtonPanel == buttonPanelID)
-				{  return;  }
-			else
-				{  this.HidePrototypeButtonPanel(this.showingPrototypeButtonPanel, this.showingPrototypeButtonPanelParent);  }
-			}
+			if (this.openButtonPanelID != undefined)
+				{  this.HideButtonPanel(this.openButtonPanelID, this.openButtonPanelParentID);  }
 
-		this.ShowPrototypeButtonPanel(buttonPanelID, parentID);
+			this.ShowButtonPanel(buttonPanelID, parentID);
+			}
 		};
 
 
@@ -296,48 +299,41 @@ var NDContentPage = new function ()
 	*/
 	this.OnPrototypeMouseLeave = function (event, buttonPanelID, parentID)
 		{
-		this.prototypeButtonPanelTimeout = setTimeout("NDContentPage.HidePrototypeButtonPanel('" + buttonPanelID + "','" + parentID + "');", $PrototypeButtonBarDelay);
+		this.buttonPanelTimeout = setTimeout("NDContentPage.HideButtonPanel('" + buttonPanelID + "','" + parentID + "');", $HideButtonPanelDelay);
 		};
 
 
-	/* Function: ShowPrototypeButtonPanel
+	/* Function: ShowButtonPanel
 	*/
-	this.ShowPrototypeButtonPanel = function (buttonPanelID, parentID)
+	this.ShowButtonPanel = function (buttonPanelID, parentID)
 		{
 		var buttonPanel = document.getElementById(buttonPanelID);
+		buttonPanel.style.visibility = "visible";
+
 		var parent = document.getElementById(parentID);
+		parent.classList.add("ButtonPanelOpen");
 
-		if (buttonPanel)
-			{
-			buttonPanel.style.visibility = "visible";
-			parent.classList.add("ButtonPanelOpen");
-
-			this.showingPrototypeButtonPanel = buttonPanelID;
-			this.showingPrototypeButtonPanelParent = parentID;
-			}
+		this.openButtonPanelID = buttonPanelID;
+		this.openButtonPanelParentID = parentID;
 		};
 
 
-	/* Function: HidePrototypeButtonPanel
+	/* Function: HideButtonPanel
 	*/
-	this.HidePrototypeButtonPanel = function (buttonPanelID, parentID)
+	this.HideButtonPanel = function (buttonPanelID, parentID)
 		{
 		var buttonPanel = document.getElementById(buttonPanelID);
+		buttonPanel.style.visibility = "hidden";
+
 		var parent = document.getElementById(parentID);
+		parent.classList.remove("ButtonPanelOpen");
 
-		if (buttonPanel)
+		if (this.openButtonPanelID == buttonPanelID)
 			{
-			buttonPanel.style.visibility = "hidden";
-			parent.classList.remove("ButtonPanelOpen");
-
-			if (this.showingPrototypeButtonPanel == buttonPanelID)
-				{
-				this.showingPrototypeButtonPanel = undefined;
-				this.showingPrototypeButtonPanelParent = undefined;
-				}
+			this.openButtonPanelID = undefined;
+			this.openButtonPanelParentID = undefined;
 			}
 		};
-
 
 
 
@@ -517,15 +513,21 @@ var NDContentPage = new function ()
 		The ID of the prototype reflow timeout if one is running.
 	*/
 
-	/* var: showingPrototypeButtonPanel
-		The ID of the visible prototype button panel, or undefined if none.
+
+
+	// Group: Button Panel Variables
+	// ________________________________________________________________________
+
+
+	/* var: openButtonPanelID
+		The DOM ID of the visible button panel, or undefined if one isn't open.
 	*/
 
-	/* var: showingPrototypeButtonPanelParent
-		The ID of the parent object of the visible prototype button panel, or undefined if none.
+	/* var: openButtonPanelParentID
+		The DOM ID of the object the visible prototype button panel is attached to, or undefined if one isn't open.
 	*/
 
-	/* var: prototypeButtonPanelTimeout
+	/* var: buttonPanelTimeout
 		The timeout used before hiding the button panel.
 	*/
 
