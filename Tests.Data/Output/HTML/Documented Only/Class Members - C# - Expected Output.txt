@@ -51,7 +51,7 @@
    <div class="CTitle">NDDocumentedClass</div>
 
    <div class="NDClassPrototype">
-      <div class="CPEntry TClass Current">
+      <div class="CPEntry CPContent TClass Current">
          <div class="CPName">NDDocumentedClass</div>
       </div>
    </div>
@@ -111,7 +111,7 @@
    <div class="CTitle">NDHeaderlessDocumentedClass</div>
 
    <div class="NDClassPrototype">
-      <div class="CPEntry TClass Current">
+      <div class="CPEntry CPContent TClass Current">
          <div class="CPName">NDHeaderlessDocumentedClass</div>
       </div>
    </div>
@@ -173,7 +173,7 @@
    <div class="CTitle">JavadocDocumentedClass</div>
 
    <div class="NDClassPrototype">
-      <div class="CPEntry TClass Current">
+      <div class="CPEntry CPContent TClass Current">
          <div class="CPName">JavadocDocumentedClass</div>
       </div>
    </div>
@@ -237,7 +237,7 @@
    <div class="CTitle">XMLDocumentedClass</div>
 
    <div class="NDClassPrototype">
-      <div class="CPEntry TClass Current">
+      <div class="CPEntry CPContent TClass Current">
          <div class="CPName">XMLDocumentedClass</div>
       </div>
    </div>

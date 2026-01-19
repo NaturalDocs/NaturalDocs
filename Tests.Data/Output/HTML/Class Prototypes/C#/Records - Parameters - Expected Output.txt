@@ -1,76 +1,76 @@
 <div class="NDClassPrototype">
-   <div class="CPEntry TClass Current">
+   <div class="CPEntry CPContent TClass Current">
       <div class="CPModifiers"><span class="SHKeyword">public</span> <span class="SHKeyword">record</span></div>
       <div class="CPName">WithEmptyParameters</div>
    </div>
 </div>
 -----
 <div class="NDClassPrototype">
-   <div class="CPEntry TClass Current">
+   <div class="CPEntry CPContent TClass Current">
       <div class="CPModifiers"><span class="SHKeyword">public</span> <span class="SHKeyword">record</span></div>
       <div class="CPName">WithEmptyParameters_NoBody</div>
    </div>
 </div>
 -----
 <div class="NDClassPrototype">
-   <div class="CPEntry TClass Current">
+   <div class="CPEntry CPContent TClass Current">
       <div class="CPModifiers"><span class="SHKeyword">public</span> <span class="SHKeyword">record</span></div>
       <div class="CPName">WithParameters</div>
    </div>
 </div>
 -----
 <div class="NDClassPrototype">
-   <div class="CPEntry TClass Current">
+   <div class="CPEntry CPContent TClass Current">
       <div class="CPModifiers"><span class="SHKeyword">public</span> <span class="SHKeyword">record</span></div>
       <div class="CPName">WithParameters_NoBody</div>
    </div>
 </div>
 -----
 <div class="NDClassPrototype HasParents">
-   <div class="CPEntry Parent TClass">
+   <div class="CPEntry CPContent Parent TClass">
       <div class="CPName">Parent</div>
    </div>
-   <div class="CPEntry TClass Current">
+   <div class="CPEntry CPContent TClass Current">
       <div class="CPModifiers"><span class="SHKeyword">public</span> <span class="SHKeyword">record</span></div>
       <div class="CPName">WithParametersAndInheritance</div>
    </div>
 </div>
 -----
 <div class="NDClassPrototype HasParents">
-   <div class="CPEntry Parent TClass">
+   <div class="CPEntry CPContent Parent TClass">
       <div class="CPName">Parent</div>
    </div>
-   <div class="CPEntry TClass Current">
+   <div class="CPEntry CPContent TClass Current">
       <div class="CPModifiers"><span class="SHKeyword">public</span> <span class="SHKeyword">record</span></div>
       <div class="CPName">WithParametersAndInheritance_NoBody</div>
    </div>
 </div>
 -----
 <div class="NDClassPrototype">
-   <div class="CPEntry TClass Current">
+   <div class="CPEntry CPContent TClass Current">
       <div class="CPModifiers"><span class="SHKeyword">public</span> <span class="SHKeyword">record</span></div>
       <div class="CPName">WithParametersAndMembers</div>
    </div>
 </div>
 -----
 <div class="NDClassPrototype">
-   <div class="CPEntry TClass Current">
+   <div class="CPEntry CPContent TClass Current">
       <div class="CPModifiers"><span class="SHKeyword">public</span> <span class="SHKeyword">record</span></div>
       <div class="CPName">WithParametersAndModifiers</div>
    </div>
 </div>
 -----
 <div class="NDClassPrototype HasParents">
-   <div class="CPEntry Parent TClass">
+   <div class="CPEntry CPContent Parent TClass">
       <div class="CPName">Parent</div>
    </div>
-   <div class="CPEntry Parent TClass">
+   <div class="CPEntry CPContent Parent TClass">
       <div class="CPName">Parent2</div>
    </div>
-   <div class="CPEntry Parent TClass">
+   <div class="CPEntry CPContent Parent TClass">
       <div class="CPName">Parent3</div>
    </div>
-   <div class="CPEntry TClass Current">
+   <div class="CPEntry CPContent TClass Current">
       <div class="CPModifiers"><span class="SHKeyword">public</span> <span class="SHKeyword">record</span></div>
       <div class="CPName">WithAll&#8203;<span class="TemplateSignature">&lt;T&gt;</span></div>
       <div class="CPPostPrototypeLine"><span class="SHKeyword">where</span> T: <span class="SHKeyword">unmanaged</span>, <span class="SHKeyword">notnull</span></div>
