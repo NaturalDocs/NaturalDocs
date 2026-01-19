@@ -201,8 +201,9 @@
 	$NDSizerZIndex: 101;
 	$NDContentCoverZIndex: 100;
 
-	$NDButtonPanelZIndex: 22;
-	$NDToolTipZIndex: 21;
+	$NDToolTipZIndex: 22;
+
+	$NDButtonPanelZIndex: 11;
 
 	$NDMenuArrowZIndex: 6;
 	$NDMenuZIndex: 5;
