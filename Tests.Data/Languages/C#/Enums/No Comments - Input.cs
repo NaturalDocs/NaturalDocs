@@ -34,14 +34,3 @@ enum NoParentCommentsB : byte
 	B = (5 + 6),
 	C  /** Inline description of C */
 	}
-
-
-enum EmptyInlineComments {
-	A, ///
-	B, /***/
-	C, /** */
-	D, ///
-	//
-	E /**
-	*/
-	}

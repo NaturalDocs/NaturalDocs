@@ -74,18 +74,3 @@ Enum: NoParentCommentsB
       C - <p>Inline description of C</p>
 
    Body: <h>Values</h><dl><ds>A</ds><dd><p>Inline description of A</p></dd><ds>B</ds><dd></dd><ds>C</ds><dd><p>Inline description of C</p></dd></dl>
-
------
-
-Enum: EmptyInlineComments
-
-   Prototype: enum EmptyInlineComments
-
-   Members:
-      A
-      B
-      C
-      D
-      E
-
-   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd><ds>D</ds><dd></dd><ds>E</ds><dd></dd></dl>

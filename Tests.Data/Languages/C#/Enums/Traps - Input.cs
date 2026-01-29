@@ -17,6 +17,16 @@ enum ExtraCommentTrapsB
 	/** ignore */ B = (5 + /** ignore */ 6)
 	}
 
+enum EmptyInlineComments {
+	A, ///
+	B, /***/
+	C, /** */
+	D, ///
+	//
+	E /**
+	*/
+	}
+
 /* Enum: LineBreakTraps
  */
 enum LineBreakTraps
@@ -84,37 +94,37 @@ enum MixedCommentTypes {
 	/// Not included because different comment type
 	}
 
-/* Enum: ExtraInCode_InOrderA
+/* Enum: ExtraValuesInCode_InOrderA
  *
  * Values:
  *    B - Description of B
  *    C - Description of C
  */
-enum ExtraInCode_InOrderA {
+enum ExtraValuesInCode_InOrderA {
 	A, B, C
 	}
 
-/* Enum: ExtraInCode_InOrderB
+/* Enum: ExtraValuesInCode_InOrderB
  *
  * Values:
  *    A - Description of A
  *    B - Description of B
  */
-enum ExtraInCode_InOrderB {
+enum ExtraValuesInCode_InOrderB {
 	A, B, C
 	}
 
-/* Enum: ExtraInCode_InOrderC
+/* Enum: ExtraValuesInCode_InOrderC
  *
  * Values:
  *    A - Description of A
  *    C - Description of C
  */
-enum ExtraInCode_InOrderC {
+enum ExtraValuesInCode_InOrderC {
 	A, B, C
 	}
 
-/* Enum: ExtraInCode_InOrderD
+/* Enum: ExtraValuesInCode_InOrderD
  *
  * Values:
  *    C - Description of C
@@ -122,41 +132,41 @@ enum ExtraInCode_InOrderC {
  *    H - Description of H
  *    I - Description of I
  */
-enum ExtraInCode_InOrderD {
+enum ExtraValuesInCode_InOrderD {
 	A, B, C, D, E, F, G, H, I, J, K
 	}
 
-/* Enum: ExtraInCode_OutOfOrderA
+/* Enum: ExtraValuesInCode_OutOfOrderA
  *
  * Values:
  *    B - Description of B
  *    A - Description of A
  */
-enum ExtraInCode_OutOfOrderA {
+enum ExtraValuesInCode_OutOfOrderA {
 	A, B, C, D
 	}
 
-/* Enum: ExtraInCode_OutOfOrderB
+/* Enum: ExtraValuesInCode_OutOfOrderB
  *
  * Values:
  *    A - Description of A
  *    B - Description of B
  */
-enum ExtraInCode_OutOfOrderB {
+enum ExtraValuesInCode_OutOfOrderB {
 	D, C, B, A
 	}
 
-/* Enum: ExtraInCode_OutOfOrderC
+/* Enum: ExtraValuesInCode_OutOfOrderC
  *
  * Values:
  *    C - Description of C
  *    B - Description of B
  */
-enum ExtraInCode_OutOfOrderC {
+enum ExtraValuesInCode_OutOfOrderC {
 	A, B, C, D
 	}
 
-/* Enum: ExtraInComment
+/* Enum: ExtraValuesInComment
  *
  * Values:
  *    A - Comment description of A
@@ -164,7 +174,7 @@ enum ExtraInCode_OutOfOrderC {
  *    C - Comment description of C
  *    D - Comment description of non-existent D
  */
-enum ExtraInComment {
+enum ExtraValuesInComment {
 	A, /// Inline description of A
 	B, /// Inline description of B
 	C  /// Inline descroption of C
