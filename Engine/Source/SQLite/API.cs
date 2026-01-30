@@ -100,37 +100,37 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 
 		static public Result Initialize ()
 			{
-			return NativeLibrary.sqlite3_initialize();
+			return NativeBindings.sqlite3_initialize();
 			}
 
 		static public Result ShutDown ()
 			{
-			return NativeLibrary.sqlite3_shutdown();
+			return NativeBindings.sqlite3_shutdown();
 			}
 
 		static public Result OpenV2 (string filename, out IntPtr connectionHandle, OpenOption options)
 			{
-			return NativeLibrary.sqlite3_open_v2(filename, out connectionHandle, options, IntPtr.Zero);
+			return NativeBindings.sqlite3_open_v2(filename, out connectionHandle, options, IntPtr.Zero);
 			}
 
 		static public Result CloseV2 (IntPtr connectionHandle)
 			{
-			return NativeLibrary.sqlite3_close_v2(connectionHandle);
+			return NativeBindings.sqlite3_close_v2(connectionHandle);
 			}
 
 		static public int Limit (IntPtr connectionHandle, LimitID id, int newLimit)
 			{
-			return NativeLibrary.sqlite3_limit(connectionHandle, id, newLimit);
+			return NativeBindings.sqlite3_limit(connectionHandle, id, newLimit);
 			}
 
 		static public Result ExtendedResultCodes (IntPtr connectionHandle, bool onoff)
 			{
-			return NativeLibrary.sqlite3_extended_result_codes (connectionHandle, (onoff ? 1 : 0));
+			return NativeBindings.sqlite3_extended_result_codes (connectionHandle, (onoff ? 1 : 0));
 			}
 
 		static public Result BusyTimeout (IntPtr connectionHandle, int milliseconds)
 			{
-			return NativeLibrary.sqlite3_busy_timeout(connectionHandle, milliseconds);
+			return NativeBindings.sqlite3_busy_timeout(connectionHandle, milliseconds);
 			}
 
 		static public Result PrepareV2 (IntPtr connectionHandle, string statementText, out IntPtr statementHandle)
@@ -138,9 +138,9 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 			IntPtr ignore;
 
 			#if SQLITE_UTF16
-				return NativeLibrary.sqlite3_prepare16_v2(connectionHandle, statementText, -1, out statementHandle, out ignore);
+				return NativeBindings.sqlite3_prepare16_v2(connectionHandle, statementText, -1, out statementHandle, out ignore);
 			#elif SQLITE_UTF8
-				return NativeLibrary.sqlite3_prepare_v2(connectionHandle, statementText, -1, out statementHandle, out ignore);
+				return NativeBindings.sqlite3_prepare_v2(connectionHandle, statementText, -1, out statementHandle, out ignore);
 			#else
 				throw new Exception("Did not define SQLITE_UTF8 or SQLITE_UTF16");
 			#endif
@@ -148,20 +148,20 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 
 		static public Result BindInt (IntPtr statementHandle, int index, int value)
 			{
-			return NativeLibrary.sqlite3_bind_int(statementHandle, index, value);
+			return NativeBindings.sqlite3_bind_int(statementHandle, index, value);
 			}
 
 		static public Result BindInt64 (IntPtr statementHandle, int index, long value)
 			{
-			return NativeLibrary.sqlite3_bind_int64(statementHandle, index, value);
+			return NativeBindings.sqlite3_bind_int64(statementHandle, index, value);
 			}
 
 		static public Result BindText (IntPtr statementHandle, int index, string value)
 			{
 			#if SQLITE_UTF16
-				return NativeLibrary.sqlite3_bind_text16(statementHandle, index, value, -1, (IntPtr)DestructorOption.Transient);
+				return NativeBindings.sqlite3_bind_text16(statementHandle, index, value, -1, (IntPtr)DestructorOption.Transient);
 			#elif SQLITE_UTF8
-				return NativeLibrary.sqlite3_bind_text(statementHandle, index, value, -1, (IntPtr)DestructorOption.Transient);
+				return NativeBindings.sqlite3_bind_text(statementHandle, index, value, -1, (IntPtr)DestructorOption.Transient);
 			#else
 				throw new Exception("Did not define SQLITE_UTF8 or SQLITE_UTF16");
 			#endif
@@ -169,27 +169,27 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 
 		static public Result BindDouble (IntPtr statementHandle, int index, double value)
 			{
-			return NativeLibrary.sqlite3_bind_double (statementHandle, index, value);
+			return NativeBindings.sqlite3_bind_double (statementHandle, index, value);
 			}
 
 		static public Result BindNull (IntPtr statementHandle, int index)
 			{
-			return NativeLibrary.sqlite3_bind_null (statementHandle, index);
+			return NativeBindings.sqlite3_bind_null (statementHandle, index);
 			}
 
 		static public Result Step (IntPtr statementHandle)
 			{
-			return NativeLibrary.sqlite3_step(statementHandle);
+			return NativeBindings.sqlite3_step(statementHandle);
 			}
 
 		static public int ColumnInt (IntPtr statementHandle, int column)
 			{
-			return NativeLibrary.sqlite3_column_int (statementHandle, column);
+			return NativeBindings.sqlite3_column_int (statementHandle, column);
 			}
 
 		static public long ColumnInt64 (IntPtr statementHandle, int column)
 			{
-			return NativeLibrary.sqlite3_column_int64 (statementHandle, column);
+			return NativeBindings.sqlite3_column_int64 (statementHandle, column);
 			}
 
 		static public string ColumnText (IntPtr statementHandle, int column)
@@ -197,10 +197,10 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 			IntPtr nativeResult;
 
 			#if SQLITE_UTF16
-				nativeResult = NativeLibrary.sqlite3_column_text16 (statementHandle, column);
+				nativeResult = NativeBindings.sqlite3_column_text16 (statementHandle, column);
 				return Marshal.PtrToStringUni(nativeResult);
 			#elif SQLITE_UTF8
-				nativeResult = NativeLibrary.sqlite3_column_text (statementHandle, column);
+				nativeResult = NativeBindings.sqlite3_column_text (statementHandle, column);
 				return Marshal.PtrToStringUTF8(nativeResult);
 			#else
 				throw new Exception("Did not define SQLITE_UTF8 or SQLITE_UTF16");
@@ -209,28 +209,28 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 
 		static public double ColumnDouble (IntPtr statementHandle, int column)
 			{
-			return NativeLibrary.sqlite3_column_double(statementHandle, column);
+			return NativeBindings.sqlite3_column_double(statementHandle, column);
 			}
 
 		static public Result Reset (IntPtr statementHandle)
 			{
-			return NativeLibrary.sqlite3_reset(statementHandle);
+			return NativeBindings.sqlite3_reset(statementHandle);
 			}
 
 		static public Result ClearBindings (IntPtr statementHandle)
 			{
-			return NativeLibrary.sqlite3_clear_bindings(statementHandle);
+			return NativeBindings.sqlite3_clear_bindings(statementHandle);
 			}
 
 		static public Result Finalize (IntPtr statementHandle)
 			{
-			return NativeLibrary.sqlite3_finalize(statementHandle);
+			return NativeBindings.sqlite3_finalize(statementHandle);
 			}
 
 		static public string LibVersion ()
 			{
 			IntPtr nativeResult;
-			nativeResult = NativeLibrary.sqlite3_libversion();
+			nativeResult = NativeBindings.sqlite3_libversion();
 
 			return Marshal.PtrToStringUTF8(nativeResult);
 			}

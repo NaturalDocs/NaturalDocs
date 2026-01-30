@@ -1,5 +1,5 @@
 ﻿/*
- * Class: CodeClear.NaturalDocs.Engine.SQLite.NativeLibrary
+ * Class: CodeClear.NaturalDocs.Engine.SQLite.NativeBindings
  * ____________________________________________________________________________
  *
  * The functions exported directly from the SQLite native library.  Code should use <SQLite.API> instead.
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 
 namespace CodeClear.NaturalDocs.Engine.SQLite
 	{
-	internal static class NativeLibrary
+	internal static class NativeBindings
 		{
 
 		#if WINDOWS && X64
