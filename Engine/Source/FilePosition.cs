@@ -12,10 +12,12 @@
 
 
 using System;
+using System.Diagnostics;
 
 
 namespace CodeClear.NaturalDocs.Engine
 	{
+	[DebuggerDisplay("{DebuggerDisplay,nq}")]
 	public struct FilePosition
 		{
 
@@ -126,6 +128,16 @@ namespace CodeClear.NaturalDocs.Engine
 				{  return charNumber;  }
 			set
 				{  charNumber = value;  }
+			}
+
+
+		/* Property: DebuggerDisplay
+		 * Shows the comment type and title when debugging Natural Docs.
+		 */
+		internal string DebuggerDisplay
+			{
+			get
+				{  return ("Line " + lineNumber + ", Char " + charNumber);  }
 			}
 
 
