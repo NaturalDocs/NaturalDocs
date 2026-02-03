@@ -1633,7 +1633,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						}
 					}
 
-				// Embedded topics get a ParentElement and their children get regular Elements no matter what.
+				// Embedded topics get a ParentElement and their children get regular Elements no matter what.  This covers enums
+				// with values defined in the comment.
 				if (i + 1 < topics.Count && topics[i + 1].IsEmbedded == true)
 					{
 					ParentElement parentElement = new ParentElement(topic.CommentLineNumber, 1, Element.Flags.InComments);
@@ -1664,12 +1665,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						}
 					}
 
-				// Scoped and group topics get a ParentElement.  Sections get treated like classes because we want any modifiers they
-				// have to be inherited by the topics that follow.
+				// Scoped, group, and enum topics always get a ParentElement.  Sections get treated like classes because we want
+				// any modifiers they have to be inherited by the topics that follow.
 				else if (commentType != null && topic.IsList == false &&
 						  (commentType.Scope == CommentType.ScopeValue.Start ||
 						   commentType.Scope == CommentType.ScopeValue.End ||
-						   topic.IsGroup))
+						   topic.IsGroup || topic.IsEnum))
 					{
 					ParentElement parentElement = new ParentElement(topic.CommentLineNumber, 1, Element.Flags.InComments);
 					parentElement.Topic = topic;
@@ -1679,6 +1680,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						{
 						// Groups don't enfoce a maximum access level, they just set the default declared level.
 						parentElement.DefaultDeclaredChildAccessLevel = topic.DeclaredAccessLevel;
+						}
+					else if (topic.IsEnum)
+						{
+						parentElement.DefaultDeclaredChildAccessLevel = topic.DeclaredAccessLevel;
+
+						// This is for enums without values defined in the comments.  We want it to be a parent element for merging
+						// later, but it doesn't currently have children, so set the end to the same as the start.
+						parentElement.EndingFilePosition = parentElement.FilePosition;
 						}
 					else // scope start or end
 						{
@@ -1691,6 +1700,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 					if (topic.IsGroup)
 						{  lastGroup = parentElement;  }
+					else if (topic.IsEnum)
+						{  }
 					else
 						{  lastClass = parentElement;  }
 					}
@@ -2578,15 +2589,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 								commentCount++;
 								}
 							}
-						}
 
-					if (MergeEmbeddedElements(commentElements, commentIndex, codeElements, codeIndex, mergedElements,
-															 out int embeddedCommentElementsMerged, out int embeddedCodeElementsMerged))
-						{
-						commentIndex += embeddedCommentElementsMerged;
-						commentCount -= embeddedCommentElementsMerged;
-						codeIndex += embeddedCodeElementsMerged;
-						codeCount -= embeddedCodeElementsMerged;
+						if (MergeEnumValues((ParentElement)mergedElement, commentElements, commentIndex, codeElements, codeIndex,
+														ref mergedElements,
+														out int embeddedCommentElementsMerged, out int embeddedCodeElementsMerged))
+							{
+							commentIndex += embeddedCommentElementsMerged;
+							commentCount -= embeddedCommentElementsMerged;
+							codeIndex += embeddedCodeElementsMerged;
+							codeCount -= embeddedCodeElementsMerged;
+							}
 						}
 
 					// Add the remainder of the code elements as is.
@@ -2667,8 +2679,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 								codeIndex++;
 								codeCount--;
 
-								if (MergeEmbeddedElements(commentElements, commentIndex, codeElements, codeIndex, mergedElements,
-																		 out int embeddedCommentElementsMerged, out int embeddedCodeElementsMerged))
+								if (mergedElement.Topic.IsEnum &&
+									MergeEnumValues((ParentElement)mergedElement, commentElements, commentIndex, codeElements, codeIndex,
+																ref mergedElements,
+																out int embeddedCommentElementsMerged, out int embeddedCodeElementsMerged))
 									{
 									commentIndex += embeddedCommentElementsMerged;
 									commentCount -= embeddedCommentElementsMerged;
@@ -2811,15 +2825,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			}
 
 
-		/* Function: MergeEmbeddedElements
+		/* Function: MergeEnumValues
 		 *
-		 * If either of the indexes are on embedded topics, it will merge them into the list and return how many it did.
+		 * If you've just merged an enum, this will merge the code elements for the values with any embedded topics from the
+		 * comment.  It will return how many elements were merged from each list.
 		 *
 		 * - commentElementIndex should be an index into commentElements pointing to the first potential embedded topic,
 		 *   not to parent element.  Likewise for codeElementIndex and codeElements.
 		 *
 		 *	- The merged embedded elements will be added to the end of the mergedElements list.  As such the merged parent
-		 *	  element should already be on the list as the last element.
+		 *	  enum should already be on the list as the last element prior to calling.
 		 *
 		 *	- As with <MergeElements()> the original <Elements> and/or <Topics> may be reused so don't use them after
 		 *	  calling this function.
@@ -2827,16 +2842,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 *	- It will return the amount of elements merged from each list in embeddedCommentElementsMerged and
 		 *	  embeddedCodeElementsMerged.  The calling code should skip ahead that many in its list processing.
 		 */
-		protected bool MergeEmbeddedElements (List<Element> commentElements, int commentElementIndex,
-																	List<Element> codeElements, int codeElementIndex,
-																	List<Element> mergedElements,
-																	out int embeddedCommentElementsMerged,
-																	out int embeddedCodeElementsMerged)
+		protected bool MergeEnumValues (ParentElement enumElement,
+														  List<Element> commentElements, int commentElementIndex,
+														  List<Element> codeElements, int codeElementIndex,
+														  ref List<Element> mergedElements,
+														  out int embeddedCommentElementsMerged,
+														  out int embeddedCodeElementsMerged)
 			{
 			// See how many embedded topics there are in each list.
 
 			int commentEmbeddedTopicCount = CountConsecutiveEmbeddedTopics(commentElements, commentElementIndex);
-			int codeEmbeddedTopicCount = CountConsecutiveEmbeddedTopics(codeElements, codeElementIndex);
+			int codeEmbeddedTopicCount = CountChildElements(enumElement, codeElements, codeElementIndex);
 
 
 			// Merge the elements.
@@ -3156,6 +3172,21 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			}
 
 
+		/* Function: CountChildElements
+		 * Returns the number of consecutive child <Elements> that follow the passed <ParentElement>.
+		 */
+		protected int CountChildElements (ParentElement parentElement, List<Element> elements, int startingIndex)
+			{
+			int endingIndex = startingIndex;
+
+			while (endingIndex < elements.Count &&
+					 parentElement.Contains(elements[endingIndex]))
+				{  endingIndex++;  }
+
+			return (endingIndex - startingIndex);
+			}
+
+
 		/* Function: RemoveHeaderlessTopics
 		 * Deletes any <Topics> which do not have the Title field set, which means they were headerless and they were never merged
 		 * with a code topic.  It will remove their <Elements> if they serve no other purpose.
@@ -3199,13 +3230,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					elements[elementIndex].Topic.IsList == false &&
 					elements[elementIndex].Topic.IsEnum)
 					{
-					var enumElement = elements[elementIndex];
+					var enumElement = (ParentElement)elements[elementIndex];
 					var enumTopic = enumElement.Topic;
 					var enumBody = enumTopic.Body;
 					elementIndex++;
 
 					int firstValueElementIndex = elementIndex;
-					int valueCount = CountConsecutiveEmbeddedTopics(elements, firstValueElementIndex);
+					int valueCount = CountChildElements(enumElement, elements, firstValueElementIndex);
 					elementIndex += valueCount;
 
 					// If the enum topic has values...
@@ -3222,7 +3253,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 							for (int i = 0; i < valueCount; i++)
 								{
-								AddAsDefinitionListSymbol(elements[firstValueElementIndex + i].Topic, newBody);
+								var topic = elements[firstValueElementIndex + i].Topic;
+
+								AddAsDefinitionListSymbol(topic, newBody);
+								topic.IsEmbedded = true;
 								}
 
 							newBody.Append("</dl>");
@@ -3305,7 +3339,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 								for (int i = 0; i < valueCount; i++)
 									{
-									AddAsDefinitionListSymbol(elements[firstValueElementIndex + i].Topic, newBody);
+									var topic = elements[firstValueElementIndex + i].Topic;
+
+									AddAsDefinitionListSymbol(topic, newBody);
+									topic.IsEmbedded = true;
 									}
 
 								newBody.Append("</dl>");
@@ -3333,7 +3370,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 										{
 										if (bodyIndexOfValue[i] == 0)
 											{
-											AddAsDefinitionListSymbol(elements[firstValueElementIndex + i].Topic, newBody);
+											var topic = elements[firstValueElementIndex + i].Topic;
+
+											AddAsDefinitionListSymbol(topic, newBody);
+											topic.IsEmbedded = true;
 											}
 										}
 
@@ -3370,7 +3410,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 											// Add the values that don't appear in the body to it.
 											while (valueIndex < valueInBodyIndex)
 												{
-												AddAsDefinitionListSymbol(elements[firstValueElementIndex + valueIndex].Topic, newBody);
+												var topic = elements[firstValueElementIndex + valueIndex].Topic;
+
+												AddAsDefinitionListSymbol(topic, newBody);
+												topic.IsEmbedded = true;
+
 												valueIndex++;
 												}
 
@@ -3393,7 +3437,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 											// Add all remaining values that don't appear in the body to it.
 											while (valueIndex < valueCount)
 												{
-												AddAsDefinitionListSymbol(elements[firstValueElementIndex + valueIndex].Topic, newBody);
+												var topic = elements[firstValueElementIndex + valueIndex].Topic;
+
+												AddAsDefinitionListSymbol(topic, newBody);
+												topic.IsEmbedded = true;
+
 												valueIndex++;
 												}
 
@@ -6364,20 +6412,25 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 								{  bodyEmbeddedTopics++;  }
 							}
 
-						int elementEmbeddedTopics = 0;
-
-						for (int j = i + 1; j < elements.Count; j++)
+						if (element.Topic.IsList)
 							{
-							if (elements[j].Topic != null && elements[j].Topic.IsEmbedded)
-								{  elementEmbeddedTopics++;  }
-							else
-								{  break;  }
+							int elementEmbeddedTopics = CountConsecutiveEmbeddedTopics(elements, i + 1);
+
+							if (bodyEmbeddedTopics != elementEmbeddedTopics)
+								{
+								throw new Exception("Element " + ElementName(element) + " had " + bodyEmbeddedTopics + " embedded topics in its body but " +
+															   elementEmbeddedTopics + " embedded topics following it in the elements.");
+								}
 							}
-
-						if (bodyEmbeddedTopics != elementEmbeddedTopics)
+						else // element.Topic.IsEnum
 							{
-							throw new Exception("Element " + ElementName(element) + " had " + bodyEmbeddedTopics + " embedded topics in its body but " +
-														  elementEmbeddedTopics + " embedded topics following it in the elements.");
+							int elementChildren = CountChildElements((ParentElement)element, elements, i + 1);
+
+							if (bodyEmbeddedTopics != elementChildren)
+								{
+								throw new Exception("Element " + ElementName(element) + " had " + bodyEmbeddedTopics + " embedded topics in its body but " +
+															   elementChildren + " child elements.");
+								}
 							}
 						}
 
