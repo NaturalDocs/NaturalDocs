@@ -607,13 +607,15 @@ namespace CodeClear.NaturalDocs.Tests
 				}
 			catch (Exception e)
 				{
+				// Need to use Environment.NewLine instead of "\n" because otherwise it will be saved literally into the file (LF line breaks)
+				// while e.StackTrace will be formatted with the native line breaks, making it a mix on Windows.
 				actualOutput =
-					"An exception was thrown while executing the test:\n" +
-					"\n" +
-					e.Message + "\n" +
-					"(" + e.GetType().Name + ")\n" +
-					"\n" +
-					e.StackTrace + "\n";
+					"An exception was thrown while executing the test:" + Environment.NewLine +
+					Environment.NewLine +
+					e.Message + Environment.NewLine +
+					"(" + e.GetType().Name + ")" + Environment.NewLine +
+					Environment.NewLine +
+					e.StackTrace + Environment.NewLine;
 
 				SaveIfDifferent(test.ActualOutputFile, actualOutput);
 
