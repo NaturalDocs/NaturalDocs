@@ -2285,6 +2285,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 								valueTopic.Symbol = enumElement.ChildContextString.Scope + SymbolString.FromPlainText_NoParameters(valueName);
 								valueTopic.LanguageID = language.ID;
 								valueTopic.CommentTypeID = constantCommentTypeID;
+								valueTopic.CodeLineNumber = startOfValue.LineNumber;
 
 								valueElement.Topic = valueTopic;
 								}
