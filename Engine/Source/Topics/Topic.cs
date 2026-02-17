@@ -1449,17 +1449,22 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 				{
 				StringBuilder debuggerDisplay = new StringBuilder();
 
-				var commentType = EngineInstance.CommentTypes.FromID(commentTypeID);
-
-				if (commentType != null)
-					{  debuggerDisplay.Append(commentType.Name + ": ");  }
+				if (commentTypeID == 0 && title == null)
+					{  debuggerDisplay.Append("Headerless Comment");  }
 				else
-					{  debuggerDisplay.Append("Comment Type ID " + commentTypeID + ": ");  }
+					{
+					var commentType = EngineInstance.CommentTypes.FromID(commentTypeID);
 
-				if (title != null)
-					{  debuggerDisplay.Append(title);  }
-				else
-					{  debuggerDisplay.Append("(no title)");  }
+					if (commentType != null)
+						{  debuggerDisplay.Append(commentType.Name + ": ");  }
+					else
+						{  debuggerDisplay.Append("Comment Type ID " + commentTypeID + ": ");  }
+
+					if (title != null)
+						{  debuggerDisplay.Append(title);  }
+					else
+						{  debuggerDisplay.Append("(no title)");  }
+					}
 
 				if (isEmbedded)
 					{  debuggerDisplay.Append(" (embedded)");  }
