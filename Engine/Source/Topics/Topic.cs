@@ -1184,26 +1184,6 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		// __________________________________________________________________________
 
 
-		/* Property: CommentTypes
-		 * The <CommentTypes.Manager> associated with this topic.
-		 */
-		public CommentTypes.Manager CommentTypes
-			{
-			get
-				{  return commentTypes;  }
-			}
-
-
-		/* Property: EngineInstance
-		 * The <Engine.Instance> associated with this topic.
-		 */
-		public Engine.Instance EngineInstance
-			{
-			get
-				{  return CommentTypes.EngineInstance;  }
-			}
-
-
 		/* Property: IgnoredFields
 		 *
 		 * When querying topics from the database, not all fields may be needed in all situations.  The database
@@ -1437,6 +1417,32 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 			{
 			get
 				{  return otherDefinitions;  }
+			}
+
+
+
+		// Group: Other Properties
+		// __________________________________________________________________________
+
+
+
+		/* Property: CommentTypes
+		 * The <CommentTypes.Manager> associated with this topic.
+		 */
+		public CommentTypes.Manager CommentTypes
+			{
+			get
+				{  return commentTypes;  }
+			}
+
+
+		/* Property: EngineInstance
+		 * The <Engine.Instance> associated with this topic.
+		 */
+		public Engine.Instance EngineInstance
+			{
+			get
+				{  return CommentTypes.EngineInstance;  }
 			}
 
 
