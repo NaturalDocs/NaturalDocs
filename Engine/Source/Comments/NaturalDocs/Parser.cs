@@ -162,7 +162,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 		 *		- UsesPluralKeyword, unless doesn't require header
 		 *		- IsEmbedded
 		 */
-		public bool Parse (PossibleDocumentationComment comment, int languageID, List<Topic> topics, bool requireHeader)
+		public bool Parse (DocumentationComment comment, int languageID, List<Topic> topics, bool requireHeader)
 			{
 			// Skip initial blank and horizontal lines.
 

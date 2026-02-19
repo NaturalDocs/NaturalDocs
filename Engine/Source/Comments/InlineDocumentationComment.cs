@@ -2,8 +2,9 @@
  * Class: CodeClear.NaturalDocs.Engine.Comments.InlineDocumentationComment
  * ____________________________________________________________________________
  *
- * A class representing an inline documenation comment, such as for comments trailing enum values.  Normal
- * documentation comments would be represented by <PossibleDocumentationComment> instead.
+ * A class representing an inline documenation comment, such as for comments trailing enum values.  Regular
+ * documentation comments appearing on their own lines would be represented by <DocumentationComment>
+ * instead.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2026 Code Clear LLC.

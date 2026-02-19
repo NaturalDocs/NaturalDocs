@@ -45,16 +45,16 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		 * comments are not guaranteed to have documentation in them, just to be acceptable candidates for them.  If there are no
 		 * comments it will return an empty list.
 		 */
-		protected List<PossibleDocumentationComment> GetPossibleDocumentationComments (Tokenizer source)
+		protected List<DocumentationComment> GetPossibleDocumentationComments (Tokenizer source)
 			{
-			List<PossibleDocumentationComment> possibleDocumentationComments = new List<PossibleDocumentationComment>();
+			List<DocumentationComment> possibleDocumentationComments = new List<DocumentationComment>();
 
 			LineIterator lineIterator = source.FirstLine;
 
 			while (lineIterator.IsInBounds)
 				{
 				bool foundComment = false;
-				PossibleDocumentationComment possibleDocumentationComment = null;
+				DocumentationComment possibleDocumentationComment = null;
 
 				// Block comments
 				if (blockCommentStringPairs != null)
@@ -95,14 +95,14 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		 *
 		 * If the iterator is on a line that starts with the opening symbol of a block comment, this function moves the iterator
 		 * past the entire comment and returns true.  If the comment is a candidate for documentation it will also return it as
-		 * a <PossibleDocumentationComment> and mark the symbols as <CommentParsingType.CommentSymbol>.  If the
-		 * line does not start with an opening comment symbol it will return false and leave the iterator where it is.
+		 * a <DocumentationComment> and mark the symbols as <CommentParsingType.CommentSymbol>.  If the line does
+		 * not start with an opening comment symbol it will return false and leave the iterator where it is.
 		 *
 		 * Not all the block comments it finds will be candidates for documentation, since some will have text after the closing
 		 * symbol, so it's possible for this function to return true and have comment be null.
 		 */
 		protected bool TryToGetBlockComment (ref LineIterator lineIterator, string openingSymbol, string closingSymbol,
-																 out PossibleDocumentationComment comment)
+																 out DocumentationComment comment)
 			{
 			TokenIterator firstToken, endOfLine;
 			lineIterator.GetBounds(LineBoundsMode.ExcludeWhitespace, out firstToken, out endOfLine);
@@ -117,7 +117,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			// Python's ''' and """ strings.
 			firstToken.NextByCharacters(openingSymbol.Length);
 
-			comment = new PossibleDocumentationComment();
+			comment = new DocumentationComment();
 			comment.Start = lineIterator;
 
 			var tokenizer = lineIterator.Tokenizer;
@@ -184,11 +184,11 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		/* Function: TryToGetLineComment
 		 * If the iterator is on a line that starts with a line comment symbol, this function moves the iterator past the entire
 		 * comment and returns true.  If the comment is a candidate for documentation it will also return it as a
-		 * <PossibleDocumentationComment>.  If the line does not start with a line comment symbol it will return false and
-		 * leave the iterator where it is.
+		 * <DocumentationComment>.  If the line does not start with a line comment symbol it will return false and leave the
+		 * iterator where it is.
 		 */
 		protected bool TryToGetLineComment (ref LineIterator lineIterator, string commentSymbol,
-																out PossibleDocumentationComment comment)
+																out DocumentationComment comment)
 			{
 			TokenIterator firstToken = lineIterator.FirstToken(LineBoundsMode.ExcludeWhitespace);
 
@@ -198,7 +198,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 				return false;
 				}
 
-			comment = new PossibleDocumentationComment();
+			comment = new DocumentationComment();
 			comment.Start = lineIterator;
 			lineIterator.Next();
 
@@ -226,7 +226,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		 * Extracts and returns all comment content marked "include in output".  All comment symbols and extra indents
 		 * will be removed.  Returns null if none of the comments have any.
 		 */
-		protected string FindIncludeInOutput (List<PossibleDocumentationComment> comments)
+		protected string FindIncludeInOutput (List<DocumentationComment> comments)
 			{
 			StringBuilder output = null;
 
@@ -256,7 +256,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		 * Extracts and returns any comment content marked "include in output".  All comment symbols and extra indents
 		 * will be removed.  Returns null if the comment doesn't have any.
 		 */
-		protected string FindIncludeInOutput (PossibleDocumentationComment comment)
+		protected string FindIncludeInOutput (DocumentationComment comment)
 			{
 			Comments.LineFinder.MarkTextBoxes(comment);
 

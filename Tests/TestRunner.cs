@@ -528,7 +528,7 @@ namespace CodeClear.NaturalDocs.Tests
 
 					string code = System.IO.File.ReadAllText(test.InputFile);
 
-					IList<PossibleDocumentationComment> comments = language.Parser.GetPossibleDocumentationComments(code);
+					IList<DocumentationComment> comments = language.Parser.GetPossibleDocumentationComments(code);
 
 					IList<Topic> topics;
 					LinkSet classParentLinks;
@@ -726,7 +726,7 @@ namespace CodeClear.NaturalDocs.Tests
 		 *		to define this as well.
 		 *
 		 */
-		protected virtual string RunTest (IList<PossibleDocumentationComment> comments, IList<Topic> topics)
+		protected virtual string RunTest (IList<DocumentationComment> comments, IList<Topic> topics)
 			{
 			throw new NotImplementedException();
 			}

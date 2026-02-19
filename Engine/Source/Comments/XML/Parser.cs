@@ -90,7 +90,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.XML
 		 *		- Body, if present
 		 *		- Summary, if available
 		 */
-		public bool Parse (PossibleDocumentationComment sourceComment, List<Topic> topics)
+		public bool Parse (DocumentationComment sourceComment, List<Topic> topics)
 			{
 			XMLIterator iterator = new XMLIterator(sourceComment.Start.FirstToken(Tokenization.LineBoundsMode.Everything),
 																	  sourceComment.End.FirstToken(Tokenization.LineBoundsMode.Everything));

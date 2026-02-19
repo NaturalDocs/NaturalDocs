@@ -29,7 +29,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 
 		/* Function: MarkTextBoxes
 		 *
-		 * Finds all text boxes in a <PossibleDocumentationComment> and marks the tokens as
+		 * Finds all text boxes in a <DocumentationComment> and marks the tokens as
 		 * <CommentParsingType.CommentDecoration>.  Vertical lines will only be detected if they are continuous
 		 * throughout the comment and horizontal lines if they are connected to it.  Freestanding horizontal lines are
 		 * *not* detected here.  This function tolerates differing symbols on corners and where embedded horizontal
@@ -69,7 +69,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 		 * > // +-----+
 		 * > // (end code)
 		 */
-		public static void MarkTextBoxes (PossibleDocumentationComment comment)
+		public static void MarkTextBoxes (DocumentationComment comment)
 			{
 			char symbolA, symbolB, symbolC;
 			int symbolACount, symbolBCount, symbolCCount;

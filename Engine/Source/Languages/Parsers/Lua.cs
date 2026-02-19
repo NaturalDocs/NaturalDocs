@@ -44,15 +44,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 * in the tokenizer.  This allows further operations to be done on them in a language independent manner.  If you want to also
 		 * filter out text boxes and lines, use <Comments.LineFinder>.
 		*/
-		override public List<PossibleDocumentationComment> GetPossibleDocumentationComments (Tokenizer source)
+		override public List<DocumentationComment> GetPossibleDocumentationComments (Tokenizer source)
 			{
-			List<PossibleDocumentationComment> possibleDocumentationComments = new List<PossibleDocumentationComment>();
+			List<DocumentationComment> possibleDocumentationComments = new List<DocumentationComment>();
 
 			LineIterator lineIterator = source.FirstLine;
 
 			while (lineIterator.IsInBounds)
 				{
-				PossibleDocumentationComment possibleDocumentationComment = null;
+				DocumentationComment possibleDocumentationComment = null;
 
 				if (TryToGetBlockComment(ref lineIterator, out possibleDocumentationComment) ||
 					TryToGetLineComment(ref lineIterator, out possibleDocumentationComment))
@@ -80,10 +80,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *
 		 * If the iterator is on a line that starts with the opening symbol of a block comment, this function moves the iterator
 		 * past the entire comment and returns true.  If the comment is a candidate for documentation it will also return it as
-		 * a <PossibleDocumentationComment> and mark the symbols as <CommentParsingType.CommentSymbol>.  If the
-		 * line does not start with an opening comment symbol it will return false and leave the iterator where it is.
+		 * a <DocumentationComment> and mark the symbols as <CommentParsingType.CommentSymbol>.  If the line does
+		 * not start with an opening comment symbol it will return false and leave the iterator where it is.
 		 */
-		protected bool TryToGetBlockComment (ref LineIterator lineIterator, out PossibleDocumentationComment comment)
+		protected bool TryToGetBlockComment (ref LineIterator lineIterator, out DocumentationComment comment)
 			{
 			TokenIterator firstToken, endOfLine;
 			lineIterator.GetBounds(LineBoundsMode.ExcludeWhitespace, out firstToken, out endOfLine);
@@ -101,9 +101,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 
-			// We are.  Create a possible documentation comment.
+			// We are.  Create a documentation comment.
 
-			comment = new PossibleDocumentationComment();
+			comment = new DocumentationComment();
 			comment.Start = lineIterator;
 
 
@@ -208,10 +208,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *
 		 * If the iterator is on a line that starts with a line comment symbol, this function moves the iterator past the entire
 		 * comment and returns true.  If the comment is a candidate for documentation it will also return it as a
-		 * <PossibleDocumentationComment> and mark the symbols as <CommentParsingType.CommentSymbol>.  If the
-		 * line does not start with a line comment symbol it will return false and leave the iterator where it is.
+		 * <DocumentationComment> and mark the symbols as <CommentParsingType.CommentSymbol>.  If the line does
+		 * not start with a line comment symbol it will return false and leave the iterator where it is.
 		 */
-		protected bool TryToGetLineComment (ref LineIterator lineIterator, out PossibleDocumentationComment comment)
+		protected bool TryToGetLineComment (ref LineIterator lineIterator, out DocumentationComment comment)
 			{
 			TokenIterator firstToken = lineIterator.FirstToken(LineBoundsMode.ExcludeWhitespace);
 			TokenIterator lookahead = firstToken;
@@ -226,9 +226,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 
-			// We are.  Create a possible documentation comment.
+			// We are.  Create a documentation comment.
 
-			comment = new PossibleDocumentationComment();
+			comment = new DocumentationComment();
 			comment.Start = lineIterator;
 
 

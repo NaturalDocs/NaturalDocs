@@ -61,9 +61,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		// in the tokenizer.  This allows further operations to be done on them in a language independent manner.  If you want to also
 		// filter out text boxes and lines, use <Comments.LineFinder>.
 		//
-		override public List<PossibleDocumentationComment> GetPossibleDocumentationComments (Tokenizer source)
+		override public List<DocumentationComment> GetPossibleDocumentationComments (Tokenizer source)
 			{
-			List<PossibleDocumentationComment> comments = new List<PossibleDocumentationComment>();
+			List<DocumentationComment> comments = new List<DocumentationComment>();
 			LineIterator lineIterator = source.FirstLine;
 
 			PODLineType podLineType;
@@ -77,7 +77,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 				if (tokenIterator.Character == '#')
 					{
-					PossibleDocumentationComment comment = new PossibleDocumentationComment();
+					DocumentationComment comment = new DocumentationComment();
 					comment.Start = lineIterator;
 
 
@@ -187,7 +187,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					if (podLineType == PODLineType.StartNaturalDocs ||
 						podLineType == PODLineType.StartJavadoc)
 						{
-						PossibleDocumentationComment comment = new PossibleDocumentationComment();
+						DocumentationComment comment = new DocumentationComment();
 						comment.Start = lineIterator;
 
 						if (podLineType == PODLineType.StartJavadoc)

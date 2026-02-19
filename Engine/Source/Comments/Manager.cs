@@ -64,7 +64,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 		/* Function: Parse
 		 * Parses the passed comment for documentation.  If successful it will return true and add <Topics> to the list.
 		 */
-		public bool Parse (PossibleDocumentationComment comment, int languageID, List<Topic> topics)
+		public bool Parse (DocumentationComment comment, int languageID, List<Topic> topics)
 			{
 			// Apply to all comments, not just Natural Docs'.  Javadoc comments may use a left line of stars which would
 			// need to be taken out.

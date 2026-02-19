@@ -161,7 +161,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			// Find all the comments that could have documentation.
 
-			List<PossibleDocumentationComment> possibleDocumentationComments = GetPossibleDocumentationComments(source);
+			List<DocumentationComment> possibleDocumentationComments = GetPossibleDocumentationComments(source);
 
 			if (cancelDelegate())
 				{  return ParseResult.Cancelled;  }
@@ -1112,7 +1112,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 *
 		 * 	If you already have the source code in tokenized form it would be more efficient to pass it as a <Tokenizer>.
 		 */
-		public List<PossibleDocumentationComment> GetPossibleDocumentationComments (string source)
+		public List<DocumentationComment> GetPossibleDocumentationComments (string source)
 			{
 			return GetPossibleDocumentationComments(new Tokenizer(source));
 			}
@@ -1156,16 +1156,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		// an independent stage even when using full language support means comments don't disappear the way prototypes do if the
 		// parser gets tripped up on something like an unmatched brace.
 		//
-		virtual public List<PossibleDocumentationComment> GetPossibleDocumentationComments (Tokenizer source)
+		virtual public List<DocumentationComment> GetPossibleDocumentationComments (Tokenizer source)
 			{
 			if (language.Type == Language.LanguageType.Container)
 				{  throw new Exceptions.BadContainerOperation("GetPossibleDocumentationComments");  }
 
 			else if (language.Type == Language.LanguageType.TextFile)
 				{
-				List<PossibleDocumentationComment> possibleDocumentationComments = new List<PossibleDocumentationComment>(1);
+				List<DocumentationComment> possibleDocumentationComments = new List<DocumentationComment>(1);
 
-				PossibleDocumentationComment comment = new PossibleDocumentationComment();
+				DocumentationComment comment = new DocumentationComment();
 				comment.Start = source.FirstLine;
 				comment.End = source.EndOfLines;
 
@@ -1175,14 +1175,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			else
 				{
-				List<PossibleDocumentationComment> possibleDocumentationComments = new List<PossibleDocumentationComment>();
+				List<DocumentationComment> possibleDocumentationComments = new List<DocumentationComment>();
 
 				LineIterator lineIterator = source.FirstLine;
 
 				while (lineIterator.IsInBounds)
 					{
 					bool foundComment = false;
-					PossibleDocumentationComment possibleDocumentationComment = null;
+					DocumentationComment possibleDocumentationComment = null;
 
 
 					// Javadoc block comments
@@ -1270,7 +1270,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						language.HasJavadocLineCommentSymbols)
 						{
 						LineIterator javadocLineIterator = possibleDocumentationComment.Start;
-						PossibleDocumentationComment possibleJavadocDocumentationComment = null;
+						DocumentationComment possibleJavadocDocumentationComment = null;
 						bool foundJavadocComment = false;
 
 						foreach (var javadocLineCommentSymbols in language.JavadocLineCommentSymbols)
@@ -1568,17 +1568,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 		/* Function: GetCommentElements
 		 *
-		 * Goes through the <PossibleDocumentationComments> looking for comment <Elements> that should be included in the
+		 * Goes through the <DocumentationComments> looking for <Topics> and <Elements> that should be included in the
 		 * output.  If there are none, it will return an empty list.
 		 *
-		 * The default implementation sends each <PossibleDocumentationComment> to <Comments.Manager.Parse()> and then
-		 * converts the <Topics> to <Elements>.  There should be no need to change it.
+		 * The default implementation sends each <DocumentationComment> to <Comments.Manager.Parse()> and then converts
+		 * the <Topics> to <Elements>.  There should be no need to change it.
 		 */
-		protected virtual List<Element> GetCommentElements (List<PossibleDocumentationComment> possibleDocumentationComments)
+		protected virtual List<Element> GetCommentElements (List<DocumentationComment> documentationComments)
 			{
 			List<Topic> topics = new List<Topic>();
 
-			foreach (var comment in possibleDocumentationComments)
+			foreach (var comment in documentationComments)
 				{  EngineInstance.Comments.Parse(comment, language.ID, topics);  }
 
 
@@ -1765,8 +1765,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		/* Function: AddBasicPrototypes
 		 *
 		 * Adds prototypes to the <Topics> for languages with basic support.  It examines the code between the end of each
-		 * comment topic and the next one (or the next <PossibleDocumentationComment>) and if it finds the topic title before it
-		 * finds one of the language's prototype enders the prototype will be set to the code between the topic and the ender.
+		 * comment topic and the next one (or the next <DocumentationComment>) and if it finds the topic title before it finds
+		 * one of the language's prototype enders the prototype will be set to the code between the topic and the ender.
 		 *
 		 * This function does the basic looping of the search but throws the individual prototype detection to <AddBasicPrototype()>,
 		 * so languages with basic support can just override that to implement tweaks instead.
@@ -1774,13 +1774,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * This function will not apply a prototype to a <Topic> that already has one.
 		 */
 		protected virtual void AddBasicPrototypes (Tokenizer source, List<Element> elements,
-																  List<PossibleDocumentationComment> possibleDocumentationComments)
+																	  List<DocumentationComment> documentationComments)
 			{
 			int elementIndex = 0;
 
-			for (int commentIndex = 0; commentIndex < possibleDocumentationComments.Count; commentIndex++)
+			for (int commentIndex = 0; commentIndex < documentationComments.Count; commentIndex++)
 				{
-				PossibleDocumentationComment comment = possibleDocumentationComments[commentIndex];
+				DocumentationComment comment = documentationComments[commentIndex];
 
 				// Advance the element index to the last one before the end of this comment.  If there are multiple topics in a
 				// comment only the last one gets a prototype search.
@@ -1818,8 +1818,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				Tokenization.LineIterator startCode = comment.End;
 				Tokenization.LineIterator endCode;
 
-				if (commentIndex + 1 < possibleDocumentationComments.Count)
-					{  endCode = possibleDocumentationComments[commentIndex + 1].Start;  }
+				if (commentIndex + 1 < documentationComments.Count)
+					{  endCode = documentationComments[commentIndex + 1].Start;  }
 				else
 					{  endCode = source.EndOfLines;  }
 
@@ -5352,8 +5352,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 *
 		 * If the iterator is on a line that starts with the opening symbol of a block comment, this function moves the iterator
 		 * past the entire comment and returns true.  If the comment is a candidate for documentation it will also return it as
-		 * a <PossibleDocumentationComment> and mark the symbols as <CommentParsingType.CommentSymbol>.  If the
-		 * line does not start with an opening comment symbol it will return false and leave the iterator where it is.
+		 * a <DocumentationComment> and mark the symbols as <CommentParsingType.CommentSymbol>.  If the line does
+		 * not start with an opening comment symbol it will return false and leave the iterator where it is.
 		 *
 		 * Not all the block comments it finds will be candidates for documentation, since some will have text after the closing
 		 * symbol, so it's possible for this function to return true and have comment be null.  This is important because in Lua
@@ -5366,7 +5366,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 */
 		protected bool TryToGetBlockComment (ref LineIterator lineIterator,
 																 string openingSymbol, string closingSymbol, bool openingMustBeAlone,
-																 out PossibleDocumentationComment comment)
+																 out DocumentationComment comment)
 			{
 			TokenIterator firstToken, endOfLine;
 			lineIterator.GetBounds(LineBoundsMode.ExcludeWhitespace, out firstToken, out endOfLine);
@@ -5387,7 +5387,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				return false;
 				}
 
-			comment = new PossibleDocumentationComment();
+			comment = new DocumentationComment();
 			comment.Start = lineIterator;
 
 			var tokenizer = lineIterator.Tokenizer;
@@ -5538,8 +5538,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 *
 		 * If the iterator is on a line that starts with a line comment symbol, this function moves the iterator past the entire
 		 * comment and returns true.  If the comment is a candidate for documentation it will also return it as a
-		 * <PossibleDocumentationComment> and mark the symbols as <CommentParsingType.CommentSymbol>.  If the
-		 * line does not start with a line comment symbol it will return false and leave the iterator where it is.
+		 * <DocumentationComment> and mark the symbols as <CommentParsingType.CommentSymbol>.  If the line does
+		 * not start with a line comment symbol it will return false and leave the iterator where it is.
 		 *
 		 * This function takes a separate comment symbol for the first line and all remaining lines, allowing you to detect
 		 * Javadoc line comments that start with ## and the remaining lines use #.  Both symbols can be the same if this isn't
@@ -5551,7 +5551,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 */
 		protected bool TryToGetLineComment (ref LineIterator lineIterator,
 																string firstSymbol, string remainderSymbol, bool openingMustBeAlone,
-																out PossibleDocumentationComment comment)
+																out DocumentationComment comment)
 			{
 			TokenIterator firstToken = lineIterator.FirstToken(LineBoundsMode.ExcludeWhitespace);
 
@@ -5573,7 +5573,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					}
 				}
 
-			comment = new PossibleDocumentationComment();
+			comment = new DocumentationComment();
 			comment.Start = lineIterator;
 			lineIterator.Next();
 

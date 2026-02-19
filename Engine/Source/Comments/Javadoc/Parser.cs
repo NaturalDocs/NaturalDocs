@@ -99,7 +99,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 		 *		- Body, if present
 		 *		- Summary, if available
 		 */
-		public bool Parse (PossibleDocumentationComment sourceComment, List<Topic> topics)
+		public bool Parse (DocumentationComment sourceComment, List<Topic> topics)
 			{
 			if (HasAnyTag(sourceComment.Start.FirstToken(LineBoundsMode.CommentContent),
 								sourceComment.End.FirstToken(LineBoundsMode.Everything)) == false)

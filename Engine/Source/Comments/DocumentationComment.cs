@@ -1,8 +1,10 @@
 ﻿/*
- * Class: CodeClear.NaturalDocs.Engine.Comments.PossibleDocumentationComment
+ * Class: CodeClear.NaturalDocs.Engine.Comments.DocumentationComment
  * ____________________________________________________________________________
  *
- * A class representing a comment found in source code which could possibly contain documentation.
+ * A class representing a comment found in source code which could contain documentation.  These are full
+ * comments that must appear on their own lines.  Inline comments that can appear after things like enum values
+ * are represented by <InlineDocumentationComment>.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2026 Code Clear LLC.
@@ -17,16 +19,16 @@ using System.Diagnostics;
 namespace CodeClear.NaturalDocs.Engine.Comments
 	{
 	[DebuggerDisplay("{DebuggerDisplay,nq}")]
-	public class PossibleDocumentationComment
+	public class DocumentationComment
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 
 
-		/* Function: PossibleDocumentationComment
+		/* Function: DocumentationComment
 		 */
-		public PossibleDocumentationComment ()
+		public DocumentationComment ()
 			{
 			javadoc = false;
 			xml = false;
@@ -42,7 +44,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 
 		/* Property: Javadoc
 		 * Whether the comment could possibly contain Javadoc content.  This doesn't mean that it does, just that
-		 * it could.  It's possible for both this and <XML> to be true.
+		 * the comment symbols indicate that it could.  It's possible for both this and <XML> to be true.
 		 */
 		public bool Javadoc
 			{
@@ -54,8 +56,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 
 
 		/* Property: XML
-		 * Whether the comment could possibly contain XML content.  This doesn't mean that it does, just that
-		 * it could.  It's possible for both this and <Javadoc> to be true.
+		 * Whether the comment could possibly contain XML content.  This doesn't mean that it does, just that the
+		 * comment symbols indicate that it could.  It's possible for both this and <Javadoc> to be true.
 		 */
 		public bool XML
 			{

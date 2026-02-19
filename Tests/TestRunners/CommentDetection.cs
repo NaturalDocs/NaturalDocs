@@ -28,7 +28,7 @@ namespace CodeClear.NaturalDocs.Tests.TestRunners
 			: base (InputMode.CommentsAndTopics, EngineMode.InstanceOnly)
 			{  	}
 
-		protected override string RunTest (IList<PossibleDocumentationComment> comments, IList<Topic> topics)
+		protected override string RunTest (IList<DocumentationComment> comments, IList<Topic> topics)
 			{
 			if (comments == null || comments.Count == 0)
 				{  return "(No comments found)";  }
@@ -39,7 +39,7 @@ namespace CodeClear.NaturalDocs.Tests.TestRunners
 
 			while (commentIndex < comments.Count)
 				{
-				PossibleDocumentationComment comment = comments[commentIndex];
+				DocumentationComment comment = comments[commentIndex];
 
 				output.Append("- ");
 
