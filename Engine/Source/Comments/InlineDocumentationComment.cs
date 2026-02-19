@@ -12,10 +12,12 @@
 
 
 using System;
+using System.Diagnostics;
 
 
 namespace CodeClear.NaturalDocs.Engine.Comments
 	{
+	[DebuggerDisplay("{DebuggerDisplay,nq}")]
 	public class InlineDocumentationComment
 		{
 
@@ -74,10 +76,10 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 			}
 
 
-		/* Property: String
-		 * The entire comment as a string.  Primarily used to aid debugging.
+		/* Property: DebuggerDisplay
+		 * Shows the comment content when debugging Natural Docs.
 		 */
-		public string String
+		internal string DebuggerDisplay
 			{
 			get
 				{  return start.TextBetween(end);  }
