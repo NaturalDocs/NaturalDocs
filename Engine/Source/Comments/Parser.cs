@@ -207,6 +207,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 				embeddedTopic.DeclaredAccessLevel = topic.DeclaredAccessLevel;
 				embeddedTopic.TagString = topic.TagString;
 				embeddedTopic.CommentLineNumber = topic.CommentLineNumber;
+				embeddedTopic.EndOfCommentLineNumber = topic.EndOfCommentLineNumber;
 
 				MakeSummaryFromBody(embeddedTopic);
 

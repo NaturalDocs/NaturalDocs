@@ -127,6 +127,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Javadoc
 			if (topic != null)
 				{
 				topic.CommentLineNumber = sourceComment.Start.LineNumber;
+				topic.EndOfCommentLineNumber = sourceComment.End.LineNumber;
 				topics.Add(topic);
 				}
 

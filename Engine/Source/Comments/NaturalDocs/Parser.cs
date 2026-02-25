@@ -215,6 +215,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 				{
 				if (prevLineBlank && IsTopicLine(lineIterator, languageID, out nextTopic))
 					{
+					currentTopic.EndOfCommentLineNumber = lineIterator.LineNumber;
+
 					if (firstContentLine < lineIterator)
 						{  ParseBody(firstContentLine, lineIterator, currentTopic);  }
 
@@ -258,6 +260,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 					}
 				}
 
+			currentTopic.EndOfCommentLineNumber = lineIterator.LineNumber;
+
 			if (firstContentLine < lineIterator)
 				{  ParseBody(firstContentLine, lineIterator, currentTopic);  }
 
@@ -287,6 +291,12 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 
 			Topic topic = new Topic(EngineInstance.CommentTypes);
 			topic.CommentLineNumber = firstLine.LineNumber;
+			topic.EndOfCommentLineNumber = comment.End.LineNumber;
+
+			// If we're on the first character of a line then the comment ended just after a line break and we can use End's line number
+			// as the end.  If we're not then there was comment content on this line and we should use the next one as the end.
+			if (comment.End.CharNumber > 1)
+				{  topic.EndOfCommentLineNumber++;  }
 
 			ParseBody(firstLine, tokenizer.EndOfLines, topic, inlineFormattingOnly: true);
 
