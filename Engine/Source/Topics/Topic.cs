@@ -169,6 +169,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 			languageID = 0;
 			commentLineNumber = 0;
 			codeLineNumber = 0;
+			endOfCommentLineNumber = 0;
 
 			fileID = 0;
 			filePosition = 0;
@@ -1203,6 +1204,18 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 			}
 
 
+		/* Property: EndOfCommentLineNumber
+		 * One past the last line number of the topic's comment, or zero if it hasn't been set yet or the topic doesn't have a comment.
+		 */
+		public int EndOfCommentLineNumber
+			{
+			get
+				{  return endOfCommentLineNumber;  }
+			set
+				{  endOfCommentLineNumber = value;  }
+			}
+
+
 		/* Property: ParsedPrototype
 		 * If <Prototype> is not null, this will be it in <ParsedPrototype> form.
 		 */
@@ -1619,6 +1632,11 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		 * The line number the actual code element appears on, or zero if not specified or the topic doesn't have one.
 		 */
 		protected int codeLineNumber;
+
+		/* var: endOfCommentLineNumber
+		 * One past the last line number of the topic's comment, or zero if not specified or the topic doesn't have one.
+		 */
+		protected int endOfCommentLineNumber;
 
 		/* var: languageID
 		 * The ID of the topic's language, or zero if not specified.
