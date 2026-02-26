@@ -55,9 +55,8 @@ namespace CodeClear.NaturalDocs.Tests
 		 *							Requires at least <EngineMode.InstanceAndGeneratedDocs>.
 		 *
 		 *		CommentsAndTopics - The test runner will parse the input file as a source file and send the resulting
-		 *										 <PossibleDocumentationComments> and <Topics> to
-		 *										 <RunTest(PossibleDocumentationComment, Topic)>.  Requires at least
-		 *										 <EngineMode.InstanceOnly>.
+		 *										 <DocumentationComments> and <Topics> to <RunTest(DocumentationComment, Topic)>.
+		 *										 Requires at least <EngineMode.InstanceOnly>.
 		 *
 		 *		CodeElements - The test runner will parse the input file as a source file and send the resulting code
 		 *								<Elements> to <RunTest(Element)>.  Requires at least <EngineMode.InstanceOnly>.
@@ -710,11 +709,11 @@ namespace CodeClear.NaturalDocs.Tests
 			}
 
 
-		/* Function: RunTest (PossibleDocumentationComment, Topic)
+		/* Function: RunTest (DocumentationComment, Topic)
 		 *
-		 * Generates output from the test input <PossibleDocumentationComments> and <Topics> and returns it.  The input files will be
-		 * parsed as source files to generate the <PossibleDocumentationComments> and <Topics>.  The output will be whatever properties
-		 * from them are relevant to the test.
+		 * Generates output from the test input <DocumentationComments> and <Topics> and returns it.  The input files will be parsed
+		 * as source files to generate the <DocumentationComments> and <Topics>.  The output will be whatever properties from them
+		 * are relevant to the test.
 		 *
 		 * This function is only relevant if you're using the default implementation of <RunTest(Test)> with <InputMode.CommentsAndTopics>.
 		 * It will not be called otherwise, unless your implementation of <RunTest(Test)> also calls it.
