@@ -2537,12 +2537,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 				int lastCommentIndex = commentIndex + commentCount - 1;
 
-				// If it's embedded walk backwards to find the last non-embedded one.
-				while (commentElements[lastCommentIndex].Topic != null &&
-						 commentElements[lastCommentIndex].Topic.IsEmbedded == true &&
-						 lastCommentIndex > commentIndex)
-					{  lastCommentIndex--;  }
-
+				// We don't have to check if the last comment is embedded.  Embedded topics created by comment topics will always have
+				// a title.
 				if (commentElements[lastCommentIndex].Topic != null &&
 					commentElements[lastCommentIndex].Topic.Title == null &&
 					CanMergeTopics(commentElements[lastCommentIndex].Topic, codeElements[codeIndex].Topic, true))
