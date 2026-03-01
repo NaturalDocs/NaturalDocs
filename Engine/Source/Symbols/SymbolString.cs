@@ -14,11 +14,13 @@
 
 
 using System;
+using System.Diagnostics;
 using CodeClear.NaturalDocs.Engine.Tokenization;
 
 
 namespace CodeClear.NaturalDocs.Engine.Symbols
 	{
+	[DebuggerDisplay("{DebuggerDisplay,nq}")]
 	public struct SymbolString : IComparable
 		{
 
@@ -256,6 +258,21 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 					{  return new SymbolString();  }
 				else
 					{  return new SymbolString(symbolString.Substring(0, lastSeparator));  }
+				}
+			}
+
+
+		/* Property: DebuggerDisplay
+		 * Shows the string contents when debugging Natural Docs.
+		 */
+		internal string DebuggerDisplay
+			{
+			get
+				{
+				if (symbolString == null)
+					{  return "null";  }
+				else
+					{  return ('"' + FormatWithSeparator('.') + '"');  }
 				}
 			}
 
