@@ -2372,11 +2372,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		/* Function: PreprocessEnumElements
 		 *
 		 * Finds any enums in the code <Elements> and adjusts any comment <Elements> appearing inside their bodies.  This is
-		 * done because standard comments and/or comments of the wrong type appearing with the values can throw off merging.
+		 * done because certain comments appearing with the values can throw off merging.
 		 *
-		 * For now all comments inside an enum's body will be removed.  In the future appropriate comments will be merged into
-		 * the code elements like inline comments are, with adjustments if necessary, and others will either be deleted or moved
-		 * to outside the enum's scope.
+		 * For now only constants and headerless comments are allowed inside an enum's body.  Everything else will be removed.
 		 */
 		protected void PreprocessEnumComments (List<Element> commentElements, List<Element> codeElements)
 			{
@@ -2388,6 +2386,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			// to be handled differently and not affect other groups' range, so we may have to fix them.  Thus we keep track of the last
 			// non-enum group comment we found in case we need to extend the end of its range.
 			ParentElement lastNonEnumGroup = null;
+
+			int constantCommentTypeID = EngineInstance.CommentTypes.IDFromKeyword("constant", this.language.ID);
 
 			while (codeIndex < codeElements.Count)
 				{
@@ -2429,9 +2429,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 						var commentTopic = commentElement.Topic;
 
-
 						// If the topic is a group, remove it (for now)
-
 						if (commentTopic.IsGroup)
 							{
 							// The group may have ended a previous group.  If so, extend the previous group.
@@ -2442,9 +2440,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 							commentElements.RemoveAt(commentIndex);
 							}
 
+						// If the topic is a constant, allow it so it can be treated as a value
+						// If the topic is headerless, allow it so it can be applied to a value
+						else if (commentTopic.CommentTypeID == constantCommentTypeID ||
+								   commentTopic.Title == null)
+							{
+							commentIndex++;
+							}
 
 						// If the topic is any other type, remove it (for now)
-
 						else
 							{  commentElements.RemoveAt(commentIndex);  }
 						}
