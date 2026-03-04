@@ -2355,6 +2355,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 									Topic inlineTopic = EngineInstance.Comments.Parse(inlineComment);
 									valueTopic.Body = inlineTopic.Body;
 									valueTopic.Summary = inlineTopic.Summary;
+									valueTopic.CommentLineNumber = inlineTopic.CommentLineNumber;
+									valueTopic.EndOfCommentLineNumber = inlineTopic.EndOfCommentLineNumber;
 									}
 								}
 
