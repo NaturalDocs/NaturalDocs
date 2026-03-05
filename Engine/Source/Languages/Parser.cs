@@ -239,6 +239,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					{  return ParseResult.Cancelled;  }
 
 
+				// Remove overlapping comments.  This could happen if the second line of a quick comment is mistaken for a headerless
+				// standalone comment.
+
+				RemoveOverlappingComments(commentElements, codeElements);
+
+				if (cancelDelegate())
+					{  return ParseResult.Cancelled;  }
+
+
 				// Preprocess enums to prevent issues that may otherwise occur in the merging process.
 
 				PreprocessEnumComments(commentElements, codeElements);
@@ -2374,6 +2383,50 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 					if (element is ParentElement)
 						{  (element as ParentElement).MaximumEffectiveChildAccessLevel = element.Topic.DeclaredAccessLevel;  }
+					}
+				}
+			}
+
+
+		/* Function: RemoveOverlappingComments
+		 *
+		 * Finds any comment <Elements> that are actually an extension of an inline comment and removes them.
+		 *
+		 * In the example below, the second line of the inline comment could be picked up by the regular, non-inline comment
+		 * gathering code.  We can detect when this happens by its line numbers being encompassed by those of the inline comment.
+		 * This function goes through and removes any comments it finds like this.
+		 *
+		 * --- C#
+		 * enum MyEnum
+		 *	   {
+		 *	   Value /// Multi-line inline comment.
+		 *	         /// Continuation of inline comment.
+		 *	   }
+		 *
+		 */
+		protected void RemoveOverlappingComments (List<Element> commentElements, List<Element> codeElements)
+			{
+			int commentIndex = 0;
+
+			// Go through each code element, which is where the inline comments will be
+			for (int codeIndex = 0; codeIndex < codeElements.Count; codeIndex++)
+				{
+				if (codeElements[codeIndex].Topic != null)
+					{
+					var codeTopic = codeElements[codeIndex].Topic;
+
+					// Move past any comments that are before the current code element
+					while (commentIndex < commentElements.Count &&
+							  (commentElements[commentIndex].Topic == null ||
+							   commentElements[commentIndex].Topic.CommentLineNumber < codeTopic.CommentLineNumber))
+						{  commentIndex++;  }
+
+					// Delete any comments that are encompassed by the current code element
+					while (commentIndex < commentElements.Count &&
+							 commentElements[commentIndex].Topic != null &&
+							 commentElements[commentIndex].Topic.CommentLineNumber >= codeTopic.CommentLineNumber &&
+							 commentElements[commentIndex].Topic.EndOfCommentLineNumber <= codeTopic.EndOfCommentLineNumber)
+						{  commentElements.RemoveAt(commentIndex);  }
 					}
 				}
 			}
