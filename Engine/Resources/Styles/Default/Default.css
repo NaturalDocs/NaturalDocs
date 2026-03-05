@@ -1710,8 +1710,32 @@ td {
 			.BlackTheme .CDLParameterType {
 				opacity: 0.75;
 				}
+
+		/* Adjust the spacing of elements appearing in definitions */
 		td.CDLDefinition p {
 			text-indent: 0;
+			}
+		/* Block formatting can appear in definitions if a full comment is used to document an enum value */
+		/* which then gets converted to a definition list.  Adjust them as well. */
+		td.CDLDefinition ul,
+		td.CDLDefinition ul ul {
+			margin-left: $IndentSubList;
+			}
+			@-moz-document url-prefix() {
+				td.CDLDefinition ul,
+				td.CDLDefinition ul ul {
+					margin-left: $IndentSubList_Firefox;
+					}
+				}
+		td.CDLDefinition table.CDefinitionList {
+			margin-left: 0;
+			}
+		td.CDLDefinition .CHeading {
+			font-size: $ContentFontSize;
+			margin: 1rem 0 $ParagraphSpacing 0;
+			}
+		td.CDLDefinition pre {
+			margin: $DiagramSpacing 0;
 			}
 
 	.CTopic pre {
