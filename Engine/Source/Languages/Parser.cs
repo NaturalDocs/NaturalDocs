@@ -247,11 +247,21 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					{  return ParseResult.Cancelled;  }
 
 
-				// Combine the two.
+				// Combine the two.  Enums and list topics need special processing so they're broken out into their own stages.
 
 				elements = MergeElements(commentElements, codeElements);
 				codeElements = null;
 				commentElements = null;
+
+				if (cancelDelegate())
+					{  return ParseResult.Cancelled;  }
+
+				MergeEnumValues(elements);
+
+				if (cancelDelegate())
+					{  return ParseResult.Cancelled;  }
+
+				MergeListTopics(elements);
 
 				if (cancelDelegate())
 					{  return ParseResult.Cancelled;  }
@@ -1130,7 +1140,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		//
 		// Default Implementation:
 		//
-		//	The default implementation uses the comment symbols found in <Language>.  You can override this function if you need to
+		// The default implementation uses the comment symbols found in <Language>.  You can override this function if you need to
 		// do something more sophisticated, such as interpret the POD directives in Perl.
 		//
 		// Comments must be alone on a line to be a candidate for documentation, meaning that the comment symbol must be the
@@ -2463,8 +2473,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: MergeElements
-		 * Combines code and comment <Elements> into one list.  The original <Elements> and/or <Topics> may be reused so don't use them
-		 * after calling this function.
+		 *
+		 * Combines code and comment <Elements> into one list.  The original <Elements> and/or <Topics> may be reused so don't
+		 * use them after calling this function.
+		 *
+		 * This function will not merge embedded comment <Elements> (enum values and list <Topic> members) with code <Elements>.
+		 * They will simply be added immediately after the parent comment <Element> to be handled by other functions later.
 		 */
 		protected List<Element> MergeElements (List<Element> commentElements, List<Element> codeElements)
 			{
@@ -2571,7 +2585,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					if (mergedElement.Topic.IsEnum)
 						{
 						var commentParser = EngineInstance.Comments.NaturalDocsParser;
-
 						int definitionListEntryCount = commentParser.ConvertDefinitionEntriesToSymbols(mergedElement.Topic);
 
 						if (definitionListEntryCount > 0)
@@ -2585,19 +2598,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 								Element newEmbeddedElement = new Element(mergedElement.Topic.CommentLineNumber, 1, Element.Flags.InComments);
 								newEmbeddedElement.Topic = newEmbeddedTopics[i];
 
-								commentElements.Insert(commentIndex + i, newEmbeddedElement);
-								commentCount++;
+								mergedElements.Add(newEmbeddedElement);
 								}
-							}
-
-						if (MergeEnumValues((ParentElement)mergedElement, commentElements, commentIndex, codeElements, codeIndex,
-														ref mergedElements,
-														out int embeddedCommentElementsMerged, out int embeddedCodeElementsMerged))
-							{
-							commentIndex += embeddedCommentElementsMerged;
-							commentCount -= embeddedCommentElementsMerged;
-							codeIndex += embeddedCodeElementsMerged;
-							codeCount -= embeddedCodeElementsMerged;
 							}
 						}
 
@@ -2639,88 +2641,65 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 							// Since we're using the code elements' positions, we may have to squish the comment element in beneath
 							// the last one to make sure the list is still in order.
-
 							if (mergedElements.Count > 1 &&
 								mergedElements[mergedElements.Count - 1].FilePosition < mergedElements[mergedElements.Count - 2].FilePosition)
 								{
-								mergedElements[mergedElements.Count - 1].LineNumber = mergedElements[mergedElements.Count - 2].LineNumber;
-								mergedElements[mergedElements.Count - 1].CharNumber = mergedElements[mergedElements.Count - 2].CharNumber + 1;
+								mergedElements[mergedElements.Count - 1].FilePosition = mergedElements[mergedElements.Count - 2].FilePosition;
+								}
+
+							// Also add any embedded comment elements since we're not merging them in this function.
+							while (commentCount > 0 &&
+									 commentElements[commentIndex].Topic != null &&
+									 commentElements[commentIndex].Topic.IsEmbedded)
+								{
+								mergedElements.Add(commentElements[commentIndex]);
+								commentIndex++;
+								commentCount--;
+
+								if (mergedElements[mergedElements.Count - 1].FilePosition < mergedElements[mergedElements.Count - 2].FilePosition)
+									{
+									mergedElements[mergedElements.Count - 1].FilePosition = mergedElements[mergedElements.Count - 2].FilePosition;
+									}
 								}
 							}
 
 						// If there is a matching code element...
 						else
 							{
-							// Comment and code elements should match in order to avoid weird side effects like members being pulled out of their parents'
-							// scope, so for non-list elements we enforce this.  We add all the code elements above the match as is; they are no longer
-							// candidates for matching.
+							// Comment and code elements should match in order to avoid weird side effects like members being pulled out of their
+							// parents' scope, so for non-embedded elements we enforce this.  Add all the code elements above the match as is; they
+							// are no longer candidates for matching.
 
-							// Ideally we would do this for list topics as well, but we make an exception for them.  List topics are for documenting lots of
-							// small elements in one place, which means they're much more likely to be far from their code elements, and forcing the user
-							// to document them in the order in which they're defined is too restricting.  We'll make it the user's responsibility to not
-							// document them in a way that would cause side effects.
-
-							if (commentElements[commentIndex].Topic.IsEmbedded == false)
+							while (codeIndex < matchingCodeIndex)
 								{
-								while (codeIndex < matchingCodeIndex)
-									{
-									mergedElements.Add(codeElements[codeIndex]);
-									codeIndex++;
-									codeCount--;
-									}
-
-								var mergedElement = codeElements[codeIndex];
-								mergedElement.InComments = true;
-								mergedElement.Topic = MergeTopics(commentElements[commentIndex].Topic, codeElements[codeIndex].Topic);
-								mergedElements.Add(mergedElement);
-
-								commentIndex++;
-								commentCount--;
+								mergedElements.Add(codeElements[codeIndex]);
 								codeIndex++;
 								codeCount--;
-
-								if (mergedElement.Topic.IsEnum &&
-									MergeEnumValues((ParentElement)mergedElement, commentElements, commentIndex, codeElements, codeIndex,
-																ref mergedElements,
-																out int embeddedCommentElementsMerged, out int embeddedCodeElementsMerged))
-									{
-									commentIndex += embeddedCommentElementsMerged;
-									commentCount -= embeddedCommentElementsMerged;
-									codeIndex += embeddedCodeElementsMerged;
-									codeCount -= embeddedCodeElementsMerged;
-									}
 								}
 
-							else // comment topic is embedded
-								{
-								// Use the comment element instead of the code element.
-								var mergedElement = commentElements[commentIndex];
-								mergedElement.InCode = true;
-								mergedElement.Topic = MergeTopics(commentElements[commentIndex].Topic, codeElements[matchingCodeIndex].Topic);
-								mergedElements.Add(mergedElement);
+							var mergedElement = codeElements[codeIndex];
+							mergedElement.InComments = true;
+							mergedElement.Topic = MergeTopics(commentElements[commentIndex].Topic, codeElements[codeIndex].Topic);
+							mergedElements.Add(mergedElement);
 
+							commentIndex++;
+							commentCount--;
+							codeIndex++;
+							codeCount--;
+
+							// Also add any embedded comment elements since we're not merging them in this function.
+							while (commentCount > 0 &&
+									 commentElements[commentIndex].Topic != null &&
+									 commentElements[commentIndex].Topic.IsEmbedded)
+								{
+								mergedElements.Add(commentElements[commentIndex]);
 								commentIndex++;
 								commentCount--;
 
-								// If the code element had a scope, we have to remove all its members.  This is so if you document a class as part of
-								// a list topic (maybe documenting a lot of little structs?) you don't get the members appearing independently.
-								if (codeElements[matchingCodeIndex] is ParentElement)
+								if (mergedElements[mergedElements.Count - 1].FilePosition < mergedElements[mergedElements.Count - 2].FilePosition)
 									{
-									ParentElement parentElement = (ParentElement)codeElements[matchingCodeIndex];
-
-									if (RemoveChildElements(parentElement,
-																		 commentElements, commentIndex, commentIndex + commentCount,
-																		 codeElements, matchingCodeIndex + 1, codeIndex + codeCount,
-																		 out int commentElementsRemovedFromBlock, out int commentElementsRemovedAfterBlock,
-																		 out int codeElementsRemovedFromBlock, out int codeElementsRemovedAfterBlock))
-										{
-										commentCount -= commentElementsRemovedFromBlock;
-										codeCount -= codeElementsRemovedFromBlock;
-										}
+									mergedElements[mergedElements.Count - 1].FilePosition = mergedElements[mergedElements.Count - 2].FilePosition;
 									}
-
-								codeElements.RemoveAt(matchingCodeIndex);
-								codeCount--;
 								}
 							}
 						}
@@ -2827,192 +2806,184 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 		/* Function: MergeEnumValues
 		 *
-		 * If you've just merged an enum, this will merge the code elements for the values with any embedded topics from the
-		 * comment.  It will return how many elements were merged from each list.
+		 * Goes through the list of <Elements> looking for enums and merging any embedded <Topics> from the comments with
+		 * values from the code.  It assumes the <Elements> will appear in this order:
 		 *
-		 * - commentElementIndex should be an index into commentElements pointing to the first potential embedded topic,
-		 *   not to parent element.  Likewise for codeElementIndex and codeElements.
+		 *		- The <ParentElement> for the enum
+		 *		- Then all <Elements> for values appearing in the enum's comment as embedded <Topics>
+		 *		- Then all <Elements> for values from the code
 		 *
-		 *	- The merged embedded elements will be added to the end of the mergedElements list.  As such the merged parent
-		 *	  enum should already be on the list as the last element prior to calling.
-		 *
-		 *	- As with <MergeElements()> the original <Elements> and/or <Topics> may be reused so don't use them after
-		 *	  calling this function.
-		 *
-		 *	- It will return the amount of elements merged from each list in embeddedCommentElementsMerged and
-		 *	  embeddedCodeElementsMerged.  The calling code should skip ahead that many in its list processing.
+		 * The list of <Elements> for embedded <Topics> and the code don't have to match 1:1.  It will handle one or both being
+		 * missing, individual elements appearing in one but not the other, and the element order not matching.
 		 */
-		protected bool MergeEnumValues (ParentElement enumElement,
-														  List<Element> commentElements, int commentElementIndex,
-														  List<Element> codeElements, int codeElementIndex,
-														  ref List<Element> mergedElements,
-														  out int embeddedCommentElementsMerged,
-														  out int embeddedCodeElementsMerged)
+		protected void MergeEnumValues (List<Element> elements)
 			{
-			// See how many embedded topics there are in each list.
+			var elementIndex = 0;
 
-			int commentEmbeddedTopicCount = CountConsecutiveEmbeddedTopics(commentElements, commentElementIndex);
-			int codeEmbeddedTopicCount = CountChildElements(enumElement, codeElements, codeElementIndex);
-
-
-			// Merge the elements.
-
-			if (commentEmbeddedTopicCount == 0)
+			while (elementIndex < elements.Count)
 				{
-				// If there are no embedded comment or code topics we can just return.
-				if (codeEmbeddedTopicCount == 0)
+				if (elements[elementIndex].Topic != null &&
+					elements[elementIndex].Topic.IsEnum &&
+					!elements[elementIndex].Topic.IsList)
 					{
-					embeddedCommentElementsMerged = 0;
-					embeddedCodeElementsMerged = 0;
-					return false;
-					}
 
-				// If there are no embedded comment topics but we do have code topics, we can add them as is.
-				else
-					{
-					for (int i = codeElementIndex; i < codeElementIndex + codeEmbeddedTopicCount; i++)
-						{  mergedElements.Add(codeElements[i]);  }
+					// Gather information about the enum and its values
 
-					embeddedCommentElementsMerged = 0;
-					embeddedCodeElementsMerged = codeEmbeddedTopicCount;
-					return true;
-					}
-				}
+					var enumElement = (ParentElement)elements[elementIndex];
+					elementIndex++;
 
-			// If there are embedded comment topics but no embedded code topics we can add them as is.
-			else if (codeEmbeddedTopicCount == 0)
-				{
-				for (int i = commentElementIndex; i < commentElementIndex + commentEmbeddedTopicCount; i++)
-					{  mergedElements.Add(commentElements[i]);  }
+					int firstEmbeddedValueIndex = elementIndex;
 
-				embeddedCommentElementsMerged = commentEmbeddedTopicCount;
-				embeddedCodeElementsMerged = 0;
-				return true;
-				}
-
-			// If both have embedded topics, we must compare the lists.
-			else
-				{
-				// Start by adding every code element.  If there is a matching comment element we'll use its Topic since its description
-				// should be used.
-
-				StringComparison comparisonType =(this.Language.CaseSensitive ?
-																	  StringComparison.InvariantCulture :
-																	  StringComparison.InvariantCultureIgnoreCase);
-
-				for (int codeEmbeddedElementIndex = codeElementIndex;
-					  codeEmbeddedElementIndex < codeElementIndex + codeEmbeddedTopicCount;
-					  codeEmbeddedElementIndex++)
-					{
-					Element codeEmbeddedElement = codeElements[codeEmbeddedElementIndex];
-					Topic codeEmbeddedTopic = codeEmbeddedElement.Topic;
-
-					for (int commentEmbeddedElementIndex = commentElementIndex;
-						  commentEmbeddedElementIndex < commentElementIndex + commentEmbeddedTopicCount;
-						  commentEmbeddedElementIndex++)
+					while (elementIndex < elements.Count &&
+							 elements[elementIndex].Topic != null &&
+							 elements[elementIndex].Topic.IsEmbedded)
 						{
-						Element commentEmbeddedElement = commentElements[commentEmbeddedElementIndex];
-						Topic commentEmbeddedTopic = commentEmbeddedElement.Topic;
+						elementIndex++;
+						}
 
-						if (commentEmbeddedTopic != null &&
-							string.Compare(codeEmbeddedTopic.Title, commentEmbeddedTopic.Title, comparisonType) == 0)
+					int embeddedValueCount = elementIndex - firstEmbeddedValueIndex;
+
+					int firstCodeValueIndex = elementIndex;
+
+					while (elementIndex < elements.Count &&
+							 enumElement.Contains(elements[elementIndex]))
+						{
+						elementIndex++;
+						}
+
+					int codeValueCount = elementIndex - firstCodeValueIndex;
+
+
+					// Merge
+
+					if (embeddedValueCount > 0 && codeValueCount > 0)
+						{
+
+						// Loop through each code value element
+
+						for (int codeValueIndex = firstCodeValueIndex;
+							  codeValueIndex < firstCodeValueIndex + codeValueCount;
+							  codeValueIndex++)
 							{
-							// Replace the code topic with the comment's
-							codeEmbeddedElement.Topic = commentEmbeddedTopic;
+							var codeValueElement = elements[codeValueIndex];
 
-							// Set the comment's to null so we don't reuse it and we can tell which ones weren't used later
-							commentEmbeddedElement.Topic = null;
+							// Find a matching embedded value element
 
-							break;
+							int embeddedValueMatchIndex = -1;
+
+							for (int embeddedValueIndex = firstEmbeddedValueIndex;
+								  embeddedValueIndex < firstEmbeddedValueIndex + embeddedValueCount;
+								  embeddedValueIndex++)
+								{
+								if (CanMergeTopics(elements[embeddedValueIndex].Topic, codeValueElement.Topic, true))
+									{
+									embeddedValueMatchIndex = embeddedValueIndex;
+									break;
+									}
+								}
+
+							// If there's a match, merge the embedded comment element into the code element
+
+							if (embeddedValueMatchIndex != -1)
+								{
+								codeValueElement.Topic = MergeTopics(elements[embeddedValueMatchIndex].Topic, codeValueElement.Topic);
+								codeValueElement.InComments = true;
+
+								// Remove the embedded element.  Remember that it appears in the list before the code elements, so removing
+								// it shifts the code element indices as well.  Same with elementIndex.
+
+								elements.RemoveAt(embeddedValueMatchIndex);
+								embeddedValueCount--;
+
+								firstCodeValueIndex--;
+								codeValueIndex--;
+								elementIndex--;
+								}
 							}
 						}
-
-					// Add the code element whether there was a comment match or not
-					mergedElements.Add(codeEmbeddedElement);
 					}
 
-
-				// Now go through all the comment elements to add any that didn't have a match, which we'll recognize because
-				// they didn't have their Topics set to null in the last stage.
-
-				// Reuse the last added element's file position because the elements must appear in source order.
-				FilePosition lastFilePosition = mergedElements[mergedElements.Count - 1].FilePosition;
-
-				for (int commentEmbeddedElementIndex = commentElementIndex;
-					  commentEmbeddedElementIndex < commentElementIndex + commentEmbeddedTopicCount;
-					  commentEmbeddedElementIndex++)
-					{
-					Element commentEmbeddedElement = commentElements[commentEmbeddedElementIndex];
-
-					if (commentEmbeddedElement.Topic != null)
-						{
-						commentEmbeddedElement.FilePosition = lastFilePosition;
-						mergedElements.Add(commentEmbeddedElement);
-						}
-					}
-
-				embeddedCommentElementsMerged = commentEmbeddedTopicCount;
-				embeddedCodeElementsMerged = codeEmbeddedTopicCount;
-				return true;
+				else // not an enum
+					{  elementIndex++;  }
 				}
 			}
 
 
-		/* Function: RemoveChildElements
-		 *
-		 * Removes all the <Elements> from both lists which are a child of the passed <ParentElement>.  Returns whether it
-		 * removed anything, with specific counts in separate variables.
-		 *
-		 * Since this is called from code that processes <Elements> in blocks, you can specify the index of the end of each block
-		 * to separate the counts into those removed from inside the block and after.  This is useful because only the ones removed
-		 * from inside it will shrink the size of the block.
+		/* Function: MergeListTopics
+		 * Goes through the list of <Elements> looking for list <Topics> and merging any matching code <Topics> into them.
 		 */
-		protected bool RemoveChildElements (ParentElement parent,
-																List<Element> commentElements, int firstCommentChildIndex, int endOfCommentBlockIndex,
-																List<Element> codeElements, int firstCodeChildIndex, int endOfCodeBlockIndex,
-																out int commentElementsRemovedFromBlock, out int commentElementsRemovedAfterBlock,
-																out int codeElementsRemovedFromBlock, out int codeElementsRemovedAfterBlock)
+		protected void MergeListTopics (List<Element> elements)
 			{
-			commentElementsRemovedFromBlock = 0;
-			commentElementsRemovedAfterBlock = 0;
+			var elementIndex = 0;
 
-			while (firstCommentChildIndex < commentElements.Count &&
-					  parent.Contains(commentElements[firstCommentChildIndex]))
+			while (elementIndex < elements.Count)
 				{
-				if (firstCommentChildIndex < endOfCommentBlockIndex)
+				if (elements[elementIndex].Topic != null &&
+					elements[elementIndex].Topic.IsList)
 					{
-					commentElementsRemovedFromBlock++;
-					endOfCommentBlockIndex--;
+					elementIndex++;
+
+					int firstListItemIndex = elementIndex;
+
+					while (elementIndex < elements.Count &&
+							 elements[elementIndex].Topic != null &&
+							 elements[elementIndex].Topic.IsEmbedded)
+						{
+						elementIndex++;
+						}
+
+					int listItemCount = elementIndex - firstListItemIndex;
+
+
+					// Loop through each list element
+
+					for (int listItemIndex = firstListItemIndex;
+						  listItemIndex < firstListItemIndex + listItemCount;
+						  listItemIndex++)
+						{
+						var listItemElement = elements[listItemIndex];
+
+						// Find a matching code element
+
+						int matchIndex = -1;
+
+						for (int i = elementIndex; i < elements.Count; i++)
+							{
+							// We stop searching at the next comment
+							if (elements[i].InComments)
+								{  break;  }
+
+							if (CanMergeTopics(listItemElement.Topic, elements[i].Topic, false))
+								{
+								matchIndex = i;
+								break;
+								}
+							}
+
+						// If there's a match, merge the embedded comment element into the code element
+
+						if (matchIndex != -1)
+							{
+							listItemElement.Topic = MergeTopics(listItemElement.Topic, elements[matchIndex].Topic);
+							listItemElement.InCode = true;
+
+							// If the code element had a scope, we have to remove all its members.  This is so if you document a class as part of
+							// a list topic (maybe documenting a lot of little structs?) you don't get the members appearing independently.
+							int numberOfChildren = 0;
+
+							if (elements[matchIndex] is ParentElement)
+								{
+								numberOfChildren = CountChildElements(elements[matchIndex] as ParentElement, elements, matchIndex + 1);
+								}
+
+							elements.RemoveRange(matchIndex, 1 + numberOfChildren);
+							}
+						}
 					}
-				else
-					{  commentElementsRemovedAfterBlock++;  }
 
-				commentElements.RemoveAt(firstCommentChildIndex);
+				else // not a list element
+					{  elementIndex++;  }
 				}
-
-
-			codeElementsRemovedFromBlock = 0;
-			codeElementsRemovedAfterBlock = 0;
-
-			while (firstCodeChildIndex < codeElements.Count &&
-					  parent.Contains(codeElements[firstCodeChildIndex]))
-				{
-				if (firstCodeChildIndex < endOfCodeBlockIndex)
-					{
-					codeElementsRemovedFromBlock++;
-					endOfCodeBlockIndex--;
-					}
-				else
-					{  codeElementsRemovedAfterBlock++;  }
-
-				codeElements.RemoveAt(firstCodeChildIndex);
-				}
-
-
-			return (commentElementsRemovedFromBlock > 0 ||
-					   commentElementsRemovedAfterBlock > 0 ||
-					   codeElementsRemovedFromBlock > 0 ||
-					   codeElementsRemovedAfterBlock > 0);
 			}
 
 
@@ -3139,8 +3110,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			// CommentLineNumber - Use the comment.
 			// CodeLineNumber - Use the code.
+			// EndOfCommentLineNumber - Use the comment.
 			mergedTopic.CommentLineNumber = commentTopic.CommentLineNumber;
 			mergedTopic.CodeLineNumber = codeTopic.CodeLineNumber;
+			mergedTopic.EndOfCommentLineNumber = commentTopic.EndOfCommentLineNumber;
 
 			// LanguageID - Use the code.
 			mergedTopic.LanguageID = codeTopic.LanguageID;
@@ -3173,14 +3146,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: CountChildElements
-		 * Returns the number of consecutive child <Elements> that follow the passed <ParentElement>.
+		 * Returns the number of consecutive child <Elements> that follow the passed <ParentElement>.  This will count both child
+		 * elements and embedded <Topics>.
 		 */
 		protected int CountChildElements (ParentElement parentElement, List<Element> elements, int startingIndex)
 			{
 			int endingIndex = startingIndex;
 
 			while (endingIndex < elements.Count &&
-					 parentElement.Contains(elements[endingIndex]))
+					 (parentElement.Contains(elements[endingIndex]) ||
+					  (elements[endingIndex].Topic != null &&
+					   elements[endingIndex].Topic.IsEmbedded)))
 				{  endingIndex++;  }
 
 			return (endingIndex - startingIndex);
@@ -3217,8 +3193,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: AddEnumValuesToBodies
-		 * Goes through all the enum <Topics> in the list of <Elements> and makes sure all embedded value <Topics> are also
-		 * represented in the enum's body via a definition list.  If any are missing it will add them.
+		 * Goes through all the enum values in the list of <Elements> and makes sure all of them are also represented in the enum's
+		 * topic body via a definition list.  If any are missing it will add them.
 		 */
 		protected void AddEnumValuesToBodies (List<Element> elements)
 			{
