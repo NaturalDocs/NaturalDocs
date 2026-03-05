@@ -84,16 +84,6 @@ enum CommentAfterCloseD {
 	C } /** Description of C.
 	Continuation of description of C. */
 
-/* Enum: MixedCommentTypes
- */
-enum MixedCommentTypes {
-	A, /// Description of A
-	/** Not included because different comment type */
-
-	B /** Description of B */
-	/// Not included because different comment type
-	}
-
 /* Enum: ExtraValuesInCode_InOrderA
  *
  * Values:

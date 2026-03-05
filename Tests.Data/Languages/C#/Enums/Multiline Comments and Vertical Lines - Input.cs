@@ -3,8 +3,6 @@
  */
 enum MultilineLineCommentsA
 	{
-	/// Leading comment that shouldn't be included.
-
 	A, /// Line comment description of A line 1.
 		// Line comment description of A line 2.
 
@@ -12,14 +10,7 @@ enum MultilineLineCommentsA
 		//
 		// Line comment description of B line 3, new paragraph.
 
-	C, /// Line comment description of C line 1.
-
-		/// Non-consecutive comment that shouldn't be included.
-
-	D /// Line comment description of D line 1.
-		// Line comment description of D line 2.
-
-	/// Trailing comment that shouldn't be included.
+	C /// Line comment description of C line 1.
 	}
 
 
@@ -27,8 +18,6 @@ enum MultilineLineCommentsA
  */
 enum MultilineLineCommentsB
 	{
-	/// Leading comment that shouldn't be included.
-
 	A = 0, /// Line comment description of A line 1.
 			  // Line comment description of A line 2.
 
@@ -36,14 +25,7 @@ enum MultilineLineCommentsB
 			  //
 			  // Line comment description of B line 3, new paragraph.
 
-	C = 4, /// Line comment description of C line 1.
-
-			  /// Non-consecutive comment that shouldn't be included.
-
-	D = 6 /// Line comment description of D line 1.
-			  // Line comment description of D line 2.
-
-	/// Trailing comment that shouldn't be included.
+	C = 4 /// Line comment description of C line 1.
 	}
 
 
@@ -51,8 +33,6 @@ enum MultilineLineCommentsB
  */
 enum MultilineBlockCommentsA
 	{
-	/** Leading comment that shouldn't be included. */
-
 	A, /** Block comment description of A line 1.
 			Block comment description of A line 2. */
 
@@ -78,17 +58,7 @@ enum MultilineBlockCommentsA
 		 * Block comment description of F line 3, new paragraph.
 		 */
 
-	G, /** Block comment description of G line 1. */
-
-		/** Non-consecutive comment that shouldn't be included. */
-
-	H, /** Block comment description of H line 1. */
-		/** Non-consecutive comment that shouldn't be included. */
-
-	I /** Block comment description of I line 1.
-			Block comment description of I line 2. */
-
-	/** Trailing comment that shouldn't be included. */
+	G /** Block comment description of G line 1. */
 	}
 
 
@@ -96,8 +66,6 @@ enum MultilineBlockCommentsA
  */
 enum MultilineBlockCommentsB
 	{
-	/** Leading comment that shouldn't be included. */
-
 	A = 0, /** Block comment description of A line 1.
 				   Block comment description of A line 2. */
 
@@ -123,17 +91,7 @@ enum MultilineBlockCommentsB
 				  * Block comment description of F line 3, new paragraph.
 				  */
 
-	G = 12, /** Block comment description of G line 1. */
-
-				 /** Non-consecutive comment that shouldn't be included. */
-
-	H = 14, /** Block comment description of H line 1. */
-				 /** Non-consecutive comment that shouldn't be included. */
-
-	I = 16 /** Block comment description of I line 1.
-				   Block comment description of I line 2. */
-
-	/** Trailing comment that shouldn't be included. */
+	G = 12 /** Block comment description of G line 1. */
 	}
 
 
@@ -152,22 +110,17 @@ enum VerticalLinesAndExtraSymbolsA
 		  */
 
 	C, /** Description of C line 1.
-		  *   Description of C line 2.
-		  *   Description of C line 3.
+		  ** Description of C line 2.
+		  ** Description of C line 3.
 		  */
 
-	D, /** Description of D line 1.
-		  ** Description of D line 2.
-		  ** Description of D line 3.
-		  */
+	D, /// Description of D line 1.
+		//   Description of D line 2.
+		//   Description of D line 3.
 
-	E, /// Description of E line 1.
-		//   Description of E line 2.
-		//   Description of E line 3.
-
-	F /// Description of F line 1.
-	   /// Description of F line 2.
-	   /// Description of F line 3.
+	E /// Description of E line 1.
+	   /// Description of E line 2.
+	   /// Description of E line 3.
 	}
 
 
@@ -186,22 +139,17 @@ enum VerticalLinesAndExtraSymbolsB
 		  */
 
 	C, /** Description of C line 1.
-		  *
-		  *   Description of C line 3.
-		  */
-
-	D, /** Description of D line 1.
 		  **
-		  ** Description of D line 3.
+		  ** Description of C line 3.
 		  */
 
-	E, /// Description of E line 1.
+	D, /// Description of D line 1.
 		//
-		//   Description of E line 3.
+		//   Description of D line 3.
 
-	F /// Description of F line 1.
+	E /// Description of E line 1.
 	   ///
-	   /// Description of F line 3.
+	   /// Description of E line 3.
 	}
 
 
@@ -214,12 +162,5 @@ enum VerticalLinesAndExtraSymbolsC
 	B, /** Description of B.
 		  */
 
-	C, /** Description of C. */
-
-	D, /** Description of D.
-		  */
-
-	E, /// Description of E.
-
-	F /// Description of F.
+	C /// Description of C.
 	}

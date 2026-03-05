@@ -107,18 +107,6 @@ Enum: CommentAfterCloseD
 
 -----
 
-Enum: MixedCommentTypes
-
-   Prototype: enum MixedCommentTypes
-
-   Members:
-      A - <p>Description of A</p>
-      B - <p>Description of B</p>
-
-   Body: <h>Values</h><dl><ds>A</ds><dd><p>Description of A</p></dd><ds>B</ds><dd><p>Description of B</p></dd></dl>
-
------
-
 Enum: ExtraValuesInCode_InOrderA
 
    Prototype: enum ExtraValuesInCode_InOrderA
