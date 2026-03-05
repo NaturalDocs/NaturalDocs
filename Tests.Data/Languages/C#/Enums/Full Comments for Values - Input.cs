@@ -1,10 +1,7 @@
 
 // Group: Full Comments for Values
 // ____________________________________________________________________________
-//
-// Properly merging these comments isn't supported yet, so the expected behavior for now is
-// that these comments are ignored.
-//
+
 
 /* Enum: FullCommentsForValues
 */
