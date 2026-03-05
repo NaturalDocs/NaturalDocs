@@ -1,0 +1,39 @@
+
+Enum: InlineFormatting
+
+   Prototype: enum InlineFormatting
+
+   Members:
+      A - <p>Comment description of A with <b>bold</b> and <u>underline</u> and <link type="email" target="email@addresses.com"> and <link type="url" target="https://www.naturaldocs.org"> and <link type="url" target="https://www.naturaldocs.org" text="named links">.</p>
+      B - <p>Inline description of B with <b>bold</b> and <u>underline</u> and <link type="email" target="email@addresses.com"> and <link type="url" target="https://www.naturaldocs.org"> and <link type="url" target="https://www.naturaldocs.org" text="named links">.</p>
+      C - <p>Inline description of C with <b>bold</b> and <u>underline</u> and <link type="email" target="email@addresses.com"> and <link type="url" target="https://www.naturaldocs.org"> and <link type="url" target="https://www.naturaldocs.org" text="named links">.</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Comment description of A with <b>bold</b> and <u>underline</u> and <link type="email" target="email@addresses.com"> and <link type="url" target="https://www.naturaldocs.org"> and <link type="url" target="https://www.naturaldocs.org" text="named links">.</p></dd><ds>B</ds><dd><p>Inline description of B with <b>bold</b> and <u>underline</u> and <link type="email" target="email@addresses.com"> and <link type="url" target="https://www.naturaldocs.org"> and <link type="url" target="https://www.naturaldocs.org" text="named links">.</p></dd><ds>C</ds><dd><p>Inline description of C with <b>bold</b> and <u>underline</u> and <link type="email" target="email@addresses.com"> and <link type="url" target="https://www.naturaldocs.org"> and <link type="url" target="https://www.naturaldocs.org" text="named links">.</p></dd></dl>
+
+-----
+
+Enum: BlockFormatting_FullComments
+
+   Prototype: enum BlockFormatting_FullComments
+
+   Members:
+      A - <p>Paragraph before bullet list</p><ul><li><p>Bullet 1</p></li><li><p>Bullet 2</p><p>Bullet 2 second paragraph</p><ul><li><p>Bullet 3 level 2</p></li></ul></li></ul><p>Paragraph after bullet list</p>
+      B - <p>Paragraph before definition list</p><dl><de>Definition1</de><dd><p>Description of definition 1</p></dd><de>Definition2</de><dd><p>Description of definition 2</p><p>Description of definition 2 second paragraph</p></dd></dl><p>Paragraph after definition list</p>
+      C - <p>Paragraph before heading</p><h>Heading</h><p>Paragraph after heading</p>
+      D - <p>Paragraph before code block</p><pre type="code">int x = 12;</pre><p>Paragraph after code block</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Paragraph before bullet list</p><ul><li><p>Bullet 1</p></li><li><p>Bullet 2</p><p>Bullet 2 second paragraph</p><ul><li><p>Bullet 3 level 2</p></li></ul></li></ul><p>Paragraph after bullet list</p></dd><ds>B</ds><dd><p>Paragraph before definition list</p><dl><de>Definition1</de><dd><p>Description of definition 1</p></dd><de>Definition2</de><dd><p>Description of definition 2</p><p>Description of definition 2 second paragraph</p></dd></dl><p>Paragraph after definition list</p></dd><ds>C</ds><dd><p>Paragraph before heading</p><h>Heading</h><p>Paragraph after heading</p></dd><ds>D</ds><dd><p>Paragraph before code block</p><pre type="code">int x = 12;</pre><p>Paragraph after code block</p></dd></dl>
+
+-----
+
+Enum: BlockFormatting_InlineComments
+
+   Prototype: enum BlockFormatting_InlineComments
+
+   Members:
+      A - <p>Paragraph before bullet list</p><ul><li><p>Bullet 1</p></li><li><p>Bullet 2</p><p>Bullet 2 second paragraph</p><ul><li><p>Bullet 3 level 2</p></li></ul></li></ul><p>Paragraph after bullet list</p>
+      B - <p>Paragraph before definition list</p><dl><de>Definition1</de><dd><p>Description of definition 1</p></dd><de>Definition2</de><dd><p>Description of definition 2</p><p>Description of definition 2 second paragraph</p></dd></dl><p>Paragraph after definition list</p>
+      C - <p>Paragraph before heading</p><h>Heading</h><p>Paragraph after heading</p>
+      D - <p>Paragraph before code block</p><pre type="code">int x = 12;</pre><p>Paragraph after code block</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Paragraph before bullet list</p><ul><li><p>Bullet 1</p></li><li><p>Bullet 2</p><p>Bullet 2 second paragraph</p><ul><li><p>Bullet 3 level 2</p></li></ul></li></ul><p>Paragraph after bullet list</p></dd><ds>B</ds><dd><p>Paragraph before definition list</p><dl><de>Definition1</de><dd><p>Description of definition 1</p></dd><de>Definition2</de><dd><p>Description of definition 2</p><p>Description of definition 2 second paragraph</p></dd></dl><p>Paragraph after definition list</p></dd><ds>C</ds><dd><p>Paragraph before heading</p><h>Heading</h><p>Paragraph after heading</p></dd><ds>D</ds><dd><p>Paragraph before code block</p><pre type="code">int x = 12;</pre><p>Paragraph after code block</p></dd></dl>
