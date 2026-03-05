@@ -214,10 +214,10 @@ Enum: ExtraValuesInComment
    Prototype: enum ExtraValuesInComment
 
    Members:
+      D - <p>Comment description of non-existent D</p>
       A - <p>Comment description of A</p>
       B - <p>Comment description of B</p>
       C - <p>Comment description of C</p>
-      D - <p>Comment description of non-existent D</p>
 
    Body: <h>Values</h><dl><ds>A</ds><dd><p>Comment description of A</p></dd><ds>B</ds><dd><p>Comment description of B</p></dd><ds>C</ds><dd><p>Comment description of C</p></dd><ds>D</ds><dd><p>Comment description of non-existent D</p></dd></dl>
 
@@ -273,10 +273,10 @@ Enum: DuplicatesInComment
    Prototype: enum DuplicatesInComment
 
    Members:
-      A - <p>First comment description of A</p>
-      B - <p>First comment description of B</p>
       A - <p>Second comment description of A</p>
       B - <p>Second comment description of B</p>
+      A - <p>First comment description of A</p>
+      B - <p>First comment description of B</p>
 
    Body: <h>Values</h><dl><ds>A</ds><dd><p>First comment description of A</p></dd><ds>A</ds><dd><p>Second comment description of A</p></dd><ds>B</ds><dd><p>First comment description of B</p></dd><ds>B</ds><dd><p>Second comment description of B</p></dd></dl>
 
