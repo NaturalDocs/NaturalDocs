@@ -298,7 +298,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 			if (comment.End.CharNumber > 1)
 				{  topic.EndOfCommentLineNumber++;  }
 
-			ParseBody(firstLine, tokenizer.EndOfLines, topic, inlineFormattingOnly: true);
+			ParseBody(firstLine, tokenizer.EndOfLines, topic);
 
 			return topic;
 			}
@@ -1822,7 +1822,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 		 * Parses the content between two <LineIterators> and adds its content to the <Topic> in <NDMarkup> as its body.
 		 * Also extracts the summary from it and adds it to the <Topic>.
 		 */
-		protected void ParseBody (LineIterator firstContentLine, LineIterator endOfContent, Topic topic, bool inlineFormattingOnly = false)
+		protected void ParseBody (LineIterator firstContentLine, LineIterator endOfContent, Topic topic)
 			{
 			LineIterator line = firstContentLine;
 			StringBuilder body = new StringBuilder();
@@ -1851,8 +1851,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 				// (start code)
 				// --- code
 
-				if (!inlineFormattingOnly &&
-					IsStartBlockLine(line, out blockChar, out blockType, out language))
+				if (IsStartBlockLine(line, out blockChar, out blockType, out language))
 					{
 					CloseAllBlocks(ref paragraph, ref definitionIndent, ref bulletIndents, body);
 
@@ -1918,8 +1917,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 				// Standalone preformatted blocks
 				// > code
 
-				else if (!inlineFormattingOnly &&
-						  IsStandalonePreformattedLine(line, out tempString, out indent, out leadingCharacter))
+				else if (IsStandalonePreformattedLine(line, out tempString, out indent, out leadingCharacter))
 					{
 					CloseAllBlocks(ref paragraph, ref definitionIndent, ref bulletIndents, body);
 
@@ -1950,8 +1948,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 				// Standalone image lines
 				// (see image.jpg)
 
-				else if (!inlineFormattingOnly &&
-						  IsStandaloneImage(line, out relativeFilePath))
+				else if (IsStandaloneImage(line, out relativeFilePath))
 					{
 					CloseAllBlocks(ref paragraph, ref definitionIndent, ref bulletIndents, body);
 
@@ -1972,8 +1969,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 				// Bullet lists
 				// - bullet
 
-				else if ( !inlineFormattingOnly &&
-						   (prevLineBlank || (bulletIndents != null && bulletIndents.Count > 0)) &&
+				else if ((prevLineBlank || (bulletIndents != null && bulletIndents.Count > 0)) &&
 						   IsBulletLine(line, out tempString, out leadingCharacter, out indent) )
 					{
 					if (bulletIndents == null)
@@ -2035,8 +2031,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 				// Definition Lists
 				// item - definition
 
-				else if (!inlineFormattingOnly &&
-						   (prevLineBlank || definitionIndent != -1) &&
+				else if ((prevLineBlank || definitionIndent != -1) &&
 						   IsDefinitionLine(line, out tempString, out tempString2, out indent) )
 					{
 					if (definitionIndent == -1)
@@ -2081,8 +2076,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 				// Headings
 				// heading:
 
-				else if (!inlineFormattingOnly &&
-						  prevLineBlank && IsHeading(line, out tempString, out headingType))
+				else if (prevLineBlank && IsHeading(line, out tempString, out headingType))
 					{
 					CloseAllBlocks(ref paragraph, ref definitionIndent, ref bulletIndents, body);
 
@@ -2111,7 +2105,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 
 				else if (line.IsEmpty(LineBoundsMode.CommentContent) || LineFinder.IsHorizontalLine(line))
 					{
-					CloseParagraph(ref paragraph, body, inlineFormattingOnly);
+					CloseParagraph(ref paragraph, body);
 					prevLineBlank = true;
 					line.Next();
 					}
@@ -2164,7 +2158,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 				}
 
 
-			CloseAllBlocks(ref paragraph, ref definitionIndent, ref bulletIndents, body, inlineFormattingOnly);
+			CloseAllBlocks(ref paragraph, ref definitionIndent, ref bulletIndents, body);
 
 			if (body.Length > 0)
 				{
@@ -2228,11 +2222,11 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 		 * If the paragraph isn't null or empty, convert its contents to <NDMarkup>, add it to the body along with a closing </p>,
 		 *	and empty it.
 		 */
-		protected void CloseParagraph (ref StringBuilder paragraph, StringBuilder body, bool inlineFormattingOnly = false)
+		protected void CloseParagraph (ref StringBuilder paragraph, StringBuilder body)
 			{
 			if (paragraph != null && paragraph.Length > 0)
 				{
-				ParseTextBlock(paragraph.ToString(), body, inlineFormattingOnly);
+				ParseTextBlock(paragraph.ToString(), body);
 				body.Append("</p>");
 
 				paragraph.Remove(0, paragraph.Length);
@@ -2252,10 +2246,9 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 		 *		bulletIndents - If this isn't null or empty, adds a closing </li></ul> for every entry on the list and empties it.
 		 *
 		 */
-		protected void CloseAllBlocks (ref StringBuilder paragraph, ref int definitionIndent, ref List<int> bulletIndents, StringBuilder body,
-													bool inlineFormattingOnly = false)
+		protected void CloseAllBlocks (ref StringBuilder paragraph, ref int definitionIndent, ref List<int> bulletIndents, StringBuilder body)
 			{
-			CloseParagraph(ref paragraph, body, inlineFormattingOnly);
+			CloseParagraph(ref paragraph, body);
 
 			if (definitionIndent != -1)
 				{
@@ -2276,25 +2269,19 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 		/* Function: ParseTextBlock
 		 * Parses a block of text for inline tags and adds it to the StringBuilder as <NDMarkup>.
 		 */
-		protected void ParseTextBlock (string input, StringBuilder output, bool inlineFormattingOnly = false)
+		protected void ParseTextBlock (string input, StringBuilder output)
 			{
 			Tokenizer tokenizer = new Tokenizer(input, tabWidth: EngineInstance.Config.TabWidth);
 
 			// The order of these function calls is important.  Read each of their descriptions.
 			MarkPossibleFormattingTags(tokenizer);
 			MarkPossibleLinkTags(tokenizer);
-
-			if (!inlineFormattingOnly)
-				{  MarkPossibleInlineImageTags(tokenizer);  }
-
+			MarkPossibleInlineImageTags(tokenizer);
 			MarkEMailAddresses(tokenizer);
 			MarkURLs(tokenizer);
 
 			FinalizeLinkTags(tokenizer);
-
-			if (!inlineFormattingOnly)
-				{  FinalizeInlineImageTags(tokenizer);  }
-
+			FinalizeInlineImageTags(tokenizer);
 			FinalizeFormattingTags(tokenizer);
 
 			MarkedTokensToNDMarkup(tokenizer, output);
