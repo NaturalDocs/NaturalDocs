@@ -33,6 +33,22 @@ enum StrayCommentsC
 	C
 	}
 
+/* Enum: StrayCommentsD
+ */
+enum StrayCommentsD
+	{
+	A, B, C
+	/// Stray comment in D
+	}
+
+/* Enum: StrayCommentsE
+ */
+enum StrayCommentsE
+	{
+	A, B, C
+	/** Stray comment in E */
+	}
+
 
 
 // Group: Stray Comments (Headerless)
@@ -65,6 +81,22 @@ enum StrayComments_HeaderlessC
 	C
 	}
 
+/** Description
+ */
+enum StrayComments_HeaderlessD
+	{
+	A, B, C
+	/// Stray comment in D
+	}
+
+/** Description
+ */
+enum StrayComments_HeaderlessE
+	{
+	A, B, C
+	/** Stray comment in E */
+	}
+
 
 
 // Group: Stray Comments (Undocumented)
@@ -90,3 +122,16 @@ enum StrayComments_UndocumentedC
 	// Topic: Stray comment in C
 	C
 	}
+
+enum StrayComments_UndocumentedD
+	{
+	A, B, C
+	/// Stray comment in D
+	}
+
+enum StrayComments_UndocumentedE
+	{
+	A, B, C
+	/** Stray comment in E */
+	}
+

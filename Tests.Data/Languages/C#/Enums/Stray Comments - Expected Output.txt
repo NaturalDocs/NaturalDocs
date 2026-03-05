@@ -42,6 +42,32 @@ Enum: StrayCommentsC
 
 -----
 
+Enum: StrayCommentsD
+
+   Prototype: enum StrayCommentsD
+
+   Members:
+      A
+      B
+      C
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Enum: StrayCommentsE
+
+   Prototype: enum StrayCommentsE
+
+   Members:
+      A
+      B
+      C
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
 Group: Stray Comments (Headerless)
 
 -----
@@ -75,6 +101,32 @@ Enum: StrayComments_HeaderlessB
 Enum: StrayComments_HeaderlessC
 
    Prototype: enum StrayComments_HeaderlessC
+
+   Members:
+      A
+      B
+      C
+
+   Body: <p>Description</p><h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Enum: StrayComments_HeaderlessD
+
+   Prototype: enum StrayComments_HeaderlessD
+
+   Members:
+      A
+      B
+      C
+
+   Body: <p>Description</p><h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Enum: StrayComments_HeaderlessE
+
+   Prototype: enum StrayComments_HeaderlessE
 
    Members:
       A
@@ -125,3 +177,29 @@ Enum: StrayComments_UndocumentedC
       C
 
    Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Enum: StrayComments_UndocumentedD
+
+   Prototype: enum StrayComments_UndocumentedD
+
+   Members:
+      A
+      B
+      C
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
+
+-----
+
+Enum: StrayComments_UndocumentedE
+
+   Prototype: enum StrayComments_UndocumentedE
+
+   Members:
+      A
+      B
+      C
+
+   Body: <p>Stray comment in D</p><h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl>
