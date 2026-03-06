@@ -563,10 +563,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 				"</div>" +
 
+				"<div id=\"NDLoadingNotice\" style=\"display: none\"></div>" +
+
 				"<script type=\"text/javascript\">" +
-					// The backslash on /div is necessary to validate even though it's logically not necessary.  See here:
-					// http://www.htmlhelp.com/tools/validator/problems.html#script
-					"document.write(\"<div id=\\\"NDLoadingNotice\\\"><\\/div>\");" +
+					"var loadingNotice = document.getElementById(\"NDLoadingNotice\");" +
+					"loadingNotice.style.display = \"block\";" +
 				"</script>" +
 				"<noscript>" +
 					"<div id=\"NDJavaScriptRequiredNotice\">" +

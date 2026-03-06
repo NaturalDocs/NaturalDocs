@@ -57,7 +57,7 @@ var NDCore = new function ()
 		if (id != undefined)
 			{  script.id = id;  }
 
-		document.getElementsByTagName("head")[0].appendChild(script);
+		document.head.appendChild(script);
 
 		// This intentionally does not return the script element.  In IE8 the data file's callback may fire before this function
 		// returns, thus whatever was going to store the script element may be undefined when other code doesn't expect

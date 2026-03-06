@@ -122,16 +122,15 @@ var NDSummary = new function ()
 
 			// Remove the previous loaders if there are any.
 
-			var head = document.getElementsByTagName("head")[0];
 			var loader = document.getElementById("NDSummaryLoader");
 
 			if (loader)
-				{  head.removeChild(loader);  }
+				{  document.head.removeChild(loader);  }
 
 			loader = document.getElementById("NDSummaryToolTipsLoader");
 
 			if (loader)
-				{  head.removeChild(loader);  }
+				{  document.head.removeChild(loader);  }
 
 
 			// Create a new summary loader.  We don't load the tooltips until the summary is complete to
