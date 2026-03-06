@@ -1303,32 +1303,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				"\n" +
 				"   this.LoadJSArray = function (links, relativePrefix)\n" +
 				"      {\n" +
-
-					// WebKit, and I'm guessing KHTML just to be safe, doesn't import scripts included the other way in time
-					// for their functions to be accessible to body.OnLoad().
-
-				"      if (navigator.userAgent.indexOf('KHTML') != -1)\n" +
+				"      for (var i = 0; i < links.length; i++)\n" +
 				"         {\n" +
-				"         for (var i = 0; i < links.length; i++)\n" +
-				"            {\n" +
-				"            document.write('<script type=\"text/javascript\" src=\"' + relativePrefix + links[i] + '\"></script>');\n" +
-				"            }\n" +
-				"         }\n" +
-
-					// The proper way.
-
-				"      else\n" +
-				"         {\n" +
-				"         var head = document.getElementsByTagName('head')[0];\n" +
+				"         var script = document.createElement('script');\n" +
+				"         script.src = relativePrefix + links[i];\n" +
+				"         script.type = 'text/javascript';\n" +
 				"         \n" +
-				"         for (var i = 0; i < links.length; i++)\n" +
-				"            {\n" +
-				"            var script = document.createElement('script');\n" +
-				"            script.src = relativePrefix + links[i];\n" +
-				"            script.type = 'text/javascript';\n" +
-				"            \n" +
-				"            head.appendChild(script);\n" +
-				"            }\n" +
+				"         document.head.appendChild(script);\n" +
 				"         }\n" +
 				"      };\n" +
 				"\n" +
