@@ -1,0 +1,72 @@
+Group: Full comments only
+----------------------------------------
+
+  Event: FullCommentOnlyA
+  Body: <p>Full comment only A</p>
+
+  Event: FullCommentOnlyB
+  Body: <p>Full comment only B</p>
+
+  Event: FullCommentOnlyC
+  Body: <p>Full comment only C</p>
+
+
+Group: Inline comments only
+----------------------------------------
+
+  Event: InlineCommentOnlyA
+  Body: <p>Inline comment only A</p>
+
+  Event: InlineCommentOnlyB
+  Body: <p>Inline comment only B</p>
+
+  Event: InlineCommentOnlyC
+  Body: <p>Inline comment only C with multiple lines</p>
+
+  Event: InlineCommentOnlyD
+  Body: <p>Inline comment only D with multiple lines</p>
+
+  Event: InlineCommentOnlyE
+  Body: <p>Inline comment only E with multiple lines</p>
+
+  Event: InlineCommentOnlyF
+  Body: <p>Inline comment only F with multiple lines</p>
+
+  Event: InlineCommentOnlyG
+  Body: <p>Inline comment only G</p>
+
+
+Group: Both comments
+----------------------------------------
+
+  Event: BothCommentsA
+  Body: <p>Description from full comment.</p>
+
+
+Group: Compound Declarations
+----------------------------------------
+
+  Event: CompoundDeclarationA
+  (no body)
+
+  Event: CompoundDeclarationB
+  Body: <p>Description after both</p>
+
+  Event: CompoundDeclarationC
+  Body: <p>Description of C</p>
+
+  Event: CompoundDeclarationD
+  Body: <p>Description of D</p>
+
+
+Group: Traps
+----------------------------------------
+
+  Event: InnerCommentsA
+  (no body)
+
+  Event: InnerCommentsB
+  (no body)
+
+  Event: InnerCommentsC
+  Body: <p>Acceptable comment</p>

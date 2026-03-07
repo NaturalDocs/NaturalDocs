@@ -1,0 +1,17 @@
+  Function: FunctionA
+  Body: <p>Description of FunctionA</p>
+
+  Function: FunctionB
+  Body: <p>Description of FunctionB</p>
+
+  Function: FunctionC
+  Body: <p>Description of FunctionC</p>
+
+  Function: FunctionD
+  Body: <p>Description of FunctionD</p>
+
+  Function: Interface.Interface.FunctionE
+  Body: <p>Description of FunctionE</p>
+
+  Function: IEnumerable<T>.GetEnumerator
+  Body: <p>Description of GetEnumerator</p>

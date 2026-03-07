@@ -1,0 +1,81 @@
+Group: Full comments only
+----------------------------------------
+
+  Constant: FullCommentOnlyA
+  Body: <p>Full comment only A</p>
+
+  Constant: FullCommentOnlyB
+  Body: <p>Full comment only B</p>
+
+  Constant: FullCommentOnlyC
+  Body: <p>Full comment only C</p>
+
+
+Group: Inline comments only
+----------------------------------------
+
+  Constant: InlineCommentOnlyA
+  Body: <p>Inline comment only A</p>
+
+  Constant: InlineCommentOnlyB
+  Body: <p>Inline comment only B</p>
+
+  Constant: InlineCommentOnlyC
+  Body: <p>Inline comment only C with multiple lines</p>
+
+  Constant: InlineCommentOnlyD
+  Body: <p>Inline comment only D with multiple lines</p>
+
+  Constant: InlineCommentOnlyE
+  Body: <p>Inline comment only E with multiple lines</p>
+
+  Constant: InlineCommentOnlyF
+  Body: <p>Inline comment only F with multiple lines</p>
+
+  Constant: InlineCommentOnlyG
+  Body: <p>Inline comment only G</p>
+
+  Constant: InlineCommentOnlyH
+  Body: <p>Inline comment only H</p>
+
+
+Group: Both comments
+----------------------------------------
+
+  Constant: BothCommentsA
+  Body: <p>Description from full comment.</p>
+
+
+Group: Compound Declarations
+----------------------------------------
+
+  Constant: CompoundDeclarationA
+  (no body)
+
+  Constant: CompoundDeclarationB
+  Body: <p>Description after both</p>
+
+  Constant: CompoundDeclarationC
+  Body: <p>Description of C</p>
+
+  Constant: CompoundDeclarationD
+  Body: <p>Description of D</p>
+
+  Constant: CompoundDeclarationE
+  Body: <p>Description of E</p>
+
+  Constant: CompoundDeclarationF
+  Body: <p>Description of F</p>
+
+
+Group: Traps
+----------------------------------------
+
+  Constant: InnerCommentsA
+  (no body)
+
+  Constant: InnerCommentsB
+  (no body)
+
+  Constant: InnerCommentsC
+  Body: <p>Acceptable comment</p>

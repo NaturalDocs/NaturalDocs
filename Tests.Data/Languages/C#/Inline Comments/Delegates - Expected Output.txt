@@ -1,0 +1,5 @@
+  Delegate: DelegateA
+  Body: <p>Description of DelegateA</p>
+
+  Delegate: DelegateB
+  Body: <p>Description of DelegateB</p>

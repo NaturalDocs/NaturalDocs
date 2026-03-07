@@ -1,0 +1,115 @@
+Group: Full comments only
+----------------------------------------
+
+  Variable: FullCommentOnlyA
+  Body: <p>Full comment only A</p>
+
+  Variable: FullCommentOnlyB
+  Body: <p>Full comment only B</p>
+
+  Variable: FullCommentOnlyC
+  Body: <p>Full comment only C</p>
+
+
+Group: Inline comments only
+----------------------------------------
+
+  Variable: InlineCommentOnlyA
+  Body: <p>Inline comment only A</p>
+
+  Variable: InlineCommentOnlyB
+  Body: <p>Inline comment only B</p>
+
+  Variable: InlineCommentOnlyC
+  Body: <p>Inline comment only C with multiple lines</p>
+
+  Variable: InlineCommentOnlyD
+  Body: <p>Inline comment only D with multiple lines</p>
+
+  Variable: InlineCommentOnlyE
+  Body: <p>Inline comment only E with multiple lines</p>
+
+  Variable: InlineCommentOnlyF
+  Body: <p>Inline comment only F with multiple lines</p>
+
+  Variable: InlineCommentOnlyG
+  Body: <p>Inline comment only G</p>
+
+  Variable: InlineCommentOnlyH
+  Body: <p>Inline comment only H</p>
+
+  Variable: InlineCommentOnlyI
+  Body: <p>Inline comment only I</p>
+
+
+Group: Both comments
+----------------------------------------
+
+  Variable: BothCommentsA
+  Body: <p>Description from full comment.</p>
+
+
+Group: In structs
+----------------------------------------
+
+  Struct: StructA
+  (no body)
+
+  Variable: InlineCommentA
+  Body: <p>Inline comment A</p>
+
+  Variable: InlineCommentB
+  Body: <p>Inline comment B</p>
+
+  Struct: StructB
+  (no body)
+
+  Variable: InlineCommentA
+  Body: <p>Inline comment A</p>
+
+  Variable: InlineCommentB
+  Body: <p>Inline comment B</p>
+
+  Struct: StructC
+  Body: <p>Description of struct C</p>
+
+  Variable: InlineCommentA
+  Body: <p>Inline comment A</p>
+
+  Variable: InlineCommentB
+  Body: <p>Inline comment B</p>
+
+
+Group: Compound Declarations
+----------------------------------------
+
+  Variable: CompoundDeclarationA
+  (no body)
+
+  Variable: CompoundDeclarationB
+  Body: <p>Description after both</p>
+
+  Variable: CompoundDeclarationC
+  Body: <p>Description of C</p>
+
+  Variable: CompoundDeclarationD
+  Body: <p>Description of D</p>
+
+  Variable: CompoundDeclarationE
+  Body: <p>Description of E</p>
+
+  Variable: CompoundDeclarationF
+  Body: <p>Description of F</p>
+
+
+Group: Traps
+----------------------------------------
+
+  Variable: InnerCommentsA
+  (no body)
+
+  Variable: InnerCommentsB
+  (no body)
+
+  Variable: InnerCommentsC
+  Body: <p>Acceptable comment</p>
