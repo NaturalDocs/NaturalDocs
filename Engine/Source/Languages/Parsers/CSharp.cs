@@ -1185,13 +1185,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Create element
 
+			Topic functionTopic = null;
+
 			if (mode == ParseMode.CreateElements)
 				{
 				int commentTypeID = EngineInstance.CommentTypes.IDFromKeyword(keyword, language.ID);
 
 				if (commentTypeID != 0)
 					{
-					Topic functionTopic = new Topic(EngineInstance.CommentTypes);
+					functionTopic = new Topic(EngineInstance.CommentTypes);
 					functionTopic.Title = name;
 					functionTopic.Symbol = scope + SymbolString.FromPlainText_NoParameters(name);
 					functionTopic.Prototype = NormalizePrototype( iterator.TextBetween(lookahead) );
@@ -1216,7 +1218,24 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				GenericSkipUntilAfter(ref lookahead, '}');
 				}
 			else if (lookahead.Character == ';')
-				{  lookahead.Next();  }
+				{
+				lookahead.Next();
+
+				if (mode == ParseMode.CreateElements &&
+					functionTopic != null)
+					{
+					var inlineComment = GetInlineDocumentationComment(lookahead);
+
+					if (inlineComment != null)
+						{
+						Topic inlineTopic = EngineInstance.Comments.Parse(inlineComment);
+						functionTopic.Body = inlineTopic.Body;
+						functionTopic.Summary = inlineTopic.Summary;
+						functionTopic.CommentLineNumber = inlineTopic.CommentLineNumber;
+						functionTopic.EndOfCommentLineNumber = inlineTopic.EndOfCommentLineNumber;
+						}
+					}
+				}
 			else if (lookahead.MatchesAcrossTokens("=>"))
 				{
 				lookahead.Next(2);
@@ -1665,6 +1684,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				return false;
 				}
 
+			TokenIterator endOfDeclaration = lookahead;
 			TryToSkipWhitespace(ref lookahead);
 
 
@@ -1691,7 +1711,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					{  lookahead.PrototypeParsingType = PrototypeParsingType.ClosingParamModifier;  }
 
 				lookahead.Next();
-				lookahead.NextPastWhitespace();
+				endOfDeclaration = lookahead;
+
+				TryToSkipWhitespace(ref lookahead);
 				}
 
 			if (lookahead.IsInBounds &&
@@ -1708,10 +1730,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// Create element
 
 			int commentTypeID = EngineInstance.CommentTypes.IDFromKeyword(keyword, language.ID);
+			Topic variableTopic = null;
 
 			if (mode == ParseMode.CreateElements && commentTypeID != 0)
 				{
-				Topic variableTopic = new Topic(EngineInstance.CommentTypes);
+				variableTopic = new Topic(EngineInstance.CommentTypes);
 				variableTopic.Title = name;
 				variableTopic.Symbol = scope + SymbolString.FromPlainText_NoParameters(name);
 				variableTopic.Prototype = NormalizePrototype( iterator.TextBetween(lookahead) );
@@ -1750,7 +1773,23 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				else if (lookahead.Character == ',')
 					{
 					lookahead.Next();
+					endOfDeclaration = lookahead;
 					TryToSkipWhitespace(ref lookahead);
+
+					if (mode == ParseMode.CreateElements &&
+						variableTopic != null)
+						{
+						var inlineComment = GetInlineDocumentationComment(endOfDeclaration);
+
+						if (inlineComment != null)
+							{
+							Topic inlineTopic = EngineInstance.Comments.Parse(inlineComment);
+							variableTopic.Body = inlineTopic.Body;
+							variableTopic.Summary = inlineTopic.Summary;
+							variableTopic.CommentLineNumber = inlineTopic.CommentLineNumber;
+							variableTopic.EndOfCommentLineNumber = inlineTopic.EndOfCommentLineNumber;
+							}
+						}
 
 					TokenIterator startOfNewName = lookahead;
 
@@ -1758,6 +1797,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					if (TryToSkipIdentifier(ref lookahead, out newName, mode, PrototypeParsingType.Name) == false)
 						{  break;  }
 
+					endOfDeclaration = lookahead;
 					TryToSkipWhitespace(ref lookahead);
 
 					if (lookahead.IsInBounds &&
@@ -1768,17 +1808,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 					if (mode == ParseMode.CreateElements && commentTypeID != 0)
 						{
-						Topic newVariableTopic = new Topic(EngineInstance.CommentTypes);
-						newVariableTopic.Title = newName;
-						newVariableTopic.Symbol = scope + SymbolString.FromPlainText_NoParameters(newName);
-						newVariableTopic.Prototype = NormalizePrototype( iterator.TextBetween(endOfType) + " " + newName );
-						newVariableTopic.CommentTypeID = commentTypeID;
-						newVariableTopic.LanguageID = language.ID;
-						newVariableTopic.DeclaredAccessLevel = accessLevel;
-						newVariableTopic.CodeLineNumber = startOfNewName.LineNumber;
+						variableTopic = new Topic(EngineInstance.CommentTypes);
+						variableTopic.Title = newName;
+						variableTopic.Symbol = scope + SymbolString.FromPlainText_NoParameters(newName);
+						variableTopic.Prototype = NormalizePrototype( iterator.TextBetween(endOfType) + " " + newName );
+						variableTopic.CommentTypeID = commentTypeID;
+						variableTopic.LanguageID = language.ID;
+						variableTopic.DeclaredAccessLevel = accessLevel;
+						variableTopic.CodeLineNumber = startOfNewName.LineNumber;
 
 						Element newVariableElement = new Element(startOfNewName, Element.Flags.InCode);
-						newVariableElement.Topic = newVariableTopic;
+						newVariableElement.Topic = variableTopic;
 
 						elements.Add(newVariableElement);
 						}
@@ -1789,6 +1829,23 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (lookahead.Character == ';')
 				{  lookahead.Next();  }
+
+			endOfDeclaration = lookahead;
+
+			if (mode == ParseMode.CreateElements &&
+				variableTopic != null)
+				{
+				var inlineComment = GetInlineDocumentationComment(endOfDeclaration);
+
+				if (inlineComment != null)
+					{
+					Topic inlineTopic = EngineInstance.Comments.Parse(inlineComment);
+					variableTopic.Body = inlineTopic.Body;
+					variableTopic.Summary = inlineTopic.Summary;
+					variableTopic.CommentLineNumber = inlineTopic.CommentLineNumber;
+					variableTopic.EndOfCommentLineNumber = inlineTopic.EndOfCommentLineNumber;
+					}
+				}
 
 			iterator = lookahead;
 			return true;
