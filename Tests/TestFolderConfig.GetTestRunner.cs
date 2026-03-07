@@ -55,6 +55,8 @@ namespace CodeClear.NaturalDocs.Tests
 					return new TestRunners.CommentTypesAndSymbols();
 				case "enums":
 					return new TestRunners.Enums();
+				case "inline comments":
+					return new TestRunners.InlineComments();
 				case "grouping":
 					return new TestRunners.Grouping();
 				case "language detection":
