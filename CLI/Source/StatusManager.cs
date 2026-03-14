@@ -179,6 +179,9 @@ namespace CodeClear.NaturalDocs.CLI
 			{
 			lock (statusLock)
 				{
+				// Set inProgress to false in case there's an Update() call waiting on the lock that runs after this.
+				inProgress = false;
+
 				if (updateTimer != null)
 					{
 					updateTimer.Stop();
