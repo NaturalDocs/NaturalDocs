@@ -1,0 +1,454 @@
+
+Group: Groups in Code
+
+-----
+
+Enum: GroupsInCodeA
+
+   Prototype: enum GroupsInCodeA
+
+   Members:
+      A
+      B
+      C
+      D
+
+   Body: <h>Group at Start</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd></dl><h>Group at Middle</h><dl><ds>C</ds><dd></dd><ds>D</ds><dd></dd></dl>
+
+-----
+
+Enum: GroupsInCodeB
+
+   Prototype: enum GroupsInCodeB
+
+   Members:
+      A
+      B
+      C
+      D
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd></dl><h>Group at Middle Only</h><dl><ds>C</ds><dd></dd><ds>D</ds><dd></dd></dl>
+
+-----
+
+Enum: GroupsInCodeC
+
+   Prototype: enum GroupsInCodeC
+
+   Members:
+      A - <p>Description of A</p>
+      B - <p>Description of B</p>
+      C - <p>Description of C</p>
+      D - <p>Description of D</p>
+
+   Body: <h>Group at Start</h><dl><ds>A</ds><dd><p>Description of A</p></dd><ds>B</ds><dd><p>Description of B</p></dd></dl><h>Group at Middle</h><dl><ds>C</ds><dd><p>Description of C</p></dd><ds>D</ds><dd><p>Description of D</p></dd></dl>
+
+-----
+
+Enum: GroupsInCodeD
+
+   Prototype: enum GroupsInCodeD
+
+   Members:
+      A - <p>Description of A</p>
+      B - <p>Description of B</p>
+      C - <p>Description of C</p>
+      D - <p>Description of D</p>
+
+   Body: <h>Values</h><dl><ds>A</ds><dd><p>Description of A</p></dd><ds>B</ds><dd><p>Description of B</p></dd></dl><h>Group at Middle Only</h><dl><ds>C</ds><dd><p>Description of C</p></dd><ds>D</ds><dd><p>Description of D</p></dd></dl>
+
+-----
+
+Group: Groups in Comment
+
+-----
+
+Enum: GroupsInCommentA
+
+   Prototype: enum GroupsInCommentA
+
+   Members:
+      A - <p>Description of A</p>
+      B - <p>Description of B</p>
+      C - <p>Description of C</p>
+      D - <p>Description of D</p>
+
+   Body: <h>Group at Start</h><dl><ds>A</ds><dd><p>Description of A</p></dd><ds>B</ds><dd><p>Description of B</p></dd></dl><h>Group at Middle</h><dl><ds>C</ds><dd><p>Description of C</p></dd><ds>D</ds><dd><p>Description of D</p></dd></dl>
+
+-----
+
+Enum: GroupsInCommentB
+
+   Prototype: enum GroupsInCommentB
+
+   Members:
+      A - <p>Description of A</p>
+      B - <p>Description of B</p>
+      C - <p>Description of C</p>
+      D - <p>Description of D</p>
+
+   Body: <dl><ds>A</ds><dd><p>Description of A</p></dd><ds>B</ds><dd><p>Description of B</p></dd></dl><h>Group at Middle Only</h><dl><ds>C</ds><dd><p>Description of C</p></dd><ds>D</ds><dd><p>Description of D</p></dd></dl>
+
+-----
+
+Enum: GroupsInCommentC
+
+   Prototype: enum GroupsInCommentC
+
+   Members:
+      A - <p>Description of A</p>
+      B - <p>Description of B</p>
+      C - <p>Description of C</p>
+      D - <p>Description of D</p>
+
+   Body: <h>Group at Start</h><dl><ds>A</ds><dd><p>Description of A</p></dd><ds>B</ds><dd><p>Description of B</p></dd></dl><h>Group at Middle</h><dl><ds>C</ds><dd><p>Description of C</p></dd><ds>D</ds><dd><p>Description of D</p></dd></dl>
+
+-----
+
+Group: Extra Values in Code, In Order
+
+-----
+
+Enum: ExtraValuesInCodeA_InOrder
+
+   Prototype: enum ExtraValuesInCodeA_InOrder
+
+   Members:
+      A - <p>Description of A</p>
+      B - <p>Description of B</p>
+      C - <p>Description of C</p>
+      D - <p>Description of D</p>
+      E
+
+   Body: <h>Group at Start</h><dl><ds>A</ds><dd><p>Description of A</p></dd><ds>B</ds><dd><p>Description of B</p></dd></dl><h>Group at Middle</h><dl><ds>C</ds><dd><p>Description of C</p></dd><ds>D</ds><dd><p>Description of D</p></dd><ds>E</ds><dd></dd></dl>
+
+-----
+
+Enum: ExtraValuesInCodeB_InOrder
+
+   Prototype: enum ExtraValuesInCodeB_InOrder
+
+   Members:
+      A
+      B - <p>Description of B</p>
+      C - <p>Description of C</p>
+      D - <p>Description of D</p>
+      E - <p>Description of E</p>
+
+   Body: <h>Group at Start</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd><p>Description of B</p></dd><ds>C</ds><dd><p>Description of C</p></dd></dl><h>Group at Middle</h><dl><ds>D</ds><dd><p>Description of D</p></dd><ds>E</ds><dd><p>Description of E</p></dd></dl>
+
+-----
+
+Enum: ExtraValuesInCodeC_InOrder
+
+   Prototype: enum ExtraValuesInCodeC_InOrder
+
+   Members:
+      A
+      B - <p>Description of B</p>
+      C - <p>Description of C</p>
+      D
+      E - <p>Description of E</p>
+      F - <p>Description of F</p>
+      G
+
+   Body: <h>Group at Start</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd><p>Description of B</p></dd><ds>C</ds><dd><p>Description of C</p></dd></dl><h>Group at Middle</h><dl><ds>D</ds><dd></dd><ds>E</ds><dd><p>Description of E</p></dd><ds>F</ds><dd><p>Description of F</p></dd><ds>G</ds><dd></dd></dl>
+
+-----
+
+Enum: ExtraValuesInCodeD_InOrder
+
+   Prototype: enum ExtraValuesInCodeD_InOrder
+
+   Members:
+      A - <p>Description of A</p>
+      B - <p>Description of B</p>
+      C - <p>Description of C</p>
+      D - <p>Description of D</p>
+      E
+
+   Body: <dl><ds>A</ds><dd><p>Description of A</p></dd><ds>B</ds><dd><p>Description of B</p></dd></dl><h>Group at Middle Only</h><dl><ds>C</ds><dd><p>Description of C</p></dd><ds>D</ds><dd><p>Description of D</p></dd><ds>E</ds><dd></dd></dl>
+
+-----
+
+Enum: ExtraValuesInCodeE_InOrder
+
+   Prototype: enum ExtraValuesInCodeE_InOrder
+
+   Members:
+      A
+      B - <p>Description of B</p>
+      C - <p>Description of C</p>
+      D - <p>Description of D</p>
+      E - <p>Description of E</p>
+
+   Body: <dl><ds>A</ds><dd></dd><ds>B</ds><dd><p>Description of B</p></dd><ds>C</ds><dd><p>Description of C</p></dd></dl><h>Group at Middle Only</h><dl><ds>D</ds><dd><p>Description of D</p></dd><ds>E</ds><dd><p>Description of E</p></dd></dl>
+
+-----
+
+Enum: ExtraValuesInCodeF_InOrder
+
+   Prototype: enum ExtraValuesInCodeF_InOrder
+
+   Members:
+      A
+      B - <p>Description of B</p>
+      C - <p>Description of C</p>
+      D
+      E - <p>Description of E</p>
+      F - <p>Description of F</p>
+      G
+
+   Body: <dl><ds>A</ds><dd></dd><ds>B</ds><dd><p>Description of B</p></dd><ds>C</ds><dd><p>Description of C</p></dd></dl><h>Group at Middle Only</h><dl><ds>D</ds><dd></dd><ds>E</ds><dd><p>Description of E</p></dd><ds>F</ds><dd><p>Description of F</p></dd><ds>G</ds><dd></dd></dl>
+
+-----
+
+Group: Extra Values in Code, Out of Order
+
+-----
+
+Enum: ExtraValuesInCodeA_OutOfOrder
+
+   Prototype: enum ExtraValuesInCodeA_OutOfOrder
+
+   Members:
+      E
+      D - <p>Description of D</p>
+      C - <p>Description of C</p>
+      B - <p>Description of B</p>
+      A - <p>Description of A</p>
+
+   Body: <h>Group at Start</h><dl><ds>A</ds><dd><p>Description of A</p></dd><ds>B</ds><dd><p>Description of B</p></dd></dl><h>Group at Middle</h><dl><ds>C</ds><dd><p>Description of C</p></dd><ds>D</ds><dd><p>Description of D</p></dd><ds>E</ds><dd></dd></dl>
+
+-----
+
+Enum: ExtraValuesInCodeB_OutOfOrder
+
+   Prototype: enum ExtraValuesInCodeB_OutOfOrder
+
+   Members:
+      E - <p>Description of E</p>
+      D - <p>Description of D</p>
+      C - <p>Description of C</p>
+      B - <p>Description of B</p>
+      A
+
+   Body: <h>Group at Start</h><dl><ds>B</ds><dd><p>Description of B</p></dd><ds>C</ds><dd><p>Description of C</p></dd></dl><h>Group at Middle</h><dl><ds>D</ds><dd><p>Description of D</p></dd><ds>E</ds><dd><p>Description of E</p></dd><ds>A</ds><dd></dd></dl>
+
+-----
+
+Enum: ExtraValuesInCodeC_OutOfOrder
+
+   Prototype: enum ExtraValuesInCodeC_OutOfOrder
+
+   Members:
+      G
+      F - <p>Description of F</p>
+      E - <p>Description of E</p>
+      D
+      C - <p>Description of C</p>
+      B - <p>Description of B</p>
+      A
+
+   Body: <h>Group at Start</h><dl><ds>B</ds><dd><p>Description of B</p></dd><ds>C</ds><dd><p>Description of C</p></dd></dl><h>Group at Middle</h><dl><ds>E</ds><dd><p>Description of E</p></dd><ds>F</ds><dd><p>Description of F</p></dd><ds>G</ds><dd></dd><ds>D</ds><dd></dd><ds>A</ds><dd></dd></dl>
+
+-----
+
+Enum: ExtraValuesInCodeD_OutOfOrder
+
+   Prototype: enum ExtraValuesInCodeD_OutOfOrder
+
+   Members:
+      E
+      D - <p>Description of D</p>
+      C - <p>Description of C</p>
+      B - <p>Description of B</p>
+      A - <p>Description of A</p>
+
+   Body: <dl><ds>A</ds><dd><p>Description of A</p></dd><ds>B</ds><dd><p>Description of B</p></dd></dl><h>Group at Middle Only</h><dl><ds>C</ds><dd><p>Description of C</p></dd><ds>D</ds><dd><p>Description of D</p></dd><ds>E</ds><dd></dd></dl>
+
+-----
+
+Enum: ExtraValuesInCodeE_OutOfOrder
+
+   Prototype: enum ExtraValuesInCodeE_OutOfOrder
+
+   Members:
+      E - <p>Description of E</p>
+      D - <p>Description of D</p>
+      C - <p>Description of C</p>
+      B - <p>Description of B</p>
+      A
+
+   Body: <dl><ds>B</ds><dd><p>Description of B</p></dd><ds>C</ds><dd><p>Description of C</p></dd></dl><h>Group at Middle Only</h><dl><ds>D</ds><dd><p>Description of D</p></dd><ds>E</ds><dd><p>Description of E</p></dd><ds>A</ds><dd></dd></dl>
+
+-----
+
+Enum: ExtraValuesInCodeF_OutOfOrder
+
+   Prototype: enum ExtraValuesInCodeF_OutOfOrder
+
+   Members:
+      G
+      F - <p>Description of F</p>
+      E - <p>Description of E</p>
+      D
+      C - <p>Description of C</p>
+      B - <p>Description of B</p>
+      A
+
+   Body: <dl><ds>B</ds><dd><p>Description of B</p></dd><ds>C</ds><dd><p>Description of C</p></dd></dl><h>Group at Middle Only</h><dl><ds>E</ds><dd><p>Description of E</p></dd><ds>F</ds><dd><p>Description of F</p></dd><ds>G</ds><dd></dd><ds>D</ds><dd></dd><ds>A</ds><dd></dd></dl>
+
+-----
+
+Group: Extra Values in Comment
+
+-----
+
+Enum: ExtraValuesInCommentA
+
+   Prototype: enum ExtraValuesInCommentA
+
+   Members:
+      A - <p>Description of A</p>
+      D - <p>Description of D</p>
+      B - <p>Description of B</p>
+      C - <p>Description of C</p>
+
+   Body: <h>Group 1</h><dl><ds>A</ds><dd><p>Description of A</p></dd><ds>B</ds><dd><p>Description of B</p></dd></dl><h>Group 2</h><dl><ds>C</ds><dd><p>Description of C</p></dd><ds>D</ds><dd><p>Description of D</p></dd></dl>
+
+-----
+
+Group: Formatting
+
+-----
+
+Enum: GroupsWithDescriptions
+
+   Prototype: enum GroupsWithDescriptions
+
+   Members:
+      A - <p>Description of A</p>
+      B - <p>Description of B</p>
+      C - <p>Description of C</p>
+      D - <p>Description of D</p>
+      E - <p>Description of E</p>
+      F - <p>Description of F</p>
+
+   Body: <h>Group at Start</h><p>Plain text description with group at start.</p><dl><ds>A</ds><dd><p>Description of A</p></dd><ds>B</ds><dd><p>Description of B</p></dd></dl><h>Group at Middle 1</h><p>Description in group at middle with definition list.</p><dl><de>Item1</de><dd><p>Definition of Item1</p></dd><de>Item2</de><dd><p>Definition of Item2</p></dd></dl><dl><ds>C</ds><dd><p>Description of C</p></dd><ds>D</ds><dd><p>Description of D</p></dd></dl><h>Group at Middle 2</h><p>Description in group at middle with bullet list.</p><ul><li><p>Bullet 1</p></li><li><p>Bullet 2</p></li></ul><dl><ds>E</ds><dd><p>Description of E</p></dd><ds>F</ds><dd><p>Description of F</p></dd></dl>
+
+-----
+
+Enum: DocumentationButNoValuesA
+
+   Prototype: enum DocumentationButNoValuesA
+
+   Members:
+      A
+      B - <p>Description of B</p>
+      C - <p>Description of C</p>
+      D
+
+   Body: <p>A description of DocumentationButNoValuesA.</p><h>Group at Start</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd><p>Description of B</p></dd></dl><h>Group at Middle With Description</h><p>Description in group at middle.</p><dl><ds>C</ds><dd><p>Description of C</p></dd><ds>D</ds><dd></dd></dl>
+
+-----
+
+Enum: DocumentationButNoValuesB
+
+   Prototype: enum DocumentationButNoValuesB
+
+   Members:
+      A - <p>Description of A</p>
+      B
+      C
+      D - <p>Description of D</p>
+
+   Body: <p>A description of DocumentationButNoValuesB.</p><h>Values</h><dl><ds>A</ds><dd><p>Description of A</p></dd><ds>B</ds><dd></dd></dl><h>Group at Middle Only</h><dl><ds>C</ds><dd></dd><ds>D</ds><dd><p>Description of D</p></dd></dl>
+
+-----
+
+Group: Traps
+
+-----
+
+Enum: GroupAfterLastInCode
+
+   Prototype: enum GroupAfterLastInCode
+
+   Members:
+      A
+      B
+      C
+
+   Body: <h>Values</h><dl><ds>A</ds><dd></dd><ds>B</ds><dd></dd><ds>C</ds><dd></dd></dl><h>Group after last</h>
+
+-----
+
+Enum: GroupAfterLastInComment
+
+   Prototype: enum GroupAfterLastInComment
+
+   Members:
+      A - <p>Description of A</p>
+      B - <p>Description of B</p>
+      C - <p>Description of C</p>
+
+   Body: <dl><ds>A</ds><dd><p>Description of A</p></dd><ds>B</ds><dd><p>Description of B</p></dd><ds>C</ds><dd><p>Description of C</p></dd></dl><h>Group 1</h>
+
+-----
+
+Enum: GroupsInBothA
+
+   Prototype: enum GroupsInBothA
+
+   Members:
+      A - <p>Description of A</p>
+      B - <p>Description of B</p>
+      C - <p>Description of C</p>
+      D - <p>Description of D</p>
+
+   Body: <h>Group in Comment at Start</h><dl><ds>A</ds><dd><p>Description of A</p></dd><ds>B</ds><dd><p>Description of B</p></dd></dl><h>Group in Comment at Middle</h><dl><ds>C</ds><dd><p>Description of C</p></dd><ds>D</ds><dd><p>Description of D</p></dd></dl>
+
+-----
+
+Enum: GroupsInBothB
+
+   Prototype: enum GroupsInBothB
+
+   Members:
+      A - <p>Description of A</p>
+      B - <p>Description of B</p>
+      C - <p>Description of C</p>
+      D - <p>Description of D</p>
+
+   Body: <dl><ds>A</ds><dd><p>Description of A</p></dd><ds>B</ds><dd><p>Description of B</p></dd></dl><h>Group in Comment at Middle Only</h><dl><ds>C</ds><dd><p>Description of C</p></dd><ds>D</ds><dd><p>Description of D</p></dd></dl>
+
+-----
+
+Enum: GroupsInBothC
+
+   Prototype: enum GroupsInBothC
+
+   Members:
+      A - <p>Description of A</p>
+      B - <p>Description of B</p>
+      C - <p>Description of C</p>
+      D - <p>Description of D</p>
+
+   Body: <dl><ds>A</ds><dd><p>Description of A</p></dd><ds>B</ds><dd><p>Description of B</p></dd><ds>C</ds><dd><p>Description of C</p></dd><ds>D</ds><dd><p>Description of D</p></dd></dl>
+
+-----
+
+Enum: GroupsInBothD
+
+   Prototype: enum GroupsInBothD
+
+   Members:
+      A - <p>Description of A</p>
+      B - <p>Description of B</p>
+      C
+      D - <p>Description of D</p>
+      E - <p>Description of E</p>
+      F
+
+   Body: <h>Group in Comment at Start</h><dl><ds>A</ds><dd><p>Description of A</p></dd><ds>B</ds><dd><p>Description of B</p></dd></dl><h>Group in Comment at Middle</h><dl><ds>C</ds><dd></dd><ds>D</ds><dd><p>Description of D</p></dd><ds>E</ds><dd><p>Description of E</p></dd><ds>F</ds><dd></dd></dl>
