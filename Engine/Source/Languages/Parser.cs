@@ -2437,7 +2437,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * Finds any enums in the code <Elements> and adjusts any comment <Elements> appearing inside their bodies.  This is
 		 * done because certain comments appearing with the values can throw off merging.
 		 *
-		 * For now only constants and headerless comments are allowed inside an enum's body.  Everything else will be removed.
+		 * Only constants, headerless comments, and groups are allowed inside an enum's body.  Everything else will be removed.
 		 */
 		protected void PreprocessEnumComments (List<Element> commentElements, List<Element> codeElements)
 			{
@@ -2482,6 +2482,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						}
 
 					// Walk through comments that appear inside the enum's body
+					ParentElement lastEnumGroup = null;
+
 					while (commentIndex < commentElements.Count &&
 							  commentElements[commentIndex].FilePosition <= enumElement.EndingFilePosition)
 						{
@@ -2492,7 +2494,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 						var commentTopic = commentElement.Topic;
 
-						// If the topic is a group, remove it (for now)
+						// If the topic is a group, allow it
 						if (commentTopic.IsGroup)
 							{
 							// The group may have ended a previous group.  If so, extend the previous group.
@@ -2500,7 +2502,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 								lastNonEnumGroup.EndingFilePosition == commentElement.FilePosition)
 								{  lastNonEnumGroup.EndingFilePosition = (commentElement as ParentElement).EndingFilePosition;  }
 
-							commentElements.RemoveAt(commentIndex);
+							lastEnumGroup = commentElement as ParentElement;
+							commentIndex++;
 							}
 
 						// If the topic is a constant, allow it so it can be treated as a value
@@ -2511,7 +2514,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 							commentIndex++;
 							}
 
-						// If the topic is any other type, remove it (for now)
+						// If the topic is any other type, remove it
 						else
 							{  commentElements.RemoveAt(commentIndex);  }
 						}
@@ -2834,14 +2837,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 							}
 						}
 
-					// Finally, if it's a group, make sure it doesn't encompass any other ParentElements except enums.
+					// Finally, if it's a group, make sure it doesn't encompass any other ParentElements except enums or nested groups,
+					// such as groups appearing within enums.
 
 					if (element.Topic != null && element.Topic.IsGroup)
 						{
 						for (int j = i + 1; j < mergedElements.Count && element.Contains(mergedElements[j]); j++)
 							{
 							if (mergedElements[j] is ParentElement &&
-								(mergedElements[j].Topic == null || mergedElements[j].Topic.IsEnum == false))
+								(mergedElements[j].Topic == null ||
+								 (mergedElements[j].Topic.IsEnum == false &&
+								  mergedElements[j].Topic.IsGroup == false)))
 								{
 								element.EndingLineNumber = mergedElements[j].LineNumber;
 								element.EndingCharNumber = mergedElements[j].CharNumber;
@@ -2919,6 +2925,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 							  codeValueIndex++)
 							{
 							var codeValueElement = elements[codeValueIndex];
+
+							if (codeValueElement.Topic.IsGroup)
+								{  continue;  }
+
 
 							// Find a matching embedded value element
 
@@ -3256,154 +3266,132 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{
 				// If the topic is an enum...
 				if (elements[elementIndex].Topic != null &&
-					elements[elementIndex].Topic.IsList == false &&
-					elements[elementIndex].Topic.IsEnum)
+					elements[elementIndex].Topic.IsEnum &&
+					elements[elementIndex].Topic.IsList == false)
 					{
 					var enumElement = (ParentElement)elements[elementIndex];
 					var enumTopic = enumElement.Topic;
 					var enumBody = enumTopic.Body;
-					elementIndex++;
 
-					int firstValueElementIndex = elementIndex;
-					int valueCount = CountChildElements(enumElement, elements, firstValueElementIndex);
-					elementIndex += valueCount;
+					int firstValueElementIndex = elementIndex + 1;
+					int numberOfValues = CountChildElements(enumElement, elements, firstValueElementIndex);
 
 					// If the enum topic has values...
-					if (valueCount > 0)
+					if (numberOfValues > 0)
 						{
 
 						// If there's no existing body just add them all in order
 						if (enumBody == null)
 							{
 							StringBuilder newBody = new StringBuilder();
-
-							newBody.Append("<h>" + Locale.Get("NaturalDocs.Engine", "Heading.EnumValues") + "</h>");
-							newBody.Append("<dl>");
-
-							for (int i = 0; i < valueCount; i++)
-								{
-								var topic = elements[firstValueElementIndex + i].Topic;
-
-								AddAsDefinitionListSymbol(topic, newBody);
-								topic.IsEmbedded = true;
-								}
-
-							newBody.Append("</dl>");
+							AddEnumValuesAsDefinitionList(elements, firstValueElementIndex, numberOfValues, newBody);
 							enumTopic.Body = newBody.ToString();
 							}
 
 						// If the enum element already has a body...
 						else
 							{
-
 							// For each value, find the index of where it appears in the enum topic's body.
 
-							// The array values are initialized to zero, and it's okay to use that to mean "undefined" instead of -1
+							// The array values are initialized to zero, and it's okay to use that to mean "not found" instead of -1
 							// because no value will ever have a body index of zero.  The index is to the "<ds>" which must appear
 							// after a "<dl>".
-							int[] bodyIndexOfValue = new int[valueCount];
+							int[] valueTagBodyIndexes = new int[numberOfValues];
+
+							// We'll use -99 to represent groups though.  Find and mark them.
+							for (int i = 0; i < numberOfValues; i++)
+								{
+								if (elements[firstValueElementIndex + i].Topic.IsGroup)
+									{  valueTagBodyIndexes[i] = -99;  }
+								}
 
 							int bodyIndex = 0;
 
-							while (GetNextDefinitionListSymbol(enumBody, bodyIndex, out int valueTagIndex, out int valueNameIndex,
-																				out int valueNameLength, out int valueEndIndex))
+							// Walk through the <ds> tags in the topic body and find value elements that match them
+							while (GetNextDefinitionListSymbol(enumBody, bodyIndex, out int valueTagBodyIndex, out int valueNameBodyIndex,
+																			  out int valueNameBodyLength, out int valueTagEndBodyIndex))
 								{
-								// Find a matching unused value element
-								for (int i = 0; i < valueCount; i++)
+								for (int i = 0; i < numberOfValues; i++)
 									{
-									var valueElement = elements[firstValueElementIndex + i];
-									var valueTopic = valueElement.Topic;
+									var valueTopic = elements[firstValueElementIndex + i].Topic;
 
-									if (bodyIndexOfValue[i] == 0 &&
-										valueTopic.Title.Length == valueNameLength &&
-										string.Compare(enumBody, valueNameIndex, valueTopic.Title, 0, valueNameLength) == 0)
+									if (valueTagBodyIndexes[i] == 0 &&  // 0 = no match yet, -99 = group
+										valueTopic.Title.Length == valueNameBodyLength &&
+										string.Compare(enumBody, valueNameBodyIndex, valueTopic.Title, 0, valueNameBodyLength) == 0)
 										{
-										bodyIndexOfValue[i] = valueTagIndex;
+										valueTagBodyIndexes[i] = valueTagBodyIndex;
 										break;
 										}
 									}
 
-								bodyIndex = valueEndIndex;
+								bodyIndex = valueTagEndBodyIndex;
 								}
 
 
-							// Now that bodyIndexOfValue is filled in, get some summary information about it such as whether all
-							// the values are represented in the body and if they're in the same order.
+							// Now that valueTagBodyIndexes is filled in, get some summary information about it such as whether all
+							// the values are represented in the topic body and if they appear in the same order.
 
-							bool allValuesInBody = true;
-							bool anyValuesInBody = false;
-							bool allValuesInOrder = true;
-							int bodyIndexOfLastValueInBody = 0;
-							int lastDefinedBodyIndex = 0;
+							int valuesInBody = 0;
+							int valuesNotInBody = 0;
+							bool valuesInOrder = true;
+							int previousValueTagBodyIndex = 0;
+							int finalValueTagBodyIndex = 0;
 
-							for (int i = 0; i < valueCount; i++)
+							for (int i = 0; i < numberOfValues; i++)
 								{
-								if (bodyIndexOfValue[i] == 0)
+								if (valueTagBodyIndexes[i] == 0)
 									{
-									allValuesInBody = false;
+									valuesNotInBody++;
 									}
-								else
+								else if (valueTagBodyIndexes[i] > 0)
 									{
-									anyValuesInBody = true;
+									valuesInBody++;
 
-									if (bodyIndexOfValue[i] < lastDefinedBodyIndex)
-										{  allValuesInOrder = false;  }
+									if (valueTagBodyIndexes[i] < previousValueTagBodyIndex)
+										{  valuesInOrder = false;  }
 
-									lastDefinedBodyIndex = bodyIndexOfValue[i];
+									previousValueTagBodyIndex = valueTagBodyIndexes[i];
 
-									if (bodyIndexOfValue[i] > bodyIndexOfLastValueInBody)
-										{  bodyIndexOfLastValueInBody = bodyIndexOfValue[i];  }
+									if (valueTagBodyIndexes[i] > finalValueTagBodyIndex)
+										{  finalValueTagBodyIndex = valueTagBodyIndexes[i];  }
 									}
 								}
 
 
-							// If there are no values in the body, we can just add them to the end in a new section.
+							// If there are no values in the body, we can just add them to the end.
 
-							if (!anyValuesInBody)
+							if (valuesInBody == 0)
 								{
 								StringBuilder newBody = new StringBuilder(enumBody);
-
-								newBody.Append("<h>" + Locale.Get("NaturalDocs.Engine", "Heading.EnumValues") + "</h>");
-								newBody.Append("<dl>");
-
-								for (int i = 0; i < valueCount; i++)
-									{
-									var topic = elements[firstValueElementIndex + i].Topic;
-
-									AddAsDefinitionListSymbol(topic, newBody);
-									topic.IsEmbedded = true;
-									}
-
-								newBody.Append("</dl>");
-								enumElement.Topic.Body = newBody.ToString();
+								AddEnumValuesAsDefinitionList(elements, firstValueElementIndex, numberOfValues, newBody);
+								enumTopic.Body = newBody.ToString();
 								}
 
 
-							// Otherwise if there's some values in the body but not all, we have to add the rest in.
+							// Otherwise if there's some values in the body but not all, we have to add the missing ones in.
 
-							else if (!allValuesInBody)
+							else if (valuesNotInBody > 0)
 								{
 
 								// If the existing ones aren't in any discernable order, just add the missing ones to the end of the list.
 
-								if (!allValuesInOrder)
+								if (!valuesInOrder)
 									{
-									int insertionPoint = GetEndOfDefinitionListEntry(enumBody, bodyIndexOfLastValueInBody);
+									int insertionPoint = GetEndOfDefinitionListEntry(enumBody, finalValueTagBodyIndex);
 
-									// Create the new body.
 									StringBuilder newBody = new StringBuilder();
-
 									newBody.Append(enumBody, 0, insertionPoint);
 
-									for (int i = 0; i < valueCount; i++)
+									for (int i = 0; i < numberOfValues; i++)
 										{
-										if (bodyIndexOfValue[i] == 0)
+										// If it's a value that isn't already in the body, add it
+										if (valueTagBodyIndexes[i] == 0)
 											{
 											var topic = elements[firstValueElementIndex + i].Topic;
-
 											AddAsDefinitionListSymbol(topic, newBody);
-											topic.IsEmbedded = true;
 											}
+										// If it's a value that's already in the body, skip it.
+										// If it's a group, ignore it.  They only apply when there's nothing defined in the body.
 										}
 
 									newBody.Append(enumBody, insertionPoint, enumBody.Length - insertionPoint);
@@ -3412,73 +3400,74 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 								else // allValuesInOrder
 									{
-									// Create the new body.
 									StringBuilder newBody = new StringBuilder();
 
 									int valueIndex = 0;
-									int valueInBodyIndex = 0;
-									int lastBodyIndex = 0;
+									int bodyContentIndex = 0;
 
 									for (;;)
 										{
-										// Skip past any values that don't appear in the body.
-										while (valueInBodyIndex < valueCount &&
-												 bodyIndexOfValue[valueInBodyIndex] == 0)
-											{  valueInBodyIndex++;  }
+										// Find the next value that appears in the body
+										int nextValueInBodyIndex = valueIndex;
 
-										if (valueInBodyIndex < valueCount)
+										while (nextValueInBodyIndex < numberOfValues &&
+												 valueTagBodyIndexes[nextValueInBodyIndex] <= 0)
+											{  nextValueInBodyIndex++;  }
+
+										if (nextValueInBodyIndex < numberOfValues)
 											{
-											// Add the body between the last point we added and the beginning of this value to the
+											// Add the body content between the last point we added and the beginning of this value to the
 											// new body.
-											if (bodyIndexOfValue[valueInBodyIndex] > lastBodyIndex)
+											if (valueTagBodyIndexes[nextValueInBodyIndex] > bodyContentIndex)
 												{
-												newBody.Append(enumBody, lastBodyIndex, bodyIndexOfValue[valueInBodyIndex] - lastBodyIndex);
-												lastBodyIndex = bodyIndexOfValue[valueInBodyIndex];
+												newBody.Append(enumBody, bodyContentIndex, valueTagBodyIndexes[nextValueInBodyIndex] - bodyContentIndex);
+												bodyContentIndex = valueTagBodyIndexes[nextValueInBodyIndex];
 												}
 
 											// Add the values that don't appear in the body to it.
-											while (valueIndex < valueInBodyIndex)
+											while (valueIndex < nextValueInBodyIndex)
 												{
-												var topic = elements[firstValueElementIndex + valueIndex].Topic;
-
-												AddAsDefinitionListSymbol(topic, newBody);
-												topic.IsEmbedded = true;
+												if (valueTagBodyIndexes[valueIndex] != -99)  // exclude groups
+													{
+													var topic = elements[firstValueElementIndex + valueIndex].Topic;
+													AddAsDefinitionListSymbol(topic, newBody);
+													}
 
 												valueIndex++;
 												}
 
-											// Increment both to start this process again on the next one.
+											// Increment to start this process again on the next one.
 											valueIndex++;
-											valueInBodyIndex++;
 											}
 
 										else // there's no more values that appear in the body
 											{
 											// Add all the body between the last point we added and the end of the last value entry.
-											int afterLastValueInBodyIndex = GetEndOfDefinitionListEntry(enumBody, bodyIndexOfLastValueInBody);
+											int afterLastValueInBodyIndex = GetEndOfDefinitionListEntry(enumBody, finalValueTagBodyIndex);
 
-											if (afterLastValueInBodyIndex > lastBodyIndex)
+											if (afterLastValueInBodyIndex > bodyContentIndex)
 												{
-												newBody.Append(enumBody, lastBodyIndex, afterLastValueInBodyIndex - lastBodyIndex);
-												lastBodyIndex = afterLastValueInBodyIndex;
+												newBody.Append(enumBody, bodyContentIndex, afterLastValueInBodyIndex - bodyContentIndex);
+												bodyContentIndex = afterLastValueInBodyIndex;
 												}
 
 											// Add all remaining values that don't appear in the body to it.
-											while (valueIndex < valueCount)
+											while (valueIndex < numberOfValues)
 												{
-												var topic = elements[firstValueElementIndex + valueIndex].Topic;
-
-												AddAsDefinitionListSymbol(topic, newBody);
-												topic.IsEmbedded = true;
+												if (valueTagBodyIndexes[valueIndex] != -99)  // exclude groups
+													{
+													var topic = elements[firstValueElementIndex + valueIndex].Topic;
+													AddAsDefinitionListSymbol(topic, newBody);
+													}
 
 												valueIndex++;
 												}
 
 											// Add the last of the original body to it.
-											if (lastBodyIndex < enumBody.Length)
+											if (bodyContentIndex < enumBody.Length)
 												{
-												newBody.Append(enumBody, lastBodyIndex, enumBody.Length - lastBodyIndex);
-												lastBodyIndex = enumBody.Length;
+												newBody.Append(enumBody, bodyContentIndex, enumBody.Length - bodyContentIndex);
+												bodyContentIndex = enumBody.Length;
 												}
 
 											break;
@@ -3491,7 +3480,27 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 							}
 						}
 
-					// elementIndex was already incremented
+
+					// Now that we're done merging, finalize the elements by making sure groups are removed (they've been converted
+					// into headings and we don't need them anymore) and values have IsEmbedded set (they should exist in the body
+					// as definition list symbols now.)
+
+					elementIndex = firstValueElementIndex;
+					while (elementIndex < firstValueElementIndex + numberOfValues)
+						{
+						var elementTopic = elements[elementIndex].Topic;
+
+						if (elementTopic.IsGroup)
+							{
+							elements.RemoveAt(elementIndex);
+							numberOfValues--;
+							}
+						else
+							{
+							elementTopic.IsEmbedded = true;
+							elementIndex++;
+							}
+						}
 					}
 
 				else // not an enum
@@ -3500,44 +3509,60 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			}
 
 
-		/* Function: GetNextDefinitionListSymbol
-		 * Walks through the passed <NDMarkup>, stopping on definition list symbols enclosed in "<ds>" tags.  Returns whether
-		 * it found one, and if so, also returns its tag index (where the "<ds>" is), the name index and length, and the ending
-		 * index (after the "</ds>".)  You can pass an index into the <NDMarkup> where the search should start from.
+		/* Function: AddEnumValuesAsDefinitionList
+		 *
+		 * Adds the passed range of enum values to the StringBuilder as a definition list with symbols.  This will include the "<dl>"
+		 * tags for the entire list.  Any groups appearing in the values will be added as headers.  If there is no group to start the
+		 * list, a "Values" header will be added at the start.
+		 *
+		 * This does no symbol matching with the existing content of the StringBuilder.  All values will be added as is and in order.
 		 */
-		protected bool GetNextDefinitionListSymbol (string ndMarkup, int searchStartIndex, out int tagIndex, out int nameIndex,
-																		out int nameLength, out int endIndex)
+		protected void AddEnumValuesAsDefinitionList (List<Element> elements, int firstValueIndex, int numberOfValues,
+																			StringBuilder stringBuilder)
 			{
-			tagIndex = ndMarkup.IndexOf("<ds>", searchStartIndex);
-
-			if (tagIndex == -1)
+			if (numberOfValues > 0)
 				{
-				nameIndex = -1;
-				nameLength = 0;
-				endIndex = -1;
-				return false;
+				bool inDefinitionList = false;
+
+				if (elements[firstValueIndex].Topic.IsGroup == false)
+					{  stringBuilder.Append("<h>" + Locale.Get("NaturalDocs.Engine", "Heading.EnumValues") + "</h>");  }
+
+				for (int i = 0; i < numberOfValues; i++)
+					{
+					var topic = elements[firstValueIndex + i].Topic;
+
+					if (topic.IsGroup)
+						{
+						if (inDefinitionList)
+							{
+							stringBuilder.Append("</dl>");
+							inDefinitionList = false;
+							}
+
+						AddAsHeader(topic, stringBuilder);
+						}
+					else
+						{
+						if (!inDefinitionList)
+							{
+							stringBuilder.Append("<dl>");
+							inDefinitionList= true;
+							}
+
+						AddAsDefinitionListSymbol(topic, stringBuilder);
+						topic.IsEmbedded = true;
+						}
+					}
+
+				if (inDefinitionList)
+					{  stringBuilder.Append("</dl>");  }
 				}
-
-			nameIndex = tagIndex + 4;  // move past "<ds>"
-			endIndex = ndMarkup.IndexOf("</ds>", nameIndex);
-
-			if (endIndex == -1)
-				{
-				tagIndex = -1;
-				nameIndex = -1;
-				nameLength = 0;
-				return false;
-				}
-
-			nameLength = endIndex - nameIndex;
-			endIndex += 5;  // move past "</ds>"
-
-			return true;
 			}
 
 
 		/* Function: AddAsDefinitionListSymbol
-		 * Adds the passed <Topic> as a definition list entry to the end of the StringBuilder.
+		 * Adds the passed <Topic> as a definition list entry to the end of the StringBuilder.  It will include both the "<ds>" and
+		 * the "<dd>" sections, but not the "<dl>".
 		 */
 		protected void AddAsDefinitionListSymbol (Topic topic, StringBuilder stringBuilder)
 			{
@@ -3548,6 +3573,54 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{  stringBuilder.Append(topic.Body);  }
 
 			stringBuilder.Append("</dd>");
+			}
+
+
+		/* Function: AddAsHeader
+		 * Adds the passed <Topic> as a header at the end of the StringBuilder.
+		 */
+		protected void AddAsHeader (Topic topic, StringBuilder stringBuilder)
+			{
+			stringBuilder.Append("<h>" + topic.Title + "</h>");
+
+			if (topic.Body != null)
+				{  stringBuilder.Append(topic.Body);  }
+			}
+
+
+		/* Function: GetNextDefinitionListSymbol
+		 * Walks through the passed <NDMarkup>, stopping on definition list symbols enclosed in "<ds>" tags.  Returns whether
+		 * it found one, and if so, also returns its tag index (where the "<ds>" is), the name index and length, and the ending
+		 * index (after the "</ds>".)  You can pass an index into the <NDMarkup> where the search should start from.
+		 */
+		protected bool GetNextDefinitionListSymbol (string ndMarkup, int searchStartIndex, out int tagIndex, out int nameIndex,
+																		out int nameLength, out int tagEndIndex)
+			{
+			tagIndex = ndMarkup.IndexOf("<ds>", searchStartIndex);
+
+			if (tagIndex == -1)
+				{
+				nameIndex = -1;
+				nameLength = 0;
+				tagEndIndex = -1;
+				return false;
+				}
+
+			nameIndex = tagIndex + 4;  // move past "<ds>"
+			tagEndIndex = ndMarkup.IndexOf("</ds>", nameIndex);
+
+			if (tagEndIndex == -1)
+				{
+				tagIndex = -1;
+				nameIndex = -1;
+				nameLength = 0;
+				return false;
+				}
+
+			nameLength = tagEndIndex - nameIndex;
+			tagEndIndex += 5;  // move past "</ds>"
+
+			return true;
 			}
 
 
