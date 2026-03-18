@@ -418,8 +418,10 @@ namespace CodeClear.NaturalDocs.Engine.Config
 						// If the source URL template isn't declared...
 						if (sourceTarget.RepositorySourceURLTemplate == null)
 							{
-							// If it's not a known repository site, the source URL template must be explicitly declared
-							if (knownRepositorySite == null)
+							// If it's not a known repository site or the template cannot be determined from the project URL, the source
+							// URL template must be explicitly declared
+							if (knownRepositorySite == null ||
+								knownRepositorySite.RequiresURLTemplate)
 								{
 								errorList.Add(
 									Locale.Get("NaturalDocs.Engine", "Project.txt.RepositoryRequiresLinkTemplate"),

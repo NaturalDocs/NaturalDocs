@@ -126,13 +126,24 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			}
 
 
+		/* Property: RequiresURLTemplate
+		 * Whether the known site nevertheless requires a source URL template to be manually defined because it can't be
+		 * determined from the project URL.
+		 */
+		public bool RequiresURLTemplate
+			{
+			get
+				{  return (sourceURLTemplate_WithBranch == null && sourceURLTemplate_WithoutBranch == null);  }
+			}
+
+
 		/* Property: RequiresBranch
 		 * Whether <SourceURLTemplate()> can be called without a branch name.
 		 */
 		public bool RequiresBranch
 			{
 			get
-				{  return (sourceURLTemplate_WithoutBranch == null);  }
+				{  return (sourceURLTemplate_WithBranch != null && sourceURLTemplate_WithoutBranch == null);  }
 			}
 
 
