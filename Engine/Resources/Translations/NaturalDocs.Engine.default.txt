@@ -323,16 +323,17 @@ Project.txt.SourceFolderSyntax.multiline {{{
 #       Additional repository properties can be added as needed:
 #
 #       Branch: [name]
-#          If you're using GitHub, CodeBerg, or Gitea and want the links to go
-#          to a specific branch, add its name here.  If you're using GitLab
-#          you must always include the branch name, which could be "main" or
-#          "master" for the trunk.
+#          If you want repository links to go to a specific branch, add its
+#          name here.  Otherwise they will go to the trunk.  If you're using
+#          GitLab you must always include the branch name since the trunk
+#          could be "main" or "master".
 #
 #       Link Template: [url]
-#          If you're not using GitHub, GitLab, CodeBerg, or Gitea, add the URL
-#          used to link to source files.  Include {File} to represent where
-#          the file path goes and {LineNumber} for where the line number goes.
-#          For example, "https://mysite.com/repo/src/{File}#L{LineNumber}".
+#          If you're not using a common repository site like GitHub or GitLab
+#          or it's self-hosted you must add the URL used to link to source
+#          files.  Use {File} to represent where the file path goes and
+#          {LineNumber} for where the line number goes.  For example,
+#          "https://mysite.com/repo/src/{File}#L{LineNumber}".
 #
 #    Encoding: [name or code page number]
 #    Encoding: [name or code page number] *.[extension]
