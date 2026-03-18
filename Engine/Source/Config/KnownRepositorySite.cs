@@ -1,5 +1,5 @@
 ﻿/*
- * Class: CodeClear.NaturalDocs.Engine.Config.RepositorySite
+ * Class: CodeClear.NaturalDocs.Engine.Config.KnownRepositorySite
  * ____________________________________________________________________________
  *
  * A class storing information about a known repository site.
@@ -17,17 +17,17 @@ using System.Text.RegularExpressions;
 
 namespace CodeClear.NaturalDocs.Engine.Config
 	{
-	public class RepositorySite
+	public class KnownRepositorySite
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 
 
-		/* Function: RepositorySite
+		/* Function: KnownRepositorySite
 		 */
-		public RepositorySite (string name, Regex isSiteURLRegex, Regex isProjectURLRegex, string sourceURLTemplate_WithBranch,
-										string sourceURLTemplate_WithoutBranch, string exampleProjectURL)
+		public KnownRepositorySite (string name, Regex isSiteURLRegex, Regex isProjectURLRegex, string sourceURLTemplate_WithBranch,
+												 string sourceURLTemplate_WithoutBranch, string exampleProjectURL)
 			{
 			this.name = name;
 			this.isSiteURLRegex = isSiteURLRegex;

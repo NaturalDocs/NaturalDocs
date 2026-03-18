@@ -1,5 +1,5 @@
 ﻿/*
- * Struct: CodeClear.NaturalDocs.Engine.Config.RepositorySites
+ * Struct: CodeClear.NaturalDocs.Engine.Config.KnownRepositorySites
  * ____________________________________________________________________________
  *
  * A static class storing information about all known repository sites.
@@ -17,16 +17,16 @@ using System.Text.RegularExpressions;
 
 namespace CodeClear.NaturalDocs.Engine.Config
 	{
-	public static partial class RepositorySites
+	public static partial class KnownRepositorySites
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 
 
-		static RepositorySites ()
+		static KnownRepositorySites ()
 			{
-			var gitHub = new RepositorySite (
+			var gitHub = new KnownRepositorySite (
 				name: "GitHub",
 				isSiteURLRegex: IsGitHubURLRegex(),
 				isProjectURLRegex: IsGitHubProjectURLRegex(),
@@ -41,7 +41,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				exampleProjectURL: "https://github.com/UserName/ProjectName"
 				);
 
-			var gitLab = new RepositorySite (
+			var gitLab = new KnownRepositorySite (
 				name: "GitLab",
 				isSiteURLRegex: IsGitLabURLRegex(),
 				isProjectURLRegex: IsGitLabProjectURLRegex(),
@@ -53,7 +53,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				exampleProjectURL: "https://gitlab.com/UserName/ProjectName"
 				);
 
-			var codeberg = new RepositorySite (
+			var codeberg = new KnownRepositorySite (
 				name: "Codeberg",
 				isSiteURLRegex: IsCodebergURLRegex(),
 				isProjectURLRegex: IsCodebergProjectURLRegex(),
@@ -68,7 +68,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				exampleProjectURL: "https://codeberg.org/UserName/ProjectName"
 				);
 
-			var gitea = new RepositorySite (
+			var gitea = new KnownRepositorySite (
 				name: "Gitea",
 				isSiteURLRegex: IsGiteaURLRegex(),
 				isProjectURLRegex: IsGiteaProjectURLRegex(),
@@ -83,14 +83,14 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				exampleProjectURL: "https://gitea.com/UserName/ProjectName"
 				);
 
-			knownSites = new RepositorySite[] {  gitHub, gitLab, codeberg, gitea  };
+			knownSites = new KnownRepositorySite[] {  gitHub, gitLab, codeberg, gitea  };
 			}
 
 
 		/* Function: FromName
-		 * Returns a <RepositorySite> from the passed name, or null if it is unrecognized.
+		 * Returns a <KnownRepositorySite> from the passed name, or null if it is unrecognized.
 		 */
-		public static RepositorySite FromName (string name)
+		public static KnownRepositorySite FromName (string name)
 			{
 			foreach (var knownSite in knownSites)
 				{
@@ -103,9 +103,9 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 
 		/* Function: FromURL
-		 * Returns a <RepositorySite> associated with the passed URL, or null if it is unrecognized.
+		 * Returns a <KnownRepositorySite> associated with the passed URL, or null if it is unrecognized.
 		 */
-		public static RepositorySite FromURL (string url)
+		public static KnownRepositorySite FromURL (string url)
 			{
 			foreach (var knownSite in knownSites)
 				{
@@ -121,7 +121,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		// Group: Variables
 		// __________________________________________________________________________
 
-		private static RepositorySite[] knownSites;
+		private static KnownRepositorySite[] knownSites;
 
 
 
