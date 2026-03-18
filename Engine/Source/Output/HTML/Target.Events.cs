@@ -156,14 +156,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					{  return;  }
 
 
-				// Does the file source even have a repository link template?  If not we don't care about line number changes.  We do this test
-				// last because it requires more effort to look up.
+				// Does the file source even have a repository link template, and does it even use the line number?  If not we don't care about
+				// line number changes.  We do these tests last because it requires more effort to look up.
 
 				File file = EngineInstance.Files.FromID(oldTopic.FileID);
 				Files.FileSource fileSource = EngineInstance.Files.FileSourceOf(file);
 
-				if (fileSource is not Files.FileSources.SourceFolder ||
-					(fileSource as Files.FileSources.SourceFolder).RepositorySourceURLTemplate == null)
+				// This will be null rather than throw an exception if it can't be cast
+				var fileSourceFolder = fileSource as Files.FileSources.SourceFolder;
+
+				if (fileSourceFolder == null ||
+					fileSourceFolder.RepositorySourceURLTemplate == null ||
+					fileSourceFolder.RepositorySourceURLTemplateUsesLineNumbers == false)
 					{  return;  }
 				}
 

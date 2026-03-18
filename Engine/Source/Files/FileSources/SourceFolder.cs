@@ -29,6 +29,11 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 		public SourceFolder (Files.Manager manager, Config.Targets.SourceFolder config) : base (manager)
 			{
 			this.config = config;
+
+			// We use LastIndexOf instead of IndexOf since it's likely to be at the end
+			repositorySourceURLTemplateUsesLineNumbers =
+				(this.config.RepositorySourceURLTemplate != null &&
+				 this.config.RepositorySourceURLTemplate.LastIndexOf(Config.RepositorySubstitutions.LineNumber, StringComparison.Ordinal) != -1);
 			}
 
 
@@ -166,12 +171,29 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 				{  return config.RepositorySourceURLTemplate;  }
 			}
 
+		/* Property: RepositorySourceURLTemplateUsesLineNumbers
+		 * Whether <RepositorySourceURLTemplate> uses line numbers, since not all sites have URLs that support linking to
+		 * specific lines.  If there is no source URL template this will be false.
+		 */
+		public bool RepositorySourceURLTemplateUsesLineNumbers
+			{
+			get
+				{  return repositorySourceURLTemplateUsesLineNumbers;  }
+			}
+
 
 
 		// Group: Variables
 		// __________________________________________________________________________
 
 		protected Config.Targets.SourceFolder config;
+
+		/* var: repositorySourceURLTemplateUsesLineNumbers
+		 * Whether <RepositorySourceURLTemplate> uses line numbers, since not all sites have URLs that support linking to
+		 * specific lines.  This value is cached here because it's referenced frequently and we can avoid searching the URL
+		 * template every time.
+		 */
+		protected bool repositorySourceURLTemplateUsesLineNumbers;
 
 		}
 	}
