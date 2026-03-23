@@ -2,7 +2,7 @@
  * Class: CodeClear.NaturalDocs.Engine.Repositories.Manager
  * ____________________________________________________________________________
  *
- * A static class storing information about all known repository sites.
+ * A module to handle repository sites within Natural Docs.
  *
  */
 
@@ -17,14 +17,23 @@ using System.Text.RegularExpressions;
 
 namespace CodeClear.NaturalDocs.Engine.Repositories
 	{
-	public static partial class Manager
+	public partial class Manager : Module
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 
 
-		static Manager ()
+		public Manager (Engine.Instance engineInstance) : base (engineInstance)
+			{
+			knownSites = null;
+			}
+
+
+		/* Function: Start
+		 * Starts the module, returning whether it was successful.  If there were any errors they will be added to errorList.
+		 */
+		public bool Start (Errors.ErrorList errorList)
 			{
 			var gitHub = new KnownSite (
 				name: "GitHub",
@@ -84,13 +93,19 @@ namespace CodeClear.NaturalDocs.Engine.Repositories
 				);
 
 			knownSites = new KnownSite[] {  gitHub, gitLab, codeberg, gitea  };
+			return true;
+			}
+
+
+		protected override void Dispose (bool strictRulesApply)
+			{
 			}
 
 
 		/* Function: FromName
 		 * Returns a <KnownSite> from the passed name, or null if it is unrecognized.
 		 */
-		public static KnownSite FromName (string name)
+		public KnownSite FromName (string name)
 			{
 			foreach (var knownSite in knownSites)
 				{
@@ -105,7 +120,7 @@ namespace CodeClear.NaturalDocs.Engine.Repositories
 		/* Function: FromURL
 		 * Returns a <KnownSite> associated with the passed URL, or null if it is unrecognized.
 		 */
-		public static KnownSite FromURL (string url)
+		public KnownSite FromURL (string url)
 			{
 			foreach (var knownSite in knownSites)
 				{
@@ -121,7 +136,7 @@ namespace CodeClear.NaturalDocs.Engine.Repositories
 		// Group: Variables
 		// __________________________________________________________________________
 
-		private static KnownSite[] knownSites;
+		protected KnownSite[] knownSites;
 
 
 

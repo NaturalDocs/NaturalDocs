@@ -25,7 +25,9 @@
  *		It's critical for module code to understand its place in the initialization order so it doesn't call anything later than itself in
  *		its Start() function.  This also serves to document exactly why the order is the way it is.
  *
- *		- <Config.Manager.Start_Stage1()> is first because almost everything depends on it, such as for its config and working
+ *		- <Repositories.Manager> is first because <Config.Manager> depends on it.
+ *
+ *		- <Config.Manager.Start_Stage1()> is next because almost everything else depends on it, such as for its config and working
  *		  data folder properties or for its flag to rebuild everything.
  *
  *		- <Languages.Manager.Start_Stage1()> is next.
@@ -94,6 +96,7 @@ namespace CodeClear.NaturalDocs.Engine
 		 */
 		public Instance (Config.Manager configManager = null,
 								Hierarchies.Manager hierarchiesManager = null,
+								Repositories.Manager repositoriesManager = null,
 								CommentTypes.Manager commentTypesManager = null,
 								Languages.Manager languagesManager = null,
 								Comments.Manager commentsManager = null,
@@ -111,6 +114,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 			this.config = configManager ?? new Config.Manager(this);
 			this.hierarchies = hierarchiesManager ?? new Hierarchies.Manager(this);
+			this.repositories = repositoriesManager ?? new Repositories.Manager(this);
 			this.commentTypes = commentTypesManager ?? new CommentTypes.Manager(this);
 			this.languages = languagesManager ?? new Languages.Manager(this);
 			this.comments = commentsManager ?? new Comments.Manager(this);
@@ -217,6 +221,12 @@ namespace CodeClear.NaturalDocs.Engine
 				config.Dispose();
 				config = null;
 				}
+
+			if (repositories != null && !strictRulesApply)
+				{
+				repositories.Dispose();
+				repositories = null;
+				}
 			}
 
 
@@ -226,7 +236,8 @@ namespace CodeClear.NaturalDocs.Engine
 		 */
 		public bool Start (Errors.ErrorList errors, Config.ProjectConfig commandLineConfig)
 			{
-			if (config.Start_Stage1(errors, commandLineConfig) == false)
+			if (repositories.Start(errors) == false ||
+				config.Start_Stage1(errors, commandLineConfig) == false)
 				{  return false;  }
 
 
@@ -627,6 +638,15 @@ namespace CodeClear.NaturalDocs.Engine
 				{  return hierarchies;  }
 			}
 
+		/* Property: Repositories
+		 * Returns the <Repositories.Manager> associated with this instance.
+		 */
+		public Repositories.Manager Repositories
+			{
+			get
+				{  return repositories;  }
+			}
+
 		/* Property: CommentTypes
 		 * Returns the <CommentTypes.Manager> associated with this instance.
 		 */
@@ -735,6 +755,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 		protected Config.Manager config;
 		protected Hierarchies.Manager hierarchies;
+		protected Repositories.Manager repositories;
 		protected CommentTypes.Manager commentTypes;
 		protected Languages.Manager languages;
 		protected Comments.Manager comments;

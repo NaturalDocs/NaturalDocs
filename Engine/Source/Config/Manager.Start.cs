@@ -29,6 +29,10 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		 *
 		 * After <Start()> is called the properties of this class become read-only.  This function will add all the input and filter
 		 * targets it has to <Files.Manager>, and all output targets to <Output.Manager>.
+		 *
+		 * Dependencies:
+		 *
+		 *		- Call <Repositories.Manager.Start()> before calling this function.
 		 */
 		public bool Start_Stage1 (ErrorList errorList, ProjectConfig commandLineConfig)
 			{
@@ -393,7 +397,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 					if (sourceTarget.HasRepositoryInfo)
 						{
 						// See if it's a known repository site.  Get it from the project URL rather than the declared name.
-						var knownRepositorySite = Repositories.Manager.FromURL(sourceTarget.RepositoryProjectURL);
+						var knownRepositorySite = engineInstance.Repositories.FromURL(sourceTarget.RepositoryProjectURL);
 
 						// If it's a known repository site and the name isn't declared, add it.
 						if (knownRepositorySite != null &&
