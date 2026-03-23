@@ -1,5 +1,5 @@
 ﻿/*
- * Class: CodeClear.NaturalDocs.Engine.Config.KnownRepositorySite
+ * Class: CodeClear.NaturalDocs.Engine.Repositories.KnownSite
  * ____________________________________________________________________________
  *
  * A class storing information about a known repository site.
@@ -15,18 +15,18 @@ using System;
 using System.Text.RegularExpressions;
 
 
-namespace CodeClear.NaturalDocs.Engine.Config
+namespace CodeClear.NaturalDocs.Engine.Repositories
 	{
-	public class KnownRepositorySite
+	public class KnownSite
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 
 
-		/* Function: KnownRepositorySite
+		/* Function: KnownSite
 		 */
-		public KnownRepositorySite (string name, Regex isSiteURLRegex, Regex isProjectURLRegex, string sourceURLTemplate_WithBranch,
+		public KnownSite (string name, Regex isSiteURLRegex, Regex isProjectURLRegex, string sourceURLTemplate_WithBranch,
 												 string sourceURLTemplate_WithoutBranch, string exampleProjectURL)
 			{
 			this.name = name;
@@ -85,11 +85,11 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			if (projectURL[projectURL.Length - 1] == '/')
 				{
 				#if DEBUG
-				if (RepositorySubstitutions.ProjectURL.Length != 1)
+				if (URLSubstitutions.ProjectURL.Length != 1)
 					{  throw new Exception ("Assumed RepositorySubstitutions.ProjectURL was a single character.");  }
 				#endif
 
-				int projectURLSubstitutionIndex = sourceURLTemplate.IndexOf(RepositorySubstitutions.ProjectURL[0]);
+				int projectURLSubstitutionIndex = sourceURLTemplate.IndexOf(URLSubstitutions.ProjectURL[0]);
 
 				if (projectURLSubstitutionIndex != -1 &&
 					projectURLSubstitutionIndex + 1 < sourceURLTemplate.Length &&
@@ -102,10 +102,10 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 			// Perform the substitutions
 
-			sourceURLTemplate = sourceURLTemplate.Replace(RepositorySubstitutions.ProjectURL, projectURL);
+			sourceURLTemplate = sourceURLTemplate.Replace(URLSubstitutions.ProjectURL, projectURL);
 
 			if (branchName != null)
-				{  sourceURLTemplate = sourceURLTemplate.Replace(RepositorySubstitutions.Branch, branchName);  }
+				{  sourceURLTemplate = sourceURLTemplate.Replace(URLSubstitutions.Branch, branchName);  }
 
 			return sourceURLTemplate;
 			}

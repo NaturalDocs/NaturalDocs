@@ -142,8 +142,8 @@ namespace CodeClear.NaturalDocs.Tests
 					inputTarget.RepositoryProjectURLPropertyLocation = Engine.Config.PropertySource.CommandLine;
 
 					inputTarget.RepositorySourceURLTemplate =
-						"https://reposite.com/MyProject/src/" + Engine.Config.RepositorySubstitutions.FilePath +
-						"#Line" + Engine.Config.RepositorySubstitutions.LineNumber;
+						"https://reposite.com/MyProject/src/" + Engine.Repositories.URLSubstitutions.FilePath +
+						"#Line" + Engine.Repositories.URLSubstitutions.LineNumber;
 					inputTarget.RepositorySourceURLTemplatePropertyLocation = Engine.Config.PropertySource.CommandLine;
 					}
 

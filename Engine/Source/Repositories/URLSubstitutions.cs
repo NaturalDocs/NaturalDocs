@@ -1,5 +1,5 @@
 ﻿/*
- * Class: CodeClear.NaturalDocs.Engine.Config.RepositorySubstitutions
+ * Class: CodeClear.NaturalDocs.Engine.Repositories.URLSubstitutions
  * ____________________________________________________________________________
  *
  * Constants for dealing with substitution points in repository source URL templates.
@@ -14,9 +14,9 @@
 using System;
 
 
-namespace CodeClear.NaturalDocs.Engine.Config
+namespace CodeClear.NaturalDocs.Engine.Repositories
 	{
-	public static class RepositorySubstitutions
+	public static class URLSubstitutions
 		{
 
 		/* Constant: FilePath

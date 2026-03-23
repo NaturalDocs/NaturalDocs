@@ -43,8 +43,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			{
 			string url = sourceFileURLTemplate;
 
-			url = url.Replace( Config.RepositorySubstitutions.FilePath, sourceFilePath.ToURL() );
-			url = url.Replace( Config.RepositorySubstitutions.LineNumber, lineNumber.ToString() );
+			url = url.Replace( Repositories.URLSubstitutions.FilePath, sourceFilePath.ToURL() );
+			url = url.Replace( Repositories.URLSubstitutions.LineNumber, lineNumber.ToString() );
 
 			return url;
 			}

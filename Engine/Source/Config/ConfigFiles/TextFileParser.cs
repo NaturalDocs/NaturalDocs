@@ -277,8 +277,8 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 				if (sourceFolder != null && sourceFolder.HasRepositoryInfo)
 					{
-					value = FindRepositorySourceURLTemplateFilePathSubstitutionRegex().Replace(value, RepositorySubstitutions.FilePath);
-					value = FindRepositorySourceURLTemplateLineNumberSubstitutionRegex().Replace(value, RepositorySubstitutions.LineNumber);
+					value = FindRepositorySourceURLTemplateFilePathSubstitutionRegex().Replace(value, Repositories.URLSubstitutions.FilePath);
+					value = FindRepositorySourceURLTemplateLineNumberSubstitutionRegex().Replace(value, Repositories.URLSubstitutions.LineNumber);
 
 					sourceFolder.RepositorySourceURLTemplate = value;
 					sourceFolder.RepositorySourceURLTemplatePropertyLocation = propertyLocation;
@@ -1092,8 +1092,8 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 					output.Append("   Link Template: ");
 
 					var template = sourceFolder.RepositorySourceURLTemplate;
-					template = template.Replace(RepositorySubstitutions.FilePath, "{File}");
-					template = template.Replace(RepositorySubstitutions.LineNumber, "{LineNumber}");
+					template = template.Replace(Repositories.URLSubstitutions.FilePath, "{File}");
+					template = template.Replace(Repositories.URLSubstitutions.LineNumber, "{LineNumber}");
 
 					output.AppendLine(template);
 					}

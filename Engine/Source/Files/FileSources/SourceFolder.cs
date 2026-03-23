@@ -33,7 +33,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 			// We use LastIndexOf instead of IndexOf since it's likely to be at the end
 			repositorySourceURLTemplateUsesLineNumbers =
 				(this.config.RepositorySourceURLTemplate != null &&
-				 this.config.RepositorySourceURLTemplate.LastIndexOf(Config.RepositorySubstitutions.LineNumber, StringComparison.Ordinal) != -1);
+				 this.config.RepositorySourceURLTemplate.LastIndexOf(Repositories.URLSubstitutions.LineNumber, StringComparison.Ordinal) != -1);
 			}
 
 

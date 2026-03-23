@@ -393,7 +393,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 					if (sourceTarget.HasRepositoryInfo)
 						{
 						// See if it's a known repository site.  Get it from the project URL rather than the declared name.
-						var knownRepositorySite = KnownRepositorySites.FromURL(sourceTarget.RepositoryProjectURL);
+						var knownRepositorySite = Repositories.Manager.FromURL(sourceTarget.RepositoryProjectURL);
 
 						// If it's a known repository site and the name isn't declared, add it.
 						if (knownRepositorySite != null &&

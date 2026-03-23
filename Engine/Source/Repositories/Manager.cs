@@ -1,5 +1,5 @@
 ﻿/*
- * Struct: CodeClear.NaturalDocs.Engine.Config.KnownRepositorySites
+ * Class: CodeClear.NaturalDocs.Engine.Repositories.Manager
  * ____________________________________________________________________________
  *
  * A static class storing information about all known repository sites.
@@ -15,82 +15,82 @@ using System;
 using System.Text.RegularExpressions;
 
 
-namespace CodeClear.NaturalDocs.Engine.Config
+namespace CodeClear.NaturalDocs.Engine.Repositories
 	{
-	public static partial class KnownRepositorySites
+	public static partial class Manager
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 
 
-		static KnownRepositorySites ()
+		static Manager ()
 			{
-			var gitHub = new KnownRepositorySite (
+			var gitHub = new KnownSite (
 				name: "GitHub",
 				isSiteURLRegex: IsGitHubURLRegex(),
 				isProjectURLRegex: IsGitHubProjectURLRegex(),
-				sourceURLTemplate_WithBranch: RepositorySubstitutions.ProjectURL +
-																"/blob/" + RepositorySubstitutions.Branch + "/" +
-																RepositorySubstitutions.FilePath +
-																"#L" + RepositorySubstitutions.LineNumber,
-				sourceURLTemplate_WithoutBranch: RepositorySubstitutions.ProjectURL +
+				sourceURLTemplate_WithBranch: URLSubstitutions.ProjectURL +
+																"/blob/" + URLSubstitutions.Branch + "/" +
+																URLSubstitutions.FilePath +
+																"#L" + URLSubstitutions.LineNumber,
+				sourceURLTemplate_WithoutBranch: URLSubstitutions.ProjectURL +
 																	"/blob/master/" + // Will redirect to the default branch even if it isn't called "master"
-																	RepositorySubstitutions.FilePath +
-																	"#L" + RepositorySubstitutions.LineNumber,
+																	URLSubstitutions.FilePath +
+																	"#L" + URLSubstitutions.LineNumber,
 				exampleProjectURL: "https://github.com/UserName/ProjectName"
 				);
 
-			var gitLab = new KnownRepositorySite (
+			var gitLab = new KnownSite (
 				name: "GitLab",
 				isSiteURLRegex: IsGitLabURLRegex(),
 				isProjectURLRegex: IsGitLabProjectURLRegex(),
-				sourceURLTemplate_WithBranch: RepositorySubstitutions.ProjectURL +
-																"/-/blob/" + RepositorySubstitutions.Branch + "/" +
-																RepositorySubstitutions.FilePath +
-																"#L" + RepositorySubstitutions.LineNumber,
+				sourceURLTemplate_WithBranch: URLSubstitutions.ProjectURL +
+																"/-/blob/" + URLSubstitutions.Branch + "/" +
+																URLSubstitutions.FilePath +
+																"#L" + URLSubstitutions.LineNumber,
 				sourceURLTemplate_WithoutBranch: null, // Not possible to omit the branch or redirect to the default branch
 				exampleProjectURL: "https://gitlab.com/UserName/ProjectName"
 				);
 
-			var codeberg = new KnownRepositorySite (
+			var codeberg = new KnownSite (
 				name: "Codeberg",
 				isSiteURLRegex: IsCodebergURLRegex(),
 				isProjectURLRegex: IsCodebergProjectURLRegex(),
-				sourceURLTemplate_WithBranch: RepositorySubstitutions.ProjectURL +
-																"/src/branch/" + RepositorySubstitutions.Branch + "/" +
-																RepositorySubstitutions.FilePath +
-																"#L" + RepositorySubstitutions.LineNumber,
-				sourceURLTemplate_WithoutBranch: RepositorySubstitutions.ProjectURL +
+				sourceURLTemplate_WithBranch: URLSubstitutions.ProjectURL +
+																"/src/branch/" + URLSubstitutions.Branch + "/" +
+																URLSubstitutions.FilePath +
+																"#L" + URLSubstitutions.LineNumber,
+				sourceURLTemplate_WithoutBranch: URLSubstitutions.ProjectURL +
 																	"/src/" +
-																	RepositorySubstitutions.FilePath +
-																	"#L" + RepositorySubstitutions.LineNumber,
+																	URLSubstitutions.FilePath +
+																	"#L" + URLSubstitutions.LineNumber,
 				exampleProjectURL: "https://codeberg.org/UserName/ProjectName"
 				);
 
-			var gitea = new KnownRepositorySite (
+			var gitea = new KnownSite (
 				name: "Gitea",
 				isSiteURLRegex: IsGiteaURLRegex(),
 				isProjectURLRegex: IsGiteaProjectURLRegex(),
-				sourceURLTemplate_WithBranch: RepositorySubstitutions.ProjectURL +
-																"/src/branch/" + RepositorySubstitutions.Branch + "/" +
-																RepositorySubstitutions.FilePath +
-																"#L" + RepositorySubstitutions.LineNumber,
-				sourceURLTemplate_WithoutBranch: RepositorySubstitutions.ProjectURL +
+				sourceURLTemplate_WithBranch: URLSubstitutions.ProjectURL +
+																"/src/branch/" + URLSubstitutions.Branch + "/" +
+																URLSubstitutions.FilePath +
+																"#L" + URLSubstitutions.LineNumber,
+				sourceURLTemplate_WithoutBranch: URLSubstitutions.ProjectURL +
 																	"/src/" +
-																	RepositorySubstitutions.FilePath +
-																	"#L" + RepositorySubstitutions.LineNumber,
+																	URLSubstitutions.FilePath +
+																	"#L" + URLSubstitutions.LineNumber,
 				exampleProjectURL: "https://gitea.com/UserName/ProjectName"
 				);
 
-			knownSites = new KnownRepositorySite[] {  gitHub, gitLab, codeberg, gitea  };
+			knownSites = new KnownSite[] {  gitHub, gitLab, codeberg, gitea  };
 			}
 
 
 		/* Function: FromName
-		 * Returns a <KnownRepositorySite> from the passed name, or null if it is unrecognized.
+		 * Returns a <KnownSite> from the passed name, or null if it is unrecognized.
 		 */
-		public static KnownRepositorySite FromName (string name)
+		public static KnownSite FromName (string name)
 			{
 			foreach (var knownSite in knownSites)
 				{
@@ -103,9 +103,9 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 
 		/* Function: FromURL
-		 * Returns a <KnownRepositorySite> associated with the passed URL, or null if it is unrecognized.
+		 * Returns a <KnownSite> associated with the passed URL, or null if it is unrecognized.
 		 */
-		public static KnownRepositorySite FromURL (string url)
+		public static KnownSite FromURL (string url)
 			{
 			foreach (var knownSite in knownSites)
 				{
@@ -121,7 +121,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		// Group: Variables
 		// __________________________________________________________________________
 
-		private static KnownRepositorySite[] knownSites;
+		private static KnownSite[] knownSites;
 
 
 
