@@ -38,7 +38,10 @@ namespace CodeClear.NaturalDocs.Engine.Repositories
 				new Templates.GitHub(),
 				new Templates.GitLab(),
 				new Templates.Codeberg(),
-				new Templates.Gitea()
+				new Templates.Gitea(),
+				new Templates.Forgejo(),
+				new Templates.Bitbucket(),
+				new Templates.AzureRepos()
 				};
 
 			return true;
