@@ -277,8 +277,8 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 				if (sourceFolder != null && sourceFolder.HasRepositoryInfo)
 					{
-					value = FindRepositorySourceURLTemplateFilePathSubstitutionRegex().Replace(value, Repositories.URLSubstitutions.FilePath);
-					value = FindRepositorySourceURLTemplateLineNumberSubstitutionRegex().Replace(value, Repositories.URLSubstitutions.LineNumber);
+					value = FindRepositorySourceURLTemplateFilePathSubstitutionRegex().Replace(value, Repositories.URLSubstitutions.FilePathString);
+					value = FindRepositorySourceURLTemplateLineNumberSubstitutionRegex().Replace(value, Repositories.URLSubstitutions.LineNumberString);
 
 					sourceFolder.RepositorySourceURLTemplate = value;
 					sourceFolder.RepositorySourceURLTemplatePropertyLocation = propertyLocation;
@@ -1092,8 +1092,8 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 					output.Append("   Link Template: ");
 
 					var template = sourceFolder.RepositorySourceURLTemplate;
-					template = template.Replace(Repositories.URLSubstitutions.FilePath, "{File}");
-					template = template.Replace(Repositories.URLSubstitutions.LineNumber, "{LineNumber}");
+					template = template.Replace(Repositories.URLSubstitutions.FilePathString, "{File}");
+					template = template.Replace(Repositories.URLSubstitutions.LineNumberString, "{LineNumber}");
 
 					output.AppendLine(template);
 					}
@@ -1624,7 +1624,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 		/* Regex: FindRepositorySourceURLTemplateLineNumberSubstitutionRegex
 		 * Will match instances of "{line}" in the source URL template or any of its acceptable variants.
 		 */
-		[GeneratedRegex("""\{ *line(?:[ \-_]?number) *\}""",
+		[GeneratedRegex("""\{ *line(?:[ \-_]?number)? *\}""",
 								  RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
 		static internal partial Regex FindRepositorySourceURLTemplateLineNumberSubstitutionRegex();
 

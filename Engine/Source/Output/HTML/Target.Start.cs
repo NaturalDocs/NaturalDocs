@@ -226,7 +226,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				{
 				bool hasDeletions = false;
 				bool hasAdditions = false;
-				bool hasRepositoryURLTemplateChange = false;
+				bool repositorySourceURLsChanged = false;
 
 
 				// Purge the output folders of any deleted FileSources
@@ -282,8 +282,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 									{
 									var sourceFolder = fileSource as Files.FileSources.SourceFolder;
 
-									if (sourceFolder.RepositorySourceURLTemplate != previousFileSourceConfig.RepositorySourceURLTemplate)
-										{  hasRepositoryURLTemplateChange = true;  }
+									if (sourceFolder.Repository != null)
+										{
+										string repositorySourceURLSample = sourceFolder.Repository.SourceURL(ConfigFiles.BinaryConfigParser.SampleRepositoryPath,
+																																				 ConfigFiles.BinaryConfigParser.SampleRepositoryLineNumber);
+
+										if (repositorySourceURLSample != previousFileSourceConfig.RepositorySourceURLSample)
+											{  repositorySourceURLsChanged = true;  }
+										}
+									else
+										{
+										if (previousFileSourceConfig.RepositorySourceURLSample != null)
+											{  repositorySourceURLsChanged = true;  }
+										}
 									}
 
 								break;
@@ -307,10 +318,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					{  newStartupIssues |= StartupIssues.NeedToRebuildAllOutput;  }
 
 
-				// If there were repository URL template changes, force a rebuild.  This covers if a repository config was added for the
-				// first time, changed, or removed completely.
+				// If there were changes to the repository source URL format, force a rebuild.  This covers if a repository config was
+				// added for the first time, changed, or removed completely.
 
-				if (hasRepositoryURLTemplateChange)
+				if (repositorySourceURLsChanged)
 					{  newStartupIssues |= StartupIssues.NeedToRebuildAllOutput;  }
 				}
 

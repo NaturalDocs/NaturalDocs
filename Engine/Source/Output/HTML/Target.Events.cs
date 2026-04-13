@@ -152,12 +152,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				// Next check if the line number we actually use for the repository link changed, because if only the other one changed we can
 				// still ignore it.
 
-				if (RepositoryLinks.EffectiveLineNumber(oldTopic) == RepositoryLinks.EffectiveLineNumber(newTopic))
+				if (Components.ButtonPanels.RepositoryLinks.ChooseLineNumber(oldTopic) ==
+					Components.ButtonPanels.RepositoryLinks.ChooseLineNumber(newTopic))
 					{  return;  }
 
 
-				// Does the file source even have a repository link template, and does it even use the line number?  If not we don't care about
-				// line number changes.  We do these tests last because it requires more effort to look up.
+				// Does the file source even have repository settings, and does it even use the line number?  If not we don't care about line
+				// number changes.  We do these tests last because it requires more effort to look up.
 
 				File file = EngineInstance.Files.FromID(oldTopic.FileID);
 				Files.FileSource fileSource = EngineInstance.Files.FileSourceOf(file);
@@ -166,8 +167,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				var fileSourceFolder = fileSource as Files.FileSources.SourceFolder;
 
 				if (fileSourceFolder == null ||
-					fileSourceFolder.RepositorySourceURLTemplate == null ||
-					fileSourceFolder.RepositorySourceURLTemplateUsesLineNumbers == false)
+					fileSourceFolder.Repository == null ||
+					fileSourceFolder.Repository.SupportsLineNumbers == false)
 					{  return;  }
 				}
 

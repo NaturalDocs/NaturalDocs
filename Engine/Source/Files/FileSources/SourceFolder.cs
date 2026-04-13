@@ -30,10 +30,16 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 			{
 			this.config = config;
 
-			// We use LastIndexOf instead of IndexOf since it's likely to be at the end
-			repositorySourceURLTemplateUsesLineNumbers =
-				(this.config.RepositorySourceURLTemplate != null &&
-				 this.config.RepositorySourceURLTemplate.LastIndexOf(Repositories.URLSubstitutions.LineNumber, StringComparison.Ordinal) != -1);
+			if (config.HasRepositoryInfo)
+				{
+				repository = new Repositories.Repository(projectURL: config.RepositoryProjectURL,
+																			siteName: config.RepositoryName,
+																			siteTemplate: config.RepositorySiteTemplate,
+																			branch: config.RepositoryBranch,
+																			sourceURLTemplate: config.RepositorySourceURLTemplate);
+				}
+			else
+				{  repository = null;  }
 			}
 
 
@@ -142,43 +148,13 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 				{  return config.Name;  }
 			}
 
-		/* Property: RepositoryName
-		 * The name of the repository site, such as "GitHub", or null if there isn't one.
+		/* Property: Repository
+		 * The <Repositories.Repository> associated with this source folder, or null if one hasn't been set.
 		 */
-		public string RepositoryName
+		public Repositories.Repository Repository
 			{
 			get
-				{  return config.RepositoryName;  }
-			}
-
-		/* Property: RepositoryProjectURL
-		 * The URL to the repository project page, or null if there isn't one.
-		 */
-		public string RepositoryProjectURL
-			{
-			get
-				{  return config.RepositoryProjectURL;  }
-			}
-
-		/* Property: RepositorySourceURLTemplate
-		 * The URL template for source files in the repository, or null if it's not set.  Substitution points will be marked with
-		 * <RepositorySubstitutions.FilePath> and <RepositorySubstitutions.LineNumber>.  Generally you should use
-		 * <RepositorySourceFileURLOf()> instead of reading this directly.
-		 */
-		public string RepositorySourceURLTemplate
-			{
-			get
-				{  return config.RepositorySourceURLTemplate;  }
-			}
-
-		/* Property: RepositorySourceURLTemplateUsesLineNumbers
-		 * Whether <RepositorySourceURLTemplate> uses line numbers, since not all sites have URLs that support linking to
-		 * specific lines.  If there is no source URL template this will be false.
-		 */
-		public bool RepositorySourceURLTemplateUsesLineNumbers
-			{
-			get
-				{  return repositorySourceURLTemplateUsesLineNumbers;  }
+				{  return repository;  }
 			}
 
 
@@ -187,13 +163,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 		// __________________________________________________________________________
 
 		protected Config.Targets.SourceFolder config;
-
-		/* var: repositorySourceURLTemplateUsesLineNumbers
-		 * Whether <RepositorySourceURLTemplate> uses line numbers, since not all sites have URLs that support linking to
-		 * specific lines.  This value is cached here because it's referenced frequently and we can avoid searching the URL
-		 * template every time.
-		 */
-		protected bool repositorySourceURLTemplateUsesLineNumbers;
+		protected Repositories.Repository repository;
 
 		}
 	}

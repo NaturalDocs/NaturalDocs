@@ -33,6 +33,8 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 			folderPropertyLocation = PropertySource.NotDefined;
 			namePropertyLocation = PropertySource.NotDefined;
 
+			repositorySiteTemplate = null;
+
 			repositoryName = null;
 			repositoryBranch = null;
 			repositoryProjectURL = null;
@@ -44,6 +46,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 			repositorySourceURLTemplatePropertyLocation = PropertySource.NotDefined;
 			}
 
+
 		public SourceFolder (SourceFolder toCopy) : base (toCopy)
 			{
 			folder = toCopy.folder;
@@ -51,6 +54,8 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 
 			folderPropertyLocation = toCopy.folderPropertyLocation;
 			namePropertyLocation = toCopy.namePropertyLocation;
+
+			repositorySiteTemplate = toCopy.repositorySiteTemplate;
 
 			repositoryName = toCopy.repositoryName;
 			repositoryBranch = toCopy.repositoryBranch;
@@ -63,10 +68,12 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 			repositorySourceURLTemplatePropertyLocation = toCopy.repositorySourceURLTemplatePropertyLocation;
 			}
 
+
 		override public Input Duplicate ()
 			{
 			return new SourceFolder(this);
 			}
+
 
 		override public bool IsSameTarget (Input other)
 			{
@@ -75,6 +82,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 
 			return (folder == (other as SourceFolder).folder);
 			}
+
 
 		public override bool Validate (ErrorList errorList, int targetIndex)
 			{
@@ -107,8 +115,62 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 					}
 				}
 
+			if (HasRepositoryInfo)
+				{
+				if (repositorySourceURLTemplate == null)
+					{
+
+					// If the project URL and/or name didn't get recognized so a site template could be assigned, the source URL template
+					// needed to be set manually.
+					if (repositorySiteTemplate == null)
+						{
+						errorList.Add(
+							Locale.Get("NaturalDocs.Engine", "Project.txt.UnknownRepositorySitesRequireLinkTemplate"),
+							RepositoryProjectURLPropertyLocation
+							);
+						valid = false;
+						}
+
+					else // repositorySiteTemplate != null
+						{
+
+						// If it got assigned a site template because of the URL, check that it's a valid project URL.  We don't do this when it
+						// only matches the name because it may be a self-hosted instance which may have a different URL format.
+						if (repositorySiteTemplate.IsSiteURL(repositoryProjectURL) &&
+							!repositorySiteTemplate.IsProjectURL(repositoryProjectURL))
+							{
+							errorList.Add(
+								Locale.Get("NaturalDocs.Engine", "Project.txt.RepositoryURLMustBeToProjectPage(example)", repositorySiteTemplate.ExampleProjectURL),
+								RepositoryProjectURLPropertyLocation
+								);
+							valid = false;
+							}
+
+						// Check the template requirements
+						if (repositorySiteTemplate.RequiresSourceURLTemplate)
+							{
+							errorList.Add(
+								Locale.Get("NaturalDocs.Engine", "Project.txt.RepositoryRequiresLinkTemplate"),
+								RepositoryProjectURLPropertyLocation
+								);
+							valid = false;
+							}
+						else if (repositorySiteTemplate.RequiresBranch &&
+								   repositoryBranch == null)
+							{
+							errorList.Add(
+								Locale.Get("NaturalDocs.Engine", "Project.txt.RepositoryRequiresBranch"),
+								RepositoryProjectURLPropertyLocation
+								);
+							valid = false;
+							}
+						}
+					}
+				}
+
 			return valid;
 			}
+
 
 		public void GenerateDefaultName ()
 			{
@@ -182,6 +244,18 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 			}
 
 
+		/* Property: RepositorySiteTemplate
+		 * The <Repositories.Template> associated with this site, or null if none.
+		 */
+		public Repositories.Template RepositorySiteTemplate
+			{
+			get
+				{  return repositorySiteTemplate;  }
+			set
+				{  repositorySiteTemplate = value;  }
+			}
+
+
 		/* Property: RepositoryName
 		 * The name of the repository the source code is in, or null if it's not set.  This is the name of the site, such as GitHub, rather
 		 * than the name of the project.
@@ -221,16 +295,14 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 
 		/* Property: RepositorySourceURLTemplate
 		 * The URL template for source files in the repository, or null if it's not set.  The template should mark substitution points with
-		 * <RepositorySubstitutions.FilePath> and <RepositorySubstitutions.LineNumber>.
+		 * <Repositories.URLSubstitutions.FilePath> and <Repositories.URLSubstitutions.LineNumber>.
 		 */
 		public string RepositorySourceURLTemplate
 			{
 			get
 				{  return repositorySourceURLTemplate;  }
 			set
-				{
-				repositorySourceURLTemplate = value;
-				}
+				{  repositorySourceURLTemplate = value;  }
 			}
 
 
@@ -321,6 +393,8 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 
 		protected PropertyLocation folderPropertyLocation;
 		protected PropertyLocation namePropertyLocation;
+
+		protected Repositories.Template repositorySiteTemplate;
 
 		protected string repositoryName;
 		protected string repositoryBranch;

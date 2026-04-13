@@ -50,7 +50,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.ButtonPanels
 			var definitionFileSource = EngineInstance.Files.FileSourceOf(definitionFile) as Files.FileSources.SourceFolder;
 
 			if (definitionFileSource != null &&
-				definitionFileSource.RepositorySourceURLTemplate != null)
+				definitionFileSource.Repository != null)
 				{  return true;  }
 
 
@@ -66,7 +66,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.ButtonPanels
 					definitionFileSource = EngineInstance.Files.FileSourceOf(definitionFile) as Files.FileSources.SourceFolder;
 
 					if (definitionFileSource != null &&
-						definitionFileSource.RepositorySourceURLTemplate != null)
+						definitionFileSource.Repository != null)
 						{  return true;  }
 					}
 				}
@@ -151,16 +151,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.ButtonPanels
 			var definitionFileSource = EngineInstance.Files.FileSourceOf(definitionFile) as Files.FileSources.SourceFolder;
 
 			if (definitionFileSource != null &&
-				definitionFileSource.RepositorySourceURLTemplate != null)
+				definitionFileSource.Repository != null)
 				{
 				var link = new RepositoryLink();
 
 				link.FileID = topic.FileID;
 				link.FileSourceName = definitionFileSource.Name;
 				link.RelativeFilePath = definitionFileSource.MakeRelative(definitionFile.FileName);
-				link.LineNumber = HTML.RepositoryLinks.EffectiveLineNumber(topic);
+				link.LineNumber = ChooseLineNumber(topic);
 
-				link.URL = HTML.RepositoryLinks.ToSourceFile(definitionFileSource.RepositorySourceURLTemplate, link.RelativeFilePath, link.LineNumber);
+				link.URL = definitionFileSource.Repository.SourceURL(link.RelativeFilePath, link.LineNumber);
 				// link.Title stays null for now
 
 				links = new List<RepositoryLink>();
@@ -180,17 +180,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.ButtonPanels
 					definitionFileSource = EngineInstance.Files.FileSourceOf(definitionFile) as Files.FileSources.SourceFolder;
 
 					if (definitionFileSource != null &&
-						definitionFileSource.RepositorySourceURLTemplate != null)
+						definitionFileSource.Repository != null)
 						{
 						var definitionLink = new RepositoryLink();
 
 						definitionLink.FileID = definitionTopic.FileID;
 						definitionLink.FileSourceName = definitionFileSource.Name;
 						definitionLink.RelativeFilePath = definitionFileSource.MakeRelative(definitionFile.FileName);
-						definitionLink.LineNumber = HTML.RepositoryLinks.EffectiveLineNumber(definitionTopic);
+						definitionLink.LineNumber = ChooseLineNumber(definitionTopic);
 
-						definitionLink.URL = HTML.RepositoryLinks.ToSourceFile(definitionFileSource.RepositorySourceURLTemplate,
-																										  definitionLink.RelativeFilePath, definitionLink.LineNumber);
+						definitionLink.URL = definitionFileSource.Repository.SourceURL(definitionLink.RelativeFilePath, definitionLink.LineNumber);
 						// definitionLink.Title stays null for now
 
 						if (links == null)
@@ -330,6 +329,29 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.ButtonPanels
 
 			return links;
 			}
+
+
+
+		// Group: Static Functions
+		// ___________________________________________________________________________
+
+
+		/* Function: ChooseLineNumber
+		 * Chooses either the code line number or the comment line number to use in a repository link.
+		 */
+		static public int ChooseLineNumber (int commentLineNumber, int codeLineNumber)
+			{
+			return (codeLineNumber > 0 ? codeLineNumber : commentLineNumber);
+			}
+
+		/* Function: ChooseLineNumber
+		 * Chooses either the code line number or the comment line number to use in a repository link.
+		 */
+		static public int ChooseLineNumber (Engine.Topics.Topic topic)
+			{
+			return ChooseLineNumber (commentLineNumber: topic.CommentLineNumber, codeLineNumber: topic.CodeLineNumber);
+			}
+
 
 
 		/* ___________________________________________________________________________

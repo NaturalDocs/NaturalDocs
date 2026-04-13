@@ -20,32 +20,27 @@ namespace CodeClear.NaturalDocs.Engine.Repositories
 		{
 
 		/* Constant: FilePath
-		 * A string representing the place in a repository source URL template which should be replaced with the
-		 * source file's relative path.  It's a single character but almost all substitution functions require strings so
-		 * the constant is a string as well.
+		 * A character representing the place in a repository source URL template which should be replaced with the
+		 * source file's relative path.
 		 */
-		public const string FilePath = "\x1F";
+		public const char FilePath = '\x1F';
+
+		/* Constant: FilePathString
+		 * <FilePath> as a string to avoid repeated runtime conversions for substitution functions that require it as a
+		 * string.
+		 */
+		public const string FilePathString = "\x1F";
 
 		/* Constant: LineNumber
-		 * A string representing the place in a repository source URL template which should be replaced with the
-		 * source file line number.  It's a single character but almost all substitution functions require strings so the
-		 * constant is a string as well.
+		 * A character representing the place in a repository source URL template which should be replaced with the
+		 * source file line number.
 		 */
-		public const string LineNumber = "\x1E";
+		public const char LineNumber = '\x1E';
 
-		/* Constant: Branch
-		 * A string representing the place in a repository source URL template which should be replaced with the
-		 * branch name.  It's a single character but almost all substitution functions require strings so the constant
-		 * is a string as well.
+		/* Constant: LineNumberString
+		 * <LineNumber> as a string to avoid repeated runtime conversions for substitution functions that require it
+		 * as a string.
 		 */
-		public const string Branch = "\x1D";
-
-		/* Constant: ProjectURL
-		 * A string representing the place in a repository source URL template which should be replaced with the
-		 * source file's repository project URL.  It's a single character but almost all substitution functions require
-		 * strings so the constant is a string as well.
-		 */
-		public const string ProjectURL = "\x1C";
-
+		public const string LineNumberString = "\x1E";
 		}
 	}

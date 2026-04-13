@@ -188,7 +188,35 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 
 			//
-			// Validate targets and encodings
+			// Match repository site templates with configurations
+			//
+
+			foreach (var target in combinedConfig.InputTargets)
+				{
+				// Will be null instead of throwing an exception if it isn't the correct type
+				Targets.SourceFolder sourceFolderTarget = target as Targets.SourceFolder;
+
+				if (sourceFolderTarget != null &&
+					sourceFolderTarget.Type == Files.InputType.Source &&
+					sourceFolderTarget.HasRepositoryInfo)
+					{
+					// First try to match by site URL.  We'll use that if the name is undefined or the name is wrong.
+					var siteTemplate = engineInstance.Repositories.TemplateFromURL(sourceFolderTarget.RepositoryProjectURL);
+
+					// If it's not a recognized URL, see if we can match by name since it may be a self-hosted version of a
+					// known repository site and we still want to use their URL schema.
+					if (siteTemplate == null &&
+						sourceFolderTarget.RepositoryName != null)
+						{  siteTemplate = engineInstance.Repositories.TemplateFromName(sourceFolderTarget.RepositoryName);  }
+
+					if (siteTemplate != null)
+						{  sourceFolderTarget.RepositorySiteTemplate = siteTemplate;  }
+					}
+				}
+
+
+			//
+			// Validate targets, repositories, and encodings
 			//
 
 			if (combinedConfig.InputTargets.Count < 1)
@@ -382,82 +410,6 @@ namespace CodeClear.NaturalDocs.Engine.Config
 					break;
 					}
 				}
-
-
-			//
-			// Validate repository configurations and fill in implied properties
-			//
-
-			foreach (var target in combinedConfig.InputTargets)
-				{
-				if (target.Type == Files.InputType.Source)
-					{
-					Targets.SourceFolder sourceTarget = (Targets.SourceFolder)target;
-
-					if (sourceTarget.HasRepositoryInfo)
-						{
-						// See if it's a known repository site.  Get it from the project URL rather than the declared name.
-						var knownRepositorySite = engineInstance.Repositories.FromURL(sourceTarget.RepositoryProjectURL);
-
-						// If it's a known repository site and the name isn't declared, add it.
-						if (knownRepositorySite != null &&
-							sourceTarget.RepositoryName == null)
-							{
-							sourceTarget.RepositoryName = knownRepositorySite.Name;
-							sourceTarget.RepositoryNamePropertyLocation = PropertySource.SystemGenerated;
-							}
-
-						// If it's a known repository site, make sure the project URL is correct
-						if (knownRepositorySite != null &&
-							!knownRepositorySite.IsProjectURL(sourceTarget.RepositoryProjectURL))
-							{
-							errorList.Add(
-								Locale.Get("NaturalDocs.Engine", "Project.txt.RepositoryURLMustBeToProjectPage(example)",
-												knownRepositorySite.ExampleProjectURL),
-								sourceTarget.RepositoryProjectURLPropertyLocation
-								);
-							success = false;
-							}
-
-						// If the source URL template isn't declared...
-						if (sourceTarget.RepositorySourceURLTemplate == null)
-							{
-							// If it's not a known repository site or the template cannot be determined from the project URL, the source
-							// URL template must be explicitly declared
-							if (knownRepositorySite == null ||
-								knownRepositorySite.RequiresURLTemplate)
-								{
-								errorList.Add(
-									Locale.Get("NaturalDocs.Engine", "Project.txt.RepositoryRequiresLinkTemplate"),
-									sourceTarget.RepositoryProjectURLPropertyLocation
-									);
-								success = false;
-								}
-
-							// If the site requires a branch, it must be explicitly declared
-							else if (knownRepositorySite.RequiresBranch &&
-									  sourceTarget.RepositoryBranch == null)
-								{
-								errorList.Add(
-									Locale.Get("NaturalDocs.Engine", "Project.txt.RepositoryRequiresBranch"),
-									sourceTarget.RepositoryProjectURLPropertyLocation
-									);
-								success = false;
-								}
-
-							// Otherwise we can generate the source URL template
-							else
-								{
-								sourceTarget.RepositorySourceURLTemplate = knownRepositorySite.SourceURLTemplate(sourceTarget.RepositoryProjectURL, sourceTarget.RepositoryBranch);
-								sourceTarget.RepositorySourceURLTemplatePropertyLocation = PropertySource.SystemGenerated;
-								}
-							}
-						}
-					}
-				}
-
-			if (success == false)
-				{  return false;  }
 
 
 			//

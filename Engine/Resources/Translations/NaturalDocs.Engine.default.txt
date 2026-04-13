@@ -208,9 +208,10 @@ Project.txt.OneRepositoryPerSourceFolder: Only one repository may be defined per
 Project.txt.PropertyOnlyAppliesToSourceFolders(property): The {0} property only applies to source folders.
 Project.txt.PropertyOnlyAppliesToRepositories(property): The {0} property only applies to repositories.
 Project.txt.StyleOnlyAppliesToHTMLOutputFolders: The Style property only applies to HTML output folders.
-Project.txt.RepositoryRequiresLinkTemplate: This repository must have a Link Template property.
-Project.txt.RepositoryRequiresBranch: This repository must have a Branch property.
-Project.txt.RepositoryURLMustBeToProjectPage(example): The repository URL must be to the project page, such as "{0}".
+Project.txt.UnknownRepositorySitesRequireLinkTemplate: This isn't a recognized repository site.  Please add a Link Template line for source file links such as "Link Template: https://mysite.com/repo/src/{File}#L{LineNumber}".
+Project.txt.RepositoryRequiresLinkTemplate: This repository must have a Link Template property.  Please add a Link Template line for source file links such as "Link Template: https://mysite.com/repo/src/{File}#L{LineNumber}".
+Project.txt.RepositoryRequiresBranch: This repository must have a Branch property.  Please add the name of the branch to use such as "Branch: main".
+Project.txt.RepositoryURLMustBeToProjectPage(example): Please set the repository URL to the project page, such as "{0}".
 Project.txt.UnrecognizedValue(keyword, value): "{1}" is not a valid value for {0}.
 Project.txt.CantFindHomePageFile(name): Can't find home page file {0}.
 
@@ -318,22 +319,19 @@ Project.txt.SourceFolderSyntax.multiline {{{
 #       The web-based repository for the source files.  The URL should go to
 #       the main project page, such as "https://github.com/User/MyProject".
 #       You can optionally include the name of the repository site, such as
-#       "GitHub".
+#       "GitHub", which helps Natural Docs recognize self-hosted instances.
 #
 #       Additional repository properties can be added as needed:
 #
 #       Branch: [name]
 #          If you want repository links to go to a specific branch, add its
-#          name here.  Otherwise they will go to the trunk.  If you're using
-#          GitLab you must always include the branch name since the trunk
-#          could be "main" or "master".
+#          name here.  Otherwise they will go to the trunk.
 #
 #       Link Template: [url]
-#          If you're not using a common repository site like GitHub or GitLab
-#          or it's self-hosted you must add the URL used to link to source
-#          files.  Use {File} to represent where the file path goes and
-#          {LineNumber} for where the line number goes.  For example,
-#          "https://mysite.com/repo/src/{File}#L{LineNumber}".
+#          If Natural Docs doesn't recognize the repository site you must add
+#          the URL used to link to source files.  Use {File} to represent
+#          where the file path goes and {LineNumber} for the line number.  For
+#          example, "https://mysite.com/repo/src/{File}#L{LineNumber}".
 #
 #    Encoding: [name or code page number]
 #    Encoding: [name or code page number] *.[extension]

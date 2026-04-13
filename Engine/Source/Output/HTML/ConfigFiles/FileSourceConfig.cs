@@ -30,9 +30,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 			UniqueIDString = null;
 			Name = null;
 
-			RepositoryName = null;
+			RepositorySiteName = null;
 			RepositoryProjectURL = null;
-			RepositorySourceURLTemplate = null;
+			RepositorySourceURLSample = null;
 			}
 
 		public bool IsSameFundamentalFileSource (Files.FileSource other)
@@ -49,13 +49,22 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 			UniqueIDString = other.UniqueIDString;
 			Name = other.Name;
 
-			if (other is Files.FileSources.SourceFolder)
-				{
-				var sourceFolder = other as Files.FileSources.SourceFolder;
+			// Will be null if cast fails.  Will not throw an exception.
+			var otherSourceFolder = other as Files.FileSources.SourceFolder;
 
-				RepositoryName = sourceFolder.RepositoryName;
-				RepositoryProjectURL = sourceFolder.RepositoryProjectURL;
-				RepositorySourceURLTemplate = sourceFolder.RepositorySourceURLTemplate;
+			if (otherSourceFolder != null &&
+				otherSourceFolder.Repository != null)
+				{
+				RepositorySiteName = otherSourceFolder.Repository.SiteName;
+				RepositoryProjectURL = otherSourceFolder.Repository.ProjectURL;
+				RepositorySourceURLSample = otherSourceFolder.Repository.SourceURL(BinaryConfigParser.SampleRepositoryPath,
+																														BinaryConfigParser.SampleRepositoryLineNumber);
+				}
+			else
+				{
+				RepositorySiteName = null;
+				RepositoryProjectURL = null;
+				RepositorySourceURLSample= null;
 				}
 			}
 
@@ -68,9 +77,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 		public string UniqueIDString;
 		public string Name;
 
-		public string RepositoryName;
+		public string RepositorySiteName;
 		public string RepositoryProjectURL;
-		public string RepositorySourceURLTemplate;
+		public string RepositorySourceURLSample;
 
 		}
 	}

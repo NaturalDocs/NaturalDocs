@@ -288,13 +288,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 			fileSourceConfig.Name = binaryFile.ReadString();
 
 
-			// [String: Repository Name]
+			// [String: Repository Site Name]
 			// [String: Repository Project URL]
-			// [String: Repository Source URL Template]
+			// [String: Repository Source URL Sample]
 
-			fileSourceConfig.RepositoryName = binaryFile.ReadString();
+			fileSourceConfig.RepositorySiteName = binaryFile.ReadString();
 			fileSourceConfig.RepositoryProjectURL = binaryFile.ReadString();
-			fileSourceConfig.RepositorySourceURLTemplate = binaryFile.ReadString();
+			fileSourceConfig.RepositorySourceURLSample = binaryFile.ReadString();
 
 
 			return fileSourceConfig;
@@ -499,13 +499,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 			binaryFile.WriteString(fileSourceConfig.Name);
 
 
-			// [String: Repository Name]
+			// [String: Repository Site Name]
 			// [String: Repository Project URL]
-			// [String: Repository Source URL Template]
+			// [String: Repository Source URL Sample]
 
-			binaryFile.WriteString(fileSourceConfig.RepositoryName);
+			binaryFile.WriteString(fileSourceConfig.RepositorySiteName);
 			binaryFile.WriteString(fileSourceConfig.RepositoryProjectURL);
-			binaryFile.WriteString(fileSourceConfig.RepositorySourceURLTemplate);
+			binaryFile.WriteString(fileSourceConfig.RepositorySourceURLSample);
 			}
 
 
@@ -533,6 +533,28 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 		// __________________________________________________________________________
 
 		protected BinaryFile binaryFile;
+
+
+
+		// Group: Constants
+		// __________________________________________________________________________
+
+
+		/* Constant: SampleRepositoryPath
+		 * A relative path to use for constructing a sample repository source file URL to store in <Config.nd>.  This helps detect
+		 * changes in the URL format from one run to the next which incorporates all settings such as the branch name.
+		 */
+		static public RelativePath SampleRepositoryPath = "Folder_A/Folder B/SourceFile.cs";
+		// We want to include:
+		// - At least one folder level
+		// - At least one space in the path to reflect how that's handled, such as by URL encoding
+
+
+		/* Constant: SampleRepositoryLineNumber
+		 * A line number to use for constructing a sample repository source file URL to store in <Config.nd>.  This helps detect
+		 * changes in the URL format from one run to the next which incorporates all settings such as the branch name.
+		 */
+		static public int SampleRepositoryLineNumber = 12;
 
 		}
 	}
