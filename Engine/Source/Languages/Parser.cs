@@ -1847,6 +1847,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					{
 					Tokenizer prototype = Tokenizer.CreateFromIterators(prototypeStart, prototypeEnd);
 					elements[elementIndex].Topic.Prototype = NormalizePrototype(prototype);
+					elements[elementIndex].Topic.CodeLineNumber = prototypeStart.LineNumber;
 					}
 				}
 			}
