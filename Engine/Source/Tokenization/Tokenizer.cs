@@ -206,8 +206,7 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 			if (end.RawTextIndex - start.RawTextIndex != searchText.Length)
 				{  return false;  }
 
-			StringComparison compareMode = (ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
-			return (rawText.IndexOf(searchText, start.RawTextIndex, end.RawTextIndex - start.RawTextIndex, compareMode) == start.RawTextIndex);
+			return (string.Compare(rawText, start.RawTextIndex, searchText, 0, searchText.Length, ignoreCase) == 0);
 			}
 
 
