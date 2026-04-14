@@ -289,6 +289,12 @@ Language: Rust
    Case Sensitive: Yes
    Block Comments Nest: Yes
 
+   Struct Prototype Enders: ; {
+   Function Prototype Enders: ; {
+   Variable Prototype Enders: ; =
+   Type Prototype Enders: ; =
+   Constant Prototype Enders: ; =
+
 
 Language: SQL
 
