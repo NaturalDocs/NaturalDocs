@@ -1,0 +1,5 @@
+<pre class="CCode"><span class="SHMetadata">#[test]</span><br /><span class="SHKeyword">fn</span> test_foo() {<br />    }<br /><br /><span class="SHMetadata">#[cfg(target_os = &quot;linux&quot;)]</span><br /><span class="SHKeyword">mod</span> bar {<br />    }<br /><br /><span class="SHMetadata">#[allow(non_camel_case_types)]</span><br /><span class="SHKeyword">type</span> int8_t = i8;</pre>
+-----
+<pre class="CCode"><span class="SHMetadata">#![crate_type = &quot;lib&quot;]</span><br /><br /><span class="SHKeyword">fn</span> some_unused_variables() {<br />    <span class="SHMetadata">#![allow(unused_variables)]</span><br />    }</pre>
+-----
+<pre class="CCode"><span class="SHMetadata">#[macro_attr1]</span><br /><span class="SHMetadata">#[doc = mac!()]</span><br /><span class="SHMetadata">#[macro_attr2]</span><br /><span class="SHMetadata">#[derive(MacroDerive1, MacroDerive2)]</span><br /><span class="SHKeyword">fn</span> foo() {<br />    }</pre>

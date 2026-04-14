@@ -1,0 +1,5 @@
+<pre class="CCode">a <span class="SHComment">// comment</span><br />b <span class="SHComment">/// doc comment</span><br />c <span class="SHComment">//// comment</span><br /><br />d <span class="SHComment">//! doc comment</span><br />e <span class="SHComment">//!! allowed doc comment, but second ! is part of its content</span></pre>
+-----
+<pre class="CCode">a <span class="SHComment">/* comment */</span> a<br />b <span class="SHComment">/** doc comment */</span> b<br />c <span class="SHComment">/*** comment */</span> c<br /><br />d <span class="SHComment">/*! doc comment */</span> d<br />e <span class="SHComment">/*!! allowed doc comment, but second ! is part of its content */</span> e</pre>
+-----
+<pre class="CCode">a <span class="SHComment">/* level1 /* level2 */ level1 /** level2 */ level1 /*! level2 */ level1 */</span> a<br />b <span class="SHComment">/*! level1 /* level2 */ level1 /** level2 */ level1 /*! level2 */ level1 */</span> b<br />c <span class="SHComment">/** level1 /* level2 */ level1 /** level2 */ level1 /*! level2 */ level1 */</span> c<br /><br />d <span class="SHComment">/* level1 /** level2 /*! level3 */ level2 */ level1 */</span> d</pre>
