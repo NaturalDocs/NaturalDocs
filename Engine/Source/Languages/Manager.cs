@@ -40,7 +40,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			lastRunConfig = null;
 
 
-			// Predefined languages
+			// Special languages
 
 			Language textFile = new Language("Text File");
 				textFile.Type = Language.LanguageType.TextFile;
@@ -48,6 +48,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			Language shebangScript = new Language("Shebang Script");
 				shebangScript.Type = Language.LanguageType.Container;
 				shebangScript.Parser = new Parsers.ShebangScript(engineInstance, shebangScript);
+
+
+			// Full language support
 
 			Language cSharp = new Language("C#");
 				cSharp.Type = Language.LanguageType.FullSupport;
@@ -73,8 +76,26 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				//systemVerilog.EnumValue = Language.EnumValues.Global;
 				//systemVerilog.CaseSensitive = true;
 
+
+			// Basic language support with helper classes
+
+			Language java = new Language("Java");
+				java.Parser = new Parsers.Java(engineInstance, java);
+
+			Language lua = new Language("Lua");
+				lua.Parser = new Parsers.Lua(engineInstance, lua);
+
 			Language perl = new Language("Perl");
 				perl.Parser = new Parsers.Perl(engineInstance, perl);
+
+			Language php = new Language("PHP");
+				php.Parser = new Parsers.PHP(engineInstance, php);
+
+			Language powerbuilder = new Language("PowerBuilder");
+				powerbuilder.Parser = new Parsers.PowerBuilder(engineInstance, powerbuilder);
+
+			Language powershell = new Language("PowerShell");
+				powershell.Parser = new Parsers.PowerShell(engineInstance, powershell);
 
 			Language python = new Language("Python");
 				python.Parser = new Parsers.Python(engineInstance, python);
@@ -85,26 +106,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			Language sql = new Language("SQL");
 				sql.Parser = new Parsers.SQL(engineInstance, sql);
 
-			Language java = new Language("Java");
-				java.Parser = new Parsers.Java(engineInstance, java);
-
-			Language lua = new Language("Lua");
-				lua.Parser = new Parsers.Lua(engineInstance, lua);
-
-			Language php = new Language("PHP");
-				php.Parser = new Parsers.PHP(engineInstance, php);
-
-			Language powershell = new Language("PowerShell");
-				powershell.Parser = new Parsers.PowerShell(engineInstance, powershell);
-
-			Language powerbuilder = new Language("PowerBuilder");
-				powerbuilder.Parser = new Parsers.PowerBuilder(engineInstance, powerbuilder);
-
 			Language tcl = new Language("Tcl");
 				tcl.Parser = new Parsers.Tcl(engineInstance, tcl);
 
-			predefinedLanguages = new Language[] { textFile, shebangScript, cSharp, systemVerilog, perl, python, ruby, sql,
-																		  java, lua, php, powershell, powerbuilder, tcl };
+			predefinedLanguages = new Language[] { textFile, shebangScript,
+																		 cSharp, systemVerilog,
+																		 java, lua, perl, php, powerbuilder, powershell, python, ruby, sql, tcl };
 			}
 
 
