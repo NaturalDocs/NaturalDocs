@@ -103,6 +103,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			Language ruby = new Language("Ruby");
 				ruby.Parser = new Parsers.Ruby(engineInstance, ruby);
 
+			Language rust = new Language("Rust");
+				rust.Parser = new Parsers.Rust(engineInstance, rust);
+
 			Language sql = new Language("SQL");
 				sql.Parser = new Parsers.SQL(engineInstance, sql);
 
@@ -111,7 +114,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			predefinedLanguages = new Language[] { textFile, shebangScript,
 																		 cSharp, systemVerilog,
-																		 java, lua, perl, php, powerbuilder, powershell, python, ruby, sql, tcl };
+																		 java, lua, perl, php, powerbuilder, powershell, python, ruby, rust, sql, tcl };
 			}
 
 

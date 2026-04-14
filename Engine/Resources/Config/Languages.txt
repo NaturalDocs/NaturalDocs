@@ -278,6 +278,18 @@ Language: Ruby
    Variable Prototype Enders: ; \n =
 
 
+Language: Rust
+
+   Extension: rs
+
+   Line Comment: //
+   Block Comment: /* */
+   Member Operator: ::
+   Enum Values: Under Parent
+   Case Sensitive: Yes
+   Block Comments Nest: Yes
+
+
 Language: SQL
 
    Extension: sql
