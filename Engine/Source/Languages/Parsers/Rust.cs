@@ -208,45 +208,92 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 
-			// Main delimiter ' or "
-
-			char delimiter = lookahead.Character;
-
-			if (delimiter != '\'' && delimiter != '\"')
-				{  return false;  }
-
-			lookahead.Next();
-
-
 			// String contents
 
-			while (lookahead.IsInBounds)
+			if (lookahead.Character == '"')
 				{
-				if (lookahead.Character == delimiter)
+				lookahead.Next();
+
+				while (lookahead.IsInBounds)
 					{
-					lookahead.Next();
-
-					if (isRawString && hashCount > 0)
+					if (lookahead.Character == '"')
 						{
-						int endHashCount = 0;
+						lookahead.Next();
 
-						while (lookahead.Character == '#' && endHashCount < hashCount)
+						if (isRawString && hashCount > 0)
 							{
-							endHashCount++;
-							lookahead.Next();
-							}
+							int endHashCount = 0;
 
-						if (endHashCount == hashCount)
+							while (lookahead.Character == '#' && endHashCount < hashCount)
+								{
+								endHashCount++;
+								lookahead.Next();
+								}
+
+							if (endHashCount == hashCount)
+								{  break;  }
+							}
+						else
 							{  break;  }
 						}
+					else if (lookahead.Character == '\\' && !isRawString)
+						{  lookahead.Next(2);  }
 					else
-						{  break;  }
+						{  lookahead.Next();  }
 					}
-				else if (lookahead.Character == '\\' && !isRawString)
-					{  lookahead.Next(2);  }
-				else
-					{  lookahead.Next();  }
 				}
+
+
+			// Char contents
+
+			else if (lookahead.Character == '\'')
+				{
+				lookahead.Next();
+
+				TokenIterator startOfContent = lookahead;
+				bool isClosed = false;
+
+				while (lookahead.IsInBounds)
+					{
+					if (lookahead.Character == '\'')
+						{
+						lookahead.Next();
+						isClosed = true;
+						break;
+						}
+					else if (lookahead.Character == '\\')
+						{  lookahead.Next(2);  }
+					else
+						{  lookahead.Next();  }
+					}
+
+				// We need to check the entire thing to make sure it isn't part of a lifetime signature like in
+				// "fn FunctionName<'a> (varName: &'a i32)".
+
+				// If we didn't find a closing quote we assume it was a lifetime
+				if (!isClosed)
+					{  return false;  }
+
+				// A lifetime has to start with an identifier character.  Any other symbols we'll treat as a char.
+				if (startOfContent.FundamentalType == FundamentalType.Text ||
+					startOfContent.Character == '_')
+					{
+					startOfContent.Next();
+
+					// If the second token isn't the end quote assume it's a lifetime.  This covers:
+					// - 'a' and '_' which get treated as chars
+					// - 'r#a and 'r#_ which have a symbol as the second character
+					// - '\x32' was previously ruled out by the first character
+					// - 'a has a space as the second character
+					// - 'a, has a comma as the second character
+					if (startOfContent.Character != '\'')
+						{  return false;  }
+					}
+				}
+
+
+			else // not " or '
+				{  return false;  }
 
 
 			// Done
