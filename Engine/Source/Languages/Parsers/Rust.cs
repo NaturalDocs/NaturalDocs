@@ -462,7 +462,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			"else", "enum", "extern", "false", "final", "fn", "for", "gen", "if", "impl", "in", "let", "loop", "macro_rules",
 			"macro", "match", "mod", "move", "mut", "override", "priv", "pub", "raw", "ref", "return", "safe", "self",
 			"Self", "static", "struct", "super", "trait", "true", "try", "type", "typeof", "union", "unsafe", "unsized", "use",
-			"virtual", "where", "while", "yield"
+			"virtual", "where", "while", "yield",
+
+			// Primitive types
+
+			"bool", "u8", "i8", "u16", "i16", "u32", "i32", "u64", "i64", "u128", "i128", "f32", "f64", "usize", "isize",
+			"char", "str"
 
 			});
 
