@@ -1509,8 +1509,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		protected ParsedPrototype parsedPrototype;
 
 		/* var: parameterLayouts
-		 * An array of <ParameterLayouts> corresponding to the sections of <parsedPrototype>.  Each <Prototypes.Section>
-		 * will have an entry at the same index.  If that section is not a <Prototypes.ParameterSection> its entry will be null.
+		 * An array of <PrototypeParameterLayouts> corresponding to the sections of <parsedPrototype>.  Each
+		 * <Prototypes.Section> will have an entry at the same index.  If that section is not a <Prototypes.ParameterSection>
+		 * its entry will be null.
 		 */
 		protected PrototypeParameterLayout[] parameterLayouts;
 
