@@ -5205,9 +5205,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		protected void MarkType (TokenIterator start, TokenIterator end)
 			{
 			// Mark all pre-text symbols as type modifiers.  This includes :: on ::globals.
+			// Exclude opening symbols like '[' so things like Rust's "[i32; 5]" arrays align correctly.
 			while (start < end &&
 					 start.FundamentalType != FundamentalType.Text &&
-					 start.Character != '_')
+					 start.Character != '_' &&
+					 start.Character != '(' && start.Character != '[' && start.Character != '{')
 				{
 				start.PrototypeParsingType = PrototypeParsingType.TypeModifier;
 				start.Next();
