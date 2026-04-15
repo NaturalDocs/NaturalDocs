@@ -62,3 +62,21 @@
 	---
 */
 
+
+/* Topic: Char Literals vs. Lifetimes
+	_____________________________________________
+
+	--- Code
+	fn Lifetimes<'a> (a: &'a i32,
+                      b: &'a mut i32,
+                      c: &'a [i32; 5],
+                      d: &'a mut [i32; 5]);
+
+	fn Lifetimes<'a> (a: &'a i32, b: &'a mut i32, c: &'a [i32; 5], d: &'a mut [i32; 5]);
+
+	'a'
+	' '
+	'\ '
+	x<'a'
+	---
+*/
