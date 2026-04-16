@@ -1,5 +1,5 @@
 
-// Group: Multiple
+// Group: Simple
 // ____________________________________________________________________________
 
 
@@ -110,5 +110,71 @@ Function UniformityH (a:float, bbb:integer): integer;
 
 // Function: UniformityI
 Function UniformityI (a : float, bbb : integer): integer;
+	Begin
+	End
+
+
+
+// Group: ImpliedTypesA
+// ____________________________________________________________________________
+
+
+// Function: ImpliedTypesA
+Function ImpliedTypesA (a, b, c: integer): integer;
+	Begin
+	End
+
+// Function: ImpliedTypesB
+Function ImpliedTypesB (aa, b, c: integer): integer;
+	Begin
+	End
+
+// Function: ImpliedTypesC
+Function ImpliedTypesC (a, bb, c: integer): integer;
+	Begin
+	End
+
+// Function: ImpliedTypesD
+Function ImpliedTypesD (a, b, cc: integer): integer;
+	Begin
+	End
+
+// Function: ImpliedTypesE
+Function ImpliedTypesE (aaa, b, c: integer): integer;
+	Begin
+	End
+
+// Function: ImpliedTypesF
+Function ImpliedTypesF (a, bbb, c: integer): integer;
+	Begin
+	End
+
+// Function: ImpliedTypesG
+Function ImpliedTypesG (a, b, ccc: integer): integer;
+	Begin
+	End
+
+// Function: ImpliedTypesH
+Function ImpliedTypesH (a, b: integer, c, d: float): integer;
+	Begin
+	End
+
+// Function: ImpliedTypesI
+Function ImpliedTypesI (aaa, b: integer, c, d: float): integer;
+	Begin
+	End
+
+// Function: ImpliedTypesJ
+Function ImpliedTypesJ (a, bbb: integer, c, d: float): integer;
+	Begin
+	End
+
+// Function: ImpliedTypesK
+Function ImpliedTypesK (a, b: integer, ccc, d: float): integer;
+	Begin
+	End
+
+// Function: ImpliedTypesL
+Function ImpliedTypesL (a, b: integer, c, ddd: float): integer;
 	Begin
 	End
