@@ -1989,7 +1989,8 @@ td {
 			text-indent: 0 !important;
 			}
 
-		.WideForm .NegativeLeftSpaceOnWide { text-indent: -1ch; }
+		.WideForm .NegativeLeftSpaceOnWide,
+		.NegativeLeftSpaceOnTypeNameSeparator .PTypeNameSeparator { text-indent: -1ch; }
 
 		.NarrowForm .FitIntoLeftIndentOnNarrow { width: 3ch; }
 

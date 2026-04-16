@@ -755,6 +755,62 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 			//
+			// Now check if the type/name separator column can be moved left because it never touches a name and the
+			// longest columns to the left of it all end with a comma.
+			//
+
+			int tnsColumnIndex = columnLayout.IndexOf(PrototypeColumnType.TypeNameSeparator);
+
+			if (tnsColumnIndex != -1 &&
+				columnLayout.IsUsed(tnsColumnIndex))
+				{
+				int previousColumnIndex = columnLayout.PreviousUsed(tnsColumnIndex);
+
+				if (previousColumnIndex != -1)
+					{
+					int previousColumnWidth = columnLayout.WidthOf(previousColumnIndex);
+					bool tnsColumnCanMoveLeft = true;
+
+					for (int i = sectionIndex; i < sectionIndex + sectionCount && tnsColumnCanMoveLeft; i++)
+						{
+						var parameterSection = parameterLayouts[i];
+
+						for (int parameterIndex = 0; parameterIndex < parameterSection.NumberOfParameters; parameterIndex++)
+							{
+							if (parameterSection.HasContent(parameterIndex, previousColumnIndex) &&
+								parameterSection.GetContentWidth(parameterIndex, previousColumnIndex) >= previousColumnWidth)
+								{
+								if (parameterSection.HasContent(parameterIndex, tnsColumnIndex))
+									{
+									tnsColumnCanMoveLeft = false;
+									break;
+									}
+
+								parameterSection.GetContent(parameterIndex, previousColumnIndex,
+																			out TokenIterator contentStart, out TokenIterator contentEnd);
+
+								if (contentEnd.Tokenizer.RawText[ contentEnd.RawTextIndex - 1 ] != ',')
+									{
+									tnsColumnCanMoveLeft = false;
+									break;
+									}
+								}
+							}
+						}
+
+					if (tnsColumnCanMoveLeft)
+						{
+						for (int i = sectionIndex; i < sectionIndex + sectionCount; i++)
+							{
+							var parameterSection = parameterLayouts[i];
+							parameterSection.Columns.TypeNameSeparatorCanShiftLeft = true;
+							}
+						}
+					}
+				}
+
+
+			//
 			// Now check the parts before and after the parameters, such as "void FunctionName (" and ")",  to see if they
 			// need spaces.
 			//
@@ -928,9 +984,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			// Opening tags
 
-			string parameterCSSClass = parameterLayouts[sectionIndex].ParameterStyle.ToString() + "Style";
+			string sectionCSSClass = parameterLayouts[sectionIndex].ParameterStyle.ToString() + "Style";
 
-			output.Append("<div class=\"PSection PParameterSection " + parameterCSSClass + "\">");
+			if (columnLayout.TypeNameSeparatorCanShiftLeft)
+				{  sectionCSSClass += " NegativeLeftSpaceOnTypeNameSeparator";  }
+
+			output.Append("<div class=\"PSection PParameterSection " + sectionCSSClass + "\">");
 
 
 			int wideColumnCount = 1 + columnLayout.UsedCount + 1;
@@ -1130,9 +1189,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			// Opening tags
 
-			string parameterCSSClass = parameterLayouts[sectionIndex].ParameterStyle.ToString() + "Style";
+			string sectionCSSClass = parameterLayouts[sectionIndex].ParameterStyle.ToString() + "Style";
 
-			output.Append("<div class=\"PSection PParameterSection " + parameterCSSClass + "\">");
+			if (parameterLayouts[sectionIndex].Columns.TypeNameSeparatorCanShiftLeft)
+				{  sectionCSSClass += " NegativeLeftSpaceOnTypeNameSeparator";  }
+
+			output.Append("<div class=\"PSection PParameterSection " + sectionCSSClass + "\">");
 
 
 			// There's always 2 wide columns: before parameters and the cell for the nested grid

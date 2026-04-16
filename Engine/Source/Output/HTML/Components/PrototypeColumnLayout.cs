@@ -38,6 +38,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			{
 			parameterStyle = parameterSection.ParameterStyle;
 			columnWidths = new int[Formatter.ColumnCount];
+			typeNameSeparatorCanShiftLeft = false;
 
 			RecalculateWidths(parsedPrototype, parameterSection, cells);
 			}
@@ -50,6 +51,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			{
 			parameterStyle = toCopy.parameterStyle;
 			columnWidths = (int[])toCopy.columnWidths.Clone();
+			typeNameSeparatorCanShiftLeft = toCopy.typeNameSeparatorCanShiftLeft;
 			}
 
 
@@ -77,6 +79,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				{
 				this.columnWidths[i] = Math.Max(this.columnWidths[i], toMergeWith.columnWidths[i]);
 				}
+
+			this.typeNameSeparatorCanShiftLeft = (this.typeNameSeparatorCanShiftLeft && toMergeWith.typeNameSeparatorCanShiftLeft);
 			}
 
 
@@ -342,6 +346,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			}
 
 
+		/* Property: TypeNameSeparatorCanShiftLeft
+		 * If set, the type/name separator column (the colon in "a: integer") is able to be shifted left one character.
+		 */
+		public bool TypeNameSeparatorCanShiftLeft
+			{
+			get
+				{  return typeNameSeparatorCanShiftLeft;  }
+			set
+				{  typeNameSeparatorCanShiftLeft = value;  }
+			}
+
+
 
 		// Group: Variables
 		// __________________________________________________________________________
@@ -357,6 +373,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * parameter.  If the width is zero then that column is not used.
 		 */
 		protected int[] columnWidths;
+
+		/* var: typeNameSeparatorCanShiftLeft
+		 * If set, the type/name separator column (the colon in "a: integer") is able to be shifted left one character.
+		 */
+		protected bool typeNameSeparatorCanShiftLeft;
 
 		}
 	}
