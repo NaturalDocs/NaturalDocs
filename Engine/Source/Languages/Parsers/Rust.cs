@@ -454,47 +454,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
-		/* Function: TryToSkipString
-		 *
-		 * Supported Modes:
-		 *
-		 *		- <ParseMode.IterateOnly>
-		 *		- <ParseMode.SyntaxHighlight>
-		 *		- Everything else is treated as <ParseMode.IterateOnly>.
-		 */
-		//override protected bool TryToSkipString (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
-		//	{
-		//	if (iterator.Character != '\'' && iterator.Character != '\"')
-		//		{  return false;  }
-
-		//	char openingCharacter = iterator.Character;
-
-		//	TokenIterator lookahead = iterator;
-		//	lookahead.Next();
-
-		//	while (lookahead.IsInBounds)
-		//		{
-		//		if (lookahead.Character == '`')
-		//			{  lookahead.Next(2);  }
-
-		//		else if (lookahead.Character == openingCharacter)
-		//			{
-		//			lookahead.Next();
-		//			break;
-		//			}
-
-		//		else
-		//			{  lookahead.Next();  }
-		//		}
-
-		//	if (mode == ParseMode.SyntaxHighlight)
-		//		{  iterator.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.String);  }
-
-		//	iterator = lookahead;
-		//	return true;
-		//	}
-
-
 
 		// Group: Static Variables
 		// __________________________________________________________________________
