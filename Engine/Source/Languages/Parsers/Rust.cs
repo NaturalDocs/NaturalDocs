@@ -321,8 +321,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{  return false;  }
 
 			TokenIterator lookahead = iterator;
-
-			bool validNumber = false;
 			TokenIterator endOfNumber = iterator;
 
 
@@ -340,9 +338,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					{  return false;  }
 
 				lookahead.Next();
-
-				// This isn't enough to set validNumber to true but we have a new endOfNumber.
-				endOfNumber = lookahead;
 				}
 
 
@@ -360,15 +355,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				while (lookahead.FundamentalType == FundamentalType.Text ||
 						 lookahead.Character == '_');
 
-				validNumber = true;
 				endOfNumber = lookahead;
 				}
+			else
+				{  return false;  }
 
 
 			//	Check for a dot, which would continue a floating point number.  There needs to be a preceding digit, it cannot
 			// start with a dot like ".2".
 
-			if (validNumber && lookahead.Character == '.')
+			if (lookahead.Character == '.')
 				{
 				lookahead.Next();
 
@@ -392,13 +388,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Check for a +/-, which could continue a floating point number with an exponent
 
-			if (validNumber &&
-				(lookahead.Character == '+' || lookahead.Character == '-'))
+			if (lookahead.Character == '+' || lookahead.Character == '-')
 				{
 				// Make sure the character before this point was an E before we accept it.
 
-				// We're safe to read RawTextIndex - 1 because we know we're not on its first character because validNumber
-				// wouldn't be set otherwise.
+				// We're safe to read RawTextIndex - 1 because we know we're not on its first character because we wouldn't
+				// have made it this far otherwise.
 				string rawText = lookahead.Tokenizer.RawText;
 				char previousCharacter = rawText[ lookahead.RawTextIndex - 1 ];
 
@@ -441,16 +436,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			Done:  // An evil goto target!  The shame!
 
-			if (validNumber)
-				{
-				if (mode == ParseMode.SyntaxHighlight)
-					{  iterator.SetSyntaxHighlightingTypeBetween(endOfNumber, SyntaxHighlightingType.Number);  }
+			if (mode == ParseMode.SyntaxHighlight)
+				{  iterator.SetSyntaxHighlightingTypeBetween(endOfNumber, SyntaxHighlightingType.Number);  }
 
-				iterator = endOfNumber;
-				return true;
-				}
-			else
-				{  return false;  }
+			iterator = endOfNumber;
+			return true;
 			}
 
 
