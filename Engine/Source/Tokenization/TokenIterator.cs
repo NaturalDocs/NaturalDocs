@@ -422,16 +422,16 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 		/* Function: MatchesAcrossTokens
 		 * Returns whether the passed string matches the tokens at the current position.  The string comparison can
 		 * span multiple tokens, which allows you to test against things like "//" which would be two tokens.  However,
-		 * the string must still match complete tokens so "// some" won't match "// something".  Returns false if the
-		 * iterator is out of bounds.
+		 * unless machPartialTokens is set the string must still match complete tokens, so "// some" won't match
+		 * "// something".  Returns false if the iterator is out of bounds.
 		 */
-		public bool MatchesAcrossTokens (string text, bool ignoreCase = false)
+		public bool MatchesAcrossTokens (string text, bool ignoreCase = false, bool matchPartialTokens = false)
 			{
 			if (!IsInBounds)
 				{  return false;  }
 
-			return ( TokensInCharacters(text.Length) != -1 &&
-							String.Compare(tokenizer.RawText, rawTextIndex, text, 0, text.Length, ignoreCase) == 0 );
+			return ( (matchPartialTokens || TokensInCharacters(text.Length) != -1) &&
+						String.Compare(tokenizer.RawText, rawTextIndex, text, 0, text.Length, ignoreCase) == 0 );
 			}
 
 
