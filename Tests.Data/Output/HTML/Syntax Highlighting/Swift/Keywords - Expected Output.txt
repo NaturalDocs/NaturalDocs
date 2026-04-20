@@ -1,0 +1,7 @@
+<pre class="CCode"><span class="SHKeyword">class</span><br />_class<br />class_</pre>
+-----
+<pre class="CCode"><span class="SHKeyword">Int</span><br /><span class="SHKeyword">Float</span><br /><span class="SHKeyword">String</span><br /><br /><span class="SHKeyword">UInt32</span><br /><span class="SHKeyword">Float64</span><br /><br />int<br />float<br />string<br />uint32<br />float64</pre>
+-----
+<pre class="CCode"><span class="SHKeyword">_</span><br />__</pre>
+-----
+<pre class="CCode">`class`<br />`Int`</pre>

@@ -1,0 +1,11 @@
+<pre class="CCode">a <span class="SHString">&quot;x&quot;</span> a<br />b <span class="SHString">&quot;\'&quot;</span> b<br />c <span class="SHString">&quot;\&quot;&quot;</span> c<br />d <span class="SHString">&quot;\\&quot;</span> d</pre>
+-----
+<pre class="CCode">a<br /><span class="SHString">&quot;&quot;&quot;</span><br /><span class="SHString">b &quot;c&quot; d \&quot;e\&quot; f</span><br /><span class="SHString">&quot;&quot;&quot;</span><br />g</pre>
+-----
+<pre class="CCode">a <span class="SHString">&quot; x </span>\(x)<span class="SHString"> x&quot;</span> a<br />b <span class="SHString">&quot; x </span>\( <span class="SHString">&quot;x&quot;</span> )<span class="SHString"> x&quot;</span> b<br />c <span class="SHString">&quot; x </span>\( (x + <span class="SHNumber">5</span>) * <span class="SHNumber">2</span> )<span class="SHString"> x &quot;</span> c</pre>
+-----
+<pre class="CCode">a<br /><span class="SHString">&quot;&quot;&quot;</span><br /><span class="SHString">b </span>\(c)<span class="SHString"> d </span>\(<span class="SHString">&quot;e&quot;</span>)<span class="SHString"> f </span>\((g + <span class="SHNumber">5</span>) * <span class="SHNumber">2</span>)<span class="SHString"> h </span>\(<span class="SHString">&quot;&quot;&quot;i&quot;&quot;&quot;</span>)<span class="SHString"> j</span><br /><span class="SHString">&quot;&quot;&quot;</span><br />k</pre>
+-----
+<pre class="CCode">a <span class="SHString">#&quot;x&quot;#</span> a<br />b <span class="SHString">#&quot; x &quot;x&quot; x &quot;#</span> b<br />c <span class="SHString">###&quot; &quot;# &quot;## &quot;###</span> c<br />d <span class="SHString">###&quot; \(x + 5) &quot;###</span> d</pre>
+-----
+<pre class="CCode">a<br /><span class="SHString">###&quot;&quot;&quot;</span><br /><span class="SHString">b &quot;c&quot; d &quot;&quot;&quot; e \(f+5) g &quot;&quot;&quot;## h</span><br /><span class="SHString">&quot;&quot;&quot;###</span><br />i</pre>

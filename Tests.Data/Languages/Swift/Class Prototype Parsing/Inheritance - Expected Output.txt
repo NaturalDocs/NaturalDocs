@@ -1,0 +1,25 @@
+class InheritanceA: ParentClassName
+
+  - Name: InheritanceA
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: ParentClassName
+    - Name: ParentClassName
+
+-----
+
+class InheritanceB: ParentClassName, ProtocolNameA, ProtocolNameB
+
+  - Name: InheritanceB
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: ParentClassName
+    - Name: ParentClassName
+
+  - Parent 2: ProtocolNameA
+    - Name: ProtocolNameA
+
+  - Parent 3: ProtocolNameB
+    - Name: ProtocolNameB

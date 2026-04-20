@@ -1,0 +1,1 @@
+<pre class="CCode"><span class="SHMetadata">@main</span><br /><span class="SHKeyword">struct</span> MyTopLevel<br />    {<br />    <span class="SHKeyword">static func</span> main()<br />        {  }<br />    }<br /><br /><span class="SHMetadata">@available(iOS 10.0, macOS 10.12, *)</span><br /><span class="SHKeyword">class</span> MyClass<br />    {<br />    }</pre>
