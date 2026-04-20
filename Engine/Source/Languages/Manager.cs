@@ -109,12 +109,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			Language sql = new Language("SQL");
 				sql.Parser = new Parsers.SQL(engineInstance, sql);
 
+			Language swift = new Language("Swift");
+				swift.Parser = new Parsers.Swift(engineInstance, swift);
+
 			Language tcl = new Language("Tcl");
 				tcl.Parser = new Parsers.Tcl(engineInstance, tcl);
 
 			predefinedLanguages = new Language[] { textFile, shebangScript,
 																		 cSharp, systemVerilog,
-																		 java, lua, perl, php, powerbuilder, powershell, python, ruby, rust, sql, tcl };
+																		 java, lua, perl, php, powerbuilder, powershell, python, ruby, rust, sql, swift, tcl };
 			}
 
 

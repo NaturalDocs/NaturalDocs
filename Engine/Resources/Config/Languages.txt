@@ -311,6 +311,26 @@ Language: SQL
    Variable Prototype Enders: ; , = := DEFAULT
 
 
+Language: Swift
+
+   Extension: swift
+
+   Line Comment: //
+   Block Comment: /* */
+   Enum Values: Under Parent
+   Case Sensitive: Yes
+   Block Comments Nest: Yes
+
+   Class Prototype Ender: {
+   Struct Prototype Ender: {
+   Interface Prototype Ender: {
+   Function Prototype Enders: { \n
+   Variable Prototype Enders: \n ; = {
+   Property Prototype Enders: \n ; = {
+   Constant Prototype Ender: =
+   Type Prototype Ender: =
+
+
 Language: SystemVerilog
 
    Extensions: sv svh

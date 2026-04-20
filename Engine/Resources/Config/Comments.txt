@@ -27,6 +27,9 @@ Comment Type: Class
    C# Keywords:
       record, records
 
+   Swift Keywords:
+      actor, actors
+
 
 Comment Type: Interface
 
@@ -38,6 +41,9 @@ Comment Type: Interface
 
    Keywords:
       interface, interfaces
+
+   Swift Keywords:
+      protocol, protocols
 
 
 Comment Type: Struct
