@@ -18,10 +18,12 @@
 
 
 using System;
+using System.Diagnostics;
 
 
 namespace CodeClear.NaturalDocs.Engine.Tokenization
 	{
+	[DebuggerDisplay("{DebuggerDisplay,nq}")]
 	public struct LineIterator
 		{
 
@@ -475,6 +477,19 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 			{
 			get
 				{  return lineIndex;  }
+			}
+
+
+		/* Property: DebuggerDisplay
+		 * Shows the string and position when debugging Natural Docs.
+		 */
+		 internal string DebuggerDisplay
+			{
+			get
+				{
+				GetBounds(LineBoundsMode.ExcludeWhitespace, out TokenIterator lineStart, out TokenIterator lineEnd);
+				return ("\"" + lineStart.TextBetween(lineEnd) + "\" (line " + this.LineNumber + ")");
+				}
 			}
 
 

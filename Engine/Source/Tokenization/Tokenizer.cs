@@ -20,11 +20,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 
 namespace CodeClear.NaturalDocs.Engine.Tokenization
 	{
+	[DebuggerDisplay("{DebuggerDisplay}")]
 	public class Tokenizer
 		{
 
@@ -815,6 +817,16 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 
 				return lines;
 				}
+			}
+
+
+		/* Property: DebuggerDisplay
+		 * Shows the string contents when debugging Natural Docs.
+		 */
+		 internal string DebuggerDisplay
+			{
+			get
+				{  return (this.rawText);  }
 			}
 
 
