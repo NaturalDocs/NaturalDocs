@@ -15,12 +15,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using CodeClear.NaturalDocs.Engine.Tokenization;
 
 
 namespace CodeClear.NaturalDocs.Engine.Prototypes
 	{
+	[DebuggerDisplay("{DebuggerDisplay}")]
 	public class TypeBuilder
 		{
 
@@ -311,6 +313,16 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			{
 			get
 				{  return (rawText.Length == 0);  }
+			}
+
+
+		/* Property: DebuggerDisplay
+		 * Shows the contents when debugging Natural Docs.
+		 */
+		 internal string DebuggerDisplay
+			{
+			get
+				{  return rawText.ToString();  }
 			}
 
 

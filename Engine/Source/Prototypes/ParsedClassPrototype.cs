@@ -31,11 +31,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using CodeClear.NaturalDocs.Engine.Tokenization;
 
 
 namespace CodeClear.NaturalDocs.Engine.Prototypes
 	{
+	[DebuggerDisplay("{DebuggerDisplay}")]
 	public class ParsedClassPrototype
 		{
 
@@ -516,6 +518,16 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				{
 				return CountSections(SectionType.Parent);
 				}
+			}
+
+
+		/* Property: DebuggerDisplay
+		 * Shows the string contents when debugging Natural Docs.
+		 */
+		 internal string DebuggerDisplay
+			{
+			get
+				{  return tokenizer.DebuggerDisplay;  }
 			}
 
 

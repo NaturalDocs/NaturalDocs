@@ -26,11 +26,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using CodeClear.NaturalDocs.Engine.Tokenization;
 
 
 namespace CodeClear.NaturalDocs.Engine.Prototypes
 	{
+	[DebuggerDisplay("{DebuggerDisplay}")]
 	public class ParsedPrototype
 		{
 
@@ -570,6 +572,16 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			{
 			get
 				{  return supportsImpliedTypes;  }
+			}
+
+
+		/* Property: DebuggerDisplay
+		 * Shows the string contents when debugging Natural Docs.
+		 */
+		 internal string DebuggerDisplay
+			{
+			get
+				{  return tokenizer.DebuggerDisplay;  }
 			}
 
 

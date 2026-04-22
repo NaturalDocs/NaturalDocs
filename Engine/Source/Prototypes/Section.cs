@@ -13,13 +13,13 @@
 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics;
 using CodeClear.NaturalDocs.Engine.Tokenization;
 
 
 namespace CodeClear.NaturalDocs.Engine.Prototypes
 	{
+	[DebuggerDisplay("{DebuggerDisplay}")]
 	public class Section
 		{
 
@@ -464,6 +464,16 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 				return false;
 				}
+			}
+
+
+		/* Property: DebuggerDisplay
+		 * Shows the string contents when debugging Natural Docs.
+		 */
+		 internal string DebuggerDisplay
+			{
+			get
+				{  return start.TextBetween(end);  }
 			}
 
 
