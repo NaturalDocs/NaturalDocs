@@ -607,13 +607,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					for (int i = 0; i < parsedPrototype.NumberOfParameters; i++)
 						{
 						parsedPrototype.GetParameter(i, out start, out end);
-
-						if (parsedPrototype.ParameterStyle == ParameterStyle.C)
-							{  MarkCParameter(start, end);  }
-						else if (parsedPrototype.ParameterStyle == ParameterStyle.Pascal)
-							{  MarkPascalParameter(start, end);  }
-						else
-							{  throw new NotImplementedException();  }
+						MarkParameter(start, end, parsedPrototype.ParameterStyle);
 						}
 					}
 
@@ -669,13 +663,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				TokenIterator end = tokenizedPrototype.EndOfTokens;
 
 				parsedPrototype.ParameterStyle = DetectParameterStyle(start, end);
-
-				if (parsedPrototype.ParameterStyle == ParameterStyle.C)
-					{  MarkCParameter(start, end);  }
-				else if (parsedPrototype.ParameterStyle == ParameterStyle.Pascal)
-					{  MarkPascalParameter(start, end);  }
-				else
-					{  throw new NotImplementedException();  }
+				MarkParameter(start, end, parsedPrototype.ParameterStyle);
 				}
 
 			return parsedPrototype;
@@ -4730,6 +4718,22 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			// If we didn't find anything Pascal then we're C.
 			return ParameterStyle.C;
+			}
+
+
+		/* Function: MarkParameter
+		 * Marks the tokens in the parameter specified by the bounds with <PrototypeParsingTypes>.  By default it will call
+		 * <MarkCParameter()> or <MarkPascalParameter()> depending on the <ParameterStyle>, but derived classes can
+		 * override it with custom implementations.
+		 */
+		virtual protected void MarkParameter (TokenIterator start, TokenIterator end, ParameterStyle parameterStyle = ParameterStyle.Unknown)
+			{
+			if (parameterStyle == ParameterStyle.C)
+				{  MarkCParameter(start, end);  }
+			else if (parameterStyle == ParameterStyle.Pascal)
+				{  MarkPascalParameter(start, end);  }
+			else
+				{  throw new NotImplementedException();  }
 			}
 
 
