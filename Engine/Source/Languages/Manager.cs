@@ -81,6 +81,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			Language java = new Language("Java");
 				java.Parser = new Parsers.Java(engineInstance, java);
+				java.ParameterStyle = Prototypes.ParameterStyle.C;
 
 			Language lua = new Language("Lua");
 				lua.Parser = new Parsers.Lua(engineInstance, lua);
@@ -90,6 +91,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			Language php = new Language("PHP");
 				php.Parser = new Parsers.PHP(engineInstance, php);
+				php.ImpliedParameterTypes = false;
 
 			Language powerbuilder = new Language("PowerBuilder");
 				powerbuilder.Parser = new Parsers.PowerBuilder(engineInstance, powerbuilder);
@@ -99,6 +101,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			Language python = new Language("Python");
 				python.Parser = new Parsers.Python(engineInstance, python);
+				python.ParameterStyle = Prototypes.ParameterStyle.Pascal;
+				python.ImpliedParameterTypes = false;
 
 			Language ruby = new Language("Ruby");
 				ruby.Parser = new Parsers.Ruby(engineInstance, ruby);
