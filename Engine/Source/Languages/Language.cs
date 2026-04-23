@@ -27,7 +27,7 @@
 
 using System;
 using System.Collections.Generic;
-using CodeClear.NaturalDocs.Engine.Collections;
+using CodeClear.NaturalDocs.Engine.Prototypes;
 
 
 namespace CodeClear.NaturalDocs.Engine.Languages
@@ -85,6 +85,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			enumValue = EnumValues.UnderType;
 			caseSensitive = true;
 			blockCommentsNest = false;
+			parameterStyle = ParameterStyle.Unknown;
+			impliedParameterTypes = true;
 			}
 
 		/* Function: HasPrototypeEndersFor
@@ -462,6 +464,30 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			}
 
 
+		/* Property: ParameterStyle
+		 * The parameter style of the language, or <ParameterStyle.Unknown> if not known and it should be auto-detected.
+		 */
+		public ParameterStyle ParameterStyle
+			{
+			get
+				{  return parameterStyle;  }
+			set
+				{  parameterStyle = value;  }
+			}
+
+
+		/* Property: ImpliedParameterTypes
+		 * Whether parameter types carry over from one to the next if they're not defined.
+		 */
+		public bool ImpliedParameterTypes
+			{
+			get
+				{  return impliedParameterTypes;  }
+			set
+				{  impliedParameterTypes = value;  }
+			}
+
+
 
 		// Group: Operators
 		// __________________________________________________________________________
@@ -488,7 +514,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				language1.lineExtender != language2.lineExtender ||
 				language1.enumValue != language2.enumValue ||
 				language1.caseSensitive != language2.caseSensitive ||
-				language1.blockCommentsNest != language2.blockCommentsNest)
+				language1.blockCommentsNest != language2.blockCommentsNest ||
+				language1.parameterStyle != language2.parameterStyle ||
+				language1.impliedParameterTypes != language2.impliedParameterTypes)
 				{  return false;  }
 
 			int lineCommentSymbols1Count = (language1.lineCommentSymbols != null ? language1.lineCommentSymbols.Count : 0);
@@ -675,6 +703,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * Whether the language's block comments can nest.
 		 */
 		protected bool blockCommentsNest;
+
+		/* var: parameterStyle
+		 * The parameter style of the language, or <ParameterStyle.Unknown> if not known and it should be auto-detected.
+		 */
+		protected ParameterStyle parameterStyle;
+
+		/* var: impliedParameterTypes
+		 * Whether parameter types carry over from one to the next if they're not defined.
+		 */
+		protected bool impliedParameterTypes;
 
 		}
 	}
