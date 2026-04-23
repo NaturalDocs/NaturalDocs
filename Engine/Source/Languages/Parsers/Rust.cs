@@ -37,30 +37,27 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
-		/* Function: SyntaxHighlight
-		 */
-		override public void SyntaxHighlight (Tokenizer source)
-			{
-			TokenIterator iterator = source.FirstToken;
-
-			while (iterator.IsInBounds)
-				{
-				if (TryToSkipKeyword(ref iterator, ParseMode.SyntaxHighlight) ||
-				    TryToSkipComment(ref iterator, ParseMode.SyntaxHighlight) ||
-				    TryToSkipString(ref iterator, ParseMode.SyntaxHighlight) ||
-				    TryToSkipNumber(ref iterator, ParseMode.SyntaxHighlight) ||
-					TryToSkipAttribute(ref iterator, ParseMode.SyntaxHighlight))
-					{
-					}
-				else
-					{  iterator.Next();  }
-				}
-			}
-
-
 
 		// Group: Parsing Functions
 		// __________________________________________________________________________
+
+
+		/* Function: TryToSkipMetadata
+		 *
+		 * Override to support detecting attributes as metadata.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- Each annotation will create a new prototype section.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		override protected bool TryToSkipMetadata (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			return TryToSkipAttribute(ref iterator, mode);
+			}
 
 
 		/* Function: TryToSkipAttribute

@@ -71,6 +71,24 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		// __________________________________________________________________________
 
 
+		/* Function: TryToSkipMetadata
+		 *
+		 * Override to support detecting attributes as metadata.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- Each annotation will create a new prototype section.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		override protected bool TryToSkipMetadata (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			return TryToSkipAttribute(ref iterator, mode);
+			}
+
+
 		/* Function: TryToSkipAttribute
 		 *
 		 * Supported Modes:

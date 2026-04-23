@@ -125,132 +125,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
-		/* Function: ParsePrototype
-		 * Converts a raw text prototype into a <ParsedPrototype>.
+		/* Function: MarkParameter
 		 */
-		override public ParsedPrototype ParsePrototype (string stringPrototype, int commentTypeID)
-			{
-			Tokenizer tokenizedPrototype = new Tokenizer(stringPrototype, tabWidth: EngineInstance.Config.TabWidth);
-			ParsedPrototype parsedPrototype;
-
-
-			// Mark any leading attributes.
-
-			TokenIterator iterator = tokenizedPrototype.FirstToken;
-
-			TryToSkipWhitespace(ref iterator, true, ParseMode.ParsePrototype);
-
-			while (TryToSkipAttribute(ref iterator, ParseMode.ParsePrototype))
-				{  TryToSkipWhitespace(ref iterator, true, ParseMode.ParsePrototype);  }
-
-
-			// Search for the first opening bracket or brace.
-
-			char closingBracket = '\0';
-
-			while (iterator.IsInBounds)
-				{
-				if (iterator.Character == '(')
-					{
-					closingBracket = ')';
-					break;
-					}
-				else if (iterator.Character == '{')
-					{
-					closingBracket = '}';
-					break;
-					}
-				else if (TryToSkipComment(ref iterator) ||
-						   TryToSkipString(ref iterator))
-					{  }
-				else
-					{  iterator.Next();  }
-				}
-
-
-			// If we found brackets, it's either a function prototype or a class prototype that includes members.
-			// Mark the delimiters.
-
-			if (closingBracket != '\0')
-				{
-				iterator.PrototypeParsingType = PrototypeParsingType.StartOfParams;
-				iterator.Next();
-
-				while (iterator.IsInBounds)
-					{
-					if (iterator.Character == ',')
-						{
-						iterator.PrototypeParsingType = PrototypeParsingType.ParamSeparator;
-						iterator.Next();
-						}
-
-					else if (iterator.Character == closingBracket)
-						{
-						iterator.PrototypeParsingType = PrototypeParsingType.EndOfParams;
-						break;
-						}
-
-					// Unlike prototype detection, here we treat < as an opening bracket.  Since we're already in the parameter list
-					// we shouldn't run into it as part of an operator overload, and we need it to not treat the comma in "template<a,b>"
-					// as a parameter divider.
-					else if (TryToSkipComment(ref iterator) ||
-							   TryToSkipString(ref iterator) ||
-							   TryToSkipAttribute(ref iterator) ||
-							   TryToSkipBlock(ref iterator, true))
-						{  }
-
-					else
-						{  iterator.Next();  }
-					}
-
-
-				// We have enough tokens marked to create the parsed prototype.  This will also let us iterate through the parameters
-				// easily.
-
-				parsedPrototype = new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID,
-																		  parameterStyle: ParameterStyle.C, supportsImpliedTypes: false);
-
-
-				// Set the main section to the last one, since any attributes present will each be in their own section.  Some can have
-				// parameter lists and we don't want those confused for the actual parameter list.
-
-				parsedPrototype.MainSectionIndex = parsedPrototype.Sections.Count - 1;
-
-
-				// If there are any parameters, mark the tokens in them.
-
-				if (parsedPrototype.NumberOfParameters > 0)
-					{
-					TokenIterator start, end;
-
-					for (int i = 0; i < parsedPrototype.NumberOfParameters; i++)
-						{
-						parsedPrototype.GetParameter(i, out start, out end);
-						MarkPowerShellParameter(start, end);
-						}
-					}
-				}
-
-
-			// If there's no brackets, it's a variable, property, or class.
-
-			else
-				{
-				parsedPrototype = new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID,
-																		  parameterStyle: ParameterStyle.C, supportsImpliedTypes: false);
-				TokenIterator start = tokenizedPrototype.FirstToken;
-				TokenIterator end = tokenizedPrototype.EndOfTokens;
-
-				MarkPowerShellParameter(start, end);
-				}
-
-			return parsedPrototype;
-			}
-
-
-		/* Function: MarkPowerShellParameter
-		 */
-		protected void MarkPowerShellParameter (TokenIterator start, TokenIterator end)
+		override protected void MarkParameter (TokenIterator start, TokenIterator end, ParameterStyle parameterStyle = ParameterStyle.Unknown)
 			{
 			TokenIterator iterator = start;
 			iterator.NextPastWhitespace(end);
@@ -316,6 +193,24 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		// Group: Parsing Functions
 		// __________________________________________________________________________
+
+
+		/* Function: TryToSkipMetadata
+		 *
+		 * Override to support detecting attributes as metadata.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- Each annotation will create a new prototype section.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		override protected bool TryToSkipMetadata (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			return TryToSkipAttribute(ref iterator, mode);
+			}
 
 
 		/* Function: TryToSkipKeyword
