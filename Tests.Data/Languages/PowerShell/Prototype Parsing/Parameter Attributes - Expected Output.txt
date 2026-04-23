@@ -1,7 +1,7 @@
 - Parameter Section:
   - Before Parameters: function BareParameters (
     - Access Level: Unknown
-    - Link Candidates: (none)
+    - Link Candidates: function
 
   - Parameter 1: $a,
     - Name: $a
@@ -32,7 +32,7 @@
 - Parameter Section:
   - Before Parameters: function ParameterTypes (
     - Access Level: Unknown
-    - Link Candidates: (none)
+    - Link Candidates: function
 
   - Parameter 1: [string] $a,
     - Name: $a
@@ -91,7 +91,7 @@
 - Parameter Section:
   - Before Parameters: function ParameterModifiers (
     - Access Level: Unknown
-    - Link Candidates: (none)
+    - Link Candidates: function
 
   - Parameter 1: [Parameter(Mandatory=$true)] $a,
     - Name: $a
@@ -150,7 +150,7 @@
 - Parameter Section:
   - Before Parameters: function DetermineTypeA (
     - Access Level: Unknown
-    - Link Candidates: (none)
+    - Link Candidates: function
 
   - Parameter 1: [Parameter(Mandatory=$true)][Alias("a")][ValidateNotNull][string] $a,
     - Name: $a
@@ -181,7 +181,7 @@
 - Parameter Section:
   - Before Parameters: function DetermineTypeB (
     - Access Level: Unknown
-    - Link Candidates: (none)
+    - Link Candidates: function
 
   - Parameter 1: [Parameter(Mandatory=$true)][Alias("a")][ValidateNotNull][DateTime] $a,
     - Name: $a
@@ -212,7 +212,7 @@
 - Parameter Section:
   - Before Parameters: function DetermineTypeC (
     - Access Level: Unknown
-    - Link Candidates: (none)
+    - Link Candidates: function
 
   - Parameter 1: [Parameter(Mandatory=$true)][Alias("a")][ValidateNotNull][System.IO.FileInfo[]] $a,
     - Name: $a
