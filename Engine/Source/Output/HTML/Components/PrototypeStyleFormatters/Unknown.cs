@@ -14,6 +14,7 @@
 
 using System;
 using CodeClear.NaturalDocs.Engine.Prototypes;
+using CodeClear.NaturalDocs.Engine.Tokenization;
 
 
 namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleFormatters
@@ -29,7 +30,152 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 		 */
 		override public PrototypeCellLayout[,] CalculateCells (ParameterSection parameters)
 			{
-			return null;
+			var cells = new PrototypeCellLayout[ parameters.NumberOfParameters, ColumnCount ];
+
+			for (int parameterIndex = 0; parameterIndex < parameters.NumberOfParameters; parameterIndex++)
+				{
+				TokenIterator startOfParam, endOfParam;
+				parameters.GetParameterBounds(parameterIndex, out startOfParam, out endOfParam);
+
+				TokenIterator iterator = startOfParam;
+
+				while (iterator < endOfParam &&
+							iterator.PrototypeParsingType == PrototypeParsingType.Null &&
+							iterator.FundamentalType == FundamentalType.Whitespace)
+					{  iterator.Next();  }
+
+
+				// Put everything except values in the name column
+
+				int currentColumn = 0;
+				TokenIterator startOfCell = iterator;
+				TokenIterator startOfType = iterator;
+
+				while (iterator < endOfParam)
+					{
+					PrototypeParsingType type = iterator.PrototypeParsingType;
+
+					if (type != PrototypeParsingType.PropertyValueSeparator &&
+						type != PrototypeParsingType.PropertyValue &&
+						type != PrototypeParsingType.DefaultValueSeparator &&
+						type != PrototypeParsingType.DefaultValue)
+						{  iterator.Next();   }
+					else
+						{  break;  }
+					}
+
+				TokenIterator endOfCell = iterator;
+
+				cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
+				cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
+				cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
+
+
+				// PropertyValueSeparator
+
+				currentColumn++;
+				startOfCell = iterator;
+
+				while (iterator < endOfParam)
+					{
+					PrototypeParsingType type = iterator.PrototypeParsingType;
+
+					if (type == PrototypeParsingType.PropertyValueSeparator ||
+						type == PrototypeParsingType.Null)
+						{  iterator.Next();   }
+					else
+						{  break;  }
+					}
+
+				endOfCell = iterator;
+
+				cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
+				cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
+				cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
+
+
+				// PropertyValue
+
+				currentColumn++;
+				startOfCell = iterator;
+
+				while (iterator < endOfParam)
+					{
+					PrototypeParsingType type = iterator.PrototypeParsingType;
+
+					if (type == PrototypeParsingType.PropertyValue ||
+						type == PrototypeParsingType.ParamSeparator ||
+						type == PrototypeParsingType.Null)
+						{  iterator.Next();   }
+					else
+						{  break;  }
+					}
+
+				endOfCell = iterator;
+
+				cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
+				cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
+				cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
+
+
+				// DefaultValueSeparator
+
+				currentColumn++;
+				startOfCell = iterator;
+
+				while (iterator < endOfParam)
+					{
+					PrototypeParsingType type = iterator.PrototypeParsingType;
+
+					if (type == PrototypeParsingType.DefaultValueSeparator ||
+						type == PrototypeParsingType.Null)
+						{  iterator.Next();   }
+					else
+						{  break;  }
+					}
+
+				endOfCell = iterator;
+
+				cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
+				cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
+				cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
+
+
+				// DefaultValue
+
+				currentColumn++;
+				startOfCell = iterator;
+
+				while (iterator < endOfParam)
+					{  iterator.Next();   }
+
+				endOfCell = iterator;
+
+				cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
+				cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
+				cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
+				}
+
+			return cells;
+			}
+
+
+		/* Function: ColumnSpacingOf
+		 * Returns the spacing of the passed column type.
+		 */
+		override public ColumnSpacing ColumnSpacingOf (PrototypeColumnType columnType)
+			{
+			switch (columnType)
+				{
+				case PrototypeColumnType.DefaultValueSeparator:
+					return ColumnSpacing.AlwaysBoth;
+
+				case PrototypeColumnType.PropertyValueSeparator:
+					return ColumnSpacing.SpacedUnlessColon;
+
+				default:
+					return ColumnSpacing.Normal;
+				}
 			}
 
 
@@ -54,7 +200,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 
 		/* var: ColumnOrderValues
 		 */
-		readonly static protected PrototypeColumnType[] ColumnOrderValues = { };
+		readonly static public PrototypeColumnType[] ColumnOrderValues = { PrototypeColumnType.Name,
+																											  PrototypeColumnType.PropertyValueSeparator,
+																											  PrototypeColumnType.PropertyValue,
+																											  PrototypeColumnType.DefaultValueSeparator,
+																											  PrototypeColumnType.DefaultValue };
 
 		}
 	}
