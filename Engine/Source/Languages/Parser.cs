@@ -591,7 +591,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				// We have enough tokens marked to create the parsed prototype.  This will also let us iterate through the parameters
 				// easily.
 
-				parsedPrototype = new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID);
+				parsedPrototype = new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID,
+																		  language.ParameterStyle, language.ImpliedParameterTypes);
 
 
 				// If there are any parameters, mark the tokens in them.
@@ -600,7 +601,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 				if (parsedPrototype.NumberOfParameters > 0)
 					{
-					parsedPrototype.ParameterStyle = DetectParameterStyle(parsedPrototype);
+					if (parsedPrototype.ParameterStyle == ParameterStyle.Unknown)
+						{  parsedPrototype.ParameterStyle = DetectParameterStyle(parsedPrototype);  }
 
 					for (int i = 0; i < parsedPrototype.NumberOfParameters; i++)
 						{
