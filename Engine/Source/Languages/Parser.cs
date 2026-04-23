@@ -510,10 +510,19 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			ParsedPrototype parsedPrototype;
 
 
+			// Mark any leading metadata.
+
+			TokenIterator iterator = tokenizedPrototype.FirstToken;
+
+			TryToSkipWhitespace(ref iterator, true, ParseMode.ParsePrototype);
+
+			while (TryToSkipMetadata(ref iterator, ParseMode.ParsePrototype))
+				{  TryToSkipWhitespace(ref iterator, true, ParseMode.ParsePrototype);  }
+
+
 			// Search for the first opening bracket or brace.  Also be on the lookout for anything that would indicate this is a
 			// class prototype.
 
-			TokenIterator iterator = tokenizedPrototype.FirstToken;
 			char closingBracket = '\0';
 
 			while (iterator.IsInBounds)
@@ -595,7 +604,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 																		  language.ParameterStyle, language.ImpliedParameterTypes);
 
 
-				// If there are any parameters, mark the tokens in them.
+				// Set the main section to the last one, since any metadata at the start may have created its own sections.  Some can
+				// have parameters and we don't want those confused for the actual parameter list.
+
+				parsedPrototype.MainSectionIndex = parsedPrototype.Sections.Count - 1;
+
+
+				// If there are any parameters, mark the tokens in them.  We only have to do the main section because if any sections
+				// were created by metadata, that means the metadata section was already marked with prototype parsing tokens.
 
 				TokenIterator start, end;
 
@@ -1082,7 +1098,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				if (TryToSkipComment(ref iterator, ParseMode.SyntaxHighlight) ||
 					TryToSkipString(ref iterator, ParseMode.SyntaxHighlight) ||
 					TryToSkipNumber(ref iterator, ParseMode.SyntaxHighlight) ||
-					TryToSkipKeyword(ref iterator, ParseMode.SyntaxHighlight))
+					TryToSkipKeyword(ref iterator, ParseMode.SyntaxHighlight) ||
+					TryToSkipMetadata(ref iterator, ParseMode.SyntaxHighlight))
 					{
 					}
 				else
@@ -6223,6 +6240,21 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			iterator.Next();
 			return true;
+			}
+
+
+		/* Function: TryToSkipMetadata
+		 *
+		 * If the iterator is on metadata, such as an attribute in C# or an annotation in Java, moves the iterator past it and
+		 * returns true.
+		 *
+		 * This is an override point for other languages so that they can add metadata parsing without having to also override
+		 * functions like <SyntaxHighlight()> and <ParsePrototype()>.  The default implementation always returns false.
+		 *
+		 */
+		virtual protected bool TryToSkipMetadata (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			return false;
 			}
 
 
