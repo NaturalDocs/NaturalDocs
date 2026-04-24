@@ -36,9 +36,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: SyntaxHighlight
 		 */
-		override public void SyntaxHighlight (Tokenizer source)
+		override public void SyntaxHighlight (TokenIterator start, TokenIterator end)
 			{
-			TokenIterator iterator = source.FirstToken;
+			TokenIterator iterator = start;
 
 			while (iterator.IsInBounds)
 				{

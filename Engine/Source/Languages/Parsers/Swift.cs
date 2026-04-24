@@ -41,27 +41,21 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: SyntaxHighlight
 		 */
-		override public void SyntaxHighlight (Tokenizer source)
+		override public void SyntaxHighlight (TokenIterator start, TokenIterator end)
 			{
-			SyntaxHighlight(source.FirstToken, source.EndOfTokens);
-			}
+			TokenIterator iterator = start;
 
-
-		/* Function: SyntaxHighlight
-		 */
-		public void SyntaxHighlight (TokenIterator start, TokenIterator end)
-			{
-			while (start < end)
+			while (iterator < end)
 				{
-				if (TryToSkipAttribute(ref start, ParseMode.SyntaxHighlight) ||
-					TryToSkipKeyword(ref start, ParseMode.SyntaxHighlight) ||
-				    TryToSkipComment(ref start, ParseMode.SyntaxHighlight) ||
-				    TryToSkipString(ref start, ParseMode.SyntaxHighlight) ||
-				    TryToSkipNumber(ref start, ParseMode.SyntaxHighlight))
+				if (TryToSkipAttribute(ref iterator, ParseMode.SyntaxHighlight) ||
+					TryToSkipKeyword(ref iterator, ParseMode.SyntaxHighlight) ||
+				    TryToSkipComment(ref iterator, ParseMode.SyntaxHighlight) ||
+				    TryToSkipString(ref iterator, ParseMode.SyntaxHighlight) ||
+				    TryToSkipNumber(ref iterator, ParseMode.SyntaxHighlight))
 					{
 					}
 				else
-					{  start.Next();  }
+					{  iterator.Next();  }
 				}
 			}
 
@@ -156,7 +150,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (swiftKeywords.Contains(iterator.TextBetween(end)) == false)
 				{  return false;  }
-
 
 			TokenIterator lookbehind = iterator;
 			lookbehind.Previous();

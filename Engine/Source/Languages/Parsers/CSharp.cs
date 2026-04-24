@@ -248,15 +248,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: SyntaxHighlight
 		 */
-		override public void SyntaxHighlight (Tokenizer source)
-			{
-			SyntaxHighlight(source.FirstToken, source.EndOfTokens);
-			}
-
-
-		/* Function: SyntaxHighlight
-		 */
-		public void SyntaxHighlight (TokenIterator start, TokenIterator end)
+		override public void SyntaxHighlight (TokenIterator start, TokenIterator end)
 			{
 			TokenIterator iterator = start;
 

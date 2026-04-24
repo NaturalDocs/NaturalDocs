@@ -151,9 +151,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: SyntaxHighlight
 		 */
-		override public void SyntaxHighlight (Tokenizer source)
+		override public void SyntaxHighlight (TokenIterator start, TokenIterator end)
 			{
-			TokenIterator iterator = source.FirstToken;
+			TokenIterator iterator = start;
 
 			while (iterator.IsInBounds)
 				{
@@ -184,7 +184,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					// All SV keywords start with a lowercase letter or $
 					if ((iterator.Character >= 'a' && iterator.Character <= 'z') || iterator.Character == '$')
 						{
-						string identifier = source.TextBetween(iterator, endOfIdentifier);
+						string identifier = iterator.TextBetween(endOfIdentifier);
 
 						if (Keywords.Contains(identifier))
 							{  iterator.SetSyntaxHighlightingTypeByCharacters(SyntaxHighlightingType.Keyword, identifier.Length);  }
