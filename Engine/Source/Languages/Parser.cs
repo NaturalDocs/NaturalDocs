@@ -1084,16 +1084,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: SyntaxHighlight
-		 * Applies <SyntaxHighlightingTypes> to the tokenized content.
+		 * Applies <SyntaxHighlightingTypes> to the passed range.  Note that it's possible the highlighting may extend past the ending
+		 * bounds, but it will always highlight at least the passed range.
 		 */
-		public virtual void SyntaxHighlight (Tokenizer source)
+		public virtual void SyntaxHighlight (TokenIterator start, TokenIterator end)
 			{
 			if (language.Type == Language.LanguageType.Container)
 				{  throw new Exceptions.BadContainerOperation("SyntaxHighlight");  }
 
-			TokenIterator iterator = source.FirstToken;
+			TokenIterator iterator = start;
 
-			while (iterator.IsInBounds)
+			while (iterator < end)
 				{
 				if (TryToSkipComment(ref iterator, ParseMode.SyntaxHighlight) ||
 					TryToSkipString(ref iterator, ParseMode.SyntaxHighlight) ||
@@ -1105,6 +1106,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				else
 					{  iterator.Next();  }
 				}
+			}
+
+
+		/* Function: SyntaxHighlight
+		 * Applies <SyntaxHighlightingTypes> to the tokenized content.
+		 */
+		public void SyntaxHighlight (Tokenizer source)
+			{
+			SyntaxHighlight(source.FirstToken, source.EndOfTokens);
 			}
 
 
