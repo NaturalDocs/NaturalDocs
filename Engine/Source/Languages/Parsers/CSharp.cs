@@ -3993,26 +3993,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
-		/* Function: ConsecutiveCharacterCount
-		 * Returns how many times the character at the iterator appears in a row.
-		 */
-		protected int ConsecutiveCharacterCount (TokenIterator iterator)
-			{
-			char character = iterator.Character;
-
-			string rawText = iterator.Tokenizer.RawText;
-			int indexOfEnd = iterator.RawTextIndex + 1;
-
-			while (indexOfEnd < rawText.Length &&
-					  rawText[indexOfEnd] == character)
-				{
-				indexOfEnd++;
-				}
-
-			return (indexOfEnd - iterator.RawTextIndex);
-			}
-
-
 
 		// Group: Static Variables
 		// __________________________________________________________________________
