@@ -192,12 +192,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Count hash symbols for #" strings.  Zero is fine.
 
-			int hashCount = 0;
+			int delimiterHashCount = 0;
 
 			if (lookahead.Character == '#')
 				{
-				hashCount = ConsecutiveCharacterCount(lookahead);
-				lookahead.Next(hashCount);
+				delimiterHashCount = ConsecutiveCharacterCount(lookahead);
+				lookahead.Next(delimiterHashCount);
 				}
 
 
@@ -228,33 +228,46 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					else
 						{  lookahead.Next(3);  }
 
-					if (hashCount == 0 ||
-						(lookahead.Character == '#' && ConsecutiveCharacterCount(lookahead) >= hashCount))
+					if (delimiterHashCount == 0 ||
+						(lookahead.Character == '#' && ConsecutiveCharacterCount(lookahead) >= delimiterHashCount))
 						{
-						lookahead.Next(hashCount);
+						lookahead.Next(delimiterHashCount);
 						break;
 						}
 					}
 
-				// Interpolated strings
-				else if (hashCount == 0 && lookahead.MatchesAcrossTokens("\\("))
+				else if (lookahead.Character == '\\')
 					{
-					if (mode == ParseMode.SyntaxHighlight)
-						{  startOfLastStringSegment.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.String);  }
-
 					TokenIterator startOfInterpolatedCode = lookahead;
 
 					lookahead.Next();
-					TryToSkipBlock(ref lookahead, false);
+					int contentHashCount = (lookahead.Character == '#' ? ConsecutiveCharacterCount(lookahead) : 0);
 
-					if (mode == ParseMode.SyntaxHighlight)
-						{  SyntaxHighlight(startOfInterpolatedCode, lookahead);  }
+					// Interpolated strings
+					if (contentHashCount == delimiterHashCount)
+						{
+						if (contentHashCount > 0)
+							{  lookahead.Next(contentHashCount);  }
 
-					startOfLastStringSegment = lookahead;
+						if (lookahead.Character == '(')
+							{
+							if (mode == ParseMode.SyntaxHighlight)
+								{  startOfLastStringSegment.SetSyntaxHighlightingTypeBetween(startOfInterpolatedCode, SyntaxHighlightingType.String);  }
+
+							TryToSkipBlock(ref lookahead, false);
+
+							if (mode == ParseMode.SyntaxHighlight)
+								{  SyntaxHighlight(startOfInterpolatedCode, lookahead);  }
+
+							startOfLastStringSegment = lookahead;
+							}
+						else
+							{  lookahead.Next();  }
+						}
+					else
+						{  lookahead.Next();  }
 					}
 
-				else if (hashCount == 0 && lookahead.Character == '\\')
-					{  lookahead.Next(2);  }
 				else
 					{  lookahead.Next();  }
 				}
