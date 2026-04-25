@@ -54,8 +54,7 @@
 	--- Code
 	a #"x"# a
 	b #" x "x" x "# b
-	c ###" "# "## "### c
-	d ###" \(x + 5) "### d
+	c ###" x "# x "## x "### c
 	---
 */
 
@@ -66,8 +65,33 @@
 	--- Code
 	a
 	###"""
-	b "c" d """ e \(f+5) g """## h
+	b "c" d """ e """## f
 	"""###
-	i
+	g
+	---
+*/
+
+/* Topic: Interpolated Extended String Literals
+	_____________________________________________
+
+	The number of hashes after the backslash must match the delimiters.
+
+	--- Code
+	a #"x \(x) \#(x) x"# a
+	b ##"x \(x) \#(x) \##(x) x"## b
+	c ###"x \(x) \#(x) \##(x) \###(x) x"### c
+	---
+*/
+
+
+/* Topic: Multiline Interpolated Extended String Literals
+	_____________________________________________
+
+	--- Code
+	a
+	###"""
+	b \(c) \#(d) \##(e) \###(f) g
+	"""###
+	h
 	---
 */
