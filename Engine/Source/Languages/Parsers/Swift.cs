@@ -194,10 +194,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			int hashCount = 0;
 
-			while (lookahead.Character == '#')
+			if (lookahead.Character == '#')
 				{
-				hashCount++;
-				lookahead.Next();
+				hashCount = ConsecutiveCharacterCount(lookahead);
+				lookahead.Next(hashCount);
 				}
 
 
@@ -228,16 +228,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					else
 						{  lookahead.Next(3);  }
 
-					int endHashCount = 0;
-
-					while (lookahead.Character == '#' && endHashCount < hashCount)
+					if (hashCount == 0 ||
+						(lookahead.Character == '#' && ConsecutiveCharacterCount(lookahead) >= hashCount))
 						{
-						endHashCount++;
-						lookahead.Next();
+						lookahead.Next(hashCount);
+						break;
 						}
-
-					if (endHashCount == hashCount)
-						{  break;  }
 					}
 
 				// Interpolated strings

@@ -195,13 +195,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// If it's a raw string, count hashes.  Zero is fine.
 
-			if (isRawString)
+			if (isRawString && lookahead.Character == '#')
 				{
-				while (lookahead.Character == '#')
-					{
-					hashCount++;
-					lookahead.Next();
-					}
+				hashCount = ConsecutiveCharacterCount(lookahead);
+				lookahead.Next(hashCount);
 				}
 
 
@@ -219,16 +216,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 						if (isRawString && hashCount > 0)
 							{
-							int endHashCount = 0;
-
-							while (lookahead.Character == '#' && endHashCount < hashCount)
+							if (lookahead.Character == '#' && ConsecutiveCharacterCount(lookahead) >= hashCount)
 								{
-								endHashCount++;
-								lookahead.Next();
+								lookahead.Next(hashCount);
+								break;
 								}
-
-							if (endHashCount == hashCount)
-								{  break;  }
 							}
 						else
 							{  break;  }
