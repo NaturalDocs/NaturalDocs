@@ -141,6 +141,25 @@ Language: JavaScript
    Variable Prototype Enders: ; =
 
 
+Language: Kotlin
+
+   Extensions: kt kts
+
+   Line Comment: //
+   Block Comment: /* */
+   Enum Values: Under Type
+   Case Sensitive: Yes
+   Block Comments Nest: Yes
+
+   Class Prototype Enders: { \n
+   Interface Prototype Enders: { \n
+   Function Prototype Enders: = {
+   Variable Prototype Enders: = \n
+   Property Prototype Enders: = \n
+   Constant Prototype Ender: =
+   Type Prototype Ender: =
+
+
 Language: Lua
 
    Extension: lua

@@ -83,6 +83,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				java.Parser = new Parsers.Java(engineInstance, java);
 				java.ParameterStyle = Prototypes.ParameterStyle.C;
 
+			Language kotlin = new Language("Kotlin");
+				kotlin.Parser = new Parsers.Kotlin(engineInstance, kotlin);
+
 			Language lua = new Language("Lua");
 				lua.Parser = new Parsers.Lua(engineInstance, lua);
 
@@ -121,7 +124,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			predefinedLanguages = new Language[] { textFile, shebangScript,
 																		 cSharp, systemVerilog,
-																		 java, lua, perl, php, powerbuilder, powershell, python, ruby, rust, sql, swift, tcl };
+																		 java, kotlin, lua, perl, php, powerbuilder, powershell, python, ruby, rust, sql, swift, tcl };
 			}
 
 
