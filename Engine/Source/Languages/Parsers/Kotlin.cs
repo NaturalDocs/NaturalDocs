@@ -554,7 +554,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// Hard keywords as of April 2026
 
 			"as", "break", "class", "continue", "do", "else", "false", "for", "fun", "if", "in", "interface", "is", "null", "object",
-			"package", "return", "super", "this", "throw", "true", "try", "typalias", "typeof", "val", "var", "when", "while",
+			"package", "return", "super", "this", "throw", "true", "try", "typealias", "typeof", "val", "var", "when", "while",
 
 			// Soft keywords
 
