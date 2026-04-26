@@ -4,6 +4,10 @@
  *
  * Additional language support for Rust.
  *
+ * Language Version:
+ *
+ *		The parser is based on Rust 1.95.0, the latest release as of April 2026.
+ *
  * Resources:
  *		- <Language Reference: https://doc.rust-lang.org/reference/>
  *		- <Tutorial: https://doc.rust-lang.org/book/>

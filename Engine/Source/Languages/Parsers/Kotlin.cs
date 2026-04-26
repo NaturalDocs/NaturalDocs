@@ -4,6 +4,10 @@
  *
  * Additional language support for Kotlin.
  *
+ * Language Version:
+ *
+ *		The parser is based on Kotlin 2.3.21, the latest release as of April 2026.
+ *
  * Resources:
  *		- <Docs Home: https://kotlinlang.org/docs/home.html>
  *		- <Language Specification: https://kotlinlang.org/spec/> and <Grammar: https://kotlinlang.org/grammar/>

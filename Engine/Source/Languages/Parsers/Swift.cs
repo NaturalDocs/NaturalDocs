@@ -4,6 +4,10 @@
  *
  * Additional language support for Swift.
  *
+ * Language Version:
+ *
+ *		The parser is based on Swift 6.3, the latest release as of April 2026.
+ *
  * Resources:
  *
  *		- <Language Reference: https://docs.swift.org/swift-book/documentation/the-swift-programming-language>
