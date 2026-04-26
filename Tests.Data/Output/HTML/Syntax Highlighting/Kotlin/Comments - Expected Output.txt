@@ -1,0 +1,1 @@
+<pre class="CCode">a <span class="SHComment">// line comment</span><br />b <span class="SHComment">/* block comment */</span> b<br />c <span class="SHComment">/* nesting /* block */ comments */</span> c</pre>

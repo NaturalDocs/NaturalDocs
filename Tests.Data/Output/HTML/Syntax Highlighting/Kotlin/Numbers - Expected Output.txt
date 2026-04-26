@@ -1,0 +1,15 @@
+<pre class="CCode"><span class="SHNumber">12</span><br /><span class="SHNumber">-12</span><br /><span class="SHNumber">123456789l</span><br /><span class="SHNumber">-123456789L</span><br /><span class="SHNumber">12U</span><br /><span class="SHNumber">123456789ul</span></pre>
+-----
+<pre class="CCode"><span class="SHNumber">12e1</span><br /><span class="SHNumber">-12E-1</span><br /><span class="SHNumber">12.34f</span><br /><span class="SHNumber">-12.34F</span><br /><span class="SHNumber">12.34e+5</span><br /><span class="SHNumber">-12.34e-5f</span><br /><span class="SHNumber">.012</span><br /><span class="SHNumber">-.012F</span><br /><span class="SHNumber">.012E+5</span><br /><span class="SHNumber">-.012e10</span><br /><span class="SHNumber">0.0123f</span><br /><span class="SHNumber">-0.0123F</span><br /><span class="SHNumber">0.0123e+5</span><br /><span class="SHNumber">-0.0123E-5</span></pre>
+-----
+<pre class="CCode"><span class="SHNumber">0x01230ABC</span><br /><span class="SHNumber">0xabc12345UL</span><br /><span class="SHNumber">0b00100110</span><br /><span class="SHNumber">0B0110100110011100ul</span></pre>
+-----
+<pre class="CCode"><span class="SHNumber">1_234_567</span><br /><span class="SHNumber">0xabc1_2345UL</span><br /><span class="SHNumber">0x_ab12_cd45UL</span><br /><span class="SHNumber">0B0110_1001_1001_1100ul</span><br /><span class="SHNumber">0b_0110_1001_1001_1100ul</span><br /><span class="SHNumber">1.234_567e1_2</span><br /><span class="SHNumber">1____2____3</span></pre>
+-----
+<pre class="CCode"><span class="SHNumber">0x000E</span>+a<br /><span class="SHNumber">0x000e</span>-<span class="SHNumber">1</span></pre>
+-----
+<pre class="CCode"><span class="SHNumber">-1</span><br />y-<span class="SHNumber">1</span><br />y -<span class="SHNumber">1</span><br /><span class="SHNumber">1</span>-<span class="SHNumber">1</span><br /><span class="SHNumber">1</span> -<span class="SHNumber">1</span><br />(<span class="SHNumber">-1</span>)<br /><span class="SHNumber">1</span> + <span class="SHNumber">-1</span></pre>
+-----
+<pre class="CCode">_12</pre>
+-----
+<pre class="CCode">a1_2_3 = <span class="SHString">&quot;45&quot;</span></pre>

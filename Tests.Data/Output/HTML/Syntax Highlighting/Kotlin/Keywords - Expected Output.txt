@@ -1,0 +1,5 @@
+<pre class="CCode"><span class="SHKeyword">true</span><br />_true<br />true_</pre>
+-----
+<pre class="CCode"><span class="SHKeyword">UInt</span><br />uint<br />Uint<br /><br /><span class="SHKeyword">true</span><br />True</pre>
+-----
+<pre class="CCode">`true`<br />`UInt`</pre>
