@@ -57,7 +57,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					config = null;
 					return false;
 					}
-				else if (binaryFile.Version.IsAtLeastRelease("2.2") == false &&  // can handle changes in 2.3.1
+				else if (binaryFile.Version.IsAtLeastRelease("2.4") == false &&
 						   binaryFile.Version.IsSamePreRelease(Engine.Instance.Version) == false)
 					{
 					binaryFile.Close();
@@ -83,8 +83,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 						// [Byte: Type]
 						// [String: Simple Identifier]
 						// [Byte: Enum Values]
+						// [Byte: Parameter Style]
 						// [Byte: Case Sensitive (1 or 0)]
 						// [Byte: Block Comments Nest (1 or 0)]
+						// [Byte: Implied Parameter Types (1 or 0)]
 						// [String: Member Operator Symbol]
 						// [String: Line Extender Symbol]
 
@@ -110,17 +112,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 							return false;
 							}
 
-						language.CaseSensitive = (binaryFile.ReadByte() == 1);
-
-						if (binaryFile.Version.IsAtLeastRelease("2.3.1") ||
-							binaryFile.Version.IsSamePreRelease(Engine.Instance.Version))
-							{
-							language.BlockCommentsNest = (binaryFile.ReadByte() == 1);
-							}
+						byte parameterStyle = binaryFile.ReadByte();
+						if (Enum.IsDefined(typeof(Prototypes.ParameterStyle), parameterStyle))
+							{  language.ParameterStyle = (Prototypes.ParameterStyle)parameterStyle;  }
 						else
 							{
-							language.BlockCommentsNest = false;
+							config = null;
+							return false;
 							}
+
+						language.CaseSensitive = (binaryFile.ReadByte() == 1);
+						language.BlockCommentsNest = (binaryFile.ReadByte() == 1);
+						language.ImpliedParameterTypes = (binaryFile.ReadByte() == 1);
 
 						language.MemberOperator = binaryFile.ReadString();
 						language.LineExtender = binaryFile.ReadString();
@@ -334,8 +337,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// [Byte: Type]
 					// [String: Simple Identifier]
 					// [Byte: Enum Values]
+					// [Byte: Parameter Style]
 					// [Byte: Case Sensitive (1 or 0)]
 					// [Byte: Block Comments Nest (1 or 0)]
+					// [Byte: Implied Parameter Types (1 or 0)]
 					// [String: Member Operator Symbol]
 					// [String: Line Extender Symbol]
 
@@ -343,8 +348,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					binaryFile.WriteByte( (byte)language.Type );
 					binaryFile.WriteString( language.SimpleIdentifier );
 					binaryFile.WriteByte( (byte)language.EnumValue );
+					binaryFile.WriteByte( (byte)language.ParameterStyle );
 					binaryFile.WriteByte( (byte)(language.CaseSensitive ? 1 : 0) );
 					binaryFile.WriteByte( (byte)(language.BlockCommentsNest ? 1 : 0) );
+					binaryFile.WriteByte( (byte)(language.ImpliedParameterTypes ? 1 : 0) );
 					binaryFile.WriteString( language.MemberOperator );
 					binaryFile.WriteString( language.LineExtender );
 

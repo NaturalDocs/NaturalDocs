@@ -20,6 +20,6 @@ using System;
 
 namespace CodeClear.NaturalDocs.Engine.Prototypes
 	{
-	public enum ParameterStyle
+	public enum ParameterStyle : byte
 		{  Unknown = 0, C, Pascal, SystemVerilog  }
 	}

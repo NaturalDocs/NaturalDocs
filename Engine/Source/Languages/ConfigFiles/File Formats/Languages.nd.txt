@@ -33,8 +33,10 @@ _______________________________________________________________________________
 		> [Byte: Type]
 		> [String: Simple Identifier]
 		> [Byte: Enum Values]
+		> [Byte: Parameter Style]
 		> [Byte: Case Sensitive (1 or 0)]
 		> [Byte: Block Comments Nest (1 or 0)]
+		> [Byte: Implied Parameter Types (1 or 0)]
 		> [String: Member Operator Symbol]
 		> [String: Line Extender Symbol]
 		> [String: Line Comment Symbol] [] ... [String: null]
@@ -69,6 +71,10 @@ _______________________________________________________________________________
 
 Group: Revisions
 _______________________________________________________________________________
+
+	Topic: 2.4
+
+		- Added Parameter Style and Implied Parameter Types.
 
 	Topic: 2.3.1
 
