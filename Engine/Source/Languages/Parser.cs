@@ -65,6 +65,33 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			{  IterateOnly, CreateElements, SyntaxHighlight, ParsePrototype, ParseClassPrototype  }
 
 
+		/* enum: ParseNumberFlags
+		 *
+		 * Flags for parsing numbers in <TryToSkipNumber(flags)>.  This allows multiple language parsers to use the same
+		 * function rather than having duplicated code with slight variations.
+		 *
+		 * Default - None of the below flags set.
+		 *
+		 * AllowUnderscoreSeparators - Digits can be separated with underscores such as "123_456".
+		 * AllowHexFloats - Floats can be declared in hex such as "0x1A.8p10".
+		 *
+		 * RequireDigitBeforeDot - Floats must have a leading number, such as "0.1".  Otherwise ".1" is allowed.
+		 * RequireDigitAfterDot - Floats must have a number after a dot, such as "0.1".  Otherwise "1." is allowed.  This is
+		 *									 included in <Default>.
+		 */
+		[Flags]
+		public enum ParseNumberFlags : byte
+			{
+			Default = RequireDigitAfterDot,
+
+			AllowUnderscoreSeparators = 0x01,
+			AllowHexFloats = 0x02,
+
+			RequireDigitBeforeDot = 0x04,
+			RequireDigitAfterDot = 0x08
+			}
+
+
 		/* enum: ParseResult
 		 *
 		 * The result of a <Parse()> operation.
@@ -6110,12 +6137,33 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 */
 		virtual protected bool TryToSkipNumber (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
+			return TryToSkipNumber(ref iterator, ParseNumberFlags.Default, mode);
+			}
+
+
+		/* Function: TryToSkipNumber (flags)
+		 *
+		 * If the iterator is on a numeric literal, moves the iterator past it and returns true.  Uses the passed <ParseNumberFlags> to
+		 * control the behavior.  Language parsers can override the main <TryToSkipNumber()> to call this version with the appropriate
+		 * flags.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipNumber (ref TokenIterator iterator, ParseNumberFlags flags, ParseMode mode = ParseMode.IterateOnly)
+			{
 			if ( ((iterator.Character >= '0' && iterator.Character <= '9') ||
 				   iterator.Character == '-' || iterator.Character == '+' || iterator.Character == '.') == false)
 				{  return false;  }
 
 			TokenIterator lookbehind = iterator;
 			lookbehind.Previous();
+
+			bool allowUnderscoreSeparators = ((flags & ParseNumberFlags.AllowUnderscoreSeparators) != 0);
+
 
 			// Check that we're not following an underscore or letter.  This prevents "_12" from being seen as a number.
 
@@ -6128,9 +6176,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{  return false;  }
 
 			TokenIterator lookahead = iterator;
-			bool passedPeriod = false;
-			bool lastCharWasE = false;
+			bool passedDot = false;
 			bool isHex = false;
+
+
+			// Leading +/-
 
 			if (lookahead.Character == '-' || lookahead.Character == '+')
 				{
@@ -6147,66 +6197,151 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				lookahead.Next();
 				}
 
+
+			// Leading dot with no digits beforehand
+
 			if (lookahead.Character == '.')
 				{
+				if ((flags & ParseNumberFlags.RequireDigitBeforeDot) != 0)
+					{  return false;  }
+
 				lookahead.Next();
-				passedPeriod = true;
+				passedDot = true;
 				}
+
+
+			// First digits.  Must start with 0-9 even for hex because of the 0x prefix.
 
 			if (lookahead.Character >= '0' && lookahead.Character <= '9')
 				{
 				if (lookahead.Character == '0' && lookahead.RawTextLength > 1)
 					{
-					char secondChar = iterator.Tokenizer.RawText[ lookahead.RawTextIndex + 1 ];
+					char secondChar = lookahead.Tokenizer.RawText[ lookahead.RawTextIndex + 1 ];
 					isHex = (secondChar == 'x' || secondChar == 'X');
 					}
 
-				lookahead.Next();
-
-				char lastChar = iterator.Tokenizer.RawText[ lookahead.RawTextIndex - 1 ];
-				lastCharWasE = (lastChar == 'e' || lastChar == 'E');
+				do
+					{  lookahead.Next();  }
+				while (lookahead.FundamentalType == FundamentalType.Text ||
+						 (allowUnderscoreSeparators && lookahead.Character == '_'));
 				}
 			else
 				{  return false;  }
 
-			// We're definitely on a number, so apply the position in case the later lookaheads fail.
-			TokenIterator startOfNumber = iterator;
-			iterator = lookahead;
 
-			if (lookahead.Character == '.' && !passedPeriod)
+			// We're definitely on a number at this point, so save the position in case the later lookaheads fail.
+
+			TokenIterator endOfNumber = lookahead;
+
+
+			// Dot following at least one digit
+
+			if (lookahead.Character == '.' && !passedDot)
 				{
 				lookahead.Next();
+				passedDot = true;
 
-				if (lookahead.Character >= '0' && lookahead.Character <= '9')
+				if ((flags & ParseNumberFlags.RequireDigitAfterDot) == 0)
+					{  endOfNumber = lookahead;  }
+
+
+				// Does the token following the dot start with an acceptable character?  Formatting it this way so the expression
+				// isn't an unintelligible mess of paretheses.
+
+				char character = lookahead.Character;
+
+				if (character >= '0' && character <= '9')
+					{  }
+				else if (allowUnderscoreSeparators && character == '_')
+					{  }
+				else if (isHex)
 					{
-					lookahead.Next();
-					iterator = lookahead;
-
-					passedPeriod = true;
-
-					char lastChar = iterator.Tokenizer.RawText[ lookahead.RawTextIndex - 1 ];
-					lastCharWasE = (lastChar == 'e' || lastChar == 'E');
+					if ((character >= 'a' && character <= 'f') ||
+						(character >= 'A' && character <= 'F'))
+						{  }
+					else if ( ((flags & ParseNumberFlags.AllowHexFloats) != 0) &&
+								((flags & ParseNumberFlags.RequireDigitAfterDot) == 0) &&
+							   (character == 'p' || character == 'P') )
+						{  }
+					else
+						{  goto Done;  }
 					}
-				else
-					{  lookahead = iterator;  }
+				else // !isHex
+					{
+					if ( ((flags & ParseNumberFlags.RequireDigitAfterDot) == 0) &&
+						 (character == 'e' || character == 'E') )
+						{  }
+					else
+						{  goto Done;  }
+					}
+
+				// If we're here the previous character was acceptable.  Collect additional digits following the dot.  The exponent will
+				// be included in the same token ("23e4") unless there is a +/- after the E/P.
+
+				do
+					{  lookahead.Next();  }
+				while (lookahead.FundamentalType == FundamentalType.Text ||
+						 (allowUnderscoreSeparators && lookahead.Character == '_'));
+
+				endOfNumber = lookahead;
 				}
 
-			if (lastCharWasE && !isHex && (lookahead.Character == '-' || lookahead.Character == '+'))
+
+			// The +/- between the E/P and the exponent digits
+
+			if (lookahead.Character == '-' || lookahead.Character == '+')
 				{
+				// Make sure the character before the +/- was an E or P and is appropriate for our number.
+
+				char lastChar = lookahead.Tokenizer.RawText[ lookahead.RawTextIndex - 1 ];
+
+				if (lastChar == 'e' || lastChar == 'E')
+					{
+					// E can only be used for decimal floats.  Hex floats must use P.
+					if (isHex)
+						{  goto Done;  }
+
+					// For Rust, also make sure it's not just the 'e' from "isize" or "usize".  We can just check for the 'z' since
+					// that can't be a digit.
+					if (lookahead.RawTextIndex < 2 ||
+						lookahead.Tokenizer.RawText[lookahead.RawTextIndex - 2] == 'z')
+						{  goto Done;  }
+					}
+				else if ((lastChar == 'p' || lastChar == 'P'))
+					{
+					// P can only be used for hex floats.
+					if (!isHex || ((flags & ParseNumberFlags.AllowHexFloats) == 0))
+						{  goto Done;  }
+					}
+				else
+					{  goto Done;  }
+
+
+				// If we're here it's acceptable.  Move past the +/-
+
 				lookahead.Next();
 
-				if (lookahead.Character >= '0' && lookahead.Character <= '9')
+
+				// Get the exponent.  Even hex floats require it to only use 0-9 for this part.
+				if (lookahead.Character >= '0' && lookahead.Character <= '9' ||
+					(allowUnderscoreSeparators && lookahead.Character == '_'))
 					{
-					lookahead.Next();
-					iterator = lookahead;
+					do
+						{  lookahead.Next();  }
+					while (lookahead.FundamentalType == FundamentalType.Text ||
+							 (allowUnderscoreSeparators && lookahead.Character == '_'));
+
+					endOfNumber = lookahead;
 					}
-				else
-					{  lookahead = iterator;  }
 				}
+
+
+			Done: // An evil goto target!  The shame!
 
 			if (mode == ParseMode.SyntaxHighlight)
-				{  startOfNumber.SetSyntaxHighlightingTypeBetween(iterator, SyntaxHighlightingType.Number);  }
+				{  iterator.SetSyntaxHighlightingTypeBetween(endOfNumber, SyntaxHighlightingType.Number);  }
 
+			iterator = endOfNumber;
 			return true;
 			}
 
