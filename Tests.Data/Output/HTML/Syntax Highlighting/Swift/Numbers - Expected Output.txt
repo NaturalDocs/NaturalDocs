@@ -2,6 +2,6 @@
 -----
 <pre class="CCode"><span class="SHNumber">1.2</span><br /><span class="SHNumber">-1.2</span><br /><span class="SHNumber">+1.2</span><br /><br /><span class="SHNumber">12e3</span><br /><span class="SHNumber">-12E-3</span><br /><span class="SHNumber">+12E+3</span><br /><br /><span class="SHNumber">1.2e3</span><br /><span class="SHNumber">-1.2E-3</span><br /><span class="SHNumber">+1.2E+3</span></pre>
 -----
-<pre class="CCode"><span class="SHNumber">0xC.D</span><br /><span class="SHNumber">-0xC.D</span><br /><span class="SHNumber">+0xC.D</span><br /><br /><span class="SHNumber">0xCp3</span><br /><span class="SHNumber">-0xCP-3</span><br /><span class="SHNumber">+0xCP+3</span><br /><br /><span class="SHNumber">0xC.0xDp3</span><br /><span class="SHNumber">-0xC.0xDP-3</span><br /><span class="SHNumber">+0xC.0xDP+3</span></pre>
+<pre class="CCode"><span class="SHNumber">0xC.D</span><br /><span class="SHNumber">-0xC.D</span><br /><span class="SHNumber">+0xC.D</span><br /><br /><span class="SHNumber">0xCp3</span><br /><span class="SHNumber">-0xCP-3</span><br /><span class="SHNumber">+0xCP+3</span><br /><br /><span class="SHNumber">0xC.Dp3</span><br /><span class="SHNumber">-0xC.DP-3</span><br /><span class="SHNumber">+0xC.DP+3</span></pre>
 -----
 <pre class="CCode"><span class="SHNumber">-1</span><br /><span class="SHNumber">1</span>-<span class="SHNumber">1</span><br /><br /><span class="SHNumber">+1</span><br /><span class="SHNumber">1</span>+<span class="SHNumber">1</span></pre>
