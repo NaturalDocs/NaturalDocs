@@ -4,7 +4,7 @@ Test Type: HTML Syntax Highlighting
 
 Keep HTML: yes
 
-	Title: Kotline Syntax Highlighting Tests
+	Title: Kotlin Syntax Highlighting Tests
 	Style: Prominent Syntax Highlighting
 
 Engine Config: ..\..\..\..\- Shared Engine Configs\HTML Structure
