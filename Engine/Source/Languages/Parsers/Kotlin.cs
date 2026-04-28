@@ -75,7 +75,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		override protected void MarkParameter (TokenIterator start, TokenIterator end, ParameterStyle parameterStyle = ParameterStyle.Unknown)
 			{
 			// Mark and skip the annotations before each parameter.  This allows us to use the generic function for the rest
-			// of it and not have it be confiused by the colons in annotation scopes like on "@field:Ann val x".
+			// of it and not have it be confused by the colons in annotation scopes like on "@field:Ann val x".
 			TryToSkipWhitespace(ref start, mode: ParseMode.ParsePrototype);
 			TryToSkipAnnotations(ref start, mode: ParseMode.ParsePrototype, breakPrototypeSections: false);
 
