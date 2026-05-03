@@ -6465,6 +6465,106 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			}
 
 
+		/* Function: TryToSkipIdentifier
+		 *
+		 * Tries to move the iterator past a qualified identifier, such as "X.Y.Z".  It will use <Language.MemberOperator> for the separator.
+		 * Use <TryToSkipUnqualifiedIdentifier()> if you only want to skip a single segment.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.Name> or
+		 *			  <PrototypeParsingType.Type>.  If set to Type, it will use both <PrototypeParsingType.Type> and
+		 *			  <PrototypeParsingType.TypeQualifier>.
+		 *		- <ParseMode.ParseClassPrototype>
+		 *			- The tokens will be marked with <ClassPrototypeParsingType.Name>.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		virtual protected bool TryToSkipIdentifier (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
+																	 PrototypeParsingType prototypeParsingType = PrototypeParsingType.Name)
+			{
+			TokenIterator lookahead = iterator;
+
+			if (TryToSkipUnqualifiedIdentifier(ref lookahead, mode, prototypeParsingType) == false)
+				{  return false;  }
+
+			if (lookahead.MatchesAcrossTokens(language.MemberOperator))
+				{
+				TokenIterator endOfQualifier;
+
+				do
+					{
+					lookahead.NextByCharacters(language.MemberOperator.Length);
+					endOfQualifier = lookahead;
+
+					if (TryToSkipUnqualifiedIdentifier(ref lookahead, mode, prototypeParsingType) == false)
+						{
+						ResetTokensBetween(iterator, lookahead, mode);
+						return false;
+						}
+					}
+				while (lookahead.MatchesAcrossTokens(language.MemberOperator));
+
+				if (mode == ParseMode.ParsePrototype &&
+					prototypeParsingType == PrototypeParsingType.Type)
+					{  iterator.SetPrototypeParsingTypeBetween(endOfQualifier, PrototypeParsingType.TypeQualifier);  }
+				}
+
+			iterator = lookahead;
+			return true;
+			}
+
+
+		/* Function: TryToSkipUnqualifiedIdentifier
+		 *
+		 * Tries to move the iterator past a single unqualified identifier, which means only "X" in "X.Y.Z".
+		 *
+		 * The default implementation assumes it must start with a letter or underscore and only contain letters, numbers, and
+		 * underscores.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.Name> or
+		 *			  <PrototypeParsingType.Type>.
+		 *		- <ParseMode.ParseClassPrototype>
+		 *			- The tokens will be marked with <ClassPrototypeParsingType.Name>.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		virtual protected bool TryToSkipUnqualifiedIdentifier (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
+																					 PrototypeParsingType prototypeParsingType = PrototypeParsingType.Name)
+			{
+			if (iterator.FundamentalType == FundamentalType.Text)
+				{
+				if (iterator.Character >= '0' && iterator.Character <= '9')
+					{  return false;  }
+				}
+			else if (iterator.FundamentalType == FundamentalType.Symbol)
+				{
+				if (iterator.Character != '_')
+					{  return false;  }
+				}
+			else
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+
+			do
+				{  lookahead.Next();  }
+			while (lookahead.FundamentalType == FundamentalType.Text || lookahead.Character == '_');
+
+			if (mode == ParseMode.ParsePrototype)
+				{  iterator.SetPrototypeParsingTypeBetween(lookahead, prototypeParsingType);  }
+			else if (mode == ParseMode.ParseClassPrototype)
+				{  iterator.SetClassPrototypeParsingTypeBetween(lookahead, ClassPrototypeParsingType.Name);  }
+
+			iterator = lookahead;
+			return true;
+			}
+
+
 		/* Function: TryToSkipTypeOrVarName
 		 *
 		 * If the iterator is on what could be a complex type or variable name, moves the iterator past it and returns true.
