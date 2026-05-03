@@ -2967,8 +2967,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *			- The tokens will be marked with <ClassPrototypeParsingType.Name>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipIdentifier (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
-													   PrototypeParsingType prototypeParsingType = PrototypeParsingType.Name)
+		override protected bool TryToSkipIdentifier (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
+																	   PrototypeParsingType prototypeParsingType = PrototypeParsingType.Name)
 			{
 			TokenIterator lookahead = iterator;
 			TokenIterator endOfIdentifier;
@@ -3033,9 +3033,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 * Supported Modes:
 		 *
 		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.Name> or
+		 *			  <PrototypeParsingType.Type>.
+		 *		- <ParseMode.ParseClassPrototype>
+		 *			- The tokens will be marked with <ClassPrototypeParsingType.Name>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipUnqualifiedIdentifier (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+		override protected bool TryToSkipUnqualifiedIdentifier (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
+																					   PrototypeParsingType prototypeParsingType = PrototypeParsingType.Name)
 			{
 			TokenIterator lookahead = iterator;
 
@@ -3055,12 +3061,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			else
 				{  return false;  }
 
-			iterator = lookahead;
-
 			do
-				{  iterator.Next();  }
-			while (iterator.FundamentalType == FundamentalType.Text || iterator.Character == '_');
+				{  lookahead.Next();  }
+			while (lookahead.FundamentalType == FundamentalType.Text || lookahead.Character == '_');
 
+			if (mode == ParseMode.ParsePrototype)
+				{  iterator.SetPrototypeParsingTypeBetween(lookahead, prototypeParsingType);  }
+			else if (mode == ParseMode.ParseClassPrototype)
+				{  iterator.SetClassPrototypeParsingTypeBetween(lookahead, ClassPrototypeParsingType.Name);  }
+
+			iterator = lookahead;
 			return true;
 			}
 

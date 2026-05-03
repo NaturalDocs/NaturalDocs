@@ -2646,8 +2646,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *			  or <PrototypeParsingType.Type>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipUnqualifiedIdentifier (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
-																		  PrototypeParsingType prototypeParsingType = PrototypeParsingType.Name)
+		override protected bool TryToSkipUnqualifiedIdentifier (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
+																						PrototypeParsingType prototypeParsingType = PrototypeParsingType.Name)
 			{
 			// Simple identifiers start with letters or underscores.  They can also contain numbers and $ but cannot start with
 			// them.

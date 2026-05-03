@@ -128,31 +128,5 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			return true;
 			}
 
-
-		/* Function: TryToSkipUnqualifiedIdentifier
-		 * Tries to move the iterator past a single unqualified identifier, which means only "X" in "X.Y.Z".
-		 */
-		protected bool TryToSkipUnqualifiedIdentifier (ref TokenIterator iterator)
-			{
-			if (iterator.FundamentalType == FundamentalType.Text)
-				{
-				if (iterator.Character >= '0' && iterator.Character <= '9')
-					{  return false;  }
-				}
-			else if (iterator.FundamentalType == FundamentalType.Symbol)
-				{
-				if (iterator.Character != '_')
-					{  return false;  }
-				}
-			else
-				{  return false;  }
-
-			do
-				{  iterator.Next();  }
-			while (iterator.FundamentalType == FundamentalType.Text || iterator.Character == '_');
-
-			return true;
-			}
-
 		}
 	}

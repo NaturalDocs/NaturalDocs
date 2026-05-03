@@ -489,56 +489,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
-		/* Function: TryToSkipIdentifier
-		 * Tries to move the iterator past a qualified identifier, such as "X.Y.Z".  Use <TryToSkipUnqualifiedIdentifier()> if you only want
-		 * to skip a single segment.
-		 */
-		protected bool TryToSkipIdentifier (ref TokenIterator iterator)
-			{
-			TokenIterator lookahead = iterator;
-
-			for (;;)
-				{
-				if (TryToSkipUnqualifiedIdentifier(ref lookahead) == false)
-					{  return false;  }
-
-				if (lookahead.Character == '.')
-					{  lookahead.Next();  }
-				else
-					{  break;  }
-				}
-
-			iterator = lookahead;
-			return true;
-			}
-
-
-		/* Function: TryToSkipUnqualifiedIdentifier
-		 * Tries to move the iterator past a single unqualified identifier, which means only "X" in "X.Y.Z".
-		 */
-		protected bool TryToSkipUnqualifiedIdentifier (ref TokenIterator iterator)
-			{
-			if (iterator.FundamentalType == FundamentalType.Text)
-				{
-				if (iterator.Character >= '0' && iterator.Character <= '9')
-					{  return false;  }
-				}
-			else if (iterator.FundamentalType == FundamentalType.Symbol)
-				{
-				if (iterator.Character != '_')
-					{  return false;  }
-				}
-			else
-				{  return false;  }
-
-			do
-				{  iterator.Next();  }
-			while (iterator.FundamentalType == FundamentalType.Text || iterator.Character == '_');
-
-			return true;
-			}
-
-
 
 		// Group: Static Variables
 		// __________________________________________________________________________

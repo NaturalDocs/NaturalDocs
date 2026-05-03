@@ -1046,58 +1046,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
-		/* Function: TryToSkipIdentifier
-		 *
-		 * If the passed iterator is on an identifier, moves the iterator past it and returns true.  If the iterator isn't on an
-		 * identifier, nothing is changed and it returns false.  This function accepts qualified identifiers but will still return
-		 * true if it's on an unqualified one.
-		 *
-		 * Supported Modes:
-		 *
-		 *		- <ParseMode.IterateOnly>
-		 *		- <ParseMode.ParsePrototype>
-		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.Name> or
-		 *			  <PrototypeParsingType.Type>.  If set to Type, it will use <PrototypeParsingType.Type>, <PrototypeParsingType.TypeModifier>,
-		 *			  and <PrototypeParsingType.TypeQualifier>.
-		 *		- <ParseMode.SyntaxHighlight>
-		 *		- Everything else is treated as <ParseMode.IterateOnly>.
-		 */
-		protected bool TryToSkipIdentifier (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
-														   PrototypeParsingType prototypeParsingType = PrototypeParsingType.Name)
-			{
-			TokenIterator lookahead = iterator;
-			TokenIterator endOfIdentifier;
-			TokenIterator endOfQualifier = iterator;
-
-			for (;;)
-				{
-				if (TryToSkipUnqualifiedIdentifier(ref lookahead, mode, prototypeParsingType) == false)
-					{
-					ResetTokensBetween(iterator, lookahead, mode);
-					return false;
-					}
-
-				endOfIdentifier = lookahead;
-
-				if (lookahead.Character != '.')
-					{  break;  }
-
-				lookahead.Next();
-				endOfQualifier = lookahead;
-				}
-
-			if (mode == ParseMode.ParsePrototype &&
-				prototypeParsingType == PrototypeParsingType.Type &&
-				endOfQualifier > iterator)
-				{
-				iterator.SetPrototypeParsingTypeBetween(endOfQualifier, PrototypeParsingType.TypeQualifier);
-				}
-
-			iterator = endOfIdentifier;
-			return true;
-			}
-
-
 		/* Function: TryToSkipUnqualifiedIdentifier
 		 *
 		 * If the passed iterator is on an identifier, moves the iterator past it and returns true.  If the iterator isn't on an identifier,
@@ -1114,8 +1062,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipUnqualifiedIdentifier (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
-																		   PrototypeParsingType prototypeParsingType = PrototypeParsingType.Name)
+		override protected bool TryToSkipUnqualifiedIdentifier (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
+																					   PrototypeParsingType prototypeParsingType = PrototypeParsingType.Name)
 			{
 			TokenIterator lookahead = iterator;
 
