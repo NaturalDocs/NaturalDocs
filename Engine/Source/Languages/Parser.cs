@@ -6408,7 +6408,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * If the iterator is on an opening symbol, moves it past the entire block and returns true.  This takes care of
 		 * nested blocks, strings, and comments, but otherwise doesn't parse the underlying code.  You must specify
 		 * whether to include < as an opening symbol because it may be relevant in some places (template definitions)
-		 * but detrimental in others (general code where < could mean less than and not have a closing >.)
+		 * but detrimental in others (general code where < could mean "less than" and not have a closing >.)  It will
+		 * always ignore <- though.
 		 *
 		 * Important:
 		 *
@@ -6427,7 +6428,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 protected bool TryToSkipBlock (ref TokenIterator iterator, bool includeAngleBrackets)
 			{
 			if (iterator.Character != '(' && iterator.Character != '[' && iterator.Character != '{' &&
-				 (iterator.Character != '<' || includeAngleBrackets == false) )
+				(iterator.Character != '<' || includeAngleBrackets == false || iterator.MatchesAcrossTokens("<-")) )
 				{  return false;  }
 
 			SafeStack<char> symbols = new SafeStack<char>();
@@ -6436,16 +6437,23 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			while (iterator.IsInBounds)
 				{
-				if (iterator.Character == '(' || iterator.Character == '[' || iterator.Character == '{' ||
-					 (iterator.Character == '<' && includeAngleBrackets) )
+				if (iterator.Character == '(' || iterator.Character == '[' || iterator.Character == '{')
 					{
 					symbols.Push(iterator.Character);
 					iterator.Next();
 					}
+				else if (iterator.Character == '<' && includeAngleBrackets)
+					{
+					iterator.Next();
+
+					// Don't treat <- as the opening to a block.  They appear in Go.
+					if (iterator.Character != '-')
+						{  symbols.Push('<');  }
+					}
 				else if ( (iterator.Character == ')' && symbols.Peek() == '(') ||
-							  (iterator.Character == ']' && symbols.Peek() == '[') ||
-							  (iterator.Character == '}' && symbols.Peek() == '{') ||
-							  (iterator.Character == '>' && symbols.Peek() == '<') )
+							(iterator.Character == ']' && symbols.Peek() == '[') ||
+							(iterator.Character == '}' && symbols.Peek() == '{') ||
+							(iterator.Character == '>' && symbols.Peek() == '<') )
 					{
 					symbols.Pop();
 					iterator.Next();
@@ -6455,7 +6463,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					}
 				// TryToSkipComment has to come first so ' comments in VB don't get interpreted as strings.
 				else if (TryToSkipComment(ref iterator) ||
-							 TryToSkipString(ref iterator))
+						   TryToSkipString(ref iterator))
 					{  }
 				else
 					{  iterator.Next();  }
