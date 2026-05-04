@@ -314,13 +314,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						startOfParam = lookahead;
 						}
 
-					else if (TryToSkipComment(ref lookahead) ||
-							   TryToSkipString(ref lookahead) ||
-							   TryToSkipBlock(ref lookahead, true))
-						{  }
-
 					else
-						{  lookahead.Next();  }
+						{  GenericSkip(ref lookahead, true);  }
 					}
 
 				MarkDecoratorParameter(startOfParam, lookahead, mode);
@@ -365,12 +360,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					equals.PrototypeParsingType = PrototypeParsingType.PropertyValueSeparator;
 					break;
 					}
-				else if (TryToSkipComment(ref equals) ||
-							TryToSkipString(ref equals) ||
-							TryToSkipBlock(ref equals, true))
-					{  }
 				else
-					{  equals.Next();  }
+					{  GenericSkip(ref equals, true);  }
 				}
 
 

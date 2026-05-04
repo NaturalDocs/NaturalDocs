@@ -176,7 +176,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (hasScope && lookahead.Character == '[')
 				{
-				TryToSkipBlock(ref lookahead, false);
+				lookahead.Next();
+				GenericSkipUntilAfter(ref lookahead, ']', false);
 				}
 			else
 				{
@@ -188,7 +189,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				TryToSkipWhitespace(ref lookahead);
 
 				if (lookahead.Character == '(')
-					{  TryToSkipBlock(ref lookahead, false);  }
+					{
+					lookahead.Next();
+					GenericSkipUntilAfter(ref lookahead, ')', false);
+					}
 				else
 					{  lookahead = endOfIdentifier;  }
 				}

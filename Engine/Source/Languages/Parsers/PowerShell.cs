@@ -323,9 +323,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{  return false;  }
 
 			TokenIterator lookahead = iterator;
-
-			if (!TryToSkipBlock(ref lookahead, false))
-				{  return false;  }
+			lookahead.Next();
+			GenericSkipUntilAfter(ref lookahead, ']', false);
 
 			if (mode == ParseMode.SyntaxHighlight)
 				{  iterator.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.Metadata);  }

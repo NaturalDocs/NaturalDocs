@@ -151,9 +151,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{  return false;  }
 
 			TokenIterator lookahead = iterator;
-
-			if (!TryToSkipBlock(ref lookahead, false))
-				{  return false;  }
+			lookahead.Next();
+			GenericSkipUntilAfter(ref lookahead, ')', false);
 
 			TokenIterator end = lookahead;
 
@@ -189,13 +188,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						startOfParam = lookahead;
 						}
 
-					else if (TryToSkipComment(ref lookahead) ||
-							   TryToSkipString(ref lookahead) ||
-							   TryToSkipBlock(ref lookahead, true))
-						{  }
-
 					else
-						{  lookahead.Next();  }
+						{  GenericSkip(ref lookahead, true);  }
 					}
 
 				MarkAnnotationParameter(startOfParam, lookahead, mode);
@@ -240,12 +234,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					equals.PrototypeParsingType = PrototypeParsingType.PropertyValueSeparator;
 					break;
 					}
-				else if (TryToSkipComment(ref equals) ||
-							TryToSkipString(ref equals) ||
-							TryToSkipBlock(ref equals, true))
-					{  }
 				else
-					{  equals.Next();  }
+					{  GenericSkip(ref equals, true);  }
 				}
 
 
