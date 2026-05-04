@@ -6403,76 +6403,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			}
 
 
-		/* Function: TryToSkipBlock
-		 *
-		 * If the iterator is on an opening symbol, moves it past the entire block and returns true.  This takes care of
-		 * nested blocks, strings, and comments, but otherwise doesn't parse the underlying code.  You must specify
-		 * whether to include < as an opening symbol because it may be relevant in some places (template definitions)
-		 * but detrimental in others (general code where < could mean "less than" and not have a closing >.)  It will
-		 * always ignore <- though.
-		 *
-		 * Important:
-		 *
-		 *		When you're skipping over generic code without interpreting it, these functions should always be called in this order:
-		 *
-		 *		- <TryToSkipComment()>
-		 *		- <TryToSkipString()>
-		 *		- <TryToSkipBlock()>
-		 *
-		 *		You want to check for comments before strings because Visual Basic uses the ' character for comments and you don't
-		 *		want the parser to interpret it as a string and search for a closing quote.
-		 *
-		 *		You want to check for comments before blocks because Pascal uses braces for comments and you don't want to
-		 *		interpret the comment content as code.
-		 */
-		 protected bool TryToSkipBlock (ref TokenIterator iterator, bool includeAngleBrackets)
-			{
-			if (iterator.Character != '(' && iterator.Character != '[' && iterator.Character != '{' &&
-				(iterator.Character != '<' || includeAngleBrackets == false || iterator.MatchesAcrossTokens("<-")) )
-				{  return false;  }
-
-			SafeStack<char> symbols = new SafeStack<char>();
-			symbols.Push(iterator.Character);
-			iterator.Next();
-
-			while (iterator.IsInBounds)
-				{
-				if (iterator.Character == '(' || iterator.Character == '[' || iterator.Character == '{')
-					{
-					symbols.Push(iterator.Character);
-					iterator.Next();
-					}
-				else if (iterator.Character == '<' && includeAngleBrackets)
-					{
-					iterator.Next();
-
-					// Don't treat <- as the opening to a block.  They appear in Go.
-					if (iterator.Character != '-')
-						{  symbols.Push('<');  }
-					}
-				else if ( (iterator.Character == ')' && symbols.Peek() == '(') ||
-							(iterator.Character == ']' && symbols.Peek() == '[') ||
-							(iterator.Character == '}' && symbols.Peek() == '{') ||
-							(iterator.Character == '>' && symbols.Peek() == '<') )
-					{
-					symbols.Pop();
-					iterator.Next();
-
-					if (symbols.Count == 0)
-						{  break;  }
-					}
-				// TryToSkipComment has to come first so ' comments in VB don't get interpreted as strings.
-				else if (TryToSkipComment(ref iterator) ||
-						   TryToSkipString(ref iterator))
-					{  }
-				else
-					{  iterator.Next();  }
-				}
-
-			return true;
-			}
-
-
 		/* Function: TryToSkipIdentifier
 		 *
 		 * Tries to move the iterator past a qualified identifier, such as "X.Y.Z".  It will use <Language.MemberOperator> for the separator.
@@ -6665,6 +6595,114 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				}
 			else
 				{  return false;  }
+			}
+
+
+		/* Function: TryToSkipBlock
+		 *
+		 * If the iterator is on an opening symbol, moves it past the entire block and returns true.  It will move past its contents
+		 * with <GenericSkip()> which will take care of nested blocks, strings, and comments but doesn't otherwise parse the
+		 * underlying code.  You must specify whether to include < as an opening symbol because it may be relevant in some
+		 * places (template definitions) but detrimental in others (general code where < could mean "less than" and not have a
+		 * closing >.)  It will always ignore <- though.
+		 *
+		 */
+		 virtual protected bool TryToSkipBlock (ref TokenIterator iterator, bool includeAngleBrackets)
+			{
+			char character = iterator.Character;
+
+			if (character == '(')
+				{
+				iterator.Next();
+				GenericSkipUntilAfter(ref iterator, ')', includeAngleBrackets);
+				return true;
+				}
+			else if (character == '[')
+				{
+				iterator.Next();
+				GenericSkipUntilAfter(ref iterator, ']', includeAngleBrackets);
+				return true;
+				}
+			else if (character == '{')
+				{
+				iterator.Next();
+				GenericSkipUntilAfter(ref iterator, '}', includeAngleBrackets);
+				return true;
+				}
+			// Ignore <- which appears in Go
+			else if (character == '<' && includeAngleBrackets && iterator.MatchesAcrossTokens("<-") == false)
+				{
+				iterator.Next();
+				GenericSkipUntilAfter(ref iterator, '>', includeAngleBrackets);
+				return true;
+				}
+			else
+				{  return false;  }
+			}
+
+
+		/* Function: GenericSkip
+		 *
+		 * Advances the iterator one place through general code.
+		 *
+		 * - If the position is on a comment or string, it will skip it completely.
+		 * - If the position is on a block, such as an opening brace, parenthesis, or bracket, it will skip until the past its end.
+		 *   This includes any nested blocks.
+		 *		- It can optionally treat opening angle brackets as blocks but won't by default.
+		 * - Otherwise it skips one token.
+		 *
+		 * This can be overridden to include other language features that might trip up the parser.
+		 */
+		virtual protected void GenericSkip (ref TokenIterator iterator, bool angleBracketsAsBlocks = false)
+			{
+			// Check for comments before strings because Visual Basic uses the ' character for comments and you don't want the
+			// parser to interpret it as a string and search for a closing quote.
+
+			// Check for comments before blocks because Pascal uses braces for comments and you don't want to interpret the
+			// comment content as code.
+
+			if (TryToSkipComment(ref iterator) ||
+				TryToSkipString(ref iterator) ||
+				TryToSkipBlock(ref iterator, angleBracketsAsBlocks))
+				{  }
+			else
+				{  iterator.Next();  }
+			}
+
+
+		/* Function: GenericSkipUntilAfter
+		 * Advances the iterator via <GenericSkip()> until a specific symbol is reached and passed.
+		 */
+		protected void GenericSkipUntilAfter (ref TokenIterator iterator, char endingSymbol, bool angleBracketsAsBlocks = false)
+			{
+			while (iterator.IsInBounds)
+				{
+				if (iterator.Character == endingSymbol)
+					{
+					iterator.Next();
+					break;
+					}
+				else
+					{  GenericSkip(ref iterator, angleBracketsAsBlocks);  }
+				}
+			}
+
+
+		/* Function: GenericSkipUntilAfter
+		 * Advances the iterator via <GenericSkip()> until a specific symbol is reached and passed.
+		 */
+		protected void GenericSkipUntilAfter (ref TokenIterator iterator, string endingSymbol, bool angleBracketsAsBlocks = false)
+			{
+			while (iterator.IsInBounds)
+				{
+				if (iterator.MatchesAcrossTokens(endingSymbol))
+					{
+					iterator.NextByCharacters(endingSymbol.Length);
+					break;
+					}
+				else
+					{  GenericSkip(ref iterator, angleBracketsAsBlocks);  }
+				}
 			}
 
 
