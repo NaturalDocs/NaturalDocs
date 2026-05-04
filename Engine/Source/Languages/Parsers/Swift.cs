@@ -43,27 +43,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
-		/* Function: SyntaxHighlight
-		 */
-		override public void SyntaxHighlight (TokenIterator start, TokenIterator end)
-			{
-			TokenIterator iterator = start;
-
-			while (iterator < end)
-				{
-				if (TryToSkipAttribute(ref iterator, ParseMode.SyntaxHighlight) ||
-					TryToSkipKeyword(ref iterator, ParseMode.SyntaxHighlight) ||
-				    TryToSkipComment(ref iterator, ParseMode.SyntaxHighlight) ||
-				    TryToSkipString(ref iterator, ParseMode.SyntaxHighlight) ||
-				    TryToSkipNumber(ref iterator, ParseMode.SyntaxHighlight))
-					{
-					}
-				else
-					{  iterator.Next();  }
-				}
-			}
-
-
 
 		// Group: Parsing Functions
 		// __________________________________________________________________________

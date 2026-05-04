@@ -270,59 +270,5 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			return true;
 			}
 
-
-		/* Function: GenericSkip
-		 *
-		 * Advances the iterator one place through general code.
-		 *
-		 * - If the position is on a string, it will skip it completely.
-		 * - If the position is on an opening brace, parenthesis, or bracket it will skip until the past the closing symbol.
-		 * - If the position is on whitespace or comments it will skip it completely.
-		 * - Otherwise it skips one token.
-		 */
-		protected void GenericSkip (ref TokenIterator iterator)
-			{
-			if (iterator.Character == '(')
-				{
-				iterator.Next();
-				GenericSkipUntilAfter(ref iterator, ')');
-				}
-			else if (iterator.Character == '[')
-				{
-				iterator.Next();
-				GenericSkipUntilAfter(ref iterator, ']');
-				}
-			else if (iterator.Character == '{')
-				{
-				iterator.Next();
-				GenericSkipUntilAfter(ref iterator, '}');
-				}
-
-			else if (TryToSkipString(ref iterator) ||
-					  TryToSkipWhitespace(ref iterator))
-				{  }
-
-			else
-				{  iterator.Next();  }
-			}
-
-
-		/* Function: GenericSkipUntilAfter
-		 * Advances the iterator via <GenericSkip()> until a specific symbol is reached and passed.
-		 */
-		protected void GenericSkipUntilAfter (ref TokenIterator iterator, char symbol)
-			{
-			while (iterator.IsInBounds)
-				{
-				if (iterator.Character == symbol)
-					{
-					iterator.Next();
-					break;
-					}
-				else
-					{  GenericSkip(ref iterator);  }
-				}
-			}
-
 		}
 	}
