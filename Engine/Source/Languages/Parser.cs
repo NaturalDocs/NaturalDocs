@@ -6670,39 +6670,109 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			}
 
 
-		/* Function: GenericSkipUntilAfter
-		 * Advances the iterator via <GenericSkip()> until a specific symbol is reached and passed.
+		/* Function: GenericSkipUntilOn
+		 *
+		 * Advances the iterator via <GenericSkip()> until a specific symbol is reached.  If found the iterator will be left on the ending
+		 * symbol and it will return true.  If not the iterator will either be left alone or moved to the ending bounds depending on the value
+		 * of skipToEndIfNotFound and it will return false.
+		 *
+		 * The original implementation of <GenericSkipUntilAfter()> would move to the end if not found so skipToEndIfNotFound defaults to
+		 * true to preserve this behavior for existing code that depends on it.
 		 */
-		protected void GenericSkipUntilAfter (ref TokenIterator iterator, char endingSymbol, bool angleBracketsAsBlocks = false)
+		protected bool GenericSkipUntilOn (ref TokenIterator iterator, char endingSymbol, bool angleBracketsAsBlocks = false,
+															bool skipToEndIfNotFound = true)
 			{
-			while (iterator.IsInBounds)
+			TokenIterator lookahead = iterator;
+
+			while (lookahead.IsInBounds)
 				{
-				if (iterator.Character == endingSymbol)
+				if (lookahead.Character == endingSymbol)
 					{
-					iterator.Next();
-					break;
+					iterator = lookahead;
+					return true;
 					}
 				else
-					{  GenericSkip(ref iterator, angleBracketsAsBlocks);  }
+					{  GenericSkip(ref lookahead, angleBracketsAsBlocks);  }
 				}
+
+			if (skipToEndIfNotFound)
+				{  iterator = lookahead;  }
+
+			return false;
+			}
+
+
+		/* Function: GenericSkipUntilOn
+		 *
+		 * Advances the iterator via <GenericSkip()> until a specific symbol is reached.  If found the iterator will be left on the ending
+		 * symbol and it will return true.  If not the iterator will either be left alone or moved to the ending bounds depending on the value
+		 * of skipToEndIfNotFound and it will return false.
+		 *
+		 * The original implementation of <GenericSkipUntilAfter()> would move to the end if not found so skipToEndIfNotFound defaults to
+		 * true to preserve this behavior for existing code that depends on it.
+		 */
+		protected bool GenericSkipUntilOn (ref TokenIterator iterator, string endingSymbol, bool angleBracketsAsBlocks = false,
+															bool skipToEndIfNotFound = true)
+			{
+			TokenIterator lookahead = iterator;
+
+			while (lookahead.IsInBounds)
+				{
+				if (lookahead.MatchesAcrossTokens(endingSymbol))
+					{
+					iterator = lookahead;
+					return true;
+					}
+				else
+					{  GenericSkip(ref lookahead, angleBracketsAsBlocks);  }
+				}
+
+			if (skipToEndIfNotFound)
+				{  iterator = lookahead;  }
+
+			return false;
 			}
 
 
 		/* Function: GenericSkipUntilAfter
-		 * Advances the iterator via <GenericSkip()> until a specific symbol is reached and passed.
+		 *
+		 * Advances the iterator via <GenericSkip()> until a specific symbol is reached and passed.  If found the iterator will be left after
+		 * the symbol and it will return true.  If not the iterator will either be left alone or moved to the ending bounds depending on the
+		 * value of skipToEndIfNotFound and it will return false.
+		 *
+		 * The original implementation of GenericSkipUntilAfter() would move to the end if not found so skipToEndIfNotFound defaults to
+		 * true to preserve this behavior for existing code that depends on it.
 		 */
-		protected void GenericSkipUntilAfter (ref TokenIterator iterator, string endingSymbol, bool angleBracketsAsBlocks = false)
+		protected bool GenericSkipUntilAfter (ref TokenIterator iterator, char endingSymbol, bool angleBracketsAsBlocks = false,
+															  bool skipToEndIfNotFound = true)
 			{
-			while (iterator.IsInBounds)
-				{
-				if (iterator.MatchesAcrossTokens(endingSymbol))
-					{
-					iterator.NextByCharacters(endingSymbol.Length);
-					break;
-					}
-				else
-					{  GenericSkip(ref iterator, angleBracketsAsBlocks);  }
-				}
+			bool result = GenericSkipUntilOn(ref iterator, endingSymbol, angleBracketsAsBlocks, skipToEndIfNotFound);
+
+			if (result == true)
+				{  iterator.Next();  }
+
+			return result;
+			}
+
+
+		/* Function: GenericSkipUntilAfter
+		 *
+		 * Advances the iterator via <GenericSkip()> until a specific symbol is reached and passed.  If found the iterator will be left after
+		 * the symbol and it will return true.  If not the iterator will either be left alone or moved to the ending bounds depending on the
+		 * value of skipToEndIfNotFound and it will return false.
+		 *
+		 * The original implementation of GenericSkipUntilAfter() would move to the end if not found so skipToEndIfNotFound defaults to
+		 * true to preserve this behavior for existing code that depends on it.
+		 */
+		protected bool GenericSkipUntilAfter (ref TokenIterator iterator, string endingSymbol, bool angleBracketsAsBlocks = false,
+															  bool skipToEndIfNotFound = true)
+			{
+			bool result = GenericSkipUntilOn(ref iterator, endingSymbol, angleBracketsAsBlocks, skipToEndIfNotFound);
+
+			if (result == true)
+				{  iterator.NextByCharacters(endingSymbol.Length);  }
+
+			return result;
 			}
 
 
