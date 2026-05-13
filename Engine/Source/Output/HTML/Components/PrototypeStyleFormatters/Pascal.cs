@@ -46,42 +46,56 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 					{  iterator.Next();  }
 
 
-				// ModifierQualifier
+				// Do we have a name or name/type separator?  We may not, such as for SQL and Go.
 
-				int currentColumn = 0;
-				TokenIterator startOfCell = iterator;
-
-				while (iterator < endOfParam)
-					{
-					PrototypeParsingType type = iterator.PrototypeParsingType;
-
-					if (type == PrototypeParsingType.TypeModifier ||
-						type == PrototypeParsingType.ParamModifier ||
-						type == PrototypeParsingType.ParamSeparator ||
-						type == PrototypeParsingType.Null)
-						{  iterator.Next();   }
-					else if (type == PrototypeParsingType.OpeningTypeModifier ||
-								type == PrototypeParsingType.OpeningParamModifier)
-						{  SkipModifierBlock(ref iterator, endOfParam);  }
-					else
-						{  break;  }
-					}
-
-
-				// Do we have a name-type separator?  We may not, such as for SQL.
-
+				bool hasName = false;
 				bool hasNameTypeSeparator = false;
 				TokenIterator lookahead = iterator;
 
 				while (lookahead < endOfParam)
 					{
-					if (lookahead.PrototypeParsingType == PrototypeParsingType.NameTypeSeparator)
+					if (lookahead.PrototypeParsingType == PrototypeParsingType.Name)
+						{
+						hasName = true;
+
+						if (hasNameTypeSeparator)
+							{  break;  }
+						}
+					else if (lookahead.PrototypeParsingType == PrototypeParsingType.NameTypeSeparator)
 						{
 						hasNameTypeSeparator = true;
-						break;
+
+						if (hasName)
+							{  break;  }
 						}
 
 					lookahead.Next();
+					}
+
+
+				// Modifiers/Qualifiers appearing before the name
+
+				int currentColumn = 0;
+				TokenIterator startOfCell = iterator;
+
+				// Only include them here if there's a name since otherwise we'd want them to apply to the type instead
+				if (hasName)
+					{
+					while (iterator < endOfParam)
+						{
+						PrototypeParsingType type = iterator.PrototypeParsingType;
+
+						if (type == PrototypeParsingType.TypeModifier ||
+							type == PrototypeParsingType.ParamModifier ||
+							type == PrototypeParsingType.ParamSeparator ||
+							type == PrototypeParsingType.Null)
+							{  iterator.Next();   }
+						else if (type == PrototypeParsingType.OpeningTypeModifier ||
+									type == PrototypeParsingType.OpeningParamModifier)
+							{  SkipModifierBlock(ref iterator, endOfParam);  }
+						else
+							{  break;  }
+						}
 					}
 
 				TokenIterator endOfCell = iterator;
@@ -96,26 +110,31 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 				currentColumn++;
 				startOfCell = iterator;
 
-				while (iterator < endOfParam)
+				if (hasName)
 					{
-					PrototypeParsingType type = iterator.PrototypeParsingType;
+					while (iterator < endOfParam)
+						{
+						PrototypeParsingType type = iterator.PrototypeParsingType;
 
-					// Include the parameter separator because there may not be a type.
-					if (type == PrototypeParsingType.Name ||
-						type == PrototypeParsingType.KeywordName ||
-						type == PrototypeParsingType.ParamSeparator ||
-						type == PrototypeParsingType.Null)
-						{  iterator.Next();   }
-					// Include modifiers because there still may be some after the name, but only if there's a name-type separator.
-					else if (hasNameTypeSeparator &&
-								(type == PrototypeParsingType.TypeModifier ||
-								type == PrototypeParsingType.ParamModifier))
-						{  iterator.Next();   }
-					else if (type == PrototypeParsingType.OpeningTypeModifier ||
-								type == PrototypeParsingType.OpeningParamModifier)
-						{  SkipModifierBlock(ref iterator, endOfParam);  }
-					else
-						{  break;  }
+						// Include the parameter separator because there may not be a type.
+						if (type == PrototypeParsingType.Name ||
+							type == PrototypeParsingType.KeywordName ||
+							type == PrototypeParsingType.ParamSeparator ||
+							type == PrototypeParsingType.Null)
+							{  iterator.Next();   }
+						// Include modifiers because there still may be some after the name, but only if there's a name/type separator.
+						// Otherwise they should apply to the type.
+						else if (hasNameTypeSeparator &&
+									(type == PrototypeParsingType.TypeModifier ||
+									type == PrototypeParsingType.ParamModifier))
+							{  iterator.Next();   }
+						else if (hasNameTypeSeparator &&
+									(type == PrototypeParsingType.OpeningTypeModifier ||
+									type == PrototypeParsingType.OpeningParamModifier))
+							{  SkipModifierBlock(ref iterator, endOfParam);  }
+						else
+							{  break;  }
+						}
 					}
 
 				endOfCell = iterator;
@@ -125,20 +144,23 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 				cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
 
 
-				// TypeNameSeparator
+				// Name/Type Separator
 
 				currentColumn++;
 				startOfCell = iterator;
 
-				while (iterator < endOfParam)
+				if (hasNameTypeSeparator)
 					{
-					PrototypeParsingType type = iterator.PrototypeParsingType;
+					while (iterator < endOfParam)
+						{
+						PrototypeParsingType type = iterator.PrototypeParsingType;
 
-					if (type == PrototypeParsingType.NameTypeSeparator ||
-						type == PrototypeParsingType.Null)
-						{  iterator.Next();   }
-					else
-						{  break;  }
+						if (type == PrototypeParsingType.NameTypeSeparator ||
+							type == PrototypeParsingType.Null)
+							{  iterator.Next();   }
+						else
+							{  break;  }
+						}
 					}
 
 				endOfCell = iterator;
@@ -216,7 +238,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 				cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
 
 
-				// PropertyValueSeparator
+				// Property/Value Separator
 
 				currentColumn++;
 				startOfCell = iterator;
@@ -239,7 +261,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 				cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
 
 
-				// PropertyValue
+				// Property Value
 
 				currentColumn++;
 				startOfCell = iterator;
@@ -263,7 +285,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 				cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
 
 
-				// DefaultValueSeparator
+				// Default Value Separator
 
 				currentColumn++;
 				startOfCell = iterator;
@@ -286,7 +308,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 				cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
 
 
-				// DefaultValue
+				// Default Value
 
 				currentColumn++;
 				startOfCell = iterator;
