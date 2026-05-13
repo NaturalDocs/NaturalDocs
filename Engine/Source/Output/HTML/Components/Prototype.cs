@@ -755,11 +755,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 			//
-			// Now check if the type/name separator column can be moved left because it never touches a name and the
+			// Now check if the name/type separator column can be moved left because it never touches a name and the
 			// longest columns to the left of it all end with a comma.
 			//
 
-			int tnsColumnIndex = columnLayout.IndexOf(PrototypeColumnType.TypeNameSeparator);
+			int tnsColumnIndex = columnLayout.IndexOf(PrototypeColumnType.NameTypeSeparator);
 
 			if (tnsColumnIndex != -1 &&
 				columnLayout.IsUsed(tnsColumnIndex))
@@ -803,7 +803,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						for (int i = sectionIndex; i < sectionIndex + sectionCount; i++)
 							{
 							var parameterSection = parameterLayouts[i];
-							parameterSection.Columns.TypeNameSeparatorCanShiftLeft = true;
+							parameterSection.Columns.NameTypeSeparatorCanShiftLeft = true;
 							}
 						}
 					}
@@ -986,8 +986,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			string sectionCSSClass = parameterLayouts[sectionIndex].ParameterStyle.ToString() + "Style";
 
-			if (columnLayout.TypeNameSeparatorCanShiftLeft)
-				{  sectionCSSClass += " NegativeLeftSpaceOnTypeNameSeparator";  }
+			if (columnLayout.NameTypeSeparatorCanShiftLeft)
+				{  sectionCSSClass += " NegativeLeftSpaceOnNameTypeSeparator";  }
 
 			output.Append("<div class=\"PSection PParameterSection " + sectionCSSClass + "\">");
 
@@ -1191,8 +1191,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			string sectionCSSClass = parameterLayouts[sectionIndex].ParameterStyle.ToString() + "Style";
 
-			if (parameterLayouts[sectionIndex].Columns.TypeNameSeparatorCanShiftLeft)
-				{  sectionCSSClass += " NegativeLeftSpaceOnTypeNameSeparator";  }
+			if (parameterLayouts[sectionIndex].Columns.NameTypeSeparatorCanShiftLeft)
+				{  sectionCSSClass += " NegativeLeftSpaceOnNameTypeSeparator";  }
 
 			output.Append("<div class=\"PSection PParameterSection " + sectionCSSClass + "\">");
 

@@ -38,7 +38,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			{
 			parameterStyle = parameterSection.ParameterStyle;
 			columnWidths = new int[Formatter.ColumnCount];
-			typeNameSeparatorCanShiftLeft = false;
+			nameTypeSeparatorCanShiftLeft = false;
 
 			RecalculateWidths(parsedPrototype, parameterSection, cells);
 			}
@@ -51,7 +51,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			{
 			parameterStyle = toCopy.parameterStyle;
 			columnWidths = (int[])toCopy.columnWidths.Clone();
-			typeNameSeparatorCanShiftLeft = toCopy.typeNameSeparatorCanShiftLeft;
+			nameTypeSeparatorCanShiftLeft = toCopy.nameTypeSeparatorCanShiftLeft;
 			}
 
 
@@ -80,7 +80,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				this.columnWidths[i] = Math.Max(this.columnWidths[i], toMergeWith.columnWidths[i]);
 				}
 
-			this.typeNameSeparatorCanShiftLeft = (this.typeNameSeparatorCanShiftLeft && toMergeWith.typeNameSeparatorCanShiftLeft);
+			this.nameTypeSeparatorCanShiftLeft = (this.nameTypeSeparatorCanShiftLeft && toMergeWith.nameTypeSeparatorCanShiftLeft);
 			}
 
 
@@ -346,15 +346,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			}
 
 
-		/* Property: TypeNameSeparatorCanShiftLeft
-		 * If set, the type/name separator column (the colon in "a: integer") is able to be shifted left one character.
+		/* Property: NameTypeSeparatorCanShiftLeft
+		 * If set, the name/type separator column (the colon in "a: integer") is able to be shifted left one character.
 		 */
-		public bool TypeNameSeparatorCanShiftLeft
+		public bool NameTypeSeparatorCanShiftLeft
 			{
 			get
-				{  return typeNameSeparatorCanShiftLeft;  }
+				{  return nameTypeSeparatorCanShiftLeft;  }
 			set
-				{  typeNameSeparatorCanShiftLeft = value;  }
+				{  nameTypeSeparatorCanShiftLeft = value;  }
 			}
 
 
@@ -374,10 +374,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 */
 		protected int[] columnWidths;
 
-		/* var: typeNameSeparatorCanShiftLeft
-		 * If set, the type/name separator column (the colon in "a: integer") is able to be shifted left one character.
+		/* var: nameTypeSeparatorCanShiftLeft
+		 * If set, the name/type separator column (the colon in "a: integer") is able to be shifted left one character.
 		 */
-		protected bool typeNameSeparatorCanShiftLeft;
+		protected bool nameTypeSeparatorCanShiftLeft;
 
 		}
 	}

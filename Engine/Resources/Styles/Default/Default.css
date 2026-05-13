@@ -1990,7 +1990,7 @@ td {
 			}
 
 		.WideForm .NegativeLeftSpaceOnWide,
-		.NegativeLeftSpaceOnTypeNameSeparator .PTypeNameSeparator { text-indent: -1ch; }
+		.NegativeLeftSpaceOnNameTypeSeparator .PNameTypeSeparator { text-indent: -1ch; }
 
 		.NarrowForm .FitIntoLeftIndentOnNarrow { width: 3ch; }
 

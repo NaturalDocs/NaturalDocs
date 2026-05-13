@@ -335,7 +335,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 				case PrototypeColumnType.DefaultValueSeparator:
 					return ColumnSpacing.AlwaysBoth;
 
-				case PrototypeColumnType.TypeNameSeparator:
+				case PrototypeColumnType.NameTypeSeparator:
 				case PrototypeColumnType.PropertyValueSeparator:
 					return ColumnSpacing.SpacedUnlessColon;
 
@@ -370,7 +370,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 		 */
 		readonly static public PrototypeColumnType[] ColumnOrderValues = { PrototypeColumnType.ModifierQualifier,
 																											  PrototypeColumnType.Name,
-																											  PrototypeColumnType.TypeNameSeparator,
+																											  PrototypeColumnType.NameTypeSeparator,
 																											  PrototypeColumnType.Symbols,
 																											  PrototypeColumnType.Type,
 																											  PrototypeColumnType.PropertyValueSeparator,

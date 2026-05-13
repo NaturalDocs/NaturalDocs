@@ -11,7 +11,7 @@
  *								  prototypes, any modifiers that appear before the name.
  *		Type - The parameter type.  For C-style prototypes this will only be the last word.  For Pascal-style
  *				  prototypes this will be the entire symbol.
- *		TypeNameSeparator - For Pascal-style prototypes, the symbol separating the name from the type.
+ *		NameTypeSeparator - For Pascal-style prototypes, the symbol separating the name from the type.
  *		Symbols - Symbols between names and types that should be formatted in a separate column, such as *
  *					   and &.
  *		Name - The parameter name.
@@ -47,7 +47,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 	public enum PrototypeColumnType : byte
 		{
 		OpeningDecorator,
-		ModifierQualifier, Type, TypeNameSeparator,
+		ModifierQualifier, Type, NameTypeSeparator,
 		Symbols, Name,
 		DefaultValueSeparator, DefaultValue,
 		PropertyValueSeparator, PropertyValue,

@@ -368,7 +368,7 @@ Parameter Section:
  		PModifierQualifier - For C-style prototypes, a separate column for modifiers and qualifiers.
 		PType - The parameter type.  For C-style prototypes this will only be the last word.  For Pascal-style
 						prototypes this will be the entire symbol.
-		PTypeNameSeparator - For Pascal-style prototypes, the symbol separating the name from the type.
+		PNameTypeSeparator - For Pascal-style prototypes, the symbol separating the name from the type.
 		PSymbols - Symbols before a parameter name that should be formatted with the name, such as * and &.
 		PName - The parameter name.
 		PDefaultValueSeparator - If present, the symbol for assigning a default value like = or :=.
