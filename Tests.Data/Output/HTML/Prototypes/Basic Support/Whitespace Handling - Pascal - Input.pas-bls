@@ -1,31 +1,31 @@
 
-// Function: TypeNameSeparatorsAll
-Function TypeNameSeparatorsAll (a:int, b: int, c :int, d : int, e   :   int);
+// Function: NameTypeSeparatorsAll
+Function NameTypeSeparatorsAll (a:int, b: int, c :int, d : int, e   :   int);
 	Begin;
 	End;
 
-// Function: TypeNameSeparators1
-Function TypeNameSeparators1 (a:int);
+// Function: NameTypeSeparators1
+Function NameTypeSeparators1 (a:int);
 	Begin;
 	End;
 
-// Function: TypeNameSeparators2
-Function TypeNameSeparators2 (b: int);
+// Function: NameTypeSeparators2
+Function NameTypeSeparators2 (b: int);
 	Begin;
 	End;
 
-// Function: TypeNameSeparators3
-Function TypeNameSeparators3 (c :int);
+// Function: NameTypeSeparators3
+Function NameTypeSeparators3 (c :int);
 	Begin;
 	End;
 
-// Function: TypeNameSeparators4
-Function TypeNameSeparators4 (d : int);
+// Function: NameTypeSeparators4
+Function NameTypeSeparators4 (d : int);
 	Begin;
 	End;
 
-// Function: TypeNameSeparators5
-Function TypeNameSeparators5 (e   :   int);
+// Function: NameTypeSeparators5
+Function NameTypeSeparators5 (e   :   int);
 	Begin;
 	End;
 
