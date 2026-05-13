@@ -111,6 +111,26 @@ Language: Fortran
    Variable Prototype Enders: \n = =>
 
 
+Language: Go
+
+   Extension: go
+
+   Alias: Golang
+
+   Line Comment: //
+   Block Comment: /* */
+   Member Operator: .
+   Case Sensitive: Yes
+   Block Comments Nest: No
+
+   Function Prototype Enders: { \n
+   Interface Prototype Ender: {
+   Struct Prototype Ender: {
+   Variable Prototype Enders: := = \n ;
+   Constant Prototype Enders: = \n ;
+   Type Prototype Enders: = \n ; {
+
+
 Language: Java
 
    Extension: java

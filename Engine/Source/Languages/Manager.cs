@@ -79,6 +79,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			// Basic language support with helper classes
 
+			Language go = new Language("Go");
+				go.Parser = new Parsers.Go(engineInstance, go);
+				go.ParameterStyle = Prototypes.ParameterStyle.Pascal;
+
 			Language java = new Language("Java");
 				java.Parser = new Parsers.Java(engineInstance, java);
 				java.ParameterStyle = Prototypes.ParameterStyle.C;
@@ -124,7 +128,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			predefinedLanguages = new Language[] { textFile, shebangScript,
 																		 cSharp, systemVerilog,
-																		 java, kotlin, lua, perl, php, powerbuilder, powershell, python, ruby, rust, sql, swift, tcl };
+																		 go, java, kotlin, lua, perl, php, powerbuilder, powershell, python, ruby, rust,
+																		 sql, swift, tcl };
 			}
 
 
