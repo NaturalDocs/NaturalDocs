@@ -1,0 +1,100 @@
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection PascalStyle">
+      <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">func</span> NoReturnValue (</div>
+         <div class="PName InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">a&nbsp;</div>
+         <div class="PType InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4"><span class="SHKeyword">int</span></div>
+         <div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">)</div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection PascalStyle">
+      <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">func</span> SimpleReturnValue (</div>
+         <div class="PName InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">a&nbsp;</div>
+         <div class="PType InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4"><span class="SHKeyword">int</span></div>
+         <div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">) <span class="SHKeyword">int</span></div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">func</span> Parameterized[A <span class="SHKeyword">comparable</span>, B <span class="SHKeyword">int32</span>, C ~<span class="SHKeyword">int</span>|~<span class="SHKeyword">float64</span>] ()</div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">func</span> (r *ReceiverType) Receiver() <span class="SHKeyword">float64</span></div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">func</span> (r ReceiverType[T]) ParameterizedReceiver() T</div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">func</span> MultipleReturnValuesA () (<span class="SHKeyword">bool</span>, <span class="SHKeyword">int</span>)</div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">func</span> MultipleReturnValuesB () (success <span class="SHKeyword">bool</span>, value <span class="SHKeyword">int</span>)</div>
+</div>
+-----
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection PascalStyle">
+      <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/3/2"><span class="SHKeyword">func</span> ParametersAndMultipleReturnValuesA (</div>
+         <div class="PName InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">a&nbsp;</div>
+         <div class="PType InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4"><span class="SHKeyword">string</span>,</div>
+         <div class="PName InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3">b&nbsp;</div>
+         <div class="PType InLastParameterColumn" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4"><span class="SHKeyword">int</span></div>
+         <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="2/4/3/5" data-NarrowGridArea="4/1/5/4" style="grid-area:2/4/3/5">) (<span class="SHKeyword">bool</span>, <span class="SHKeyword">int</span>)</div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection PascalStyle">
+      <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/3/2"><span class="SHKeyword">func</span> ParametersAndMultipleReturnValuesB (</div>
+         <div class="PName InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">a&nbsp;</div>
+         <div class="PType InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4"><span class="SHKeyword">string</span>,</div>
+         <div class="PName InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3">b&nbsp;</div>
+         <div class="PType InLastParameterColumn" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4"><span class="SHKeyword">int</span></div>
+         <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="2/4/3/5" data-NarrowGridArea="4/1/5/4" style="grid-area:2/4/3/5">) (success <span class="SHKeyword">bool</span>, value <span class="SHKeyword">int</span>)</div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection PascalStyle">
+      <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/5/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/5/2"><span class="SHKeyword">func</span> UnnamedParameters (</div>
+         <div class="PType InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4"><span class="SHKeyword">float64</span>,</div>
+         <div class="PSymbols InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3">*</div>
+         <div class="PType InLastParameterColumn" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4">[<span class="SHNumber">12</span>]<span class="SHKeyword">byte</span>,</div>
+         <div class="PType InLastParameterColumn" data-WideGridArea="3/3/4/4" data-NarrowGridArea="4/2/5/3" style="grid-area:3/3/4/4">OtherType[<span class="SHKeyword">int</span>],</div>
+         <div class="PType InLastParameterColumn" data-WideGridArea="4/3/5/4" data-NarrowGridArea="5/2/6/3" style="grid-area:4/3/5/4"><span class="SHKeyword">map</span>[<span class="SHKeyword">int</span>]<span class="SHKeyword">string</span></div>
+         <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="4/4/5/5" data-NarrowGridArea="6/1/7/4" style="grid-area:4/4/5/5">)</div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">func</span> InterfaceConstraintsA[A <span class="SHKeyword">interface</span>{}, B <span class="SHKeyword">interface</span>{<span class="SHKeyword">any</span>}, C <span class="SHKeyword">interface</span>{~<span class="SHKeyword">int</span>|[]OtherType}] ()</div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">func</span> InterfaceConstraintsB[T <span class="SHKeyword">interface</span>{ FuncA(); FuncB(b <span class="SHKeyword">int</span>) <span class="SHKeyword">bool</span>; <span class="SHKeyword">float32</span> | <span class="SHKeyword">float64</span> }] ()</div>
+</div>
+-----
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection PascalStyle">
+      <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/3/2"><span class="SHKeyword">func</span> AmbiguousUnnamedParameters (</div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">TypeName1,</div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3">TypeName2</div>
+         <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="2/3/3/4" data-NarrowGridArea="4/1/5/3" style="grid-area:2/3/3/4">)</div>
+      </div>
+   </div>
+</div>

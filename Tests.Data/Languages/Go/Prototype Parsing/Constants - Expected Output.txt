@@ -1,0 +1,29 @@
+- Plain Section: const Typed float64
+  - Access Level: Unknown
+  - Link Candidates: float64
+
+------------------------------
+
+- Plain Section: const Untyped
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: const ParameterizedType TypeName[int]
+  - Access Level: Unknown
+  - Link Candidates: TypeName, int
+
+------------------------------
+Currently Unsupported Features:
+------------------------------
+
+(No prototype detected)
+
+------------------------------
+
+(No prototype detected)
+
+------------------------------
+
+(No prototype detected)

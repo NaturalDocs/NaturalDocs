@@ -1,0 +1,55 @@
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">var</span> DeclaredType <span class="SHKeyword">int</span></div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">var</span> ImpliedType</div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">var</span> PointerType *<span class="SHKeyword">float64</span></div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">var</span> ArrayType [<span class="SHNumber">32</span>]<span class="SHKeyword">byte</span></div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">var</span> PointersAndArray1 [<span class="SHNumber">2</span>][<span class="SHNumber">5</span>]*<span class="SHKeyword">float32</span></div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">var</span> PointersAndArray2 * [<span class="SHNumber">2</span>] [<span class="SHNumber">5</span>] <span class="SHKeyword">float32</span></div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">var</span> SliceType []<span class="SHKeyword">int</span></div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">var</span> MapType <span class="SHKeyword">map</span>[<span class="SHKeyword">string</span>]<span class="SHKeyword">int</span></div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">var</span> ParameterizedType1 OtherType [ <span class="SHKeyword">int</span> ]</div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">var</span> ParameterizedType2 Package.OtherType [<span class="SHKeyword">int</span>, [<span class="SHNumber">2</span>]<span class="SHKeyword">byte</span>, Package.NestedType[<span class="SHKeyword">float64</span>, <span class="SHKeyword">float64</span>], <span class="SHKeyword">map</span>[<span class="SHKeyword">int</span>]<span class="SHKeyword">string</span>]</div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">var</span> ChannelType <span class="SHKeyword">chan</span> <span class="SHKeyword">int</span></div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">var</span> SendOnlyChannelType <span class="SHKeyword">chan</span>&lt;- <span class="SHKeyword">int</span></div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">var</span> ReceiveOnlyChannelType &lt;-<span class="SHKeyword">chan</span> <span class="SHKeyword">int</span></div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection">ShortDeclaration</div>
+</div>

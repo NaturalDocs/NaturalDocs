@@ -1,0 +1,7 @@
+<pre class="CCode">a <span class="SHString">'x'</span> a<br />b <span class="SHString">'\''</span> b<br />c <span class="SHString">'\&quot;'</span> c<br />d <span class="SHString">'&quot;'</span> d<br />e <span class="SHString">'`'</span> e<br />f <span class="SHString">'\\'</span> f<br />g <span class="SHString">'\xABCD'</span> g</pre>
+-----
+<pre class="CCode">a <span class="SHString">&quot;x&quot;</span> a<br />b <span class="SHString">&quot;x \&quot;x\&quot; x&quot;</span> b<br />c <span class="SHString">&quot;x \'x\' x&quot;</span> c<br />d <span class="SHString">&quot;x 'x' x&quot;</span> d<br />e <span class="SHString">&quot;x `x` x&quot;</span> e<br />f <span class="SHString">&quot;x \\ x&quot;</span> f</pre>
+-----
+<pre class="CCode">a <span class="SHString">`x`</span> a<br />b <span class="SHString">`x \'x\' x`</span> b<br />c <span class="SHString">`x \&quot;x\&quot; x`</span> c<br />d <span class="SHString">`x 'x' x`</span> d<br />e <span class="SHString">`x &quot;x&quot; x`</span> e<br />f <span class="SHString">`x \\ x`</span> f</pre>
+-----
+<pre class="CCode">a <span class="SHString">`x \`</span> b <span class="SHString">`x \`</span> c</pre>

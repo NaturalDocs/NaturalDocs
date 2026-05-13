@@ -1,0 +1,11 @@
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">const</span> Typed <span class="SHKeyword">float64</span></div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">const</span> Untyped</div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">const</span> ParameterizedType TypeName[<span class="SHKeyword">int</span>]</div>
+</div>

@@ -1,0 +1,55 @@
+- Plain Section: type SimpleType
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: type ParameterizedType[P any]
+  - Access Level: Unknown
+  - Link Candidates: any
+
+------------------------------
+
+- Plain Section: type SimpleAlias
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: type ParameterizedAlias[P comparable]
+  - Access Level: Unknown
+  - Link Candidates: comparable
+
+------------------------------
+Constraints:
+------------------------------
+
+- Plain Section: type ConstraintsA [T ~[]E, E any]
+  - Access Level: Unknown
+  - Link Candidates: E, any
+
+------------------------------
+
+- Plain Section: type ConstraintsB[T OtherType[int]]
+  - Access Level: Unknown
+  - Link Candidates: OtherType, int
+
+------------------------------
+
+- Plain Section: type ConstraintsC [_ any]
+  - Access Level: Unknown
+  - Link Candidates: any
+
+------------------------------
+Partially Supported Features:
+------------------------------
+
+- Plain Section: type InterfaceConstraints[T interface{ ~[]byte|string }]
+  - Access Level: Unknown
+  - Link Candidates: interface
+
+------------------------------
+Currently Unsupported Features:
+------------------------------
+
+(No prototype detected)

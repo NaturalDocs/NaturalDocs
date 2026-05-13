@@ -1,0 +1,243 @@
+- Parameter Section:
+  - Before Parameters: func BasicTypes (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a int,
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: b,
+    - Name: b
+    - Full Type (implied): string
+    - Base Type (implied): string
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: c string
+    - Name: c
+    - Full Type: string
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: func DefaultValues (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a int = 12,
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: 12
+
+  - Parameter 2: b = 12,
+    - Name: b
+    - Full Type (implied): float64
+    - Base Type (implied): float64
+    - Link Candidates: (none)
+    - Default Value: 12
+
+  - Parameter 3: c float64 = 0.1,
+    - Name: c
+    - Full Type: float64
+    - Base Type: float64
+    - Link Candidates: float64
+    - Default Value: 0.1
+
+  - Parameter 4: d = 0.1
+    - Name: d
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 0.1
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: func PointersAndArrays (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a [32]byte,
+    - Name: a
+    - Full Type: [32] byte
+    - Base Type: byte
+    - Link Candidates: byte
+    - Default Value: (not detected)
+
+  - Parameter 2: b *float64,
+    - Name: b
+    - Full Type: * float64
+    - Base Type: float64
+    - Link Candidates: float64
+    - Default Value: (not detected)
+
+  - Parameter 3: c [1000]*float64,
+    - Name: c
+    - Full Type: [1000]* float64
+    - Base Type: float64
+    - Link Candidates: float64
+    - Default Value: (not detected)
+
+  - Parameter 4: d *[3][5]int
+    - Name: d
+    - Full Type: *[3][5] int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: func SlicesAndMaps (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a []int,
+    - Name: a
+    - Full Type: [] int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: b map[string]int
+    - Name: b
+    - Full Type: map[string] int
+    - Base Type: map
+    - Link Candidates: map, string, int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: func Channels (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a chan int,
+    - Name: a
+    - Full Type: chan int
+    - Base Type: chan
+    - Link Candidates: chan, int
+    - Default Value: (not detected)
+
+  - Parameter 2: b chan<- int,
+    - Name: b
+    - Full Type: chan<- int
+    - Base Type: chan
+    - Link Candidates: chan, int
+    - Default Value: (not detected)
+
+  - Parameter 3: c <-chan int
+    - Name: c
+    - Full Type: <- chan int
+    - Base Type: chan
+    - Link Candidates: chan, int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: func ParameterizedTypes (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a OtherType[int],
+    - Name: a
+    - Full Type: OtherType[int]
+    - Base Type: OtherType
+    - Link Candidates: OtherType, int
+    - Default Value: (not detected)
+
+  - Parameter 2: b Package.OtherType [int, [2]byte, Package.NestedType[float64, float64], map[int]string]
+    - Name: b
+    - Full Type: Package.OtherType[int, [2] byte, Package.NestedType[float64, float64], map[int] string]
+    - Base Type: Package.OtherType
+    - Link Candidates: Package.OtherType, int, byte, Package.NestedType, float64, float64, map, int, string
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: func VariadicParameter (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a string,
+    - Name: a
+    - Full Type: string
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value: (not detected)
+
+  - Parameter 2: b ...int
+    - Name: b
+    - Full Type: ...int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+Partially Supported Features:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: func InlineStruct (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: x struct { z int }
+    - Name: x
+    - Full Type: struct { z int }
+    - Base Type: struct
+    - Link Candidates: struct
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: func InlineInterface (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: x interface { FunctionName() }
+    - Name: x
+    - Full Type: interface { FunctionName() }
+    - Base Type: interface
+    - Link Candidates: interface
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)

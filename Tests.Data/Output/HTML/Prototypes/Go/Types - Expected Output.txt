@@ -1,0 +1,31 @@
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">type</span> SimpleType</div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">type</span> ParameterizedType[P <span class="SHKeyword">any</span>]</div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">type</span> SimpleAlias</div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">type</span> ParameterizedAlias[P <span class="SHKeyword">comparable</span>]</div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">type</span> ConstraintsA [T ~[]E, E <span class="SHKeyword">any</span>]</div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">type</span> ConstraintsB[T OtherType[<span class="SHKeyword">int</span>]]</div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">type</span> ConstraintsC [_ <span class="SHKeyword">any</span>]</div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">type</span> InterfaceConstraints[T <span class="SHKeyword">interface</span>{ ~[]<span class="SHKeyword">byte</span>|<span class="SHKeyword">string</span> }]</div>
+</div>

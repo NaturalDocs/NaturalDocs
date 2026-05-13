@@ -1,0 +1,103 @@
+------------------------------
+Basic Types:
+------------------------------
+
+- Plain Section: var DeclaredType int
+  - Access Level: Unknown
+  - Link Candidates: int
+
+------------------------------
+
+- Plain Section: var ImpliedType
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: var PointerType *float64
+  - Access Level: Unknown
+  - Link Candidates: float64
+
+------------------------------
+
+- Plain Section: var ArrayType [32]byte
+  - Access Level: Unknown
+  - Link Candidates: byte
+
+------------------------------
+
+- Plain Section: var PointersAndArray1 [2][5]*float32
+  - Access Level: Unknown
+  - Link Candidates: float32
+
+------------------------------
+
+- Plain Section: var PointersAndArray2 * [2] [5] float32
+  - Access Level: Unknown
+  - Link Candidates: float32
+
+------------------------------
+
+- Plain Section: var SliceType []int
+  - Access Level: Unknown
+  - Link Candidates: int
+
+------------------------------
+
+- Plain Section: var MapType map[string]int
+  - Access Level: Unknown
+  - Link Candidates: map, string, int
+
+------------------------------
+
+- Plain Section: var ParameterizedType1 OtherType [ int ]
+  - Access Level: Unknown
+  - Link Candidates: OtherType, int
+
+------------------------------
+
+- Plain Section: var ParameterizedType2 Package.OtherType [int, [2]byte, Package.NestedType[float64, float64], map[int]string]
+  - Access Level: Unknown
+  - Link Candidates: Package.OtherType, int, byte, Package.NestedType, float64, float64, map, int, string
+
+------------------------------
+Channels:
+------------------------------
+
+- Plain Section: var ChannelType chan int
+  - Access Level: Unknown
+  - Link Candidates: chan, int
+
+------------------------------
+
+- Plain Section: var SendOnlyChannelType chan<- int
+  - Access Level: Unknown
+  - Link Candidates: chan, int
+
+------------------------------
+
+- Plain Section: var ReceiveOnlyChannelType <-chan int
+  - Access Level: Unknown
+  - Link Candidates: chan, int
+
+------------------------------
+Misc:
+------------------------------
+
+- Plain Section: ShortDeclaration
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+Currently Unsupported Features:
+------------------------------
+
+(No prototype detected)
+
+------------------------------
+
+(No prototype detected)
+
+------------------------------
+
+(No prototype detected)

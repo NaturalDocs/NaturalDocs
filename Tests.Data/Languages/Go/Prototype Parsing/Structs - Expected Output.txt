@@ -1,0 +1,55 @@
+- Plain Section: type SimpleStruct struct
+  - Access Level: Unknown
+  - Link Candidates: struct
+
+------------------------------
+
+- Plain Section: Member int
+  - Access Level: Unknown
+  - Link Candidates: int
+
+------------------------------
+
+- Plain Section: type ParameterizedStruct[T comparable] struct
+  - Access Level: Unknown
+  - Link Candidates: comparable, struct
+
+------------------------------
+
+- Plain Section: Member T
+  - Access Level: Unknown
+  - Link Candidates: T
+
+------------------------------
+Constraints:
+------------------------------
+
+- Plain Section: type ConstraintsA [T ~[]E, E any] struct
+  - Access Level: Unknown
+  - Link Candidates: E, any, struct
+
+------------------------------
+
+- Plain Section: type ConstraintsB[T OtherType[int]] struct
+  - Access Level: Unknown
+  - Link Candidates: OtherType, int, struct
+
+------------------------------
+
+- Plain Section: type ConstraintsC [_ any] struct
+  - Access Level: Unknown
+  - Link Candidates: any, struct
+
+------------------------------
+Partially Supported Features:
+------------------------------
+
+- Plain Section: type InterfaceConstraints[T interface{ ~[]byte|string }] struct
+  - Access Level: Unknown
+  - Link Candidates: interface, struct
+
+------------------------------
+Currently Unsupported Features:
+------------------------------
+
+(No prototype detected)

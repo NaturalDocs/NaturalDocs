@@ -1,0 +1,213 @@
+- Parameter Section:
+  - Before Parameters: func NoReturnValue (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a int
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: func SimpleReturnValue (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a int
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: ) int
+    - Link Candidates: int
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: func Parameterized[A comparable, B int32, C ~int|~float64] (
+    - Access Level: Unknown
+    - Link Candidates: comparable, int32, int, float64
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: func (r *ReceiverType) Receiver(
+    - Access Level: Unknown
+    - Link Candidates: ReceiverType
+
+  - After Parameters: ) float64
+    - Link Candidates: float64
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: func (r ReceiverType[T]) ParameterizedReceiver(
+    - Access Level: Unknown
+    - Link Candidates: ReceiverType, T
+
+  - After Parameters: ) T
+    - Link Candidates: T
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: func MultipleReturnValuesA (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: ) (bool, int)
+    - Link Candidates: bool, int
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: func MultipleReturnValuesB (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: ) (success bool, value int)
+    - Link Candidates: bool, int
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: func ParametersAndMultipleReturnValuesA (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a string,
+    - Name: a
+    - Full Type: string
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value: (not detected)
+
+  - Parameter 2: b int
+    - Name: b
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: ) (bool, int)
+    - Link Candidates: bool, int
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: func ParametersAndMultipleReturnValuesB (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a string,
+    - Name: a
+    - Full Type: string
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value: (not detected)
+
+  - Parameter 2: b int
+    - Name: b
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: ) (success bool, value int)
+    - Link Candidates: bool, int
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: func UnnamedParameters (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: float64,
+    - Name: (not detected)
+    - Full Type: float64
+    - Base Type: float64
+    - Link Candidates: float64
+    - Default Value: (not detected)
+
+  - Parameter 2: *[12]byte,
+    - Name: (not detected)
+    - Full Type: *[12] byte
+    - Base Type: byte
+    - Link Candidates: byte
+    - Default Value: (not detected)
+
+  - Parameter 3: OtherType[int],
+    - Name: (not detected)
+    - Full Type: OtherType[int]
+    - Base Type: OtherType
+    - Link Candidates: OtherType, int
+    - Default Value: (not detected)
+
+  - Parameter 4: map[int]string
+    - Name: (not detected)
+    - Full Type: map[int] string
+    - Base Type: map
+    - Link Candidates: map, int, string
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+Partially Supported Features:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: func InterfaceConstraintsA[A interface{}, B interface{any}, C interface{~int|[]OtherType}] (
+    - Access Level: Unknown
+    - Link Candidates: interface, interface, interface
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: func InterfaceConstraintsB[T interface{ FuncA(); FuncB(b int) bool; float32 | float64 }] (
+    - Access Level: Unknown
+    - Link Candidates: interface
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: func AmbiguousUnnamedParameters (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: TypeName1,
+    - Name: TypeName1
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: TypeName2
+    - Name: TypeName2
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)

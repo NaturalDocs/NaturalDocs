@@ -1,0 +1,69 @@
+- Plain Section: type SimpleInterface interface
+  - Access Level: Unknown
+  - Link Candidates: interface
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: Member(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: ) int
+    - Link Candidates: int
+
+------------------------------
+
+- Plain Section: type ParameterizedInterface[T comparable] interface
+  - Access Level: Unknown
+  - Link Candidates: comparable, interface
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: Member(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: ) T
+    - Link Candidates: T
+
+------------------------------
+Constraints:
+------------------------------
+
+- Plain Section: type ConstraintsA [T ~[]E, E any] interface
+  - Access Level: Unknown
+  - Link Candidates: E, any, interface
+
+------------------------------
+
+- Plain Section: type ConstraintsB[T OtherType[int]] interface
+  - Access Level: Unknown
+  - Link Candidates: OtherType, int, interface
+
+------------------------------
+
+- Plain Section: type ConstraintsC [_ any] interface
+  - Access Level: Unknown
+  - Link Candidates: any, interface
+
+------------------------------
+Partially Supported Features:
+------------------------------
+
+- Plain Section: type InterfaceConstraints[T interface{ ~[]byte|string }] interface
+  - Access Level: Unknown
+  - Link Candidates: interface, interface
+
+------------------------------
+
+- Plain Section: type ConstraintLines interface
+  - Access Level: Unknown
+  - Link Candidates: interface
+
+------------------------------
+Currently Unsupported Features:
+------------------------------
+
+(No prototype detected)
