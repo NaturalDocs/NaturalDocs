@@ -177,14 +177,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 
 				if (iterator < endOfParam &&
 					iterator.FundamentalType == FundamentalType.Symbol &&
-					iterator.Character != '_')
+					iterator.Character != '_' &&
+					iterator.MatchesAcrossTokens("<-") == false)
 					{
 					while (iterator < endOfParam)
 						{
 						PrototypeParsingType type = iterator.PrototypeParsingType;
 
 						if ( (
-								( iterator.FundamentalType == FundamentalType.Symbol && iterator.Character != '_' ) ||
+								( iterator.FundamentalType == FundamentalType.Symbol && iterator.Character != '_' && iterator.MatchesAcrossTokens("<-") == false ) ||
 								( iterator.FundamentalType == FundamentalType.Whitespace )
 								) &&
 							( type == PrototypeParsingType.TypeModifier ||
