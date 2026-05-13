@@ -921,11 +921,6 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		 */
 		public bool IsBetterTopicDefinition (Topic currentDefinition, Topic toTest)
 			{
-			#if DEBUG
-			if (EngineInstance.Languages.FromID(currentDefinition.LanguageID).Parser.IsSameCodeElement(currentDefinition, toTest) == false)
-				{  throw new Exception("Tried to call IsBetterTopicDefinition() on two topics with different code elements.");  }
-			#endif
-
 			// Piggyback on ScoreTopic since iti already evaluates all the properties we want
 			long currentScore = ScoreTopic(currentDefinition);
 			long toTestScore = ScoreTopic(toTest);
