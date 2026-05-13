@@ -14,18 +14,6 @@
 */
 
 
-/* Topic: Underscore
-	_____________________________________________
-
-	A single underscore is a keyword.
-
-	--- Code
-	_
-	__
-	---
-*/
-
-
 /* Topic: Raw Identifiers
 	_____________________________________________
 

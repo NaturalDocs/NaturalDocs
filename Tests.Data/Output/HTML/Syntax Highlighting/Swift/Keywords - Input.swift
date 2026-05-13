@@ -26,13 +26,6 @@
 	float64
 	---
 
-	A single underscore is a keyword.
-
-	--- Code
-	_
-	__
-	---
-
 	Backticks are used to surround identifiers that are otherwise keywords.
 
 	--- Code
