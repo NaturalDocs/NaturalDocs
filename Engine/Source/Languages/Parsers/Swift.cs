@@ -306,9 +306,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// Keywords used in expressions and types
 			"Any", "as", "await", "catch", "false", "is", "nil", "rethrows", "self", "Self", "super", "throw", "throws", "true", "try",
 
-			// Keywords used in patterns
-			"_",
-
 			// Keywords reserved in particular contexts
 			"associativity", "async", "convenience", "didSet", "dynamic", "final", "get", "indirect", "infix", "lazy", "left", "mutating", "none",
 			"nonmutating", "optional", "override", "package", "postfix", "precedence", "prefix", "Protocol", "required", "right", "set", "some",

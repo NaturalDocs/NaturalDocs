@@ -326,7 +326,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Language keywords as of April 2026.  Includes strict, reserved, and weak keywords
 
-			"_", "abstract", "as", "async", "await", "become", "box", "break", "const", "continue", "crate", "do", "dyn",
+			"abstract", "as", "async", "await", "become", "box", "break", "const", "continue", "crate", "do", "dyn",
 			"else", "enum", "extern", "false", "final", "fn", "for", "gen", "if", "impl", "in", "let", "loop", "macro_rules",
 			"macro", "match", "mod", "move", "mut", "override", "priv", "pub", "raw", "ref", "return", "safe", "self",
 			"Self", "static", "struct", "super", "trait", "true", "try", "type", "typeof", "union", "unsafe", "unsized", "use",
