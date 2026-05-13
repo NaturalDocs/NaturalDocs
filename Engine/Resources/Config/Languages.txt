@@ -148,7 +148,7 @@ Language: Java
 
 Language: JavaScript
 
-   Extension: js
+   Extensions: js cjs mjs
 
    Alias: JS
 
