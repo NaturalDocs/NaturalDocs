@@ -1,0 +1,17 @@
+class SimpleClass
+
+  - Name: SimpleClass
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+class ClassWithInheritance extends ParentClass
+
+  - Name: ClassWithInheritance
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: ParentClass
+    - Name: ParentClass

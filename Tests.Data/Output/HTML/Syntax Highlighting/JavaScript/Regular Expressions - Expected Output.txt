@@ -1,0 +1,9 @@
+<pre class="CCode">regex = <span class="SHString">/abc/</span>;<br />str.replace(<span class="SHString">/abc/</span>, <span class="SHString">&quot;xyz&quot;</span>);<br /><span class="SHKeyword">return</span> <span class="SHString">/abc/</span>;<br />MyFunction(<span class="SHString">&quot;abc&quot;</span>, <span class="SHString">/xyz/</span>);<br /><span class="SHKeyword">if</span> (<span class="SHString">/abc/</span>.test(str)) { }</pre>
+-----
+<pre class="CCode">num = x/y;<br />num = (x / y);<br />num = (<span class="SHNumber">1</span>/<span class="SHNumber">2</span>);<br />num = <span class="SHNumber">1</span> / <span class="SHNumber">2</span>;<br />num = <span class="SHNumber">1</span> <span class="SHComment">// 2</span></pre>
+-----
+<pre class="CCode">str = str.replace(<span class="SHString">/abc/gi</span>, <span class="SHString">&quot;xyz&quot;</span>);</pre>
+-----
+<pre class="CCode">regex = <span class="SHString">/a\/b\&quot;c&quot;d\'e'f/</span>;</pre>
+-----
+<pre class="CCode">regex = <span class="SHString">/[a-z/]/</span>;<br />regex = <span class="SHString">/[a-z\/]/</span>;</pre>

@@ -1,0 +1,9 @@
+<pre class="CCode">a <span class="SHString">'x'</span> a<br />b <span class="SHString">'\''</span> b<br />c <span class="SHString">'&quot;'</span> c<br />d <span class="SHString">'\\'</span> d</pre>
+-----
+<pre class="CCode">a <span class="SHString">&quot;x&quot;</span> a<br />b <span class="SHString">&quot;'&quot;</span> b<br />c <span class="SHString">&quot;\&quot;&quot;</span> c<br />d <span class="SHString">&quot;\\&quot;</span> d</pre>
+-----
+<pre class="CCode">a <span class="SHString">`x`</span> a<br />b <span class="SHString">`'`</span> b<br />c <span class="SHString">`&quot;`</span> c<br />d <span class="SHString">`\``</span> d<br />e <span class="SHString">`\\`</span> e</pre>
+-----
+<pre class="CCode">a <span class="SHString">` x </span>${x}<span class="SHString"> x`</span> a<br />b <span class="SHString">` x </span>${ <span class="SHString">`x`</span> }<span class="SHString"> x`</span> b<br />c <span class="SHString">` x </span>${ (x + <span class="SHNumber">5</span>) * <span class="SHNumber">2</span> }<span class="SHString"> x `</span> c<br />d <span class="SHString">` x \` x \$ x \${x} x `</span> d</pre>
+-----
+<pre class="CCode">a<br /><span class="SHString">`b </span>${c}<span class="SHString"> d </span>${<span class="SHString">&quot;e&quot;</span>}<span class="SHString"> f</span><br /><span class="SHString">g </span>${(h + <span class="SHNumber">5</span>) * <span class="SHNumber">2</span>}<span class="SHString"> i`</span><br />j</pre>
