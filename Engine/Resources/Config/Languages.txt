@@ -150,15 +150,19 @@ Language: JavaScript
 
    Extensions: js cjs mjs
 
-   Alias: JS
+   Aliases: JS ECMAScript ES
 
    Line Comment: //
    Block Comment: /* */
-   Enum Values: Under Type
+   Member Operator: .
    Case Sensitive: Yes
+   Block Comments Nest: No
 
+   Class Prototype Ender: {
    Function Prototype Ender: {
-   Variable Prototype Enders: ; =
+   Property Prototype Ender: {
+   Variable Prototype Enders: ; = \n
+   Constant Prototype Enders: ; = \n
 
 
 Language: Kotlin
