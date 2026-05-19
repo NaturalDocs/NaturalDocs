@@ -2964,7 +2964,7 @@ $FadedInterfacePrototypeBorderB_Black: #4C4C65;
 	.BlackTheme .SHString { color: #B8B8FF; }
 
 	.LightTheme .CCode .SHNumber,
-	.LightTheme .CCode .SHString { color: #3030A0; }
+	.LightTheme .CCode .SHString { color: #3030B4; }
 
 .SHPreprocessingDirective {
 	color: $ContentTextColor;
