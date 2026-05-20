@@ -215,6 +215,40 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		// __________________________________________________________________________
 
 
+		/* Function: IsPartOfIdentifier
+		 * Returns whether the <TokenIterator> is on a token that could be part of an identifier.
+		 */
+		protected static bool IsPartOfIdentifier (TokenIterator iterator)
+			{
+			return (iterator.FundamentalType == FundamentalType.Text ||
+					   iterator.Character == '_' ||
+					   iterator.Character == '$');
+			}
+
+
+		/* Function: IsPartOfLongerIdentifier
+		 * Returns whether the <TokenIterator> is on tokens that are part of a longer identifier, such as by being next to an
+		 * underscore.  This is primarily used to validate keywords after checking the contents of the token against a keyword list,
+		 * so that "input" by itself will be distinguished from "_input" or similar.
+		 */
+		protected static bool IsPartOfLongerIdentifier (TokenIterator iterator, int characterLength)
+			{
+			TokenIterator lookahead = iterator;
+			lookahead.NextByCharacters(characterLength);
+
+			if (IsPartOfIdentifier(lookahead))
+				{  return true;  }
+
+			// Just use iterator as a lookbehind instead of creating another one
+			iterator.Previous();
+
+			if (IsPartOfIdentifier(iterator))
+				{  return true;  }
+
+			return false;
+			}
+
+
 		/* Function: IsOnKeyword
 		 *
 		 * Returns whether the <TokenIterator> is on the passed keyword, making sure there are no other identifier tokens
@@ -225,26 +259,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		public static bool IsOnKeyword (TokenIterator iterator, string keyword)
 			{
-			if (!iterator.MatchesAcrossTokens(keyword))
-				{  return false;  }
-
-			TokenIterator lookahead = iterator;
-			lookahead.NextByCharacters(keyword.Length);
-
-			if (lookahead.FundamentalType == FundamentalType.Text ||
-				lookahead.Character == '_' ||
-				lookahead.Character == '$')
-				{  return false;  }
-
-			// Just use iterator as a lookbehind instead of creating another one
-			iterator.Previous();
-
-			if (iterator.FundamentalType == FundamentalType.Text ||
-				iterator.Character == '_' ||
-				iterator.Character == '$')
-				{  return false;  }
-
-			return true;
+			return (iterator.MatchesAcrossTokens(keyword) &&
+					   !IsPartOfLongerIdentifier(iterator, keyword.Length));
 			}
 
 
@@ -255,8 +271,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		public static bool IsOnAnyKeyword (TokenIterator iterator, params string[] keywords)
 			{
-			string ignore;
-			return IsOnAnyKeyword(iterator, out ignore, keywords);
+			return IsOnAnyKeyword(iterator, out _, keywords);
 			}
 
 
@@ -267,13 +282,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		public static bool IsOnAnyKeyword (TokenIterator iterator, out string matchingKeyword, params string[] keywords)
 			{
-			if (iterator.FundamentalType != FundamentalType.Text &&
-				iterator.Character != '$')
-				{
-				matchingKeyword = null;
-				return false;
-				}
-
 			int matchIndex = iterator.MatchesAnyAcrossTokens(keywords, true);
 
 			if (matchIndex == -1)
@@ -284,21 +292,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			matchingKeyword = keywords[matchIndex];
 
-			TokenIterator lookahead = iterator;
-			lookahead.NextByCharacters(matchingKeyword.Length);
-
-			if (lookahead.FundamentalType == FundamentalType.Text ||
-				lookahead.Character == '_' ||
-				lookahead.Character == '$')
-				{  return false;  }
-
-			// Just use iterator as a lookbehind instead of creating another one
-			iterator.Previous();
-
-			if (iterator.FundamentalType == FundamentalType.Text ||
-				iterator.Character == '_' ||
-				iterator.Character == '$')
-				{  return false;  }
+			if (IsPartOfLongerIdentifier(iterator, matchingKeyword.Length))
+				{
+				matchingKeyword = null;
+				return false;
+				}
 
 			return true;
 			}
@@ -311,8 +309,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		public static bool IsOnAnyKeyword (TokenIterator iterator, StringSet keywords)
 			{
-			string ignore;
-			return IsOnAnyKeyword(iterator, out ignore, keywords);
+			return IsOnAnyKeyword(iterator, out _, keywords);
 			}
 
 
@@ -323,8 +320,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		public static bool IsOnAnyKeyword (TokenIterator iterator, out string matchingKeyword, StringSet keywords)
 			{
-			if (iterator.FundamentalType != FundamentalType.Text &&
-				iterator.Character != '$')
+			if (IsPartOfIdentifier(iterator))
 				{
 				matchingKeyword = null;
 				return false;
@@ -333,9 +329,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TokenIterator lookbehind = iterator;
 			lookbehind.Previous();
 
-			if (lookbehind.FundamentalType == FundamentalType.Text ||
-				lookbehind.Character == '_' ||
-				lookbehind.Character == '$')
+			if (IsPartOfIdentifier(lookbehind))
 				{
 				matchingKeyword = null;
 				return false;
@@ -345,9 +339,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			do
 				{  endOfIdentifier.Next();  }
-			while (endOfIdentifier.FundamentalType == FundamentalType.Text ||
-					 endOfIdentifier.Character == '_' ||
-					 endOfIdentifier.Character == '$');
+			while (IsPartOfIdentifier(endOfIdentifier));
 
 			string identifier = iterator.TextBetween(endOfIdentifier);
 
@@ -370,8 +362,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		public static bool IsOnAnyKeyword (TokenIterator iterator, out string matchingKeyword, out string value,
 														   StringToStringTable keywords)
 			{
-			if (iterator.FundamentalType != FundamentalType.Text &&
-				iterator.Character != '$')
+			if (!IsPartOfIdentifier(iterator))
 				{
 				matchingKeyword = null;
 				value = null;
@@ -381,9 +372,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TokenIterator lookbehind = iterator;
 			lookbehind.Previous();
 
-			if (lookbehind.FundamentalType == FundamentalType.Text ||
-				lookbehind.Character == '_' ||
-				lookbehind.Character == '$')
+			if (IsPartOfIdentifier(lookbehind))
 				{
 				matchingKeyword = null;
 				value = null;
@@ -394,9 +383,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			do
 				{  endOfIdentifier.Next();  }
-			while (endOfIdentifier.FundamentalType == FundamentalType.Text ||
-					 endOfIdentifier.Character == '_' ||
-					 endOfIdentifier.Character == '$');
+			while (IsPartOfIdentifier(endOfIdentifier));
 
 			string identifier = iterator.TextBetween(endOfIdentifier);
 			value = keywords[identifier];

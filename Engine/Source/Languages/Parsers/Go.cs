@@ -158,6 +158,31 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		// __________________________________________________________________________
 
 
+		/* Function: IsPartOfLongerIdentifier
+		 * Returns whether the <TokenIterator> is on token that's part of a longer identifier, such as by being next to an underscore.
+		 * This is primarily used to validate keywords after checking the contents of the token against a keyword list, so that "input"
+		 * by itself will be distinguished from "_input" or similar.
+		 */
+		protected bool IsPartOfLongerIdentifier (TokenIterator iterator)
+			{
+			TokenIterator lookahead = iterator;
+			lookahead.Next();
+
+			if (lookahead.FundamentalType == FundamentalType.Text ||
+				lookahead.Character == '_')
+				{  return true;  }
+
+			// Just use iterator as a lookbehind instead of creating another one
+			iterator.Previous();
+
+			if (iterator.FundamentalType == FundamentalType.Text ||
+				iterator.Character == '_')
+				{  return true;  }
+
+			return false;
+			}
+
+
 		/* Function: IsOnKeyword
 		 *
 		 * Returns whether the <TokenIterator> is on the passed keyword, making sure there are no other identifier tokens
@@ -168,24 +193,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		public bool IsOnKeyword (TokenIterator iterator, string keyword)
 			{
-			if (!iterator.MatchesToken(keyword))
-				{  return false;  }
-
-			TokenIterator lookahead = iterator;
-			lookahead.Next();
-
-			if (lookahead.FundamentalType == FundamentalType.Text ||
-				lookahead.Character == '_')
-				{  return false;  }
-
-			// Just use iterator as a lookbehind instead of creating another one
-			iterator.Previous();
-
-			if (iterator.FundamentalType == FundamentalType.Text ||
-				iterator.Character == '_')
-				{  return false;  }
-
-			return true;
+			return (iterator.MatchesToken(keyword) &&
+					   !IsPartOfLongerIdentifier(iterator));
 			}
 
 
@@ -197,24 +206,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		public bool IsOnAnyKeyword (TokenIterator iterator, params string[] keywords)
 			{
-			if (iterator.MatchesAnyAcrossTokens(keywords, true) == -1)
-				{  return false;  }
-
-			TokenIterator lookahead = iterator;
-			lookahead.Next();
-
-			if (lookahead.FundamentalType == FundamentalType.Text ||
-				lookahead.Character == '_')
-				{  return false;  }
-
-			// Just use iterator as a lookbehind instead of creating another one
-			iterator.Previous();
-
-			if (iterator.FundamentalType == FundamentalType.Text ||
-				iterator.Character == '_')
-				{  return false;  }
-
-			return true;
+			return (iterator.MatchesAnyAcrossTokens(keywords, true) != -1 &&
+					   !IsPartOfLongerIdentifier(iterator));
 			}
 
 
@@ -226,25 +219,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		public bool IsOnAnyKeyword (TokenIterator iterator, StringSet keywords)
 			{
-			if (iterator.FundamentalType != FundamentalType.Text ||
-				keywords.Contains(iterator.String) == false)
-				{  return false;  }
-
-			TokenIterator lookahead = iterator;
-			lookahead.Next();
-
-			if (lookahead.FundamentalType == FundamentalType.Text ||
-				lookahead.Character == '_')
-				{  return false;  }
-
-			// Just use iterator as a lookbehind instead of creating another one
-			iterator.Previous();
-
-			if (iterator.FundamentalType == FundamentalType.Text ||
-				iterator.Character == '_')
-				{  return false;  }
-
-			return true;
+			return (iterator.FundamentalType == FundamentalType.Text &&
+					   keywords.Contains(iterator.String) &&
+					   !IsPartOfLongerIdentifier(iterator));
 			}
 
 
@@ -1190,26 +1167,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		override protected bool TryToSkipKeyword (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
-			// No keywords have underscores, so they must be text and only one token long.
-
-			if (iterator.FundamentalType != FundamentalType.Text)
-				{  return false;  }
-
-			if (goKeywords.Contains(iterator.ToString()) == false)
-				{  return false;  }
-
-			// Check if it's part of another identifier like "x_keyword".
-
-			TokenIterator lookbehind = iterator;
-			lookbehind.Previous();
-
-			if (lookbehind.Character == '_' || lookbehind.FundamentalType == FundamentalType.Text)
-				{  return false;  }
-
-			TokenIterator lookahead = iterator;
-			lookahead.Next();
-
-			if (lookahead.Character == '_' || lookahead.FundamentalType == FundamentalType.Text)
+			if (iterator.FundamentalType != FundamentalType.Text ||
+				goKeywords.Contains(iterator.ToString()) == false ||
+				IsPartOfLongerIdentifier(iterator))
 				{  return false;  }
 
 			if (mode == ParseMode.SyntaxHighlight)

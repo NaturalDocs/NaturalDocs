@@ -55,9 +55,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					 iterator.PrototypeParsingType != PrototypeParsingType.StartOfParams)
 				{
 				if (iterator.PrototypeParsingType == PrototypeParsingType.Name &&
-					(IsOnKeyword(iterator, "this") ||
-					 IsOnKeyword(iterator, "prototype") ||
-					 IsOnKeyword(iterator, "constructor")))
+					IsOnAnyKeyword(iterator, "this", "prototype", "constructor"))
 					{
 					iterator.PrototypeParsingType = PrototypeParsingType.KeywordName;
 					}
@@ -73,23 +71,20 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		// __________________________________________________________________________
 
 
-		/* Function: IsOnKeyword
-		 * Returns whether the <TokenIterator> is on the passed keyword, making sure there are no other identifier tokens
-		 * before or after it.  This allows us to be sure an iterator on "input" isn't actually on "_input" or similar.  This function
-		 * assumes keywords are only one text token.
+		/* Function: IsPartOfLongerIdentifier
+		 * Returns whether the <TokenIterator> is on token that's part of a longer identifier, such as by being next to an underscore.
+		 * This is primarily used to validate keywords after checking the contents of the token against a keyword list, so that "input"
+		 * by itself will be distinguished from "_input" or similar.
 		 */
-		public bool IsOnKeyword (TokenIterator iterator, string keyword)
+		protected bool IsPartOfLongerIdentifier (TokenIterator iterator)
 			{
-			if (!iterator.MatchesToken(keyword))
-				{  return false;  }
-
 			TokenIterator lookahead = iterator;
 			lookahead.Next();
 
 			if (lookahead.FundamentalType == FundamentalType.Text ||
 				lookahead.Character == '_' ||
 				lookahead.Character == '$')
-				{  return false;  }
+				{  return true;  }
 
 			// Just use iterator as a lookbehind instead of creating another one
 			iterator.Previous();
@@ -98,9 +93,33 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				iterator.Character == '_' ||
 				iterator.Character == '$' ||
 				iterator.Character == '#')
-				{  return false;  }
+				{  return true;  }
 
-			return true;
+			return false;
+			}
+
+
+		/* Function: IsOnKeyword
+		 * Returns whether the <TokenIterator> is on the passed keyword, making sure there are no other identifier tokens
+		 * before or after it.  This allows us to be sure an iterator on "input" isn't actually on "_input" or similar.  This function
+		 * assumes keywords are only one text token.
+		 */
+		public bool IsOnKeyword (TokenIterator iterator, string keyword)
+			{
+			return (iterator.MatchesToken(keyword) &&
+					   !IsPartOfLongerIdentifier(iterator));
+			}
+
+
+		/* Function: IsOnAnyKeyword
+		 * Returns whether the <TokenIterator> is on any of the passed keywords, making sure there are no other identifier
+		 * tokens before or after it.  This allows us to be sure an iterator on "input" isn't actually on "_input" or similar.  This
+		 * function assumes keywords are only one text token.
+		 */
+		public bool IsOnAnyKeyword (TokenIterator iterator, params string[] keywords)
+			{
+			return (iterator.MatchesAnyToken(keywords) != -1 &&
+					   !IsPartOfLongerIdentifier(iterator));
 			}
 
 
@@ -114,31 +133,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		override protected bool TryToSkipKeyword (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
-			// No keywords contain symbols so they must be text and only one token long.
-
-			if (iterator.FundamentalType != FundamentalType.Text)
-				{  return false;  }
-
-			if (javascriptKeywords.Contains(iterator.ToString()) == false)
-				{  return false;  }
-
-			// Check if it's part of another identifier ("x_keyword")
-
-			TokenIterator lookbehind = iterator;
-			lookbehind.Previous();
-
-			if (lookbehind.FundamentalType == FundamentalType.Text ||
-				lookbehind.Character == '_' ||
-				lookbehind.Character == '$' ||
-				lookbehind.Character == '#')
-				{  return false;  }
-
-			TokenIterator lookahead = iterator;
-			lookahead.Next();
-
-			if (lookahead.FundamentalType == FundamentalType.Text ||
-				lookahead.Character == '_' ||
-				lookahead.Character == '$')
+			if (iterator.FundamentalType != FundamentalType.Text ||
+				javascriptKeywords.Contains(iterator.String) == false ||
+				IsPartOfLongerIdentifier(iterator))
 				{  return false;  }
 
 			if (mode == ParseMode.SyntaxHighlight)
