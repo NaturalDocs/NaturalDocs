@@ -1,0 +1,17 @@
+<pre class="CCode"><span class="SHNumber">12</span><br /><span class="SHNumber">-12</span><br /><span class="SHNumber">12e1</span><br /><span class="SHNumber">12.34e+5</span><br /><span class="SHNumber">-12.34e-5</span><br /><span class="SHNumber">.012</span><br /><span class="SHNumber">-.012</span><br /><span class="SHNumber">.012E+5</span><br /><span class="SHNumber">-.012e10</span></pre>
+-----
+<pre class="CCode"><span class="SHNumber">0x01230ABC</span><br /><span class="SHNumber">0Xabc12345</span><br /><span class="SHNumber">0b00100110</span><br /><span class="SHNumber">0B0110100110011100</span><br /><span class="SHNumber">0o1234567</span></pre>
+-----
+<pre class="CCode"><span class="SHNumber">1_234_567</span><br /><span class="SHNumber">0xabc1_2345</span><br /><span class="SHNumber">0B0110_1001_1001_1100</span><br /><span class="SHNumber">1.234_567e1_2</span></pre>
+-----
+<pre class="CCode"><span class="SHNumber">123n</span></pre>
+-----
+<pre class="CCode"><span class="SHNumber">NaN</span></pre>
+-----
+<pre class="CCode"><span class="SHNumber">0x000E</span>+a<br /><span class="SHNumber">0x000e</span>-<span class="SHNumber">1</span></pre>
+-----
+<pre class="CCode"><span class="SHNumber">-1</span><br />y-<span class="SHNumber">1</span><br />y -<span class="SHNumber">1</span><br /><span class="SHNumber">1</span>-<span class="SHNumber">1</span><br /><span class="SHNumber">1</span> -<span class="SHNumber">1</span><br />(<span class="SHNumber">-1</span>)<br /><span class="SHNumber">1</span> + <span class="SHNumber">-1</span></pre>
+-----
+<pre class="CCode">_12</pre>
+-----
+<pre class="CCode">a1_2_3 = <span class="SHString">&quot;45&quot;</span></pre>
