@@ -158,10 +158,22 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		override protected bool TryToSkipNumber (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
-			return TryToSkipNumber(ref iterator,
-												ParseNumberFlags.AllowUnderscoreSeparators |
-												ParseNumberFlags.RequireDigitAfterDot,
-												mode);
+			if (TryToSkipNumber(ref iterator,
+										  ParseNumberFlags.AllowUnderscoreSeparators |
+										  ParseNumberFlags.RequireDigitAfterDot,
+										  mode))
+				{  return true;  }
+
+			if (IsOnKeyword(iterator, "NaN"))
+				{
+				if (mode == ParseMode.SyntaxHighlight)
+					{  iterator.SyntaxHighlightingType = SyntaxHighlightingType.Number;  }
+
+				iterator.Next();
+				return true;
+				}
+
+			return false;
 			}
 
 
