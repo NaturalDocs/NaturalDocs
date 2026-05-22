@@ -45,6 +45,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			{  Character, Quoted, Verbatim, Raw  }
 
 
+		/* Enum: TemplateSignatureType
+		 * Definition - The signature of a template definition, such as "class MyTemplate<X, out Y> { ... }".
+		 * Instantiation - The signature of a template instantiation, such as "MyTemplate<int, string> x = null;".
+		 */
+		public enum TemplateSignatureType: byte
+			{  Definition, Instantiation  }
+
+
 
 		// Group: Functions
 		// __________________________________________________________________________
@@ -713,7 +721,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Template signature
 
-			if (TryToSkipTemplateSignature(ref lookahead, mode, false))
+			if (TryToSkipTemplateSignature(ref lookahead, TemplateSignatureType.Definition, mode))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
@@ -758,7 +766,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 					// Parent template signature
 
-					if (TryToSkipTemplateSignature(ref lookahead, mode, true))
+					if (TryToSkipTemplateSignature(ref lookahead, TemplateSignatureType.Instantiation, mode))
 						{  TryToSkipWhitespace(ref lookahead);  }
 
 
@@ -1144,7 +1152,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Template signature
 
-			if (TryToSkipTemplateSignature(ref lookahead, mode, false))
+			if (TryToSkipTemplateSignature(ref lookahead, TemplateSignatureType.Definition, mode))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
@@ -2783,7 +2791,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Parameters as template signature
 
-			if (!TryToSkipTemplateSignature(ref lookahead, mode, true))
+			if (!TryToSkipTemplateSignature(ref lookahead, TemplateSignatureType.Instantiation, mode))
 				{
 				ResetTokensBetween(iterator, lookahead, mode);
 				return false;
@@ -2827,7 +2835,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Template Signature
 
-			if (TryToSkipTemplateSignature(ref lookahead, mode, true))
+			if (TryToSkipTemplateSignature(ref lookahead, TemplateSignatureType.Instantiation, mode))
 				{
 				iterator = lookahead;
 				TryToSkipWhitespace(ref lookahead);
@@ -2974,6 +2982,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TokenIterator endOfIdentifier;
 			TokenIterator endOfQualifier = iterator;
 
+			var templateSignatureType = (prototypeParsingType == PrototypeParsingType.Type ?
+														TemplateSignatureType.Instantiation : TemplateSignatureType.Definition);
+
 			for (;;)
 				{
 				if (TryToSkipUnqualifiedIdentifier(ref lookahead) == false)
@@ -2982,7 +2993,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				endOfIdentifier = lookahead;
 				TryToSkipWhitespace(ref lookahead);
 
-				if (TryToSkipTemplateSignature(ref lookahead, mode, (prototypeParsingType == PrototypeParsingType.Type)))
+				if (TryToSkipTemplateSignature(ref lookahead, templateSignatureType, mode))
 					{
 					TryToSkipWhitespace(ref lookahead);
 					}
@@ -3077,20 +3088,21 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToSkipTemplateSignature
 		 *
-		 * Tries to move the iterator past a template signature, such as "<int>" in "List<int>".  It can handle nested templates.  If isType is
-		 * false, it will move past the signature in template declarations, such as "<X, in Y>" in "class Template<X, in Y>".
+		 * Tries to move the iterator past a template signature, such as "<int>" in "List<int>".  It can handle nested templates.  Set the
+		 * <TemplateSignatureType> to set whether it's handling a definition, such as "class MyTemplate<X, out Y> { ... }", or an
+		 * instantiation, such as "MyTemplate<int, string> x = null;".
 		 *
 		 * Supported Modes:
 		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParsePrototype>
-		 *			- If isType is true, it will mark tokens with these types, including in nested templates:
+		 *			- When using <TemplateSignatureType.Instantiation>, it will mark tokens with these types, including in nested templates:
 		 *				- <PrototypeParsingType.OpeningTypeModifier>
 		 *				- <PrototypeParsingType.ClosingTypeModifier>
 		 *				- <PrototypeParsingType.Type>
 		 *				- <PrototypeParsingType.TypeQualifier>
 		 *				- <PrototypeParsingType.TypeModifier>
-		 *			- If isType is false, it will mark everything with these types:
+		 *			- When using <TemplateSignatureType.Definition>, it will mark everything with these types:
 		 *				- <PrototypeParsingType.OpeningParamModifier>
 		 *				- <PrototypeParsingType.ClosingParamModifier>
 		 *				- <PrototypeParsingType.Name>
@@ -3098,7 +3110,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *			- All tokens will be marked with <ClassPrototypeParsingType.TemplateSuffix>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipTemplateSignature (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, bool isType = true)
+		protected bool TryToSkipTemplateSignature (ref TokenIterator iterator, TemplateSignatureType signatureType,
+																		ParseMode mode = ParseMode.IterateOnly)
 			{
 			if (iterator.Character != '<')
 				{  return false;  }
@@ -3112,7 +3125,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{
 				for (;;)
 					{
-					if (isType)
+					if (signatureType == TemplateSignatureType.Instantiation)
 						{
 						if (TryToSkipType(ref lookahead, mode) == false)
 							{
@@ -3120,7 +3133,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 							return false;
 							}
 						}
-					else // not a type
+					else if (signatureType == TemplateSignatureType.Definition)
 						{
 						// In interfaces and delegates there is an additional in/out modifier that can be applied to each one.
 						if (lookahead.MatchesToken("in") ||
@@ -3130,12 +3143,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 							TryToSkipWhitespace(ref lookahead);
 							}
 
-						if (TryToSkipUnqualifiedIdentifier(ref lookahead, mode) == false)
+						if (TryToSkipUnqualifiedIdentifier(ref lookahead, mode, PrototypeParsingType.Name) == false)
 							{
 							ResetTokensBetween(iterator, lookahead, mode);
 							return false;
 							}
 						}
+					else
+						{  throw new NotImplementedException();  }
 
 					TryToSkipWhitespace(ref lookahead);
 
@@ -3153,18 +3168,20 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{
 				if (mode == ParseMode.ParsePrototype)
 					{
-					if (isType)
+					if (signatureType == TemplateSignatureType.Instantiation)
 						{
 						iterator.PrototypeParsingType = PrototypeParsingType.OpeningTypeModifier;
 						lookahead.PrototypeParsingType = PrototypeParsingType.ClosingTypeModifier;
-						lookahead.Next();
 						}
-					else
+					else if (signatureType == TemplateSignatureType.Definition)
 						{
 						iterator.PrototypeParsingType = PrototypeParsingType.OpeningParamModifier;
 						lookahead.PrototypeParsingType = PrototypeParsingType.ClosingParamModifier;
-						lookahead.Next();
 						}
+					else
+						{  throw new NotImplementedException();  }
+
+					lookahead.Next();
 					}
 				else if (mode == ParseMode.ParseClassPrototype)
 					{
