@@ -3085,12 +3085,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParsePrototype>
 		 *			- If isType is true, it will mark tokens with these types, including in nested templates:
-		 *				- <PrototypeParsingType.OpeningTypeSuffix>
-		 *				- <PrototypeParsingType.ClosingTypeSuffix>
+		 *				- <PrototypeParsingType.OpeningTypeModifier>
+		 *				- <PrototypeParsingType.ClosingTypeModifier>
 		 *				- <PrototypeParsingType.Type>
 		 *				- <PrototypeParsingType.TypeQualifier>
 		 *				- <PrototypeParsingType.TypeModifier>
-		 *			- If isType is false, it will mark everything with <PrototypeParsingType.NameSuffix_PartOfType>.
+		 *			- If isType is false, it will mark everything with these types:
+		 *				- <PrototypeParsingType.OpeningParamModifier>
+		 *				- <PrototypeParsingType.ClosingParamModifier>
+		 *				- <PrototypeParsingType.Name>
 		 *		- <ParseMode.ParseClassPrototype>
 		 *			- All tokens will be marked with <ClassPrototypeParsingType.TemplateSuffix>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
