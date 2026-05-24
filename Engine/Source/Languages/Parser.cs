@@ -1931,6 +1931,19 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		protected virtual bool TryToFindBasicPrototype (Topic topic, TokenIterator start, TokenIterator limit,
 																			out TokenIterator prototypeStart, out TokenIterator prototypeEnd)
 			{
+			return TryToFindBasicPrototype(topic, start, limit,
+														 treatAngleBracketsAsBlocks: false,
+														 out prototypeStart, out prototypeEnd);
+			}
+
+
+		/* Function: TryToFindBasicPrototype
+		 * A configurable version of the default implementation of TryToFindBasicPrototype.  This allows overridden versions to call this
+		 * with parameters instead of reimplementing it with slight alterations.
+		 */
+		protected bool TryToFindBasicPrototype (Topic topic, TokenIterator start, TokenIterator limit, bool treatAngleBracketsAsBlocks,
+																  out TokenIterator prototypeStart, out TokenIterator prototypeEnd)
+			{
 			PrototypeEnders prototypeEnders = language.GetPrototypeEndersFor(topic.CommentTypeID);
 
 			if (prototypeEnders == null)
@@ -2011,7 +2024,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				// We don't include < when skipping brackets because there might be an unbalanced pair as part of an operator overload.
 				else if (TryToSkipComment(ref iterator) ||
 						   TryToSkipString(ref iterator) ||
-						   TryToSkipBlock(ref iterator, false))
+						   TryToSkipBlock(ref iterator, treatAngleBracketsAsBlocks))
 					{
 					}
 
