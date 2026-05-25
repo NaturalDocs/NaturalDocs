@@ -407,6 +407,28 @@ Language: Tcl
    Variable Prototype Enders: ; \n
 
 
+Language: TypeScript
+
+   Extensions: ts cts mts
+
+   Alias: TS
+
+   Line Comment: //
+   Block Comment: /* */
+   Member Operator: .
+   Enum Values: Under Type
+   Case Sensitive: Yes
+   Block Comments Nest: No
+
+   Class Prototype Ender: {
+   Interface Prototype Ender: {
+   Function Prototype Ender: { ;
+   Property Prototype Ender: { ;
+   Variable Prototype Enders: ; = \n
+   Constant Prototype Enders: = \n
+   Type Prototype Enders: = \n
+
+
 Language: Visual Basic
 
    Extensions: vb vbs bas cls frm

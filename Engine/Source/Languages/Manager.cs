@@ -129,10 +129,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			Language tcl = new Language("Tcl");
 				tcl.Parser = new Parsers.Tcl(engineInstance, tcl);
 
+			Language typescript = new Language("TypeScript");
+				typescript.Parser = new Parsers.TypeScript(engineInstance, typescript);
+				typescript.ParameterStyle = Prototypes.ParameterStyle.Pascal;
+				typescript.ImpliedParameterTypes = false;
+
 			predefinedLanguages = new Language[] { textFile, shebangScript,
 																		 cSharp, systemVerilog,
 																		 go, java, javascript, kotlin, lua, perl, php, powerbuilder, powershell, python, ruby,
-																		 rust, sql, swift, tcl };
+																		 rust, sql, swift, tcl, typescript };
 			}
 
 
