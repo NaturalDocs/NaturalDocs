@@ -112,6 +112,19 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 							}
 						}
 
+					// No space after dashes in case they're part of allowed value lists in TypeScript like -1 | 0 | 1.  However, add them if
+					// the previous character is < so they don't apply to <- in Go.
+					else if (lastCharacter == '-')
+						{
+						TokenIterator lookbehind = lastTokenIterator;
+						lookbehind.Previous();
+
+						if (lookbehind.Character == '<')
+							{
+							addSpaceBeforeToken = true;
+							}
+						}
+
 					else if (lastCharacter != '.' &&  // no space after dot separators like Class.Member
 							   lastCharacter != '%' &&  // no space after keywords in Oracle's PL/SQL like MyVar%TYPE or MyTable%ROWTYPE
 							   lastCharacter != '"' &&  // no space after strings in Java annotations like @copyright("me")
@@ -145,6 +158,15 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 						   thisCharacter != ']' &&
 						   thisCharacter != '}' &&
 						   thisCharacter != '>')
+					{
+					addSpaceBeforeToken = true;
+					}
+
+				// Always add spaces around pipe characters, which are used in TypeScript's union types such as "string | number".
+				// TypeScript also has intersection types like "string & number" but ampersands are used in too many other places and
+				// they aren't that commonly used in TypeScript so we won't do the same for them.
+				else if (thisCharacter == '|' ||
+						   lastCharacter == '|')
 					{
 					addSpaceBeforeToken = true;
 					}
