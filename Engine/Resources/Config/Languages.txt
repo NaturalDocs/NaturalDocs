@@ -422,8 +422,8 @@ Language: TypeScript
 
    Class Prototype Ender: {
    Interface Prototype Ender: {
-   Function Prototype Ender: { ;
-   Property Prototype Ender: { ;
+   Function Prototype Enders: { ;
+   Property Prototype Enders: { ;
    Variable Prototype Enders: ; = \n
    Constant Prototype Enders: = \n
    Type Prototype Enders: = \n
