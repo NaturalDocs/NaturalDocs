@@ -1,0 +1,504 @@
+------------------------------
+Parameter Types:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function ParameterTypes(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a: string,
+    - Name: a
+    - Full Type: string
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value: (not detected)
+
+  - Parameter 2: b: Date,
+    - Name: b
+    - Full Type: Date
+    - Base Type: Date
+    - Link Candidates: Date
+    - Default Value: (not detected)
+
+  - Parameter 3: c: boolean = false
+    - Name: c
+    - Full Type: boolean
+    - Base Type: boolean
+    - Link Candidates: boolean
+    - Default Value: false
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function PartialParameterTypes(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a,
+    - Name: a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: b: string,
+    - Name: b
+    - Full Type: string
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value: (not detected)
+
+  - Parameter 3: c: any,
+    - Name: c
+    - Full Type: any
+    - Base Type: any
+    - Link Candidates: any
+    - Default Value: (not detected)
+
+  - Parameter 4: d: boolean = false,
+    - Name: d
+    - Full Type: boolean
+    - Base Type: boolean
+    - Link Candidates: boolean
+    - Default Value: false
+
+  - Parameter 5: e = 12
+    - Name: e
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 12
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function ArrayParameter (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a: number[]
+    - Name: a
+    - Full Type: number[]
+    - Base Type: number
+    - Link Candidates: number
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function UserDefinedTypeParameter (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a: UserDefinedType
+    - Name: a
+    - Full Type: UserDefinedType
+    - Base Type: UserDefinedType
+    - Link Candidates: UserDefinedType
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function ParameterizedTypeParameter (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a: ParameterizedType<string>,
+    - Name: a
+    - Full Type: ParameterizedType<string>
+    - Base Type: ParameterizedType
+    - Link Candidates: ParameterizedType, string
+    - Default Value: (not detected)
+
+  - Parameter 2: b: ParameterizedType<UserType, number>
+    - Name: b
+    - Full Type: ParameterizedType<UserType, number>
+    - Base Type: ParameterizedType
+    - Link Candidates: ParameterizedType, UserType, number
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function InlineObjectParameter(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a: { x: number; y: number }
+    - Name: a
+    - Full Type: { x: number; y: number }
+    - Base Type: (not detected)
+    - Link Candidates: number, number
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function TupleParameter (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a: [number, string]
+    - Name: a
+    - Full Type: [number, string]
+    - Base Type: (not detected)
+    - Link Candidates: number, string
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function OptionalParameters (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a: number,
+    - Name: a
+    - Full Type: number
+    - Base Type: number
+    - Link Candidates: number
+    - Default Value: (not detected)
+
+  - Parameter 2: b?: number
+    - Name: b
+    - Full Type: number
+    - Base Type: number
+    - Link Candidates: number
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function UnionParameters (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a: number | string,
+    - Name: a
+    - Full Type: number | string
+    - Base Type: number
+    - Link Candidates: number, string
+    - Default Value: (not detected)
+
+  - Parameter 2: b: string | string[] | undefined
+    - Name: b
+    - Full Type: string | string[] | undefined
+    - Base Type: string
+    - Link Candidates: string, string, undefined
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function AllowableValueParameters (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a: "x" | "y" | "z",
+    - Name: a
+    - Full Type: "x" | "y" | "z"
+    - Base Type: "x"
+    - Link Candidates: "x", "y", "z"
+    - Default Value: (not detected)
+
+  - Parameter 2: b: 1 | 0 | -1
+    - Name: b
+    - Full Type: 1 | 0 | -1
+    - Base Type: 1
+    - Link Candidates: 1, 0, -1
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function RestParameter (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a: number,
+    - Name: a
+    - Full Type: number
+    - Base Type: number
+    - Link Candidates: number
+    - Default Value: (not detected)
+
+  - Parameter 2: ...b: number[]
+    - Name: b
+    - Full Type: number[]
+    - Base Type: number
+    - Link Candidates: number
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function DecoratedParameter (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: @Decorator1 @Decorator2 a,
+    - Name: a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: @ParameterDecorator(value) b: number
+    - Name: b
+    - Full Type: @ParameterDecorator(value) number
+    - Base Type: number
+    - Link Candidates: number
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+Return Values:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function ReturnNumber(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: ): number
+    - Link Candidates: number
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function ReturnArray (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: ): string[]
+    - Link Candidates: string
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function ReturnVoid (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: ): void
+    - Link Candidates: void
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function ReturnPromise(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: ): Promise<number>
+    - Link Candidates: Promise, number
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function AllowableReturnValues(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: ): 1 | 0 | -1
+    - Link Candidates: 1, 0, -1
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function TypePredicateReturnValue (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a
+    - Name: a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: ): a is UserDefinedType
+    - Link Candidates: UserDefinedType
+
+------------------------------
+Generic Functions:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function SingleGenericType<T>(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a: Type[]
+    - Name: a
+    - Full Type: Type[]
+    - Base Type: Type
+    - Link Candidates: Type
+    - Default Value: (not detected)
+
+  - After Parameters: ): Type | undefined
+    - Link Candidates: Type, undefined
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function TwoGenericTypes<X,Y>(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a: X[]
+    - Name: a
+    - Full Type: X[]
+    - Base Type: X
+    - Link Candidates: X
+    - Default Value: (not detected)
+
+  - After Parameters: ): Y[]
+    - Link Candidates: Y
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function SimpleConstraint<T extends any[]>(
+    - Access Level: Unknown
+    - Link Candidates: any
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function ObjectConstraint<T extends { x: number }>(
+    - Access Level: Unknown
+    - Link Candidates: number
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function ConstraintWithDefault<T extends MyType[] = MyOtherType[]>(
+    - Access Level: Unknown
+    - Link Candidates: MyType, MyOtherType
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function ConstraintsWithVariance<in A, out B, in out C>(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function KeyOfTypeOperator<A, B extends keyof A>(
+    - Access Level: Unknown
+    - Link Candidates: A
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+Modifiers:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: public function PublicFunction (
+    - Access Level: Public
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: protected function ProtectedFunction(
+    - Access Level: Protected
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: static function StaticFunction(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: abstract function AbstractFunction(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: @ParameterlessDecorator
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: @ParameterDecorator(value)
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: function DecoratedFunction(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)

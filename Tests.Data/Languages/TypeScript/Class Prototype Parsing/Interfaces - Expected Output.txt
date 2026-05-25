@@ -1,0 +1,64 @@
+interface SimpleInterface
+
+  - Name: SimpleInterface
+  - Keyword: interface
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+interface InheritedInterface extends BaseInterface
+
+  - Name: InheritedInterface
+  - Keyword: interface
+  - Access Level: Unknown
+
+  - Parent 1: BaseInterface
+    - Name: BaseInterface
+
+-----
+
+interface MultipleInheritedInterfaces extends BaseInterfaceA, BaseInterfaceB
+
+  - Name: MultipleInheritedInterfaces
+  - Keyword: interface
+  - Access Level: Unknown
+
+  - Parent 1: BaseInterfaceA
+    - Name: BaseInterfaceA
+
+  - Parent 2: BaseInterfaceB
+    - Name: BaseInterfaceB
+
+-----
+
+interface GenericInterface<X, Y>
+
+  - Name: GenericInterface
+  - Template Suffix: <X, Y>
+  - Keyword: interface
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+interface GenericInterfaceWithInheritance<T> extends BaseInterface<T>
+
+  - Name: GenericInterfaceWithInheritance
+  - Template Suffix: <T>
+  - Keyword: interface
+  - Access Level: Unknown
+
+  - Parent 1: BaseInterface<T>
+    - Name: BaseInterface
+    - Template Suffix: <T>
+
+-----
+
+interface VarianceAnnotations<in X, out Y, in out Z>
+
+  - Name: VarianceAnnotations
+  - Template Suffix: <in X, out Y, in out Z>
+  - Keyword: interface
+  - Access Level: Unknown
+  - No parents

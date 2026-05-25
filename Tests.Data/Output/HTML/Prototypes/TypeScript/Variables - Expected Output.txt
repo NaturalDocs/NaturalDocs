@@ -1,0 +1,73 @@
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection">Typeless</div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">var</span> TypelessVar</div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">var</span> TypelessVarWithValue</div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">let</span> TypelessLet</div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">let</span> TypelessLetWithValue</div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection">Typed: <span class="SHKeyword">number</span></div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">var</span> TypedVar: <span class="SHKeyword">string</span></div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">var</span> TypedVarWithValue: <span class="SHKeyword">boolean</span></div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">let</span> TypedLet: <span class="SHKeyword">string</span></div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">let</span> TypedLetWithValue: <span class="SHKeyword">number</span></div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">var</span> ArrayType: <span class="SHKeyword">number</span>[]</div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">let</span> UserDefinedType: MyClass</div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection">TemplatedType: MyTemplate&lt;<span class="SHKeyword">number</span>, <span class="SHKeyword">string</span>&gt;</div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection">OptionalVariable?: <span class="SHKeyword">number</span></div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">var</span> AllowableValues: <span class="SHString">&quot;x&quot;</span> | <span class="SHString">&quot;y&quot;</span> | <span class="SHString">&quot;</span><span class="SHString">z</span><span class="SHString">&quot;</span></div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">readonly</span> ReadOnlyTyped: <span class="SHKeyword">number</span></div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">readonly</span> ReadOnlyUntyped</div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHMetadata">@ParameterlessDecorator</span></div>
+   <div class="PSection PPlainSection"><span class="SHMetadata">@ParameterDecorator(value)</span></div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">var</span> DecoratedVariable</div>
+</div>

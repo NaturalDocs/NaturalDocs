@@ -1,0 +1,123 @@
+------------------------------
+Typeless Variables:
+------------------------------
+
+- Plain Section: Typeless
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: var TypelessVar
+  - Access Level: Unknown
+  - Link Candidates: var
+
+------------------------------
+
+- Plain Section: var TypelessVarWithValue
+  - Access Level: Unknown
+  - Link Candidates: var
+
+------------------------------
+
+- Plain Section: let TypelessLet
+  - Access Level: Unknown
+  - Link Candidates: let
+
+------------------------------
+
+- Plain Section: let TypelessLetWithValue
+  - Access Level: Unknown
+  - Link Candidates: let
+
+------------------------------
+Typed Variables:
+------------------------------
+
+- Plain Section: Typed: number
+  - Access Level: Unknown
+  - Link Candidates: number
+
+------------------------------
+
+- Plain Section: var TypedVar: string
+  - Access Level: Unknown
+  - Link Candidates: string
+
+------------------------------
+
+- Plain Section: var TypedVarWithValue: boolean
+  - Access Level: Unknown
+  - Link Candidates: boolean
+
+------------------------------
+
+- Plain Section: let TypedLet: string
+  - Access Level: Unknown
+  - Link Candidates: string
+
+------------------------------
+
+- Plain Section: let TypedLetWithValue: number
+  - Access Level: Unknown
+  - Link Candidates: number
+
+------------------------------
+Special Types:
+------------------------------
+
+- Plain Section: var ArrayType: number[]
+  - Access Level: Unknown
+  - Link Candidates: number
+
+------------------------------
+
+- Plain Section: let UserDefinedType: MyClass
+  - Access Level: Unknown
+  - Link Candidates: MyClass
+
+------------------------------
+
+- Plain Section: TemplatedType: MyTemplate<number, string>
+  - Access Level: Unknown
+  - Link Candidates: MyTemplate, number, string
+
+------------------------------
+
+- Plain Section: OptionalVariable?: number
+  - Access Level: Unknown
+  - Link Candidates: number
+
+------------------------------
+
+- Plain Section: var AllowableValues: "x" | "y" | "z"
+  - Access Level: Unknown
+  - Link Candidates: z
+
+------------------------------
+Modifiers:
+------------------------------
+
+- Plain Section: readonly ReadOnlyTyped: number
+  - Access Level: Unknown
+  - Link Candidates: number
+
+------------------------------
+
+- Plain Section: readonly ReadOnlyUntyped
+  - Access Level: Unknown
+  - Link Candidates: readonly
+
+------------------------------
+
+- Plain Section: @ParameterlessDecorator
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: @ParameterDecorator(value)
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: var DecoratedVariable
+  - Access Level: Unknown
+  - Link Candidates: var

@@ -1,0 +1,95 @@
+class SimpleClass
+
+  - Name: SimpleClass
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+class InheritedClass extends BaseClass
+
+  - Name: InheritedClass
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: BaseClass
+    - Name: BaseClass
+
+-----
+
+class InheritedInterface implements BaseInterface
+
+  - Name: InheritedInterface
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: BaseInterface
+    - Name: BaseInterface
+
+-----
+
+class MultipleInheritedClass extends BaseClassA, BaseClassB
+
+  - Name: MultipleInheritedClass
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: BaseClassA
+    - Name: BaseClassA
+
+  - Parent 2: BaseClassB
+    - Name: BaseClassB
+
+-----
+
+class GenericClass<X, Y>
+
+  - Name: GenericClass
+  - Template Suffix: <X, Y>
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+class GenericClassWithInheritance<T> extends BaseClass<T>
+
+  - Name: GenericClassWithInheritance
+  - Template Suffix: <T>
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: BaseClass<T>
+    - Name: BaseClass
+    - Template Suffix: <T>
+
+-----
+
+class VarianceAnnotations<in X, out Y, in out Z>
+
+  - Name: VarianceAnnotations
+  - Template Suffix: <in X, out Y, in out Z>
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+abstract class AbstractClass
+
+  - Name: AbstractClass
+  - Keyword: class
+  - Modifiers: abstract
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+@ParameterlessDecorator @ParameterDecorator(value) class DecoratedClass
+
+  - Name: DecoratedClass
+  - Keyword: class
+  - Modifiers: @ParameterlessDecorator @ParameterDecorator(value)
+  - Access Level: Unknown
+  - No parents
