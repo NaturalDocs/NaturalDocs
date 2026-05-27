@@ -608,6 +608,51 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
+		/* Function: TryToSkipNumber
+		 *
+		 * If the iterator is on a numeric literal, moves the iterator past it and returns true.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		override protected bool TryToSkipNumber (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			if (TryToSkipNumber(ref iterator,
+										  ParseNumberFlags.AllowUnderscoreSeparators,
+										  mode))
+				{
+				// Still need to catch the case of "123.j".  All other cases are handled by the above function.
+				if (iterator.Character == 'j' && iterator.TokenLength == 1)
+					{
+					// We know the character before exists because we just skipped a value, so do this to avoid creating a lookbehind
+					// iterator.
+					if (iterator.Tokenizer.RawText[ iterator.RawTextIndex - 1 ] == '.')
+						{
+						TokenIterator lookahead = iterator;
+						lookahead.Next();
+
+						if (lookahead.FundamentalType != FundamentalType.Text &&
+							lookahead.Character != '_')
+							{
+							// Now we can add the j to the number
+							if (mode == ParseMode.SyntaxHighlight)
+								{  iterator.SyntaxHighlightingType = SyntaxHighlightingType.Number;  }
+
+							iterator.Next();
+							}
+						}
+					}
+
+				return true;
+				}
+			else
+				{  return false;  }
+			}
+
+
 
 		// Group: Static Variables
 		// __________________________________________________________________________
