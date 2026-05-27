@@ -4,6 +4,16 @@
  *
  * Additional language support for Python.
  *
+ * Language Version:
+ *
+ *		The parser is based on Python 3.14.5, the latest release as of May 2026.
+ *
+ * Resources:
+ *		- <Docs Home: https://www.python.org/doc/>
+ *		- <Language Reference: https://docs.python.org/3/reference/>
+ *			- Built-in types like "int" are documented in the <Standard Library: https://docs.python.org/3/library/stdtypes.html>.
+ *			- Built-in constants like "None" are documented in the <Standard Library: https://docs.python.org/3/library/constants.html>.
+ *
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2026 Code Clear LLC.
