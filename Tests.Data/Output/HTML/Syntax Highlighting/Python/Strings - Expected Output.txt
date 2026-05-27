@@ -1,0 +1,17 @@
+<pre class="CCode">a <span class="SHString">'x'</span> a<br />b <span class="SHString">'\''</span> b<br />c <span class="SHString">'\&quot;'</span> c<br />d <span class="SHString">'\\'</span> d</pre>
+-----
+<pre class="CCode">a <span class="SHString">&quot;x&quot;</span> a<br />b <span class="SHString">&quot;\'&quot;</span> b<br />c <span class="SHString">&quot;\&quot;&quot;</span> c<br />d <span class="SHString">&quot;\\&quot;</span> d</pre>
+-----
+<pre class="CCode">a <span class="SHString">'''x 'x' x \'''x''\' x &quot;x&quot; x &quot;&quot;&quot;x&quot;&quot;&quot; x'''</span> a<br />b <span class="SHString">&quot;&quot;&quot;x &quot;x&quot; x \&quot;&quot;&quot;x&quot;&quot;\&quot; x 'x' x '''x''' x&quot;&quot;&quot;</span> b</pre>
+-----
+<pre class="CCode">a <span class="SHString">&quot;x \</span><br /><span class="SHString">x&quot;</span> b<br /><br />c <span class="SHString">'''x</span><br /><span class="SHString">x'''</span> d</pre>
+-----
+<pre class="CCode">a <span class="SHString">r&quot;x \&quot; x&quot;</span> b <span class="SHString">R'x \' x'</span> c <span class="SHString">R'''x'''</span> d <span class="SHString">r&quot;&quot;&quot;x&quot;&quot;&quot;</span> e</pre>
+-----
+<pre class="CCode">a <span class="SHString">b'x'</span> b <span class="SHString">RB&quot;x&quot;</span> c <span class="SHString">br'''x'''</span> d <span class="SHString">B&quot;&quot;&quot;x&quot;&quot;&quot;</span> e<br />a <span class="SHString">f'x'</span> b <span class="SHString">RF&quot;x&quot;</span> c <span class="SHString">fr'''x'''</span> d <span class="SHString">F&quot;&quot;&quot;x&quot;&quot;&quot;</span> e<br />a <span class="SHString">t'x'</span> b <span class="SHString">RT&quot;x&quot;</span> c <span class="SHString">tr'''x'''</span> d <span class="SHString">T&quot;&quot;&quot;x&quot;&quot;&quot;</span> e</pre>
+-----
+<pre class="CCode">a <span class="SHString">u'x'</span> b <span class="SHString">U'x'</span> c</pre>
+-----
+<pre class="CCode">a <span class="SHString">f&quot;x </span>{x}<span class="SHString"> x&quot;</span> a<br />b <span class="SHString">t'x </span>{ <span class="SHString">'x'</span> }<span class="SHString"> x'</span> b<br />c <span class="SHString">F&quot;&quot;&quot;x </span>{ (x + <span class="SHNumber">5</span>) * len(<span class="SHString">T&quot;&quot;&quot;x&quot;&quot;&quot;</span>)}<span class="SHString"> x&quot;&quot;&quot;</span> c</pre>
+-----
+<pre class="CCode">a <span class="SHString">f&quot;x </span>{x}<span class="SHString"> x {{x}} x&quot;</span> a</pre>
