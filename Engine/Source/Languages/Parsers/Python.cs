@@ -661,6 +661,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		static protected StringSet pythonKeywords = new StringSet (KeySettings.Literal, new string[] {
 
+			// Keywords
 			"False", "await", "else", "import", "pass",
 			"None", "break", "except", "in", "raise",
 			"True", "class", "finally", "is", "return",
@@ -669,14 +670,19 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			"assert", "del", "global", "not" ,"with",
 			"async", "elif", "if", "or", "yield",
 
-			"metaclass",
+			// Soft Keywords
+			"match", "case", "type",
 
+			// Primitive Types
 			"int", "float", "complex",
+			"bool",
 			"list", "tuple", "range",
 			"str",
 			"bytes", "bytearray", "memoryview",
 			"set", "frozenset", "dict",
-			"bool"
+
+			// Misc
+			"metaclass", "NotImplemented"
 
 			});
 
