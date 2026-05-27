@@ -5555,8 +5555,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				return false;
 				}
 
-			// Advance past the opening symbol because it's possible for it to be the same as the closing one, such as with
-			// Python's ''' and """ strings.
+			// Advance past the opening symbol because it's possible for it to be the same as the closing one
 			firstToken.NextByCharacters(openingSymbol.Length);
 
 			if (openingMustBeAlone && firstToken.FundamentalType == FundamentalType.Symbol)
@@ -5658,8 +5657,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			TokenIterator openingSymbolIterator = iterator;
 			TokenIterator lookahead = iterator;
 
-			// Advance past the opening symbol because it's possible for it to be the same as the closing one, such as with
-			// Python's ''' and """ strings.
+			// Advance past the opening symbol because it's possible for it to be the same as the closing one
 			lookahead.NextByCharacters(openingSymbol.Length);
 
 			if (openingMustBeAlone && lookahead.FundamentalType == FundamentalType.Symbol)

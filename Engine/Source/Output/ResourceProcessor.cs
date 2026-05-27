@@ -113,8 +113,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 				return false;
 				}
 
-			// Advance past the opening symbol because it's possible for it to be the same as the closing one, such as with
-			// Python's ''' and """ strings.
+			// Advance past the opening symbol because it's possible for it to be the same as the closing one
 			firstToken.NextByCharacters(openingSymbol.Length);
 
 			comment = new DocumentationComment();
