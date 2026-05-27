@@ -480,6 +480,134 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
+		/* Function: TryToSkipString
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		override protected bool TryToSkipString (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			if (iterator.Character != '\'' && iterator.Character != '\"' &&
+				(iterator.FundamentalType == FundamentalType.Text && iterator.TokenLength <= 2) == false)
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+			TokenIterator startOfLastStringSegment = iterator;
+
+
+			// Text prefix
+
+			bool interpolated = false;
+
+			// We've already established that it's only one or two characters long
+			if (lookahead.FundamentalType == FundamentalType.Text)
+				{
+				char character = lookahead.Character;
+
+				if (character == 'f' || character == 'F' ||
+					character == 't' || character == 'T')
+					{  interpolated = true;  }
+				else if (character != 'r' && character != 'R' &&
+						   character != 'b' && character != 'B' &&
+						   character != 'u' && character != 'U')
+					{  return false;  }
+
+				if (lookahead.TokenLength == 2)
+					{
+					character = lookahead.Tokenizer.RawText[ lookahead.RawTextIndex + 1 ];
+
+					if (character == 'f' || character == 'F' ||
+						character == 't' || character == 'T')
+						{  interpolated = true;  }
+					else if (character != 'r' && character != 'R' &&
+							   character != 'b' && character != 'B')
+						{  return false;  }
+					}
+
+				lookahead.Next();
+				}
+
+
+			// Opening delimiter
+
+			char delimiter;
+			int delimiterCount;
+
+			if (lookahead.MatchesAcrossTokens("'''") ||
+				lookahead.MatchesAcrossTokens("\"\"\""))
+				{
+				delimiter = lookahead.Character;
+				delimiterCount = 3;
+				lookahead.Next(3);
+				}
+			else if (lookahead.Character == '\'' ||
+					   lookahead.Character == '"')
+				{
+				delimiter = lookahead.Character;
+				delimiterCount = 1;
+				lookahead.Next();
+				}
+			else
+				{  return false;  }
+
+
+			// Contents
+
+			while (lookahead.IsInBounds)
+				{
+				if (lookahead.Character == delimiter &&
+					ConsecutiveCharacterCount(lookahead) >= delimiterCount)
+					{
+					lookahead.Next(delimiterCount);
+					break;
+					}
+
+				else if (lookahead.Character == '\\')
+					{
+					lookahead.Next(2);
+					}
+
+				// Interpolated strings
+				else if (interpolated && lookahead.Character == '{')
+					{
+					TokenIterator startOfInterpolatedCode = lookahead;
+					lookahead.Next();
+
+					// Double braces are escaped, so ignore
+					if (lookahead.Character == '{')
+						{  lookahead.Next();  }
+					else
+						{
+						if (mode == ParseMode.SyntaxHighlight)
+							{  startOfLastStringSegment.SetSyntaxHighlightingTypeBetween(startOfInterpolatedCode, SyntaxHighlightingType.String);  }
+
+						GenericSkipUntilAfter(ref lookahead, '}', skipToEndIfNotFound: true);
+
+						if (mode == ParseMode.SyntaxHighlight)
+							{  SyntaxHighlight(startOfInterpolatedCode, lookahead);  }
+
+						startOfLastStringSegment = lookahead;
+						}
+					}
+
+				else
+					{  lookahead.Next();  }
+				}
+
+
+			// Done
+
+			if (mode == ParseMode.SyntaxHighlight)
+				{  startOfLastStringSegment.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.String);  }
+
+			iterator = lookahead;
+			return true;
+			}
+
+
 
 		// Group: Static Variables
 		// __________________________________________________________________________

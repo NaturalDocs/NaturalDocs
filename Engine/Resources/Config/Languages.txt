@@ -286,7 +286,6 @@ Language: Python
    Shebang String: python
 
    Line Comment: #
-   Block Comment: ''' ''' """ """
    Line Extender: \
    Case Sensitive: Yes
 
