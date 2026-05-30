@@ -101,7 +101,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 			// Since we're building a string we can't rely on Path to simplify out ./
 			if (subfolder != null && subfolder != ".")
 				{
-				result.Append(Utilities.Sanitize(subfolder.ToURL()));
+				// Use Path.ToString('/') instead of ToURL() so things like spaces don't get URL-encoded.  Sanitize() will handle
+				// any potentially problematic characters for us.
+				result.Append(Utilities.Sanitize(subfolder.ToString(separator: '/')));
 				result.Append('/');
 				}
 
