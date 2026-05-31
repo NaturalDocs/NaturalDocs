@@ -807,7 +807,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToSkipDecorators
 		 *
-		 * Tries to move the iterator past one or more decorators, like "@Preliminary" or "@Copynight("String")".
+		 * Tries to move the iterator past one or more decorators, like "@Preliminary" or "@Copyright("String")".
 		 *
 		 * Supported Modes:
 		 *
@@ -843,7 +843,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToSkipDecorator
 		 *
-		 * Tries to move the iterator past a single decorator, like "@Preliminary" or "@Copynight("String")".
+		 * Tries to move the iterator past a single decorator, like "@Preliminary" or "@Copyright("String")".
 		 *
 		 * Supported Modes:
 		 *

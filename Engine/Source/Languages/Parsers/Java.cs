@@ -51,7 +51,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToSkipAnnotations
 		 *
-		 * Tries to move the iterator past one or more annotations, like "@Preliminary" or "@Copynight("String")".
+		 * Tries to move the iterator past one or more annotations, like "@Preliminary" or "@Copyright("String")".
 		 *
 		 * Supported Modes:
 		 *
@@ -86,7 +86,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToSkipAnnotation
 		 *
-		 * Tries to move the iterator past a single annotation, like "@Preliminary" or "@Copynight("String")".
+		 * Tries to move the iterator past a single annotation, like "@Preliminary" or "@Copyright("String")".
 		 *
 		 * Supported Modes:
 		 *
@@ -135,7 +135,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToSkipAnnotationParameters
 		 *
-		 * Tries to move the iterator past an annotation parameter section, such as "("String")" in "@Copynight("String")".
+		 * Tries to move the iterator past an annotation parameter section, such as "("String")" in "@Copyright("String")".
 		 *
 		 * Supported Modes:
 		 *
@@ -202,7 +202,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: MarkAnnotationParameter
 		 *
-		 * Applies types to an annotation parameter, such as ""String"" in "@Copynight("String")" or "id = 12" in
+		 * Applies types to an annotation parameter, such as ""String"" in "@Copyright("String")" or "id = 12" in
 		 * "@RequestForEnhancement(id = 12, engineer = "String")".
 		 *
 		 * Supported Modes:

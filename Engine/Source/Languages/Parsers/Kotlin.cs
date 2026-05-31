@@ -103,7 +103,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToSkipAnnotations
 		 *
-		 * Tries to move the iterator past one or more annotations, like "@Preliminary" or "@Copynight("String")".
+		 * Tries to move the iterator past one or more annotations, like "@Preliminary" or "@Copyright("String")".
 		 *
 		 * Supported Modes:
 		 *
@@ -139,7 +139,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToSkipAnnotation
 		 *
-		 * Tries to move the iterator past a single annotation, like "@Preliminary" or "@Copynight("String")".
+		 * Tries to move the iterator past a single annotation, like "@Preliminary" or "@Copyright("String")".
 		 *
 		 * Supported Modes:
 		 *

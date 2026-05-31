@@ -270,7 +270,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToSkipDecoratorParameters
 		 *
-		 * Tries to move the iterator past a decorator parameter section, such as "("String")" in "@Copynight("String")".
+		 * Tries to move the iterator past a decorator parameter section, such as "("String")" in "@Copyright("String")".
 		 *
 		 * Supported Modes:
 		 *
@@ -338,7 +338,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: MarkDecoratorParameter
 		 *
-		 * Applies types to an decorator parameter, such as ""String"" in "@Copynight("String")" or "id = 12" in
+		 * Applies types to an decorator parameter, such as ""String"" in "@Copyright("String")" or "id = 12" in
 		 * "@RequestForEnhancement(id = 12, engineer = "String")".
 		 *
 		 * Supported Modes:
