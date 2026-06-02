@@ -1,35 +1,66 @@
 
-/* Highlight wide vs. narrow form on black theme */
+/* All highlighting appears on hover for light and dark themes, stays visible for black theme */
 
+
+/* Highlight wide vs. narrow form */
+
+.NDPrototype.WideForm:hover,
 .BlackTheme .NDPrototype.WideForm {
 	border: 1px solid green !important;
 	}
+.NDPrototype.NarrowForm:hover,
 .BlackTheme .NDPrototype.NarrowForm {
 	border: 1px solid red !important;
 	}
 
 
-/* Outline blocks on black theme */
+/* Outline prototype block structure */
 
-.BlackTheme .NDPrototype .PParameterCells > div {
-	border: 1px dotted #C0C000;
+.NDPrototype:hover .PPlainSection,
+.NDPrototype:hover .PParameterCells > div {
+	outline: 1px solid rgb(0 0 0 / 25%);
+	}
+	.DarkTheme .NDPrototype:hover .PPlainSection,
+	.DarkTheme .NDPrototype:hover .PParameterCells > div,
+	.BlackTheme .NDPrototype .PPlainSection,
+	.BlackTheme .NDPrototype .PParameterCells > div {
+		outline: 1px solid rgb(255 255 255 / 33%);
+		}
+
+
+/* Highlight nested parameter sections */
+
+.NDPrototype:hover .PParameterSection:has(.Nested),
+.BlackTheme .NDPrototype .PParameterCells:has(.Nested) {
+	border-color: green;
+	border-style: dashed;
+	border-width: 0 2px;
+
+	padding: 0 5px;
+	margin: 0 -7px;
 	}
 
-.BlackTheme .NDPrototype .PParameterCells.Nested {
-	padding: 4px;
-	}
-.BlackTheme .PParameterSection + .PParameterSection {
+
+/* Highlight sequential parameter sections */
+
+.NDPrototype:hover .PParameterSection + .PParameterSection,
+.BlackTheme .NDPrototype .PParameterSection + .PParameterSection {
 	margin-top: 5px;
-	border-top: 1px dashed #C0C000 !important;
+	border-top: 1px dashed rgb(0 0 0 / 25%);
 	padding-top: 5px;
 	}
+	.DarkTheme .NDPrototype:hover .PParameterSection + .PParameterSection,
+	.BlackTheme .NDPrototype .PParameterSection + .PParameterSection {
+		border-color: rgb(255 255 255 / 33%);
+		}
 
 
-/* Highlight blocks on hover for all themes */
+/* Highlight block contents on hover */
 
 .PPlainSection:hover,
 .PParameterCells > div:hover {
 	background-color: #FFFFD0;
+	opacity: 1;
 	}
 	.DarkTheme .PPlainSection:hover,
 	.BlackTheme .PPlainSection:hover,
@@ -37,9 +68,12 @@
 	.BlackTheme .PParameterCells > div:hover {
 		background-color: #606000;
 		}
+	.PParameterCells.Nested:hover {
+		background-color: rgb(128 128 128 / 25%) !important;
+		}
 
 
-/* Label blocks on hover for all themes */
+/* Label blocks on hover */
 
 .PBlockLabel {
 	display: none;
@@ -62,7 +96,9 @@
 		}
 
 .PPlainSection:hover .PBlockLabel,
-.PParameterCells > div:hover .PBlockLabel {
+.PParameterCells:not(:has(.Nested)) > div:hover .PBlockLabel,
+.PParameterCells:has(.Nested) > .PBeforeParameters:hover .PBlockLabel,
+.PParameterCells.Nested > div:hover .PBlockLabel {
 	display: block;
 	}
 
