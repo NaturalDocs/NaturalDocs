@@ -5,6 +5,6 @@ Test Type: HTML Prototypes
 Keep HTML: yes
 
 	Title: Tcl Prototype Tests
-	Style: Prominent Prototype Grid on Black
+	Style: Show Prototype Structure
 
 Engine Config: ..\..\..\..\- Shared Engine Configs\HTML Structure

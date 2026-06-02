@@ -6,6 +6,6 @@ Keep HTML: yes
 
 	Title: BLS Prototype Tests
 	Subtitle: Basic Language Support
-	Style: Prominent Prototype Grid on Black
+	Style: Show Prototype Structure
 
 Engine Config: ..\..\..\..\- Shared Engine Configs\Basic Language Support plus HTML Structure
