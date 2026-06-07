@@ -697,7 +697,7 @@ td {
 			}
 
 	.SeEntry {
-		padding: .05em .75rem .15em 1.65rem;
+		padding: .05em .75rem .15em 1.75rem;
 		color: #000000;
 		border-width: 1px 0;
 		border-style: solid;
@@ -768,7 +768,7 @@ td {
 		display: none;
 		}
 	.SeChildren .SeEntry {
-		padding-left: 2.85rem;
+		padding-left: 2.95rem;
 		}
 
 	.SeEntryIcon {
@@ -799,7 +799,7 @@ td {
 	.TInterface .SeEntryIcon,
 	.TStruct .SeEntryIcon {
 		width: 12px; height: 12px;
-		left: .5rem;
+		left: .575rem;
 		margin-top: .225rem;
 		background: url("images/search-class.svg") center center no-repeat;
 		}
@@ -817,7 +817,7 @@ td {
 		.SeChildren .TClass .SeEntryIcon,
 		.SeChildren .TInterface .SeEntryIcon,
 		.SeChildren .TStruct .SeEntryIcon {
-			left: 1.7rem;
+			left: 1.775rem;
 			}
 
 	@media (resolution: 120dpi) {  /* 125% scale */
