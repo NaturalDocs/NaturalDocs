@@ -97,10 +97,12 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	 *
 	 * Parameters:
 	 *
-	 *		StartOfParams - The start of a parameter list, such as an opening parenthesis.  It is possible for these to appear
-	 *								without a corresponding <EndOfParams>.
+	 *		StartOfParams - The start of a parameter list, such as an opening parenthesis.  If a language only uses whitespace to start
+	 *								a parameter section, such as Microsoft's T-SQL, you can apply this to the whitespace token.  It is possible
+	 *								for these to appear without a corresponding <EndOfParams>.
 	 *		EndOfParams - The end of a parameter list, such as a closing parenthesis.
-	 *		ParamSeparator - A separator between parameters, such as a comma.
+	 *		ParamSeparator - A separator between parameters, such as a comma.  If a language only uses whitespace to separate
+	 *								  parameters, such as Tcl, you can apply this to the whitespace token.
 	 *
 	 *		OpeningParamDecorator - A symbol at the beginning of a parameter, such as "{" in Tcl's "{a 12}".
 	 *		ClosingParamDecorator - A symbol at the end of a parameter, such as "}" in Tcl's "{a 12}".
@@ -110,7 +112,8 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	 *
 	 *		Type - The type excluding all modifiers and qualifiers, such as "int" in "unsigned int" or "Class" in "PkgA.PkgB.Class".
 	 *		TypeModifier - A separate word modifying a type, such as "const" in "const int".
-	 *		TypeQualifier - Everything prior to the ending word in a qualified type, such as "PkgA.PkgB." in "PkgA.PkgB.Class".
+	 *		TypeQualifier - Everything prior to the ending word in a qualified type, such as "PkgA.PkgB." in "PkgA.PkgB.Class".  Note
+	 *							  that it includes the trailing member operator.
 	 *		OpeningTypeModifier - An opening symbol modifying a type, such as "[" in "int[]" or "<" in "List<int>".  Can be followed
 	 *										 by <OpeningExtensionSymbols> for multi-token symbols.
 	 *		ClosingTypeModifier - A closing symbol modifying a type, such as "]" in "int[]" or ">" in "List<int>".  Can be followed by
@@ -141,11 +144,15 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	 *		TupleMemberSeparator - A separator between tuple members, such as a comma.
 	 *		TupleMemberName - The name of a tuple member.
 	 *
+	 *		Types appearing in tuples should be marked with <Type> and related tokens so that they can be treated as candidates for
+	 *		links in prototypes.  We use <TupleMemberName> instead of <Name> so they don't get mistaken for a parameter's name.
+	 *
 	 *
 	 *	Names:
 	 *
-	 *		NameTypeSeparator - In languages that use them, the symbol separating a variable name from its type, such as ":" in
-	 *										"x: int".  In languages that simply use a space this type won't appear.
+	 *		NameTypeSeparator - In languages with Pascal-style parameters, the symbol separating a variable name from its type, such
+	 *										as ":" in "x: int".  If a language only uses whitespace it can be applied to the whitespace token so that
+	 *										it is still detected as Pascal-style.  In languages with C-style parameters this type isn't used.
 	 *
 	 *		Name - The name of the parameter or the code element being defined by the prototype.
 	 *
@@ -162,13 +169,13 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	 *		int *x, y;
 	 *		---
 	 *
-	 *		Here * is a parameter modifier, as the type of x is int* but the type of y is just int.
+	 *		In C++ the asterisk is a parameter modifier, as the type of x is "int*" but the type of y is just "int".
 	 *
 	 *		--- C++
 	 *		int x[12], y;
 	 *		---
 	 *
-	 *		Here [12] is a parameter modifier, as the type of x is int[12] but the type of y is just int.
+	 *		Here "[12]" is a parameter modifier, as the type of x is "int[12]" but the type of y is just "int".
 	 *
 	 *		ParamModifier - Any parameter modifiers.  These usually appear with the name but are part of the type, and aren't
 	 *							    shared with other parameters inheriting the type, such as "*" in "int *x" in C++.
@@ -204,10 +211,20 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	 *		module ModuleWithAttributes ()
 	 *		---
 	 *
-	 *		Property names are marked with standard <Name> tags.
-	 *
 	 *		PropertyValueSeparator - The symbol separating a property name from its value, such as "=" or ":".
 	 *		PropertyValue - The value of a property, such as "12" in "@RequestForEnhancement(id = 12)" in Java annotations.
+	 *
+	 *		These values should only be used when properties are appearing in their own section with <StartOfPrototypeSection>.
+	 *		If they're appearing inline, such as for parameters, the entire thing should be marked with <TypeModifier> or a similar
+	 *		token instead.
+	 *
+	 *		Property names should be marked with <Name> since there's no risk of them being mistaken for parameter names
+	 *		if they're in their own section.  <PropertyValue> and <PropertyValueSeparator> are used instead of <DefaultValue>
+	 *		and <DefaultValueSeparator> because we don't want them faded out like default values are.
+	 *
+	 *		If the properties have their own section AND they contain both names and values, they can also use <StartOfParams>,
+	 *		<EndOfParams>, and <ParamSeparator> so that they're formatted as a parameter section.  These should be omitted if
+	 *		there are only values since it's better to format those as a single line.
 	 *
 	 *
 	 *	Extension Symbols:
@@ -218,9 +235,9 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	 *		was a nested modifier that wasn't closed.  If you use extension symbols it would be able to see that they are not two
 	 *		separate opening symbols.
 	 *
-	 *		OpeningExtensionSymbol - Symbols following an opening symbol which are considered part of it, such as the asterisk in (*.
+	 *		OpeningExtensionSymbol - Symbols following an opening symbol which are considered part of it, such as the asterisk in "(*".
 	 *		ClosingExtensionSymbol - Symbols following a closing symbol which are considered part of it, such as the closing parenthesis
-	 *											   in *).
+	 *											   in "*)".
 	 *
 	 */
 	public enum PrototypeParsingType :  byte
