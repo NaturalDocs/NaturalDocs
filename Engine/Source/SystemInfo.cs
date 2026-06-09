@@ -523,6 +523,8 @@ namespace CodeClear.NaturalDocs.Engine
 							{  result += " Sequoia";  }
 						else if (osVersion.StartsWith("26."))
 							{  result += " Tahoe";  }
+						else if (osVersion.StartsWith("27."))
+							{  result += " Golden Gate";  }
 						}
 					else // no osVersion
 						{
