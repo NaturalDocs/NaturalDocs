@@ -354,7 +354,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			TokenIterator iterator = source.FirstToken;
 
 
-			// Find the first valid substitution identifier or definition.  If there aren't any we don't want to \do unnecessary memory
+			// Find the first valid substitution identifier or definition.  If there aren't any we don't want to do unnecessary memory
 			// allocation and processing.
 
 			bool foundSubstitution = false;
