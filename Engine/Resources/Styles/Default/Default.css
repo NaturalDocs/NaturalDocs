@@ -2052,7 +2052,7 @@ td {
 	.PTypeBody,
 	.PDefaultValue,
 	.PDefaultValueSeparator {
-		opacity: 0.5;
+		opacity: 0.55;
 		}
 		.DarkTheme .PNameModifier,
 		.DarkTheme .PModifierQualifier,
@@ -2243,7 +2243,7 @@ td {
 	.CPEntry .CPModifiers,
 	.CPEntry .CPPostPrototypeLine {
 		font-size: 8pt;
-		opacity: .5;
+		opacity: .55;
 		}
 		.DarkTheme .CPEntry .CPPrePrototypeLine,
 		.DarkTheme .CPEntry .CPModifiers,
@@ -2290,35 +2290,54 @@ td {
 	___________________________________________________________________________
 */
 
+/* --- General --- */
+
+$PrototypeBorderDarkenAmount: .13;
+$PrototypeBorderSaturateAmount: .05;
+
+$PrototypeSummaryDarkenAmount: .0225;
+$PrototypeSummarySaturateAmount: .025;
+
+$PrototypeSearchDarkenAmount: .0125;
+$PrototypeSearchSaturateAmount: .0325;
+
+$ClassPrototypeBorderDarkenAmount: .375;
+
 
 /* --- Functions --- */
 
-$FunctionPrototypeBackground: #F4F4F4;
-$FunctionPrototypeBorder: #C9C9C9;
+$FunctionPrototypeBackgroundColor: #F4F4F4;
+$FunctionPrototypeBorderColor: oklch(from $FunctionPrototypeBackgroundColor calc(l - $PrototypeBorderDarkenAmount) c h);
+
+$FunctionPrototypeSummaryBackgroundColor: oklch(from $FunctionPrototypeBackgroundColor calc(l - $PrototypeSummaryDarkenAmount) c h);
+$FunctionPrototypeSummaryBorderColor: oklch(from $FunctionPrototypeSummaryBackgroundColor calc(l - $PrototypeBorderDarkenAmount) c h);
+
+$FunctionPrototypeSearchBackgroundColor: oklch(from $FunctionPrototypeBackgroundColor calc(l - $PrototypeSearchDarkenAmount) c h);
+$FunctionPrototypeSearchBorderColor: oklch(from $FunctionPrototypeSearchBackgroundColor calc(l - $PrototypeBorderDarkenAmount) c h);
 
 .TFunction .NDPrototype,
 .TOperator .NDPrototype {
-	background-color: $FunctionPrototypeBackground;
-	border-color: $FunctionPrototypeBorder;
-	scrollbar-color: $FunctionPrototypeBorder $FunctionPrototypeBackground;
+	background-color: $FunctionPrototypeBackgroundColor;
+	border-color: $FunctionPrototypeBorderColor;
+	scrollbar-color: $FunctionPrototypeBorderColor $FunctionPrototypeBackgroundColor;
 	}
 	.TFunction .NDPrototype::-webkit-scrollbar-thumb,
 	.TOperator .NDPrototype::-webkit-scrollbar-thumb {
-		background-color: $FunctionPrototypeBorder;
+		background-color: $FunctionPrototypeBorderColor;
 		}
 	.TFunction .NDPrototype::-webkit-scrollbar-track,
 	.TOperator .NDPrototype::-webkit-scrollbar-track {
-		background-color: $FunctionPrototypeBackground;
+		background-color: $FunctionPrototypeBackgroundColor;
 		}
 	.TFunction .SuEntryIcon,
 	.TOperator .SuEntryIcon {
-		background-color: #EDEDED;
-		border: 1px solid #C2C2C2;
+		background-color: $FunctionPrototypeSummaryBackgroundColor;
+		border: 1px solid $FunctionPrototypeSummaryBorderColor;
 		}
 	.TFunction .SeEntryIcon,
 	.TOperator .SeEntryIcon {
-		background-color: #EEEEEE;
-		border: 1px solid #BDBDBD;
+		background-color: $FunctionPrototypeSearchBackgroundColor;
+		border: 1px solid $FunctionPrototypeSearchBorderColor;
 		}
 
 $FunctionPrototypeBackground_Dark: #292929;
@@ -2371,27 +2390,34 @@ $FunctionPrototypeBorder_Black: $FunctionPrototypeBorder_Dark;
 
 /* --- Properties --- */
 
-$PropertyPrototypeBackground: #F1F1FF;
-$PropertyPrototypeBorder: #C4C4EC;
+$PropertyPrototypeBackgroundColor: #F1F1FF;
+$PropertyPrototypeBorderColor: oklch(from $PropertyPrototypeBackgroundColor calc(l - $PrototypeBorderDarkenAmount) calc(c + $PrototypeBorderSaturateAmount) h);
+
+/* Extra bit of saturation to distinguish it from functions better */
+$PropertyPrototypeSummaryBackgroundColor: oklch(from $PropertyPrototypeBackgroundColor calc(l - $PrototypeSummaryDarkenAmount) calc(c + $PrototypeSummarySaturateAmount + .05) h);
+$PropertyPrototypeSummaryBorderColor: oklch(from $PropertyPrototypeSummaryBackgroundColor calc(l - $PrototypeBorderDarkenAmount) c h);
+
+$PropertyPrototypeSearchBackgroundColor: oklch(from $PropertyPrototypeBackgroundColor calc(l - $PrototypeSearchDarkenAmount) calc(c + $PrototypeSearchSaturateAmount + .03) h);
+$PropertyPrototypeSearchBorderColor: oklch(from $PropertyPrototypeSearchBackgroundColor calc(l - $PrototypeBorderDarkenAmount) c h);
 
 .TProperty .NDPrototype {
-	background-color: $PropertyPrototypeBackground;
-	border-color: $PropertyPrototypeBorder;
-	scrollbar-color: $PropertyPrototypeBorder $PropertyPrototypeBackground;
+	background-color: $PropertyPrototypeBackgroundColor;
+	border-color: $PropertyPrototypeBorderColor;
+	scrollbar-color: $PropertyPrototypeBorderColor $PropertyPrototypeBackgroundColor;
 	}
 	.TProperty .NDPrototype::-webkit-scrollbar-thumb {
-		background-color: $PropertyPrototypeBorder;
+		background-color: $PropertyPrototypeBorderColor;
 		}
 	.TProperty .NDPrototype::-webkit-scrollbar-track {
-		background-color: $PropertyPrototypeBackground;
+		background-color: $PropertyPrototypeBackgroundColor;
 		}
 	.TProperty .SuEntryIcon {
-		background-color: #E2E2FF;
-		border: 1px solid #B9B9EA;
+		background-color: $PropertyPrototypeSummaryBackgroundColor;
+		border: 1px solid $PropertyPrototypeSummaryBorderColor;
 		}
 	.TProperty .SeEntryIcon {
-		background-color: #DDDDFF;
-		border: 1px solid #AAAAE8;
+		background-color: $PropertyPrototypeSearchBackgroundColor;
+		border: 1px solid $PropertyPrototypeSearchBorderColor;
 		}
 
 $PropertyPrototypeBackground_Dark: #282840;
@@ -2434,32 +2460,39 @@ $PropertyPrototypeBorder_Black: $PropertyPrototypeBorder_Dark;
 
 /* --- Variables --- */
 
-$VariablePrototypeBackground: #FCFCE8;
-$VariablePrototypeBorder: #D5D590;
+$VariablePrototypeBackgroundColor: #FCFCE8;
+$VariablePrototypeBorderColor: oklch(from $VariablePrototypeBackgroundColor calc(l - $PrototypeBorderDarkenAmount) calc(c + $PrototypeBorderSaturateAmount) h);
+
+/* Reduce the color adjustments since they get a bit intense on yellow */
+$VariablePrototypeSummaryBackgroundColor: oklch(from $VariablePrototypeBackgroundColor calc(l - ($PrototypeSummaryDarkenAmount * .3)) calc(c + ($PrototypeSummarySaturateAmount * .7)) h);
+$VariablePrototypeSummaryBorderColor: oklch(from $VariablePrototypeSummaryBackgroundColor calc(l - $PrototypeBorderDarkenAmount) c h);
+
+$VariablePrototypeSearchBackgroundColor: oklch(from $VariablePrototypeBackgroundColor calc(l - ($PrototypeSearchDarkenAmount * .1)) calc(c + ($PrototypeSearchSaturateAmount * .6)) h);
+$VariablePrototypeSearchBorderColor: oklch(from $VariablePrototypeSearchBackgroundColor calc(l - $PrototypeBorderDarkenAmount) c h);
 
 .TVariable .NDPrototype,
 .TDatabaseField .NDPrototype {
-	background-color: $VariablePrototypeBackground;
-	border-color: $VariablePrototypeBorder;
-	scrollbar-color: $VariablePrototypeBorder $VariablePrototypeBackground;
+	background-color: $VariablePrototypeBackgroundColor;
+	border-color: $VariablePrototypeBorderColor;
+	scrollbar-color: $VariablePrototypeBorderColor $VariablePrototypeBackgroundColor;
 	}
 	.TVariable .NDPrototype::-webkit-scrollbar-thumb,
 	.TDatabaseField .NDPrototype::-webkit-scrollbar-thumb {
-		background-color: $VariablePrototypeBorder;
+		background-color: $VariablePrototypeBorderColor;
 		}
 	.TVariable .NDPrototype::-webkit-scrollbar-track,
 	.TDatabaseField .NDPrototype::-webkit-scrollbar-track {
-		background-color: $VariablePrototypeBackground;
+		background-color: $VariablePrototypeBackgroundColor;
 		}
 	.TVariable .SuEntryIcon,
 	.TDatabaseField .SuEntryIcon {
-		background-color: #FBFBE2;
-		border: 1px solid #CECE8B;
+		background-color: $VariablePrototypeSummaryBackgroundColor;
+		border: 1px solid $VariablePrototypeSummaryBorderColor;
 		}
 	.TVariable .SeEntryIcon,
 	.TDatabaseField .SeEntryIcon {
-		background-color: #FCFCDA;
-		border: 1px solid #CFCF80;
+		background-color: $VariablePrototypeSearchBackgroundColor;
+		border: 1px solid $VariablePrototypeSearchBorderColor;
 		}
 
 $VariablePrototypeBackground_Dark: #2C2C20;
@@ -2512,27 +2545,33 @@ $VariablePrototypeBorder_Black: $VariablePrototypeBorder_Dark;
 
 /* --- Constants --- */
 
-$ConstantPrototypeBackground: #CACACA;
-$ConstantPrototypeBorder: #989898;
+$ConstantPrototypeBackgroundColor: #D0D0D0;
+$ConstantPrototypeBorderColor: oklch(from $ConstantPrototypeBackgroundColor calc(l - $PrototypeBorderDarkenAmount) c h);
+
+$ConstantPrototypeSummaryBackgroundColor: oklch(from $ConstantPrototypeBackgroundColor calc(l - $PrototypeSummaryDarkenAmount) c h);
+$ConstantPrototypeSummaryBorderColor: oklch(from $ConstantPrototypeSummaryBackgroundColor calc(l - $PrototypeBorderDarkenAmount) c h);
+
+$ConstantPrototypeSearchBackgroundColor: oklch(from $ConstantPrototypeBackgroundColor calc(l - $PrototypeSearchDarkenAmount) c h);
+$ConstantPrototypeSearchBorderColor: oklch(from $ConstantPrototypeSearchBackgroundColor calc(l - $PrototypeBorderDarkenAmount) c h);
 
 .TConstant .NDPrototype {
-	background-color: $ConstantPrototypeBackground;
-	border-color: $ConstantPrototypeBorder;
-	scrollbar-color: $ConstantPrototypeBorder $ConstantPrototypeBackground;
+	background-color: $ConstantPrototypeBackgroundColor;
+	border-color: $ConstantPrototypeBorderColor;
+	scrollbar-color: $ConstantPrototypeBorderColor $ConstantPrototypeBackgroundColor;
 	}
 	.TConstant .NDPrototype::-webkit-scrollbar-thumb {
-		background-color: $ConstantPrototypeBorder;
+		background-color: $ConstantPrototypeBorderColor;
 		}
 	.TConstant .NDPrototype::-webkit-scrollbar-track {
-		background-color: $ConstantPrototypeBackground;
+		background-color: $ConstantPrototypeBackgroundColor;
 		}
 	.TConstant .SuEntryIcon {
-		background-color: #BBBBBB;
-		border: 1px solid #8C8C8C;
+		background-color: $ConstantPrototypeSummaryBackgroundColor;
+		border: 1px solid $ConstantPrototypeSummaryBorderColor;
 		}
 	.TConstant .SeEntryIcon {
-		background-color: #C0C0C0;
-		border: 1px solid #8A8A8A;
+		background-color: $ConstantPrototypeSearchBackgroundColor;
+		border: 1px solid $ConstantPrototypeSearchBorderColor;
 		}
 
 $ConstantPrototypeBackground_Dark: #131313;
@@ -2579,37 +2618,43 @@ $ConstantPrototypeBorder_Black: $ConstantPrototypeBorder_Dark;
 
 /* --- Types --- */
 
-$TypePrototypeBackground: #FCF3E6;
-$TypePrototypeBorder: #D9C0AD;
+$TypePrototypeBackgroundColor: #FCF3E6;
+$TypePrototypeBorderColor: oklch(from $TypePrototypeBackgroundColor calc(l - $PrototypeBorderDarkenAmount) calc(c + $PrototypeBorderSaturateAmount) h);
+
+$TypePrototypeSummaryBackgroundColor: oklch(from $TypePrototypeBackgroundColor calc(l - $PrototypeSummaryDarkenAmount) calc(c + $PrototypeSummarySaturateAmount) h);
+$TypePrototypeSummaryBorderColor: oklch(from $TypePrototypeSummaryBackgroundColor calc(l - $PrototypeBorderDarkenAmount) c h);
+
+$TypePrototypeSearchBackgroundColor: oklch(from $TypePrototypeBackgroundColor calc(l - $PrototypeSearchDarkenAmount) calc(c + $PrototypeSearchSaturateAmount) h);
+$TypePrototypeSearchBorderColor: oklch(from $TypePrototypeSearchBackgroundColor calc(l - $PrototypeBorderDarkenAmount) c h);
 
 .TType .NDPrototype,
 .TEnumeration .NDPrototype,
 .TDelegate .NDPrototype {
-	background-color: $TypePrototypeBackground;
-	border-color: $TypePrototypeBorder;
-	scrollbar-color: $TypePrototypeBorder $TypePrototypeBackground;
+	background-color: $TypePrototypeBackgroundColor;
+	border-color: $TypePrototypeBorderColor;
+	scrollbar-color: $TypePrototypeBorderColor $TypePrototypeBackgroundColor;
 	}
 	.TType .NDPrototype::-webkit-scrollbar-thumb,
 	.TEnumeration .NDPrototype::-webkit-scrollbar-thumb,
 	.TDelegate .NDPrototype::-webkit-scrollbar-thumb {
-		background-color: $TypePrototypeBorder;
+		background-color: $TypePrototypeBorderColor;
 		}
 	.TType .NDPrototype::-webkit-scrollbar-track,
 	.TEnumeration .NDPrototype::-webkit-scrollbar-track,
 	.TDelegate .NDPrototype::-webkit-scrollbar-track {
-		background-color: $TypePrototypeBackground;
+		background-color: $TypePrototypeBackgroundColor;
 		}
 	.TType .SuEntryIcon,
 	.TEnumeration .SuEntryIcon,
 	.TDelegate .SuEntryIcon {
-		background-color: #FEE7CD;
-		border: 1px solid #D6BCAA;
+		background-color: $TypePrototypeSummaryBackgroundColor;
+		border: 1px solid $TypePrototypeSummaryBorderColor;
 		}
 	.TType .SeEntryIcon,
 	.TEnumeration .SeEntryIcon,
 	.TDelegate .SeEntryIcon {
-		background-color: #FEECD4;
-		border: 1px solid #E2B29A;
+		background-color: $TypePrototypeSearchBackgroundColor;
+		border: 1px solid $TypePrototypeSearchBorderColor;
 		}
 
 $TypePrototypeBackground_Dark: #2F201E;
@@ -2672,27 +2717,33 @@ $TypePrototypeBorder_Black: $TypePrototypeBorder_Dark;
 
 /* --- Events --- */
 
-$EventPrototypeBackground: #E6FAE6;
-$EventPrototypeBorder: #B6D1B6;
+$EventPrototypeBackgroundColor: #E9FDE9;
+$EventPrototypeBorderColor: oklch(from $EventPrototypeBackgroundColor calc(l - $PrototypeBorderDarkenAmount) calc(c + $PrototypeBorderSaturateAmount) h);
+
+$EventPrototypeSummaryBackgroundColor: oklch(from $EventPrototypeBackgroundColor calc(l - $PrototypeSummaryDarkenAmount) calc(c + $PrototypeSummarySaturateAmount) h);
+$EventPrototypeSummaryBorderColor: oklch(from $EventPrototypeSummaryBackgroundColor calc(l - $PrototypeBorderDarkenAmount) c h);
+
+$EventPrototypeSearchBackgroundColor: oklch(from $EventPrototypeBackgroundColor calc(l - $PrototypeSearchDarkenAmount) calc(c + $PrototypeSearchSaturateAmount) h);
+$EventPrototypeSearchBorderColor: oklch(from $EventPrototypeSearchBackgroundColor calc(l - $PrototypeBorderDarkenAmount) c h);
 
 .TEvent .NDPrototype {
-	background-color: $EventPrototypeBackground;
-	border-color: $EventPrototypeBorder;
-	scrollbar-color: $EventPrototypeBorder $EventPrototypeBackground;
+	background-color: $EventPrototypeBackgroundColor;
+	border-color: $EventPrototypeBorderColor;
+	scrollbar-color: $EventPrototypeBorderColor $EventPrototypeBackgroundColor;
 	}
 	.TEvent .NDPrototype::-webkit-scrollbar-thumb {
-		background-color: $EventPrototypeBorder;
+		background-color: $EventPrototypeBorderColor;
 		}
 	.TEvent .NDPrototype::-webkit-scrollbar-track {
-		background-color: $EventPrototypeBackground;
+		background-color: $EventPrototypeBackgroundColor;
 		}
 	.TEvent .SuEntryIcon {
-		background-color: #DCF7DC;
-		border: 1px solid #B3CEB3;
+		background-color: $EventPrototypeSummaryBackgroundColor;
+		border: 1px solid $EventPrototypeSummaryBorderColor;
 		}
 	.TEvent .SeEntryIcon {
-		background-color: #D9F9D9;
-		border: 1px solid #A9C8A9;
+		background-color: $EventPrototypeSearchBackgroundColor;
+		border: 1px solid $EventPrototypeSearchBorderColor;
 		}
 
 $EventPrototypeBackground_Dark: #1C2C1C;
@@ -2735,202 +2786,102 @@ $EventPrototypeBorder_Black: $EventPrototypeBorder_Dark;
 
 /* --- Classes --- */
 
-$ClassPrototypeBackground: #EAEAEA;
-$ClassPrototypeBorder: #606060;
-
-/* 1/3 foreground, 2/3 background */
-$ClassPrototypeScrollbar: #BCBCBC;
-
-/* 1/2 foreground, 1/2 background, since it gets too light combined with the transparency */
-$ClassPrototypeSecondaryScrollbar: #A5A5A5;
+$ClassPrototypeBackgroundColor: #EAEAEA;
+$ClassPrototypeBorderColor: oklch(from $ClassPrototypeBackgroundColor calc(l - $ClassPrototypeBorderDarkenAmount) c h);
 
 .NDClassPrototype .CPEntry {
-	background-color: $ClassPrototypeBackground;
-	border-color: $ClassPrototypeBorder;
-	scrollbar-color: $ClassPrototypeScrollbar $ClassPrototypeBackground;
+	background-color: $ClassPrototypeBackgroundColor;
+	border-color: $ClassPrototypeBorderColor;
+	scrollbar-color: $ClassPrototypeBorderColor $ClassPrototypeBackgroundColor;
 	}
 	.NDClassPrototype .CPEntry::-webkit-scrollbar-thumb {
-		background-color: $ClassPrototypeScrollbar;
+		background-color: $ClassPrototypeBorderColor;
 		}
 	.NDClassPrototype .CPEntry::-webkit-scrollbar-track {
-		background-color: $ClassPrototypeBackground;
+		background-color: $ClassPrototypeBackgroundColor;
 		}
-	.NDClassPrototype .CPEntry.Parent,
-	.NDClassPrototype .CPEntry.Child {
-		scrollbar-color: $ClassPrototypeSecondaryScrollbar $ClassPrototypeBackground;
-		}
-		.NDClassPrototype .CPEntry.Parent::-webkit-scrollbar-thumb,
-		.NDClassPrototype .CPEntry.Child::-webkit-scrollbar-thumb {
-			background-color: $ClassPrototypeSecondaryScrollbar;
-			}
 
 $ClassPrototypeBackground_Dark: #363636;
-$ClassPrototypeBorderA_Dark: #888888;
-$ClassPrototypeBorderB_Dark: #606060;
-
-$FadedClassPrototypeBackground_Dark: #262626;
-$FadedClassPrototypeBorderA_Dark: #6E6E6E;
-$FadedClassPrototypeBorderB_Dark: #565656;
+$ClassPrototypeBorderColorTL_Dark: #888888;
+$ClassPrototypeBorderColorBR_Dark: #606060;
 
 .DarkTheme .NDClassPrototype .CPEntry {
-	border-color: $ClassPrototypeBorderA_Dark $ClassPrototypeBorderB_Dark $ClassPrototypeBorderB_Dark $ClassPrototypeBorderA_Dark;
+	border-color: $ClassPrototypeBorderColorTL_Dark $ClassPrototypeBorderColorBR_Dark $ClassPrototypeBorderColorBR_Dark $ClassPrototypeBorderColorTL_Dark;
 	background-color: $ClassPrototypeBackground_Dark;
-	scrollbar-color: $ClassPrototypeBorderB_Dark $ClassPrototypeBackground_Dark;
+	scrollbar-color: $ClassPrototypeBorderColorBR_Dark $ClassPrototypeBackground_Dark;
 	}
 	.DarkTheme .NDClassPrototype .CPEntry::-webkit-scrollbar-thumb {
-		background-color: $ClassPrototypeBorderB_Dark;
+		background-color: $ClassPrototypeBorderColorBR_Dark;
 		}
 	.DarkTheme .NDClassPrototype .CPEntry::-webkit-scrollbar-track {
 		background-color: $ClassPrototypeBackground_Dark;
 		}
-	.DarkTheme .NDClassPrototype .CPEntry.Parent,
-	.DarkTheme .NDClassPrototype .CPEntry.Child {
-		border-color: $FadedClassPrototypeBorderA_Dark $FadedClassPrototypeBorderB_Dark $FadedClassPrototypeBorderB_Dark $FadedClassPrototypeBorderA_Dark;
-		background-color: $FadedClassPrototypeBackground_Dark;
-		scrollbar-color: $FadedClassPrototypeBorderB_Dark $FadedClassPrototypeBackground_Dark;
-		}
-		.DarkTheme .NDClassPrototype .CPEntry.Parent::-webkit-scrollbar-thumb,
-		.DarkTheme .NDClassPrototype .CPEntry.Child::-webkit-scrollbar-thumb {
-			background-color: $FadedClassPrototypeBorderB_Dark;
-			}
-		.DarkTheme .NDClassPrototype .CPEntry.Parent::-webkit-scrollbar-track,
-		.DarkTheme .NDClassPrototype .CPEntry.Child::-webkit-scrollbar-track {
-			background-color: $FadedClassPrototypeBackground_Dark;
-			}
 
 $ClassPrototypeBackground_Black: #2E2E2E;
-$ClassPrototypeBorderA_Black: #888888;
-$ClassPrototypeBorderB_Black: #666666;
-
-$FadedClassPrototypeBackground_Black: #181818;
-$FadedClassPrototypeBorderA_Black: #646464;
-$FadedClassPrototypeBorderB_Black: #515151;
+$ClassPrototypeBorderTL_Black: #888888;
+$ClassPrototypeBorderBR_Black: #666666;
 
 .BlackTheme .NDClassPrototype .CPEntry {
-	border-color: $ClassPrototypeBorderA_Black $ClassPrototypeBorderB_Black $ClassPrototypeBorderB_Black $ClassPrototypeBorderA_Black;
+	border-color: $ClassPrototypeBorderTL_Black $ClassPrototypeBorderBR_Black $ClassPrototypeBorderBR_Black $ClassPrototypeBorderTL_Black;
 	background-color: $ClassPrototypeBackground_Black;
-	scrollbar-color: $ClassPrototypeBorderB_Black $ClassPrototypeBackground_Black;
+	scrollbar-color: $ClassPrototypeBorderBR_Black $ClassPrototypeBackground_Black;
 	}
 	.BlackTheme .NDClassPrototype .CPEntry::-webkit-scrollbar-thumb {
-		background-color: $ClassPrototypeBorderB_Black;
+		background-color: $ClassPrototypeBorderBR_Black;
 		}
 	.BlackTheme .NDClassPrototype .CPEntry::-webkit-scrollbar-track {
 		background-color: $ClassPrototypeBackground_Black;
 		}
-	.BlackTheme .NDClassPrototype .CPEntry.Parent,
-	.BlackTheme .NDClassPrototype .CPEntry.Child {
-		border-color: $FadedClassPrototypeBorderA_Black $FadedClassPrototypeBorderB_Black $FadedClassPrototypeBorderB_Black $FadedClassPrototypeBorderA_Black;
-		background-color: $FadedClassPrototypeBackground_Black;
-		scrollbar-color: $FadedClassPrototypeBorderB_Black $FadedClassPrototypeBackground_Black;
-		}
-		.BlackTheme .NDClassPrototype .CPEntry.Parent::-webkit-scrollbar-thumb,
-		.BlackTheme .NDClassPrototype .CPEntry.Child::-webkit-scrollbar-thumb {
-			background-color: $FadedClassPrototypeBorderB_Black;
-			}
-		.BlackTheme .NDClassPrototype .CPEntry.Parent::-webkit-scrollbar-track,
-		.BlackTheme .NDClassPrototype .CPEntry.Child::-webkit-scrollbar-track {
-			background-color: $FadedClassPrototypeBackground_Black;
-			}
 
 
 /* --- Interfaces --- */
 
-$InterfacePrototypeBackground: #EAEAFF;
-$InterfacePrototypeBorder: #747493;
-
-/* 1/3 foreground, 2/3 background */
-$InterfacePrototypeScrollbar: #C2C2DB;
-
-/* 1/2 foreground, 1/2 background, since it gets too light combined with the transparency */
-$InterfacePrototypeSecondaryScrollbar: #AFAFC9;
+$InterfacePrototypeBackgroundColor: #EAEAFF;
+$InterfacePrototypeBorderColor: oklch(from $InterfacePrototypeBackgroundColor calc(l - $ClassPrototypeBorderDarkenAmount) c h);
 
 .NDClassPrototype .CPEntry.TInterface {
-	background-color: $InterfacePrototypeBackground;
-	border-color: $InterfacePrototypeBorder;
-	scrollbar-color: $InterfacePrototypeScrollbar $InterfacePrototypeBackground;
+	background-color: $InterfacePrototypeBackgroundColor;
+	border-color: $InterfacePrototypeBorderColor;
+	scrollbar-color: $InterfacePrototypeBorderColor $InterfacePrototypeBackgroundColor;
 	}
 	.NDClassPrototype .CPEntry.TInterface::-webkit-scrollbar-thumb {
-		background-color: $InterfacePrototypeScrollbar;
+		background-color: $InterfacePrototypeBorderColor;
 		}
 	.NDClassPrototype .CPEntry.TInterface::-webkit-scrollbar-track {
-		background-color: $InterfacePrototypeBackground;
+		background-color: $InterfacePrototypeBackgroundColor;
 		}
-	.NDClassPrototype .CPEntry.TInterface.Parent,
-	.NDClassPrototype .CPEntry.TInterface.Child {
-		scrollbar-color: $InterfacePrototypeSecondaryScrollbar $InterfacePrototypeBackground;
-		}
-		.NDClassPrototype .CPEntry.TInterface.Parent::-webkit-scrollbar-thumb,
-		.NDClassPrototype .CPEntry.TInterface.Child::-webkit-scrollbar-thumb {
-			background-color: $InterfacePrototypeSecondaryScrollbar;
-			}
 
-$InterfacePrototypeBackground_Dark: #33334B;
-$InterfacePrototypeBorderA_Dark: #6D6D8F;
-$InterfacePrototypeBorderB_Dark: #515178;
-
-$FadedInterfacePrototypeBackground_Dark: #2B2B3E;
-$FadedInterfacePrototypeBorderA_Dark: #6C6C8C;
-$FadedInterfacePrototypeBorderB_Dark: #4B4B6B;
+$InterfacePrototypeBackgroundColor_Dark: #33334B;
+$InterfacePrototypeBorderColorTL_Dark: #6D6D8F;
+$InterfacePrototypeBorderColorBR_Dark: #515178;
 
 .DarkTheme .NDClassPrototype .CPEntry.TInterface {
-	border-color: $InterfacePrototypeBorderA_Dark $InterfacePrototypeBorderB_Dark $InterfacePrototypeBorderB_Dark $InterfacePrototypeBorderA_Dark;
-	background-color: $InterfacePrototypeBackground_Dark;
-	scrollbar-color: $InterfacePrototypeBorderB_Dark $InterfacePrototypeBackground_Dark;
+	border-color: $InterfacePrototypeBorderColorTL_Dark $InterfacePrototypeBorderColorBR_Dark $InterfacePrototypeBorderColorBR_Dark $InterfacePrototypeBorderColorTL_Dark;
+	background-color: $InterfacePrototypeBackgroundColor_Dark;
+	scrollbar-color: $InterfacePrototypeBorderColorBR_Dark $InterfacePrototypeBackgroundColor_Dark;
 	}
 	.DarkTheme .NDClassPrototype .CPEntry.TInterface::-webkit-scrollbar-thumb {
-		background-color: $InterfacePrototypeBorderB_Dark;
+		background-color: $InterfacePrototypeBorderColorBR_Dark;
 		}
 	.DarkTheme .NDClassPrototype .CPEntry.TInterface::-webkit-scrollbar-track {
-		background-color: $InterfacePrototypeBackground_Dark;
+		background-color: $InterfacePrototypeBackgroundColor_Dark;
 		}
-	.DarkTheme .NDClassPrototype .CPEntry.TInterface.Parent,
-	.DarkTheme .NDClassPrototype .CPEntry.TInterface.Child {
-		border-color: $FadedInterfacePrototypeBorderA_Dark $FadedInterfacePrototypeBorderB_Dark $FadedInterfacePrototypeBorderB_Dark $FadedInterfacePrototypeBorderA_Dark;
-		background-color: $FadedInterfacePrototypeBackground_Dark;
-		scrollbar-color: $FadedInterfacePrototypeBorderB_Dark $FadedInterfacePrototypeBackground_Dark;
-		}
-		.DarkTheme .NDClassPrototype .CPEntry.TInterface.Parent::-webkit-scrollbar-thumb,
-		.DarkTheme .NDClassPrototype .CPEntry.TInterface.Child::-webkit-scrollbar-thumb {
-			background-color: $FadedInterfacePrototypeBorderB_Dark;
-			}
-		.DarkTheme .NDClassPrototype .CPEntry.TInterface.Parent::-webkit-scrollbar-track,
-		.DarkTheme .NDClassPrototype .CPEntry.TInterface.Child::-webkit-scrollbar-track {
-			background-color: $FadedInterfacePrototypeBackground_Dark;
-			}
 
-$InterfacePrototypeBackground_Black: #29293F;
-$InterfacePrototypeBorderA_Black: #7D7D98;
-$InterfacePrototypeBorderB_Black: #646484;
-
-$FadedInterfacePrototypeBackground_Black: #222230;
-$FadedInterfacePrototypeBorderA_Black: #656583;
-$FadedInterfacePrototypeBorderB_Black: #4C4C65;
+$InterfacePrototypeBackgroundColor_Black: #29293F;
+$InterfacePrototypeBorderColorTL_Black: #7D7D98;
+$InterfacePrototypeBorderColorBR_Black: #646484;
 
 .BlackTheme .NDClassPrototype .CPEntry.TInterface {
-	border-color: $InterfacePrototypeBorderA_Black $InterfacePrototypeBorderB_Black $InterfacePrototypeBorderB_Black $InterfacePrototypeBorderA_Black;
-	background-color: $InterfacePrototypeBackground_Black;
-	scrollbar-color: $InterfacePrototypeBorderB_Black $InterfacePrototypeBackground_Black;
+	border-color: $InterfacePrototypeBorderColorTL_Black $InterfacePrototypeBorderColorBR_Black $InterfacePrototypeBorderColorBR_Black $InterfacePrototypeBorderColorTL_Black;
+	background-color: $InterfacePrototypeBackgroundColor_Black;
+	scrollbar-color: $InterfacePrototypeBorderColorBR_Black $InterfacePrototypeBackgroundColor_Black;
 	}
 	.BlackTheme .NDClassPrototype .CPEntry.TInterface::-webkit-scrollbar-thumb {
-		background-color: $InterfacePrototypeBorderB_Black;
+		background-color: $InterfacePrototypeBorderColorBR_Black;
 		}
 	.BlackTheme .NDClassPrototype .CPEntry.TInterface::-webkit-scrollbar-track {
-		background-color: $InterfacePrototypeBackground_Black;
+		background-color: $InterfacePrototypeBackgroundColor_Black;
 		}
-	.BlackTheme .NDClassPrototype .CPEntry.TInterface.Parent,
-	.BlackTheme .NDClassPrototype .CPEntry.TInterface.Child {
-		border-color: $FadedInterfacePrototypeBorderA_Black $FadedInterfacePrototypeBorderB_Black $FadedInterfacePrototypeBorderB_Black $FadedInterfacePrototypeBorderA_Black;
-		background-color: $FadedInterfacePrototypeBackground_Black;
-		scrollbar-color: $FadedInterfacePrototypeBorderB_Black $FadedInterfacePrototypeBackground_Black;
-		}
-		.BlackTheme .NDClassPrototype .CPEntry.TInterface.Parent::-webkit-scrollbar-thumb,
-		.BlackTheme .NDClassPrototype .CPEntry.TInterface.Child::-webkit-scrollbar-thumb {
-			background-color: $FadedInterfacePrototypeBorderB_Black;
-			}
-		.BlackTheme .NDClassPrototype .CPEntry.TInterface.Parent::-webkit-scrollbar-track,
-		.BlackTheme .NDClassPrototype .CPEntry.TInterface.Child::-webkit-scrollbar-track {
-			background-color: $FadedInterfacePrototypeBackground_Black;
-			}
 
 
 
@@ -2939,32 +2890,41 @@ $FadedInterfacePrototypeBorderB_Black: #4C4C65;
 	___________________________________________________________________________
 */
 
-.SHComment {
-	color: #808080;
-	}
-	.DarkTheme .SHComment { color: #989898; }
-	.BlackTheme .SHComment { color: #A0A0A0; }
+$SHCommentColor: #888888;
+$SHKeywordColor: #981010;
+$SHConstantColor: #3030B4;
+$SHMetadataColor: #989830;
 
-.SHKeyword {
-	color: #880000;
-	}
-	.DarkTheme .SHKeyword { color: #F0B0B0; }
-	.BlackTheme .SHKeyword { color: #FFB8B8; }
+$SHCommentColor_Dark: #989898;
+$SHKeywordColor_Dark: #F0B0B0;
+$SHConstantColor_Dark: #B0B0F0;
+$SHMetadataColor_Dark: #C0C080;
 
-	/* Soften the colors a bit when they're on a white background */
-	.LightTheme .CCode .SHKeyword { color: #983030; }
+$SHCommentColor_Black: #A0A0A0;
+$SHKeywordColor_Black: #FFB8B8;
+$SHConstantColor_Black: #B8B8FF;
+$SHMetadataColor_Black: #C8C888;
+
+
+.SHComment { color: $SHCommentColor; }
+	.DarkTheme .SHComment { color: $SHCommentColor_Dark; }
+	.BlackTheme .SHComment { color: $SHCommentColor_Black; }
+
+	/* Darken a bit to make it easier to read against a colored background */
+	.LightTheme .NDPrototype .SHComment {
+		color: oklch(from $SHCommentColor calc(l - .1) c h);
+		}
+
+.SHKeyword { color: $SHKeywordColor; }
+	.DarkTheme .SHKeyword { color: $SHKeywordColor_Dark; }
+	.BlackTheme .SHKeyword { color: $SHKeywordColor_Black; }
 
 .SHNumber,
-.SHString {
-	color: #000088;
-	}
+.SHString { color: $SHConstantColor; }
 	.DarkTheme .SHNumber,
-	.DarkTheme .SHString { color: #B0B0F0; }
+	.DarkTheme .SHString { color: $SHConstantColor_Dark; }
 	.BlackTheme .SHNumber,
-	.BlackTheme .SHString { color: #B8B8FF; }
-
-	.LightTheme .CCode .SHNumber,
-	.LightTheme .CCode .SHString { color: #3030B4; }
+	.BlackTheme .SHString { color: $SHConstantColor_Black; }
 
 .SHPreprocessingDirective {
 	color: $ContentTextColor;
@@ -2973,18 +2933,17 @@ $FadedInterfacePrototypeBorderB_Black: #4C4C65;
 	.DarkTheme .SHPreprocessingDirective { color: $ContentTextColor_Dark; }
 	.BlackTheme .SHPreprocessingDirective { color: $ContentTextColor_Black; }
 
-.SHMetadata {
-	color: #808000;
-	}
-	.DarkTheme .SHMetadata { color: #C0C080; }
-	.BlackTheme .SHMetadata { color: #C8C888; }
+.SHMetadata { color: $SHMetadataColor; }
+	.DarkTheme .SHMetadata { color: $SHMetadataColor_Dark; }
+	.BlackTheme .SHMetadata { color: $SHMetadataColor_Black; }
 
-	.LightTheme .CCode .SHMetadata { color: #989830; }
-
-	/* The normal color is too light to easily read at .5 opacity */
-	/* The dark and black theme colors are fine at .7 opacity, so only apply this to light */
-	.LightTheme .CPPrePrototypeLine .SHMetadata { color: #505000; }
-
+	/* Darken a bit to make it easier to read against a colored background */
+	.LightTheme .NDPrototype .SHMetadata {
+		color: oklch(from $SHMetadataColor calc(l - .075) calc(c + .075) h);
+		}
+	.LightTheme .NDClassPrototype .SHMetadata {
+		color: oklch(from $SHMetadataColor calc(l - .2) calc(c + .2) h);
+		}
 
 
 
