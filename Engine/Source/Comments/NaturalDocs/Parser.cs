@@ -2310,7 +2310,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 
 					// Prevent *=, __, ** from counting.
 					if ( (character == '*' && (next.Character == '=' || next.Character == '*' || prev.Character == '*')) ||
-						  character == '_' && (next.Character == '_' || prev.Character == '_') )
+						 (character == '_' && (next.Character == '_' || prev.Character == '_')) )
 						{  goto ClosingSymbols;  }
 
 					// The next token must also be non-whitespace.
@@ -2346,7 +2346,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 
 					// Prevent *=, **, __ from counting.
 					if ( (character == '*' && (next.Character == '=' || next.Character == '*' || prev.Character == '*')) ||
-						  character == '_' && (next.Character == '_' || prev.Character == '_') )
+						 (character == '_' && (next.Character == '_' || prev.Character == '_')) )
 						{  continue;  }
 
 					// The previous token must also be non-whitespace.
