@@ -3140,6 +3140,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 		[GeneratedRegex("""[\.\?\!][\*_]?[\)\"\u201d]?$""",
 								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
 		static private partial Regex LineEndProbablyEndsSentenceRegex();
+		// \u201d = Right double quotation mark (fancy quotes)
 
 
 		/* Regex: IsAcceptableBeforeOpeningTagRegex
@@ -3148,6 +3149,10 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 		[GeneratedRegex("""^[\p{Ps}\p{Pi}\"\'\/\-\u00bf\u00a1\*_]+$""",
 								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
 		static private partial Regex IsAcceptableBeforeOpeningTagRegex();
+		// \p{Ps} = Punctuation, open
+		// \p{Pi} = Punctuation, initial quote
+		// \u00bf = Upside down question mark
+		// \u00a1 = Upside down exclamation point
 
 
 		/* Regex: IsAcceptableAfterClosingTagRegex
@@ -3156,6 +3161,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.NaturalDocs
 		[GeneratedRegex("""^[\p{Pe}\p{Pf}\"\'\.\,\?\!\:\;\/\-\*_]+$""",
 								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
 		static private partial Regex IsAcceptableAfterClosingTagRegex();
+		// \p{Pe} = Punctuation, close
+		// \p{Pf} = Punctuation, final quote
 
 
 		/* Regex: IsAcceptableAfterInlineImageRegex
