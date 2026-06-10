@@ -30,15 +30,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		// __________________________________________________________________________
 
 
-		/* Enum: AttributeTarget
-		 * GlobalOnly - Only attributes for assemblies and modules.
-		 * LocalOnly - All attributes other than global.
-		 * Any - All attributes.
-		 */
-		public enum AttributeTarget : byte
-			{  GlobalOnly, LocalOnly, Any  }
-
-
 		/* Enum: StringType
 		 */
 		public enum StringType : byte
@@ -664,7 +655,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Attributes
 
-			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode))
+			if (TryToSkipAttributes(ref lookahead, mode, excludeGlobalAttributes: true))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
@@ -1058,7 +1049,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Attributes
 
-			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode, PrototypeParsingType.StartOfPrototypeSection))
+			if (TryToSkipAttributes(ref lookahead, mode, excludeGlobalAttributes: true, PrototypeParsingType.StartOfPrototypeSection))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
@@ -1277,7 +1268,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Attributes
 
-			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode, PrototypeParsingType.StartOfPrototypeSection))
+			if (TryToSkipAttributes(ref lookahead, mode, excludeGlobalAttributes: true, PrototypeParsingType.StartOfPrototypeSection))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
@@ -1457,7 +1448,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Attributes
 
-			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode, PrototypeParsingType.StartOfPrototypeSection))
+			if (TryToSkipAttributes(ref lookahead, mode, excludeGlobalAttributes: true, PrototypeParsingType.StartOfPrototypeSection))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
@@ -1610,7 +1601,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Attributes
 
-			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode, PrototypeParsingType.StartOfPrototypeSection))
+			if (TryToSkipAttributes(ref lookahead, mode, excludeGlobalAttributes: true, PrototypeParsingType.StartOfPrototypeSection))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
@@ -1880,7 +1871,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Attributes
 
-			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode, PrototypeParsingType.StartOfPrototypeSection))
+			if (TryToSkipAttributes(ref lookahead, mode, excludeGlobalAttributes: true, PrototypeParsingType.StartOfPrototypeSection))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
@@ -1991,7 +1982,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						{
 						TokenIterator startOfAccessor = lookahead;
 
-						if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly))
+						if (TryToSkipAttributes(ref lookahead, excludeGlobalAttributes: true))
 							{  TryToSkipWhitespace(ref lookahead);  }
 
 						// Accessors may have their own access levels in properties (but not in events) but for the documentation we're always
@@ -2190,7 +2181,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Attributes
 
-			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode, PrototypeParsingType.StartOfPrototypeSection))
+			if (TryToSkipAttributes(ref lookahead, mode, excludeGlobalAttributes: true, PrototypeParsingType.StartOfPrototypeSection))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
@@ -2547,7 +2538,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			{
 			TokenIterator lookahead = iterator;
 
-			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode, PrototypeParsingType.TypeModifier) == true)
+			if (TryToSkipAttributes(ref lookahead, mode, excludeGlobalAttributes: true, PrototypeParsingType.TypeModifier) == true)
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 			while (lookahead.MatchesToken("ref") ||
@@ -3320,31 +3311,35 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *
 		 * Tries to move the iterator past a group of attributes which may be separated by whitespace.
 		 *
+		 * Set excludeGlobalAttributes to true when parsing declarations of language constructs.  This prevents assembly and module-level attributes
+		 * from being included included in their prototypes.  Setting it to false is better for syntax highlighting and anywhere else you don't need to
+		 * make these distinctions.
+		 *
 		 * Supported Modes:
 		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- <ParseMode.ParsePrototype>
 		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.TypeModifier>,
-		 *			  <PrototypeParsingType.ParamModifier>, or <PrototypeParsingType.StartOfPrototypeSection>.  It will actually set the brackets
-		 *			  to the opening and closing types.
+		 *			  <PrototypeParsingType.ParamModifier>, or <PrototypeParsingType.StartOfPrototypeSection>.  It will set the brackets to the
+		 *			  opening and closing types automatically.
 		 *		- <ParseMode.ParseClassPrototype>
 		 *			- Will mark the first one with <ClassPrototypeParsingType.StartOfPrePrototypeLine> and the rest with <ClassPrototypeParsingType.PrePrototypeLine>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipAttributes (ref TokenIterator iterator, AttributeTarget type = AttributeTarget.Any,
-														   ParseMode mode = ParseMode.IterateOnly,
+		protected bool TryToSkipAttributes (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, bool excludeGlobalAttributes = false,
 														   PrototypeParsingType prototypeParsingType = PrototypeParsingType.TypeModifier)
 			{
-			if (TryToSkipAttribute(ref iterator, type, mode, prototypeParsingType) == false)
+			if (TryToSkipAttribute(ref iterator, mode, excludeGlobalAttributes, prototypeParsingType) == false)
 				{  return false;  }
+
+			TokenIterator lookahead = iterator;
 
 			for (;;)
 				{
-				TokenIterator lookahead = iterator;
 				TryToSkipWhitespace(ref lookahead, mode);
 
-				if (TryToSkipAttribute(ref lookahead, type, mode, prototypeParsingType) == true)
+				if (TryToSkipAttribute(ref lookahead, mode, excludeGlobalAttributes, prototypeParsingType) == true)
 					{  iterator = lookahead;  }
 				else
 					{  break;  }
@@ -3359,50 +3354,44 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 * Tries to move the iterator past a single attribute.  Note that there may be more than one attribute in a row, so use <TryToSkipAttributes()>
 		 * if you need to move past all of them.
 		 *
+		 * Set excludeGlobalAttributes to true when parsing declarations of language constructs.  This prevents assembly and module-level attributes
+		 * from being included included in their prototypes.  Setting it to false is better for syntax highlighting and anywhere else you don't need to
+		 * make these distinctions.
+		 *
 		 * Supported Modes:
 		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- <ParseMode.ParsePrototype>
 		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.TypeModifier>,
-		 *			  <PrototypeParsingType.ParamModifier>, or <PrototypeParsingType.StartOfPrototypeSection>.  It will actually set the brackets
-		 *			  to the opening and closing types.
+		 *			  <PrototypeParsingType.ParamModifier>, or <PrototypeParsingType.StartOfPrototypeSection>.  It will set the brackets to the
+		 *			  opening and closing types automatically.
 		 *		- <ParseMode.ParseClassPrototype>
 		 *			- Will mark the first one with <ClassPrototypeParsingType.StartOfPrePrototypeLine> and the rest with <ClassPrototypeParsingType.PrePrototypeLine>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipAttribute (ref TokenIterator iterator, AttributeTarget type = AttributeTarget.Any,
-														 ParseMode mode = ParseMode.IterateOnly,
+		protected bool TryToSkipAttribute (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, bool excludeGlobalAttributes = false,
 														 PrototypeParsingType prototypeParsingType = PrototypeParsingType.TypeModifier)
 			{
 			if (iterator.Character != '[')
 				{  return false;  }
 
-			if (type != AttributeTarget.Any)
-				{
-				TokenIterator lookahead = iterator;
-				lookahead.Next();
-				TryToSkipWhitespace(ref lookahead);
+			TokenIterator lookahead = iterator;
+			lookahead.Next();
+			TryToSkipWhitespace(ref lookahead);
 
-				if (lookahead.MatchesToken("assembly") || lookahead.MatchesToken("module"))
-					{
-					if (type == AttributeTarget.LocalOnly)
-						{  return false;  }
-					}
-				else
-					{
-					if (type == AttributeTarget.GlobalOnly)
-						{  return false;  }
-					}
-				}
+			if (excludeGlobalAttributes &&
+				(lookahead.MatchesAcrossTokens("assembly:") || lookahead.MatchesAcrossTokens("module:")) )
+				{  return false;  }
 
-			TokenIterator startOfAttribute = iterator;
-
-			iterator.Next();
-			GenericSkipUntilAfter(ref iterator, ']');
+			if (!GenericSkipUntilOn(ref lookahead, ']', skipToEndIfNotFound: false))
+				{  return false;  }
 
 			if (mode == ParseMode.SyntaxHighlight)
-				{  startOfAttribute.SetSyntaxHighlightingTypeBetween(iterator, SyntaxHighlightingType.Metadata);  }
+				{
+				lookahead.Next();
+				iterator.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.Metadata);
+				}
 			else if (mode == ParseMode.ParsePrototype)
 				{
 				if (prototypeParsingType == PrototypeParsingType.StartOfPrototypeSection ||
@@ -3430,23 +3419,29 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						closingType = PrototypeParsingType.ClosingParamModifier;
 						}
 
-					startOfAttribute.PrototypeParsingType = openingType;
-
-					TokenIterator lookbehind = iterator;
-					lookbehind.Previous();
-
-					if (lookbehind.Character == ']')
-						{  lookbehind.PrototypeParsingType = closingType;  }
+					iterator.PrototypeParsingType = openingType;
+					lookahead.PrototypeParsingType = closingType;
+					lookahead.Next();
 					}
 				else
-					{  startOfAttribute.SetPrototypeParsingTypeBetween(iterator, prototypeParsingType);  }
+					{
+					lookahead.Next();
+					iterator.SetPrototypeParsingTypeBetween(lookahead, prototypeParsingType);
+					}
 				}
 			else if (mode == ParseMode.ParseClassPrototype)
 				{
-				startOfAttribute.SetClassPrototypeParsingTypeBetween(iterator, ClassPrototypeParsingType.PrePrototypeLine);
-				startOfAttribute.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfPrePrototypeLine;
+				lookahead.Next();
+				iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfPrePrototypeLine;
+				iterator.Next();
+				iterator.SetClassPrototypeParsingTypeBetween(lookahead, ClassPrototypeParsingType.PrePrototypeLine);
+				}
+			else
+				{
+				lookahead.Next();
 				}
 
+			iterator = lookahead;
 			return true;
 			}
 
