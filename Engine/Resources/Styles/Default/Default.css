@@ -2941,6 +2941,9 @@ $SHMetadataColor_Black: #C8C888;
 	.LightTheme .NDPrototype .SHMetadata {
 		color: oklch(from $SHMetadataColor calc(l - .075) calc(c + .075) h);
 		}
+	.LightTheme .NDPrototype .PModifierQualifier .SHMetadata {
+		color: oklch(from $SHMetadataColor calc(l - .1) calc(c + .1) h);
+		}
 	.LightTheme .NDClassPrototype .SHMetadata {
 		color: oklch(from $SHMetadataColor calc(l - .2) calc(c + .2) h);
 		}
