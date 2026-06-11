@@ -1,0 +1,147 @@
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHMetadata">[AttributeA]</span></div>
+   <div class="PSection PPlainSection"><span class="SHMetadata">[AttributeB()]</span></div>
+   <div class="PSection PPlainSection"><span class="SHMetadata">[AttributeC ()]</span></div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> SimpleAttributes()</div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHMetadata">[AttributeA(12, &quot;string&quot;)]</span></div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> AttributeParametersA()</div>
+</div>
+-----
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2"><span class="SHMetadata">[AttributeA(</span></div>
+         <div class="PName InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHMetadata">x</span></div>
+         <div class="PPropertyValueSeparator" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">&nbsp<span class="SHMetadata">=</span>&nbsp;</div>
+         <div class="PPropertyValue InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5"><span class="SHMetadata">12,</span></div>
+         <div class="PName InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHMetadata">y</span></div>
+         <div class="PPropertyValueSeparator" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4">&nbsp<span class="SHMetadata">=</span>&nbsp;</div>
+         <div class="PPropertyValue InLastParameterColumn" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5"><span class="SHMetadata">&quot;string&quot;</span></div>
+         <div class="PAfterParameters" data-WideGridArea="2/5/3/6" data-NarrowGridArea="4/1/5/5" style="grid-area:2/5/3/6"><span class="SHMetadata">)]</span></div>
+      </div>
+   </div>
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2"><span class="SHMetadata">[AttributeB(</span></div>
+         <div class="PName InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHMetadata">x</span></div>
+         <div class="PPropertyValueSeparator" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4"><span class="SHMetadata">:</span>&nbsp;</div>
+         <div class="PPropertyValue InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5"><span class="SHMetadata">12,</span></div>
+         <div class="PName InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHMetadata">y</span></div>
+         <div class="PPropertyValueSeparator" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4"><span class="SHMetadata">:</span>&nbsp;</div>
+         <div class="PPropertyValue InLastParameterColumn" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5"><span class="SHMetadata">&quot;string&quot;</span></div>
+         <div class="PAfterParameters" data-WideGridArea="2/5/3/6" data-NarrowGridArea="4/1/5/5" style="grid-area:2/5/3/6"><span class="SHMetadata">)]</span></div>
+      </div>
+   </div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> AttributeParametersB()</div>
+</div>
+-----
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2"><span class="SHMetadata">[AttributeA(</span></div>
+         <div class="PName InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHMetadata">x</span></div>
+         <div class="PPropertyValueSeparator" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">&nbsp<span class="SHMetadata">=</span>&nbsp;</div>
+         <div class="PPropertyValue InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5"><span class="SHMetadata">12,</span></div>
+         <div class="PName InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHMetadata">y</span></div>
+         <div class="PPropertyValueSeparator" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4"><span class="SHMetadata">:</span>&nbsp;</div>
+         <div class="PPropertyValue InLastParameterColumn" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5"><span class="SHMetadata">&quot;string&quot;</span></div>
+         <div class="PAfterParameters" data-WideGridArea="2/5/3/6" data-NarrowGridArea="4/1/5/5" style="grid-area:2/5/3/6"><span class="SHMetadata">)]</span></div>
+      </div>
+   </div>
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2"><span class="SHMetadata">[AttributeB(</span></div>
+         <div class="PName InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHMetadata">x</span></div>
+         <div class="PPropertyValueSeparator" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4"><span class="SHMetadata">:</span>&nbsp;</div>
+         <div class="PPropertyValue InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5"><span class="SHMetadata">12,</span></div>
+         <div class="PName InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHMetadata">y</span></div>
+         <div class="PPropertyValueSeparator" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4">&nbsp<span class="SHMetadata">=</span>&nbsp;</div>
+         <div class="PPropertyValue InLastParameterColumn" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5"><span class="SHMetadata">&quot;string&quot;</span></div>
+         <div class="PAfterParameters" data-WideGridArea="2/5/3/6" data-NarrowGridArea="4/1/5/5" style="grid-area:2/5/3/6"><span class="SHMetadata">)]</span></div>
+      </div>
+   </div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> AttributeParametersC()</div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHMetadata">[AttributeA(12, &quot;string&quot;)]</span></div>
+   <div class="PSection PPlainSection"><span class="SHMetadata">[AttributeB(12, y = &quot;string&quot;)]</span></div>
+   <div class="PSection PPlainSection"><span class="SHMetadata">[AttributeC(12, y: &quot;string&quot;)]</span></div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> AttributeParametersD()</div>
+</div>
+-----
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PPlainSection"><span class="SHMetadata">[AttributeA(Enum.FlagA | Enum.FlagB)]</span></div>
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/2/2"><span class="SHMetadata">[AttributeB(</span></div>
+         <div class="PName InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHMetadata">Property</span></div>
+         <div class="PPropertyValueSeparator" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">&nbsp<span class="SHMetadata">=</span>&nbsp;</div>
+         <div class="PPropertyValue InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5"><span class="SHMetadata">Enum.FlagA | Enum.FlagB</span></div>
+         <div class="PAfterParameters" data-WideGridArea="1/5/2/6" data-NarrowGridArea="3/1/4/5" style="grid-area:1/5/2/6"><span class="SHMetadata">)]</span></div>
+      </div>
+   </div>
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/2/2"><span class="SHMetadata">[AttributeC(</span></div>
+         <div class="PName InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHMetadata">Property</span></div>
+         <div class="PPropertyValueSeparator" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4"><span class="SHMetadata">:</span>&nbsp;</div>
+         <div class="PPropertyValue InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5"><span class="SHMetadata">Enum.FlagA | Enum.FlagB</span></div>
+         <div class="PAfterParameters" data-WideGridArea="1/5/2/6" data-NarrowGridArea="3/1/4/5" style="grid-area:1/5/2/6"><span class="SHMetadata">)]</span></div>
+      </div>
+   </div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> ComplexValues()</div>
+</div>
+-----
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHMetadata">[method:AttributeA]</span></div>
+   <div class="PSection PPlainSection"><span class="SHMetadata">[return: AttributeB(&quot;string&quot;)]</span></div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> AttributeTargets()</div>
+</div>
+-----
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/5/2" data-NarrowGridArea="1/1/2/7" style="grid-area:1/1/5/2"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> ParameterAttributesA(</div>
+         <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHMetadata">[AttributeA]</span>&nbsp;</div>
+         <div class="PType" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4"><span class="SHKeyword">int</span>&nbsp;</div>
+         <div class="PName" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5">a,</div>
+         <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHMetadata">[AttributeB()]</span>&nbsp;</div>
+         <div class="PType" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4"><span class="SHKeyword">int</span>&nbsp;</div>
+         <div class="PName" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5">b,</div>
+         <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="3/2/4/3" data-NarrowGridArea="4/1/5/2" style="grid-area:3/2/4/3"><span class="SHMetadata">[AttributeC(12, &quot;string&quot;)]</span>&nbsp;</div>
+         <div class="PType" data-WideGridArea="3/3/4/4" data-NarrowGridArea="4/2/5/3" style="grid-area:3/3/4/4"><span class="SHKeyword">int</span>&nbsp;</div>
+         <div class="PName" data-WideGridArea="3/4/4/5" data-NarrowGridArea="4/3/5/4" style="grid-area:3/4/4/5">c</div>
+         <div class="PDefaultValueSeparator" data-WideGridArea="3/5/4/6" data-NarrowGridArea="4/4/5/5" style="grid-area:3/5/4/6">=&nbsp;</div>
+         <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="3/6/4/7" data-NarrowGridArea="4/5/5/6" style="grid-area:3/6/4/7"> <span class="SHNumber">10</span>,</div>
+         <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="4/2/5/3" data-NarrowGridArea="5/1/6/2" style="grid-area:4/2/5/3"><span class="SHMetadata">[param:AttributeD(x = 12, y = &quot;string&quot;)]</span>&nbsp;</div>
+         <div class="PType" data-WideGridArea="4/3/5/4" data-NarrowGridArea="5/2/6/3" style="grid-area:4/3/5/4"><span class="SHKeyword">int</span>&nbsp;</div>
+         <div class="PName" data-WideGridArea="4/4/5/5" data-NarrowGridArea="5/3/6/4" style="grid-area:4/4/5/5">d</div>
+         <div class="PDefaultValueSeparator" data-WideGridArea="4/5/5/6" data-NarrowGridArea="5/4/6/5" style="grid-area:4/5/5/6">=&nbsp;</div>
+         <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="4/6/5/7" data-NarrowGridArea="5/5/6/6" style="grid-area:4/6/5/7"> <span class="SHNumber">20</span></div>
+         <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="4/7/5/8" data-NarrowGridArea="6/1/7/7" style="grid-area:4/7/5/8">)</div>
+      </div>
+   </div>
+</div>
+-----
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/7" style="grid-area:1/1/3/2"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> ParameterAttributesB(</div>
+         <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHMetadata">[AttributeA]</span>&nbsp;</div>
+         <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHMetadata">[AttributeB()]</span>&nbsp;</div>
+         <div class="PType" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4"><span class="SHKeyword">int</span>&nbsp;</div>
+         <div class="PName" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5">a,</div>
+         <div class="PModifierQualifier InFirstParameterColumn ExtraTopSpace" data-WideGridArea="3/2/4/3" data-NarrowGridArea="4/1/5/2" style="grid-area:3/2/4/3"><span class="SHMetadata">[AttributeC(12, &quot;string&quot;)]</span>&nbsp;</div>
+         <div class="PModifierQualifier InFirstParameterColumn" data-WideGridArea="4/2/5/3" data-NarrowGridArea="5/1/6/2" style="grid-area:4/2/5/3"><span class="SHMetadata">[param:AttributeD(x = 12, y = &quot;string&quot;)]</span>&nbsp;</div>
+         <div class="PType" data-WideGridArea="4/3/5/4" data-NarrowGridArea="5/2/6/3" style="grid-area:4/3/5/4"><span class="SHKeyword">int</span>&nbsp;</div>
+         <div class="PName" data-WideGridArea="4/4/5/5" data-NarrowGridArea="5/3/6/4" style="grid-area:4/4/5/5">b</div>
+         <div class="PDefaultValueSeparator" data-WideGridArea="4/5/5/6" data-NarrowGridArea="5/4/6/5" style="grid-area:4/5/5/6">=&nbsp;</div>
+         <div class="PDefaultValue InLastParameterColumn" data-WideGridArea="4/6/5/7" data-NarrowGridArea="5/5/6/6" style="grid-area:4/6/5/7"> <span class="SHNumber">10</span></div>
+         <div class="PAfterParameters" data-WideGridArea="4/7/5/8" data-NarrowGridArea="6/1/7/7" style="grid-area:4/7/5/8">)</div>
+      </div>
+   </div>
+</div>
