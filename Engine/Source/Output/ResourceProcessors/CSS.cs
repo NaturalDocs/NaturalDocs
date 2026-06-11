@@ -64,8 +64,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 
 			// We have to be more cautious than the JavaScript shrinker.  You don't want something like "head .class" to become
 			// "head.class".  Colon is a special case because we only want to remove spaces after it ("font-size: 12pt") and not
-			// before ("body :link").
-			string safeToCondenseAround = "{},;:+>[]= \0\n\r";
+			// before ("body :link").  No dashes because they can be part of identifiers and no pluses because they're required
+			// around operators in calc() functions ("calc(c+1)" won't work in Chrome or Firefox, only "calc(c + 1)".)
+			string safeToCondenseAround = "{},;:>[]= \0\n\r";
 
 			while (iterator.IsInBounds)
 				{
