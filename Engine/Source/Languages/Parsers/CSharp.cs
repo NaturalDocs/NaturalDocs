@@ -3384,8 +3384,26 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				(lookahead.MatchesAcrossTokens("assembly:") || lookahead.MatchesAcrossTokens("module:")) )
 				{  return false;  }
 
-			if (!GenericSkipUntilOn(ref lookahead, ']', skipToEndIfNotFound: false))
-				{  return false;  }
+			// We only need to mark parameters if we're parsing an attribute which has its own section.  We don't want them marked otherwise.
+			bool markParameters = (mode == ParseMode.ParsePrototype && prototypeParsingType == PrototypeParsingType.StartOfPrototypeSection);
+
+			while (lookahead.Character != ']')
+				{
+				if (!lookahead.IsInBounds)
+					{
+					ResetTokensBetween(iterator, lookahead, mode);
+					return false;
+					}
+				// If markParameters is false GenericSkip can handle them
+				else if (markParameters && TryToSkipAttributeParameters(ref lookahead, mode))
+					{  TryToSkipWhitespace(ref lookahead);  }
+				else
+					{  GenericSkip(ref lookahead);  }
+				}
+
+
+			// If we're here iterator should be on the opening bracket and lookahead on the closing one.  We still have to advance
+			// past the closing bracket before returning.
 
 			if (mode == ParseMode.SyntaxHighlight)
 				{
@@ -3394,12 +3412,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 			else if (mode == ParseMode.ParsePrototype)
 				{
+				// For these types, mark the bounds of the attribute with opening and closing tokens
 				if (prototypeParsingType == PrototypeParsingType.StartOfPrototypeSection ||
 					prototypeParsingType == PrototypeParsingType.TypeModifier ||
 					prototypeParsingType == PrototypeParsingType.OpeningTypeModifier ||
 					prototypeParsingType == PrototypeParsingType.ParamModifier ||
 					prototypeParsingType == PrototypeParsingType.OpeningParamModifier)
 					{
+
+					// Determine the tokens to use
+
 					PrototypeParsingType openingType, closingType;
 
 					if (prototypeParsingType == PrototypeParsingType.StartOfPrototypeSection)
@@ -3419,10 +3441,70 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						closingType = PrototypeParsingType.ClosingParamModifier;
 						}
 
+
+					// Mark the bounds
+
 					iterator.PrototypeParsingType = openingType;
 					lookahead.PrototypeParsingType = closingType;
+
+
+					// If we marked the parameters, see if the first one has a name
+
+					bool hasParameters = false;
+					bool firstParameterIsNamed  = false;
+
+					if (markParameters)
+						{
+						TokenIterator paramIterator = iterator;
+						paramIterator.Next();
+
+						while (paramIterator < lookahead)
+							{
+							if (paramIterator.PrototypeParsingType == PrototypeParsingType.StartOfParams)
+								{
+								hasParameters = true;
+								paramIterator.Next();
+
+								while (paramIterator < lookahead)
+									{
+									if (paramIterator.PrototypeParsingType == PrototypeParsingType.Name)
+										{
+										firstParameterIsNamed = true;
+										break;
+										}
+									else if (paramIterator.PrototypeParsingType == PrototypeParsingType.PropertyValueSeparator ||
+											   paramIterator.PrototypeParsingType == PrototypeParsingType.PropertyValue ||
+											   paramIterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
+										{  break;  }
+									else
+										{  paramIterator.Next();  }
+									}
+
+								break;
+								}
+							else
+								{  paramIterator.Next();  }
+							}
+						}
+
+
+					// If we have parameters but the first one isn't named, reset the parameter tokens.  We want them formatted on a single line,
+					// not like parameters.
+
+					if (hasParameters && !firstParameterIsNamed)
+						{
+						TokenIterator startOfContent = iterator;
+						startOfContent.Next();
+
+						ResetTokensBetween(startOfContent, lookahead, mode);
+						}
+
+
+					// Move past the closing bracket
 					lookahead.Next();
 					}
+
+				// For other types, mark the entire attribute with the type
 				else
 					{
 					lookahead.Next();
@@ -3443,6 +3525,126 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			iterator = lookahead;
 			return true;
+			}
+
+
+		/* Function: TryToSkipAttributeParameters
+		 *
+		 * Tries to move the iterator past a comma-separated list of attribute parameters in parentheses.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipAttributeParameters (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			if (iterator.Character != '(')
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+
+			if (mode == ParseMode.ParsePrototype)
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.StartOfParams;  }
+
+			lookahead.Next();
+			TryToSkipWhitespace(ref lookahead);
+
+			while (lookahead.IsInBounds)
+				{
+				if (lookahead.Character == ',')
+					{
+					if (mode == ParseMode.ParsePrototype)
+						{  lookahead.PrototypeParsingType = PrototypeParsingType.ParamSeparator;  }
+
+					lookahead.Next();
+					TryToSkipWhitespace(ref lookahead);
+					}
+
+				else if (lookahead.Character == ')')
+					{
+					if (mode == ParseMode.ParsePrototype)
+						{  lookahead.PrototypeParsingType = PrototypeParsingType.EndOfParams;  }
+
+					lookahead.Next();
+					iterator = lookahead;
+					return true;
+					}
+
+				else if (TryToSkipAttributeParameter(ref lookahead, mode))
+					{
+					TryToSkipWhitespace(ref lookahead);
+					}
+				else
+					{  break;  }
+				}
+
+			ResetTokensBetween(iterator, lookahead, mode);
+			return false;
+			}
+
+
+		/* Function: TryToSkipAttributeParameter
+		 *
+		 * Tries to move the iterator past a single attribute parameter, such as "X = 12" or just "12" since it can be a value by itself.  The
+		 * parameter ends at a comma or a closing parenthesis.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipAttributeParameter (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			TokenIterator lookahead = iterator;
+			TokenIterator startOfValue = lookahead;
+
+			for (;;)
+				{
+				if (!lookahead.IsInBounds)
+					{
+					ResetTokensBetween(iterator, lookahead, mode);
+					return false;
+					}
+
+				else if (lookahead.Character == ',' || lookahead.Character == ')')
+					{
+					if (mode == ParseMode.ParsePrototype)
+						{
+						TokenIterator endOfValue = lookahead;
+						endOfValue.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds);
+
+						if (endOfValue > startOfValue)
+							{  startOfValue.SetPrototypeParsingTypeBetween(endOfValue, PrototypeParsingType.PropertyValue);  }
+						}
+
+					iterator = lookahead;
+					return true;
+					}
+
+				else if (lookahead.Character == ':' || lookahead.Character == '=')
+					{
+					if (mode == ParseMode.ParsePrototype)
+						{
+						lookahead.PrototypeParsingType = PrototypeParsingType.PropertyValueSeparator;
+
+						TokenIterator endOfName = lookahead;
+						endOfName.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds);
+
+						if (endOfName > iterator)
+							{  iterator.SetPrototypeParsingTypeBetween(endOfName, PrototypeParsingType.Name);  }
+						}
+
+					lookahead.Next();
+					lookahead.NextPastWhitespace();
+
+					startOfValue = lookahead;
+					}
+				else
+					{  GenericSkip(ref lookahead);  }
+				}
 			}
 
 
