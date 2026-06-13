@@ -3448,59 +3448,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					lookahead.PrototypeParsingType = closingType;
 
 
-					// If we marked the parameters, see if the first one has a name
-
-					bool hasParameters = false;
-					bool firstParameterIsNamed  = false;
+					// If we marked the parameters, normalize the properties
 
 					if (markParameters)
-						{
-						TokenIterator paramIterator = iterator;
-						paramIterator.Next();
-
-						while (paramIterator < lookahead)
-							{
-							if (paramIterator.PrototypeParsingType == PrototypeParsingType.StartOfParams)
-								{
-								hasParameters = true;
-								paramIterator.Next();
-
-								while (paramIterator < lookahead)
-									{
-									if (paramIterator.PrototypeParsingType == PrototypeParsingType.Name)
-										{
-										firstParameterIsNamed = true;
-										break;
-										}
-									else if (paramIterator.PrototypeParsingType == PrototypeParsingType.PropertyValueSeparator ||
-											   paramIterator.PrototypeParsingType == PrototypeParsingType.PropertyValue ||
-											   paramIterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
-										{  break;  }
-									else
-										{  paramIterator.Next();  }
-									}
-
-								break;
-								}
-							else
-								{  paramIterator.Next();  }
-							}
-						}
-
-
-					// If we have parameters but the first one isn't named, reset the parameter tokens.  We want them formatted on a single line,
-					// not like parameters.
-
-					if (hasParameters && !firstParameterIsNamed)
-						{
-						TokenIterator startOfContent = iterator;
-						startOfContent.Next();
-
-						ResetTokensBetween(startOfContent, lookahead, mode);
-						}
+						{  NormalizeMetadataProperties(iterator, lookahead);  }
 
 
 					// Move past the closing bracket
+
 					lookahead.Next();
 					}
 

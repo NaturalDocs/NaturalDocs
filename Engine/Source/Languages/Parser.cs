@@ -5521,6 +5521,63 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			}
 
 
+		/* Function: NormalizeMetadataProperties
+		 *
+		 * Goes through the metadata properties and reformats them in a way that will be consistent across languages.  The start
+		 * can be at the beginning of the metadata or the <PrototypeParsingType.StartOfParams> token.  If the metadata doesn't
+		 * have parameters this will have no effect.
+		 *
+		 * Currently this checks if the first parameter has a <PrototypeParsingType.Name> token, and if not, resets any prototype
+		 * parsing tokens in the parameter list, including <PrototypeParsingType.StartOfParams> and <PrototypeParsingType.EndOfParams>.
+		 * This lets parameter lists that are only values ("[Attribute(12, null)]") format on one line but ones that are named
+		 * ("[Attribute(Param1 = 12, Param2 = null)]") format in columns like function parameter lists.
+		 */
+		protected void NormalizeMetadataProperties (TokenIterator start, TokenIterator end)
+			{
+			TokenIterator iterator = start;
+
+			// First find the StartOfParams token
+			while (iterator.PrototypeParsingType != PrototypeParsingType.StartOfParams)
+				{
+				// If there isn't one we can just exit
+				if (iterator >= end)
+					{  return;  }
+
+				iterator.Next();
+				}
+
+			// If we're here we're at the start of the parameters.  See if there's a Name token before a ParamSeparator.
+			TokenIterator startOfParams = iterator;
+			iterator.Next();
+
+			while (iterator < end &&
+					  iterator.PrototypeParsingType != PrototypeParsingType.EndOfParams &&
+					  iterator.PrototypeParsingType != PrototypeParsingType.ParamSeparator)
+				{
+				// If we hit a name that means the first parameter has a name and we can leave it alone.  We want it to format as a
+				// parameter list.
+				if (iterator.PrototypeParsingType == PrototypeParsingType.Name)
+					{  return;  }
+
+				iterator.Next();
+				}
+
+			// If we're here we didn't find a name before a ParamSeparator or the end of the parameters.  Remove all protoype parsing
+			// tokens from the parameter list.
+			iterator = startOfParams;
+
+			while (iterator < end &&
+					  iterator.PrototypeParsingType != PrototypeParsingType.EndOfParams)
+				{
+				iterator.PrototypeParsingType = PrototypeParsingType.Null;
+				iterator.Next();
+				}
+
+			if (iterator.PrototypeParsingType == PrototypeParsingType.EndOfParams)
+				{  iterator.PrototypeParsingType = PrototypeParsingType.Null;  }
+			}
+
+
 
 		// Group: General Parsing Support Functions
 		// __________________________________________________________________________
