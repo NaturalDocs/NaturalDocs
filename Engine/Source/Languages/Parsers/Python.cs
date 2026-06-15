@@ -193,7 +193,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParseClassPrototype>
-		 *			- Will mark each decorator with <ClassPrototypeParsingType.StartOfPrePrototypeLine> and <ClassPrototypeParsingType.PrePrototypeLine>.
+		 *			- Will mark each decorator with <ClassPrototypeParsingType.StartOfPrePrototypeLine> and
+		 *			  <ClassPrototypeParsingType.PrePrototypeLine>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		protected bool TryToSkipDecorators (ref TokenIterator iterator, ParseMode mode = ParseMode.ParseClassPrototype)
@@ -218,8 +219,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToSkipDecorator
 		 *
-		 * Tries to move the iterator past a single decorator.  Note that there may be more than one decorator in a row, so use <TryToSkipDecorators()>
-		 * if you need to move past all of them.
+		 * Tries to move the iterator past a single decorator.  Note that there may be more than one decorator in a row, so use
+		 * <TryToSkipDecorators()> if you need to move past all of them.
 		 *
 		 * Supported Modes:
 		 *
@@ -227,7 +228,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *		- <ParseMode.ParsePrototype>
 		 *			- Each decorator will create a new prototype section.
 		 *		- <ParseMode.ParseClassPrototype>
-		 *			- Will mark the first token with <ClassPrototypeParsingType.StartOfPrePrototypeLine> and the rest with <ClassPrototypeParsingType.PrePrototypeLine>.
+		 *			- Will mark the first token with <ClassPrototypeParsingType.StartOfPrePrototypeLine> and the rest with
+		 *			  <ClassPrototypeParsingType.PrePrototypeLine>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		protected bool TryToSkipDecorator (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
@@ -237,25 +239,88 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			TokenIterator lookahead = iterator;
 			lookahead.Next();
+			 TryToSkipWhitespace(ref lookahead);
 
-			if (TryToSkipIdentifier(ref lookahead) == false)
+			// Decorators can technically be any expression now.  Ideally we'd handle from the @ to the next line break, but
+			// line breaks are normalized out of prototypes so we'll just handle the most common forms and things we can
+			// say with high certainty are part of the decorator.
+
+			// First try the @() form
+			if (lookahead.Character == '(')
+				{
+				// Try to interpret it as parameters first so we can format the walrus operator that way ("@(Name := value)")
+				// but if that fails retry as just a block.
+				if (!TryToSkipDecoratorParameters(ref lookahead, mode))
+					{
+					lookahead.Next();
+
+					if (!GenericSkipUntilAfter(ref lookahead, ')'))
+						{  return false;  }
+					}
+				}
+
+			// Next try the @identifier form, which may or may not have parameters.
+			else if (TryToSkipIdentifier(ref lookahead, mode))
+				{
+				// We want to accept spaces between the identifier and parameters, so check if that's what comes next
+				TokenIterator pastWhitespace = lookahead;
+				pastWhitespace.NextPastWhitespace();
+
+				if (TryToSkipDecoratorParameters(ref pastWhitespace, mode))
+					{
+					lookahead = pastWhitespace;
+					pastWhitespace.NextPastWhitespace();
+					}
+
+				// Now continue for anything that we have high confidence is part of the decorator
+				for (;;)
+					{
+					// Allow blocks for parameters past the first one (but we don't format them as such) and brackets for arrays
+					if (TryToSkipBlock(ref pastWhitespace, includeAngleBrackets: false))
+						{
+						lookahead = pastWhitespace;
+						pastWhitespace.NextPastWhitespace();
+						}
+
+					// Allow a dot for chained function calls, but only if there's no whitespace around it (hence checking lookahead
+					// and not pastWhitespace)
+					else if (lookahead.Character == '.')
+						{
+						lookahead.Next();
+
+						if (TryToSkipIdentifier(ref lookahead))
+							{
+							pastWhitespace = lookahead;
+							pastWhitespace.NextPastWhitespace();
+							}
+						else
+							{
+							// Return lookahead to the dot
+							lookahead.Previous();
+							break;
+							}
+						}
+
+					else
+						{  break;  }
+					}
+				}
+
+			// Those are the only forms we'll accept.
+			else
 				{  return false;  }
 
-			TokenIterator decoratorStart = iterator;
-			TokenIterator decoratorEnd = lookahead;
 
 			if (mode == ParseMode.SyntaxHighlight)
-				{  decoratorStart.SetSyntaxHighlightingTypeBetween(decoratorEnd, SyntaxHighlightingType.Metadata);  }
-
-			TryToSkipWhitespace(ref lookahead);
-
-			if (TryToSkipDecoratorParameters(ref lookahead, mode))
-				{  decoratorEnd = lookahead;  }
-
-			if (mode == ParseMode.ParsePrototype)
 				{
-				decoratorStart.PrototypeParsingType = PrototypeParsingType.StartOfPrototypeSection;
-				decoratorEnd.PrototypeParsingType = PrototypeParsingType.EndOfPrototypeSection;
+				iterator.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.Metadata);
+				}
+			else if (mode == ParseMode.ParsePrototype)
+				{
+				iterator.PrototypeParsingType = PrototypeParsingType.StartOfPrototypeSection;
+				lookahead.PrototypeParsingType = PrototypeParsingType.EndOfPrototypeSection;
+
+				NormalizeMetadataProperties(iterator, lookahead);
 				}
 			else if (mode == ParseMode.ParseClassPrototype)
 				{
@@ -263,7 +328,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfPrePrototypeLine;
 				}
 
-			iterator = decoratorEnd;
+			iterator = lookahead;
 			return true;
 			}
 
@@ -286,26 +351,31 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{  return false;  }
 
 			TokenIterator lookahead = iterator;
+			lookahead.Next();
 
-			if (!TryToSkipBlock(ref lookahead, false))
+			if (!GenericSkipUntilOn(ref lookahead, ')'))
 				{  return false;  }
-
-			TokenIterator end = lookahead;
 
 			if (mode == ParseMode.SyntaxHighlight)
 				{
-				iterator.SetSyntaxHighlightingTypeBetween(end, SyntaxHighlightingType.Metadata);
+				// Move past the closing parenthesis.
+				lookahead.Next();
+
+				iterator.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.Metadata);
 				}
 
 			else if (mode == ParseMode.ParsePrototype)
 				{
-				TokenIterator openingParen = iterator;
+				// Mark the parentheses
 
+				TokenIterator openingParen = iterator;
 				TokenIterator closingParen = lookahead;
-				closingParen.Previous();
 
 				openingParen.PrototypeParsingType = PrototypeParsingType.StartOfParams;
 				closingParen.PrototypeParsingType = PrototypeParsingType.EndOfParams;
+
+
+				// Mark the parameters
 
 				lookahead = openingParen;
 				lookahead.Next();
@@ -329,9 +399,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					}
 
 				MarkDecoratorParameter(startOfParam, lookahead, mode);
+
+				// Move past the closing parenthesis.
+				lookahead.Next();
 				}
 
-			iterator = end;
+			else
+				{
+				// Move past the closing parenthesis.
+				lookahead.Next();
+				}
+
+			iterator = lookahead;
 			return true;
 			}
 
@@ -370,6 +449,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					equals.PrototypeParsingType = PrototypeParsingType.PropertyValueSeparator;
 					break;
 					}
+				else if (equals.MatchesAcrossTokens(":="))
+					{
+					equals.SetPrototypeParsingTypeByCharacters(PrototypeParsingType.PropertyValueSeparator, 2);
+					break;
+					}
 				else
 					{  GenericSkip(ref equals, true);  }
 				}
@@ -390,7 +474,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					{  start.SetPrototypeParsingTypeBetween(iterator, PrototypeParsingType.Name);  }
 
 				iterator = equals;
-				iterator.Next();
+
+				do
+					{  iterator.Next();  }
+				while (iterator.PrototypeParsingType == PrototypeParsingType.PropertyValueSeparator);
+
 				iterator.NextPastWhitespace(end);
 
 				if (iterator < end)
