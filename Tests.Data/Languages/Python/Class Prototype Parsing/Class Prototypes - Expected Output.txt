@@ -69,7 +69,7 @@ class Ŭnicode_Pŷthon (Ŭnicode_Pŷthon_Base)
 @f1(arg) @f2 class Python_Decorators
 
   - Pre-Prototype Line: @f1(arg)
-  - Pre-Prototype Line: @f2 
+  - Pre-Prototype Line: @f2
   - Name: Python_Decorators
   - Keyword: class
   - Access Level: Unknown
@@ -80,7 +80,7 @@ class Ŭnicode_Pŷthon (Ŭnicode_Pŷthon_Base)
 @f1(arg1 = 12, arg2 = "string") @f2 class Python_Decorator_Params
 
   - Pre-Prototype Line: @f1(arg1 = 12, arg2 = "string")
-  - Pre-Prototype Line: @f2 
+  - Pre-Prototype Line: @f2
   - Name: Python_Decorator_Params
   - Keyword: class
   - Access Level: Unknown
@@ -103,7 +103,7 @@ class Python_Metaclass (metaclass=Python_Metaclass)
 @f1(arg) @f2 class Everything (metaclass=Python_Metaclass, Ŭnicode_Pŷthon_Base, module.Python_Module_Base)
 
   - Pre-Prototype Line: @f1(arg)
-  - Pre-Prototype Line: @f2 
+  - Pre-Prototype Line: @f2
   - Name: Everything
   - Keyword: class
   - Access Level: Unknown

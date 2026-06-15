@@ -55,7 +55,7 @@
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPPrePrototypeLine"><span class="SHMetadata">@f1(arg)</span></div>
-      <div class="CPPrePrototypeLine"><span class="SHMetadata">@f2</span> </div>
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">@f2</span></div>
       <div class="CPName">Python_Decorators</div>
    </div>
 </div>
@@ -63,7 +63,7 @@
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPPrePrototypeLine"><span class="SHMetadata">@f1(arg1 = 12, arg2 = &quot;string&quot;)</span></div>
-      <div class="CPPrePrototypeLine"><span class="SHMetadata">@f2</span> </div>
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">@f2</span></div>
       <div class="CPName">Python_Decorator_Params</div>
    </div>
 </div>
@@ -91,7 +91,7 @@
    </div>
    <div class="CPEntry CPContent TClass Current">
       <div class="CPPrePrototypeLine"><span class="SHMetadata">@f1(arg)</span></div>
-      <div class="CPPrePrototypeLine"><span class="SHMetadata">@f2</span> </div>
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">@f2</span></div>
       <div class="CPName">Everything</div>
    </div>
 </div>

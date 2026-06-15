@@ -101,20 +101,9 @@
 
 ------------------------------
 
-- Parameter Section:
-  - Before Parameters: @f1(
-    - Access Level: Unknown
-    - Link Candidates: (none)
-
-  - Parameter 1: arg
-    - Name: (not detected)
-    - Full Type: (not detected)
-    - Base Type: (not detected)
-    - Link Candidates: (none)
-    - Default Value: (not detected)
-
-  - After Parameters: )
-    - Link Candidates: (none)
+- Plain Section: @f1(arg)
+  - Access Level: Unknown
+  - Link Candidates: (none)
 
 - Plain Section: @f2
   - Access Level: Unknown
