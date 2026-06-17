@@ -167,6 +167,57 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
+		/* Function: TryToSkipClassParent
+		 *
+		 * Tries to move the iterator past a single class parent declaration.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParseClassPrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipClassParent (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			TokenIterator lookahead = iterator;
+
+			if (lookahead.MatchesToken("metaclass"))
+				{
+				lookahead.Next();
+				TryToSkipWhitespace(ref lookahead);
+
+				if (lookahead.Character == '=')
+					{
+					if (mode == ParseMode.ParseClassPrototype)
+						{  iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.Modifier;  }
+
+					lookahead.Next();
+					TryToSkipWhitespace(ref lookahead);
+					}
+				else
+					{
+					// Nevermind, reset
+					lookahead = iterator;
+					}
+				}
+
+
+			TokenIterator startOfIdentifier = lookahead;
+
+			if (TryToSkipIdentifier(ref lookahead) == false)
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+
+			if (mode == ParseMode.ParseClassPrototype)
+				{  startOfIdentifier.SetClassPrototypeParsingTypeBetween(lookahead, ClassPrototypeParsingType.Name);  }
+
+			iterator = lookahead;
+			return true;
+			}
+
+
 		/* Function: TryToSkipMetadata
 		 *
 		 * Override to support detecting decorators as metadata.
@@ -484,57 +535,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				if (iterator < end)
 					{  iterator.SetPrototypeParsingTypeBetween(end, PrototypeParsingType.PropertyValue);  }
 				}
-			}
-
-
-		/* Function: TryToSkipClassParent
-		 *
-		 * Tries to move the iterator past a single class parent declaration.
-		 *
-		 * Supported Modes:
-		 *
-		 *		- <ParseMode.IterateOnly>
-		 *		- <ParseMode.ParseClassPrototype>
-		 *		- Everything else is treated as <ParseMode.IterateOnly>.
-		 */
-		protected bool TryToSkipClassParent (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
-			{
-			TokenIterator lookahead = iterator;
-
-			if (lookahead.MatchesToken("metaclass"))
-				{
-				lookahead.Next();
-				TryToSkipWhitespace(ref lookahead);
-
-				if (lookahead.Character == '=')
-					{
-					if (mode == ParseMode.ParseClassPrototype)
-						{  iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.Modifier;  }
-
-					lookahead.Next();
-					TryToSkipWhitespace(ref lookahead);
-					}
-				else
-					{
-					// Nevermind, reset
-					lookahead = iterator;
-					}
-				}
-
-
-			TokenIterator startOfIdentifier = lookahead;
-
-			if (TryToSkipIdentifier(ref lookahead) == false)
-				{
-				ResetTokensBetween(iterator, lookahead, mode);
-				return false;
-				}
-
-			if (mode == ParseMode.ParseClassPrototype)
-				{  startOfIdentifier.SetClassPrototypeParsingTypeBetween(lookahead, ClassPrototypeParsingType.Name);  }
-
-			iterator = lookahead;
-			return true;
 			}
 
 
