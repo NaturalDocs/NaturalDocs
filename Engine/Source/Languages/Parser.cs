@@ -631,12 +631,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 																		  language.ParameterStyle, language.ImpliedParameterTypes);
 
 
-				// Set the main section to the last one, since any metadata at the start may have created its own sections.  Some can
-				// have parameters and we don't want those confused for the actual parameter list.
-
-				parsedPrototype.MainSectionIndex = parsedPrototype.Sections.Count - 1;
-
-
 				// If there are any parameters, mark the tokens in them.  We only have to do the main section because if any sections
 				// were created by metadata, that means the metadata section was already marked with prototype parsing tokens.
 

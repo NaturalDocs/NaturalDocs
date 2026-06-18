@@ -240,8 +240,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			TokenIterator startOfSection = tokenizer.FirstToken;
 			TokenIterator endOfSection = startOfSection;
 
-			int firstSectionWithName = -1;
-			int firstSectionWithParams = -1;
+			int lastSectionWithParams = -1;
 
 			for (;;)
 				{
@@ -249,7 +248,6 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				// Find the section bounds
 
 				bool sectionIsEmpty = true;
-				bool sectionHasName = false;
 				bool sectionHasParams = false;
 
 				while (endOfSection.IsInBounds)
@@ -268,13 +266,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					if (endOfSection.FundamentalType != FundamentalType.Whitespace)
 						{  sectionIsEmpty = false; }
 
-					if (endOfSection.PrototypeParsingType == PrototypeParsingType.Name ||
-						endOfSection.PrototypeParsingType == PrototypeParsingType.KeywordName)
-						{
-						sectionHasName = true;
-						endOfSection.Next();
-						}
-					else if (endOfSection.PrototypeParsingType == PrototypeParsingType.StartOfParams)
+					if (endOfSection.PrototypeParsingType == PrototypeParsingType.StartOfParams)
 						{
 						sectionHasParams = true;
 						endOfSection.Next();
@@ -303,10 +295,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					else
 						{  sections.Add( new Section(startOfSection, endOfSection) );  }
 
-					if (sectionHasName && firstSectionWithName == -1)
-						{  firstSectionWithName = sections.Count - 1;  }
-					if (sectionHasParams && firstSectionWithParams == -1)
-						{  firstSectionWithParams = sections.Count - 1;  }
+					if (sectionHasParams)
+						{  lastSectionWithParams = sections.Count - 1;  }
 					}
 
 
@@ -330,10 +320,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 			if (sections.Count == 1)
 				{  mainSectionIndex = 0;  }
-			else if (firstSectionWithName != -1)
-				{  mainSectionIndex = firstSectionWithName;  }
-			else if (firstSectionWithParams != -1)
-				{  mainSectionIndex = firstSectionWithParams;  }
+			else if (lastSectionWithParams != -1)
+				{  mainSectionIndex = lastSectionWithParams;  }
 			else
 				{  mainSectionIndex = 0;  }
 			}

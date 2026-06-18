@@ -55,7 +55,39 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 			if (parsed && isModule)
-				{  return new Prototypes.ParsedPrototypes.SystemVerilogModule(tokenizedPrototype, this.Language.ID, commentTypeID);  }
+				{
+				var parsedPrototype = new Prototypes.ParsedPrototypes.SystemVerilogModule(tokenizedPrototype, this.Language.ID, commentTypeID);
+
+				// If there's multiple sections, make sure the parameter one with () is set to main.  Skip parameter ports with #() and
+				// attributes with (* *).
+				if (parsedPrototype.Sections.Count > 1)
+					{
+					for (int i = 0; i < parsedPrototype.Sections.Count; i++)
+						{
+						// Will be null if is not a ParameterSection.  Will not throw an exception.
+						var parameterSection = parsedPrototype.Sections[i] as Prototypes.ParameterSection;
+
+						if (parameterSection == null)
+							{  continue;  }
+
+						parameterSection.GetBeforeParameters(out _, out TokenIterator end);
+						end.Previous();
+
+						if (end.Character != '(')
+							{  continue;  }
+
+						end.Previous();
+
+						if (end.Character == '#')
+							{  continue;  }
+
+						parsedPrototype.MainSectionIndex = i;
+						break;
+						}
+					}
+
+				return parsedPrototype;
+				}
 			else
 				{  return base.ParsePrototype(stringPrototype, commentTypeID);  }
 			}

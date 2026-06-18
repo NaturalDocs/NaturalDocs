@@ -323,8 +323,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				ParseVariable(tokenizedPrototype.FirstToken, tokenizedPrototype.EndOfTokens, ParseMode.ParsePrototype);
 				}
 
-			return new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID,
-													 parameterStyle: ParameterStyle.Pascal, supportsImpliedTypes: true);
+			var parsedPrototype = new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID,
+																			parameterStyle: ParameterStyle.Pascal, supportsImpliedTypes: true);
+
+			// Set the main section index to the first one.  There's no metadata to create parameter sections before the function
+			// parameters, but T-SQL functions can have table definitions as return valuse to make a parameter section that follows
+			// it.  Also, we give T-SQL's "WITH" clauses their own prototype section at the end as well.
+			parsedPrototype.MainSectionIndex = 0;
+
+			return parsedPrototype;
 			}
 
 
