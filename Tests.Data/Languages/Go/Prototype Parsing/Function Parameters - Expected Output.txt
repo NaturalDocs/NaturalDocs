@@ -81,7 +81,7 @@
 
   - Parameter 2: b *float64,
     - Name: b
-    - Full Type: * float64
+    - Full Type: *float64
     - Base Type: float64
     - Link Candidates: float64
     - Default Value: (not detected)
