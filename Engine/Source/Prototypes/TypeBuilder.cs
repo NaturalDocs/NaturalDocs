@@ -125,6 +125,25 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 							}
 						}
 
+					// No space after an asterisk if it's the first character or all characters before it are also asterisks.  This allows "*int" and
+					// "**int" without breaking "int* const" in C and "delegate* unmanaged" in C#.
+					else if (lastCharacter == '*')
+						{
+						// We already know there's at least one character in rawText and the last one is an asterisk, so walk backwards from
+						// the second to last character to see if there are any non-asterisks.
+						if (rawText.Length > 1)
+							{
+							for (int i = rawText.Length - 2; i >= 0; i--)
+								{
+								if (rawText[i] != '*')
+									{
+									addSpaceBeforeToken = true;
+									break;
+									}
+								}
+							}
+						}
+
 					else if (lastCharacter != '.' &&  // no space after dot separators like Class.Member
 							   lastCharacter != '%' &&  // no space after keywords in Oracle's PL/SQL like MyVar%TYPE or MyTable%ROWTYPE
 							   lastCharacter != '"' &&  // no space after strings in Java annotations like @copyright("me")
