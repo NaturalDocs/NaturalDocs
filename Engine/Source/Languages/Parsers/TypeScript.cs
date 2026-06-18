@@ -885,7 +885,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				iterator.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.ParamModifier);
 
 				if (breakPrototypeSections)
-					{  lookahead.PrototypeParsingType = PrototypeParsingType.EndOfPrototypeSection;  }
+					{
+					iterator.PrototypeParsingType = PrototypeParsingType.StartOfPrototypeSection;
+					lookahead.PrototypeParsingType = PrototypeParsingType.EndOfPrototypeSection;
+					}
 				}
 
 			iterator = lookahead;
