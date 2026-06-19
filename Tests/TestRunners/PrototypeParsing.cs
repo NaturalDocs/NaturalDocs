@@ -98,56 +98,51 @@ namespace CodeClear.NaturalDocs.Tests.TestRunners
 							else
 								{  output.AppendLine("    - Name: (not detected)");  }
 
-							string fullType = null;
+							string fullType_ExplicitOnly = null;
 							if (parsedPrototype is Engine.Prototypes.ParsedPrototypes.SystemVerilogModule)
 								{
-								if (parsedPrototype.BuildFullParameterType(globalParameterIndex, out start, out end, false))
-									{  fullType = start.TextBetween(end);  }
+								if (parsedPrototype.BuildFullParameterType(globalParameterIndex, out start, out end))
+									{  fullType_ExplicitOnly = start.TextBetween(end);  }
 								}
 							else
 								{
-								if (section.BuildFullParameterType(paramIndex, out start, out end, false))
-									{  fullType = start.TextBetween(end);  }
+								if (section.BuildFullParameterType(paramIndex, out start, out end, preventImpliedTypes: true))
+									{  fullType_ExplicitOnly = start.TextBetween(end);  }
 								}
 
-							string impliedType = null;
+							string fullType_WithImplied = null;
 							if (parsedPrototype is Engine.Prototypes.ParsedPrototypes.SystemVerilogModule)
-								{
-								if (parsedPrototype.BuildFullParameterType(globalParameterIndex, out start, out end, true))
-									{  impliedType = start.TextBetween(end);  }
-								}
+								{  fullType_WithImplied = fullType_ExplicitOnly;  }
 							else
 								{
-								if (section.BuildFullParameterType(paramIndex, out start, out end, true))
-									{  impliedType = start.TextBetween(end);  }
+								if (section.BuildFullParameterType(paramIndex, out start, out end))
+									{  fullType_WithImplied = start.TextBetween(end);  }
 								}
 
-							if (fullType != null)
-								{  output.AppendLine("    - Full Type: " + fullType);  }
-							if (impliedType != null)
+							if (fullType_ExplicitOnly != null)
 								{
-								if (fullType == null)
-									{  output.AppendLine("    - Full Type (implied): " + impliedType);  }
-								else if (impliedType != fullType)
-									{  output.AppendLine("    - Full Type (plus implied): " + impliedType);  }
+								output.AppendLine("    - Full Type: " + fullType_ExplicitOnly);
+
+								if (fullType_WithImplied != fullType_ExplicitOnly)
+									{  output.AppendLine("    - Full Type (plus implied): " + fullType_WithImplied);  }
 								}
-							if (fullType == null && impliedType == null)
+							else if (fullType_WithImplied != null)
+								{  output.AppendLine("    - Full Type (implied): " + fullType_WithImplied);  }
+							else
 								{  output.AppendLine("    - Full Type: (not detected)");  }
 
 							if (parsedPrototype is Engine.Prototypes.ParsedPrototypes.SystemVerilogModule)
 								{
-								if (parsedPrototype.GetBaseParameterType(globalParameterIndex, out start, out end, false))
+								if (parsedPrototype.GetBaseParameterType(globalParameterIndex, out start, out end))
 									{  output.AppendLine("    - Base Type: " + start.TextBetween(end));  }
-								else if (parsedPrototype.GetBaseParameterType(globalParameterIndex, out start, out end, true))
-									{  output.AppendLine("    - Base Type (implied): " + start.TextBetween(end));  }
 								else
 									{  output.AppendLine("    - Base Type: (not detected)");  }
 								}
 							else
 								{
-								if (section.GetBaseParameterType(paramIndex, out start, out end, false))
+								if (section.GetBaseParameterType(paramIndex, out start, out end, preventImpliedTypes: true))
 									{  output.AppendLine("    - Base Type: " + start.TextBetween(end));  }
-								else if (section.GetBaseParameterType(paramIndex, out start, out end, true))
+								else if (section.GetBaseParameterType(paramIndex, out start, out end))
 									{  output.AppendLine("    - Base Type (implied): " + start.TextBetween(end));  }
 								else
 									{  output.AppendLine("    - Base Type: (not detected)");  }

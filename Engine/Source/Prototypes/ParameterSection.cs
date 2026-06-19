@@ -351,10 +351,10 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * couldn't find it.  It will also include type qualifiers ("Package.Class") but exclude modifiers (so "unsigned int*[]" would just
 		 * be "int".)
 		 *
-		 * If implied types is set and <SupportsImpliedTypes> is true this will return "int" for y in "int x, y".  If it is not set or
-		 * <SupportsImpliedTypes> is false then it will return false for y.
+		 * If the language supports implied types this will return "int" for y in "int x, y".  If it doesn't then it will return false for y.  You
+		 * can force it to ignore implied types regardless of the language setting if necessary.
 		 */
-		public bool GetBaseParameterType (int index, out TokenIterator baseTypeStart, out TokenIterator baseTypeEnd, bool impliedTypes = true)
+		public bool GetBaseParameterType (int index, out TokenIterator baseTypeStart, out TokenIterator baseTypeEnd, bool preventImpliedTypes = false)
 			{
 			if (parameters != null && index >= 0 && index < parameters.Count)
 				{
@@ -364,7 +364,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 				// If not, find the closest parameter that defines one.
 				int impliedTypeIndex;
-				if (impliedTypes && parsedPrototype.SupportsImpliedTypes && GetImpliedTypeIndex(index, out impliedTypeIndex))
+				if (!preventImpliedTypes && parsedPrototype.SupportsImpliedTypes && GetImpliedTypeIndex(index, out impliedTypeIndex))
 					{  return parameters[impliedTypeIndex].GetBaseType(out baseTypeStart, out baseTypeEnd);  }
 				}
 
@@ -385,10 +385,10 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * a continuous version of it.  The returned bounds will be <TokenIterators> based on that rather than on the original <Tokenizer>.
 		 * The new <Tokenizer> will still contain the same <PrototypeParsingTypes> and <SyntaxHighlightingTypes> of the original.
 		 *
-		 * If implied types is set and <SupportsImpliedTypes> is true this will return "int" for y in "int x, y".  If it is not set or
-		 * <SupportsImpliedTypes> is false then it will return false for y.
+		 * If the language supports implied types this will return "int" for y in "int x, y".  If it doesn't then it will return false for y.  You can
+		 * force it to ignore implied types regardless of the language setting if necessary.
 		 */
-		public bool BuildFullParameterType (int index, out TokenIterator fullTypeStart, out TokenIterator fullTypeEnd, bool impliedTypes = true)
+		public bool BuildFullParameterType (int index, out TokenIterator fullTypeStart, out TokenIterator fullTypeEnd, bool preventImpliedTypes = false)
 			{
 			var parameterStyle = parsedPrototype.ParameterStyle;
 
@@ -403,7 +403,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				// If not, build one from the closest parameter that defines one.
 
 				int impliedTypeIndex;
-				if (impliedTypes && parsedPrototype.SupportsImpliedTypes && GetImpliedTypeIndex(index, out impliedTypeIndex))
+				if (!preventImpliedTypes && parsedPrototype.SupportsImpliedTypes && GetImpliedTypeIndex(index, out impliedTypeIndex))
 					{
 					TypeBuilder typeBuilder = new TypeBuilder();
 
