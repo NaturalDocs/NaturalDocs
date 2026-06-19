@@ -206,8 +206,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 		/* Function: BuildFullANSIParameterPortType
 		 */
-		protected TypeBuilder BuildFullANSIParameterPortType (ParameterSection parameterSection, int parameterIndex,
-																					   bool impliedTypes = true)
+		protected TypeBuilder BuildFullANSIParameterPortType (ParameterSection parameterSection, int parameterIndex)
 			{
 			TypeBuilder typeBuilder = new TypeBuilder();
 			PortFlags portFlags = 0;
@@ -221,7 +220,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			// The parameter keyword only inherits if it's "parameter".  This is because compilers differ on whether a keywordless
 			// parameter following a "localparam" becomes "localparam" or defaults back to "parameter".  See the SystemVerilog
 			// Notes file.  Since "localparam" won't be used as often it's still worth inheriting "parameter" when we can.
-			else if (impliedTypes)
+			else
 				{
 				TokenIterator keywordPosition, endOfParameter;
 
@@ -257,7 +256,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 			// The data type only inherits if nothing is specified.  If the base type or any properties are set the rest does
 			// not inherit, they revert to the default.  This includes if signing or packed data types appear alone.
-			if (impliedTypes && (portFlags & PortFlags.HasDataTypeOrProperties) == 0)
+			if ((portFlags & PortFlags.HasDataTypeOrProperties) == 0)
 				{
 				for (int i = parameterIndex - 1; i >= 0; i--)
 					{
@@ -273,7 +272,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 					if (AppendPackedDimensions(parameterSection, i, typeBuilder))
 						{  portFlags |= PortFlags.HasPackedDimensions;  }
 
-					if (impliedTypes && (portFlags & PortFlags.HasDataTypeOrProperties) != 0)
+					if ((portFlags & PortFlags.HasDataTypeOrProperties) != 0)
 						{  break;  }
 					}
 
@@ -294,8 +293,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 		/* Function: BuildFullANSIPortType
 		 */
-		protected TypeBuilder BuildFullANSIPortType (ParameterSection parameterSection, int parameterIndex,
-																		 bool impliedTypes = true)
+		protected TypeBuilder BuildFullANSIPortType (ParameterSection parameterSection, int parameterIndex)
 			{
 			TypeBuilder typeBuilder = new TypeBuilder();
 			PortFlags portFlags = 0;
@@ -306,7 +304,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			if (AppendDirection(parameterSection, parameterIndex, typeBuilder))
 				{  portFlags |= PortFlags.HasDirection;  }
 
-			else if (impliedTypes)
+			else
 				{
 				// The direction is always inherited if it's not specified
 				for (int i = parameterIndex - 1; i >= 0; i--)
@@ -355,7 +353,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 				// The data type only inherits if nothing is specified.  If the base type or any properties are set the rest does
 				// not inherit, they revert to the default.  This includes if signing or packed data types appear alone.
-				if (impliedTypes && (portFlags & PortFlags.HasDataTypeOrProperties) == 0)
+				if ((portFlags & PortFlags.HasDataTypeOrProperties) == 0)
 					{
 					for (int i = parameterIndex - 1; i >= 0; i--)
 						{
@@ -371,7 +369,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 						if (AppendPackedDimensions(parameterSection, i, typeBuilder))
 							{  portFlags |= PortFlags.HasPackedDimensions;  }
 
-						if (impliedTypes && (portFlags & PortFlags.HasDataTypeOrProperties) != 0)
+						if ((portFlags & PortFlags.HasDataTypeOrProperties) != 0)
 							{  break;  }
 						}
 
@@ -394,8 +392,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		/* Function: GetBaseANSIParameterPortType
 		 */
 		protected bool GetBaseANSIParameterPortType (ParameterSection parameterSection, int parameterIndex,
-																			  out TokenIterator baseTypeStart, out TokenIterator baseTypeEnd,
-																			  bool impliedTypes = true)
+																			  out TokenIterator baseTypeStart, out TokenIterator baseTypeEnd)
 			{
 			// Find the start of the base type, and whether we have one
 
@@ -407,7 +404,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				foundBaseType = true;
 				}
 
-			else if (impliedTypes)
+			else
 				{
 				// If signing or packed dimensions are defined the parameter does not inherit the base data type from a previous
 				// parameter.  It reverts to a default.
@@ -475,8 +472,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		/* Function: GetBaseANSIPortType
 		 */
 		protected bool GetBaseANSIPortType (ParameterSection parameterSection, int parameterIndex,
-															   out TokenIterator baseTypeStart, out TokenIterator baseTypeEnd,
-															   bool impliedTypes = true)
+															   out TokenIterator baseTypeStart, out TokenIterator baseTypeEnd)
 			{
 			// Find the start of the base type, and whether we have one
 
@@ -488,7 +484,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				foundBaseType = true;
 				}
 
-			else if (impliedTypes)
+			else
 				{
 				// If signing or packed dimensions are defined the parameter does not inherit the base data type from a previous
 				// parameter.  It reverts to a default.
@@ -1589,8 +1585,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 		/* Function: BuildFullParameterType
 		 */
-		override public bool BuildFullParameterType (int parameterIndex, out TokenIterator fullTypeStart,
-																	  out TokenIterator fullTypeEnd, bool impliedTypes = true)
+		override public bool BuildFullParameterType (int parameterIndex, out TokenIterator fullTypeStart, out TokenIterator fullTypeEnd)
 			{
 			ParameterSection containingSection;
 			int containingSectionParameterIndex;
@@ -1607,16 +1602,16 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			switch (GetParameterSectionType(containingSection))
 				{
 				case ParameterSectionType.ANSIParameterPorts:
-					typeBuilder = BuildFullANSIParameterPortType(containingSection, containingSectionParameterIndex, impliedTypes);
+					typeBuilder = BuildFullANSIParameterPortType(containingSection, containingSectionParameterIndex);
 					break;
 
 				case ParameterSectionType.ANSIPorts:
-					typeBuilder = BuildFullANSIPortType(containingSection, containingSectionParameterIndex, impliedTypes);
+					typeBuilder = BuildFullANSIPortType(containingSection, containingSectionParameterIndex);
 					break;
 
 				case ParameterSectionType.NonANSIPorts:
 					// xxx temporary
-					return base.BuildFullParameterType(parameterIndex, out fullTypeStart, out fullTypeEnd, impliedTypes);
+					return base.BuildFullParameterType(parameterIndex, out fullTypeStart, out fullTypeEnd);
 
 				default:
 					throw new NotImplementedException();
@@ -1640,8 +1635,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 		/* Function: GetBaseParameterType
 		 */
-		override public bool GetBaseParameterType (int parameterIndex, out TokenIterator baseTypeStart,
-																		out TokenIterator baseTypeEnd, bool impliedTypes = true)
+		override public bool GetBaseParameterType (int parameterIndex, out TokenIterator baseTypeStart, out TokenIterator baseTypeEnd)
 			{
 			ParameterSection containingSection;
 			int containingSectionParameterIndex;
@@ -1657,15 +1651,15 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				{
 				case ParameterSectionType.ANSIParameterPorts:
 					return GetBaseANSIParameterPortType(containingSection, containingSectionParameterIndex,
-																			 out baseTypeStart, out baseTypeEnd, impliedTypes);
+																			 out baseTypeStart, out baseTypeEnd);
 
 				case ParameterSectionType.ANSIPorts:
 					return GetBaseANSIPortType(containingSection, containingSectionParameterIndex,
-															  out baseTypeStart, out baseTypeEnd, impliedTypes);
+															  out baseTypeStart, out baseTypeEnd);
 
 				case ParameterSectionType.NonANSIPorts:
 					// xxx temporary
-					return base.GetBaseParameterType(parameterIndex, out baseTypeStart, out baseTypeEnd, impliedTypes);
+					return base.GetBaseParameterType(parameterIndex, out baseTypeStart, out baseTypeEnd);
 
 				default:
 					throw new NotImplementedException();

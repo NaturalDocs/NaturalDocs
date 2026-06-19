@@ -136,16 +136,13 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * a continuous version of it.  The returned bounds will be <TokenIterators> based on that rather than on the original <Tokenizer>.
 		 * The new <Tokenizer> will still contain the same <PrototypeParsingTypes> and <SyntaxHighlightingTypes> of the original.
 		 *
-		 * If implied types is set and <SupportsImpliedTypes> is true this will return "int" for y in "int x, y".  If it is not set or
-		 * <SupportsImpliedTypes> is false then it will return false for y.
+		 * If the language supports implied types this will return "int" for y in "int x, y".  If it doesn't then it will return false for y.
 		 */
-		virtual public bool BuildFullParameterType (int parameterIndex, out TokenIterator fullTypeStart, out TokenIterator fullTypeEnd,
-																	  bool impliedTypes = true)
+		virtual public bool BuildFullParameterType (int parameterIndex, out TokenIterator fullTypeStart, out TokenIterator fullTypeEnd)
 			{
 			if (sections[mainSectionIndex] is ParameterSection)
 				{
-				return (sections[mainSectionIndex] as ParameterSection).BuildFullParameterType(parameterIndex, out fullTypeStart, out fullTypeEnd,
-																																	   (impliedTypes && SupportsImpliedTypes));
+				return (sections[mainSectionIndex] as ParameterSection).BuildFullParameterType(parameterIndex, out fullTypeStart, out fullTypeEnd);
 				}
 			else
 				{
@@ -161,15 +158,13 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * Returns the bounds of the type of the passed parameter, or false if it couldn't find it.  This excludes modifiers and type
 		 * suffixes.
 		 *
-		 * If implied types is set and <SupportsImpliedTypes> is true this will return "int" for y in "int x, y".  If it is not set or
-		 * <SupportsImpliedTypes> is false then it will return false for y.
+		 * If the language supports implied types this will return "int" for y in "int x, y".  If it doesn't then it will return false for y.
 		 */
-		virtual public bool GetBaseParameterType (int parameterIndex, out TokenIterator start, out TokenIterator end, bool impliedTypes = true)
+		virtual public bool GetBaseParameterType (int parameterIndex, out TokenIterator start, out TokenIterator end)
 			{
 			if (sections[mainSectionIndex] is ParameterSection)
 				{
-				return (sections[mainSectionIndex] as ParameterSection).GetBaseParameterType(parameterIndex, out start, out end,
-																																	  (impliedTypes && SupportsImpliedTypes));
+				return (sections[mainSectionIndex] as ParameterSection).GetBaseParameterType(parameterIndex, out start, out end);
 				}
 			else
 				{
