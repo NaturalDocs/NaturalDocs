@@ -1,27 +1,27 @@
 - Plain Section: type ObjectType
   - Access Level: Unknown
-  - Link Candidates: type
+  - Link Candidates: (none)
 
 ------------------------------
 
 - Plain Section: type UnionType
   - Access Level: Unknown
-  - Link Candidates: type
+  - Link Candidates: (none)
 
 ------------------------------
 
 - Plain Section: type IntersectionType
   - Access Level: Unknown
-  - Link Candidates: type
+  - Link Candidates: (none)
 
 ------------------------------
 
 - Plain Section: type TupleType
   - Access Level: Unknown
-  - Link Candidates: type
+  - Link Candidates: (none)
 
 ------------------------------
 
 - Plain Section: type ConditionalType
   - Access Level: Unknown
-  - Link Candidates: type
+  - Link Candidates: (none)

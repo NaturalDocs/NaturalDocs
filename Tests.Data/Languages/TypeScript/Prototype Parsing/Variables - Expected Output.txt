@@ -10,25 +10,25 @@ Typeless Variables:
 
 - Plain Section: var TypelessVar
   - Access Level: Unknown
-  - Link Candidates: var
+  - Link Candidates: (none)
 
 ------------------------------
 
 - Plain Section: var TypelessVarWithValue
   - Access Level: Unknown
-  - Link Candidates: var
+  - Link Candidates: (none)
 
 ------------------------------
 
 - Plain Section: let TypelessLet
   - Access Level: Unknown
-  - Link Candidates: let
+  - Link Candidates: (none)
 
 ------------------------------
 
 - Plain Section: let TypelessLetWithValue
   - Access Level: Unknown
-  - Link Candidates: let
+  - Link Candidates: (none)
 
 ------------------------------
 Typed Variables:
@@ -106,7 +106,7 @@ Modifiers:
 
 - Plain Section: readonly ReadOnlyUntyped
   - Access Level: Unknown
-  - Link Candidates: readonly
+  - Link Candidates: (none)
 
 ------------------------------
 
@@ -120,4 +120,4 @@ Modifiers:
 
 - Plain Section: var DecoratedVariable
   - Access Level: Unknown
-  - Link Candidates: var
+  - Link Candidates: (none)
