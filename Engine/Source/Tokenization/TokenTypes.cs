@@ -110,6 +110,21 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	 *								a parameter section, such as Microsoft's T-SQL, you can apply this to the whitespace token.  It is possible
 	 *								for these to appear without a corresponding <EndOfParams>.
 	 *		EndOfParams - The end of a parameter list, such as a closing parenthesis.
+	 *
+	 *		StartOfTemplateParams - The start of a template parameter list, such as the opening angle bracket in "List<int>".
+	 *		EndOfTemplateParams - The end of a template parameter list, such as the closing angle bracket in "List<int>".
+	 *		StartOfMetadataParams - The start of a parameter list appearing in metadata, such as the opening parenthesis in
+	 *											 "@Decorator(value)".
+	 *		EndOfMetadataParams - The end of a parameter list appearing in metadata, such as the closing parenthesis in
+	 *										   "@Decorator(value)".
+	 *
+	 *		StartOfAccessors - The start of an accessor section that is formatted like parameters, such as the opening brace in
+	 *								   "int PropertyName { get, set }".  Accessor sections will use <Name> or <KeywordName> and
+	 *								   <ParamSeparator>.
+	 *		EndOfAccessors - The end of an accessor section that is formatted like parameters, such as the closing brace in
+	 *								  "int PropertyName { get, set }".  Accessor sections will use <Name> or <KeywordName> and
+	 *								  <ParamSeparator>.
+	 *
 	 *		ParamSeparator - A separator between parameters, such as a comma.  If a language only uses whitespace to separate
 	 *								  parameters, such as Tcl, you can apply this to the whitespace token.
 	 *
@@ -261,32 +276,35 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 		StartOfPrototypeSection = 10, EndOfPrototypeSection = 11,
 
 		StartOfParams = 20, EndOfParams = 21,
-		ParamSeparator = 26,
-		OpeningParamDecorator = 28, ClosingParamDecorator = 29,
+		StartOfTemplateParams = 22, EndOfTemplateParams = 23,
+		StartOfMetadataParams = 24, EndOfMetadataParams = 25,
+		StartOfAccessors = 26, EndOfAccessors = 27,
+		ParamSeparator = 28,
+		OpeningParamDecorator = 30, ClosingParamDecorator = 31,
 
-		Type = 30,
-		TypeModifier = 32,
-		TypeQualifier = 34,
-		OpeningTypeModifier = 36, ClosingTypeModifier = 37,
+		Type = 40,
+		TypeModifier = 42,
+		TypeQualifier = 44,
+		OpeningTypeModifier = 46, ClosingTypeModifier = 47,
 
-		StartOfTuple = 40, EndOfTuple = 41,
-		TupleMemberSeparator = 42,
-		TupleMemberName = 44,
+		StartOfTuple = 50, EndOfTuple = 51,
+		TupleMemberSeparator = 52,
+		TupleMemberName = 54,
 
-		NameTypeSeparator = 50,
-		Name = 52,
-		KeywordName = 54,
+		NameTypeSeparator = 60,
+		Name = 62,
+		KeywordName = 64,
 
-		ParamModifier = 60,
-		OpeningParamModifier = 62, ClosingParamModifier = 63,
+		ParamModifier = 70,
+		OpeningParamModifier = 72, ClosingParamModifier = 73,
 
-		DefaultValueSeparator = 70,
-		DefaultValue = 72,
+		DefaultValueSeparator = 80,
+		DefaultValue = 82,
 
-		PropertyValueSeparator = 80,
-		PropertyValue = 82,
+		PropertyValueSeparator = 90,
+		PropertyValue = 92,
 
-		OpeningExtensionSymbol = 90, ClosingExtensionSymbol = 91
+		OpeningExtensionSymbol = 100, ClosingExtensionSymbol = 101
 		}
 
 
