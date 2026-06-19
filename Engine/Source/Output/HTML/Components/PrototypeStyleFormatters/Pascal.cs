@@ -73,10 +73,40 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 					}
 
 
-				// Modifiers/Qualifiers appearing before the name
+				// OpeningDecorator
 
 				int currentColumn = 0;
 				TokenIterator startOfCell = iterator;
+
+				// Only collect tokens for an opening param decorator column if one is explicitly marked.  We otherwise want unmarked symbol
+				// tokens to be modifier/qualifier.
+				if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningParamDecorator)
+					{
+					while (iterator < endOfParam)
+						{
+						PrototypeParsingType type = iterator.PrototypeParsingType;
+
+						// Also include any unmarked whitespace between the first opening param decorator and the next symbol.  We don't want
+						// this to become a modifier/qualifier column by itself.
+						if (type == PrototypeParsingType.OpeningParamDecorator ||
+							(type == PrototypeParsingType.Null && iterator.FundamentalType == FundamentalType.Whitespace))
+							{  iterator.Next();   }
+						else
+							{  break;  }
+						}
+					}
+
+				TokenIterator endOfCell = iterator;
+
+				cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
+				cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
+				cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
+
+
+				// Modifiers/Qualifiers appearing before the name
+
+				currentColumn++;
+				startOfCell = iterator;
 
 				// Only include them here if there's a name since otherwise we'd want them to apply to the type instead
 				if (hasName)
@@ -98,7 +128,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 						}
 					}
 
-				TokenIterator endOfCell = iterator;
+				endOfCell = iterator;
 
 				cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
 				cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
@@ -314,6 +344,28 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 				currentColumn++;
 				startOfCell = iterator;
 
+				while (iterator < endOfParam)
+					{
+					PrototypeParsingType type = iterator.PrototypeParsingType;
+
+					if (type != PrototypeParsingType.ClosingParamDecorator)
+						{  iterator.Next();   }
+					else
+						{  break;  }
+					}
+
+				endOfCell = iterator;
+
+				cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
+				cells[parameterIndex, currentColumn].HasTrailingSpace = endOfCell.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfCell);
+				cells[parameterIndex, currentColumn].EndingTextIndex = endOfCell.RawTextIndex;
+
+
+				// ClosingDecorator
+
+				currentColumn++;
+				startOfCell = iterator;
+
 				endOfCell = endOfParam;
 
 				cells[parameterIndex, currentColumn].StartingTextIndex = startOfCell.RawTextIndex;
@@ -338,6 +390,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 				case PrototypeColumnType.NameTypeSeparator:
 				case PrototypeColumnType.PropertyValueSeparator:
 					return ColumnSpacing.SpacedUnlessColon;
+
+				case PrototypeColumnType.OpeningDecorator:
+					return ColumnSpacing.AlwaysTrailing;
+
+				case PrototypeColumnType.ClosingDecorator:
+					return ColumnSpacing.AlwaysLeading;
 
 				default:
 					return ColumnSpacing.Normal;
@@ -368,7 +426,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 		/* var: ColumnOrderValues
 		 * An array of <PrototypeColumnTypes> representing the order in which columns should appear for Pascal-style prototypes.
 		 */
-		readonly static public PrototypeColumnType[] ColumnOrderValues = { PrototypeColumnType.ModifierQualifier,
+		readonly static public PrototypeColumnType[] ColumnOrderValues = { PrototypeColumnType.OpeningDecorator,
+																											  PrototypeColumnType.ModifierQualifier,
 																											  PrototypeColumnType.Name,
 																											  PrototypeColumnType.NameTypeSeparator,
 																											  PrototypeColumnType.Symbols,
@@ -376,6 +435,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 																											  PrototypeColumnType.PropertyValueSeparator,
 																											  PrototypeColumnType.PropertyValue,
 																											  PrototypeColumnType.DefaultValueSeparator,
-																											  PrototypeColumnType.DefaultValue };
+																											  PrototypeColumnType.DefaultValue,
+																											  PrototypeColumnType.ClosingDecorator };
 		}
 	}
