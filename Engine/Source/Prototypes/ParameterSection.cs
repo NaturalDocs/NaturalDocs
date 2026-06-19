@@ -529,7 +529,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 		/* Function: GetParameterDefaultValue
 		 * Returns the bounds of the parameter's default value as marked by <PrototypeParsingType.DefaultValueSeparator> and
-		 * <PrototypeParsingType.DefaultValue, or false if it couldn't find it.
+		 * <PrototypeParsingType.DefaultValue>, or false if it couldn't find it.
 		 */
 		public bool GetParameterDefaultValue (int index, out TokenIterator defaultValueStart, out TokenIterator defaultValueEnd)
 			{
@@ -653,12 +653,12 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 
 		/* var: beforeParameters
-		 * The part of the section before the first parameter, including <PrototypeParsingTypes.StartOfParams>, or null if none.
+		 * The part of the section before the first parameter, including <PrototypeParsingType.StartOfParams>, or null if none.
 		 */
 		protected Section beforeParameters;
 
 		/* var: afterParameters
-		 * The part of the section after the last parameter, including <PrototypeParsingTypes.EndOfParams>, or null if none.
+		 * The part of the section after the last parameter, including <PrototypeParsingType.EndOfParams>, or null if none.
 		 */
 		protected Section afterParameters;
 
