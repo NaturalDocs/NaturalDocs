@@ -63,6 +63,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				cSharp.MemberOperator = ".";
 				cSharp.EnumValue = Language.EnumValues.UnderType;
 				cSharp.CaseSensitive = true;
+				cSharp.ParameterStyle = Prototypes.ParameterStyle.C;
+				cSharp.ImpliedParameterTypes = true;
 
 			Language systemVerilog = new Language("SystemVerilog");
 				//systemVerilog.Type = Language.LanguageType.FullSupport;
@@ -75,6 +77,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				//systemVerilog.MemberOperator = ".";
 				//systemVerilog.EnumValue = Language.EnumValues.Global;
 				//systemVerilog.CaseSensitive = true;
+				systemVerilog.ParameterStyle = Prototypes.ParameterStyle.SystemVerilog;
+				systemVerilog.ImpliedParameterTypes = true;
 
 
 			// Basic language support with helper classes
@@ -82,6 +86,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			Language go = new Language("Go");
 				go.Parser = new Parsers.Go(engineInstance, go);
 				go.ParameterStyle = Prototypes.ParameterStyle.Pascal;
+				go.ImpliedParameterTypes = true;
 
 			Language java = new Language("Java");
 				java.Parser = new Parsers.Java(engineInstance, java);
@@ -122,12 +127,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			Language sql = new Language("SQL");
 				sql.Parser = new Parsers.SQL(engineInstance, sql);
+				sql.ParameterStyle = Prototypes.ParameterStyle.Pascal;
+				sql.ImpliedParameterTypes = true;
 
 			Language swift = new Language("Swift");
 				swift.Parser = new Parsers.Swift(engineInstance, swift);
 
 			Language tcl = new Language("Tcl");
 				tcl.Parser = new Parsers.Tcl(engineInstance, tcl);
+				tcl.ParameterStyle = Prototypes.ParameterStyle.Pascal;
 
 			Language typescript = new Language("TypeScript");
 				typescript.Parser = new Parsers.TypeScript(engineInstance, typescript);

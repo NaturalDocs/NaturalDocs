@@ -43,8 +43,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (TryToSkipProcedure(ref iterator, ParseMode.ParsePrototype))
 				{
-				return new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID,
-														 parameterStyle: ParameterStyle.C);
+				return new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID, engineInstance);
 				}
 			else
 				{

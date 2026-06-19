@@ -67,9 +67,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				TryToSkipTypeDef(ref iterator, ParseMode.ParsePrototype) ||
 				TryToSkipVariable(ref iterator, ParseMode.ParsePrototype))
 				{
-				return new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID,
-														 parameterStyle: ParameterStyle.Pascal,
-														 supportsImpliedTypes: true);
+				return new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID, engineInstance);
 				}
 			else
 				{

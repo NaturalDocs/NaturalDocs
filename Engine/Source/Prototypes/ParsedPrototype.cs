@@ -43,17 +43,17 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		/* Constructor: ParsedPrototype
 		 * Creates a new parsed prototype.
 		 */
-		public ParsedPrototype (Tokenizer prototype, int languageID, int commentTypeID,
-										   ParameterStyle parameterStyle = ParameterStyle.Unknown, bool supportsImpliedTypes = true)
+		public ParsedPrototype (Tokenizer prototype, int languageID, int commentTypeID, Engine.Instance engineInstance)
 			{
 			tokenizer = prototype;
 			sections = null;
 			mainSectionIndex = 0;
 
-			this.parameterStyle = parameterStyle;
+			parameterStyle = engineInstance.Languages.FromID(languageID).ParameterStyle;
+
+			this.engineInstance = engineInstance;
 			this.languageID = languageID;
 			this.commentTypeID = commentTypeID;
-			this.supportsImpliedTypes = supportsImpliedTypes;
 
 			RecalculateSections();
 			}
@@ -145,7 +145,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			if (sections[mainSectionIndex] is ParameterSection)
 				{
 				return (sections[mainSectionIndex] as ParameterSection).BuildFullParameterType(parameterIndex, out fullTypeStart, out fullTypeEnd,
-																																	   (impliedTypes && supportsImpliedTypes));
+																																	   (impliedTypes && SupportsImpliedTypes));
 				}
 			else
 				{
@@ -169,7 +169,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			if (sections[mainSectionIndex] is ParameterSection)
 				{
 				return (sections[mainSectionIndex] as ParameterSection).GetBaseParameterType(parameterIndex, out start, out end,
-																																	  (impliedTypes && supportsImpliedTypes));
+																																	  (impliedTypes && SupportsImpliedTypes));
 				}
 			else
 				{
@@ -291,7 +291,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					startOfSection.NextPastWhitespace(endOfSection);
 
 					if (sectionHasParams)
-						{  sections.Add( new ParameterSection(startOfSection, endOfSection, parameterStyle, supportsImpliedTypes) );  }
+						{  sections.Add( new ParameterSection(startOfSection, endOfSection, this) );  }
 					else
 						{  sections.Add( new Section(startOfSection, endOfSection) );  }
 
@@ -514,7 +514,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 
 		/* Property: ParameterStyle
-		 * The format of the prototype's parameters, such as C-style ("int x") or Pascal-style ("x: int").
+		 * The format of the prototype's parameters, such as C-style ("int x") or Pascal-style ("x: int").  This should only be set if the
+		 * associated <Language's> parameter style is <ParameterStyle.Unknown>.
 		 */
 		public ParameterStyle ParameterStyle
 			{
@@ -522,13 +523,12 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				{  return parameterStyle;  }
 			set
 				{
-				parameterStyle = value;
+				#if DEBUG
+				if (engineInstance.Languages.FromID(languageID).ParameterStyle != ParameterStyle.Unknown)
+					{  throw new Exception("You should not set a prototype parameter style manually unless its language's style is unknown.");  }
+				#endif
 
-				foreach (var section in sections)
-					{
-					if (section is ParameterSection)
-						{  (section as ParameterSection).ParameterStyle = value;  }
-					}
+				parameterStyle = value;
 				}
 			}
 
@@ -559,7 +559,17 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		public bool SupportsImpliedTypes
 			{
 			get
-				{  return supportsImpliedTypes;  }
+				{  return engineInstance.Languages.FromID(languageID).ImpliedParameterTypes;  }
+			}
+
+
+		/* Property: EngineInstance
+		 * The <Engine.Instance> associated with this prototype.
+		 */
+		public Engine.Instance EngineInstance
+			{
+			get
+				{  return engineInstance;  }
 			}
 
 
@@ -594,7 +604,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		protected int mainSectionIndex;
 
 		/* var: parameterStyle
-		 * The format of the prototype's parameters, such as C-style ("int x") or Pascal-style ("x: int").
+		 * The format of the prototype's parameters, such as C-style ("int x") or Pascal-style ("x: int").  This is needed as a separate
+		 * variable so it can be detected and set if <Language.ParameterStyle> is <ParameterStyle.Unknown>.
 		 */
 		protected ParameterStyle parameterStyle;
 
@@ -608,10 +619,10 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 */
 		protected int commentTypeID;
 
-		/* var: supportsImpliedTypes
-		 * Whether the prototype's language supports implied types.
+		/* var: engineInstance
+		 * The <Engine.Instance> associated with this prototype.
 		 */
-		protected bool supportsImpliedTypes;
+		protected Engine.Instance engineInstance;
 
 		}
 	}

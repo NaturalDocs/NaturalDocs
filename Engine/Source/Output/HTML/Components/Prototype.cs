@@ -393,7 +393,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					groupCount = 1;
 					groupAlignment = ParameterGroupAlignment.AlignAllColumns;
 
-					var parameterStyle = parameterLayouts[sectionIndex].ParameterStyle;
+					var parameterStyle = parsedPrototype.ParameterStyle;
 
 					// We'll lazy-load the opening symbol to avoid an allocation since the vast majority of prototypes will only have
 					// one parameter section.
@@ -429,7 +429,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 							{  break;  }
 
 						if (nextParameterSection.NumberOfParameters == 0 ||
-							nextParameterSection.ParameterStyle != parameterStyle ||
 							!start.MatchesAcrossTokens(openingSymbol) ||
 							end.RawTextIndex - start.RawTextIndex != openingSymbol.Length)
 							{

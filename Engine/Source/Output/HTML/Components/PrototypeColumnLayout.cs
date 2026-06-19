@@ -36,7 +36,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		internal PrototypeColumnLayout (ParsedPrototype parsedPrototype, Prototypes.ParameterSection parameterSection,
 														PrototypeCellLayout[,] cells)
 			{
-			parameterStyle = parameterSection.ParameterStyle;
+			parameterStyle = parsedPrototype.ParameterStyle;
 			columnWidths = new int[Formatter.ColumnCount];
 			nameTypeSeparatorCanShiftLeft = false;
 
@@ -210,7 +210,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 													 PrototypeCellLayout[,] cells)
 			{
 			#if DEBUG
-			if (parameterSection.ParameterStyle != parameterStyle)
+			if (parsedPrototype.ParameterStyle != parameterStyle)
 				{  throw new Exception("Can only call RecalculateWidths() on the same prototype.");  }
 			#endif
 

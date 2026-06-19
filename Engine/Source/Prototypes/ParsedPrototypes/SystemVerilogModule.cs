@@ -138,8 +138,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 		/* Constructor: SystemVerilogModule
 		 */
-		public SystemVerilogModule (Tokenizer prototype, int languageID, int commentTypeID)
-			: base (prototype, languageID, commentTypeID, parameterStyle: ParameterStyle.SystemVerilog, supportsImpliedTypes: true)
+		public SystemVerilogModule (Tokenizer prototype, int languageID, int commentTypeID, Engine.Instance engineInstance)
+			: base (prototype, languageID, commentTypeID, engineInstance)
 			{
 			}
 

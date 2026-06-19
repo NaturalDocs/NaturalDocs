@@ -627,8 +627,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				// We have enough tokens marked to create the parsed prototype.  This will also let us iterate through the parameters
 				// easily.
 
-				parsedPrototype = new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID,
-																		  language.ParameterStyle, language.ImpliedParameterTypes);
+				parsedPrototype = new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID, engineInstance);
 
 
 				// If there are any parameters, mark the tokens in them.  We only have to do the main section because if any sections
@@ -695,11 +694,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			else
 				{
-				parsedPrototype = new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID);
+				parsedPrototype = new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID, engineInstance);
 				TokenIterator start = tokenizedPrototype.FirstToken;
 				TokenIterator end = tokenizedPrototype.EndOfTokens;
 
-				parsedPrototype.ParameterStyle = DetectParameterStyle(start, end);
+				if (parsedPrototype.ParameterStyle == ParameterStyle.Unknown)
+					{  parsedPrototype.ParameterStyle = DetectParameterStyle(start, end);  }
+
 				MarkParameter(start, end, parsedPrototype.ParameterStyle);
 				}
 

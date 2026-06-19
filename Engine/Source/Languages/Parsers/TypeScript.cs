@@ -94,9 +94,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (TryToSkipFunction(ref iterator, ParseMode.ParsePrototype))
 				{
-				return new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID,
-														 parameterStyle: ParameterStyle.Pascal,
-														 supportsImpliedTypes: false);
+				return new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID, engineInstance);
 				}
 			else
 				{

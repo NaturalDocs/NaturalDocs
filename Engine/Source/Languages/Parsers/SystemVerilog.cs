@@ -56,7 +56,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (parsed && isModule)
 				{
-				var parsedPrototype = new Prototypes.ParsedPrototypes.SystemVerilogModule(tokenizedPrototype, this.Language.ID, commentTypeID);
+				var parsedPrototype = new Prototypes.ParsedPrototypes.SystemVerilogModule(tokenizedPrototype, this.Language.ID, commentTypeID,
+																																 engineInstance);
 
 				// If there's multiple sections, make sure the parameter one with () is set to main.  Skip parameter ports with #() and
 				// attributes with (* *).

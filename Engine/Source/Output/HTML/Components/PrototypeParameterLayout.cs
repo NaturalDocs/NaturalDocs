@@ -201,7 +201,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			if (parameters.NumberOfParameters == 0)
 				{  cells = null;  }
 			else
-				{  cells = Prototype.FormatterOf(parameters.ParameterStyle).CalculateCells(parameters);  }
+				{  cells = Prototype.FormatterOf(parsedPrototype.ParameterStyle).CalculateCells(parameters);  }
 
 			columns = new PrototypeColumnLayout(parsedPrototype, parameters, cells);
 			}
@@ -217,7 +217,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		public ParameterStyle ParameterStyle
 			{
 			get
-				{  return parameters.ParameterStyle;  }
+				{  return parsedPrototype.ParameterStyle;  }
 			}
 
 

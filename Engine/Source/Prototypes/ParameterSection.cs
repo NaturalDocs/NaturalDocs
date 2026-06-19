@@ -30,17 +30,14 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * Pass the start and end of the entire section to be covered, including the before and after parameters part.  This function will
 		 * automatically call <RecalculateParameters()> so you don't have to.
 		 */
-		public ParameterSection (TokenIterator start, TokenIterator end,
-											 ParameterStyle parameterStyle = ParameterStyle.Unknown,
-											 bool supportsImpliedTypes = true)
+		public ParameterSection (TokenIterator start, TokenIterator end, ParsedPrototype parsedPrototype)
 			: base (start, end)
 			{
 			beforeParameters = null;
 			afterParameters = null;
 			parameters = null;
 
-			this.parameterStyle = parameterStyle;
-			this.supportsImpliedTypes = supportsImpliedTypes;
+			this.parsedPrototype = parsedPrototype;
 
 			RecalculateParameters();
 			}
@@ -367,7 +364,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 				// If not, find the closest parameter that defines one.
 				int impliedTypeIndex;
-				if (impliedTypes && supportsImpliedTypes && GetImpliedTypeIndex(index, out impliedTypeIndex))
+				if (impliedTypes && parsedPrototype.SupportsImpliedTypes && GetImpliedTypeIndex(index, out impliedTypeIndex))
 					{  return parameters[impliedTypeIndex].GetBaseType(out baseTypeStart, out baseTypeEnd);  }
 				}
 
@@ -393,6 +390,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 */
 		public bool BuildFullParameterType (int index, out TokenIterator fullTypeStart, out TokenIterator fullTypeEnd, bool impliedTypes = true)
 			{
+			var parameterStyle = parsedPrototype.ParameterStyle;
+
 			if (parameters != null && index >= 0 && index < parameters.Count)
 				{
 				// If the parameter has its own type, we can use the existing Build function.
@@ -404,7 +403,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				// If not, build one from the closest parameter that defines one.
 
 				int impliedTypeIndex;
-				if (impliedTypes && supportsImpliedTypes && GetImpliedTypeIndex(index, out impliedTypeIndex))
+				if (impliedTypes && parsedPrototype.SupportsImpliedTypes && GetImpliedTypeIndex(index, out impliedTypeIndex))
 					{
 					TypeBuilder typeBuilder = new TypeBuilder();
 
@@ -415,7 +414,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 					TokenIterator iterator, end, name;
 
-					if (ParameterStyle == ParameterStyle.Pascal)
+					if (parameterStyle == ParameterStyle.Pascal)
 						{
 						iterator = parameters[index].Start;
 						end = parameters[index].End;
@@ -485,7 +484,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					// "[12]" in "out a[12], b: integer".  For C-style parameters we'll start at the beginning because we didn't add
 					// any before.
 
-					if (ParameterStyle == ParameterStyle.Pascal)
+					if (parameterStyle == ParameterStyle.Pascal)
 						{  iterator = name;  }
 					else
 						{  iterator = parameters[index].Start;  }
@@ -553,12 +552,13 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		protected bool GetImpliedTypeIndex (int parameterIndex, out int impliedTypeIndex)
 			{
 			impliedTypeIndex = parameterIndex;
+			var parameterStyle = parsedPrototype.ParameterStyle;
 
 			for (;;)
 				{
-				if (ParameterStyle == ParameterStyle.C ||
-					ParameterStyle == ParameterStyle.SystemVerilog ||
-					ParameterStyle == ParameterStyle.Unknown)
+				if (parameterStyle == ParameterStyle.C ||
+					parameterStyle == ParameterStyle.SystemVerilog ||
+					parameterStyle == ParameterStyle.Unknown)
 					{
 					impliedTypeIndex--;
 
@@ -568,7 +568,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 						return false;
 						}
 					}
-				else if (ParameterStyle == ParameterStyle.Pascal)
+				else if (parameterStyle == ParameterStyle.Pascal)
 					{
 					impliedTypeIndex++;
 
@@ -647,27 +647,6 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			}
 
 
-		/* Property: ParameterStyle
-		 */
-		public ParameterStyle ParameterStyle
-			{
-			get
-				{  return parameterStyle;  }
-			set
-				{  parameterStyle = value;  }
-			}
-
-
-		/* Property: SupportsImpliedTypes
-		 * Whether the prototype's language supports implied types.
-		 */
-		public bool SupportsImpliedTypes
-			{
-			get
-				{  return supportsImpliedTypes;  }
-			}
-
-
 
 		// Group: Variables
 		// __________________________________________________________________________
@@ -688,15 +667,10 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 */
 		protected List<Section> parameters;
 
-		/* var: parameterStyle
-		 * The format of the parameters, such as C-style ("int x") or Pascal-style ("x: int").
+		/* var: parsedPrototype
+		 * The <ParsedPrototype> associated with this section.
 		 */
-		protected ParameterStyle parameterStyle;
-
-		/* var: supportsImpliedTypes
-		 * Whether the prototype's language supports implied types.
-		 */
-		protected bool supportsImpliedTypes;
+		protected ParsedPrototype parsedPrototype;
 
 		}
 	}
