@@ -80,6 +80,15 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	 *		Null - Returned when the token is out of bounds or one of these values hasn't been assigned to it yet.
 	 *
 	 *
+	 *	Value Rules:
+	 *
+	 *		- For any pair of Opening/Closing or StartOf/EndOf types, the closing type will use the opening type's value + 1.  This lets
+	 *		  you easily get the closing value for any opening value.
+	 *
+	 *		- For any symbol that isn't part of an opening/closing pair, the value + 1 will not be a valid value.  That means you can
+	 *		  do something like <ParamSeparator> + 1 and it will never appear as a token.
+	 *
+	 *
 	 * Sections:
 	 *
 	 *		Sections are used to separate prototypes into blocks which are individually formatted.  For example, attributes in C# are
@@ -242,25 +251,42 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	 */
 	public enum PrototypeParsingType :  byte
 		{
+
+		// Rules for Values:
+		// - All Closing/EndOf values are the Opening/StartOf values + 1
+		// - All non-paired values + 1 are invalid
+
 		Null = 0,
 
-		StartOfPrototypeSection, EndOfPrototypeSection,
+		StartOfPrototypeSection = 10, EndOfPrototypeSection = 11,
 
-		StartOfParams, EndOfParams, ParamSeparator, OpeningParamDecorator, ClosingParamDecorator,
+		StartOfParams = 20, EndOfParams = 21,
+		ParamSeparator = 26,
+		OpeningParamDecorator = 28, ClosingParamDecorator = 29,
 
-		Type, TypeModifier, TypeQualifier, OpeningTypeModifier, ClosingTypeModifier,
+		Type = 30,
+		TypeModifier = 32,
+		TypeQualifier = 34,
+		OpeningTypeModifier = 36, ClosingTypeModifier = 37,
 
-		StartOfTuple, EndOfTuple, TupleMemberSeparator, TupleMemberName,
+		StartOfTuple = 40, EndOfTuple = 41,
+		TupleMemberSeparator = 42,
+		TupleMemberName = 44,
 
-		NameTypeSeparator, Name, KeywordName,
+		NameTypeSeparator = 50,
+		Name = 52,
+		KeywordName = 54,
 
-		ParamModifier, OpeningParamModifier, ClosingParamModifier,
+		ParamModifier = 60,
+		OpeningParamModifier = 62, ClosingParamModifier = 63,
 
-		DefaultValueSeparator, DefaultValue,
+		DefaultValueSeparator = 70,
+		DefaultValue = 72,
 
-		PropertyValueSeparator, PropertyValue,
+		PropertyValueSeparator = 80,
+		PropertyValue = 82,
 
-		OpeningExtensionSymbol, ClosingExtensionSymbol
+		OpeningExtensionSymbol = 90, ClosingExtensionSymbol = 91
 		}
 
 
