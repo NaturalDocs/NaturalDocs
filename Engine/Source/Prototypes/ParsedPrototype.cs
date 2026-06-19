@@ -619,5 +619,23 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 */
 		protected Engine.Instance engineInstance;
 
+
+
+		// Group: Static Variables
+		// __________________________________________________________________________
+
+
+		/* Constant: StartOfParamsTypes
+		 * An array of all the <PrototypeParsingTypes>, such as <PrototypeParsingType.StartOfParams> and
+		 * <PrototypeParsingType.StartOfTemplateParams>.  These will be in order of importance, so when matching parameter
+		 * names you should use parameter sections that appear earlier on this list first.
+		 */
+		public static PrototypeParsingType[] StartOfParamsTypes = {
+			PrototypeParsingType.StartOfParams,
+			PrototypeParsingType.StartOfAccessors,
+			PrototypeParsingType.StartOfTemplateParams,
+			PrototypeParsingType.StartOfMetadataParams
+			};
+
 		}
 	}

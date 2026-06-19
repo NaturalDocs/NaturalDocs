@@ -36,6 +36,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			beforeParameters = null;
 			afterParameters = null;
 			parameters = null;
+			startingParameterType = PrototypeParsingType.Null;
 
 			this.parsedPrototype = parsedPrototype;
 
@@ -148,7 +149,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 				while (lookbehind >= beforeParameters.Start)
 					{
-					if (lookbehind.PrototypeParsingType == PrototypeParsingType.StartOfParams ||
+					if (StartOfParamsTypes.Contains(lookbehind.PrototypeParsingType) ||
 						lookbehind.PrototypeParsingType == PrototypeParsingType.OpeningExtensionSymbol)
 						{
 						symbolStart = lookbehind;
@@ -175,10 +176,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 
 		/* Function: RecalculateParameters
-		 * Scans this section for <PrototypeParsingType.StartOfParams>, <PrototypeParsingType.EndOfParams>, and
-		 * <PrototypeParsingTypes.ParamSeparator> tokens to determine how many parameters there are and allow easy access to them
-		 * individually.  This is automatically called by the constructor so you only need to call this manually if you made changes to these
-		 * token types after creating this object.
+		 * Scans this section for parameter bounding tokens like <PrototypeParsingType.StartOfParams> and
+		 * <PrototypeParsingType.EndOfParams>, as well as <PrototypeParsingType.ParamSeparator> to determine how
+		 * many parameters there are and allow easy access to them individually.  This is automatically called by the
+		 * constructor so you only need to call this manually if you made changes to these token types after creating this
+		 * object.  This also updates <StartingParameterType>.
 		 */
 		public void RecalculateParameters ()
 			{
@@ -188,16 +190,26 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			// Before parameters
 
 			while (iterator < end &&
-					 iterator.PrototypeParsingType != PrototypeParsingType.StartOfParams)
+					  !StartOfParamsTypes.Contains(iterator.PrototypeParsingType))
 				{  iterator.Next();  }
 
-			if (iterator.PrototypeParsingType == PrototypeParsingType.StartOfParams)
+			PrototypeParsingType endingType;
+
+			if (iterator < end)
 				{
+				startingParameterType = iterator.PrototypeParsingType;
+				endingType = startingParameterType + 1;
+
 				iterator.Next();
 
 				// Note that it could be more than one token, such as "(*".
 				while (iterator.PrototypeParsingType == PrototypeParsingType.OpeningExtensionSymbol)
 					{  iterator.Next();  }
+				}
+			else
+				{
+				startingParameterType = PrototypeParsingType.Null;
+				endingType = PrototypeParsingType.Null;
 				}
 
 			beforeParameters = new Section(start, iterator);
@@ -208,11 +220,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				{  iterator.Next();  }
 
 
-			// Count the parameters so we don't allocate more memory than we need for the list.  Also, there may not be any parameters
-			// at all since it could be a pair of empty parentheses.
+			// Count the parameters so we don't allocate more memory than we need for the list.  Also, there may not be any
+			// parameters at all since it could be a pair of empty parentheses.
 
 			if (iterator < end &&
-				iterator.PrototypeParsingType != PrototypeParsingType.EndOfParams)
+				iterator.PrototypeParsingType != endingType)
 				{
 				TokenIterator startOfFirstParam = iterator;
 				int paramCount = 1;
@@ -225,7 +237,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					iterator.Next();
 					}
 				while (iterator < end &&
-						 iterator.PrototypeParsingType != PrototypeParsingType.EndOfParams);
+						 iterator.PrototypeParsingType != endingType);
 
 
 				// Get the actual parameters
@@ -238,7 +250,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				for (;;)
 					{
 					if (iterator >= end ||
-						iterator.PrototypeParsingType == PrototypeParsingType.EndOfParams)
+						iterator.PrototypeParsingType == endingType)
 						{
 						TokenIterator lookbehind = iterator;
 						lookbehind.Previous();
@@ -647,18 +659,29 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			}
 
 
+		/* Property: StartingParameterType
+		 * The starting <PrototypeParsingType> of the parameter section.  It will be a value in <ParameterTypes> such as
+		 * <PrototypeParsingType.StartOfParams> or <PrototypeParsingType.StartOfTemplateParams>.
+		 */
+		public PrototypeParsingType StartingParameterType
+			{
+			get
+				{  return startingParameterType;  }
+			}
+
+
 
 		// Group: Variables
 		// __________________________________________________________________________
 
 
 		/* var: beforeParameters
-		 * The part of the section before the first parameter, including <PrototypeParsingType.StartOfParams>, or null if none.
+		 * The part of the section before the first parameter, including the opening parameter symbol, or null if none.
 		 */
 		protected Section beforeParameters;
 
 		/* var: afterParameters
-		 * The part of the section after the last parameter, including <PrototypeParsingType.EndOfParams>, or null if none.
+		 * The part of the section after the last parameter, including the closing parameter symbol, or null if none.
 		 */
 		protected Section afterParameters;
 
@@ -667,10 +690,32 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 */
 		protected List<Section> parameters;
 
+		/* var: startingParameterType
+		 * The starting <PrototypeParsingType> of the parameter section.  It will be a value in <ParameterTypes> such as
+		 * <PrototypeParsingType.StartOfParams> or <PrototypeParsingType.StartOfTemplateParams>.
+		 */
+		protected PrototypeParsingType startingParameterType;
+
 		/* var: parsedPrototype
 		 * The <ParsedPrototype> associated with this section.
 		 */
 		protected ParsedPrototype parsedPrototype;
+
+
+
+		// Group: Static Variables
+		// __________________________________________________________________________
+
+
+		/* Constant: StartOfParamsTypes
+		 *
+		 * An array of all the <PrototypeParsingTypes>, such as <PrototypeParsingType.StartOfParams> and
+		 * <PrototypeParsingType.StartOfTemplateParams>.  These will be in order of importance, so when matching parameter
+		 * names you should use parameter sections that appear earlier on this list first.
+		 *
+		 * This is a convenience alias to <ParsedPrototype.StartOfParamTypes>.  The contents are the same.
+		 */
+		public static PrototypeParsingType[] StartOfParamsTypes = ParsedPrototype.StartOfParamsTypes;
 
 		}
 	}
