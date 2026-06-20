@@ -216,8 +216,9 @@ namespace CodeClear.NaturalDocs.Engine.Links
 						long lastParamScore = ScoreParameter(topic.ParsedPrototype, linkParameters, 9, !language.CaseSensitive);
 						int maxParameters = linkParameters.NumberOfParameters;
 
-						if (topic.ParsedPrototype != null && topic.ParsedPrototype.NumberOfParameters > maxParameters)
-							{  maxParameters = topic.ParsedPrototype.NumberOfParameters;  }
+						if (topic.ParsedPrototype != null && topic.ParsedPrototype.MainParameterSection != null &&
+							topic.ParsedPrototype.MainParameterSection.NumberOfParameters > maxParameters)
+							{  maxParameters = topic.ParsedPrototype.MainParameterSection.NumberOfParameters;  }
 
 						for (int i = 10; i < maxParameters; i++)
 							{
@@ -627,7 +628,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			bool hasLinkParam = linkParameters.GetParameter(index, out linkParamStart, out linkParamEnd);
 			bool hasPrototypeParam;
 
-			if (prototype == null)
+			if (prototype == null || prototype.MainParameterSection == null)
 				{
 				hasPrototypeParam = false;
 
@@ -636,7 +637,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				prototypeParamEnd = new TokenIterator();
 				}
 			else
-				{  hasPrototypeParam = prototype.GetParameter(index, out prototypeParamStart, out prototypeParamEnd);  }
+				{  hasPrototypeParam = prototype.MainParameterSection.GetParameterBounds(index, out prototypeParamStart, out prototypeParamEnd);  }
 
 			if (!hasLinkParam)
 				{

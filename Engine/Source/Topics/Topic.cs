@@ -1334,20 +1334,27 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 					{
 					ParsedPrototype parsedPrototype = this.ParsedPrototype;
 
-					if (parsedPrototype == null || parsedPrototype.NumberOfParameters == 0)
+					if (parsedPrototype == null)
 						{  prototypeParameters = new ParameterString();  }
 					else
 						{
-						string[] parameterTypes = new string[parsedPrototype.NumberOfParameters];
-						Tokenization.TokenIterator start, end;
+						ParameterSection parameters = parsedPrototype.MainParameterSection;
 
-						for (int i = 0; i < parsedPrototype.NumberOfParameters; i++)
-							{
-							if (parsedPrototype.GetBaseParameterType(i, out start, out end))
-								{  parameterTypes[i] = start.TextBetween(end);  }
+						if (parameters == null || parameters.NumberOfParameters == 0)
+							{  prototypeParameters = new ParameterString();  }
+						else
+								{
+							string[] parameterTypes = new string[parameters.NumberOfParameters];
+							Tokenization.TokenIterator start, end;
+
+							for (int i = 0; i < parameters.NumberOfParameters; i++)
+								{
+								if (parameters.GetBaseParameterType(i, out start, out end))
+									{  parameterTypes[i] = start.TextBetween(end);  }
+								}
+
+							prototypeParameters = ParameterString.FromParameterTypes(parameterTypes);
 							}
-
-						prototypeParameters = ParameterString.FromParameterTypes(parameterTypes);
 						}
 
 					buildFlags |= BuildFlags.PrototypeParameters;

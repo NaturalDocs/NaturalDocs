@@ -325,11 +325,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			var parsedPrototype = new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID, engineInstance);
 
-			// Set the main section index to the first one.  There's no metadata to create parameter sections before the function
-			// parameters, but T-SQL functions can have table definitions as return valuse to make a parameter section that follows
-			// it.  Also, we give T-SQL's "WITH" clauses their own prototype section at the end as well.
-			parsedPrototype.MainSectionIndex = 0;
-
 			return parsedPrototype;
 			}
 
@@ -852,7 +847,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				lookahead.Next();
 
 				if (mode == ParseMode.ParsePrototype)
-					{  lookahead.PrototypeParsingType = PrototypeParsingType.StartOfParams;  }
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.StartOfMetadataParams;  }
 
 				lookahead.Next();
 				TokenIterator startOfStretch = lookahead;

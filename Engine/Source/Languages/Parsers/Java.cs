@@ -168,8 +168,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				TokenIterator closingParen = lookahead;
 				closingParen.Previous();
 
-				openingParen.PrototypeParsingType = PrototypeParsingType.StartOfParams;
-				closingParen.PrototypeParsingType = PrototypeParsingType.EndOfParams;
+				openingParen.PrototypeParsingType = PrototypeParsingType.StartOfMetadataParams;
+				closingParen.PrototypeParsingType = PrototypeParsingType.EndOfMetadataParams;
 
 				lookahead = openingParen;
 				lookahead.Next();

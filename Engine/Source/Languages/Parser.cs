@@ -630,19 +630,19 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				parsedPrototype = new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID, engineInstance);
 
 
-				// If there are any parameters, mark the tokens in them.  We only have to do the main section because if any sections
-				// were created by metadata, that means the metadata section was already marked with prototype parsing tokens.
+				// If there are any parameters, mark the tokens in them.
 
+				Prototypes.ParameterSection parameters = parsedPrototype.MainParameterSection;
 				TokenIterator start, end;
 
-				if (parsedPrototype.NumberOfParameters > 0)
+				if (parameters.NumberOfParameters > 0)
 					{
 					if (parsedPrototype.ParameterStyle == ParameterStyle.Unknown)
-						{  parsedPrototype.ParameterStyle = DetectParameterStyle(parsedPrototype);  }
+						{  parsedPrototype.ParameterStyle = DetectParameterStyle(parameters);  }
 
-					for (int i = 0; i < parsedPrototype.NumberOfParameters; i++)
+					for (int i = 0; i < parameters.NumberOfParameters; i++)
 						{
-						parsedPrototype.GetParameter(i, out start, out end);
+						parameters.GetParameterBounds(i, out start, out end);
 						MarkParameter(start, end, parsedPrototype.ParameterStyle);
 						}
 					}
@@ -651,7 +651,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				// Mark the return value of functions.  First we'll check if there's a colon after the parameters to see if it's a
 				// Pascal-style function.
 
-				parsedPrototype.GetAfterParameters(out start, out end);
+				parameters.GetAfterParameters(out start, out end);
 
 				// Exclude the closing bracket
 				if (start.PrototypeParsingType == PrototypeParsingType.EndOfParams)
@@ -678,7 +678,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				// Otherwise assume it's a C-style function.  Mark the part before the parameters, which includes the name.
 				else
 					{
-					parsedPrototype.GetBeforeParameters(out start, out end);
+					parameters.GetBeforeParameters(out start, out end);
 
 					// Exclude the opening bracket
 					end.Previous();
@@ -695,13 +695,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			else
 				{
 				parsedPrototype = new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID, engineInstance);
-				TokenIterator start = tokenizedPrototype.FirstToken;
-				TokenIterator end = tokenizedPrototype.EndOfTokens;
+
+				// Use the last section in case metadata creates its own sections at the beginning
+				Prototypes.Section lastSection = parsedPrototype.Sections[ parsedPrototype.Sections.Count - 1 ];
 
 				if (parsedPrototype.ParameterStyle == ParameterStyle.Unknown)
-					{  parsedPrototype.ParameterStyle = DetectParameterStyle(start, end);  }
+					{  parsedPrototype.ParameterStyle = DetectParameterStyle(lastSection.Start, lastSection.End);  }
 
-				MarkParameter(start, end, parsedPrototype.ParameterStyle);
+				MarkParameter(lastSection.Start, lastSection.End, parsedPrototype.ParameterStyle);
 				}
 
 			return parsedPrototype;
@@ -4753,11 +4754,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 		/* Function: DetectParameterStyle
-		 * Determines whether the parameters in this prototype use the C or Pascal style.
+		 * Determines whether the parameters in this prototype section use the C or Pascal style.
 		 */
-		protected ParameterStyle DetectParameterStyle (ParsedPrototype prototype)
+		protected ParameterStyle DetectParameterStyle (Prototypes.ParameterSection prototypeSection)
 			{
-			if (prototype.NumberOfParameters == 0)
+			if (prototypeSection.NumberOfParameters == 0)
 				{  return ParameterStyle.Unknown;  }
 
 			// We have to go through all the parameters to see if any are Pascal-style since some may appear as C-style.  For
@@ -4770,9 +4771,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			TokenIterator start, end;
 
-			for (int i = 0; i < prototype.NumberOfParameters; i++)
+			for (int i = 0; i < prototypeSection.NumberOfParameters; i++)
 				{
-				prototype.GetParameter(i, out start, out end);
+				prototypeSection.GetParameterBounds(i, out start, out end);
 
 				if (DetectParameterStyle(start, end) == ParameterStyle.Pascal)
 					{  return ParameterStyle.Pascal;  }
@@ -5519,20 +5520,21 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		/* Function: NormalizeMetadataProperties
 		 *
 		 * Goes through the metadata properties and reformats them in a way that will be consistent across languages.  The start
-		 * can be at the beginning of the metadata or the <PrototypeParsingType.StartOfParams> token.  If the metadata doesn't
-		 * have parameters this will have no effect.
+		 * can be at the beginning of the metadata or the <PrototypeParsingType.StartOfMetadataParams> token.  If the metadata
+		 * doesn't have parameters this will have no effect.
 		 *
 		 * Currently this checks if the first parameter has a <PrototypeParsingType.Name> token, and if not, resets any prototype
-		 * parsing tokens in the parameter list, including <PrototypeParsingType.StartOfParams> and <PrototypeParsingType.EndOfParams>.
-		 * This lets parameter lists that are only values ("[Attribute(12, null)]") format on one line but ones that are named
-		 * ("[Attribute(Param1 = 12, Param2 = null)]") format in columns like function parameter lists.
+		 * parsing tokens in the parameter list, including <PrototypeParsingType.StartOfMetadataParams> and
+		 * <PrototypeParsingType.EndOfMetadataParams>.  This lets parameter lists that are only values ("[Attribute(12, null)]")
+		 * format on one line but ones that are named ("[Attribute(Param1 = 12, Param2 = null)]") format in columns like function
+		 * parameter lists.
 		 */
 		protected void NormalizeMetadataProperties (TokenIterator start, TokenIterator end)
 			{
 			TokenIterator iterator = start;
 
-			// First find the StartOfParams token
-			while (iterator.PrototypeParsingType != PrototypeParsingType.StartOfParams)
+			// First find the StartOfMetadataParams token
+			while (iterator.PrototypeParsingType != PrototypeParsingType.StartOfMetadataParams)
 				{
 				// If there isn't one we can just exit
 				if (iterator >= end)
@@ -5546,7 +5548,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			iterator.Next();
 
 			while (iterator < end &&
-					  iterator.PrototypeParsingType != PrototypeParsingType.EndOfParams &&
+					  iterator.PrototypeParsingType != PrototypeParsingType.EndOfMetadataParams &&
 					  iterator.PrototypeParsingType != PrototypeParsingType.ParamSeparator)
 				{
 				// If we hit a name that means the first parameter has a name and we can leave it alone.  We want it to format as a
@@ -5562,13 +5564,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			iterator = startOfParams;
 
 			while (iterator < end &&
-					  iterator.PrototypeParsingType != PrototypeParsingType.EndOfParams)
+					  iterator.PrototypeParsingType != PrototypeParsingType.EndOfMetadataParams)
 				{
 				iterator.PrototypeParsingType = PrototypeParsingType.Null;
 				iterator.Next();
 				}
 
-			if (iterator.PrototypeParsingType == PrototypeParsingType.EndOfParams)
+			if (iterator.PrototypeParsingType == PrototypeParsingType.EndOfMetadataParams)
 				{  iterator.PrototypeParsingType = PrototypeParsingType.Null;  }
 			}
 

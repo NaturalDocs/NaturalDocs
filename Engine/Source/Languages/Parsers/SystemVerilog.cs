@@ -82,7 +82,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						if (end.Character == '#')
 							{  continue;  }
 
-						parsedPrototype.MainSectionIndex = i;
 						break;
 						}
 					}

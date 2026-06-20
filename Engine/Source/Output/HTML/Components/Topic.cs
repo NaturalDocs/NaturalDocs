@@ -474,31 +474,37 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 								TokenIterator start, end;
 								int matchedParameter = -1;
 
-								for (int i = 0; i < parsedPrototype.NumberOfParameters; i++)
-									{
-									parsedPrototype.GetParameterName(i, out start, out end);
 
-									if ( (parameterListSymbol != null && parsedPrototype.Tokenizer.EqualsTextBetween(parameterListSymbol, true, start, end)) ||
-										 (altParameterListSymbol != null && parsedPrototype.Tokenizer.EqualsTextBetween(altParameterListSymbol, true, start, end)) )
+								var parameters = parsedPrototype.MainParameterSection;
+
+								if (parameters != null && parameters.NumberOfParameters > 0)
+									{
+									for (int i = 0; i < parameters.NumberOfParameters; i++)
 										{
-										matchedParameter = i;
-										break;
+										parameters.GetParameterName(i, out start, out end);
+
+										if ( (parameterListSymbol != null && parsedPrototype.Tokenizer.EqualsTextBetween(parameterListSymbol, true, start, end)) ||
+											 (altParameterListSymbol != null && parsedPrototype.Tokenizer.EqualsTextBetween(altParameterListSymbol, true, start, end)) )
+											{
+											matchedParameter = i;
+											break;
+											}
 										}
-									}
 
-								// If so, include the type under the entry in the HTML
-								if (matchedParameter != -1)
-									{
-									parsedPrototype.BuildFullParameterType(matchedParameter, out start, out end);
-
-									if (start < end &&
-										// Don't include single symbol types
-										 !(end.RawTextIndex - start.RawTextIndex == 1 &&
-										   (start.Character == '$' || start.Character == '@' || start.Character == '%')) )
+									// If so, include the type under the entry in the HTML
+									if (matchedParameter != -1)
 										{
-										output.Append("<div class=\"CDLParameterType\">");
-										AppendSyntaxHighlightedTextWithTypeLinks(start, end, output, links, linkTargets);
-										output.Append("</div>");
+										parameters.BuildFullParameterType(matchedParameter, out start, out end);
+
+										if (start < end &&
+											// Don't include single symbol types
+											 !(end.RawTextIndex - start.RawTextIndex == 1 &&
+											   (start.Character == '$' || start.Character == '@' || start.Character == '%')) )
+											{
+											output.Append("<div class=\"CDLParameterType\">");
+											AppendSyntaxHighlightedTextWithTypeLinks(start, end, output, links, linkTargets);
+											output.Append("</div>");
+											}
 										}
 									}
 								}

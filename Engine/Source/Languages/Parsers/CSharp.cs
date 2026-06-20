@@ -893,12 +893,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						// properties.
 						var parametersPrototype = new ParsedPrototype(parametersTokenizer, this.Language.ID, propertyCommentTypeID,
 																							   engineInstance);
+						var parameters = parametersPrototype.MainParameterSection;
 
-						for (int i = 0; i < parametersPrototype.NumberOfParameters; i++)
+						for (int i = 0; i < parameters.NumberOfParameters; i++)
 							{
 							TokenIterator parameterNameStart, parameterNameEnd;
 
-							if (parametersPrototype.GetParameterName(i, out parameterNameStart, out parameterNameEnd))
+							if (parameters.GetParameterName(i, out parameterNameStart, out parameterNameEnd))
 								{
 								string parameterName = parameterNameStart.TextBetween(parameterNameEnd);
 
@@ -910,7 +911,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 									// Start by getting the full parameter line.
 									TokenIterator fullParameterStart, fullParameterEnd;
-									parametersPrototype.GetParameter(i, out fullParameterStart, out fullParameterEnd);
+									parameters.GetParameterBounds(i, out fullParameterStart, out fullParameterEnd);
 
 									// Trim off the trailing comma and default value expression
 									TokenIterator paramLookBehind = fullParameterEnd;
@@ -2083,7 +2084,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				if (lookahead.Character == '{')
 					{
 					if (mode == ParseMode.ParsePrototype)
-						{  lookahead.PrototypeParsingType = PrototypeParsingType.StartOfParams;  }
+						{  lookahead.PrototypeParsingType = PrototypeParsingType.StartOfAccessors;  }
 
 					lookahead.Next();
 					TokenIterator startOfModifiers = lookahead;
@@ -2093,7 +2094,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						if (lookahead.Character == '}')
 							{
 							if (mode == ParseMode.ParsePrototype)
-								{  lookahead.PrototypeParsingType = PrototypeParsingType.EndOfParams;  }
+								{  lookahead.PrototypeParsingType = PrototypeParsingType.EndOfAccessors;  }
 
 							lookahead.Next();
 							break;
@@ -3500,7 +3501,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TokenIterator lookahead = iterator;
 
 			if (mode == ParseMode.ParsePrototype)
-				{  lookahead.PrototypeParsingType = PrototypeParsingType.StartOfParams;  }
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.StartOfMetadataParams;  }
 
 			lookahead.Next();
 			TryToSkipWhitespace(ref lookahead);
@@ -3519,7 +3520,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				else if (lookahead.Character == ')')
 					{
 					if (mode == ParseMode.ParsePrototype)
-						{  lookahead.PrototypeParsingType = PrototypeParsingType.EndOfParams;  }
+						{  lookahead.PrototypeParsingType = PrototypeParsingType.EndOfMetadataParams;  }
 
 					lookahead.Next();
 					iterator = lookahead;
