@@ -7,11 +7,11 @@
  *
  * Usage:
  *
- *		The functions and properties obviously rely on the relevant tokens being set.  You cannot expect a proper result from
- *		<GetParameter()> or <NumberOfParameters> unless the tokens are marked with <PrototypeParsingType.StartOfParams>,
- *		<PrototypeParsingType.ParamSeparator>, etc.  Likewise, you can't get anything from <GetParameterName()> unless
- *		you also have tokens marked with <PrototypeParsingType.Name>.  However, you can set the parameter divider tokens,
- *		call <GetParameter()>, and then use those bounds to further parse the parameter and set tokens like
+ *		The functions and properties obviously rely on the relevant tokens being set.  You cannot expect a proper result from things
+ *		like <ParameterSection.NumberOfParameters> unless the tokens are marked with <PrototypeParsingType.StartOfParams>,
+ *		<PrototypeParsingType.ParamSeparator>, etc.  Likewise, you can't get anything from <ParameterSection.GetParameterName()>
+ *		unless you also have tokens marked with <PrototypeParsingType.Name>.  However, you can set the parameter divider tokens,
+ *		call <ParameterSection.GetParameterBounds()>, and then use those bounds to further parse the parameter and set tokens like
  *		<PrototypeParsingType.Name>.
  *
  *		Section and parameter divisions are not calculated on the fly.  They are calculated once at object creation and then saved.
@@ -47,7 +47,6 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			{
 			tokenizer = prototype;
 			sections = null;
-			mainSectionIndex = 0;
 
 			parameterStyle = engineInstance.Languages.FromID(languageID).ParameterStyle;
 
@@ -65,165 +64,31 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 */
 		public Languages.AccessLevel GetAccessLevel ()
 			{
-			return sections[mainSectionIndex].GetAccessLevel();
-			}
-
-
-		/* Function: GetBeforeParameters
-		 * Returns the bounds of the section of the prototype prior to the parameters and whether it exists.  If it has parameters,
-		 * it will include the starting symbol of the parameter list such as the opening parenthesis.  If there are no parameters, this
-		 * will return the bounds of the entire prototype.
-		 */
-		public bool GetBeforeParameters (out TokenIterator beforeParametersStart, out TokenIterator beforeParametersEnd)
-			{
-			if (sections[mainSectionIndex] is ParameterSection)
+			// Just return the first section that's able to return a value
+			foreach (var section in sections)
 				{
-				return (sections[mainSectionIndex] as ParameterSection).GetBeforeParameters(out beforeParametersStart, out beforeParametersEnd);
-				}
-			else
-				{
-				beforeParametersStart = tokenizer.FirstToken;
-				beforeParametersEnd = tokenizer.EndOfTokens;
-				return true;
-				}
-			}
+				var accessLevel = section.GetAccessLevel();
 
+				if (accessLevel != Languages.AccessLevel.Unknown)
+					{  return accessLevel;  }
+				}
 
-		/* Function: GetParameter
-		 * Returns the bounds of a numbered parameter.  Numbers start at zero.  It will return false if one does not exist at that
-		 * number.
-		 */
-		virtual public bool GetParameter (int parameterIndex, out TokenIterator parameterStart, out TokenIterator parameterEnd)
-			{
-			if (sections[mainSectionIndex] is ParameterSection)
-				{
-				return (sections[mainSectionIndex] as ParameterSection).GetParameterBounds(parameterIndex, out parameterStart, out parameterEnd);
-				}
-			else
-				{
-				parameterStart = tokenizer.EndOfTokens;
-				parameterEnd = tokenizer.EndOfTokens;
-				return false;
-				}
-			}
-
-
-		/* Function: GetParameterName
-		 * Returns the bounds of the name of the passed parameter, or false if it couldn't find it.
-		 */
-		virtual public bool GetParameterName (int parameterIndex, out TokenIterator parameterNameStart, out TokenIterator parameterNameEnd)
-			{
-			if (sections[mainSectionIndex] is ParameterSection)
-				{
-				return (sections[mainSectionIndex] as ParameterSection).GetParameterName(parameterIndex, out parameterNameStart, out parameterNameEnd);
-				}
-			else
-				{
-				parameterNameStart = tokenizer.EndOfTokens;
-				parameterNameEnd = tokenizer.EndOfTokens;
-				return false;
-				}
-			}
-
-
-		/* Function: BuildFullParameterType
-		 *
-		 * Returns the full type if one is marked by <PrototypeParsingType.Type> tokens, combining all its modifiers and qualifiers into
-		 * one continuous string.
-		 *
-		 * If the type and all its modifiers and qualifiers are continuous in the original <Tokenizer> it will return <TokenIterators> based
-		 * on it.  However, if the type and all its modifiers and qualifiers are NOT continuous it will create a separate <Tokenizer> to hold
-		 * a continuous version of it.  The returned bounds will be <TokenIterators> based on that rather than on the original <Tokenizer>.
-		 * The new <Tokenizer> will still contain the same <PrototypeParsingTypes> and <SyntaxHighlightingTypes> of the original.
-		 *
-		 * If the language supports implied types this will return "int" for y in "int x, y".  If it doesn't then it will return false for y.
-		 */
-		virtual public bool BuildFullParameterType (int parameterIndex, out TokenIterator fullTypeStart, out TokenIterator fullTypeEnd)
-			{
-			if (sections[mainSectionIndex] is ParameterSection)
-				{
-				return (sections[mainSectionIndex] as ParameterSection).BuildFullParameterType(parameterIndex, out fullTypeStart, out fullTypeEnd);
-				}
-			else
-				{
-				fullTypeStart = tokenizer.EndOfTokens;
-				fullTypeEnd = tokenizer.EndOfTokens;
-				return false;
-				}
-			}
-
-
-		/* Function: GetBaseParameterType
-		 *
-		 * Returns the bounds of the type of the passed parameter, or false if it couldn't find it.  This excludes modifiers and type
-		 * suffixes.
-		 *
-		 * If the language supports implied types this will return "int" for y in "int x, y".  If it doesn't then it will return false for y.
-		 */
-		virtual public bool GetBaseParameterType (int parameterIndex, out TokenIterator start, out TokenIterator end)
-			{
-			if (sections[mainSectionIndex] is ParameterSection)
-				{
-				return (sections[mainSectionIndex] as ParameterSection).GetBaseParameterType(parameterIndex, out start, out end);
-				}
-			else
-				{
-				start = tokenizer.EndOfTokens;
-				end = tokenizer.EndOfTokens;
-				return false;
-				}
-			}
-
-
-		/* Function: GetParameterDefaultValue
-		 * Returns the bounds of the default value of the passed parameter, or false if it doesn't exist.
-		 */
-		virtual public bool GetParameterDefaultValue (int parameterIndex, out TokenIterator defaultValueStart, out TokenIterator defaultValueEnd)
-			{
-			if (sections[mainSectionIndex] is ParameterSection)
-				{
-				return (sections[mainSectionIndex] as ParameterSection).GetParameterDefaultValue(parameterIndex, out defaultValueStart, out defaultValueEnd);
-				}
-			else
-				{
-				defaultValueStart = tokenizer.EndOfTokens;
-				defaultValueEnd = tokenizer.EndOfTokens;
-				return false;
-				}
-			}
-
-
-		/* Function: GetAfterParameters
-		 * Returns the bounds of the section of the prototype after the parameters and whether it exists.  If it does
-		 * exist, the bounds will include the closing symbol of the parameter list such as the closing parenthesis.
-		 */
-		public bool GetAfterParameters (out TokenIterator afterParametersStart, out TokenIterator afterParametersEnd)
-			{
-			if (sections[mainSectionIndex] is ParameterSection)
-				{
-				return (sections[mainSectionIndex] as ParameterSection).GetAfterParameters(out afterParametersStart, out afterParametersEnd);
-				}
-			else
-				{
-				afterParametersStart = tokenizer.EndOfTokens;
-				afterParametersEnd = tokenizer.EndOfTokens;
-				return false;
-				}
+			return Languages.AccessLevel.Unknown;
 			}
 
 
 		/* Function: RecalculateSections
 		 *
-		 * Recalculates the <Sections> list.  If you've set <MainSectionIndex> manually, it will have to be set again after calling this
-		 * function.
+		 * Recalculates the <Sections> list.  This is automatically called by the constructor so you only need to call this manually if you made
+		 * changes to these token types after creating this object.
 		 *
 		 * Sections are delimited with <PrototypeParsingType.StartOfPrototypeSection> and <PrototypeParsingType.EndOfPrototypeSection>.
 		 * Neither of these token types are required to appear, and if they do not the entire prototype will be in one section.  Also, they are
 		 * not required to appear together.  Sections can be delimited by only start tokens or only end tokens, whichever is most convenient
 		 * to the language parser and won't interfere with marking other types.
 		 *
-		 * Each section containing <PrototypeParsingType.StartOfParams> will generate a <ParameterSection>.  All others will generate a
-		 * regular <Section>.
+		 * Each section containing <PrototypeParsingType.StartOfParams> or similar will generate a <ParameterSection>.  All others will generate
+		 * a regular <Section>.
 		 */
 		virtual public void RecalculateSections ()
 			{
@@ -234,8 +99,6 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 			TokenIterator startOfSection = tokenizer.FirstToken;
 			TokenIterator endOfSection = startOfSection;
-
-			int lastSectionWithParams = -1;
 
 			for (;;)
 				{
@@ -253,7 +116,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 						{  break;  }
 
 					// End the section if we're starting parameters when the current section already has some
-					if (endOfSection.PrototypeParsingType == PrototypeParsingType.StartOfParams &&
+					if (StartOfParamsTypes.Contains(endOfSection.PrototypeParsingType) &&
 						sectionHasParams)
 						{  break;  }
 
@@ -261,7 +124,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					if (endOfSection.FundamentalType != FundamentalType.Whitespace)
 						{  sectionIsEmpty = false; }
 
-					if (endOfSection.PrototypeParsingType == PrototypeParsingType.StartOfParams)
+					if (StartOfParamsTypes.Contains(endOfSection.PrototypeParsingType))
 						{
 						sectionHasParams = true;
 						endOfSection.Next();
@@ -289,9 +152,6 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 						{  sections.Add( new ParameterSection(startOfSection, endOfSection, this) );  }
 					else
 						{  sections.Add( new Section(startOfSection, endOfSection) );  }
-
-					if (sectionHasParams)
-						{  lastSectionWithParams = sections.Count - 1;  }
 					}
 
 
@@ -309,21 +169,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 			if (sections.Count < 1)
 				{  sections.Add( new Section(tokenizer.FirstToken, tokenizer.EndOfTokens) );  }
-
-
-			// Determine main section
-
-			if (sections.Count == 1)
-				{  mainSectionIndex = 0;  }
-			else if (lastSectionWithParams != -1)
-				{  mainSectionIndex = lastSectionWithParams;  }
-			else
-				{  mainSectionIndex = 0;  }
 			}
 
 
 
-		// Group: Static Functions
+		// Group: Parsing Support Functions
 		// __________________________________________________________________________
 
 
@@ -481,36 +331,37 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			}
 
 
-		/* Property: MainSectionIndex
-		 * The index into <Sections> for the one which contains the most significant content, namely the prototype's
-		 * access level and function parameters.  If it's not set manually it will be a guess.
+		/* Property: MainParameterSection
+		 * Returns the <ParameterSection> that should be used for things like parentheses in Natural Docs links, or null if
+		 * there isn't one.  There may be multiple parameter sections so calling code should decide whether this is good
+		 * enough or if it should go through the individual <Sections> so that it can check all of them.
 		 */
-		public int MainSectionIndex
-			{
-			get
-				{  return mainSectionIndex;  }
-			set
-				{  mainSectionIndex = value;  }
-			}
-
-
-		/* Property: NumberOfParameters
-		 */
-		virtual public int NumberOfParameters
+		public ParameterSection MainParameterSection
 			{
 			get
 				{
-				if (sections[mainSectionIndex] is ParameterSection)
-					{  return (sections[mainSectionIndex] as ParameterSection).NumberOfParameters;  }
-				else
-					{  return 0;  }
+				foreach (var section in Sections)
+					{
+					// Will be null if not a ParameterSection.  Will not throw an exception.
+					var parameterSection = section as ParameterSection;
+
+					// Return the first ParameterSection with StartOfParams.  We don't want to use other types like
+					// StartOfMetadataParams.
+					if (parameterSection != null &&
+						parameterSection.StartingParameterType == PrototypeParsingType.StartOfParams)
+						{
+						return parameterSection;
+						}
+					}
+
+				return null;
 				}
 			}
 
 
 		/* Property: ParameterStyle
 		 * The format of the prototype's parameters, such as C-style ("int x") or Pascal-style ("x: int").  This should only be set if the
-		 * associated <Language's> parameter style is <ParameterStyle.Unknown>.
+		 * associated language's parameter style is <ParameterStyle.Unknown>.
 		 */
 		public ParameterStyle ParameterStyle
 			{
@@ -592,15 +443,9 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 */
 		protected List<Section> sections;
 
-		/* var: mainSectionIndex
-		 * An index into <sections> representing the main one used for retrieving properties like name, access level,
-		 * and parameters.
-		 */
-		protected int mainSectionIndex;
-
 		/* var: parameterStyle
 		 * The format of the prototype's parameters, such as C-style ("int x") or Pascal-style ("x: int").  This is needed as a separate
-		 * variable so it can be detected and set if <Language.ParameterStyle> is <ParameterStyle.Unknown>.
+		 * variable so it can be detected and set if the Language object's <ParameterStyle> is <ParameterStyle.Unknown>.
 		 */
 		protected ParameterStyle parameterStyle;
 
