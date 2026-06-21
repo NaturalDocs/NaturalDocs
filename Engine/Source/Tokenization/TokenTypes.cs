@@ -132,6 +132,26 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	 *		ClosingParamDecorator - A symbol at the end of a parameter, such as "}" in Tcl's "{a 12}".
 	 *
 	 *
+	 * SystemVerilog-Specific Parameters:
+	 *
+	 *		SystemVerilog has specific rules on how port attributes inherit, so they need their own class to process them,
+	 *		<Prototypes.ParameterSections.SystemVerilogPorts>.  These tokens allow you to specify parameter sections intended
+	 *		for that class.
+	 *
+	 *		SystemVerilog_StartOfANSIPorts - The start of an ANSI port list, which are similar to standard parameters and appear in
+	 *														  parentheses.
+	 *		SystemVerilog_EndOfANSIPorts - The end of an ANSI port list, which are similar to standard parameters and appear in
+	 *														parentheses.
+	 *		SystemVerilog_StartOfANSIParameterPorts - The start of an ANSI parameter port list, which are similar to template
+	 *																		 parameters and appear in #( ).
+	 *		SystemVerilog_EndOfANSIParameterPorts - The end of an ANSI parameter port list, which are similar to template
+	 *																	   parameters and appear in #( ).
+	 *		SystemVerilog_StartOfNonANSIPorts - The start of a non-ANSI port list, which can potentially have multiple lines that
+	 *																declare different attributes of the same port.
+	 *		SystemVerilog_EndOfNonANSIPorts - The end of a non-ANSI port list, which can potentially have multiple lines that
+	 *															  declare different attributes of the same port.
+	 *
+	 *
 	 *	Types:
 	 *
 	 *		Type - The type excluding all modifiers and qualifiers, such as "int" in "unsigned int" or "Class" in "PkgA.PkgB.Class".
@@ -281,6 +301,10 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 		StartOfAccessors = 26, EndOfAccessors = 27,
 		ParamSeparator = 28,
 		OpeningParamDecorator = 30, ClosingParamDecorator = 31,
+
+		SystemVerilog_StartOfANSIPorts = 32, SystemVerilog_EndOfANSIPorts = 33,
+		SystemVerilog_StartOfANSIParameterPorts = 34, SystemVerilog_EndOfANSIParameterPorts = 35,
+		SystemVerilog_StartOfNonANSIPorts = 36, SystemVerilog_EndOfNonANSIPorts = 37,
 
 		Type = 40,
 		TypeModifier = 42,
