@@ -3,7 +3,13 @@
  * ____________________________________________________________________________
  *
  * A class that wraps a section of a <Tokenizer> which has been marked with <PrototypeParsingTypes>.  Provides basic
- * functionality that will be common to many sections.
+ * functionality that will be common to many sections.  A section can be:
+ *
+ *		- A top-level section without parameters, such as a variable declaration or a metadata line formatted separately
+ *		  from the rest of the prototype, aka a plain section.
+ *		- A <ParameterSection>, which this is the base class for.
+ *		- An individual parameter within a <ParameterSection>.
+ *		- The parts of a <ParameterSection> before or after the list of parameters.
  *
  */
 
