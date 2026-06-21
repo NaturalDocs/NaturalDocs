@@ -366,7 +366,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * If the language supports implied types this will return "int" for y in "int x, y".  If it doesn't then it will return false for y.  You
 		 * can force it to ignore implied types regardless of the language setting if necessary.
 		 */
-		public bool GetBaseParameterType (int index, out TokenIterator baseTypeStart, out TokenIterator baseTypeEnd, bool preventImpliedTypes = false)
+		virtual public bool GetBaseParameterType (int index, out TokenIterator baseTypeStart, out TokenIterator baseTypeEnd,
+																	  bool preventImpliedTypes = false)
 			{
 			if (parameters != null && index >= 0 && index < parameters.Count)
 				{
@@ -400,7 +401,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * If the language supports implied types this will return "int" for y in "int x, y".  If it doesn't then it will return false for y.  You can
 		 * force it to ignore implied types regardless of the language setting if necessary.
 		 */
-		public bool BuildFullParameterType (int index, out TokenIterator fullTypeStart, out TokenIterator fullTypeEnd, bool preventImpliedTypes = false)
+		virtual public bool BuildFullParameterType (int index, out TokenIterator fullTypeStart, out TokenIterator fullTypeEnd,
+																	bool preventImpliedTypes = false)
 			{
 			var parameterStyle = parsedPrototype.ParameterStyle;
 

@@ -90,7 +90,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * Each section containing <PrototypeParsingType.StartOfParams> or similar will generate a <ParameterSection>.  All others will generate
 		 * a regular <Section>.
 		 */
-		virtual public void RecalculateSections ()
+		public void RecalculateSections ()
 			{
 			if (sections == null)
 				{  sections = new List<Section>(1);  }
@@ -106,7 +106,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				// Find the section bounds
 
 				bool sectionIsEmpty = true;
-				bool sectionHasParams = false;
+				PrototypeParsingType sectionParamsType = PrototypeParsingType.Null;
 
 				while (endOfSection.IsInBounds)
 					{
@@ -117,7 +117,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 					// End the section if we're starting parameters when the current section already has some
 					if (StartOfParamsTypes.Contains(endOfSection.PrototypeParsingType) &&
-						sectionHasParams)
+						sectionParamsType != PrototypeParsingType.Null)
 						{  break;  }
 
 					// At this point we know the current token will be part of the section
@@ -126,7 +126,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 					if (StartOfParamsTypes.Contains(endOfSection.PrototypeParsingType))
 						{
-						sectionHasParams = true;
+						sectionParamsType = endOfSection.PrototypeParsingType;
 						endOfSection.Next();
 						}
 					else if (endOfSection.PrototypeParsingType == PrototypeParsingType.EndOfPrototypeSection)
@@ -148,10 +148,16 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					endOfSection.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfSection);
 					startOfSection.NextPastWhitespace(endOfSection);
 
-					if (sectionHasParams)
-						{  sections.Add( new ParameterSection(startOfSection, endOfSection, this) );  }
+					Section newSection;
+
+					if (SystemVerilogPorts_StartOfParamsTypes.Contains(sectionParamsType))
+						{  newSection = new ParameterSections.SystemVerilogPorts(startOfSection, endOfSection, this);  }
+					else if (StartOfParamsTypes.Contains(sectionParamsType))
+						{  newSection = new ParameterSection(startOfSection, endOfSection, this);  }
 					else
-						{  sections.Add( new Section(startOfSection, endOfSection) );  }
+						{  newSection = new Section(startOfSection, endOfSection);  }
+
+					sections.Add(newSection);
 					}
 
 
@@ -477,9 +483,24 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 */
 		public static PrototypeParsingType[] StartOfParamsTypes = {
 			PrototypeParsingType.StartOfParams,
+			PrototypeParsingType.SystemVerilog_StartOfANSIPorts,
+			PrototypeParsingType.SystemVerilog_StartOfNonANSIPorts,
 			PrototypeParsingType.StartOfAccessors,
 			PrototypeParsingType.StartOfTemplateParams,
+			PrototypeParsingType.SystemVerilog_StartOfANSIParameterPorts,
 			PrototypeParsingType.StartOfMetadataParams
+			};
+
+
+		/* Constant: SystemVerilogPorts_StartOfParamsTypes
+		 * An array of all the <PrototypeParsingTypes> that are specific to SystemVerilog ports.  These also appear in
+		 * <StartOfParamsTypes> so you don't need to check both to find the start of parameters, you only need to check this
+		 * one if you want to know if it is one specific to SystemVerilog ports.
+		 */
+		public static PrototypeParsingType[] SystemVerilogPorts_StartOfParamsTypes = {
+			PrototypeParsingType.SystemVerilog_StartOfANSIPorts,
+			PrototypeParsingType.SystemVerilog_StartOfNonANSIPorts,
+			PrototypeParsingType.SystemVerilog_StartOfANSIParameterPorts
 			};
 
 		}
