@@ -445,13 +445,13 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 							else if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier)
 								{
 								TokenIterator closingToken, endOfBlock;
-								ParsedPrototype.GetEndOfBlock(iterator, end, out closingToken, out endOfBlock);
+								GetEndOfBlock(iterator, end, out closingToken, out endOfBlock);
 
 								typeBuilder.AddTokens(iterator, endOfBlock);
 
 								iterator = endOfBlock;
 								}
-							else if (!ParsedPrototype.TryToSkipBlock(ref iterator, end))
+							else if (!TryToSkipBlock(ref iterator, end))
 								{
 								iterator.Next();
 								}
@@ -481,13 +481,13 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 								   iterator.PrototypeParsingType == PrototypeParsingType.StartOfTuple)
 							{
 							TokenIterator closingToken, endOfBlock;
-							ParsedPrototype.GetEndOfBlock(iterator, end, out closingToken, out endOfBlock);
+							GetEndOfBlock(iterator, end, out closingToken, out endOfBlock);
 
 							typeBuilder.AddTokens(iterator, endOfBlock);
 
 							iterator = endOfBlock;
 							}
-						else if (!ParsedPrototype.TryToSkipBlock(ref iterator, end))
+						else if (!TryToSkipBlock(ref iterator, end))
 							{
 							iterator.Next();
 							}
@@ -515,13 +515,13 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 						else if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier)
 							{
 							TokenIterator closingToken, endOfBlock;
-							ParsedPrototype.GetEndOfBlock(iterator, end, out closingToken, out endOfBlock);
+							GetEndOfBlock(iterator, end, out closingToken, out endOfBlock);
 
 							typeBuilder.AddTokens(iterator, endOfBlock);
 
 							iterator = endOfBlock;
 							}
-						else if (!ParsedPrototype.TryToSkipBlock(ref iterator, end))
+						else if (!TryToSkipBlock(ref iterator, end))
 							{
 							iterator.Next();
 							}

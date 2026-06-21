@@ -204,11 +204,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					iterator.Next();
 					}
 				else if (iterator.PrototypeParsingType == PrototypeParsingType.StartOfTuple &&
-						   ParsedPrototype.TryToSkipBlock(ref iterator, end))
+						   TryToSkipBlock(ref iterator, end))
 					{
 					foundType = true;
 					}
-				else if (ParsedPrototype.TryToSkipBlock(ref iterator, end))
+				else if (TryToSkipBlock(ref iterator, end))
 					{
 					// Other non-tuple blocks like OpeningTypeModifier and OpeningParamModifier
 					}
@@ -346,6 +346,51 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		// __________________________________________________________________________
 
 
+		/* Function: BuildFullType
+		 * Creates a new <Tokenizer> for the variable type, including all modifiers, even if they are not continuous.  This is a support
+		 * function for <BuildFullType(TokenIterator, TokenIterator, Tokenizer)> and it always builds a new <Tokenizer>.
+		 */
+		protected Tokenizer BuildFullType ()
+			{
+			TokenIterator iterator = start;
+			TypeBuilder typeBuilder = new TypeBuilder(end.RawTextIndex - start.RawTextIndex, end.TokenIndex - start.TokenIndex);
+
+			while (iterator < end)
+				{
+				if (iterator.PrototypeParsingType == PrototypeParsingType.Type ||
+					iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier ||
+					iterator.PrototypeParsingType == PrototypeParsingType.TypeQualifier ||
+					iterator.PrototypeParsingType == PrototypeParsingType.ParamModifier)
+					{
+					typeBuilder.AddToken(iterator);
+					iterator.Next();
+					}
+				else if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier ||
+						   iterator.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier ||
+						   iterator.PrototypeParsingType == PrototypeParsingType.StartOfTuple)
+					{
+					TokenIterator closingToken, endOfBlock;
+					GetEndOfBlock(iterator, end, out closingToken, out endOfBlock);
+
+					typeBuilder.AddTokens(iterator, endOfBlock);
+
+					iterator = endOfBlock;
+					}
+				else
+					{
+					iterator.Next();
+					}
+				}
+
+			return typeBuilder.ToTokenizer();
+			}
+
+
+
+		// Group: Parsing Support Functions
+		// __________________________________________________________________________
+
+
 		/* Function: IsStandaloneWord
 		 * Returns whether the iterator is on a text token and the tokens immediately before and after it are not underscores.
 		 */
@@ -372,43 +417,132 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			}
 
 
-		/* Function: BuildFullType
-		 * Creates a new <Tokenizer> for the variable type, including all modifiers, even if they are not continuous.  This is a support
-		 * function for <BuildFullType(TokenIterator, TokenIterator, Tokenizer)> and it always builds a new <Tokenizer>.
+		/* Function: GetEndOfBlock
+		 *
+		 * If the iterator is on one of the following opening token types, returns a reference to the closing token and to the end of
+		 * the block, which is after the last symbol of the closing token.  It will handle any nested blocks.  If the iterator isn't on an
+		 * appropriate token or it couldn't find the end of the block it will return false.
+		 *
+		 * Supported Block Types:
+		 *
+		 *		- <PrototypeParsingType.OpeningTypeModifier>
+		 *		- <PrototypeParsingType.OpeningParamModifier>
+		 *		- <PrototypeParsingType.StartOfTuple>
 		 */
-		protected Tokenizer BuildFullType ()
+		protected bool GetEndOfBlock (TokenIterator openingSymbol, out TokenIterator closingSymbol, out TokenIterator endOfBlock)
 			{
-			TokenIterator iterator = start;
-			TypeBuilder typeBuilder = new TypeBuilder(end.RawTextIndex - start.RawTextIndex, end.TokenIndex - start.TokenIndex);
+			return GetEndOfBlock(openingSymbol, openingSymbol.Tokenizer.EndOfTokens, out closingSymbol, out endOfBlock);
+			}
 
-			while (iterator < end)
+
+		/* Function: GetEndOfBlock
+		 *
+		 * If the iterator is on one of the following opening token types, returns a reference to the closing token and to the end of
+		 * the block, which is after the last symbol of the closing token.  It will handle any nested blocks.  If the iterator isn't on an
+		 * appropriate token or it couldn't find the end of the block it will return false.
+		 *
+		 * Supported Block Types:
+		 *
+		 *		- <PrototypeParsingType.OpeningTypeModifier>
+		 *		- <PrototypeParsingType.OpeningParamModifier>
+		 *		- <PrototypeParsingType.StartOfTuple>
+		 */
+		protected bool GetEndOfBlock (TokenIterator openingSymbol, TokenIterator limit, out TokenIterator closingSymbol,
+													 out TokenIterator endOfBlock)
+			{
+			if (openingSymbol.PrototypeParsingType != PrototypeParsingType.OpeningTypeModifier &&
+				openingSymbol.PrototypeParsingType != PrototypeParsingType.OpeningParamModifier &&
+				openingSymbol.PrototypeParsingType != PrototypeParsingType.StartOfTuple)
 				{
-				if (iterator.PrototypeParsingType == PrototypeParsingType.Type ||
-					iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier ||
-					iterator.PrototypeParsingType == PrototypeParsingType.TypeQualifier ||
-					iterator.PrototypeParsingType == PrototypeParsingType.ParamModifier)
+				closingSymbol = openingSymbol;
+				endOfBlock = openingSymbol;
+				return false;
+				}
+
+			TokenIterator iterator = openingSymbol;
+			iterator.Next();
+			int level = 1;
+
+			// We're going to cheat and assume all blocks are balanced and nested in a valid way. This lets us handle them all
+			// with a simple level count.
+			for (;;)
+				{
+				if (iterator >= limit)
 					{
-					typeBuilder.AddToken(iterator);
-					iterator.Next();
+					closingSymbol = openingSymbol;
+					endOfBlock = openingSymbol;
+					return false;
 					}
 				else if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier ||
 						   iterator.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier ||
 						   iterator.PrototypeParsingType == PrototypeParsingType.StartOfTuple)
 					{
-					TokenIterator closingToken, endOfBlock;
-					ParsedPrototype.GetEndOfBlock(iterator, end, out closingToken, out endOfBlock);
-
-					typeBuilder.AddTokens(iterator, endOfBlock);
-
-					iterator = endOfBlock;
+					level++;
 					}
-				else
+				else if (iterator.PrototypeParsingType == PrototypeParsingType.ClosingTypeModifier ||
+						   iterator.PrototypeParsingType == PrototypeParsingType.ClosingParamModifier ||
+						   iterator.PrototypeParsingType == PrototypeParsingType.EndOfTuple)
 					{
-					iterator.Next();
+					level--;
+
+					if (level == 0)
+						{  break;  }
 					}
+
+				iterator.Next();
 				}
 
-			return typeBuilder.ToTokenizer();
+			closingSymbol = iterator;
+			iterator.Next();
+
+			while (iterator.PrototypeParsingType == PrototypeParsingType.ClosingExtensionSymbol)
+				{  iterator.Next();  }
+
+			endOfBlock = iterator;
+
+			return true;
+			}
+
+
+		/* Function: TryToSkipBlock
+		 *
+		 * If the iterator is on one of the following opening token types, moves the iterator past the entire block including
+		 * any nested blocks and returns true.
+		 *
+		 * Supported Block Types:
+		 *
+		 *		- <PrototypeParsingType.OpeningTypeModifier>
+		 *		- <PrototypeParsingType.OpeningParamModifier>
+		 *		- <PrototypeParsingType.StartOfTuple>
+		 */
+		protected bool TryToSkipBlock (ref TokenIterator iterator)
+			{
+			return TryToSkipBlock(ref iterator, iterator.Tokenizer.EndOfTokens);
+			}
+
+
+		/* Function: TryToSkipBlock
+		 *
+		 * If the iterator is on one of the following opening token types, moves the iterator past the entire block including
+		 * any nested blocks and returns true.
+		 *
+		 * Supported Block Types:
+		 *
+		 *		- <PrototypeParsingType.OpeningTypeModifier>
+		 *		- <PrototypeParsingType.OpeningParamModifier>
+		 *		- <PrototypeParsingType.StartOfTuple>
+		 */
+		protected bool TryToSkipBlock (ref TokenIterator iterator, TokenIterator limit)
+			{
+			TokenIterator closingSymbol, endOfBlock;
+
+			if (GetEndOfBlock(iterator, limit, out closingSymbol, out endOfBlock))
+				{
+				iterator = endOfBlock;
+				return true;
+				}
+			else
+				{  return false;  }
 			}
 
 

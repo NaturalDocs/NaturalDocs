@@ -641,7 +641,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParameterSections
 					return true;
 					}
 
-				if (!ParsedPrototype.TryToSkipBlock(ref iterator, endOfParameter))
+				if (!TryToSkipBlock(ref iterator, endOfParameter))
 					{  iterator.Next();  }
 				}
 
@@ -669,7 +669,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParameterSections
 					return true;
 					}
 
-				if (!ParsedPrototype.TryToSkipBlock(ref iterator, endOfParameter))
+				if (!TryToSkipBlock(ref iterator, endOfParameter))
 					{  iterator.Next();  }
 				}
 
@@ -696,7 +696,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParameterSections
 					return true;
 					}
 
-				if (!ParsedPrototype.TryToSkipBlock(ref iterator, endOfParameter))
+				if (!TryToSkipBlock(ref iterator, endOfParameter))
 					{  iterator.Next();  }
 				}
 
@@ -724,7 +724,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParameterSections
 					return true;
 					}
 
-				if (!ParsedPrototype.TryToSkipBlock(ref iterator, endOfParameter))
+				if (!TryToSkipBlock(ref iterator, endOfParameter))
 					{  iterator.Next();  }
 				}
 
@@ -874,7 +874,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParameterSections
 					return true;
 					}
 
-				if (!ParsedPrototype.TryToSkipBlock(ref iterator, endOfParameter))
+				if (!TryToSkipBlock(ref iterator, endOfParameter))
 					{  iterator.Next();  }
 				}
 
@@ -934,7 +934,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParameterSections
 				else if (iterator.PrototypeParsingType == PrototypeParsingType.Name)
 					{  break;  }
 
-				if (!ParsedPrototype.TryToSkipBlock(ref iterator, endOfParameter))
+				if (!TryToSkipBlock(ref iterator, endOfParameter))
 					{  iterator.Next();  }
 				}
 
@@ -960,7 +960,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParameterSections
 			while (iterator < endOfParameter &&
 					 iterator.PrototypeParsingType != PrototypeParsingType.Name)
 				{
-				if (!ParsedPrototype.TryToSkipBlock(ref iterator, endOfParameter))
+				if (!TryToSkipBlock(ref iterator, endOfParameter))
 					{  iterator.Next();  }
 				}
 
@@ -992,7 +992,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParameterSections
 					return true;
 					}
 
-				if (!ParsedPrototype.TryToSkipBlock(ref iterator, endOfParameter))
+				if (!TryToSkipBlock(ref iterator, endOfParameter))
 					{  iterator.Next();  }
 				}
 
@@ -1018,7 +1018,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParameterSections
 					 iterator.Character != '.' &&
 					 iterator.PrototypeParsingType != PrototypeParsingType.ParamModifier)
 				{
-				if (!ParsedPrototype.TryToSkipBlock(ref iterator, endOfParameter))
+				if (!TryToSkipBlock(ref iterator, endOfParameter))
 					{  iterator.Next();  }
 				}
 
@@ -1224,7 +1224,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParameterSections
 					if (iterator.Character == '{')
 						{  afterBody = true;  }
 
-					ParsedPrototype.GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock);
+					GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock);
 					bool lastTokenWasColon = false;
 
 					while (iterator < endOfBlock)
@@ -1390,7 +1390,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParameterSections
 
 			TokenIterator closingSymbol, endOfBlock;
 
-			if (!ParsedPrototype.GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock))
+			if (!GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock))
 				{  return false;  }
 
 			typeBuilder.AddToken(iterator, spacing);
@@ -1466,7 +1466,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParameterSections
 			if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier)
 				{
 				TokenIterator closingSymbol, endOfBlock;
-				ParsedPrototype.GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock);
+				GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock);
 				bool lastTokenWasColon = false;
 
 				while (iterator < endOfBlock)
