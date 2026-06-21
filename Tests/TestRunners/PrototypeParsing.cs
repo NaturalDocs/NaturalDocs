@@ -65,10 +65,6 @@ namespace CodeClear.NaturalDocs.Tests.TestRunners
 
 				var parsedPrototype = topics[topicIndex].ParsedPrototype;
 
-				// SystemVerilog modules can use multiple parameter sections to build types so we have to maintain a global parameter
-				// index which starts at zero and increments across the entire prototype's parameters regardless of section.
-				int globalParameterIndex = 0;
-
 				for (int sectionIndex = 0; sectionIndex < parsedPrototype.Sections.Count; sectionIndex++)
 					{
 					if (sectionIndex != 0)
@@ -99,25 +95,12 @@ namespace CodeClear.NaturalDocs.Tests.TestRunners
 								{  output.AppendLine("    - Name: (not detected)");  }
 
 							string fullType_ExplicitOnly = null;
-							if (parsedPrototype is Engine.Prototypes.ParsedPrototypes.SystemVerilogModule)
-								{
-								if (parsedPrototype.BuildFullParameterType(globalParameterIndex, out start, out end))
-									{  fullType_ExplicitOnly = start.TextBetween(end);  }
-								}
-							else
-								{
-								if (section.BuildFullParameterType(paramIndex, out start, out end, preventImpliedTypes: true))
-									{  fullType_ExplicitOnly = start.TextBetween(end);  }
-								}
+							if (section.BuildFullParameterType(paramIndex, out start, out end, preventImpliedTypes: true))
+								{  fullType_ExplicitOnly = start.TextBetween(end);  }
 
 							string fullType_WithImplied = null;
-							if (parsedPrototype is Engine.Prototypes.ParsedPrototypes.SystemVerilogModule)
-								{  fullType_WithImplied = fullType_ExplicitOnly;  }
-							else
-								{
-								if (section.BuildFullParameterType(paramIndex, out start, out end))
-									{  fullType_WithImplied = start.TextBetween(end);  }
-								}
+							if (section.BuildFullParameterType(paramIndex, out start, out end))
+								{  fullType_WithImplied = start.TextBetween(end);  }
 
 							if (fullType_ExplicitOnly != null)
 								{
@@ -131,22 +114,12 @@ namespace CodeClear.NaturalDocs.Tests.TestRunners
 							else
 								{  output.AppendLine("    - Full Type: (not detected)");  }
 
-							if (parsedPrototype is Engine.Prototypes.ParsedPrototypes.SystemVerilogModule)
-								{
-								if (parsedPrototype.GetBaseParameterType(globalParameterIndex, out start, out end))
-									{  output.AppendLine("    - Base Type: " + start.TextBetween(end));  }
-								else
-									{  output.AppendLine("    - Base Type: (not detected)");  }
-								}
+							if (section.GetBaseParameterType(paramIndex, out start, out end, preventImpliedTypes: true))
+								{  output.AppendLine("    - Base Type: " + start.TextBetween(end));  }
+							else if (section.GetBaseParameterType(paramIndex, out start, out end))
+								{  output.AppendLine("    - Base Type (implied): " + start.TextBetween(end));  }
 							else
-								{
-								if (section.GetBaseParameterType(paramIndex, out start, out end, preventImpliedTypes: true))
-									{  output.AppendLine("    - Base Type: " + start.TextBetween(end));  }
-								else if (section.GetBaseParameterType(paramIndex, out start, out end))
-									{  output.AppendLine("    - Base Type (implied): " + start.TextBetween(end));  }
-								else
-									{  output.AppendLine("    - Base Type: (not detected)");  }
-								}
+								{  output.AppendLine("    - Base Type: (not detected)");  }
 
 							section.GetParameterBounds(paramIndex, out start, out end);
 							output.Append("    - Link Candidates: ");
@@ -156,8 +129,6 @@ namespace CodeClear.NaturalDocs.Tests.TestRunners
 								{  output.AppendLine("    - Default Value: " + start.TextBetween(end));  }
 							else
 								{  output.AppendLine("    - Default Value: (not detected)");  }
-
-							globalParameterIndex++;
 							}
 
 						if (section.GetAfterParameters(out start, out end))
