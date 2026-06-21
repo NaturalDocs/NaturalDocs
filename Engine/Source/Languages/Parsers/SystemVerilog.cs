@@ -44,49 +44,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			{
 			Tokenizer tokenizedPrototype = new Tokenizer(stringPrototype, tabWidth: EngineInstance.Config.TabWidth);
 			TokenIterator startOfPrototype = tokenizedPrototype.FirstToken;
-			bool parsed = false;
-			bool isModule = false;
 
-			if (commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("module", language.ID) ||
-				commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("systemverilog module", language.ID))
+			if (TryToSkipModule(ref startOfPrototype, ParseMode.ParsePrototype))
 				{
-				parsed = TryToSkipModule(ref startOfPrototype, ParseMode.ParsePrototype);
-				isModule = parsed;
-				}
-
-			if (parsed && isModule)
-				{
-				var parsedPrototype = new Prototypes.ParsedPrototypes.SystemVerilogModule(tokenizedPrototype, this.Language.ID, commentTypeID,
-																																 engineInstance);
-
-				// If there's multiple sections, make sure the parameter one with () is set to main.  Skip parameter ports with #() and
-				// attributes with (* *).
-				if (parsedPrototype.Sections.Count > 1)
-					{
-					for (int i = 0; i < parsedPrototype.Sections.Count; i++)
-						{
-						// Will be null if is not a ParameterSection.  Will not throw an exception.
-						var parameterSection = parsedPrototype.Sections[i] as Prototypes.ParameterSection;
-
-						if (parameterSection == null)
-							{  continue;  }
-
-						parameterSection.GetBeforeParameters(out _, out TokenIterator end);
-						end.Previous();
-
-						if (end.Character != '(')
-							{  continue;  }
-
-						end.Previous();
-
-						if (end.Character == '#')
-							{  continue;  }
-
-						break;
-						}
-					}
-
-				return parsedPrototype;
+				return new Prototypes.ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID, engineInstance);
 				}
 			else
 				{  return base.ParsePrototype(stringPrototype, commentTypeID);  }
@@ -555,7 +516,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			bool hasAttributes = false;
 
-			if (TryToSkipAttributes(ref lookahead, mode, PrototypeParsingType.StartOfParams))
+			if (TryToSkipAttributes(ref lookahead, mode, PrototypeParsingType.StartOfMetadataParams))
 				{
 				TryToSkipWhitespace(ref lookahead, mode);
 
@@ -730,7 +691,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (mode == ParseMode.ParsePrototype)
 				{
-				lookahead.PrototypeParsingType = PrototypeParsingType.StartOfParams;
+				lookahead.PrototypeParsingType = PrototypeParsingType.SystemVerilog_StartOfANSIParameterPorts;
 				lookahead.Next();
 				lookahead.PrototypeParsingType = PrototypeParsingType.OpeningExtensionSymbol;
 				lookahead.Next();
@@ -767,7 +728,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			if (lookahead.Character == ')')
 				{
 				if (mode == ParseMode.ParsePrototype)
-					{  lookahead.PrototypeParsingType = PrototypeParsingType.EndOfParams;  }
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.SystemVerilog_EndOfANSIParameterPorts;  }
 
 				lookahead.Next();
 				iterator = lookahead;
@@ -981,7 +942,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TokenIterator lookahead = iterator;
 
 			if (mode == ParseMode.ParsePrototype)
-				{  lookahead.PrototypeParsingType = PrototypeParsingType.StartOfParams;  }
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.SystemVerilog_StartOfANSIPorts;  }
 
 			lookahead.Next();
 			TryToSkipWhitespace(ref lookahead, mode);
@@ -1013,7 +974,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			if (lookahead.Character == ')')
 				{
 				if (mode == ParseMode.ParsePrototype)
-					{  lookahead.PrototypeParsingType = PrototypeParsingType.EndOfParams;  }
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.SystemVerilog_EndOfANSIPorts;  }
 
 				lookahead.Next();
 				iterator = lookahead;
@@ -2156,12 +2117,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- <ParseMode.ParsePrototype>
-		 *			- prototypeParsingType may be set to <PrototypeParsingType.StartOfParams> or
+		 *			- prototypeParsingType may be set to <PrototypeParsingType.StartOfMetadataParams> or
 		 *			  <PrototypeParsingType.OpeningTypeModifier> to determine how the attributes should be marked.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		protected bool TryToSkipAttributes (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
-															PrototypeParsingType prototypeParsingType = PrototypeParsingType.StartOfParams)
+															PrototypeParsingType prototypeParsingType = PrototypeParsingType.StartOfMetadataParams)
 			{
 			if (!TryToSkipAttributesBlock(ref iterator, mode, prototypeParsingType))
 				{  return false;  }
@@ -2196,12 +2157,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- <ParseMode.ParsePrototype>
-		 *			- prototypeParsingType may be set to <PrototypeParsingType.StartOfParams> or
+		 *			- prototypeParsingType may be set to <PrototypeParsingType.StartOfMetadataParams> or
 		 *			  <PrototypeParsingType.OpeningTypeModifier> to determine how the attributes should be marked.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		protected bool TryToSkipAttributesBlock (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
-																   PrototypeParsingType prototypeParsingType = PrototypeParsingType.StartOfParams)
+																   PrototypeParsingType prototypeParsingType = PrototypeParsingType.StartOfMetadataParams)
 			{
 			if (iterator.MatchesAcrossTokens("(*") == false)
 				{  return false;  }
@@ -2225,18 +2186,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					{
 					if (mode == ParseMode.ParsePrototype)
 						{
-						switch (prototypeParsingType)
-							{
-							case PrototypeParsingType.StartOfParams:
-								lookahead.PrototypeParsingType = PrototypeParsingType.EndOfParams;
-								break;
-							case PrototypeParsingType.OpeningTypeModifier:
-								lookahead.PrototypeParsingType = PrototypeParsingType.ClosingTypeModifier;
-								break;
-							default:
-								throw new NotImplementedException();
-							}
-
+						lookahead.PrototypeParsingType = prototypeParsingType + 1;
 						lookahead.Next();
 						lookahead.PrototypeParsingType = PrototypeParsingType.ClosingExtensionSymbol;
 						lookahead.Next();
@@ -2250,7 +2200,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				else if (lookahead.Character == '=')
 					{
 					if (mode == ParseMode.ParsePrototype &&
-						prototypeParsingType == PrototypeParsingType.StartOfParams)
+						prototypeParsingType == PrototypeParsingType.StartOfMetadataParams)
 						{  lookahead.PrototypeParsingType = PrototypeParsingType.PropertyValueSeparator;  }
 
 					lookahead.Next();
@@ -2258,7 +2208,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				else if (lookahead.Character == ',')
 					{
 					if (mode == ParseMode.ParsePrototype &&
-						prototypeParsingType == PrototypeParsingType.StartOfParams)
+						prototypeParsingType == PrototypeParsingType.StartOfMetadataParams)
 						{  lookahead.PrototypeParsingType = PrototypeParsingType.ParamSeparator;  }
 
 					lookahead.Next();
@@ -2287,9 +2237,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				iterator.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.Metadata);
 				}
 			else if (mode == ParseMode.ParsePrototype &&
-					  prototypeParsingType == PrototypeParsingType.StartOfParams)
+					  prototypeParsingType == PrototypeParsingType.StartOfMetadataParams)
 				{
-				// We marked StartOfParams, EndOfParams, ParamSeparator, and PropertyValueSeparator.
+				// We marked StartOfMetadataParams, EndOfMetadataParams, ParamSeparator, and PropertyValueSeparator.
 				// Find and mark tokens that should be Name and PropertyValue now.
 				TokenIterator end = lookahead;
 				lookahead = iterator;
