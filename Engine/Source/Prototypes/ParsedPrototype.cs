@@ -155,7 +155,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					else if (StartOfParamsTypes.Contains(sectionParamsType))
 						{  newSection = new ParameterSection(startOfSection, endOfSection, this);  }
 					else
-						{  newSection = new Section(startOfSection, endOfSection);  }
+						{  newSection = new Section(startOfSection, endOfSection, this);  }
 
 					sections.Add(newSection);
 					}
@@ -174,7 +174,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			// suppose could with a manual prototype.
 
 			if (sections.Count < 1)
-				{  sections.Add( new Section(tokenizer.FirstToken, tokenizer.EndOfTokens) );  }
+				{  sections.Add( new Section(tokenizer.FirstToken, tokenizer.EndOfTokens, this) );  }
 			}
 
 

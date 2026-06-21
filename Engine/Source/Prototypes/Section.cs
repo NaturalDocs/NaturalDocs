@@ -35,10 +35,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 		/* Constructor: Section
 		 */
-		public Section (TokenIterator start, TokenIterator end)
+		public Section (TokenIterator start, TokenIterator end, ParsedPrototype parsedPrototype)
 			{
 			this.start = start;
 			this.end = end;
+			this.parsedPrototype = parsedPrototype;
 			}
 
 
@@ -566,6 +567,16 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			}
 
 
+		/* Property: ParsedPrototype
+		 * The <ParsedPrototype> this section is a part of.
+		 */
+		public ParsedPrototype ParsedPrototype
+			{
+			get
+				{  return parsedPrototype;  }
+			}
+
+
 		/* Property: Start
 		 */
 		public TokenIterator Start
@@ -631,5 +642,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * One past the last token of the section.
 		 */
 		protected TokenIterator end;
+
+		/* var: parsedPrototype
+		 * The <ParsedPrototype> this section is a part of.
+		 */
+		protected ParsedPrototype parsedPrototype;
+
 		}
 	}

@@ -31,14 +31,12 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * automatically call <RecalculateParameters()> so you don't have to.
 		 */
 		public ParameterSection (TokenIterator start, TokenIterator end, ParsedPrototype parsedPrototype)
-			: base (start, end)
+			: base (start, end, parsedPrototype)
 			{
 			beforeParameters = null;
 			afterParameters = null;
 			parameters = null;
 			startingParameterType = PrototypeParsingType.Null;
-
-			this.parsedPrototype = parsedPrototype;
 
 			RecalculateParameters();
 			}
@@ -212,7 +210,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				endingType = PrototypeParsingType.Null;
 				}
 
-			beforeParameters = new Section(start, iterator);
+			beforeParameters = new Section(start, iterator, parsedPrototype);
 
 			// Only trim whitespace if it's insignificant
 			if (iterator.FundamentalType == FundamentalType.Whitespace &&
@@ -259,11 +257,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 							lookbehind.PrototypeParsingType == PrototypeParsingType.Null &&
 							lookbehind >= startOfParam)
 							{
-							parameters.Add( new Section(startOfParam, lookbehind) );
+							parameters.Add( new Section(startOfParam, lookbehind, parsedPrototype) );
 							}
 						else
 							{
-							parameters.Add( new Section(startOfParam, iterator) );
+							parameters.Add( new Section(startOfParam, iterator, parsedPrototype) );
 							}
 
 						break;
@@ -271,7 +269,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					else if (iterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
 						{
 						iterator.Next();
-						parameters.Add( new Section(startOfParam, iterator) );
+						parameters.Add( new Section(startOfParam, iterator, parsedPrototype) );
 
 						if (iterator.FundamentalType == FundamentalType.Whitespace &&
 							iterator.PrototypeParsingType == PrototypeParsingType.Null)
@@ -289,7 +287,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 			if (iterator < end)
 				{
-				afterParameters = new Section(iterator, end);
+				afterParameters = new Section(iterator, end, parsedPrototype);
 				}
 
 
@@ -697,11 +695,6 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * <PrototypeParsingType.StartOfParams> or <PrototypeParsingType.StartOfTemplateParams>.
 		 */
 		protected PrototypeParsingType startingParameterType;
-
-		/* var: parsedPrototype
-		 * The <ParsedPrototype> associated with this section.
-		 */
-		protected ParsedPrototype parsedPrototype;
 
 
 
