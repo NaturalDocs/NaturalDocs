@@ -1,24 +1,8 @@
 ﻿/*
- * Class: CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes.SystemVerilogModule
+ * Class: CodeClear.NaturalDocs.Engine.Prototypes.ParameterSections.SystemVerilogPorts
  * ____________________________________________________________________________
  *
- * A specialized <ParsedPrototype> for SystemVerilog modules.  It differs from <ParsedPrototype> in the following ways:
- *
- *
- * Multiple Parameter Sections:
- *
- *		Multiple parameter sections will be used for things like <GetParameterName()> and <NumberOfParameters>.  This
- *		is because modules can have both #() and () parameters and we want to include them both.
- *
- *		This class treats them as if they are one continuous set of parameters, so in:
- *
- *		--- SV Code ---
- *		module MyModule #(int A, int B) (int C);
- *		---
- *
- *		it behaves as if there are three parameters, with B at parameter index 1 and C at parameter index 2.  The benefit
- *		of this is it allows types to be automatically retrieved from both sets of parameters when documenting them in
- *		definition lists.
+ * A specialized <ParameterSection> for SystemVerilog ports.  It differs from the base class in the following ways:
  *
  *
  *	Attribute Combining:
@@ -44,9 +28,9 @@ using System;
 using CodeClear.NaturalDocs.Engine.Tokenization;
 
 
-namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
+namespace CodeClear.NaturalDocs.Engine.Prototypes.ParameterSections
 	{
-	public class SystemVerilogModule : ParsedPrototype
+	public class SystemVerilogPorts : ParameterSection
 		{
 
 		// Group: Types
@@ -104,25 +88,15 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			}
 
 
-		/* Enum: ParameterSectionType
-		 *
-		 * ANSIParameterPorts - ANSI ports appearing in #() parentheses.
-		 * ANSIPorts - ANSI ports appearing in regular parentheses.
-		 * NonANSIPorts - Ports and parameter ports appearing in a non-ANSI section.
-		 */
-		protected enum ParameterSectionType
-			{  ANSIParameterPorts, ANSIPorts, NonANSIPorts  }
-
-
 
 		// Group: Functions
 		// __________________________________________________________________________
 
 
-		/* Constructor: SystemVerilogModule
+		/* Constructor: SystemVerilogPorts
 		 * Static constructor
 		 */
-		static SystemVerilogModule ()
+		static SystemVerilogPorts ()
 			{
 			// I debated which character to use as a stand-in:
 			// - "x" is somewhat intuitive in terms of meaning: "x[2]" and "logic [7:0] x[2]".
@@ -136,77 +110,54 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			}
 
 
-		/* Constructor: SystemVerilogModule
+		/* Constructor: SystemVerilogPorts
 		 */
-		public SystemVerilogModule (Tokenizer prototype, int languageID, int commentTypeID, Engine.Instance engineInstance)
-			: base (prototype, languageID, commentTypeID, engineInstance)
+		public SystemVerilogPorts (TokenIterator start, TokenIterator end, ParsedPrototype parsedPrototype)
+			: base (start, end, parsedPrototype)
 			{
 			}
 
 
-		/* Function: ConvertParameterIndex
-		 * Takes an index that applies across all parameter sections and finds the <ParameterSection> containing it.  Also
-		 * returns the index within that section that corresponds to it.  Returns whether it was successful.
+		/* Function: BuildFullParameterType
 		 */
-		protected bool ConvertParameterIndex (int parameterIndex, out ParameterSection containingSection,
-																 out int containingSectionParameterIndex)
+		override public bool BuildFullParameterType (int parameterIndex, out TokenIterator fullTypeStart, out TokenIterator fullTypeEnd,
+																		 bool preventImpliedTypes = false)
 			{
-			for (int i = mainSectionIndex; i < sections.Count; i++)
-				{
-				if (sections[i] is ParameterSection)
-					{
-					ParameterSection parameterSection = (sections[i] as ParameterSection);
+			TypeBuilder typeBuilder;
 
-					if (parameterIndex < parameterSection.NumberOfParameters)
-						{
-						containingSection = parameterSection;
-						containingSectionParameterIndex = parameterIndex;
-						return true;
-						}
-					else
-						{
-						parameterIndex -= parameterSection.NumberOfParameters;
-						// Continue looking
-						}
-					}
+			switch (StartingParameterType)
+				{
+				case PrototypeParsingType.SystemVerilog_StartOfANSIPorts:
+					typeBuilder = BuildFullANSIPortType(parameterIndex, preventImpliedTypes);
+					break;
+
+				case PrototypeParsingType.SystemVerilog_StartOfANSIParameterPorts:
+					typeBuilder = BuildFullANSIParameterPortType(parameterIndex, preventImpliedTypes);
+					break;
+
+				default:
+					throw new NotImplementedException();
 				}
 
-			containingSection = null;
-			containingSectionParameterIndex = -1;
-			return false;
-			}
-
-
-		/* Function: GetParameterSectionType
-		 * Returns the <ParameterSectionType> of the passed section.
-		 */
-		protected ParameterSectionType GetParameterSectionType (ParameterSection parameterSection)
-			{
-			TokenIterator start, end;
-			if (parameterSection.GetBeforeParameters(out start, out end))
+			if (!typeBuilder.IsEmpty)
 				{
-				end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds);
-				end.Previous();
-
-				if (end.Character == '(')
-					{
-					end.Previous();
-
-					if (end.Character == '#')
-						{  return ParameterSectionType.ANSIParameterPorts;  }
-					else
-						{  return ParameterSectionType.ANSIPorts;  }
-					}
+				var typeTokenizer = typeBuilder.ToTokenizer();
+				fullTypeStart = typeTokenizer.FirstToken;
+				fullTypeEnd = typeTokenizer.EndOfTokens;
+				return true;
 				}
-
-			// Everything else we treat as non-ANSI
-			return ParameterSectionType.NonANSIPorts;
+			else
+				{
+				fullTypeStart = default;
+				fullTypeEnd = default;
+				return false;
+				}
 			}
 
 
 		/* Function: BuildFullANSIParameterPortType
 		 */
-		protected TypeBuilder BuildFullANSIParameterPortType (ParameterSection parameterSection, int parameterIndex)
+		protected TypeBuilder BuildFullANSIParameterPortType (int parameterIndex, bool preventImpliedTypes = false)
 			{
 			TypeBuilder typeBuilder = new TypeBuilder();
 			PortFlags portFlags = 0;
@@ -214,19 +165,19 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 			// Parameter Keyword
 
-			if (AppendParameterKeyword(parameterSection, parameterIndex, typeBuilder))
+			if (AppendParameterKeyword(parameterIndex, typeBuilder))
 				{  portFlags |= PortFlags.HasParameterKeyword;  }
 
 			// The parameter keyword only inherits if it's "parameter".  This is because compilers differ on whether a keywordless
 			// parameter following a "localparam" becomes "localparam" or defaults back to "parameter".  See the SystemVerilog
 			// Notes file.  Since "localparam" won't be used as often it's still worth inheriting "parameter" when we can.
-			else
+			else if (!preventImpliedTypes)
 				{
 				TokenIterator keywordPosition, endOfParameter;
 
 				for (int i = parameterIndex - 1; i >= 0; i--)
 					{
-					if (FindParameterKeyword(parameterSection, i, out keywordPosition, out endOfParameter))
+					if (FindParameterKeyword(i, out keywordPosition, out endOfParameter))
 						{
 						if (keywordPosition.MatchesToken("parameter"))
 							{
@@ -242,37 +193,37 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 			// Data Type
 
-			if (AppendBaseDataType(parameterSection, parameterIndex, typeBuilder))
+			if (AppendBaseDataType(parameterIndex, typeBuilder))
 				{
 				portFlags |= PortFlags.HasBaseDataType;
 
-				if (AppendOtherModifiers(parameterSection, parameterIndex, typeBuilder))
+				if (AppendOtherModifiers(parameterIndex, typeBuilder))
 					{  portFlags |= PortFlags.HasOtherModifiers;  }
 				}
-			if (AppendSigning(parameterSection, parameterIndex, typeBuilder))
+			if (AppendSigning(parameterIndex, typeBuilder))
 				{  portFlags |= PortFlags.HasSigning;  }
-			if (AppendPackedDimensions(parameterSection, parameterIndex, typeBuilder))
+			if (AppendPackedDimensions(parameterIndex, typeBuilder))
 				{  portFlags |= PortFlags.HasPackedDimensions;  }
 
 			// The data type only inherits if nothing is specified.  If the base type or any properties are set the rest does
 			// not inherit, they revert to the default.  This includes if signing or packed data types appear alone.
-			if ((portFlags & PortFlags.HasDataTypeOrProperties) == 0)
+			if (!preventImpliedTypes && (portFlags & PortFlags.HasDataTypeOrProperties) == 0)
 				{
 				for (int i = parameterIndex - 1; i >= 0; i--)
 					{
-					if (AppendBaseDataType(parameterSection, i, typeBuilder))
+					if (AppendBaseDataType(i, typeBuilder))
 						{
 						portFlags |= PortFlags.HasBaseDataType;
 
-						if (AppendOtherModifiers(parameterSection, i, typeBuilder))
+						if (AppendOtherModifiers(i, typeBuilder))
 							{  portFlags |= PortFlags.HasOtherModifiers;  }
 						}
-					if (AppendSigning(parameterSection, i, typeBuilder))
+					if (AppendSigning(i, typeBuilder))
 						{  portFlags |= PortFlags.HasSigning;  }
-					if (AppendPackedDimensions(parameterSection, i, typeBuilder))
+					if (AppendPackedDimensions(i, typeBuilder))
 						{  portFlags |= PortFlags.HasPackedDimensions;  }
 
-					if ((portFlags & PortFlags.HasDataTypeOrProperties) != 0)
+					if (!preventImpliedTypes && (portFlags & PortFlags.HasDataTypeOrProperties) != 0)
 						{  break;  }
 					}
 
@@ -282,7 +233,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 			// Unpacked Dimensions
 
-			if (AppendUnpackedDimensions(parameterSection, parameterIndex, typeBuilder, addStandInForName: true))
+			if (AppendUnpackedDimensions(parameterIndex, typeBuilder, addStandInForName: true))
 				{  portFlags |= PortFlags.HasUnpackedDimensions;  }
 			// Unpacked dimensions don't inherit from previous parameters
 
@@ -293,7 +244,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 		/* Function: BuildFullANSIPortType
 		 */
-		protected TypeBuilder BuildFullANSIPortType (ParameterSection parameterSection, int parameterIndex)
+		protected TypeBuilder BuildFullANSIPortType (int parameterIndex, bool preventImpliedTypes = false)
 			{
 			TypeBuilder typeBuilder = new TypeBuilder();
 			PortFlags portFlags = 0;
@@ -301,15 +252,15 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 			// Direction
 
-			if (AppendDirection(parameterSection, parameterIndex, typeBuilder))
+			if (AppendDirection(parameterIndex, typeBuilder))
 				{  portFlags |= PortFlags.HasDirection;  }
 
-			else
+			else if (!preventImpliedTypes)
 				{
 				// The direction is always inherited if it's not specified
 				for (int i = parameterIndex - 1; i >= 0; i--)
 					{
-					if (AppendDirection(parameterSection, i, typeBuilder))
+					if (AppendDirection(i, typeBuilder))
 						{
 						portFlags |= PortFlags.HasDirection;
 						break;
@@ -322,14 +273,14 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 			// Var Keyword
 
-			if (AppendVarKeyword(parameterSection, parameterIndex, typeBuilder))
+			if (AppendVarKeyword(parameterIndex, typeBuilder))
 				{  portFlags |= PortFlags.HasVarKeyword;  }
 			// xxx inherits?
 
 
 			// Port Binding instead of data type?
 
-			if (AppendPortBinding(parameterSection, parameterIndex, typeBuilder, skipName: true))
+			if (AppendPortBinding(parameterIndex, typeBuilder, skipName: true))
 				{
 				portFlags |= PortFlags.IsPortBinding;
 				}
@@ -339,37 +290,37 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 			else
 				{
-				if (AppendBaseDataType(parameterSection, parameterIndex, typeBuilder))
+				if (AppendBaseDataType(parameterIndex, typeBuilder))
 					{
 					portFlags |= PortFlags.HasBaseDataType;
 
-					if (AppendOtherModifiers(parameterSection, parameterIndex, typeBuilder))
+					if (AppendOtherModifiers(parameterIndex, typeBuilder))
 						{  portFlags |= PortFlags.HasOtherModifiers;  }
 					}
-				if (AppendSigning(parameterSection, parameterIndex, typeBuilder))
+				if (AppendSigning(parameterIndex, typeBuilder))
 					{  portFlags |= PortFlags.HasSigning;  }
-				if (AppendPackedDimensions(parameterSection, parameterIndex, typeBuilder))
+				if (AppendPackedDimensions(parameterIndex, typeBuilder))
 					{  portFlags |= PortFlags.HasPackedDimensions;  }
 
 				// The data type only inherits if nothing is specified.  If the base type or any properties are set the rest does
 				// not inherit, they revert to the default.  This includes if signing or packed data types appear alone.
-				if ((portFlags & PortFlags.HasDataTypeOrProperties) == 0)
+				if (!preventImpliedTypes && (portFlags & PortFlags.HasDataTypeOrProperties) == 0)
 					{
 					for (int i = parameterIndex - 1; i >= 0; i--)
 						{
-						if (AppendBaseDataType(parameterSection, i, typeBuilder))
+						if (AppendBaseDataType(i, typeBuilder))
 							{
 							portFlags |= PortFlags.HasBaseDataType;
 
-							if (AppendOtherModifiers(parameterSection, i, typeBuilder))
+							if (AppendOtherModifiers(i, typeBuilder))
 								{  portFlags |= PortFlags.HasOtherModifiers;  }
 							}
-						if (AppendSigning(parameterSection, i, typeBuilder))
+						if (AppendSigning(i, typeBuilder))
 							{  portFlags |= PortFlags.HasSigning;  }
-						if (AppendPackedDimensions(parameterSection, i, typeBuilder))
+						if (AppendPackedDimensions(i, typeBuilder))
 							{  portFlags |= PortFlags.HasPackedDimensions;  }
 
-						if ((portFlags & PortFlags.HasDataTypeOrProperties) != 0)
+						if (!preventImpliedTypes && (portFlags & PortFlags.HasDataTypeOrProperties) != 0)
 							{  break;  }
 						}
 
@@ -379,7 +330,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 				// Unpacked Dimensions
 
-				if (AppendUnpackedDimensions(parameterSection, parameterIndex, typeBuilder, addStandInForName: true))
+				if (AppendUnpackedDimensions(parameterIndex, typeBuilder, addStandInForName: true))
 					{  portFlags |= PortFlags.HasUnpackedDimensions;  }
 				// Unpacked dimensions don't inherit from previous parameters
 
@@ -389,27 +340,46 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			}
 
 
+		/* Function: GetBaseParameterType
+		 */
+		override public bool GetBaseParameterType (int parameterIndex, out TokenIterator baseTypeStart, out TokenIterator baseTypeEnd,
+																		bool preventImpliedTypes = false)
+			{
+			switch (StartingParameterType)
+				{
+				case PrototypeParsingType.SystemVerilog_StartOfANSIPorts:
+					return GetBaseANSIPortType(parameterIndex, out baseTypeStart, out baseTypeEnd, preventImpliedTypes);
+
+				case PrototypeParsingType.SystemVerilog_StartOfANSIParameterPorts:
+					return GetBaseANSIParameterPortType(parameterIndex, out baseTypeStart, out baseTypeEnd, preventImpliedTypes);
+
+				default:
+					throw new NotImplementedException();
+				}
+			}
+
+
 		/* Function: GetBaseANSIParameterPortType
 		 */
-		protected bool GetBaseANSIParameterPortType (ParameterSection parameterSection, int parameterIndex,
-																			  out TokenIterator baseTypeStart, out TokenIterator baseTypeEnd)
+		protected bool GetBaseANSIParameterPortType (int parameterIndex, out TokenIterator baseTypeStart, out TokenIterator baseTypeEnd,
+																			 bool preventImpliedTypes = false)
 			{
 			// Find the start of the base type, and whether we have one
 
 			bool foundBaseType = false;
 			TokenIterator endOfParameter;
 
-			if (FindBaseDataType(parameterSection, parameterIndex, out baseTypeStart, out endOfParameter))
+			if (FindBaseDataType(parameterIndex, out baseTypeStart, out endOfParameter))
 				{
 				foundBaseType = true;
 				}
 
-			else
+			else if (!preventImpliedTypes)
 				{
 				// If signing or packed dimensions are defined the parameter does not inherit the base data type from a previous
 				// parameter.  It reverts to a default.
-				if (HasSigning(parameterSection, parameterIndex) ||
-					HasPackedDimensions(parameterSection, parameterIndex))
+				if (HasSigning(parameterIndex) ||
+					HasPackedDimensions(parameterIndex))
 					{
 					foundBaseType = false;
 					}
@@ -417,14 +387,14 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 					{
 					for (int i = parameterIndex - 1; i >= 0; i--)
 						{
-						if (FindBaseDataType(parameterSection, i, out baseTypeStart, out endOfParameter))
+						if (FindBaseDataType(i, out baseTypeStart, out endOfParameter))
 							{
 							foundBaseType = true;
 							break;
 							}
 
-						if (HasSigning(parameterSection, i) ||
-							HasPackedDimensions(parameterSection, i))
+						if (HasSigning(i) ||
+							HasPackedDimensions(i))
 							{
 							foundBaseType = false;
 							break;
@@ -435,8 +405,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 			if (!foundBaseType)
 				{
-				baseTypeStart = tokenizer.EndOfTokens;
-				baseTypeEnd = tokenizer.EndOfTokens;
+				baseTypeStart = default;
+				baseTypeEnd = default;
 				return false;
 				}
 
@@ -471,25 +441,25 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 		/* Function: GetBaseANSIPortType
 		 */
-		protected bool GetBaseANSIPortType (ParameterSection parameterSection, int parameterIndex,
-															   out TokenIterator baseTypeStart, out TokenIterator baseTypeEnd)
+		protected bool GetBaseANSIPortType (int parameterIndex, out TokenIterator baseTypeStart, out TokenIterator baseTypeEnd,
+															   bool preventImpliedTypes = false)
 			{
 			// Find the start of the base type, and whether we have one
 
 			bool foundBaseType = false;
 			TokenIterator endOfParameter;
 
-			if (FindBaseDataType(parameterSection, parameterIndex, out baseTypeStart, out endOfParameter))
+			if (FindBaseDataType(parameterIndex, out baseTypeStart, out endOfParameter))
 				{
 				foundBaseType = true;
 				}
 
-			else
+			else if (!preventImpliedTypes)
 				{
 				// If signing or packed dimensions are defined the parameter does not inherit the base data type from a previous
 				// parameter.  It reverts to a default.
-				if (HasSigning(parameterSection, parameterIndex) ||
-					HasPackedDimensions(parameterSection, parameterIndex))
+				if (HasSigning(parameterIndex) ||
+					HasPackedDimensions(parameterIndex))
 					{
 					foundBaseType = false;
 					}
@@ -497,14 +467,14 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 					{
 					for (int i = parameterIndex - 1; i >= 0; i--)
 						{
-						if (FindBaseDataType(parameterSection, i, out baseTypeStart, out endOfParameter))
+						if (FindBaseDataType(i, out baseTypeStart, out endOfParameter))
 							{
 							foundBaseType = true;
 							break;
 							}
 
-						if (HasSigning(parameterSection, i) ||
-							HasPackedDimensions(parameterSection, i))
+						if (HasSigning(i) ||
+							HasPackedDimensions(i))
 							{
 							foundBaseType = false;
 							break;
@@ -515,8 +485,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 			if (!foundBaseType)
 				{
-				baseTypeStart = tokenizer.EndOfTokens;
-				baseTypeEnd = tokenizer.EndOfTokens;
+				baseTypeStart = default;
+				baseTypeEnd = default;
 				return false;
 				}
 
@@ -558,10 +528,9 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * Returns whether the passed parameter contains a direction keyword (input, output, etc.)  Direction keywords must be
 		 * marked with <PrototypeParsingType.TypeModifier>.
 		 */
-		protected bool HasDirection (ParameterSection parameterSection, int parameterIndex)
+		protected bool HasDirection (int parameterIndex)
 			{
-			TokenIterator ignore1, ignore2;
-			return FindDirection(parameterSection, parameterIndex, out ignore1, out ignore2);
+			return FindDirection(parameterIndex, out _, out _);
 			}
 
 
@@ -569,10 +538,9 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * Returns whether the passed parameter contains a parameter keyword (parameter, localparam).  Parameter keywords
 		 * must be marked with <PrototypeParsingType.TypeModifier>.
 		 */
-		protected bool HasParameterKeyword (ParameterSection parameterSection, int parameterIndex)
+		protected bool HasParameterKeyword (int parameterIndex)
 			{
-			TokenIterator ignore1, ignore2;
-			return FindParameterKeyword(parameterSection, parameterIndex, out ignore1, out ignore2);
+			return FindParameterKeyword(parameterIndex, out _, out _);
 			}
 
 
@@ -580,10 +548,9 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * Returns whether the passed parameter contains a "var" keyword.  Var keywords must be marked with
 		 * <PrototypeParsingType.TypeModifier>.
 		 */
-		protected bool HasVarKeyword (ParameterSection parameterSection, int parameterIndex)
+		protected bool HasVarKeyword (int parameterIndex)
 			{
-			TokenIterator ignore1, ignore2;
-			return FindVarKeyword(parameterSection, parameterIndex, out ignore1, out ignore2);
+			return FindVarKeyword(parameterIndex, out _, out _);
 			}
 
 
@@ -592,20 +559,18 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * with <PrototypeParsingType.Type>, <PrototypeParsingType.TypeQualifier>, or for type references like "type(x)",
 		 * <PrototypeParsingType.OpeningTypeModifier> and <PrototypeParsingType.ClosingTypeModifier>.
 		 */
-		protected bool HasBaseDataType (ParameterSection parameterSection, int parameterIndex)
+		protected bool HasBaseDataType (int parameterIndex)
 			{
-			TokenIterator ignore1, ignore2;
-			return FindBaseDataType(parameterSection, parameterIndex, out ignore1, out ignore2);
+			return FindBaseDataType(parameterIndex, out _, out _);
 			}
 
 
 		/* Function: HasOtherModifiers
 		 * Returns whether the passed parameter contains modifiers that aren't signing or packed dimensions.
 		 */
-		protected bool HasOtherModifiers (ParameterSection parameterSection, int parameterIndex)
+		protected bool HasOtherModifiers (int parameterIndex)
 			{
-			TokenIterator ignore1, ignore2;
-			return FindOtherModifiers(parameterSection, parameterIndex, out ignore1, out ignore2);
+			return FindOtherModifiers(parameterIndex, out _, out _);
 			}
 
 
@@ -617,10 +582,9 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * Note that this will return false for signed structs and unions.  This is because those appear in the middle of
 		 * "other modifiers" so are treated as part of them.
 		 */
-		protected bool HasSigning (ParameterSection parameterSection, int parameterIndex)
+		protected bool HasSigning (int parameterIndex)
 			{
-			TokenIterator ignore1, ignore2;
-			return FindSigning(parameterSection, parameterIndex, out ignore1, out ignore2);
+			return FindSigning(parameterIndex, out _, out _);
 			}
 
 
@@ -629,10 +593,9 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * be marked with <PrototypeParsingType.OpeningTypeModifier> and <PrototypeParsingType.ClosingTypeModifier>.
 		 * They also cannot appear after a <PrototypeParsingType.Name> token.
 		 */
-		protected bool HasPackedDimensions (ParameterSection parameterSection, int parameterIndex)
+		protected bool HasPackedDimensions (int parameterIndex)
 			{
-			TokenIterator ignore1, ignore2;
-			return FindPackedDimensions(parameterSection, parameterIndex, out ignore1, out ignore2);
+			return FindPackedDimensions(parameterIndex, out _, out _);
 			}
 
 
@@ -642,10 +605,9 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * <PrototypeParsingType.ClosingParamModifier>.  They also must appear after a <PrototypeParsingType.Name>
 		 * token.
 		 */
-		protected bool HasUnpackedDimensions (ParameterSection parameterSection, int parameterIndex)
+		protected bool HasUnpackedDimensions (int parameterIndex)
 			{
-			TokenIterator ignore1, ignore2;
-			return FindUnpackedDimensions(parameterSection, parameterIndex, out ignore1, out ignore2);
+			return FindUnpackedDimensions(parameterIndex, out _, out _);
 			}
 
 
@@ -654,10 +616,9 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * <PrototypeParsingType.ParamModifier> at the dot, then <PrototypeParsingType.Name>, then
 		 * <PrototypeParsingType.OpeningParamModifier> at the parenthetical.
 		 */
-		protected bool IsPortBinding (ParameterSection parameterSection, int parameterIndex)
+		protected bool IsPortBinding (int parameterIndex)
 			{
-			TokenIterator ignore1, ignore2;
-			return FindPortBinding(parameterSection, parameterIndex, out ignore1, out ignore2);
+			return FindPortBinding(parameterIndex, out _, out _);
 			}
 
 
@@ -666,11 +627,10 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * its position and return true.  Returns false otherwise.  Direction keywords must be marked with
 		 * <PrototypeParsingType.TypeModifier>.
 		 */
-		protected bool FindDirection (ParameterSection parameterSection, int parameterIndex,
-												  out TokenIterator directionPosition, out TokenIterator endOfParameter)
+		protected bool FindDirection (int parameterIndex, out TokenIterator directionPosition, out TokenIterator endOfParameter)
 			{
 			TokenIterator iterator;
-			parameterSection.GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
+			GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
 
 			while (iterator < endOfParameter)
 				{
@@ -681,7 +641,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 					return true;
 					}
 
-				if (!TryToSkipBlock(ref iterator, endOfParameter))
+				if (!ParsedPrototype.TryToSkipBlock(ref iterator, endOfParameter))
 					{  iterator.Next();  }
 				}
 
@@ -695,11 +655,10 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * its position and return true.  Returns false otherwise.  Parameter keywords must be marked with
 		 * <PrototypeParsingType.TypeModifier>.
 		 */
-		protected bool FindParameterKeyword (ParameterSection parameterSection, int parameterIndex,
-																out TokenIterator keywordPosition, out TokenIterator endOfParameter)
+		protected bool FindParameterKeyword (int parameterIndex, out TokenIterator keywordPosition, out TokenIterator endOfParameter)
 			{
 			TokenIterator iterator;
-			parameterSection.GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
+			GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
 
 			while (iterator < endOfParameter)
 				{
@@ -710,7 +669,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 					return true;
 					}
 
-				if (!TryToSkipBlock(ref iterator, endOfParameter))
+				if (!ParsedPrototype.TryToSkipBlock(ref iterator, endOfParameter))
 					{  iterator.Next();  }
 				}
 
@@ -723,11 +682,10 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * If the passed parameter contains a "var" keyword it will return a <TokenIterator> at its position and return true.
 		 * Returns false otherwise.  Var keywords must be marked with <PrototypeParsingType.TypeModifier>.
 		 */
-		protected bool FindVarKeyword (ParameterSection parameterSection, int parameterIndex,
-													  out TokenIterator keywordPosition, out TokenIterator endOfParameter)
+		protected bool FindVarKeyword (int parameterIndex, out TokenIterator keywordPosition, out TokenIterator endOfParameter)
 			{
 			TokenIterator iterator;
-			parameterSection.GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
+			GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
 
 			while (iterator < endOfParameter)
 				{
@@ -738,7 +696,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 					return true;
 					}
 
-				if (!TryToSkipBlock(ref iterator, endOfParameter))
+				if (!ParsedPrototype.TryToSkipBlock(ref iterator, endOfParameter))
 					{  iterator.Next();  }
 				}
 
@@ -752,11 +710,10 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * true.  Returns false otherwise.  Base data type tokens must be marked with <PrototypeParsingType.Type> or
 		 * <PrototypeParsingType.TypeQualifier>.
 		 */
-		protected bool FindBaseDataType (ParameterSection parameterSection, int parameterIndex,
-														  out TokenIterator baseDataTypePosition, out TokenIterator endOfParameter)
+		protected bool FindBaseDataType (int parameterIndex, out TokenIterator baseDataTypePosition, out TokenIterator endOfParameter)
 			{
 			TokenIterator iterator;
-			parameterSection.GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
+			GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
 
 			while (iterator < endOfParameter)
 				{
@@ -767,7 +724,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 					return true;
 					}
 
-				if (!TryToSkipBlock(ref iterator, endOfParameter))
+				if (!ParsedPrototype.TryToSkipBlock(ref iterator, endOfParameter))
 					{  iterator.Next();  }
 				}
 
@@ -780,14 +737,13 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * If the passed parameter contains modifiers that aren't signing or packed dimensions it will return a
 		 * <TokenIterator> at its position and return true.
 		 */
-		protected bool FindOtherModifiers (ParameterSection parameterSection, int parameterIndex,
-														  out TokenIterator modifierPosition, out TokenIterator endOfParameter)
+		protected bool FindOtherModifiers (int parameterIndex, out TokenIterator modifierPosition, out TokenIterator endOfParameter)
 			{
 			TokenIterator iterator;
 			bool isStructUnion = false;
 			bool isEnum = false;
 
-			if (FindBaseDataType(parameterSection, parameterIndex, out iterator, out endOfParameter))
+			if (FindBaseDataType(parameterIndex, out iterator, out endOfParameter))
 				{
 				// If it has a base data type, check if it's a struct, union, or enum since they'll need special handling.
 				isStructUnion = Languages.Parsers.SystemVerilog.IsOnAnyKeyword(iterator, "struct", "union");
@@ -811,7 +767,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				{
 				// If it doesn't have a base data type we don't have to worry about special handling.  Position the iterator
 				// at the beginning of the parameter.
-				parameterSection.GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
+				GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
 				}
 
 			if (iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier)
@@ -889,12 +845,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * Note that this will return false for signed structs and unions.  This is because those appear in the middle of
 		 * "other modifiers" so are treated as part of them.
 		 */
-		protected bool FindSigning (ParameterSection parameterSection, int parameterIndex,
-												out TokenIterator signingPosition, out TokenIterator endOfParameter)
+		protected bool FindSigning (int parameterIndex, out TokenIterator signingPosition, out TokenIterator endOfParameter)
 			{
 			TokenIterator iterator;
 
-			if (FindBaseDataType(parameterSection, parameterIndex, out iterator, out endOfParameter))
+			if (FindBaseDataType(parameterIndex, out iterator, out endOfParameter))
 				{
 				// If it has a base data type, check if it's a struct, union, or enum.  They can have signing keywords
 				// but we treat them as "other modifiers" so this function should return false.
@@ -907,7 +862,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			else
 				{
 				// If it doesn't have a base data type, position the iterator at the beginning of the parameter.
-				parameterSection.GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
+				GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
 				}
 
 			while (iterator < endOfParameter)
@@ -919,7 +874,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 					return true;
 					}
 
-				if (!TryToSkipBlock(ref iterator, endOfParameter))
+				if (!ParsedPrototype.TryToSkipBlock(ref iterator, endOfParameter))
 					{  iterator.Next();  }
 				}
 
@@ -934,13 +889,12 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * <PrototypeParsingType.OpeningTypeModifier> and <PrototypeParsingType.ClosingTypeModifier>.  They also
 		 * cannot appear after a <PrototypeParsingType.Name> token.
 		 */
-		protected bool FindPackedDimensions (ParameterSection parameterSection, int parameterIndex,
-																out TokenIterator packedDimensionsPosition, out TokenIterator endOfParameter)
+		protected bool FindPackedDimensions (int parameterIndex, out TokenIterator packedDimensionsPosition, out TokenIterator endOfParameter)
 			{
 			TokenIterator iterator;
 			bool isEnum = false;
 
-			if (FindBaseDataType(parameterSection, parameterIndex, out iterator, out endOfParameter))
+			if (FindBaseDataType(parameterIndex, out iterator, out endOfParameter))
 				{
 				// If it has a base data type, check if it's "enum" since that will need special handling.
 				isEnum = Languages.Parsers.SystemVerilog.IsOnKeyword(iterator, "enum");
@@ -949,7 +903,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				{
 				// If it doesn't have a base data type we don't have to worry about special handling.  Position the iterator
 				// at the beginning of the parameter.
-				parameterSection.GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
+				GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
 				}
 
 			bool afterBody = false;
@@ -980,7 +934,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				else if (iterator.PrototypeParsingType == PrototypeParsingType.Name)
 					{  break;  }
 
-				if (!TryToSkipBlock(ref iterator, endOfParameter))
+				if (!ParsedPrototype.TryToSkipBlock(ref iterator, endOfParameter))
 					{  iterator.Next();  }
 				}
 
@@ -995,11 +949,10 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * <PrototypeParsingType.OpeningParamModifier> and <PrototypeParsingType.ClosingParamModifier>.  They also
 		 * must appear after a <PrototypeParsingType.Name> token.
 		 */
-		protected bool FindUnpackedDimensions (ParameterSection parameterSection, int parameterIndex,
-																   out TokenIterator unpackedDimensionsPosition, out TokenIterator endOfParameter)
+		protected bool FindUnpackedDimensions (int parameterIndex, out TokenIterator unpackedDimensionsPosition, out TokenIterator endOfParameter)
 			{
 			TokenIterator iterator;
-			parameterSection.GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
+			GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
 
 
 			// Skip all the tokens before the name
@@ -1007,7 +960,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			while (iterator < endOfParameter &&
 					 iterator.PrototypeParsingType != PrototypeParsingType.Name)
 				{
-				if (!TryToSkipBlock(ref iterator, endOfParameter))
+				if (!ParsedPrototype.TryToSkipBlock(ref iterator, endOfParameter))
 					{  iterator.Next();  }
 				}
 
@@ -1039,7 +992,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 					return true;
 					}
 
-				if (!TryToSkipBlock(ref iterator, endOfParameter))
+				if (!ParsedPrototype.TryToSkipBlock(ref iterator, endOfParameter))
 					{  iterator.Next();  }
 				}
 
@@ -1053,11 +1006,10 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * false otherwise.  Bindings must be marked with <PrototypeParsingType.ParamModifier> at the dot, then
 		 * <PrototypeParsingType.Name>, then <PrototypeParsingType.OpeningParamModifier> at the parenthetical.
 		 */
-		protected bool FindPortBinding (ParameterSection parameterSection, int parameterIndex,
-													  out TokenIterator portBindingPosition, out TokenIterator endOfParameter)
+		protected bool FindPortBinding (int parameterIndex, out TokenIterator portBindingPosition, out TokenIterator endOfParameter)
 			{
 			TokenIterator iterator;
-			parameterSection.GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
+			GetParameterBounds(parameterIndex, out iterator, out endOfParameter);
 
 
 			// Skip all the tokens before the dot
@@ -1066,7 +1018,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 					 iterator.Character != '.' &&
 					 iterator.PrototypeParsingType != PrototypeParsingType.ParamModifier)
 				{
-				if (!TryToSkipBlock(ref iterator, endOfParameter))
+				if (!ParsedPrototype.TryToSkipBlock(ref iterator, endOfParameter))
 					{  iterator.Next();  }
 				}
 
@@ -1133,11 +1085,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * and return true.  Returns false otherwise.  Direction keywords must be marked with
 		 * <PrototypeParsingType.TypeModifier>.
 		 */
-		protected bool AppendDirection (ParameterSection parameterSection, int parameterIndex, TypeBuilder typeBuilder)
+		protected bool AppendDirection (int parameterIndex, TypeBuilder typeBuilder)
 			{
 			TokenIterator directionKeyword, endOfParameter;
 
-			if (FindDirection(parameterSection, parameterIndex, out directionKeyword, out endOfParameter))
+			if (FindDirection(parameterIndex, out directionKeyword, out endOfParameter))
 				{
 				typeBuilder.AddToken(directionKeyword);
 				return true;
@@ -1152,11 +1104,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * and return true.  Returns false otherwise.  Parameter keywords must be marked with
 		 * <PrototypeParsingType.TypeModifier>.
 		 */
-		protected bool AppendParameterKeyword (ParameterSection parameterSection, int parameterIndex, TypeBuilder typeBuilder)
+		protected bool AppendParameterKeyword (int parameterIndex, TypeBuilder typeBuilder)
 			{
 			TokenIterator parameterKeyword, endOfParameter;
 
-			if (FindParameterKeyword(parameterSection, parameterIndex, out parameterKeyword, out endOfParameter))
+			if (FindParameterKeyword(parameterIndex, out parameterKeyword, out endOfParameter))
 				{
 				typeBuilder.AddToken(parameterKeyword);
 				return true;
@@ -1170,11 +1122,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * If the passed parameter contains a "var" keyword it will append it to the <TypeBuilder> and return true.  Returns
 		 * false otherwise.  Var keywords must be marked with <PrototypeParsingType.TypeModifier>.
 		 */
-		protected bool AppendVarKeyword (ParameterSection parameterSection, int parameterIndex, TypeBuilder typeBuilder)
+		protected bool AppendVarKeyword (int parameterIndex, TypeBuilder typeBuilder)
 			{
 			TokenIterator varKeyword, endOfParameter;
 
-			if (FindVarKeyword(parameterSection, parameterIndex, out varKeyword, out endOfParameter))
+			if (FindVarKeyword(parameterIndex, out varKeyword, out endOfParameter))
 				{
 				typeBuilder.AddToken(varKeyword);
 				return true;
@@ -1189,11 +1141,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * otherwise.  Base data type tokens must be marked with <PrototypeParsingType.Type> or
 		 * <PrototypeParsingType.TypeQualifier>.
 		 */
-		protected bool AppendBaseDataType (ParameterSection parameterSection, int parameterIndex, TypeBuilder typeBuilder)
+		protected bool AppendBaseDataType (int parameterIndex, TypeBuilder typeBuilder)
 			{
 			TokenIterator iterator, endOfParameter;
 
-			if (FindBaseDataType(parameterSection, parameterIndex, out iterator, out endOfParameter))
+			if (FindBaseDataType(parameterIndex, out iterator, out endOfParameter))
 				{
 				bool isTypeReference = iterator.MatchesToken("type");
 
@@ -1233,11 +1185,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * If the passed parameter contains modifiers that aren't signing or packed dimensions it will add them to the
 		 * <TypeBuilder> and return true.  Returns false otherwise.
 		 */
-		protected bool AppendOtherModifiers (ParameterSection parameterSection, int parameterIndex, TypeBuilder typeBuilder)
+		protected bool AppendOtherModifiers (int parameterIndex, TypeBuilder typeBuilder)
 			{
 			TokenIterator iterator, endOfParameter;
 
-			if (!FindOtherModifiers(parameterSection, parameterIndex, out iterator, out endOfParameter))
+			if (!FindOtherModifiers(parameterIndex, out iterator, out endOfParameter))
 				{  return false;  }
 
 			TokenIterator closingSymbol, endOfBlock;
@@ -1262,7 +1214,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 						TokenIterator baseType, ignore;
 
-						if (FindBaseDataType(parameterSection, parameterIndex, out baseType, out ignore) &&
+						if (FindBaseDataType(parameterIndex, out baseType, out ignore) &&
 							Languages.Parsers.SystemVerilog.IsOnKeyword(baseType, "enum"))
 							{  /* continue */  }
 						else
@@ -1272,7 +1224,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 					if (iterator.Character == '{')
 						{  afterBody = true;  }
 
-					GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock);
+					ParsedPrototype.GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock);
 					bool lastTokenWasColon = false;
 
 					while (iterator < endOfBlock)
@@ -1314,11 +1266,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * Note that this will return false for signed structs and unions.  This is because those appear in the middle of
 		 * "other modifiers" so are treated as part of them.
 		 */
-		protected bool AppendSigning (ParameterSection parameterSection, int parameterIndex, TypeBuilder typeBuilder)
+		protected bool AppendSigning (int parameterIndex, TypeBuilder typeBuilder)
 			{
 			TokenIterator signingKeyword, endOfParameter;
 
-			if (FindSigning(parameterSection, parameterIndex, out signingKeyword, out endOfParameter))
+			if (FindSigning(parameterIndex, out signingKeyword, out endOfParameter))
 				{
 				typeBuilder.AddToken(signingKeyword);
 				return true;
@@ -1333,11 +1285,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 * Returns false otherwise.  Packed dimensions must be marked with <PrototypeParsingType.OpeningTypeModifier> and
 		 * <PrototypeParsingType.ClosingTypeModifier>.  They also cannot appear after a <PrototypeParsingType.Name> token.
 		 */
-		protected bool AppendPackedDimensions (ParameterSection parameterSection, int parameterIndex, TypeBuilder typeBuilder)
+		protected bool AppendPackedDimensions (int parameterIndex, TypeBuilder typeBuilder)
 			{
 			TokenIterator iterator, endOfParameter;
 
-			if (FindPackedDimensions(parameterSection, parameterIndex, out iterator, out endOfParameter))
+			if (FindPackedDimensions(parameterIndex, out iterator, out endOfParameter))
 				{
 				AppendDimension(ref iterator, endOfParameter, typeBuilder, TypeBuilder.Spacing.SpaceBefore);
 
@@ -1387,12 +1339,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 *
 		 * The stand-in token is defined in <NameStandInToken>.
 		 */
-		protected bool AppendUnpackedDimensions (ParameterSection parameterSection, int parameterIndex, TypeBuilder typeBuilder,
-																		bool addStandInForName)
+		protected bool AppendUnpackedDimensions (int parameterIndex, TypeBuilder typeBuilder, bool addStandInForName)
 			{
 			TokenIterator iterator, endOfParameter;
 
-			if (FindUnpackedDimensions(parameterSection, parameterIndex, out iterator, out endOfParameter))
+			if (FindUnpackedDimensions(parameterIndex, out iterator, out endOfParameter))
 				{
 				if (addStandInForName)
 					{  typeBuilder.AddToken(NameStandInToken.FirstToken);  }
@@ -1439,7 +1390,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 
 			TokenIterator closingSymbol, endOfBlock;
 
-			if (!GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock))
+			if (!ParsedPrototype.GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock))
 				{  return false;  }
 
 			typeBuilder.AddToken(iterator, spacing);
@@ -1470,12 +1421,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 		 *
 		 * You can optionally skip the name to make it more generic, such as ".(x)" instead of ".portName(x)".
 		 */
-		protected bool AppendPortBinding (ParameterSection parameterSection, int parameterIndex, TypeBuilder typeBuilder,
-														   bool skipName)
+		protected bool AppendPortBinding (int parameterIndex, TypeBuilder typeBuilder, bool skipName)
 			{
 			TokenIterator iterator, endOfParameter;
 
-			if (!FindPortBinding(parameterSection, parameterIndex, out iterator, out endOfParameter))
+			if (!FindPortBinding(parameterIndex, out iterator, out endOfParameter))
 				{  return false;  }
 
 
@@ -1516,7 +1466,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 			if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier)
 				{
 				TokenIterator closingSymbol, endOfBlock;
-				GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock);
+				ParsedPrototype.GetEndOfBlock(iterator, endOfParameter, out closingSymbol, out endOfBlock);
 				bool lastTokenWasColon = false;
 
 				while (iterator < endOfBlock)
@@ -1532,184 +1482,6 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototypes
 				}
 
 			return true;
-			}
-
-
-
-		// Group: Overridden Functions
-		// __________________________________________________________________________
-
-
-		/* Function: GetParameter
-		 */
-		override public bool GetParameter (int parameterIndex, out TokenIterator parameterStart, out TokenIterator parameterEnd)
-			{
-			ParameterSection containingSection;
-			int containingSectionParameterIndex;
-
-			if (ConvertParameterIndex(parameterIndex, out containingSection, out containingSectionParameterIndex))
-				{
-				return containingSection.GetParameterBounds(containingSectionParameterIndex,
-																				   out parameterStart, out parameterEnd);
-				}
-			else
-				{
-				parameterStart = tokenizer.EndOfTokens;
-				parameterEnd = tokenizer.EndOfTokens;
-				return false;
-				}
-			}
-
-
-		/* Function: GetParameterName
-		 */
-		override public bool GetParameterName (int parameterIndex, out TokenIterator parameterNameStart,
-																 out TokenIterator parameterNameEnd)
-			{
-			ParameterSection containingSection;
-			int containingSectionParameterIndex;
-
-			if (ConvertParameterIndex(parameterIndex, out containingSection, out containingSectionParameterIndex))
-				{
-				return containingSection.GetParameterName(containingSectionParameterIndex,
-																				out parameterNameStart, out parameterNameEnd);
-				}
-			else
-				{
-				parameterNameStart = tokenizer.EndOfTokens;
-				parameterNameEnd = tokenizer.EndOfTokens;
-				return false;
-				}
-			}
-
-
-		/* Function: BuildFullParameterType
-		 */
-		override public bool BuildFullParameterType (int parameterIndex, out TokenIterator fullTypeStart, out TokenIterator fullTypeEnd)
-			{
-			ParameterSection containingSection;
-			int containingSectionParameterIndex;
-
-			if (!ConvertParameterIndex(parameterIndex, out containingSection, out containingSectionParameterIndex))
-				{
-				fullTypeStart = tokenizer.EndOfTokens;
-				fullTypeEnd = tokenizer.EndOfTokens;
-				return false;
-				}
-
-			TypeBuilder typeBuilder;
-
-			switch (GetParameterSectionType(containingSection))
-				{
-				case ParameterSectionType.ANSIParameterPorts:
-					typeBuilder = BuildFullANSIParameterPortType(containingSection, containingSectionParameterIndex);
-					break;
-
-				case ParameterSectionType.ANSIPorts:
-					typeBuilder = BuildFullANSIPortType(containingSection, containingSectionParameterIndex);
-					break;
-
-				case ParameterSectionType.NonANSIPorts:
-					// xxx temporary
-					return base.BuildFullParameterType(parameterIndex, out fullTypeStart, out fullTypeEnd);
-
-				default:
-					throw new NotImplementedException();
-				}
-
-			if (!typeBuilder.IsEmpty)
-				{
-				var fullTypeTokenizer = typeBuilder.ToTokenizer();
-				fullTypeStart = fullTypeTokenizer.FirstToken;
-				fullTypeEnd = fullTypeTokenizer.EndOfTokens;
-				return true;
-				}
-			else
-				{
-				fullTypeStart = tokenizer.EndOfTokens;
-				fullTypeEnd = tokenizer.EndOfTokens;
-				return false;
-				}
-			}
-
-
-		/* Function: GetBaseParameterType
-		 */
-		override public bool GetBaseParameterType (int parameterIndex, out TokenIterator baseTypeStart, out TokenIterator baseTypeEnd)
-			{
-			ParameterSection containingSection;
-			int containingSectionParameterIndex;
-
-			if (!ConvertParameterIndex(parameterIndex, out containingSection, out containingSectionParameterIndex))
-				{
-				baseTypeStart = tokenizer.EndOfTokens;
-				baseTypeEnd = tokenizer.EndOfTokens;
-				return false;
-				}
-
-			switch (GetParameterSectionType(containingSection))
-				{
-				case ParameterSectionType.ANSIParameterPorts:
-					return GetBaseANSIParameterPortType(containingSection, containingSectionParameterIndex,
-																			 out baseTypeStart, out baseTypeEnd);
-
-				case ParameterSectionType.ANSIPorts:
-					return GetBaseANSIPortType(containingSection, containingSectionParameterIndex,
-															  out baseTypeStart, out baseTypeEnd);
-
-				case ParameterSectionType.NonANSIPorts:
-					// xxx temporary
-					return base.GetBaseParameterType(parameterIndex, out baseTypeStart, out baseTypeEnd);
-
-				default:
-					throw new NotImplementedException();
-				}
-			}
-
-
-		/* Function: GetParameterDefaultValue
-		 */
-		override public bool GetParameterDefaultValue (int parameterIndex, out TokenIterator defaultValueStart,
-																			 out TokenIterator defaultValueEnd)
-			{
-			ParameterSection containingSection;
-			int containingSectionParameterIndex;
-
-			if (ConvertParameterIndex(parameterIndex, out containingSection, out containingSectionParameterIndex))
-				{
-				return containingSection.GetParameterDefaultValue(containingSectionParameterIndex,
-																						 out defaultValueStart, out defaultValueEnd);
-				}
-			else
-				{
-				defaultValueStart = tokenizer.EndOfTokens;
-				defaultValueEnd = tokenizer.EndOfTokens;
-				return false;
-				}
-			}
-
-
-
-		// Group: Overridden Properties
-		// __________________________________________________________________________
-
-
-		/* Property: NumberOfParameters
-		 */
-		override public int NumberOfParameters
-			{
-			get
-				{
-				int numberOfParameters = 0;
-
-				for (int i = mainSectionIndex; i < sections.Count; i++)
-					{
-					if (sections[i] is ParameterSection)
-						{  numberOfParameters += (sections[i] as ParameterSection).NumberOfParameters;  }
-					}
-
-				return numberOfParameters;
-				}
 			}
 
 
