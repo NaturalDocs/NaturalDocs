@@ -281,6 +281,16 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			}
 
 
+		/* Property: IsCaseSensitive
+		 * Whether the prototype's language is case-sensitive.
+		 */
+		public bool IsCaseSensitive
+			{
+			get
+				{  return engineInstance.Languages.FromID(languageID).CaseSensitive;  }
+			}
+
+
 		/* Property: EngineInstance
 		 * The <Engine.Instance> associated with this prototype.
 		 */
