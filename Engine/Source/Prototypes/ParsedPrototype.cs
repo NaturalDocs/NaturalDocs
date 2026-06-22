@@ -77,6 +77,41 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			}
 
 
+		/* Function: FindParameterByName
+		 * Attempts to locate a parameter with the passed name in one of the prototype's <ParameterSections>.  If successful it will return
+		 * the section and the parameter index within that section.  Sections are searched in the order specified by <StartOfParamTypes>,
+		 * so parameters in <PrototypeTokenType.StartOfParams> sections will be returned before parameters in
+		 * <PrototypeTokenType.StartOfMetadataParams> sections even if those appear first in the prototype.
+		 */
+		public bool FindParameterByName (string name, out ParameterSection parameterSection, out int parameterIndex)
+			{
+			foreach (var searchType in StartOfParamsTypes)
+				{
+				foreach (var searchSection in sections)
+					{
+					var searchParameterSection = searchSection as ParameterSection;
+
+					if (searchParameterSection != null &&
+						searchParameterSection.StartingParameterType == searchType)
+						{
+						int searchParameterIndex = searchParameterSection.GetParameterIndex(name);
+
+						if (searchParameterIndex != -1)
+							{
+							parameterSection = searchParameterSection;
+							parameterIndex = searchParameterIndex;
+							return true;
+							}
+						}
+					}
+				}
+
+			parameterSection = null;
+			parameterIndex = -1;
+			return false;
+			}
+
+
 		/* Function: RecalculateSections
 		 *
 		 * Recalculates the <Sections> list.  This is automatically called by the constructor so you only need to call this manually if you made

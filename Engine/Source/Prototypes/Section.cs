@@ -87,6 +87,58 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			}
 
 
+		/* Function: MatchesName
+		 * Returns whether the name marked by <PrototypeParsingType.Name> tokens matches the passed one.  It must match the entire
+		 * name, not partially.  It will use the language's case-sensitivity setting.
+		 */
+		virtual public bool MatchesName (string name)
+			{
+			// Find the start of the name
+			TokenIterator iterator = start;
+
+			while (iterator < end &&
+					  iterator.PrototypeParsingType != PrototypeParsingType.Name &&
+					  iterator.PrototypeParsingType != PrototypeParsingType.KeywordName)
+				{  iterator.Next();  }
+
+			if (iterator >= end)
+				{  return false;  }
+
+			// Make sure it matches
+			if (!iterator.MatchesAcrossTokens(name, ignoreCase: !parsedPrototype.IsCaseSensitive, matchPartialTokens: false))
+				{  return false;  }
+
+			// Find the end of the name
+			TokenIterator endOfName = iterator;
+			endOfName.NextByCharacters(name.Length);
+
+			if (endOfName > end)
+				{  return false;  }
+
+			// Make sure the next token isn't also a name, meaning this was a partial match
+			if (endOfName < end &&
+				(endOfName.PrototypeParsingType == PrototypeParsingType.Name ||
+				 endOfName.PrototypeParsingType == PrototypeParsingType.KeywordName))
+				{  return false;  }
+
+			// Walk the iterator forward to make sure all the tokens in between are also name tokens.  We already know
+			// the first one is.
+			iterator.Next();
+
+			while (iterator < endOfName)
+				{
+				if (iterator.PrototypeParsingType != PrototypeParsingType.Name &&
+					iterator.PrototypeParsingType != PrototypeParsingType.KeywordName)
+					{  return false;  }
+
+				iterator.Next();
+				}
+
+			// Now we should be good
+			return true;
+			}
+
+
 		/* Function: GetAccessLevel
 		 * Returns the <Languages.AccessLevel> if it can be determined.  This should only be used with basic language support
 		 * as it's not as reliable as the results from the dedicated language parsers.

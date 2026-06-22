@@ -355,6 +355,24 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			}
 
 
+		/* Function: GetParameterIndex
+		 * Returns the index of the parameter with the passed name, or -1 if it couldn't find it.
+		 */
+		public int GetParameterIndex (string parameterName)
+			{
+			if (parameters != null)
+				{
+				for (int i = 0; i < parameters.Count; i++)
+					{
+					if (parameters[i].MatchesName(parameterName))
+						{  return i;  }
+					}
+				}
+
+			return -1;
+			}
+
+
 		/* Function: GetBaseParameterType
 		 *
 		 * Returns the bounds of the parameter's base type if one is marked by <PrototypeParsingType.Type> tokens, or false if it
