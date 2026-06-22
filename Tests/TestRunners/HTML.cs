@@ -68,7 +68,7 @@ namespace CodeClear.NaturalDocs.Tests.TestRunners
 					else
 						{
 						if (nextAppendNeedsDivider)
-							{  outputBuilder.Append("\r\n\r\n-----\r\n\r\n");  }
+							{  outputBuilder.Append("\r\n-----\r\n");  }
 
 						if (reformatHTML)
 							{  tag = ReformatHTML(tag);  }
