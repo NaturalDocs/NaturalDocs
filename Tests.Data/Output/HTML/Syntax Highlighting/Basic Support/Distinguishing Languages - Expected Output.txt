@@ -1,11 +1,25 @@
+=== Distinguishing Languages ===
+
+=== A ===
+
 <pre class="CCode"><span class="SHKeyword">string</span> language = <span class="SHString">&quot;Unspecified, defaults to C&quot;</span>;<br /><span class="SHComment">// C comment</span><br /># Perl comment<br />-- SQL comment</pre>
------
+
+=== B ===
+
 <pre class="CCode"><span class="SHKeyword">string</span> language = <span class="SHString">&quot;C&quot;</span>;<br /><span class="SHComment">// C comment</span><br /># Perl comment<br />-- SQL comment</pre>
------
+
+=== C ===
+
 <pre class="CCode"><span class="SHKeyword">string</span> language = <span class="SHString">&quot;Perl&quot;</span>;<br />// C comment<br /><span class="SHComment"># Perl comment</span><br />-- SQL comment</pre>
------
+
+=== D ===
+
 <pre class="CCode"><span class="SHKeyword">string language</span> = <span class="SHString">&quot;SQL&quot;</span>;<br />// C <span class="SHKeyword">comment</span><br /># Perl <span class="SHKeyword">comment</span><br /><span class="SHComment">-- SQL comment</span></pre>
------
+
+=== E ===
+
 <pre class="CCode"><span class="SHKeyword">string</span> language = <span class="SHString">&quot;Pascal&quot;</span>;<br /># Perl comment<br /><span class="SHComment">// Pascal comment 1</span><br /><span class="SHComment">(* Pascal comment 2 *)</span><br /><span class="SHComment">{ Pascal comment 3 }</span><br />-- SQL comment</pre>
------
+
+=== F ===
+
 <pre class="CText">string language = &quot;Text, no highlighting&quot;;<br /># Perl comment<br />// Pascal comment 1<br />(* Pascal comment 2 *)<br />{ Pascal comment 3 }<br />-- SQL comment</pre>

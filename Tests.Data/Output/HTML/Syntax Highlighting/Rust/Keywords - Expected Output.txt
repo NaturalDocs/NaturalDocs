@@ -1,3 +1,7 @@
+=== Keywords ===
+
 <pre class="CCode"><span class="SHKeyword">true</span><br />_true<br />true_<br /><br /><span class="SHKeyword">macro_rules</span><br />_macro_rules<br />macro_rules_</pre>
------
+
+=== Raw Identifiers ===
+
 <pre class="CCode">r#true<br />rr#<span class="SHKeyword">true</span><br />r##<span class="SHKeyword">true</span><br /><br />r#macro_rules<br />rr#<span class="SHKeyword">macro_rules</span><br />r##<span class="SHKeyword">macro_rules</span></pre>

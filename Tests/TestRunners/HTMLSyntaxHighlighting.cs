@@ -22,7 +22,8 @@ namespace CodeClear.NaturalDocs.Tests.TestRunners
 		protected override string RunTest (string input)
 			{
 			return ExtractHTML(input,
-										 tagName: "pre");
+										 tagName: "pre",
+										 addTopicTitles: true);
 			}
 
 		}

@@ -1,3 +1,7 @@
+=== Block Comments ===
+
 <pre class="CCode"><span class="SHKeyword">string</span> <span class="SHComment">// comment</span><br /><br /><span class="SHKeyword">string</span> <span class="SHComment">{ comment }</span> <span class="SHKeyword">string</span><br /><br /><span class="SHKeyword">string</span> <span class="SHComment">(* comment *)</span> <span class="SHKeyword">string</span></pre>
------
+
+=== Nested Comments ===
+
 <pre class="CCode"><span class="SHKeyword">string</span> <span class="SHComment">{ comment { comment } still comment }</span> <span class="SHKeyword">string</span><br /><br /><span class="SHKeyword">string</span> <span class="SHComment">(* comment (* comment *) still comment *)</span> <span class="SHKeyword">string</span><br /><br /><span class="SHKeyword">string</span> <span class="SHComment">{ comment (* comment *) still comment }</span> <span class="SHKeyword">string</span><br /><br /><span class="SHKeyword">string</span> <span class="SHComment">(* comment { comment } still comment *)</span> <span class="SHKeyword">string</span><br /><br /><span class="SHKeyword">string</span> <span class="SHComment">{ comment (* comment *) still comment *) still comment }</span> <span class="SHKeyword">string</span><br /><br /><span class="SHKeyword">string</span> <span class="SHComment">(* comment { comment } still comment } still comment *)</span> <span class="SHKeyword">string</span></pre>
