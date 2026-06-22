@@ -472,39 +472,25 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 								{
 								var parsedPrototype = context.Topic.ParsedPrototype;
 								TokenIterator start, end;
-								int matchedParameter = -1;
 
+								Prototypes.ParameterSection parameterSection;
+								int parameterIndex;
 
-								var parameters = parsedPrototype.MainParameterSection;
-
-								if (parameters != null && parameters.NumberOfParameters > 0)
+								if ( (parameterListSymbol != null &&
+									  parsedPrototype.FindParameterByName(parameterListSymbol, out parameterSection, out parameterIndex)) ||
+									 (altParameterListSymbol != null &&
+									  parsedPrototype.FindParameterByName(altParameterListSymbol, out parameterSection, out parameterIndex)) )
 									{
-									for (int i = 0; i < parameters.NumberOfParameters; i++)
+									parameterSection.BuildFullParameterType(parameterIndex, out start, out end);
+
+									if (start < end &&
+										// Don't include single symbol types
+											!(end.RawTextIndex - start.RawTextIndex == 1 &&
+											(start.Character == '$' || start.Character == '@' || start.Character == '%')) )
 										{
-										parameters.GetParameterName(i, out start, out end);
-
-										if ( (parameterListSymbol != null && parsedPrototype.Tokenizer.EqualsTextBetween(parameterListSymbol, true, start, end)) ||
-											 (altParameterListSymbol != null && parsedPrototype.Tokenizer.EqualsTextBetween(altParameterListSymbol, true, start, end)) )
-											{
-											matchedParameter = i;
-											break;
-											}
-										}
-
-									// If so, include the type under the entry in the HTML
-									if (matchedParameter != -1)
-										{
-										parameters.BuildFullParameterType(matchedParameter, out start, out end);
-
-										if (start < end &&
-											// Don't include single symbol types
-											 !(end.RawTextIndex - start.RawTextIndex == 1 &&
-											   (start.Character == '$' || start.Character == '@' || start.Character == '%')) )
-											{
-											output.Append("<div class=\"CDLParameterType\">");
-											AppendSyntaxHighlightedTextWithTypeLinks(start, end, output, links, linkTargets);
-											output.Append("</div>");
-											}
+										output.Append("<div class=\"CDLParameterType\">");
+										AppendSyntaxHighlightedTextWithTypeLinks(start, end, output, links, linkTargets);
+										output.Append("</div>");
 										}
 									}
 								}
