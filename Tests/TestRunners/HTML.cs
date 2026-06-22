@@ -24,6 +24,7 @@
 using System;
 using System.Text;
 using System.Text.RegularExpressions;
+using CodeClear.NaturalDocs.Engine;
 
 
 namespace CodeClear.NaturalDocs.Tests.TestRunners
@@ -36,38 +37,78 @@ namespace CodeClear.NaturalDocs.Tests.TestRunners
 			{  	}
 
 
-		protected string ExtractHTML (string html, string tagName, string className = null, bool reformatHTML = false)
+		protected string ExtractHTML (string html, string tagName, string className = null,
+													bool reformatHTML = false, bool addTopicTitles = false)
 			{
 			StringBuilder outputBuilder = new StringBuilder();
 			int tagIndex = FindNextTag(html, 0, tagName, className);
+			int topicTitleTagIndex = -1;
 
-			while (tagIndex != -1)
+			if (addTopicTitles)
+				{  topicTitleTagIndex = FindNextTag(html, 0, "div", "CTitle");  }
+
+			bool nextAppendNeedsDivider = false;
+
+			while (tagIndex != -1 || topicTitleTagIndex != -1)
 				{
-				int endOfClosingTag = FindEndOfClosingTag(html, tagIndex, tagName);
-				string tag = html.Substring(tagIndex, endOfClosingTag - tagIndex);
-
-				// Filter out Topic# tags.
-				if (tag.StartsWith("<a name=\"Topic"))
+				if (tagIndex != -1 && (topicTitleTagIndex == -1 || tagIndex < topicTitleTagIndex))
 					{
-					// Ignore
+					int endOfClosingTag = FindEndOfClosingTag(html, tagIndex, tagName);
+
+					if (endOfClosingTag == -1)
+						{  throw new Exception ("Couldn't find end of closing tag.");  }
+
+					string tag = html.Substring(tagIndex, endOfClosingTag - tagIndex);
+
+					// Filter out Topic# tags.
+					if (tag.StartsWith("<a name=\"Topic"))
+						{
+						// Ignore
+						}
+					else
+						{
+						if (nextAppendNeedsDivider)
+							{  outputBuilder.Append("\r\n\r\n-----\r\n\r\n");  }
+
+						if (reformatHTML)
+							{  tag = ReformatHTML(tag);  }
+
+						outputBuilder.Append(tag);
+						nextAppendNeedsDivider = true;
+						}
+
+					tagIndex = FindNextTag(html, endOfClosingTag, tagName, className);
 					}
-				else
+
+				else if (topicTitleTagIndex != -1 && (tagIndex == -1 || topicTitleTagIndex < tagIndex))
 					{
-					if (outputBuilder.Length != 0)
-						{  outputBuilder.Append("\r\n-----\r\n");  }
+					string topicTitle = null;
+					int endOfOpeningTag = html.IndexOf('>', topicTitleTagIndex);
 
-					outputBuilder.Append(tag);
+					if (endOfOpeningTag == -1)
+						{  throw new Exception ("Couldn't find end of opening tag.");  }
+
+					endOfOpeningTag++;
+					int beginningOfClosingTag = html.IndexOf("</div>", endOfOpeningTag);
+
+					if (beginningOfClosingTag == -1)
+						{  throw new Exception ("Couldn't find beginning of closing tag.");  }
+
+					topicTitle = html.Substring(endOfOpeningTag, beginningOfClosingTag - endOfOpeningTag);
+					topicTitle = TitleTagsToRemoveRegex.Replace(topicTitle, "");
+					topicTitle = topicTitle.EntityDecode();
+
+					if (nextAppendNeedsDivider)
+						{  outputBuilder.Append("\r\n\r\n");  }
+
+					outputBuilder.Append("=== " + topicTitle + " ===\r\n\r\n");
+
+					topicTitleTagIndex = FindNextTag(html, beginningOfClosingTag + 6, "div", "CTitle");
+					nextAppendNeedsDivider = false;
 					}
-
-				tagIndex = FindNextTag(html, endOfClosingTag, tagName, className);
 				}
 
-			string output = outputBuilder.ToString();
-
-			if (reformatHTML)
-				{  output = ReformatHTML(output);  }
-
-			return output;
+			return outputBuilder.ToString();
 			}
 
 
@@ -207,19 +248,8 @@ namespace CodeClear.NaturalDocs.Tests.TestRunners
 				if (tagMatch.Index > textPosition)
 					{  output.Append(input, textPosition, tagMatch.Index - textPosition);  }
 
-				// Section separator
-				if (tagMatch.Value.StartsWith("-----"))
-					{
-					output.Append(tagMatch.Value);  // will include newline
-
-					indentLevel = 0;
-
-					textPosition = tagMatch.Index + tagMatch.Length;
-					lastNewSectionPosition = textPosition;
-					}
-
 				// Relevant closing tags
-				else if (tagMatch.Value.StartsWith("</"))
+				if (tagMatch.Value.StartsWith("</"))
 					{
 					// Only put it on a new line if it immediately follows another closing tag
 					if (textPosition == afterLastClosingTagPosition)
@@ -275,10 +305,14 @@ namespace CodeClear.NaturalDocs.Tests.TestRunners
 		// Group: Static Variables
 		// __________________________________________________________________________
 
-		static protected Regex TagsToFormatRegex = new Regex("(?:</?div[^>]*>|-----\r\n)",
+		static protected Regex TagsToFormatRegex = new Regex("</?div[^>]*>",
 																						 RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant);
 		static protected Regex IDNumbersRegex = new Regex(" id=\"ND(?:Class)?Prototype[0-9]+\"",
 																					   RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant);
+
+		// Get rid of all tags (like "<span class="Qualifier"></span>") and zero-width spaces for wrapping ("&#8203;").
+		static protected Regex TitleTagsToRemoveRegex = new Regex("(?:</?[^>]*>|&#8203;)",
+																						 RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant);
 
 		}
 	}
