@@ -5,5 +5,6 @@ Test Type: HTML Parameter Lists
 Keep HTML: yes
 
 	Title: Parameter List Tests
+	Subtitle: Using All Sets
 
 Engine Config: ..\..\..\..\- Shared Engine Configs\Basic Language Support
