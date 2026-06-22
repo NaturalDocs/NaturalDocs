@@ -1,11 +1,21 @@
+=== Empty Parameters ===
+
+=== EmptyParams1 ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection">proc EmptyParams1 {}</div>
 </div>
------
+
+=== EmptyParams2 ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection">proc EmptyParams2 { }</div>
 </div>
------
+
+=== Single Parameters ===
+
+=== SingleParam_Braces ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
@@ -15,7 +25,9 @@
       </div>
    </div>
 </div>
------
+
+=== SingleParam_NoBraces ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
@@ -24,7 +36,9 @@
       </div>
    </div>
 </div>
------
+
+=== SingleParam_BracesAndDefaultValue1 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -37,7 +51,9 @@
       </div>
    </div>
 </div>
------
+
+=== SingleParam_BracesAndDefaultValue2 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -50,7 +66,9 @@
       </div>
    </div>
 </div>
------
+
+=== SingleParam_BracesAndDefaultValue3 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -63,7 +81,9 @@
       </div>
    </div>
 </div>
------
+
+=== SingleParam_BracesAndDefaultValue4 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -76,7 +96,9 @@
       </div>
    </div>
 </div>
------
+
+=== SingleParam_BracesAndDefaultValue5 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -89,7 +111,9 @@
       </div>
    </div>
 </div>
------
+
+=== SingleParam_BracesAndDefaultValue6 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -102,7 +126,9 @@
       </div>
    </div>
 </div>
------
+
+=== SingleParam_Args_Braces ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
@@ -112,7 +138,9 @@
       </div>
    </div>
 </div>
------
+
+=== SingleParam_Args_NoBraces ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
@@ -121,7 +149,11 @@
       </div>
    </div>
 </div>
------
+
+=== Multiple Parameters ===
+
+=== MultiParam1 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
@@ -133,7 +165,9 @@
       </div>
    </div>
 </div>
------
+
+=== MultiParam2 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -148,7 +182,9 @@
       </div>
    </div>
 </div>
------
+
+=== MultiParam3 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -163,7 +199,9 @@
       </div>
    </div>
 </div>
------
+
+=== MultiParam4 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -178,7 +216,9 @@
       </div>
    </div>
 </div>
------
+
+=== MultiParam5 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -196,7 +236,9 @@
       </div>
    </div>
 </div>
------
+
+=== MultiParam6 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -217,7 +259,9 @@
       </div>
    </div>
 </div>
------
+
+=== MultiParam7 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -233,7 +277,11 @@
       </div>
    </div>
 </div>
------
+
+=== Parameter Alignment ===
+
+=== ParamAlignment1 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -251,7 +299,9 @@
       </div>
    </div>
 </div>
------
+
+=== ParamAlignment2 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -269,7 +319,9 @@
       </div>
    </div>
 </div>
------
+
+=== ParamAlignment3 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -287,7 +339,9 @@
       </div>
    </div>
 </div>
------
+
+=== ParamAlignment4 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -305,7 +359,9 @@
       </div>
    </div>
 </div>
------
+
+=== ParamAlignment5 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -323,7 +379,9 @@
       </div>
    </div>
 </div>
------
+
+=== ParamAlignment6 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -341,7 +399,9 @@
       </div>
    </div>
 </div>
------
+
+=== ParamAlignment7 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -359,7 +419,9 @@
       </div>
    </div>
 </div>
------
+
+=== ParamAlignment8 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -377,7 +439,11 @@
       </div>
    </div>
 </div>
------
+
+=== Parameter Spacing ===
+
+=== SingleParamSpacing1 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
@@ -387,7 +453,9 @@
       </div>
    </div>
 </div>
------
+
+=== SingleParamSpacing2 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
@@ -397,7 +465,9 @@
       </div>
    </div>
 </div>
------
+
+=== SingleParamSpacing3 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
@@ -407,7 +477,9 @@
       </div>
    </div>
 </div>
------
+
+=== SingleParamSpacing4 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
@@ -417,7 +489,9 @@
       </div>
    </div>
 </div>
------
+
+=== MultiParamSpacing1 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
@@ -429,7 +503,9 @@
       </div>
    </div>
 </div>
------
+
+=== MultiParamSpacing2 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
@@ -441,7 +517,9 @@
       </div>
    </div>
 </div>
------
+
+=== MultiParamSpacing3 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
@@ -453,7 +531,9 @@
       </div>
    </div>
 </div>
------
+
+=== MultiParamSpacing4 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
@@ -465,7 +545,9 @@
       </div>
    </div>
 </div>
------
+
+=== BracedParamSpacing1 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -480,7 +562,9 @@
       </div>
    </div>
 </div>
------
+
+=== BracedParamSpacing2 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -495,7 +579,9 @@
       </div>
    </div>
 </div>
------
+
+=== BracedParamSpacing3 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -510,7 +596,9 @@
       </div>
    </div>
 </div>
------
+
+=== BracedParamSpacing4 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -525,7 +613,9 @@
       </div>
    </div>
 </div>
------
+
+=== BracedParamSpacing5 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -540,7 +630,9 @@
       </div>
    </div>
 </div>
------
+
+=== BracedParamSpacing6 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -555,7 +647,9 @@
       </div>
    </div>
 </div>
------
+
+=== BracedParamSpacing7 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -570,7 +664,9 @@
       </div>
    </div>
 </div>
------
+
+=== BracedParamSpacing8 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -585,7 +681,9 @@
       </div>
    </div>
 </div>
------
+
+=== SpacingTweaks1 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
@@ -597,7 +695,9 @@
       </div>
    </div>
 </div>
------
+
+=== SpacingTweaks2 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
@@ -609,7 +709,9 @@
       </div>
    </div>
 </div>
------
+
+=== SpacingTweaks3 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
@@ -621,7 +723,9 @@
       </div>
    </div>
 </div>
------
+
+=== SpacingTweaks4 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -636,7 +740,9 @@
       </div>
    </div>
 </div>
------
+
+=== SpacingTweaks5 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -651,7 +757,9 @@
       </div>
    </div>
 </div>
------
+
+=== SpacingTweaks6 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">

@@ -1,3 +1,7 @@
+=== AnnotatedClass ===
+
+=== AnnotatedFunction ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PPlainSection"><span class="SHMetadata">@FunctionAnnotation</span></div>
    <div class="PSection PParameterSection PascalStyle">
@@ -11,7 +15,11 @@
       </div>
    </div>
 </div>
------
+
+=== MultipleParameterizedAnnotatedClass ===
+
+=== MultipleParameterizedAnnotatedFunction ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PPlainSection"><span class="SHMetadata">@FunctionAnnotation1</span></div>
    <div class="PSection PPlainSection"><span class="SHMetadata">@FunctionAnnotation2(&quot;string&quot;)</span></div>
@@ -26,7 +34,9 @@
       </div>
    </div>
 </div>
------
+
+=== ScopedAnnotations ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -41,7 +51,9 @@
       </div>
    </div>
 </div>
------
+
+=== MultiScopedAnnotation ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHMetadata">@set:[Annotation1 Annotation2]</span></div>
    <div class="PSection PPlainSection"><span class="SHKeyword">var</span> MultiScopedAnnotation: VariableType</div>

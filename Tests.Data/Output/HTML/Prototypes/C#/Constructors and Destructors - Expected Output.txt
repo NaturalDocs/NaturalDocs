@@ -1,7 +1,11 @@
+=== TestClass ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> TestClass ()</div>
 </div>
------
+
+=== TestClass ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -12,7 +16,9 @@
       </div>
    </div>
 </div>
------
+
+=== TestClass ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -25,11 +31,15 @@
       </div>
    </div>
 </div>
------
+
+=== ~TestClass ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection">~TestClass ()</div>
 </div>
------
+
+=== TestClass ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -40,7 +50,9 @@
       </div>
    </div>
 </div>
------
+
+=== ~TestClass ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">extern</span> ~TestClass ()</div>
 </div>

@@ -1,3 +1,5 @@
+=== operator ! ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -8,7 +10,9 @@
       </div>
    </div>
 </div>
------
+
+=== operator ++ ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -19,7 +23,9 @@
       </div>
    </div>
 </div>
------
+
+=== operator true ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -30,7 +36,9 @@
       </div>
    </div>
 </div>
------
+
+=== operator + ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -43,7 +51,9 @@
       </div>
    </div>
 </div>
------
+
+=== operator << ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PPlainSection"><span class="SHMetadata">[Attribute]</span></div>
    <div class="PSection PParameterSection CStyle">
@@ -57,7 +67,9 @@
       </div>
    </div>
 </div>
------
+
+=== operator string ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -68,7 +80,9 @@
       </div>
    </div>
 </div>
------
+
+=== operator List<string> ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">

@@ -24,7 +24,8 @@ namespace CodeClear.NaturalDocs.Tests.TestRunners
 			return ExtractHTML(input,
 										tagName: "div",
 										className: "NDPrototype",
-										reformatHTML: true);
+										reformatHTML: true,
+										addTopicTitles: true);
 			}
 
 		}

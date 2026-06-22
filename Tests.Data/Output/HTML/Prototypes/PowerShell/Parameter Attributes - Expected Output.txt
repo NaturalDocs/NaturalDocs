@@ -1,3 +1,5 @@
+=== BareParameters ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
@@ -9,7 +11,9 @@
       </div>
    </div>
 </div>
------
+
+=== ParameterTypes ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -32,7 +36,9 @@
       </div>
    </div>
 </div>
------
+
+=== ParameterModifiers ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -58,7 +64,9 @@
       </div>
    </div>
 </div>
------
+
+=== DetermineTypeA ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -82,7 +90,9 @@
       </div>
    </div>
 </div>
------
+
+=== DetermineTypeB ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -106,7 +116,9 @@
       </div>
    </div>
 </div>
------
+
+=== DetermineTypeC ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">

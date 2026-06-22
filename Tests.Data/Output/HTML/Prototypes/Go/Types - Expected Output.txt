@@ -1,31 +1,56 @@
+=== SimpleType ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">type</span> SimpleType</div>
 </div>
------
+
+=== ParameterizedType ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">type</span> ParameterizedType[P <span class="SHKeyword">any</span>]</div>
 </div>
------
+
+=== SimpleAlias ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">type</span> SimpleAlias</div>
 </div>
------
+
+=== ParameterizedAlias ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">type</span> ParameterizedAlias[P <span class="SHKeyword">comparable</span>]</div>
 </div>
------
+
+=== Constraints ===
+
+=== ConstraintsA ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">type</span> ConstraintsA [T ~[]E, E <span class="SHKeyword">any</span>]</div>
 </div>
------
+
+=== ConstraintsB ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">type</span> ConstraintsB[T OtherType[<span class="SHKeyword">int</span>]]</div>
 </div>
------
+
+=== ConstraintsC ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">type</span> ConstraintsC [_ <span class="SHKeyword">any</span>]</div>
 </div>
------
+
+=== Partially Supported Features ===
+
+=== InterfaceConstraints ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">type</span> InterfaceConstraints[T <span class="SHKeyword">interface</span>{ ~[]<span class="SHKeyword">byte</span>|<span class="SHKeyword">string</span> }]</div>
 </div>
+
+=== Currently Unsupported Features ===
+
+=== Parentheses ===
+

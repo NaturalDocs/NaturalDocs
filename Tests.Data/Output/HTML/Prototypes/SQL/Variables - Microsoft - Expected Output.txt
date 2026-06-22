@@ -1,51 +1,77 @@
+=== @Simple1 ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @Simple1 <span class="SHKeyword">INTEGER</span></div>
 </div>
------
+
+=== @Simple2 ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @Simple2 <span class="SHKeyword">AS</span> <span class="SHKeyword">INTEGER</span></div>
 </div>
------
+
+=== @DefaultValue1 ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @DefaultValue1 <span class="SHKeyword">INTEGER</span></div>
 </div>
------
+
+=== @DefaultValue2 ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @DefaultValue2 <span class="SHKeyword">AS</span> <span class="SHKeyword">VARCHAR</span></div>
 </div>
------
+
+=== @DefaultValue3 ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @DefaultValue3 <span class="SHKeyword">INTEGER</span></div>
 </div>
------
+
+=== @DefaultValue4 ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @DefaultValue4 <span class="SHKeyword">AS</span> <span class="SHKeyword">Real</span></div>
 </div>
------
+
+=== @DefaultValue5 ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @DefaultValue5 <span class="SHKeyword">real</span></div>
 </div>
------
+
+=== @DefaultValue6 ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @DefaultValue6 <span class="SHKeyword">AS</span> <span class="SHKeyword">VarChar</span>(<span class="SHNumber">12</span>)</div>
 </div>
------
+
+=== @TypeParens1 ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @TypeParens1 <span class="SHKeyword">NUMERIC</span>(<span class="SHNumber">6</span>)</div>
 </div>
------
+
+=== @TypeParens2 ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @TypeParens2 <span class="SHKeyword">AS</span> <span class="SHKeyword">NUMERIC</span>(<span class="SHNumber">6</span>, <span class="SHNumber">8</span>)</div>
 </div>
------
+
+=== @AllCombined ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @AllCombined <span class="SHKeyword">AS</span> <span class="SHKeyword">NUMERIC</span>(<span class="SHNumber">3</span>,<span class="SHNumber">4</span>)</div>
 </div>
------
+
+=== @Cursor ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @Cursor <span class="SHKeyword">CURSOR</span></div>
 </div>
------
+
+=== @Table1 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -60,7 +86,9 @@
       </div>
    </div>
 </div>
------
+
+=== @Table2 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">

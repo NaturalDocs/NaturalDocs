@@ -1,3 +1,7 @@
+=== Simple ===
+
+=== SimpleA ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -12,7 +16,9 @@
       </div>
    </div>
 </div>
------
+
+=== SimpleB ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -27,7 +33,9 @@
       </div>
    </div>
 </div>
------
+
+=== SimpleC ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -42,7 +50,11 @@
       </div>
    </div>
 </div>
------
+
+=== Symbols ===
+
+=== SymbolsA ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -57,7 +69,9 @@
       </div>
    </div>
 </div>
------
+
+=== SymbolsB ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -72,7 +86,9 @@
       </div>
    </div>
 </div>
------
+
+=== SymbolsC ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -87,7 +103,9 @@
       </div>
    </div>
 </div>
------
+
+=== SymbolsD ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -102,7 +120,9 @@
       </div>
    </div>
 </div>
------
+
+=== SymbolsE ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -117,7 +137,9 @@
       </div>
    </div>
 </div>
------
+
+=== SymbolsF ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -132,7 +154,9 @@
       </div>
    </div>
 </div>
------
+
+=== SymbolsG ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -147,7 +171,11 @@
       </div>
    </div>
 </div>
------
+
+=== Space Uniformity ===
+
+=== UniformityA ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -162,7 +190,9 @@
       </div>
    </div>
 </div>
------
+
+=== UniformityB ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -177,7 +207,9 @@
       </div>
    </div>
 </div>
------
+
+=== UniformityC ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -192,7 +224,9 @@
       </div>
    </div>
 </div>
------
+
+=== UniformityD ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -207,7 +241,9 @@
       </div>
    </div>
 </div>
------
+
+=== UniformityE ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -222,7 +258,9 @@
       </div>
    </div>
 </div>
------
+
+=== UniformityF ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -237,7 +275,9 @@
       </div>
    </div>
 </div>
------
+
+=== UniformityG ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -252,7 +292,9 @@
       </div>
    </div>
 </div>
------
+
+=== UniformityH ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -267,7 +309,9 @@
       </div>
    </div>
 </div>
------
+
+=== UniformityI ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -282,7 +326,11 @@
       </div>
    </div>
 </div>
------
+
+=== ImpliedTypesA ===
+
+=== ImpliedTypesA ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle NegativeLeftSpaceOnNameTypeSeparator">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -296,7 +344,9 @@
       </div>
    </div>
 </div>
------
+
+=== ImpliedTypesB ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle NegativeLeftSpaceOnNameTypeSeparator">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -310,7 +360,9 @@
       </div>
    </div>
 </div>
------
+
+=== ImpliedTypesC ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle NegativeLeftSpaceOnNameTypeSeparator">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -324,7 +376,9 @@
       </div>
    </div>
 </div>
------
+
+=== ImpliedTypesD ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -338,7 +392,9 @@
       </div>
    </div>
 </div>
------
+
+=== ImpliedTypesE ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle NegativeLeftSpaceOnNameTypeSeparator">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -352,7 +408,9 @@
       </div>
    </div>
 </div>
------
+
+=== ImpliedTypesF ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle NegativeLeftSpaceOnNameTypeSeparator">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -366,7 +424,9 @@
       </div>
    </div>
 </div>
------
+
+=== ImpliedTypesG ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -380,7 +440,9 @@
       </div>
    </div>
 </div>
------
+
+=== ImpliedTypesH ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle NegativeLeftSpaceOnNameTypeSeparator">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -397,7 +459,9 @@
       </div>
    </div>
 </div>
------
+
+=== ImpliedTypesI ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle NegativeLeftSpaceOnNameTypeSeparator">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -414,7 +478,9 @@
       </div>
    </div>
 </div>
------
+
+=== ImpliedTypesJ ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -431,7 +497,9 @@
       </div>
    </div>
 </div>
------
+
+=== ImpliedTypesK ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle NegativeLeftSpaceOnNameTypeSeparator">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -448,7 +516,9 @@
       </div>
    </div>
 </div>
------
+
+=== ImpliedTypesL ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">

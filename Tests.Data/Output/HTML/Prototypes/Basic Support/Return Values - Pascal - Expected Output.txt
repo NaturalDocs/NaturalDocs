@@ -1,7 +1,11 @@
+=== FuncA ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection">Function FuncA (): MyClass</div>
 </div>
------
+
+=== FuncB ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">

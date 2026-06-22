@@ -1,3 +1,5 @@
+=== FunctionName1 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
@@ -14,7 +16,9 @@
       </div>
    </div>
 </div>
------
+
+=== FunctionName2 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
@@ -33,7 +37,9 @@
       </div>
    </div>
 </div>
------
+
+=== FunctionName3 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
@@ -52,7 +58,9 @@
       </div>
    </div>
 </div>
------
+
+=== FunctionName4 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
@@ -69,7 +77,9 @@
       </div>
    </div>
 </div>
------
+
+=== FunctionName5 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
@@ -88,7 +98,9 @@
       </div>
    </div>
 </div>
------
+
+=== FunctionName6 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">

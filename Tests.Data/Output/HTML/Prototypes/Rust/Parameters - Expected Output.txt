@@ -1,3 +1,5 @@
+=== Parameters ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -28,7 +30,9 @@
       </div>
    </div>
 </div>
------
+
+=== Lifetimes ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">

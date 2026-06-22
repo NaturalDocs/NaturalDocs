@@ -1,3 +1,7 @@
+=== Parameter Types ===
+
+=== ParameterTypes ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
@@ -17,7 +21,9 @@
       </div>
    </div>
 </div>
------
+
+=== PartialParameterTypes ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle NegativeLeftSpaceOnNameTypeSeparator">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
@@ -41,7 +47,9 @@
       </div>
    </div>
 </div>
------
+
+=== ArrayParameter ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -53,7 +61,9 @@
       </div>
    </div>
 </div>
------
+
+=== UserDefinedTypeParameter ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -65,7 +75,9 @@
       </div>
    </div>
 </div>
------
+
+=== ParameterizedTypeParameter ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -80,7 +92,9 @@
       </div>
    </div>
 </div>
------
+
+=== InlineObjectParameter ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -92,7 +106,9 @@
       </div>
    </div>
 </div>
------
+
+=== TupleParameter ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -104,7 +120,9 @@
       </div>
    </div>
 </div>
------
+
+=== OptionalParameters ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -119,7 +137,9 @@
       </div>
    </div>
 </div>
------
+
+=== UnionParameters ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -134,7 +154,9 @@
       </div>
    </div>
 </div>
------
+
+=== AllowableValueParameters ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -149,7 +171,9 @@
       </div>
    </div>
 </div>
------
+
+=== RestParameter ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -165,7 +189,9 @@
       </div>
    </div>
 </div>
------
+
+=== DecoratedParameter ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle NegativeLeftSpaceOnNameTypeSeparator">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -180,27 +206,41 @@
       </div>
    </div>
 </div>
------
+
+=== Return Values ===
+
+=== ReturnNumber ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">function</span> ReturnNumber(): <span class="SHKeyword">number</span></div>
 </div>
------
+
+=== ReturnArray ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">function</span> ReturnArray (): <span class="SHKeyword">string</span>[]</div>
 </div>
------
+
+=== ReturnVoid ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">function</span> ReturnVoid (): <span class="SHKeyword">void</span></div>
 </div>
------
+
+=== ReturnPromise ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">function</span> ReturnPromise(): Promise&lt;<span class="SHKeyword">number</span>&gt;</div>
 </div>
------
+
+=== AllowableReturnValues ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">function</span> AllowableReturnValues(): <span class="SHNumber">1</span> | <span class="SHNumber">0</span> | <span class="SHNumber">-1</span></div>
 </div>
------
+
+=== TypePredicateReturnValue ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
@@ -210,7 +250,11 @@
       </div>
    </div>
 </div>
------
+
+=== Generic Functions ===
+
+=== SingleGenericType ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -222,7 +266,9 @@
       </div>
    </div>
 </div>
------
+
+=== TwoGenericTypes ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -234,43 +280,65 @@
       </div>
    </div>
 </div>
------
+
+=== SimpleConstraint ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">function</span> SimpleConstraint&lt;T <span class="SHKeyword">extends</span> <span class="SHKeyword">any</span>[]&gt;()</div>
 </div>
------
+
+=== ObjectConstraint ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">function</span> ObjectConstraint&lt;T <span class="SHKeyword">extends</span> { x: <span class="SHKeyword">number</span> }&gt;()</div>
 </div>
------
+
+=== ConstraintWithDefault ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">function</span> ConstraintWithDefault&lt;T <span class="SHKeyword">extends</span> MyType[] = MyOtherType[]&gt;()</div>
 </div>
------
+
+=== ConstraintsWithVariance ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">function</span> ConstraintsWithVariance&lt;<span class="SHKeyword">in</span> A, <span class="SHKeyword">out</span> B, <span class="SHKeyword">in out</span> C&gt;()</div>
 </div>
------
+
+=== KeyOfTypeOperator ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">function</span> KeyOfTypeOperator&lt;A, B <span class="SHKeyword">extends keyof</span> A&gt;()</div>
 </div>
------
+
+=== Modifiers ===
+
+=== PublicFunction ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">public function</span> PublicFunction ()</div>
 </div>
------
+
+=== ProtectedFunction ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">protected function</span> ProtectedFunction()</div>
 </div>
------
+
+=== StaticFunction ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">static function</span> StaticFunction()</div>
 </div>
------
+
+=== AbstractFunction ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">abstract function</span> AbstractFunction()</div>
 </div>
------
+
+=== DecoratedFunction ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHMetadata">@ParameterlessDecorator</span></div>
    <div class="PSection PPlainSection"><span class="SHMetadata">@ParameterDecorator(value)</span></div>

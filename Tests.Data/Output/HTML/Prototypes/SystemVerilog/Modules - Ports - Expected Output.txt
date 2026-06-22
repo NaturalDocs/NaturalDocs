@@ -1,11 +1,21 @@
+=== Empty Parentheses ===
+
+=== EmptyA ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">module</span> EmptyA ()</div>
 </div>
------
+
+=== EmptyB ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">module</span> EmptyB ( )</div>
 </div>
------
+
+=== Port Definition Components ===
+
+=== Attributes ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -56,7 +66,9 @@
       </div>
    </div>
 </div>
------
+
+=== Directions ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -85,7 +97,9 @@
       </div>
    </div>
 </div>
------
+
+=== NetTypes ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -120,7 +134,9 @@
       </div>
    </div>
 </div>
------
+
+=== UserDefinedNetTypes ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -149,7 +165,9 @@
       </div>
    </div>
 </div>
------
+
+=== VarKeyword ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -178,7 +196,9 @@
       </div>
    </div>
 </div>
------
+
+=== VarAndDirectionKeywords ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -215,7 +235,9 @@
       </div>
    </div>
 </div>
------
+
+=== Interconnects ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -226,7 +248,9 @@
       </div>
    </div>
 </div>
------
+
+=== InterfacesAndModPorts ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -243,7 +267,9 @@
       </div>
    </div>
 </div>
------
+
+=== VariableTypes ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -295,7 +321,9 @@
       </div>
    </div>
 </div>
------
+
+=== StructsAndUnions ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -344,7 +372,9 @@
       </div>
    </div>
 </div>
------
+
+=== Enums ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -426,7 +456,9 @@
       </div>
    </div>
 </div>
------
+
+=== QualifiedAndParameterizedTypes ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -480,7 +512,9 @@
       </div>
    </div>
 </div>
------
+
+=== DoubleParameterizedTypes ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -503,7 +537,9 @@
       </div>
    </div>
 </div>
------
+
+=== TypeReferences ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -522,7 +558,9 @@
       </div>
    </div>
 </div>
------
+
+=== PortBinding ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -536,7 +574,9 @@
       </div>
    </div>
 </div>
------
+
+=== Macros ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
@@ -557,7 +597,13 @@
       </div>
    </div>
 </div>
------
+
+=== Unsupported Types ===
+
+=== Net Types and Data Types ===
+
+=== NetTypesAndDataTypes ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -640,7 +686,9 @@
       </div>
    </div>
 </div>
------
+
+=== UserNetTypesAndDataTypes ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -689,7 +737,9 @@
       </div>
    </div>
 </div>
------
+
+=== NetTypesAndUserDataTypes ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -738,7 +788,9 @@
       </div>
    </div>
 </div>
------
+
+=== UserNetTypesAndUserDataTypes ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -767,7 +819,11 @@
       </div>
    </div>
 </div>
------
+
+=== Implied Types ===
+
+=== ImpliedTypesA ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
@@ -806,7 +862,9 @@
       </div>
    </div>
 </div>
------
+
+=== ImpliedTypesB ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -836,7 +894,9 @@
       </div>
    </div>
 </div>
------
+
+=== ImpliedTypesC ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
@@ -906,7 +966,9 @@
       </div>
    </div>
 </div>
------
+
+=== ImpliedTypesD ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
@@ -940,7 +1002,9 @@
       </div>
    </div>
 </div>
------
+
+=== ImpliedTypesE ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -963,7 +1027,11 @@
       </div>
    </div>
 </div>
------
+
+=== Implied Direction ===
+
+=== ImpliedDirectionA ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -1000,7 +1068,9 @@
       </div>
    </div>
 </div>
------
+
+=== ImpliedDirectionB ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
@@ -1045,7 +1115,9 @@
       </div>
    </div>
 </div>
------
+
+=== ImpliedDirectionC ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection SystemVerilogStyle">
       <div class="PParameterCells" data-WideColumnCount="8" data-NarrowColumnCount="7">

@@ -1,15 +1,23 @@
+=== Standard Decorators ===
+
+=== SimpleDecorators ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHMetadata">@DecoratorA</span></div>
    <div class="PSection PPlainSection"><span class="SHMetadata">@DecoratorB()</span></div>
    <div class="PSection PPlainSection"><span class="SHMetadata">@DecoratorC ()</span></div>
    <div class="PSection PPlainSection"><span class="SHKeyword">def</span> SimpleDecorators ()</div>
 </div>
------
+
+=== DecoratorsWithValues ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHMetadata">@DecoratorA(12, &quot;string&quot;)</span></div>
    <div class="PSection PPlainSection"><span class="SHKeyword">def</span> DecoratorsWithValues ()</div>
 </div>
------
+
+=== DecoratorsWithNamedArgs ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -25,23 +33,33 @@
    </div>
    <div class="PSection PPlainSection"><span class="SHKeyword">def</span> DecoratorsWithNamedArgs ()</div>
 </div>
------
+
+=== DecoratorsWithMixedArgs ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHMetadata">@DecoratorA(12, SecondArg = &quot;string&quot;)</span></div>
    <div class="PSection PPlainSection"><span class="SHKeyword">def</span> DecoratorsWithMixedArgs ()</div>
 </div>
------
+
+=== Extended Decorators ===
+
+=== ExtendedDecoratorsA ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHMetadata">@LookupDecoratorA[&quot;string&quot;]</span></div>
    <div class="PSection PPlainSection"><span class="SHMetadata">@LookupDecoratorB()[12]</span></div>
    <div class="PSection PPlainSection"><span class="SHKeyword">def</span> ExtendedDecoratorsA ()</div>
 </div>
------
+
+=== ExtendedDecoratorsB ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHMetadata">@Chained.Decorator(&quot;string&quot;).More(FirstArg = 12).More</span></div>
    <div class="PSection PPlainSection"><span class="SHKeyword">def</span> ExtendedDecoratorsB ()</div>
 </div>
------
+
+=== ExtendedDecoratorsC ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -54,7 +72,11 @@
    </div>
    <div class="PSection PPlainSection"><span class="SHKeyword">def</span> ExtendedDecoratorsC ()</div>
 </div>
------
+
+=== Misc ===
+
+=== AllDecorators ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PPlainSection"><span class="SHMetadata">@DecoratorA</span></div>
    <div class="PSection PPlainSection"><span class="SHMetadata">@DecoratorB()</span></div>
@@ -86,7 +108,9 @@
    </div>
    <div class="PSection PPlainSection"><span class="SHKeyword">def</span> AllDecorators ()</div>
 </div>
------
+
+=== AllDecoratorsWithSpaces ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PPlainSection"><span class="SHMetadata">@ DecoratorA</span></div>
    <div class="PSection PPlainSection"><span class="SHMetadata">@ DecoratorB ( )</span></div>

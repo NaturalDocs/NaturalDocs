@@ -1,15 +1,21 @@
+=== SimpleAttributes ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHMetadata">[AttributeA]</span></div>
    <div class="PSection PPlainSection"><span class="SHMetadata">[AttributeB()]</span></div>
    <div class="PSection PPlainSection"><span class="SHMetadata">[AttributeC ()]</span></div>
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> SimpleAttributes()</div>
 </div>
------
+
+=== AttributeParametersA ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHMetadata">[AttributeA(12, &quot;string&quot;)]</span></div>
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> AttributeParametersA()</div>
 </div>
------
+
+=== AttributeParametersB ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -37,7 +43,9 @@
    </div>
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> AttributeParametersB()</div>
 </div>
------
+
+=== AttributeParametersC ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -65,14 +73,18 @@
    </div>
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> AttributeParametersC()</div>
 </div>
------
+
+=== AttributeParametersD ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHMetadata">[AttributeA(12, &quot;string&quot;)]</span></div>
    <div class="PSection PPlainSection"><span class="SHMetadata">[AttributeB(12, y = &quot;string&quot;)]</span></div>
    <div class="PSection PPlainSection"><span class="SHMetadata">[AttributeC(12, y: &quot;string&quot;)]</span></div>
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> AttributeParametersD()</div>
 </div>
------
+
+=== ComplexValues ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PPlainSection"><span class="SHMetadata">[AttributeA(Enum.FlagA | Enum.FlagB)]</span></div>
    <div class="PSection PParameterSection CStyle">
@@ -95,13 +107,17 @@
    </div>
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> ComplexValues()</div>
 </div>
------
+
+=== AttributeTargets ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHMetadata">[method:AttributeA]</span></div>
    <div class="PSection PPlainSection"><span class="SHMetadata">[return: AttributeB(&quot;string&quot;)]</span></div>
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> AttributeTargets()</div>
 </div>
------
+
+=== ParameterAttributesA ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
@@ -126,7 +142,9 @@
       </div>
    </div>
 </div>
------
+
+=== ParameterAttributesB ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">

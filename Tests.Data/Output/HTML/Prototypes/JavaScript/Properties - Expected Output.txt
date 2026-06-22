@@ -1,7 +1,11 @@
+=== CommentTitleMatchesPropertyOnly_Get ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">get</span> CommentTitleMatchesPropertyOnly_Get ()</div>
 </div>
------
+
+=== CommentTitleMatchesPropertyOnly_Set ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
@@ -11,11 +15,15 @@
       </div>
    </div>
 </div>
------
+
+=== get CommentTitleIncludesGetSet ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">get</span> CommentTitleIncludesGetSet ()</div>
 </div>
------
+
+=== set CommentTitleIncludesGetSet ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">

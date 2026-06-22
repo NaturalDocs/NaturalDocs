@@ -1,3 +1,5 @@
+=== Params1 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -18,7 +20,9 @@
       </div>
    </div>
 </div>
------
+
+=== Params2 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -35,7 +39,9 @@
       </div>
    </div>
 </div>
------
+
+=== Params3 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -50,7 +56,9 @@
       </div>
    </div>
 </div>
------
+
+=== ExtraKeywords ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -61,14 +69,18 @@
       </div>
    </div>
 </div>
------
+
+=== Modifiers1 ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">CREATE PROCEDURE</span> Modifiers1</div>
    <div class="PSection PPlainSection"><span class="SHMetadata">SHARING = NONE</span></div>
    <div class="PSection PPlainSection"><span class="SHMetadata">AUTHID DEFINER</span></div>
    <div class="PSection PPlainSection"><span class="SHMetadata">ACCESSIBLE BY (FUNCTION Func1, PACKAGE A.B)</span></div>
 </div>
------
+
+=== Modifiers2 ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">CREATE PROCEDURE</span> Modifiers2</div>
    <div class="PSection PPlainSection"><span class="SHMetadata">SHARING = METADATA</span></div>

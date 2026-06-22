@@ -1,23 +1,39 @@
+=== Declaration Types ===
+
+=== StandaloneDeclaration ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">function</span> StandaloneDeclaration ()</div>
 </div>
------
+
+=== ClassMethodDeclaration ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection">ClassMethodDeclaration ()</div>
 </div>
------
+
+=== ThisAssignmentDeclaration ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">this</span>.ThisAssignmentDeclaration = <span class="SHKeyword">function</span> ()</div>
 </div>
------
+
+=== NamedObjectAssignmentDeclaration ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection">NamedObject.NamedObjectAssignmentDeclaration = <span class="SHKeyword">function</span> ()</div>
 </div>
------
+
+=== PrototypeAssignmentDeclaration ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection">NamedClass.<span class="SHKeyword">prototype</span>.PrototypeAssignmentDeclaration = <span class="SHKeyword">function</span> ()</div>
 </div>
------
+
+=== Parameters ===
+
+=== BasicParameters ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -30,7 +46,9 @@
       </div>
    </div>
 </div>
------
+
+=== RestParameter ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -43,35 +61,53 @@
       </div>
    </div>
 </div>
------
+
+=== Special Function Types ===
+
+=== constructor ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">constructor</span> ()</div>
 </div>
------
+
+=== StaticMethod ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">static</span> StaticMethod ()</div>
 </div>
------
+
+=== StandaloneGeneratorFunction ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">function</span> *StandaloneGeneratorFunction ()</div>
 </div>
------
+
+=== ClassGeneratorMethod ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection">*ClassGeneratorMethod ()</div>
 </div>
------
+
+=== StandaloneAsyncFunction ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">async</span> <span class="SHKeyword">function</span> StandaloneAsyncFunction ()</div>
 </div>
------
+
+=== ClassAsyncMethod ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">async</span> ClassAsyncMethod ()</div>
 </div>
------
+
+=== StandaloneAsyncGeneratorFunction ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">async</span> <span class="SHKeyword">function</span> *StandaloneAsyncGeneratorFunction ()</div>
 </div>
------
+
+=== ClassAsyncGeneratorMethod ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">async</span> *ClassAsyncGeneratorMethod ()</div>
 </div>

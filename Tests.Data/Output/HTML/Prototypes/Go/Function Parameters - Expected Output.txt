@@ -1,3 +1,5 @@
+=== BasicTypes ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -11,7 +13,9 @@
       </div>
    </div>
 </div>
------
+
+=== DefaultValues ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -34,7 +38,9 @@
       </div>
    </div>
 </div>
------
+
+=== PointersAndArrays ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -53,7 +59,9 @@
       </div>
    </div>
 </div>
------
+
+=== SlicesAndMaps ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -66,7 +74,9 @@
       </div>
    </div>
 </div>
------
+
+=== Channels ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -81,7 +91,9 @@
       </div>
    </div>
 </div>
------
+
+=== ParameterizedTypes ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -94,7 +106,9 @@
       </div>
    </div>
 </div>
------
+
+=== VariadicParameter ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -108,7 +122,11 @@
       </div>
    </div>
 </div>
------
+
+=== Partially Supported Features ===
+
+=== InlineStruct ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -119,7 +137,9 @@
       </div>
    </div>
 </div>
------
+
+=== InlineInterface ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">

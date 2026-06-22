@@ -1,3 +1,7 @@
+=== Const Handling ===
+
+=== FunctionName ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -16,7 +20,9 @@
       </div>
    </div>
 </div>
------
+
+=== FunctionName2 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -35,7 +41,9 @@
       </div>
    </div>
 </div>
------
+
+=== FunctionName3 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">

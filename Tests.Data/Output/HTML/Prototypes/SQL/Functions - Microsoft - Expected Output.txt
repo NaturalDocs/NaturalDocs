@@ -1,13 +1,19 @@
+=== Returns1 ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">FUNCTION</span> Returns1</div>
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div>
 </div>
------
+
+=== Returns2 ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">CREATE FUNCTION</span> Returns2</div>
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> SCHEMA.INTEGER(<span class="SHNumber">2</span>,<span class="SHNumber">3</span>)</div>
 </div>
------
+
+=== Returns3 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PPlainSection"><span class="SHKeyword">CREATE OR ALTER FUNCTION</span> Returns3</div>
    <div class="PSection PParameterSection PascalStyle">
@@ -23,7 +29,9 @@
       </div>
    </div>
 </div>
------
+
+=== Params1 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
@@ -55,7 +63,9 @@
    </div>
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div>
 </div>
------
+
+=== Params2 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
@@ -77,7 +87,9 @@
    </div>
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div>
 </div>
------
+
+=== With1 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PPlainSection"><span class="SHKeyword">FUNCTION</span> With1</div>
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div>
@@ -90,7 +102,9 @@
       </div>
    </div>
 </div>
------
+
+=== With2 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PPlainSection"><span class="SHKeyword">FUNCTION</span> With2</div>
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS</span> <span class="SHKeyword">INTEGER</span></div>
@@ -103,7 +117,9 @@
       </div>
    </div>
 </div>
------
+
+=== With3 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PPlainSection"><span class="SHKeyword">CREATE OR ALTER FUNCTION</span> With3</div>
    <div class="PSection PPlainSection"><span class="SHKeyword">RETURNS TABLE</span></div>
@@ -114,7 +130,9 @@
       </div>
    </div>
 </div>
------
+
+=== Complex ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -146,7 +164,9 @@
       </div>
    </div>
 </div>
------
+
+=== Fakeout ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">

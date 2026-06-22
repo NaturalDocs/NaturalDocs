@@ -1,17 +1,25 @@
+=== EventA ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">public event</span> Delegate EventA</div>
 </div>
------
+
+=== EventB ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHMetadata">[Attribute]</span></div>
    <div class="PSection PPlainSection"><span class="SHKeyword">private event</span> Delegate EventB</div>
 </div>
------
+
+=== EventC ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHMetadata">[Attribute]</span></div>
    <div class="PSection PPlainSection"><span class="SHKeyword">private event</span> Delegate EventC</div>
 </div>
------
+
+=== EventD ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
@@ -22,7 +30,9 @@
       </div>
    </div>
 </div>
------
+
+=== EventE ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PPlainSection"><span class="SHMetadata">[Attribute]</span></div>
    <div class="PSection PParameterSection CStyle">

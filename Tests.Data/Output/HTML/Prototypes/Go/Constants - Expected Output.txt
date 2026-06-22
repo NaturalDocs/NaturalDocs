@@ -1,11 +1,26 @@
+=== Typed ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">const</span> Typed <span class="SHKeyword">float64</span></div>
 </div>
------
+
+=== Untyped ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">const</span> Untyped</div>
 </div>
------
+
+=== ParameterizedType ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">const</span> ParameterizedType TypeName[<span class="SHKeyword">int</span>]</div>
 </div>
+
+=== Currently Unsupported Features ===
+
+=== Parentheses ===
+
+=== Multiple Assignments 1 ===
+
+=== Multiple Assignments 2 ===
+

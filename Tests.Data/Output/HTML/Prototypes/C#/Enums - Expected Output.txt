@@ -1,7 +1,11 @@
+=== EnumA ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">public enum</span> EnumA</div>
 </div>
------
+
+=== EnumB ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHMetadata">[Attribute]</span></div>
    <div class="PSection PPlainSection"><span class="SHKeyword">public enum</span> EnumB : <span class="SHKeyword">byte</span></div>

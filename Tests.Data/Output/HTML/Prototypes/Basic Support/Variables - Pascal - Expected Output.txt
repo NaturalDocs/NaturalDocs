@@ -1,7 +1,11 @@
+=== VarA ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> VarA: MyClass</div>
 </div>
------
+
+=== VarB ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection">VarB: Pkg.MyClass&lt;<span class="SHKeyword">int</span>, Class2&gt;</div>
 </div>

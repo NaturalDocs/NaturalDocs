@@ -1,23 +1,33 @@
+=== Marker_Annotation1 ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHMetadata">@Preliminary</span></div>
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Marker_Annotation1 ()</div>
 </div>
------
+
+=== Marker_Annotation2 ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHMetadata">@ Preliminary</span></div>
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Marker_Annotation2 ()</div>
 </div>
------
+
+=== Marker_Annotation3 ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHMetadata">@Preliminary()</span></div>
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Marker_Annotation3 ()</div>
 </div>
------
+
+=== Marker_Annotation4 ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHMetadata">@ Preliminary ()</span></div>
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Marker_Annotation4 ()</div>
 </div>
------
+
+=== Single_Element_Annotation1 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
@@ -28,7 +38,9 @@
    </div>
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Single_Element_Annotation1 ()</div>
 </div>
------
+
+=== Single_Element_Annotation2 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
@@ -39,7 +51,9 @@
    </div>
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Single_Element_Annotation2 ()</div>
 </div>
------
+
+=== Key_Value_Annotation1 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -58,7 +72,9 @@
    </div>
    <div class="PSection PPlainSection"><span class="SHKeyword">public static</span> <span class="SHKeyword">void</span> Key_Value_Annotation1 ()</div>
 </div>
------
+
+=== Multiple_Annotations ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PPlainSection"><span class="SHMetadata">@Preliminary</span></div>
    <div class="PSection PParameterSection CStyle">
@@ -92,7 +108,9 @@
    </div>
    <div class="PSection PPlainSection"><span class="SHKeyword">public static</span> <span class="SHKeyword">void</span> Multiple_Annotations ()</div>
 </div>
------
+
+=== JAXRS_Annotations ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PPlainSection"><span class="SHMetadata">@GET</span></div>
    <div class="PSection PParameterSection CStyle">

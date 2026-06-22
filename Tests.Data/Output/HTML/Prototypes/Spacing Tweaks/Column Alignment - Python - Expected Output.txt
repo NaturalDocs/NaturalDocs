@@ -1,3 +1,5 @@
+=== MultipleDecorators ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -22,7 +24,9 @@
    </div>
    <div class="PSection PPlainSection"><span class="SHKeyword">def</span> MultipleDecorators ()</div>
 </div>
------
+
+=== DecoratorsAndParameters ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">

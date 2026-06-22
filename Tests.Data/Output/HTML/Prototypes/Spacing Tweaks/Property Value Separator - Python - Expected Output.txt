@@ -1,3 +1,5 @@
+=== FunctionA ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -13,7 +15,9 @@
    </div>
    <div class="PSection PPlainSection"><span class="SHKeyword">def</span> FunctionA ()</div>
 </div>
------
+
+=== FunctionB ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -29,7 +33,9 @@
    </div>
    <div class="PSection PPlainSection"><span class="SHKeyword">def</span> FunctionB ()</div>
 </div>
------
+
+=== FunctionC ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection PascalStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">

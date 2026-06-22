@@ -1,3 +1,7 @@
+=== TestClass ===
+
+=== FunctionA ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -8,7 +12,9 @@
       </div>
    </div>
 </div>
------
+
+=== FunctionB ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -19,7 +25,9 @@
       </div>
    </div>
 </div>
------
+
+=== FunctionC ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -30,7 +38,9 @@
       </div>
    </div>
 </div>
------
+
+=== FunctionD ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -41,7 +51,9 @@
       </div>
    </div>
 </div>
------
+
+=== FunctionE ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -52,27 +64,39 @@
       </div>
    </div>
 </div>
------
+
+=== varA ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span>, <span class="SHKeyword">int</span>) varA</div>
 </div>
------
+
+=== varB ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span> a, <span class="SHKeyword">int</span> b) varB</div>
 </div>
------
+
+=== varC ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span>, (<span class="SHKeyword">int</span>, <span class="SHKeyword">float</span>)) varC</div>
 </div>
------
+
+=== varD ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span> a, (<span class="SHKeyword">int</span> m, <span class="SHKeyword">float</span> n) b) varD</div>
 </div>
------
+
+=== varE ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> (<span class="SHKeyword">string</span>[,,] a, (Namespace.MyClass&lt;<span class="SHKeyword">int</span>&gt; m, <span class="SHKeyword">float</span>? n) b) varE</div>
 </div>
------
+
+=== PropertyA ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
@@ -82,7 +106,9 @@
       </div>
    </div>
 </div>
------
+
+=== PropertyB ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
@@ -93,7 +119,9 @@
       </div>
    </div>
 </div>
------
+
+=== PropertyC ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
@@ -103,7 +131,9 @@
       </div>
    </div>
 </div>
------
+
+=== PropertyD ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
@@ -114,7 +144,9 @@
       </div>
    </div>
 </div>
------
+
+=== PropertyE ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
@@ -124,7 +156,9 @@
       </div>
    </div>
 </div>
------
+
+=== TypeSpacing ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">

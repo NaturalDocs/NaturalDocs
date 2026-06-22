@@ -1,7 +1,11 @@
+=== Parameterless ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">void</span> Parameterless ()</div>
 </div>
------
+
+=== Basic ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -14,7 +18,9 @@
       </div>
    </div>
 </div>
------
+
+=== Modifiers ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
@@ -28,7 +34,9 @@
       </div>
    </div>
 </div>
------
+
+=== Attributes_NoBraces ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PPlainSection"><span class="SHMetadata">[Attribute]</span></div>
    <div class="PSection PPlainSection"><span class="SHMetadata">[DllImport (&quot;NaturalDocs.Engine.SQLite.dll&quot;)]</span></div>
@@ -49,7 +57,9 @@
       </div>
    </div>
 </div>
------
+
+=== DefaultValues ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="6" data-NarrowColumnCount="5">
@@ -70,7 +80,9 @@
       </div>
    </div>
 </div>
------
+
+=== Templates ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="7" data-NarrowColumnCount="6">
@@ -88,7 +100,9 @@
       </div>
    </div>
 </div>
------
+
+=== WhereClause ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -103,7 +117,9 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">where</span> T1: <span class="SHKeyword">class</span>, Interface, <span class="SHKeyword">new</span> ()</div>
    <div class="PSection PPlainSection"><span class="SHKeyword">where</span> T2: System.Collections.IEnumerable&lt;T2&gt;</div>
 </div>
------
+
+=== FunctionPointer ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -116,11 +132,15 @@
       </div>
    </div>
 </div>
------
+
+=== Partial_BeginningOfModifiers ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Partial_BeginningOfModifiers ()</div>
 </div>
------
+
+=== Partial_BeginningOfModifiers2 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -133,11 +153,15 @@
       </div>
    </div>
 </div>
------
+
+=== Partial_MiddleOfModifiers ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Partial_MiddleOfModifiers ()</div>
 </div>
------
+
+=== Partial_MiddleOfModifiers2 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
@@ -150,11 +174,15 @@
       </div>
    </div>
 </div>
------
+
+=== Partial_EndOfModifiers ===
+
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">public</span> Partial_EndOfModifiers ()</div>
 </div>
------
+
+=== Partial_EndOfModifiers2 ===
+
 <div class="NDPrototype PContent WideForm">
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
