@@ -13,7 +13,7 @@
  *		- <Language Reference: https://docs.python.org/3/reference/>
  *			- Built-in types like "int" are documented in the <Standard Library: https://docs.python.org/3/library/stdtypes.html>.
  *			- Built-in constants like "None" are documented in the <Standard Library: https://docs.python.org/3/library/constants.html>.
- *
+ *			- <Type Hints Cheat Sheet: https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html>
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2026 Code Clear LLC.
@@ -32,6 +32,19 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 	public class Python : Parser
 		{
 
+		// Group: Types
+		// __________________________________________________________________________
+
+
+		/* Enum: TemplateSignatureType
+		 * Definition - The signature of a template definition, such as "class MyTemplate<X, Y> { ... }".
+		 * Instantiation - The signature of a template instantiation, such as "MyTemplate<number, string> x = null;".
+		 */
+		public enum TemplateSignatureType: byte
+			{  Definition, Instantiation  }
+
+
+
 		// Group: Functions
 		// __________________________________________________________________________
 
@@ -40,6 +53,25 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		public Python (Engine.Instance engineInstance, Language language) : base (engineInstance, language)
 			{
+			}
+
+
+		/* Function: ParsePrototype
+		 * Converts a raw text prototype into a <ParsedPrototype>.
+		 */
+		override public ParsedPrototype ParsePrototype(string stringPrototype, int commentTypeID)
+			{
+			Tokenizer tokenizedPrototype = new Tokenizer(stringPrototype, tabWidth: EngineInstance.Config.TabWidth);
+			TokenIterator iterator = tokenizedPrototype.FirstToken;
+
+			if (TryToSkipFunction(ref iterator, ParseMode.ParsePrototype))
+				{
+				return new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID, engineInstance);
+				}
+			else
+				{
+				return base.ParsePrototype(stringPrototype, commentTypeID);
+				}
 			}
 
 
@@ -215,6 +247,617 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			iterator = lookahead;
 			return true;
+			}
+
+
+		/* Function: TryToSkipFunction
+		 *
+		 * If the iterator is on a function definition,moves it past it and returns true.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipFunction (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			TokenIterator lookahead = iterator;
+
+
+			// Decorators
+
+			if (TryToSkipDecorators(ref lookahead, mode))
+				{  TryToSkipWhitespace(ref lookahead);  }
+
+
+			// Modifiers
+
+			if (IsOnKeyword(lookahead, "async"))
+				{
+				lookahead.Next();
+				TryToSkipWhitespace(ref lookahead);
+				}
+
+
+			// Keyword
+
+			if (!IsOnKeyword(lookahead, "def"))
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+
+			lookahead.Next();
+			TryToSkipWhitespace(ref lookahead);
+
+
+			// Name
+
+			if (!TryToSkipIdentifier(ref lookahead, mode, PrototypeParsingType.Name))
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+
+			TryToSkipWhitespace(ref lookahead);
+
+
+			// Template Signature
+
+			if (TryToSkipTemplateSignature(ref lookahead, TemplateSignatureType.Definition, mode))
+				{  TryToSkipWhitespace(ref lookahead);  }
+
+
+			// Parameters
+
+			if (lookahead.Character != '(')
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+
+			if (mode == ParseMode.ParsePrototype)
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.StartOfParams;  }
+
+			lookahead.Next();
+			TryToSkipWhitespace(ref lookahead);
+
+			for (;;)
+				{
+				if (!lookahead.IsInBounds)
+					{
+					ResetTokensBetween(iterator, lookahead, mode);
+					return false;
+					}
+
+				else if (lookahead.Character == ',')
+					{
+					if (mode == ParseMode.ParsePrototype)
+						{  lookahead.PrototypeParsingType = PrototypeParsingType.ParamSeparator;  }
+
+					lookahead.Next();
+					TryToSkipWhitespace(ref lookahead);
+					}
+
+				else if (lookahead.Character == ')')
+					{
+					if (mode == ParseMode.ParsePrototype)
+						{  lookahead.PrototypeParsingType = PrototypeParsingType.EndOfParams;  }
+
+					lookahead.Next();
+					TryToSkipWhitespace(ref lookahead);
+					break;
+					}
+
+				else if (TryToSkipParameter(ref lookahead, mode))
+					{
+					TryToSkipWhitespace(ref lookahead);
+					}
+
+				else
+					{
+					ResetTokensBetween(iterator, lookahead, mode);
+					return false;
+					}
+				}
+
+
+			// Return value (optional)
+
+			if (lookahead.MatchesAcrossTokens("->"))
+				{
+				lookahead.Next(2);
+				TryToSkipWhitespace(ref lookahead);
+
+				if (!TryToSkipType(ref lookahead, mode))
+					{
+					ResetTokensBetween(iterator, lookahead, mode);
+					return false;
+					}
+
+				TryToSkipWhitespace(ref lookahead);
+				}
+
+
+			//  Body (optional)
+
+			// Since this function is currently only being used to parse prototypes, and prototypes don't have the body included, we can omit
+			// this step.  Documenting it here in case this changes later though.
+
+
+			iterator = lookahead;
+			return true;
+			}
+
+
+		/* Function: TryToSkipParameter
+		 *
+		 * If the iterator is on a parameter, moves it past it and returns true.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipParameter (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			TokenIterator lookahead = iterator;
+			TryToSkipWhitespace(ref lookahead);
+
+
+			// Star or slash
+
+			if (lookahead.Character == '/' || lookahead.Character == '*')
+				{
+				// We only accept this here if this is the only content of the parameter.  Stars can also precede the parameter name so
+				// we'll reset lookahead and continue if this fails.
+
+				TokenIterator starOrSlash = lookahead;
+
+				lookahead.Next();
+				TryToSkipWhitespace(ref lookahead);
+
+				if (lookahead.Character == ',' || lookahead.Character == ')')
+					{
+					if (mode == ParseMode.ParsePrototype)
+						{
+						// Not the best option, but we want it to format in the name column, so that's what it gets.
+						starOrSlash.PrototypeParsingType = PrototypeParsingType.Name;
+						}
+
+					iterator = lookahead;
+					return true;
+					}
+				else
+					{
+					lookahead = starOrSlash;
+					// continue below
+					}
+				}
+
+
+			// Leading asterisks
+
+			// Only one or two are allowed, but we'll just loop it.
+			while (lookahead.Character == '*')
+				{
+				if (mode == ParseMode.ParsePrototype)
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.ParamModifier;  }
+
+				lookahead.Next();
+				TryToSkipWhitespace(ref lookahead);
+				}
+
+
+			// Name
+
+			if (!TryToSkipUnqualifiedIdentifier(ref lookahead, mode, PrototypeParsingType.Name))
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+
+			TryToSkipWhitespace(ref lookahead);
+
+
+			// Type
+
+			if (lookahead.Character == ':')
+				{
+				if (mode == ParseMode.ParsePrototype)
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.NameTypeSeparator;  }
+
+				lookahead.Next();
+				TryToSkipWhitespace(ref lookahead);
+
+				if (!TryToSkipType(ref lookahead, ParseMode.ParsePrototype))
+					{
+					ResetTokensBetween(iterator, lookahead, mode);
+					return false;
+					}
+
+				TryToSkipWhitespace(ref lookahead);
+				}
+
+
+			// Default Value
+
+			if (lookahead.Character == '=')
+				{
+				if (mode == ParseMode.ParsePrototype)
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.DefaultValueSeparator;  }
+
+				lookahead.Next();
+				TryToSkipWhitespace(ref lookahead);
+
+				TokenIterator startOfDefaultValue = lookahead;
+
+				while (lookahead.IsInBounds &&
+						  lookahead.Character != ',' &&
+						  lookahead.Character != ')')
+					{  GenericSkip(ref lookahead, false);  }
+
+				if (mode == ParseMode.ParsePrototype)
+					{  startOfDefaultValue.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.DefaultValue);  }
+				}
+
+			iterator = lookahead;
+			return true;
+			}
+
+
+		/* Function: TryToSkipType
+		 *
+		 * Tries to move the iterator past a type.  It can handle simple types ("str"), parameterized types ("list[int]"), tuples ("(int, str)"), and
+		 * unions ("str | bytearray").
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipType (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			TokenIterator lookahead = iterator;
+
+			for (;;)
+				{
+
+				// Leading asterisk for tuples
+
+				if (lookahead.Character == '*')
+					{
+					if (mode == ParseMode.ParsePrototype)
+						{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
+
+					lookahead.Next();
+					TryToSkipWhitespace(ref lookahead);
+
+					// Continue below.  Deliberately not using "else if" for the next statement.
+					}
+
+
+				// Simple identifier
+
+				if (TryToSkipIdentifier(ref lookahead, mode, PrototypeParsingType.Type))
+					{
+					iterator = lookahead;
+
+					// Check if the identifier ends with "Callable" since that has special handling.
+					TokenIterator lookbehind = lookahead;
+					lookbehind.Previous();
+					bool isCallable = IsOnKeyword(lookbehind, "Callable");
+
+					TryToSkipWhitespace(ref lookahead);
+
+					// Template signature
+					if (TryToSkipTemplateSignature(ref lookahead, TemplateSignatureType.Instantiation, mode, isCallable))
+						{
+						iterator = lookahead;
+						TryToSkipWhitespace(ref lookahead);
+						}
+
+					// Python doesn't have array suffixes like "int[12]".  All collections use named parameterized types like "array[int]".
+					}
+
+
+				// Tuples
+
+				else if (TryToSkipTupleDefinition(ref lookahead, mode))
+					{
+					iterator = lookahead;
+					TryToSkipWhitespace(ref lookahead);
+					}
+
+
+				// Ellipsis
+
+				else if (lookahead.MatchesAcrossTokens("..."))
+					{
+					if (mode == ParseMode.ParsePrototype)
+						{  lookahead.SetPrototypeParsingTypeByCharacters(PrototypeParsingType.Type, 3);  }
+
+					lookahead.Next(3);
+					iterator = lookahead;
+					TryToSkipWhitespace(ref lookahead);
+					}
+
+
+				// Strings and numbers
+
+				else if (TryToSkipString(ref lookahead) ||
+						   TryToSkipNumber(ref lookahead))
+					{
+					// These may be use with allowable value lists like Literal["GET" | "POST"].
+
+					if (mode == ParseMode.ParsePrototype)
+						{
+						// Find the beginning again from the last accepted end of the type.  This is a bit awkward and a little bit of duplicated
+						// work but allowed value lists should be rare and it's better to do it on the exception than do extra work on the norm.
+						TokenIterator startOfValue = iterator;
+						TryToSkipWhitespace(ref startOfValue);
+
+						// Skip | too since it didn't update the iterator
+						if (startOfValue.Character == '|')
+							{
+							startOfValue.Next();
+							TryToSkipWhitespace(ref startOfValue);
+							}
+
+						startOfValue.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.Type);
+						}
+
+					iterator = lookahead;
+					TryToSkipWhitespace(ref lookahead);
+					}
+
+
+				// None of the above
+
+				else
+					{  return false;  }
+
+
+				// Continue another round on unions
+
+				if (lookahead.Character == '|')
+					{
+					// We want them included as part of the type such as in "int | str"
+					if (mode == ParseMode.ParsePrototype)
+						{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
+
+					lookahead.Next();
+					TryToSkipWhitespace(ref lookahead);
+					}
+				else
+					{  break;  }
+				}
+
+			return true;
+			}
+
+
+		/* Function: TryToSkipTemplateSignature
+		 *
+		 * Tries to move the iterator past a template signature, such as "[int]" in "list[int]".  It can handle nested templates.
+		 * Set the <TemplateSignatureType> to set whether it's handling a definition, such as "def MyFunction[X, Y]:", or an
+		 * instantiation, such as "myVar: MyTemplate[int, str]".
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- When using <TemplateSignatureType.Instantiation>, it will mark tokens with these types, including in nested templates:
+		 *				- <PrototypeParsingType.OpeningTypeModifier>
+		 *				- <PrototypeParsingType.ClosingTypeModifier>
+		 *				- <PrototypeParsingType.Type>
+		 *				- <PrototypeParsingType.TypeQualifier>
+		 *				- <PrototypeParsingType.TypeModifier>
+		 *			- When using <TemplateSignatureType.Definition>, it will mark everything with these types:
+		 *				- <PrototypeParsingType.OpeningParamModifier>
+		 *				- <PrototypeParsingType.ClosingParamModifier>
+		 *				- <PrototypeParsingType.Name>
+		 *		- <ParseMode.ParseClassPrototype>
+		 *			- All tokens will be marked with <ClassPrototypeParsingType.TemplateSuffix>.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipTemplateSignature (ref TokenIterator iterator, TemplateSignatureType signatureType,
+																		ParseMode mode = ParseMode.IterateOnly, bool isCallable = false)
+			{
+			if (iterator.Character != '[')
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+
+			lookahead.Next();
+			TryToSkipWhitespace(ref lookahead);
+
+			bool isFirstParameter = true;
+
+			while (lookahead.IsInBounds && lookahead.Character != ']')
+				{
+				for (;;)
+					{
+					if (signatureType == TemplateSignatureType.Instantiation)
+						{
+						// Callable is the only thing that can have a nested pair of brackets immediately inside an existing one without
+						// an intervening keyword, like "Callable[[int, int], int]".
+						if (isCallable && isFirstParameter && lookahead.Character == '[')
+							{
+							if (!TryToSkipTemplateSignature(ref lookahead, signatureType, mode, isCallable = false))
+								{
+								ResetTokensBetween(iterator, lookahead, mode);
+								return false;
+								}
+							}
+						else
+							{
+							if (TryToSkipType(ref lookahead, mode) == false)
+								{
+								ResetTokensBetween(iterator, lookahead, mode);
+								return false;
+								}
+							}
+
+						TryToSkipWhitespace(ref lookahead);
+						}
+					else if (signatureType == TemplateSignatureType.Definition)
+						{
+						// Leading stars.  Only one or two are allowed, but we'll just loop it.
+						while (lookahead.Character == '*')
+							{
+							if (mode == ParseMode.ParsePrototype)
+								{  lookahead.PrototypeParsingType = PrototypeParsingType.ParamModifier;  }
+
+							lookahead.Next();
+							TryToSkipWhitespace(ref lookahead);
+							}
+
+						if (!TryToSkipUnqualifiedIdentifier(ref lookahead, mode, PrototypeParsingType.Name))
+							{
+							ResetTokensBetween(iterator, lookahead, mode);
+							return false;
+							}
+
+						TryToSkipWhitespace(ref lookahead);
+
+						if (lookahead.Character == ':')
+							{
+							lookahead.Next();
+							TryToSkipWhitespace(ref lookahead);
+
+							if (!TryToSkipType(ref lookahead, mode))
+								{
+								ResetTokensBetween(iterator, lookahead, mode);
+								return false;
+								}
+
+							TryToSkipWhitespace(ref lookahead);
+							}
+
+						if (lookahead.Character == '=')
+							{
+							lookahead.Next();
+							TryToSkipWhitespace(ref lookahead);
+
+							if (!TryToSkipType(ref lookahead, mode))
+								{
+								ResetTokensBetween(iterator, lookahead, mode);
+								return false;
+								}
+
+							TryToSkipWhitespace(ref lookahead);
+							}
+						}
+					else
+						{  throw new NotImplementedException();  }
+
+					if (lookahead.Character == ',')
+						{
+						lookahead.Next();
+						TryToSkipWhitespace(ref lookahead);
+
+						isFirstParameter = false;
+						}
+					else
+						{  break;  }
+					}
+				}
+
+			if (lookahead.Character == ']')
+				{
+				if (mode == ParseMode.ParsePrototype)
+					{
+					if (signatureType == TemplateSignatureType.Instantiation)
+						{
+						iterator.PrototypeParsingType = PrototypeParsingType.OpeningTypeModifier;
+						lookahead.PrototypeParsingType = PrototypeParsingType.ClosingTypeModifier;
+						}
+					else if (signatureType == TemplateSignatureType.Definition)
+						{
+						iterator.PrototypeParsingType = PrototypeParsingType.OpeningParamModifier;
+						lookahead.PrototypeParsingType = PrototypeParsingType.ClosingParamModifier;
+						}
+					else
+						{  throw new NotImplementedException();  }
+
+					lookahead.Next();
+					}
+				else if (mode == ParseMode.ParseClassPrototype)
+					{
+					lookahead.Next();
+					iterator.SetClassPrototypeParsingTypeBetween(lookahead, ClassPrototypeParsingType.TemplateSuffix);
+					}
+				else
+					{  lookahead.Next();  }
+
+				iterator = lookahead;
+				return true;
+				}
+			else
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+			}
+
+
+		/* Function: TryToSkipTupleDefinition
+		 *
+		 * Tries to move the iterator past a tuple definition, such as "(int, str)".
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipTupleDefinition (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			if (iterator.Character != '(')
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+
+			lookahead.Next();
+			TryToSkipWhitespace(ref lookahead);
+
+			while (lookahead.IsInBounds && lookahead.Character != ')')
+				{
+				if (!TryToSkipType(ref lookahead, mode))
+					{  break;  }
+
+				TryToSkipWhitespace(ref lookahead);
+
+				if (lookahead.Character == ',')
+					{
+					lookahead.Next();
+					TryToSkipWhitespace(ref lookahead);
+					}
+				else
+					{  break;  }
+				}
+
+			if (lookahead.Character == ')')
+				{
+				if (mode == ParseMode.ParsePrototype)
+					{
+					iterator.PrototypeParsingType = PrototypeParsingType.StartOfTuple;
+					lookahead.PrototypeParsingType = PrototypeParsingType.EndOfTuple;
+					}
+
+				lookahead.Next();
+				iterator = lookahead;
+				return true;
+				}
+			else
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
 			}
 
 
@@ -422,8 +1065,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				TokenIterator openingParen = iterator;
 				TokenIterator closingParen = lookahead;
 
-				openingParen.PrototypeParsingType = PrototypeParsingType.StartOfParams;
-				closingParen.PrototypeParsingType = PrototypeParsingType.EndOfParams;
+				openingParen.PrototypeParsingType = PrototypeParsingType.StartOfMetadataParams;
+				closingParen.PrototypeParsingType = PrototypeParsingType.EndOfMetadataParams;
 
 
 				// Mark the parameters
@@ -538,6 +1181,75 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
+		/* Function: IsPartOfLongerIdentifier
+		 * Returns whether the <TokenIterator> is on token that's part of a longer identifier, such as by being next to an underscore.
+		 * This is primarily used to validate keywords after checking the contents of the token against a keyword list, so that "input"
+		 * by itself will be distinguished from "_input" or similar.
+		 */
+		protected bool IsPartOfLongerIdentifier (TokenIterator iterator)
+			{
+			// All python keywords are a single text token
+
+			TokenIterator lookahead = iterator;
+			lookahead.Next();
+
+			if (lookahead.FundamentalType == FundamentalType.Text ||
+				lookahead.Character == '_')
+				{  return true;  }
+
+			TokenIterator lookbehind = iterator;
+			lookbehind.Previous();
+
+			if (lookbehind.FundamentalType == FundamentalType.Text ||
+				lookbehind.Character == '_')
+				{  return true;  }
+
+			return false;
+			}
+
+
+		/* Function: IsOnKeyword
+		 *
+		 * Returns whether the <TokenIterator> is on the passed keyword, making sure there are no other identifier tokens
+		 * before or after it.  This allows us to be sure an iterator on "input" isn't actually on "_input" or similar.  This function
+		 * assumes keywords are only one text token.
+		 *
+		 * If you have multiple keywords to test against, it is more efficient to use one of the <IsOnAnyKeyword()> functions.
+		 */
+		public bool IsOnKeyword (TokenIterator iterator, string keyword)
+			{
+			return (iterator.MatchesToken(keyword) &&
+					   !IsPartOfLongerIdentifier(iterator));
+			}
+
+
+		/* Function: IsOnAnyKeyword
+		 *
+		 * Returns whether the <TokenIterator> is on the passed keyword, making sure there are no other identifier tokens
+		 * before or after it.  This allows us to be sure an iterator on "input" isn't actually on "_input" or similar.  This function
+		 * assumes keywords are only one text token.
+		 */
+		public bool IsOnAnyKeyword (TokenIterator iterator, params string[] keywords)
+			{
+			return (iterator.MatchesAnyAcrossTokens(keywords, true) != -1 &&
+					   !IsPartOfLongerIdentifier(iterator));
+			}
+
+
+		/* Function: IsOnAnyKeyword
+		 *
+		 * Returns whether the <TokenIterator> is on the passed keyword, making sure there are no other identifier tokens
+		 * before or after it.  This allows us to be sure an iterator on "input" isn't actually on "_input" or similar.  This function
+		 * assumes keywords are only one text token.
+		 */
+		public bool IsOnAnyKeyword (TokenIterator iterator, StringSet keywords)
+			{
+			return (iterator.FundamentalType == FundamentalType.Text &&
+					   keywords.Contains(iterator.String) &&
+					   !IsPartOfLongerIdentifier(iterator));
+			}
+
+
 		/* Function: TryToSkipKeyword
 		 *
 		 * Supported Modes:
@@ -550,24 +1262,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			{
 			// All python keywords are a single text token
 
-			if (iterator.FundamentalType != FundamentalType.Text)
-				{  return false;  }
-
-			TokenIterator lookahead = iterator;
-			lookahead.Next();
-
-			if (lookahead.FundamentalType == FundamentalType.Text ||
-				lookahead.Character == '_')
-				{  return false;  }
-
-			TokenIterator lookbehind = iterator;
-			lookbehind.Previous();
-
-			if (lookbehind.FundamentalType == FundamentalType.Text ||
-				lookbehind.Character == '_')
-				{  return false;  }
-
-			if (!pythonKeywords.Contains(iterator.String))
+			if (!IsOnAnyKeyword(iterator, pythonKeywords))
 				{  return false;  }
 
 			if (mode == ParseMode.SyntaxHighlight)
@@ -780,7 +1475,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			"set", "frozenset", "dict",
 
 			// Misc
-			"metaclass", "NotImplemented"
+			"Any", "metaclass", "NotImplemented"
 
 			});
 
