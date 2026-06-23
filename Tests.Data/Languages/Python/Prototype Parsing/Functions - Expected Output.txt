@@ -1,7 +1,11 @@
+------------------------------
+Basics:
+------------------------------
+
 - Parameter Section:
-  - Before Parameters: def Python_Empty_Parens (
+  - Before Parameters: def EmptyParens (
     - Access Level: Unknown
-    - Link Candidates: def
+    - Link Candidates: (none)
 
   - After Parameters: )
     - Link Candidates: (none)
@@ -9,9 +13,9 @@
 ------------------------------
 
 - Parameter Section:
-  - Before Parameters: def Python_Params (
+  - Before Parameters: def Params (
     - Access Level: Unknown
-    - Link Candidates: def
+    - Link Candidates: (none)
 
   - Parameter 1: a,
     - Name: a
@@ -47,9 +51,100 @@
 ------------------------------
 
 - Parameter Section:
-  - Before Parameters: def Python_Params_StarArgs (
+  - Before Parameters: def ReturnValuesA (
     - Access Level: Unknown
-    - Link Candidates: def
+    - Link Candidates: (none)
+
+  - After Parameters: ) -> int
+    - Link Candidates: int
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: def ReturnValuesB (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: ) -> Any
+    - Link Candidates: Any
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: def ReturnValuesC (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: ) -> None
+    - Link Candidates: None
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: async def Async (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: def ŬnicodeÏdentifiers (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: ŬnicodeÅrg
+    - Name: ŬnicodeÅrg
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: @DecoratorA
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: @DecoratorB ()
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: @DecoratorC (12, "string")
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: @DecoratorD (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: arg1 = 12,
+    - Name: arg1
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: arg2 = "string"
+    - Name: arg2
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: def Decorators (
+    - Access Level: Unknown
+    - Link Candidates: (none)
 
   - Parameter 1: a,
     - Name: a
@@ -58,42 +153,82 @@
     - Link Candidates: (none)
     - Default Value: (not detected)
 
-  - Parameter 2: *b,
+  - Parameter 2: b: int,
     - Name: b
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 3: c: str = "string"
+    - Name: c
+    - Full Type: str
+    - Base Type: str
+    - Link Candidates: str
+    - Default Value: "string"
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+Stars and Slashes:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: def VariablePositionalArgsA (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a,
+    - Name: a
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (none)
     - Default Value: (not detected)
 
-  - Parameter 3: **c,
+  - Parameter 2: b: int,
+    - Name: b
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 3: *c
     - Name: c
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (none)
     - Default Value: (not detected)
 
-  - Parameter 4: d: int = 12
-    - Name: d
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: def VariablePositionalArgsB (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a,
+    - Name: a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: b: int,
+    - Name: b
     - Full Type: int
     - Base Type: int
     - Link Candidates: int
-    - Default Value: 12
+    - Default Value: (not detected)
 
-  - After Parameters: )
-    - Link Candidates: (none)
-
-------------------------------
-
-- Parameter Section:
-  - Before Parameters: def Ŭnicode_Pŷthon (
-    - Access Level: Unknown
-    - Link Candidates: def
-
-  - Parameter 1: Ŭnicode_Pŷthon_Arg
-    - Name: Ŭnicode_Pŷthon_Arg
-    - Full Type: (not detected)
-    - Base Type: (not detected)
-    - Link Candidates: (none)
+  - Parameter 3: *c: int
+    - Name: c
+    - Full Type: *int
+    - Base Type: int
+    - Link Candidates: int
     - Default Value: (not detected)
 
   - After Parameters: )
@@ -101,118 +236,870 @@
 
 ------------------------------
 
-- Plain Section: @f1(arg)
-  - Access Level: Unknown
-  - Link Candidates: (none)
-
-- Plain Section: @f2
-  - Access Level: Unknown
-  - Link Candidates: (none)
-
 - Parameter Section:
-  - Before Parameters: def Python_Decorators (
-    - Access Level: Unknown
-    - Link Candidates: def
-
-  - After Parameters: )
-    - Link Candidates: (none)
-
-------------------------------
-
-- Parameter Section:
-  - Before Parameters: @f1(
+  - Before Parameters: def VariablePositionalArgsC[Ts] (
     - Access Level: Unknown
     - Link Candidates: (none)
 
-  - Parameter 1: arg1 = 12,
-    - Name: arg1
+  - Parameter 1: a,
+    - Name: a
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (none)
     - Default Value: (not detected)
 
-  - Parameter 2: arg2 = "string"
-    - Name: arg2
-    - Full Type: (not detected)
-    - Base Type: (not detected)
-    - Link Candidates: (none)
-    - Default Value: (not detected)
-
-  - After Parameters: )
-    - Link Candidates: (none)
-
-- Plain Section: @f2
-  - Access Level: Unknown
-  - Link Candidates: (none)
-
-- Parameter Section:
-  - Before Parameters: def Python_Decorator_Params (
-    - Access Level: Unknown
-    - Link Candidates: def
-
-  - After Parameters: )
-    - Link Candidates: (none)
-
-------------------------------
-
-- Parameter Section:
-  - Before Parameters: @f1(
-    - Access Level: Unknown
-    - Link Candidates: (none)
-
-  - Parameter 1: arg1 = 12,
-    - Name: arg1
-    - Full Type: (not detected)
-    - Base Type: (not detected)
-    - Link Candidates: (none)
-    - Default Value: (not detected)
-
-  - Parameter 2: arg2 = "string"
-    - Name: arg2
-    - Full Type: (not detected)
-    - Base Type: (not detected)
-    - Link Candidates: (none)
-    - Default Value: (not detected)
-
-  - After Parameters: )
-    - Link Candidates: (none)
-
-- Plain Section: @f2
-  - Access Level: Unknown
-  - Link Candidates: (none)
-
-- Parameter Section:
-  - Before Parameters: def Everything (
-    - Access Level: Unknown
-    - Link Candidates: def
-
-  - Parameter 1: Ŭnicode_Pŷthon_Arg,
-    - Name: Ŭnicode_Pŷthon_Arg
-    - Full Type: (not detected)
-    - Base Type: (not detected)
-    - Link Candidates: (none)
-    - Default Value: (not detected)
-
-  - Parameter 2: *b,
+  - Parameter 2: b: int,
     - Name: b
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 3: *c: *Ts
+    - Name: c
+    - Full Type: **Ts
+    - Base Type: Ts
+    - Link Candidates: Ts
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: def VariableKeywordArgsA (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a,
+    - Name: a
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (none)
     - Default Value: (not detected)
 
-  - Parameter 3: **c,
+  - Parameter 2: b: int,
+    - Name: b
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 3: **c
     - Name: c
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (none)
     - Default Value: (not detected)
 
-  - Parameter 4: d: int = 12
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: def VariableKeywordArgsB (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a,
+    - Name: a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: b: int,
+    - Name: b
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 3: **c: int
+    - Name: c
+    - Full Type: **int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: def PositionalArgsDividerA (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a,
+    - Name: a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: b,
+    - Name: b
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: /,
+    - Name: /
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 4: c,
+    - Name: c
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 5: d
     - Name: d
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: def PositionalArgsDividerB (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a: int,
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: b: int = 12,
+    - Name: b
     - Full Type: int
     - Base Type: int
     - Link Candidates: int
     - Default Value: 12
+
+  - Parameter 3: /,
+    - Name: /
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 4: c: str,
+    - Name: c
+    - Full Type: str
+    - Base Type: str
+    - Link Candidates: str
+    - Default Value: (not detected)
+
+  - Parameter 5: d: str = "string"
+    - Name: d
+    - Full Type: str
+    - Base Type: str
+    - Link Candidates: str
+    - Default Value: "string"
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: def PositionalArgsDividerC (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a,
+    - Name: a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: b,
+    - Name: b
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: c,
+    - Name: c
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 4: /
+    - Name: /
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: def PositionalArgsDividerD (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a: int,
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: b: int = 12,
+    - Name: b
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: 12
+
+  - Parameter 3: c: str = "string",
+    - Name: c
+    - Full Type: str
+    - Base Type: str
+    - Link Candidates: str
+    - Default Value: "string"
+
+  - Parameter 4: /
+    - Name: /
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: def KeywordArgsDividerA (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a,
+    - Name: a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: b,
+    - Name: b
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: *,
+    - Name: *
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 4: c,
+    - Name: c
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 5: d
+    - Name: d
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: def KeywordArgsDividerB (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a: int,
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: b: int = 12,
+    - Name: b
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: 12
+
+  - Parameter 3: *,
+    - Name: *
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 4: c: str,
+    - Name: c
+    - Full Type: str
+    - Base Type: str
+    - Link Candidates: str
+    - Default Value: (not detected)
+
+  - Parameter 5: d: str = "string"
+    - Name: d
+    - Full Type: str
+    - Base Type: str
+    - Link Candidates: str
+    - Default Value: "string"
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: def KeywordArgsDividerC (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: *,
+    - Name: *
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: a,
+    - Name: a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: b,
+    - Name: b
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 4: c
+    - Name: c
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: def KeywordArgsDividerD (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: *,
+    - Name: *
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: a: int,
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 3: b: int = 12,
+    - Name: b
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: 12
+
+  - Parameter 4: c: str = "string"
+    - Name: c
+    - Full Type: str
+    - Base Type: str
+    - Link Candidates: str
+    - Default Value: "string"
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: def MultipleDividersA (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a,
+    - Name: a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: b,
+    - Name: b
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: /,
+    - Name: /
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 4: c,
+    - Name: c
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 5: d,
+    - Name: d
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 6: *,
+    - Name: *
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 7: e,
+    - Name: e
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 8: f
+    - Name: f
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: def MultipleDividersB (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a: int,
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: b: int = 12,
+    - Name: b
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: 12
+
+  - Parameter 3: /,
+    - Name: /
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 4: c: str,
+    - Name: c
+    - Full Type: str
+    - Base Type: str
+    - Link Candidates: str
+    - Default Value: (not detected)
+
+  - Parameter 5: d: str = "string",
+    - Name: d
+    - Full Type: str
+    - Base Type: str
+    - Link Candidates: str
+    - Default Value: "string"
+
+  - Parameter 6: *,
+    - Name: *
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 7: e: float,
+    - Name: e
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - Parameter 8: f: float = 0.0
+    - Name: f
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: 0.0
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+Parameterized Functions:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: def Parameterized[X, Y] (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a: X,
+    - Name: a
+    - Full Type: X
+    - Base Type: X
+    - Link Candidates: X
+    - Default Value: (not detected)
+
+  - Parameter 2: b: Y
+    - Name: b
+    - Full Type: Y
+    - Base Type: Y
+    - Link Candidates: Y
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: def ParameterizedWithConstraints[X: int, Y: (int, bytes)] (
+    - Access Level: Unknown
+    - Link Candidates: int, int, bytes
+
+  - Parameter 1: a: X,
+    - Name: a
+    - Full Type: X
+    - Base Type: X
+    - Link Candidates: X
+    - Default Value: (not detected)
+
+  - Parameter 2: b: Y
+    - Name: b
+    - Full Type: Y
+    - Base Type: Y
+    - Link Candidates: Y
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: def ParameterizedWithDefaults[X = int, Y: (int, bytes) = int] (
+    - Access Level: Unknown
+    - Link Candidates: int, int, bytes, int
+
+  - Parameter 1: a: X,
+    - Name: a
+    - Full Type: X
+    - Base Type: X
+    - Link Candidates: X
+    - Default Value: (not detected)
+
+  - Parameter 2: b: Y
+    - Name: b
+    - Full Type: Y
+    - Base Type: Y
+    - Link Candidates: Y
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: def ParameterizedWithTuples[*X, *Y = (int, bytes)] (
+    - Access Level: Unknown
+    - Link Candidates: int, bytes
+
+  - Parameter 1: a: X,
+    - Name: a
+    - Full Type: X
+    - Base Type: X
+    - Link Candidates: X
+    - Default Value: (not detected)
+
+  - Parameter 2: b: Y
+    - Name: b
+    - Full Type: Y
+    - Base Type: Y
+    - Link Candidates: Y
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: def ParameterizedWithCallable[**X, **Y = (str, bytearray)] (
+    - Access Level: Unknown
+    - Link Candidates: str, bytearray
+
+  - Parameter 1: a: Callable[X, int],
+    - Name: a
+    - Full Type: Callable[X, int]
+    - Base Type: Callable
+    - Link Candidates: Callable, X, int
+    - Default Value: (not detected)
+
+  - Parameter 2: b: Callable[Y, int]
+    - Name: b
+    - Full Type: Callable[Y, int]
+    - Base Type: Callable
+    - Link Candidates: Callable, Y, int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: def ParameterizedWithUnion[X: int | bytes] (
+    - Access Level: Unknown
+    - Link Candidates: int, bytes
+
+  - Parameter 1: a: X,
+    - Name: a
+    - Full Type: X
+    - Base Type: X
+    - Link Candidates: X
+    - Default Value: (not detected)
+
+  - Parameter 2: b: X
+    - Name: b
+    - Full Type: X
+    - Base Type: X
+    - Link Candidates: X
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+Type Expressions:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: def OptionalTypes (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a: int | None,
+    - Name: a
+    - Full Type: int | None
+    - Base Type: int
+    - Link Candidates: int, None
+    - Default Value: (not detected)
+
+  - Parameter 2: b: Optional[int]
+    - Name: b
+    - Full Type: Optional[int]
+    - Base Type: Optional
+    - Link Candidates: Optional, int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: def MultipleTypes (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a: str | bytearray,
+    - Name: a
+    - Full Type: str | bytearray
+    - Base Type: str
+    - Link Candidates: str, bytearray
+    - Default Value: (not detected)
+
+  - Parameter 2: b: Union[str, bytearray]
+    - Name: b
+    - Full Type: Union[str, bytearray]
+    - Base Type: Union
+    - Link Candidates: Union, str, bytearray
+    - Default Value: (not detected)
+
+  - After Parameters: ) -> str | bytearray
+    - Link Candidates: str, bytearray
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: def ParameterizedTypes (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a: list[int],
+    - Name: a
+    - Full Type: list[int]
+    - Base Type: list
+    - Link Candidates: list, int
+    - Default Value: (not detected)
+
+  - Parameter 2: b: set[int],
+    - Name: b
+    - Full Type: set[int]
+    - Base Type: set
+    - Link Candidates: set, int
+    - Default Value: (not detected)
+
+  - Parameter 3: c: dict[str, float],
+    - Name: c
+    - Full Type: dict[str, float]
+    - Base Type: dict
+    - Link Candidates: dict, str, float
+    - Default Value: (not detected)
+
+  - Parameter 4: d: tuple[int, str, float],
+    - Name: d
+    - Full Type: tuple[int, str, float]
+    - Base Type: tuple
+    - Link Candidates: tuple, int, str, float
+    - Default Value: (not detected)
+
+  - Parameter 5: e: tuple[int, ...],
+    - Name: e
+    - Full Type: tuple[int, ...]
+    - Base Type: tuple
+    - Link Candidates: tuple, int, ...
+    - Default Value: (not detected)
+
+  - Parameter 6: f: Callable[[int, int], int],
+    - Name: f
+    - Full Type: Callable[[int, int], int]
+    - Base Type: Callable
+    - Link Candidates: Callable, int, int, int
+    - Default Value: (not detected)
+
+  - Parameter 7: g: Callable[..., int]
+    - Name: g
+    - Full Type: Callable[..., int]
+    - Base Type: Callable
+    - Link Candidates: Callable, ..., int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: def MultipleParameterizedTypes (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a: list[str | bytearray],
+    - Name: a
+    - Full Type: list[str | bytearray]
+    - Base Type: list
+    - Link Candidates: list, str, bytearray
+    - Default Value: (not detected)
+
+  - Parameter 2: b: list[Union[str, bytearray]]
+    - Name: b
+    - Full Type: list[Union[str, bytearray]]
+    - Base Type: list
+    - Link Candidates: list, Union, str, bytearray
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: def ParenthesesTypes (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a: (str | bytearray)
+    - Name: a
+    - Full Type: (str | bytearray)
+    - Base Type: (not detected)
+    - Link Candidates: str, bytearray
+    - Default Value: (not detected)
+
+  - After Parameters: ) -> (str | bytearray)
+    - Link Candidates: str, bytearray
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: def Literals (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: a: Literal["GET" | "POST"]
+    - Name: a
+    - Full Type: Literal["GET" | "POST"]
+    - Base Type: Literal
+    - Link Candidates: Literal, "GET", "POST"
+    - Default Value: (not detected)
 
   - After Parameters: )
     - Link Candidates: (none)
