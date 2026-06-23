@@ -111,8 +111,13 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	 *								for these to appear without a corresponding <EndOfParams>.
 	 *		EndOfParams - The end of a parameter list, such as a closing parenthesis.
 	 *
-	 *		StartOfTemplateParams - The start of a template parameter list, such as the opening angle bracket in "List<int>".
-	 *		EndOfTemplateParams - The end of a template parameter list, such as the closing angle bracket in "List<int>".
+	 *		StartOfTemplateParams - The start of a template parameter list, such as the opening angle bracket in "List<int>".  Only
+	 *											 use this type if you want them to format as a separate parameter section.  If you don't, use a
+	 *											 different type like <OpeningParamModifier>.
+	 *		EndOfTemplateParams - The end of a template parameter list, such as the closing angle bracket in "List<int>".  Only use
+	 *										    this type if you want them to format as a separate parameter section.  If you don't, use a
+	 *										    different type like <ClosingParamModifier>.
+	 *
 	 *		StartOfMetadataParams - The start of a parameter list appearing in metadata, such as the opening parenthesis in
 	 *											 "@Decorator(value)".
 	 *		EndOfMetadataParams - The end of a parameter list appearing in metadata, such as the closing parenthesis in
