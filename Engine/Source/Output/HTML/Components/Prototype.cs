@@ -393,12 +393,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					groupCount = 1;
 					groupAlignment = ParameterGroupAlignment.AlignAllColumns;
 
-					var parameterStyle = parsedPrototype.ParameterStyle;
-
-					// We'll lazy-load the opening symbol to avoid an allocation since the vast majority of prototypes will only have
-					// one parameter section.
-					string openingSymbol = null;
-
 					for (int i = sectionIndex + 1; i < parsedPrototype.Sections.Count; i++)
 						{
 						if (parsedPrototype.Sections[i] is not Prototypes.ParameterSection)
@@ -411,26 +405,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						if (nextParameterLayout.BeforeParametersWidth > 3)
 							{  break;  }
 
-						TokenIterator start, end;
-
-						// If we made it this far we're comparing opening symbols, so extract the original one if we still need to.
-						if (openingSymbol == null)
-							{
-							parameterSection.GetOpeningParameterSymbol(out start, out end);
-							openingSymbol = start.TextBetween(end);
-							}
-
-						nextParameterSection.GetOpeningParameterSymbol(out start, out end);
-
-						if (start.Character != '(' &&
-							start.Character != '[' &&
-							start.Character != '{' &&
-							start.Character != '<')
-							{  break;  }
-
 						if (nextParameterSection.NumberOfParameters == 0 ||
-							!start.MatchesAcrossTokens(openingSymbol) ||
-							end.RawTextIndex - start.RawTextIndex != openingSymbol.Length)
+							parameterSection.StartingParameterType != nextParameterSection.StartingParameterType)
 							{
 							groupAlignment = ParameterGroupAlignment.AlignBeforeParameters;
 							}
