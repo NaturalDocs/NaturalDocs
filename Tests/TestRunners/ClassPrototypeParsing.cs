@@ -33,85 +33,106 @@ namespace CodeClear.NaturalDocs.Tests.TestRunners
 				{  return "(No topics found)";  }
 
 			StringBuilder output = new StringBuilder();
+			bool nextAppendNeedsDivider = false;
 
 			for (int topicIndex = 0; topicIndex < topics.Count; topicIndex++)
 				{
-				if (topicIndex != 0)
+				if (topics[topicIndex].IsGroup)
 					{
-					output.AppendLine();
-					output.AppendLine("-----");
-					output.AppendLine();
-					}
+					if (nextAppendNeedsDivider)
+						{
+						output.AppendLine();
+						output.AppendLine();
+						}
 
-				if (topics[topicIndex].ParsedClassPrototype == null)
-					{  output.AppendLine("(No class prototype detected)");  }
+					output.AppendLine("====================");
+					output.AppendLine("   " + topics[topicIndex].Title);
+					output.AppendLine("====================");
+					output.AppendLine();
+
+					nextAppendNeedsDivider = false;
+					}
 				else
 					{
-					var parsedPrototype = topics[topicIndex].ParsedClassPrototype;
-					TokenIterator start, end;
-
-					output.AppendLine(topics[topicIndex].Prototype);
-					output.AppendLine();
-
-					int numberOfLines = parsedPrototype.NumberOfPrePrototypeLines;
-
-					for (int i = 0; i < numberOfLines; i++)
+					if (nextAppendNeedsDivider)
 						{
-						parsedPrototype.GetPrePrototypeLine(i, out start, out end);
-						output.Append("  - Pre-Prototype Line: ");
-						start.AppendTextBetweenTo(end, output);
+						output.AppendLine();
+						output.AppendLine("-----");
 						output.AppendLine();
 						}
 
-					if (parsedPrototype.GetName(out start, out end))
-						{  output.AppendLine("  - Name: " + start.TextBetween(end));  }
+					if (topics[topicIndex].ParsedClassPrototype == null)
+						{  output.AppendLine("(No class prototype detected)");  }
 					else
-						{  output.AppendLine("  - Name: (none)");  }
-
-					if (parsedPrototype.GetTemplateSuffix(out start, out end))
-						{  output.AppendLine("  - Template Suffix: " + start.TextBetween(end));  }
-					if (parsedPrototype.GetKeyword(out start, out end))
-						{  output.AppendLine("  - Keyword: " + start.TextBetween(end));  }
-					if (parsedPrototype.GetModifiers(out start, out end))
-						{  output.AppendLine("  - Modifiers: " + start.TextBetween(end));  }
-					output.AppendLine("  - Access Level: " + parsedPrototype.GetAccessLevel());
-
-					numberOfLines = parsedPrototype.NumberOfPostPrototypeLines;
-
-					for (int i = 0; i < numberOfLines; i++)
 						{
-						parsedPrototype.GetPostPrototypeLine(i, out start, out end);
-						output.Append("  - Post-Prototype Line: ");
-						start.AppendTextBetweenTo(end, output);
+						var parsedPrototype = topics[topicIndex].ParsedClassPrototype;
+						TokenIterator start, end;
+
+						output.AppendLine(topics[topicIndex].Prototype);
 						output.AppendLine();
-						}
 
-					int numberOfParents = parsedPrototype.NumberOfParents;
+						int numberOfLines = parsedPrototype.NumberOfPrePrototypeLines;
 
-					if (numberOfParents == 0)
-						{
-						output.AppendLine("  - No parents");
-						}
-					else
-						{
-						for (int i = 0; i < numberOfParents; i++)
+						for (int i = 0; i < numberOfLines; i++)
 							{
+							parsedPrototype.GetPrePrototypeLine(i, out start, out end);
+							output.Append("  - Pre-Prototype Line: ");
+							start.AppendTextBetweenTo(end, output);
 							output.AppendLine();
+							}
 
-							parsedPrototype.GetParent(i, out start, out end);
-							output.AppendLine("  - Parent " + (i + 1) + ": " + start.TextBetween(end));
+						if (parsedPrototype.GetName(out start, out end))
+							{  output.AppendLine("  - Name: " + start.TextBetween(end));  }
+						else
+							{  output.AppendLine("  - Name: (none)");  }
 
-							if (parsedPrototype.GetParentName(i, out start, out end))
-								{  output.AppendLine("    - Name: " + start.TextBetween(end));  }
-							else
-								{  output.AppendLine("    - Name: (none)");  }
+						if (parsedPrototype.GetTemplateSuffix(out start, out end))
+							{  output.AppendLine("  - Template Suffix: " + start.TextBetween(end));  }
+						if (parsedPrototype.GetKeyword(out start, out end))
+							{  output.AppendLine("  - Keyword: " + start.TextBetween(end));  }
+						if (parsedPrototype.GetModifiers(out start, out end))
+							{  output.AppendLine("  - Modifiers: " + start.TextBetween(end));  }
+						output.AppendLine("  - Access Level: " + parsedPrototype.GetAccessLevel());
 
-							if (parsedPrototype.GetParentTemplateSuffix(i, out start, out end))
-								{  output.AppendLine("    - Template Suffix: " + start.TextBetween(end));  }
-							if (parsedPrototype.GetParentModifiers(i, out start, out end))
-								{  output.AppendLine("    - Modifiers: " + start.TextBetween(end));  }
+						numberOfLines = parsedPrototype.NumberOfPostPrototypeLines;
+
+						for (int i = 0; i < numberOfLines; i++)
+							{
+							parsedPrototype.GetPostPrototypeLine(i, out start, out end);
+							output.Append("  - Post-Prototype Line: ");
+							start.AppendTextBetweenTo(end, output);
+							output.AppendLine();
+							}
+
+						int numberOfParents = parsedPrototype.NumberOfParents;
+
+						if (numberOfParents == 0)
+							{
+							output.AppendLine("  - No parents");
+							}
+						else
+							{
+							for (int i = 0; i < numberOfParents; i++)
+								{
+								output.AppendLine();
+
+								parsedPrototype.GetParent(i, out start, out end);
+								output.AppendLine("  - Parent " + (i + 1) + ": " + start.TextBetween(end));
+
+								if (parsedPrototype.GetParentName(i, out start, out end))
+									{  output.AppendLine("    - Name: " + start.TextBetween(end));  }
+								else
+									{  output.AppendLine("    - Name: (none)");  }
+
+								if (parsedPrototype.GetParentTemplateSuffix(i, out start, out end))
+									{  output.AppendLine("    - Template Suffix: " + start.TextBetween(end));  }
+								if (parsedPrototype.GetParentModifiers(i, out start, out end))
+									{  output.AppendLine("    - Modifiers: " + start.TextBetween(end));  }
+								}
 							}
 						}
+
+					nextAppendNeedsDivider = true;
 					}
 				}
 
