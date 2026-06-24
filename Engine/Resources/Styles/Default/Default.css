@@ -2254,6 +2254,17 @@ td {
 			opacity: .7;
 			}
 
+		/* The parent and child CPEntries already have opacity applied, so we don't want to stack too
+			much on top of it */
+		.CPEntry.Parent .CPPrePrototypeLine,
+		.CPEntry.Parent .CPModifiers,
+		.CPEntry.Parent .CPPostPrototypeLine,
+		.CPEntry.Child .CPPrePrototypeLine,
+		.CPEntry.Child .CPModifiers,
+		.CPEntry.Child .CPPostPrototypeLine{
+			opacity: .9;
+			}
+
 	a.CPAdditionalChildrenNotice:link,
 	a.CPAdditionalChildrenNotice:visited,
 	a.CPAdditionalChildrenNotice:hover,
