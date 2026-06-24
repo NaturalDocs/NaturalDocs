@@ -6,7 +6,7 @@
 
 === B ===
 
-<pre class="CCode"><span class="SHKeyword">string</span> language = <span class="SHString">&quot;C&quot;</span>;<br /><span class="SHComment">// C comment</span><br /># Perl comment<br />-- SQL comment</pre>
+<pre class="CCode">string language = <span class="SHString">&quot;C&quot;</span>;<br /><span class="SHComment">// C comment</span><br /># Perl comment<br />-- SQL comment</pre>
 
 === C ===
 
