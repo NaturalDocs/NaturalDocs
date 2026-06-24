@@ -154,6 +154,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TryToSkipWhitespace(ref lookahead);
 
 
+			// Template Signature
+
+			if (TryToSkipTemplateSignature(ref lookahead, TemplateSignatureType.Definition, mode))
+				{  TryToSkipWhitespace(ref lookahead);  }
+
+
 			// Base classes
 
 			if (lookahead.Character == '(')
