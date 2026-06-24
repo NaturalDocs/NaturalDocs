@@ -101,11 +101,11 @@ def ParameterizedWithConstraints[X: int, Y: (int, bytes)] (a: X, b: Y):
 def ParameterizedWithDefaults[X = int, Y: (int, bytes) = int] (a: X, b: Y):
 
 # Function: ParameterizedWithTuples
-# Tuples cannot have defaults but not constraints.
+# Tuples can have defaults but not constraints.
 def ParameterizedWithTuples[*X, *Y = (int, bytes)] (a: X, b: Y):
 
 # Function: ParameterizedWithCallable
-# Callables cannot have defaults but not constraints.
+# Callables can have defaults but not constraints.
 def ParameterizedWithCallable[**X, **Y = (str, bytearray)] (a: Callable[X, int], b: Callable[Y, int]):
 
 # Function: ParameterizedWithUnion

@@ -37,8 +37,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Enum: TemplateSignatureType
-		 * Definition - The signature of a template definition, such as "class MyTemplate<X, Y> { ... }".
-		 * Instantiation - The signature of a template instantiation, such as "MyTemplate<number, string> x = null;".
+		 * Definition - The signature of a template definition, such as "class MyTemplate[X, Y]".
+		 * Instantiation - The signature of a template instantiation, such as "x: MyTemplate[int, str]".
 		 */
 		public enum TemplateSignatureType: byte
 			{  Definition, Instantiation  }
@@ -85,15 +85,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			Tokenizer tokenizedPrototype = new Tokenizer(stringPrototype, tabWidth: EngineInstance.Config.TabWidth);
 			TokenIterator startOfPrototype = tokenizedPrototype.FirstToken;
-			ParsedClassPrototype parsedPrototype = new ParsedClassPrototype(tokenizedPrototype);
-			bool success = false;
 
-			success = TryToSkipClassDeclarationLine(ref startOfPrototype, ParseMode.ParseClassPrototype);
-
-			if (success)
-				{  return parsedPrototype;  }
+			if (TryToSkipClassDeclarationLine(ref startOfPrototype, ParseMode.ParseClassPrototype))
+				{
+				return new ParsedClassPrototype(tokenizedPrototype);
+				}
 			else
-			    {  return base.ParseClassPrototype(stringPrototype, commentTypeID);  }
+			    {
+				return base.ParseClassPrototype(stringPrototype, commentTypeID);
+				}
 			}
 
 
