@@ -1,119 +1,176 @@
-class Python_Plain
+class Simple
 
-  - Name: Python_Plain
+  - Name: Simple
   - Keyword: class
   - Access Level: Unknown
   - No parents
 
------
 
-class Python_Empty_Parens ()
+====================
+   Inheritance
+====================
 
-  - Name: Python_Empty_Parens
-  - Keyword: class
-  - Access Level: Unknown
-  - No parents
+class Inheritance (Base)
 
------
-
-class Python_Inheritance (Python_Base)
-
-  - Name: Python_Inheritance
+  - Name: Inheritance
   - Keyword: class
   - Access Level: Unknown
 
-  - Parent 1: Python_Base
-    - Name: Python_Base
+  - Parent 1: Base
+    - Name: Base
 
 -----
 
-class Python_Module_Inheritance (module.Python_Base)
+class ModuleInheritance (module.Base)
 
-  - Name: Python_Module_Inheritance
+  - Name: ModuleInheritance
   - Keyword: class
   - Access Level: Unknown
 
-  - Parent 1: module.Python_Base
-    - Name: module.Python_Base
+  - Parent 1: module.Base
+    - Name: module.Base
 
 -----
 
-class Python_Multiple_Inheritance (Python_BaseA, Python_BaseB, module.Python_BaseC)
+class MultipleInheritance (BaseA, BaseB, module.BaseC)
 
-  - Name: Python_Multiple_Inheritance
+  - Name: MultipleInheritance
   - Keyword: class
   - Access Level: Unknown
 
-  - Parent 1: Python_BaseA
-    - Name: Python_BaseA
+  - Parent 1: BaseA
+    - Name: BaseA
 
-  - Parent 2: Python_BaseB
-    - Name: Python_BaseB
+  - Parent 2: BaseB
+    - Name: BaseB
 
-  - Parent 3: module.Python_BaseC
-    - Name: module.Python_BaseC
+  - Parent 3: module.BaseC
+    - Name: module.BaseC
 
 -----
 
-class Ŭnicode_Pŷthon (Ŭnicode_Pŷthon_Base)
+class Metaclass (metaclass=MetaclassBase)
 
-  - Name: Ŭnicode_Pŷthon
+  - Name: Metaclass
   - Keyword: class
   - Access Level: Unknown
 
-  - Parent 1: Ŭnicode_Pŷthon_Base
-    - Name: Ŭnicode_Pŷthon_Base
-
------
-
-@f1(arg) @f2 class Python_Decorators
-
-  - Pre-Prototype Line: @f1(arg)
-  - Pre-Prototype Line: @f2
-  - Name: Python_Decorators
-  - Keyword: class
-  - Access Level: Unknown
-  - No parents
-
------
-
-@f1(arg1 = 12, arg2 = "string") @f2 class Python_Decorator_Params
-
-  - Pre-Prototype Line: @f1(arg1 = 12, arg2 = "string")
-  - Pre-Prototype Line: @f2
-  - Name: Python_Decorator_Params
-  - Keyword: class
-  - Access Level: Unknown
-  - No parents
-
------
-
-class Python_Metaclass (metaclass=Python_Metaclass)
-
-  - Name: Python_Metaclass
-  - Keyword: class
-  - Access Level: Unknown
-
-  - Parent 1: metaclass=Python_Metaclass
-    - Name: Python_Metaclass
+  - Parent 1: metaclass=MetaclassBase
+    - Name: MetaclassBase
     - Modifiers: metaclass
 
 -----
 
-@f1(arg) @f2 class Everything (metaclass=Python_Metaclass, Ŭnicode_Pŷthon_Base, module.Python_Module_Base)
+class EmptyParens ()
 
-  - Pre-Prototype Line: @f1(arg)
-  - Pre-Prototype Line: @f2
-  - Name: Everything
+  - Name: EmptyParens
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+
+====================
+   Parameterized Classes
+====================
+
+class Parameterized[X, Y]
+
+  - Name: Parameterized
+  - Template Suffix: [X, Y]
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+class ParameterizedWithConstraints[X: int, Y: (int, bytes)]
+
+  - Name: ParameterizedWithConstraints
+  - Template Suffix: [X: int, Y: (int, bytes)]
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+class ParameterizedWithDefaults[X = int, Y: (int, bytes) = int]
+
+  - Name: ParameterizedWithDefaults
+  - Template Suffix: [X = int, Y: (int, bytes) = int]
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+class ParameterizedWithTuples[*X, *Y = (int, bytes)]
+
+  - Name: ParameterizedWithTuples
+  - Template Suffix: [*X, *Y = (int, bytes)]
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+class ParameterizedWithCallable[**X, **Y = (str, bytearray)]
+
+  - Name: ParameterizedWithCallable
+  - Template Suffix: [**X, **Y = (str, bytearray)]
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+class ParameterizedWithUnion[X: int | bytes] (a: X, b: X)
+
+  - Name: ParameterizedWithUnion
+  - Template Suffix: [X: int | bytes]
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+
+====================
+   Misc
+====================
+
+class ŬnicodeIdëntifiers (ŬnicodeBåse)
+
+  - Name: ŬnicodeIdëntifiers
   - Keyword: class
   - Access Level: Unknown
 
-  - Parent 1: metaclass=Python_Metaclass
-    - Name: Python_Metaclass
+  - Parent 1: ŬnicodeBåse
+    - Name: ŬnicodeBåse
+
+-----
+
+@DecoratorA @DecoratorB () @DecoratorC (12, "string") @DecoratorD (arg1 = 12, arg2 = "string") class Decorators
+
+  - Pre-Prototype Line: @DecoratorA
+  - Pre-Prototype Line: @DecoratorB ()
+  - Pre-Prototype Line: @DecoratorC (12, "string")
+  - Pre-Prototype Line: @DecoratorD (arg1 = 12, arg2 = "string")
+  - Name: Decorators
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+@Decorator (arg1 = 12, arg2 = "string") class AllCombined[X: int | bytes, Y: (int, bytes)] (BaseA, metaclass=module.BaseB)
+
+  - Pre-Prototype Line: @Decorator (arg1 = 12, arg2 = "string")
+  - Name: AllCombined
+  - Template Suffix: [X: int | bytes, Y: (int, bytes)]
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: BaseA
+    - Name: BaseA
+
+  - Parent 2: metaclass=module.BaseB
+    - Name: module.BaseB
     - Modifiers: metaclass
-
-  - Parent 2: Ŭnicode_Pŷthon_Base
-    - Name: Ŭnicode_Pŷthon_Base
-
-  - Parent 3: module.Python_Module_Base
-    - Name: module.Python_Module_Base

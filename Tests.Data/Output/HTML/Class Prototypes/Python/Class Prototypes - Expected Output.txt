@@ -1,97 +1,123 @@
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
-      <div class="CPName">Python_Plain</div>
-   </div>
-</div>
------
-<div class="NDClassPrototype">
-   <div class="CPEntry CPContent TClass Current">
-      <div class="CPName">Python_Empty_Parens</div>
+      <div class="CPName">Simple</div>
    </div>
 </div>
 -----
 <div class="NDClassPrototype HasParents">
    <div class="CPEntry CPContent Parent TClass">
-      <div class="CPName">Python_Base</div>
+      <div class="CPName">Base</div>
    </div>
    <div class="CPEntry CPContent TClass Current">
-      <div class="CPName">Python_Inheritance</div>
+      <div class="CPName">Inheritance</div>
    </div>
 </div>
 -----
 <div class="NDClassPrototype HasParents">
    <div class="CPEntry CPContent Parent TClass">
-      <div class="CPName"><span class="Qualifier">module.</span>&#8203;Python_Base</div>
+      <div class="CPName"><span class="Qualifier">module.</span>&#8203;Base</div>
    </div>
    <div class="CPEntry CPContent TClass Current">
-      <div class="CPName">Python_Module_Inheritance</div>
+      <div class="CPName">ModuleInheritance</div>
    </div>
 </div>
 -----
 <div class="NDClassPrototype HasParents">
    <div class="CPEntry CPContent Parent TClass">
-      <div class="CPName">Python_BaseA</div>
+      <div class="CPName">BaseA</div>
    </div>
    <div class="CPEntry CPContent Parent TClass">
-      <div class="CPName">Python_BaseB</div>
+      <div class="CPName">BaseB</div>
    </div>
    <div class="CPEntry CPContent Parent TClass">
-      <div class="CPName"><span class="Qualifier">module.</span>&#8203;Python_BaseC</div>
+      <div class="CPName"><span class="Qualifier">module.</span>&#8203;BaseC</div>
    </div>
    <div class="CPEntry CPContent TClass Current">
-      <div class="CPName">Python_Multiple_Inheritance</div>
-   </div>
-</div>
------
-<div class="NDClassPrototype HasParents">
-   <div class="CPEntry CPContent Parent TClass">
-      <div class="CPName">Ŭnicode_Pŷthon_Base</div>
-   </div>
-   <div class="CPEntry CPContent TClass Current">
-      <div class="CPName">Ŭnicode_Pŷthon</div>
-   </div>
-</div>
------
-<div class="NDClassPrototype">
-   <div class="CPEntry CPContent TClass Current">
-      <div class="CPPrePrototypeLine"><span class="SHMetadata">@f1(arg)</span></div>
-      <div class="CPPrePrototypeLine"><span class="SHMetadata">@f2</span></div>
-      <div class="CPName">Python_Decorators</div>
-   </div>
-</div>
------
-<div class="NDClassPrototype">
-   <div class="CPEntry CPContent TClass Current">
-      <div class="CPPrePrototypeLine"><span class="SHMetadata">@f1(arg1 = 12, arg2 = &quot;string&quot;)</span></div>
-      <div class="CPPrePrototypeLine"><span class="SHMetadata">@f2</span></div>
-      <div class="CPName">Python_Decorator_Params</div>
+      <div class="CPName">MultipleInheritance</div>
    </div>
 </div>
 -----
 <div class="NDClassPrototype HasParents">
    <div class="CPEntry CPContent Parent TClass">
       <div class="CPModifiers"><span class="SHKeyword">metaclass</span></div>
-      <div class="CPName">Python_Metaclass</div>
+      <div class="CPName">MetaclassBase</div>
    </div>
    <div class="CPEntry CPContent TClass Current">
-      <div class="CPName">Python_Metaclass</div>
+      <div class="CPName">Metaclass</div>
+   </div>
+</div>
+-----
+<div class="NDClassPrototype">
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPName">EmptyParens</div>
+   </div>
+</div>
+-----
+<div class="NDClassPrototype">
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPName">Parameterized&#8203;<span class="TemplateSignature">[X, Y]</span></div>
+   </div>
+</div>
+-----
+<div class="NDClassPrototype">
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPName">ParameterizedWithConstraints&#8203;<span class="TemplateSignature">[X: <span class="SHKeyword">int</span>, Y: (<span class="SHKeyword">int</span>, <span class="SHKeyword">bytes</span>)]</span></div>
+   </div>
+</div>
+-----
+<div class="NDClassPrototype">
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPName">ParameterizedWithDefaults&#8203;<span class="TemplateSignature">[X = <span class="SHKeyword">int</span>, Y: (<span class="SHKeyword">int</span>, <span class="SHKeyword">bytes</span>) = <span class="SHKeyword">int</span>]</span></div>
+   </div>
+</div>
+-----
+<div class="NDClassPrototype">
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPName">ParameterizedWithTuples&#8203;<span class="TemplateSignature">[*X, *Y = (<span class="SHKeyword">int</span>, <span class="SHKeyword">bytes</span>)]</span></div>
+   </div>
+</div>
+-----
+<div class="NDClassPrototype">
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPName">ParameterizedWithCallable&#8203;<span class="TemplateSignature">[**X, **Y = (<span class="SHKeyword">str</span>, <span class="SHKeyword">bytearray</span>)]</span></div>
+   </div>
+</div>
+-----
+<div class="NDClassPrototype">
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPName">ParameterizedWithUnion&#8203;<span class="TemplateSignature">[X: <span class="SHKeyword">int</span> | <span class="SHKeyword">bytes</span>]</span></div>
    </div>
 </div>
 -----
 <div class="NDClassPrototype HasParents">
    <div class="CPEntry CPContent Parent TClass">
-      <div class="CPModifiers"><span class="SHKeyword">metaclass</span></div>
-      <div class="CPName">Python_Metaclass</div>
-   </div>
-   <div class="CPEntry CPContent Parent TClass">
-      <div class="CPName">Ŭnicode_Pŷthon_Base</div>
-   </div>
-   <div class="CPEntry CPContent Parent TClass">
-      <div class="CPName"><span class="Qualifier">module.</span>&#8203;Python_Module_Base</div>
+      <div class="CPName">ŬnicodeBåse</div>
    </div>
    <div class="CPEntry CPContent TClass Current">
-      <div class="CPPrePrototypeLine"><span class="SHMetadata">@f1(arg)</span></div>
-      <div class="CPPrePrototypeLine"><span class="SHMetadata">@f2</span></div>
-      <div class="CPName">Everything</div>
+      <div class="CPName">ŬnicodeIdëntifiers</div>
+   </div>
+</div>
+-----
+<div class="NDClassPrototype">
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">@DecoratorA</span></div>
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">@DecoratorB ()</span></div>
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">@DecoratorC (12, &quot;string&quot;)</span></div>
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">@DecoratorD (arg1 = 12, arg2 = &quot;string&quot;)</span></div>
+      <div class="CPName">Decorators</div>
+   </div>
+</div>
+-----
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPName">BaseA</div>
+   </div>
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHKeyword">metaclass</span></div>
+      <div class="CPName"><span class="Qualifier">module.</span>&#8203;BaseB</div>
+   </div>
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">@Decorator (arg1 = 12, arg2 = &quot;string&quot;)</span></div>
+      <div class="CPName">AllCombined&#8203;<span class="TemplateSignature">[X: <span class="SHKeyword">int</span> | <span class="SHKeyword">bytes</span>, Y: (<span class="SHKeyword">int</span>, <span class="SHKeyword">bytes</span>)]</span></div>
    </div>
 </div>

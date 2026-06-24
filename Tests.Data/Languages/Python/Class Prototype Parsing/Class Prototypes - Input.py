@@ -1,36 +1,64 @@
 
-# Class: Python_Plain
-class Python_Plain:
+# Class: Simple
+class Simple:
 
-# Class: Python_Empty_Parens
-class Python_Empty_Parens ():
 
-# Class: Python_Inheritance
-class Python_Inheritance (Python_Base):
+# Group: Inheritance
+# _______________________________________________
 
-# Class: Python_Module_Inheritance
-class Python_Module_Inheritance (module.Python_Base):
+# Class: Inheritance
+class Inheritance (Base):
 
-# Class: Python_Multiple_Inheritance
-class Python_Multiple_Inheritance (Python_BaseA, Python_BaseB, module.Python_BaseC):
+# Class: ModuleInheritance
+class ModuleInheritance (module.Base):
 
-# Class: Ŭnicode_Pŷthon
-class Ŭnicode_Pŷthon (Ŭnicode_Pŷthon_Base):
+# Class: MultipleInheritance
+class MultipleInheritance (BaseA, BaseB, module.BaseC):
 
-# Class: Python_Decorators
-@f1(arg)
-@f2
-class Python_Decorators:
+# Class: Metaclass
+class Metaclass (metaclass=MetaclassBase):
 
-# Class: Python_Decorator_Params
-@f1(arg1 = 12, arg2 = "string")
-@f2
-class Python_Decorator_Params:
+# Class: EmptyParens
+class EmptyParens ():
 
-# Class: Python_Metaclass
-class Python_Metaclass (metaclass=Python_Metaclass):
 
-# Class: Everything
-@f1(arg)
-@f2
-class Everything (metaclass=Python_Metaclass, Ŭnicode_Pŷthon_Base, module.Python_Module_Base):
+# Group: Parameterized Classes
+# _______________________________________________
+
+# Class: Parameterized
+class Parameterized[X, Y]:
+
+# Class: ParameterizedWithConstraints
+class ParameterizedWithConstraints[X: int, Y: (int, bytes)]:
+
+# Class: ParameterizedWithDefaults
+class ParameterizedWithDefaults[X = int, Y: (int, bytes) = int]:
+
+# Class: ParameterizedWithTuples
+# Tuples can have defaults but not constraints.
+class ParameterizedWithTuples[*X, *Y = (int, bytes)]:
+
+# Class: ParameterizedWithCallable
+# Callables can have defaults but not constraints.
+class ParameterizedWithCallable[**X, **Y = (str, bytearray)]:
+
+# Class: ParameterizedWithUnion
+class ParameterizedWithUnion[X: int | bytes] (a: X, b: X):
+
+
+# Group: Misc
+# _______________________________________________
+
+# Class: ŬnicodeIdëntifiers
+class ŬnicodeIdëntifiers (ŬnicodeBåse):
+
+# Class: Decorators
+@DecoratorA
+@DecoratorB ()
+@DecoratorC (12, "string")
+@DecoratorD (arg1 = 12, arg2 = "string")
+class Decorators:
+
+# Class: AllCombined
+@Decorator (arg1 = 12, arg2 = "string")
+class AllCombined[X: int | bytes, Y: (int, bytes)] (BaseA, metaclass=module.BaseB):
