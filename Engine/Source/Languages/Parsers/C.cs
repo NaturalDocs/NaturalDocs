@@ -1,0 +1,118 @@
+﻿/*
+ * Class: CodeClear.NaturalDocs.Engine.Languages.Parsers.C
+ * ____________________________________________________________________________
+ *
+ * Additional language support for C and C++.
+ *
+ * Language Version:
+ *
+ *		The parser is primarily based on C23 and C++23, the latest releases as of June 2026.
+ *
+ * Resources:
+ *		- <C Language Reference: https://cppreference.com/c/language>
+ *		- <C++ Language Reference: https://cppreference.com/cpp/language>
+ *
+ */
+
+// This file is part of Natural Docs, which is Copyright © 2003-2026 Code Clear LLC.
+// Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
+// Refer to License.txt for the complete details
+
+
+using System;
+using CodeClear.NaturalDocs.Engine.Collections;
+using CodeClear.NaturalDocs.Engine.Tokenization;
+
+
+namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
+	{
+	public class C : Parser
+		{
+
+		// Group: Functions
+		// __________________________________________________________________________
+
+
+		/* Constructor: C
+		 */
+		public C (Engine.Instance engineInstance, Language language) : base (engineInstance, language)
+			{
+			}
+
+
+
+		// Group: Parsing Functions
+		// __________________________________________________________________________
+
+
+		/* Function: TryToSkipKeyword
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		override protected bool TryToSkipKeyword (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			// Everything in cKeywords starts with lowercase a-z
+			if (iterator.Character < 'a' || iterator.Character > 'z')
+				{  return false;  }
+
+			// Make sure the previous token isn't part of the identifier
+			TokenIterator lookbehind = iterator;
+			lookbehind.Previous();
+
+			if (lookbehind.FundamentalType == FundamentalType.Text ||
+				lookbehind.Character == '_')
+				{  return false;  }
+
+			// Find the end
+			TokenIterator endOfKeyword = iterator;
+
+			do
+				{  endOfKeyword.Next();  }
+			while (endOfKeyword.FundamentalType == FundamentalType.Text ||
+					  endOfKeyword.Character == '_');
+
+			if (!cKeywords.Contains(iterator.TextBetween(endOfKeyword)))
+				{  return false;  }
+
+			if (mode == ParseMode.SyntaxHighlight)
+				{  iterator.SetSyntaxHighlightingTypeBetween(endOfKeyword, SyntaxHighlightingType.Keyword);  }
+
+			iterator = endOfKeyword;
+			return true;
+			}
+
+
+
+		// Group: Static Variables
+		// __________________________________________________________________________
+
+
+		/* var: cKeywords
+		 */
+		static protected StringSet cKeywords = new StringSet (KeySettings.Literal, new string[] {
+
+			// C++ Keywords
+			"alignas", "alignof", "and", "and_eq", "asm", "atomic_cancel", "atomic_commit", "atomic_noexcept", "auto",
+			"bitand", "bitor", "bool", "break", "case", "catch", "char", "char8_t", "char16_t", "char32_t", "class", "compl",
+			"concept", "const", "consteval", "constexpr", "constinit", "const_cast", "continue", "contract_assert", "co_await",
+			"co_return", "co_yield", "decltype", "default", "delete", "do", "double", "dynamic_cast", "else", "enum", "explicit",
+			"export", "extern", "false", "float", "for", "friend", "goto", "if", "inline", "int", "long", "mutable", "namespace",
+			"new", "noexcept", "not", "not_eq", "nullptr", "operator", "or", "or_eq", "private", "protected", "public", "reflexpr",
+			"register", "reinterpret_cast", "requires", "return", "short", "signed", "sizeof", "static", "static_assert", "static_cast",
+			"struct", "switch", "synchronized", "template", "this", "thread_local", "throw", "true", "try", "typedef", "typeid",
+			"typename", "union", "unsigned", "using", "virtual", "void", "volatile", "wchar_t", "while", "xor", "xor_eq",
+
+			// C++ identifiers with special meaning
+			"final", "override", "transaction_safe", "transaction_safe_dynamic", "import", "module", "pre", "post",
+
+			// C keywords not in C++
+			"restrict", "typeof", "typeof_unqual"
+
+			});
+
+		}
+	}

@@ -75,6 +75,7 @@ Language: C/C++
    Member Operator: ::
    Enum Values: Under Parent
    Case Sensitive: Yes
+   Block Comments Nest: No
 
    Class Prototype Enders: ; {
    Struct Prototype Enders: ; {
