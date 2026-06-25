@@ -6262,7 +6262,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 				lookbehind.PreviousPastWhitespace(PreviousPastWhitespaceMode.Iterator);
 
-				if (lookbehind.FundamentalType == FundamentalType.Text || lookbehind.Character == '_')
+				if (lookbehind.FundamentalType == FundamentalType.Text ||
+					lookbehind.Character == '_' ||
+					lookbehind.Character == ')' || lookbehind.Character == ']' || lookbehind.Character == '}' ||
+					lookbehind.Character == '\'' || lookbehind.Character == '\"')
 					{  return false;  }
 
 				lookahead.Next();
