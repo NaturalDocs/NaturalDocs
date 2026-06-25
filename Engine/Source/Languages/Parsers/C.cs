@@ -86,6 +86,25 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
+		/* Function: TryToSkipNumber
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		override protected bool TryToSkipNumber (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			return TryToSkipNumber(ref iterator,
+												ParseNumberFlags.AllowDigitSeparators |
+												ParseNumberFlags.AllowHexFloats,
+												// Doesn't require digit before or after dot
+												mode,
+												digitSeparator: '\'');
+			}
+
+
 
 		// Group: Static Variables
 		// __________________________________________________________________________
