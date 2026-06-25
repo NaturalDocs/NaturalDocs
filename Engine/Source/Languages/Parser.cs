@@ -72,7 +72,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 *
 		 * Default - None of the below flags set.
 		 *
-		 * AllowUnderscoreSeparators - Digits can be separated with underscores such as "123_456".
+		 * AllowDigitSeparators - Digits can be separated with symbols such as "123_456".
 		 * AllowHexFloats - Floats can be declared in hex such as "0x1A.8p10".
 		 *
 		 * RequireDigitBeforeDot - Floats must have a leading number, such as "0.1".  Otherwise ".1" is allowed.
@@ -84,7 +84,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			{
 			Default = RequireDigitAfterDot,
 
-			AllowUnderscoreSeparators = 0x01,
+			AllowDigitSeparators = 0x01,
 			AllowHexFloats = 0x02,
 
 			RequireDigitBeforeDot = 0x04,
@@ -6218,7 +6218,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipNumber (ref TokenIterator iterator, ParseNumberFlags flags, ParseMode mode = ParseMode.IterateOnly)
+		protected bool TryToSkipNumber (ref TokenIterator iterator, ParseNumberFlags flags, ParseMode mode = ParseMode.IterateOnly,
+														char digitSeparator = '\0')
 			{
 			if ( ((iterator.Character >= '0' && iterator.Character <= '9') ||
 				   iterator.Character == '-' || iterator.Character == '+' || iterator.Character == '.') == false)
@@ -6227,7 +6228,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			TokenIterator lookbehind = iterator;
 			lookbehind.Previous();
 
-			bool allowUnderscoreSeparators = ((flags & ParseNumberFlags.AllowUnderscoreSeparators) != 0);
+			bool allowDigitSeparators = ((flags & ParseNumberFlags.AllowDigitSeparators) != 0);
+
+			#if DEBUG
+			if (allowDigitSeparators && digitSeparator == '\0')
+				{  throw new Exception("You must specify a digit separator when the flag is set.");  }
+			#endif
 
 
 			// Check that we're not following an underscore or letter.  This prevents "_12" from being seen as a number.
@@ -6288,7 +6294,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				do
 					{  lookahead.Next();  }
 				while (lookahead.FundamentalType == FundamentalType.Text ||
-						 (allowUnderscoreSeparators && lookahead.Character == '_'));
+						 (allowDigitSeparators && lookahead.Character == digitSeparator));
 				}
 			else
 				{  return false;  }
@@ -6317,7 +6323,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 				if (character >= '0' && character <= '9')
 					{  }
-				else if (allowUnderscoreSeparators && character == '_')
+				else if (allowDigitSeparators && character == digitSeparator)
 					{  }
 				else if (isHex)
 					{
@@ -6346,7 +6352,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				do
 					{  lookahead.Next();  }
 				while (lookahead.FundamentalType == FundamentalType.Text ||
-						 (allowUnderscoreSeparators && lookahead.Character == '_'));
+						 (allowDigitSeparators && lookahead.Character == digitSeparator));
 
 				endOfNumber = lookahead;
 				}
@@ -6389,12 +6395,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 				// Get the exponent.  Even hex floats require it to only use 0-9 for this part.
 				if (lookahead.Character >= '0' && lookahead.Character <= '9' ||
-					(allowUnderscoreSeparators && lookahead.Character == '_'))
+					(allowDigitSeparators && lookahead.Character == digitSeparator))
 					{
 					do
 						{  lookahead.Next();  }
 					while (lookahead.FundamentalType == FundamentalType.Text ||
-							 (allowUnderscoreSeparators && lookahead.Character == '_'));
+							 (allowDigitSeparators && lookahead.Character == digitSeparator));
 
 					endOfNumber = lookahead;
 					}

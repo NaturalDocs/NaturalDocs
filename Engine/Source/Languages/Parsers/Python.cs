@@ -1420,8 +1420,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		override protected bool TryToSkipNumber (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
 			if (TryToSkipNumber(ref iterator,
-										  ParseNumberFlags.AllowUnderscoreSeparators,
-										  mode))
+										  ParseNumberFlags.AllowDigitSeparators,
+										  mode,
+										  digitSeparator: '_'))
 				{
 				// Still need to catch the case of "123.j".  All other cases are handled by the above function.
 				if (iterator.Character == 'j' && iterator.TokenLength == 1)

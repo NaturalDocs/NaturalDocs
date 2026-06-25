@@ -373,9 +373,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		override protected bool TryToSkipNumber (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
 			return TryToSkipNumber(ref iterator,
-												ParseNumberFlags.AllowUnderscoreSeparators |
+												ParseNumberFlags.AllowDigitSeparators |
 												ParseNumberFlags.RequireDigitAfterDot,
-												mode);
+												mode,
+												digitSeparator: '_');
 			}
 
 

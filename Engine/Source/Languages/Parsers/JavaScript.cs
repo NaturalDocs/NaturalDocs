@@ -159,9 +159,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		override protected bool TryToSkipNumber (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
 			if (TryToSkipNumber(ref iterator,
-										  ParseNumberFlags.AllowUnderscoreSeparators |
+										  ParseNumberFlags.AllowDigitSeparators |
 										  ParseNumberFlags.RequireDigitAfterDot,
-										  mode))
+										  mode,
+										  digitSeparator: '_'))
 				{  return true;  }
 
 			if (IsOnKeyword(iterator, "NaN"))
