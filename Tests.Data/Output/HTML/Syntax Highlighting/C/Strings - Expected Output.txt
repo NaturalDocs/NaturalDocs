@@ -1,0 +1,29 @@
+=== Char Literals ===
+
+<pre class="CCode">a <span class="SHString">'x'</span> a<br />b <span class="SHString">'\''</span> b<br />c <span class="SHString">'\&quot;'</span> c<br />d <span class="SHString">'\\'</span> d</pre>
+
+=== Char Literal Prefixes ===
+
+<pre class="CCode">a <span class="SHString">u8'x'</span> a<br />b <span class="SHString">u'x'</span> b<br />c <span class="SHString">U'x'</span> c<br />d <span class="SHString">L'x'</span> d</pre>
+
+=== String Literals ===
+
+<pre class="CCode">a <span class="SHString">&quot;x&quot;</span> a<br />b <span class="SHString">&quot;\'&quot;</span> b<br />c <span class="SHString">&quot;\&quot;&quot;</span> c<br />d <span class="SHString">&quot;\\&quot;</span> d</pre>
+
+=== String Literal Prefixes ===
+
+<pre class="CCode">a <span class="SHString">u8&quot;x&quot;</span> a<br />b <span class="SHString">u&quot;x&quot;</span> b<br />c <span class="SHString">U&quot;x&quot;</span> c<br />d <span class="SHString">L&quot;x&quot;</span> d</pre>
+
+=== Raw String Literals ===
+
+<pre class="CCode">a <span class="SHString">R&quot;(xxx'xxx&quot;xxx\&quot;xxx&quot;&quot;xxx)&quot;</span> a<br />b <span class="SHString">R&quot;(xxx\)&quot;</span> b</pre>
+-----
+<pre class="CCode">a <span class="SHString">R&quot;(xxx\)&quot;</span> a</pre>
+-----
+<pre class="CCode">a <span class="SHString">R&quot;*(xxx&quot;xxx)&quot;xxx*xxx)*&quot;</span> a<br />b <span class="SHString">R&quot;--(xxx&quot;xxx)&quot;xxx--xxx)--&quot;</span> b<br />c <span class="SHString">R&quot;XYZ123(xxx&quot;xxx)&quot;xxxXYZ123xxx)XYZ123&quot;</span> c</pre>
+-----
+<pre class="CCode">a <span class="SHString">R&quot;[(xxx&quot;xxx)&quot;xxx)]&quot;xxx)[&quot;</span> a<br />b <span class="SHString">R&quot;&lt;&lt;(xxx&quot;xxx)&quot;xxx)&gt;&gt;&quot;xxx)&lt;&lt;&quot;</span> b</pre>
+
+=== RawString Literal Prefixes ===
+
+<pre class="CCode">a <span class="SHString">u8R&quot;(xxx)&quot;</span> a<br />b <span class="SHString">uR&quot;*(xxx)*&quot;</span> b<br />c <span class="SHString">UR&quot;-(xxx)-&quot;</span> c<br />d <span class="SHString">LR&quot;...(xxx)...&quot;</span> d</pre>
