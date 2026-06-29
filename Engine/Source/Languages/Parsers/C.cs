@@ -105,6 +105,152 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
+		/* Function: TryToSkipString
+		 *
+		 * If the iterator is on a quote or apostrophe, moves it past the entire string and returns true.  Since regular expressions
+		 * will be formatted as strings, it will skip over them as well.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		override protected bool TryToSkipString (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			if (iterator.Character != '\'' &&
+				iterator.Character != '\"' &&
+				(iterator.FundamentalType == FundamentalType.Text && iterator.TokenLength <= 3) == false)
+				{  return false;  }
+
+
+			// String prefix
+
+			TokenIterator lookahead = iterator;
+			bool isRawString = false;
+
+			if (lookahead.FundamentalType == FundamentalType.Text)
+				{
+				int matchIndex = lookahead.MatchesAnyToken(cStringPrefixes, ignoreCase: false);
+
+				if (matchIndex == -1)
+					{  return false;  }
+
+				string prefix = cStringPrefixes[matchIndex];
+
+				if (prefix[prefix.Length - 1] == 'R')
+					{  isRawString = true;  }
+
+				// Make sure it's not part of a longer token
+				TokenIterator lookbehind = iterator;
+				lookbehind.Previous();
+
+				if (lookbehind.FundamentalType == FundamentalType.Text ||
+					lookbehind.Character == '_')
+					{  return false;  }
+
+				lookahead.Next();
+				}
+
+
+			// Delimiter
+
+			char delimiter = lookahead.Character;
+
+			if (delimiter != '\'' && delimiter != '\"')
+				{  return false;  }
+
+			lookahead.Next();
+
+
+			// Extra chars in raw string delimiter.  There may not be any..
+
+			string extraDelimiterChars = null;
+
+			if (isRawString)
+				{
+				if (lookahead.Character != '(')
+					{
+					TokenIterator startOfExtraDelimiter = lookahead;
+
+					do
+						{  lookahead.Next();  }
+					while (lookahead.IsInBounds &&
+							  lookahead.Character != '(');
+
+					extraDelimiterChars = startOfExtraDelimiter.TextBetween(lookahead);
+					}
+
+				if (lookahead.Character != '(')
+					{  return false;  }
+
+				lookahead.Next();
+				}
+
+
+			// Regular string contents
+
+			if (!isRawString)
+				{
+				while (lookahead.IsInBounds)
+					{
+					if (lookahead.Character == delimiter)
+						{
+						lookahead.Next();
+						break;
+						}
+					else if (lookahead.Character == '\\')
+						{  lookahead.Next(2);  }
+					else
+						{  lookahead.Next();  }
+					}
+				}
+
+
+			// Raw string contents
+
+			else
+				{
+				while (lookahead.IsInBounds)
+					{
+					if (lookahead.Character == ')')
+						{
+						lookahead.Next();
+						bool extraDelimitersMatch = true;
+
+						if (extraDelimiterChars != null)
+							{
+							if (lookahead.MatchesAcrossTokens(extraDelimiterChars, ignoreCase: false, matchPartialTokens: false))
+								{  lookahead.NextByCharacters(extraDelimiterChars.Length);  }
+							else
+								{  extraDelimitersMatch = false;  }
+							}
+
+						if (extraDelimitersMatch &&
+							lookahead.Character == delimiter)
+							{
+							lookahead.Next();
+							break;
+							}
+						}
+
+					// There's no backslash or any other escaping in raw strings
+					else
+						{  lookahead.Next();  }
+					}
+				}
+
+
+			// Done
+
+			if (mode == ParseMode.SyntaxHighlight)
+				{  iterator.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.String);  }
+
+			iterator = lookahead;
+			return true;
+			}
+
+
 
 		// Group: Static Variables
 		// __________________________________________________________________________
@@ -133,5 +279,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			});
 
+
+		/* var: cStringPrefixes
+		 */
+		static protected string[] cStringPrefixes = new string[] { "R", "L", "LR", "u8", "u8R", "u", "uR", "U", "UR" };
 		}
 	}
