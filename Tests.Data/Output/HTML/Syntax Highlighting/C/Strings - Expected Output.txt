@@ -27,3 +27,7 @@
 === RawString Literal Prefixes ===
 
 <pre class="CCode">a <span class="SHString">u8R&quot;(xxx)&quot;</span> a<br />b <span class="SHString">uR&quot;*(xxx)*&quot;</span> b<br />c <span class="SHString">UR&quot;-(xxx)-&quot;</span> c<br />d <span class="SHString">LR&quot;...(xxx)...&quot;</span> d</pre>
+
+=== User-Defined Suffixes ===
+
+<pre class="CCode">a <span class="SHString">&quot;string&quot;_i18n</span> a<br />b <span class="SHString">u8&quot;string&quot;_abc</span> b<br />c <span class="SHString">R&quot;(string)&quot;_XYZ</span> c</pre>

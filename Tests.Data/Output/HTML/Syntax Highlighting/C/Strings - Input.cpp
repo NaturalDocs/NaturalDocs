@@ -92,3 +92,16 @@
 	d LR"...(xxx)..." d
 	---
 */
+
+
+/* Topic: User-Defined Suffixes
+	_____________________________________________
+
+	User-defined suffixes can be declared.  They must start with an underscore.
+
+	--- Code
+	a "string"_i18n a
+	b u8"string"_abc b
+	c R"(string)"_XYZ c
+	---
+*/

@@ -38,6 +38,13 @@
 	0x01ACz
 	0X01AC'5BFFZ
 	---
+
+	User-defined suffixes can be declared.  They must start with an underscore.
+
+	--- Code
+	123_km
+	0xFF0000_RGB
+	---
 */
 
 
@@ -85,6 +92,12 @@
 	1.2f
 	-12E3F64
 	+1.2E+3bf128
+	---
+
+	User-defined suffixes can be declared.  They must start with an underscore.
+
+	--- Code
+	1.2e3_km
 	---
 */
 

@@ -5,6 +5,8 @@
 === Integer Literals with Suffixes ===
 
 <pre class="CCode"><span class="SHNumber">123u</span><br /><span class="SHNumber">123'456U</span><br /><br /><span class="SHNumber">0b0110LL</span><br /><span class="SHNumber">0B0110'1001ull</span><br /><br /><span class="SHNumber">0x01ACz</span><br /><span class="SHNumber">0X01AC'5BFFZ</span></pre>
+-----
+<pre class="CCode"><span class="SHNumber">123_km</span><br /><span class="SHNumber">0xFF0000_RGB</span></pre>
 
 === Separators vs. Char Literals ===
 
@@ -17,6 +19,8 @@
 === Floating Point Literals with Separators and Suffixes ===
 
 <pre class="CCode"><span class="SHNumber">100'000e300'000</span><br /><span class="SHNumber">-100'000.200'000e-300'000</span><br /><br /><span class="SHNumber">1.2f</span><br /><span class="SHNumber">-12E3F64</span><br /><span class="SHNumber">+1.2E+3bf128</span></pre>
+-----
+<pre class="CCode"><span class="SHNumber">1.2e3_km</span></pre>
 
 === Hex Floating Point Literals ===
 
