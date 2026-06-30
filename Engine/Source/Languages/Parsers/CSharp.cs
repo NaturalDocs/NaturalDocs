@@ -3753,6 +3753,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					 iterator.FundamentalType != FundamentalType.LineBreak &&
 					 iterator.MatchesAcrossTokens("//") == false);
 
+			// Trim trailing whitespace, although we technically don't have to
+			iterator.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds);
+
 			if (mode == ParseMode.SyntaxHighlight)
 				{  startOfDirective.SetSyntaxHighlightingTypeBetween(iterator, SyntaxHighlightingType.PreprocessingDirective);  }
 
