@@ -54,7 +54,6 @@
 
 	--- Code
 	a R"(xxx'xxx"xxx\"xxx""xxx)" a
-	b R"(xxx\)" b
 	---
 
 	That means \)" DOES end the string, since the backslash doesn't escape it.

@@ -16,7 +16,7 @@
 
 === Raw String Literals ===
 
-<pre class="CCode">a <span class="SHString">R&quot;(xxx'xxx&quot;xxx\&quot;xxx&quot;&quot;xxx)&quot;</span> a<br />b <span class="SHString">R&quot;(xxx\)&quot;</span> b</pre>
+<pre class="CCode">a <span class="SHString">R&quot;(xxx'xxx&quot;xxx\&quot;xxx&quot;&quot;xxx)&quot;</span> a</pre>
 -----
 <pre class="CCode">a <span class="SHString">R&quot;(xxx\)&quot;</span> a</pre>
 -----
