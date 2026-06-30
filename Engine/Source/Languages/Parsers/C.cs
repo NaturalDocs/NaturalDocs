@@ -40,9 +40,86 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
+		/* Function: SyntaxHighlight
+		 */
+		override public void SyntaxHighlight (TokenIterator start, TokenIterator end)
+			{
+			TokenIterator iterator = start;
+
+			TokenIterator lastCodeToken = iterator.Tokenizer.EndOfTokens;  // Default to out of bounds
+
+			while (iterator < end)
+				{
+				if (TryToSkipPreprocessingDirective(ref iterator, ParseMode.SyntaxHighlight) ||
+					TryToSkipKeyword(ref iterator, ParseMode.SyntaxHighlight) ||
+					TryToSkipComment(ref iterator, ParseMode.SyntaxHighlight) ||
+					TryToSkipString(ref iterator, ParseMode.SyntaxHighlight) ||
+					TryToSkipNumber(ref iterator, ParseMode.SyntaxHighlight))
+					{
+					}
+				else
+					{
+					iterator.Next();
+					}
+				}
+			}
+
+
 
 		// Group: Parsing Functions
 		// __________________________________________________________________________
+
+
+		/* Function: TryToSkipPreprocessingDirective
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipPreprocessingDirective (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			if (iterator.Character != '#')
+				{  return false;  }
+
+			// Only actual whitespace may precede the hash character on the line.  Comments are not allowed.
+			TokenIterator lookbehind = iterator;
+			lookbehind.Previous();
+			lookbehind.PreviousPastWhitespace(PreviousPastWhitespaceMode.Iterator);
+
+			if (lookbehind.IsInBounds && lookbehind.FundamentalType != FundamentalType.LineBreak)
+				{  return false;  }
+
+			TokenIterator startOfDirective = iterator;
+
+			// Technically only the enumerated preprocessing keywords are valid here, but we'll be tolerant and accept anything in the
+			// format.  Comments are allowed after directives.
+			do
+				{
+				if (iterator.Character == '\\')
+					{
+					iterator.Next();
+
+					if (iterator.FundamentalType == FundamentalType.LineBreak)
+						{  iterator.Next();  }
+					}
+				else
+					{  iterator.Next();  }
+				}
+			while (iterator.IsInBounds &&
+					  iterator.FundamentalType != FundamentalType.LineBreak &&
+					  iterator.MatchesAcrossTokens("//") == false &&
+					  iterator.MatchesAcrossTokens("/*") == false);
+
+			// Trim trailing whitespace, although we technically don't have to
+			iterator.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds);
+
+			if (mode == ParseMode.SyntaxHighlight)
+				{  startOfDirective.SetSyntaxHighlightingTypeBetween(iterator, SyntaxHighlightingType.PreprocessingDirective);  }
+
+			return true;
+			}
 
 
 		/* Function: TryToSkipKeyword
