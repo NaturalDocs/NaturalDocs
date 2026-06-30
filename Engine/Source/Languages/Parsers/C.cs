@@ -173,12 +173,30 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		override protected bool TryToSkipNumber (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
-			return TryToSkipNumber(ref iterator,
-												ParseNumberFlags.AllowDigitSeparators |
-												ParseNumberFlags.AllowHexFloats,
-												// Doesn't require digit before or after dot
-												mode,
-												digitSeparator: '\'');
+			bool success = TryToSkipNumber(ref iterator,
+															ParseNumberFlags.AllowDigitSeparators |
+															ParseNumberFlags.AllowHexFloats,
+															// Doesn't require digit before or after dot
+															mode,
+															digitSeparator: '\'');
+
+			// Extend to include user-defined suffixes.  They must start with an underscore.
+			if (success && iterator.Character == '_')
+				{
+				TokenIterator lookahead = iterator;
+
+				do
+					{  lookahead.Next();  }
+				while (lookahead.FundamentalType == FundamentalType.Text ||
+						  lookahead.Character == '_');
+
+				if (mode == ParseMode.SyntaxHighlight)
+					{  iterator.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.Number);  }
+
+				iterator = lookahead;
+				}
+
+			return success;
 			}
 
 
@@ -315,6 +333,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					else
 						{  lookahead.Next();  }
 					}
+				}
+
+
+			// User defined suffixes
+
+			if (lookahead.Character == '_')
+				{
+				do
+					{  lookahead.Next();  }
+				while (lookahead.FundamentalType == FundamentalType.Text ||
+						  lookahead.Character == '_');
 				}
 
 
