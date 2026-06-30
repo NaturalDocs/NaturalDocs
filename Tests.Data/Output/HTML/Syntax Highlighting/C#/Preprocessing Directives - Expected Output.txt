@@ -1,3 +1,7 @@
 === Preprocessing Directives ===
 
-<pre class="CCode"><span class="SHPreprocessingDirective">#if DEBUG</span><br />    <span class="SHKeyword">int</span> x = <span class="SHNumber">12</span>;<br /><span class="SHPreprocessingDirective">#elseif X || (Y == false)</span><br />    <span class="SHKeyword">int</span> x = <span class="SHNumber">15</span>;<br /><span class="SHPreprocessingDirective">#endif</span><br /><br /><span class="SHPreprocessingDirective">#define A  </span><span class="SHComment">// Line comments are allowed afterwards</span><br /><br /><span class="SHPreprocessingDirective">#define B  /* Block comments are not */</span></pre>
+<pre class="CCode"><span class="SHPreprocessingDirective">#if DEBUG</span><br />    <span class="SHKeyword">int</span> x = <span class="SHNumber">12</span>;<br /><span class="SHPreprocessingDirective">#elseif X || (Y == false)</span><br />    <span class="SHKeyword">int</span> x = <span class="SHNumber">15</span>;<br /><span class="SHPreprocessingDirective">#endif</span><br /><br /><span class="SHPreprocessingDirective">#define A</span>  <span class="SHComment">// Line comments are allowed afterwards</span><br /><br /><span class="SHPreprocessingDirective">#define B  /* Block comments are not */</span></pre>
+
+=== Traps ===
+
+<pre class="CCode"><span class="SHKeyword">string</span> x = <span class="SHString">@&quot;Multiline string</span><br /><span class="SHString">#define THIS_IS_INVALID</span><br /><span class="SHString">multiline string&quot;</span>;<br /><br /><span class="SHComment">/* Multiline comment</span><br /><span class="SHComment">#define THIS_IS_INVALID</span><br /><span class="SHComment">multiline comment */</span></pre>
