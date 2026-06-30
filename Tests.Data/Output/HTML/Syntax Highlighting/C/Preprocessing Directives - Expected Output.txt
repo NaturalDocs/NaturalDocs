@@ -1,0 +1,21 @@
+=== Preprocessing Directives ===
+
+<pre class="CCode"><span class="SHPreprocessingDirective">#if DEBUG</span><br />    <span class="SHKeyword">int</span> x = <span class="SHNumber">12</span>;<br /><span class="SHPreprocessingDirective">#elseif X || (Y == false)</span><br />    <span class="SHKeyword">int</span> x = <span class="SHNumber">15</span>;<br /><span class="SHPreprocessingDirective">#endif</span></pre>
+
+=== With Line Comments ===
+
+<pre class="CCode"><span class="SHPreprocessingDirective">#define A</span>  <span class="SHComment">// Line comment following</span><br /><span class="SHPreprocessingDirective">#define B</span>  <span class="SHComment">/* Block comment following */</span></pre>
+
+=== With Line Breaks ===
+
+<pre class="CCode"><span class="SHPreprocessingDirective">#define TEST(x, y) \</span><br /><span class="SHPreprocessingDirective">    ((x) &gt; (y) ? (x) : (y))</span></pre>
+
+=== With Whitespace ===
+
+<pre class="CCode"><span class="SHPreprocessingDirective">#define X 0</span><br />   <span class="SHPreprocessingDirective">#define y 1</span><br />     <span class="SHPreprocessingDirective">#define Z 2</span><br /><br /><span class="SHComment">/* comment */</span> #invalid</pre>
+-----
+<pre class="CCode"><span class="SHPreprocessingDirective">#ifdef X</span><br /><span class="SHPreprocessingDirective">#   define X1 1</span><br /><span class="SHPreprocessingDirective">#   define X2 2</span><br /><span class="SHPreprocessingDirective">#endif</span></pre>
+
+=== Traps ===
+
+<pre class="CCode"><span class="SHKeyword">char</span>* x = <span class="SHString">R&quot;(multiline string</span><br /><span class="SHString">#this is not a preprocessing directive</span><br /><span class="SHString">multiline string)&quot;</span>;<br /><br /><span class="SHComment">/* Multiline comment</span><br /><span class="SHComment">#this is not a preprocessing dirctive</span><br /><span class="SHComment">multiline comment</span></pre>
