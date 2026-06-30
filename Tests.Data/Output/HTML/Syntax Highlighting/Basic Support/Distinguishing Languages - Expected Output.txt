@@ -1,25 +1,25 @@
 === Distinguishing Languages ===
 
-=== A ===
+=== Highlight Using "Code" ===
 
-<pre class="CCode"><span class="SHKeyword">string</span> language = <span class="SHString">&quot;Unspecified, defaults to C&quot;</span>;<br /><span class="SHComment">// C comment</span><br /># Perl comment<br />-- SQL comment</pre>
+<pre class="CCode"><span class="SHKeyword">string</span> language = <span class="SHString">&quot;Unspecified&quot;</span>;<br /><span class="SHComment">// C comment</span><br /># Perl comment<br />-- SQL comment</pre>
 
-=== B ===
+=== Highlight Using "C" ===
 
-<pre class="CCode">string language = <span class="SHString">&quot;C&quot;</span>;<br /><span class="SHComment">// C comment</span><br /><span class="SHPreprocessingDirective"># Perl comment</span><br />-- SQL comment</pre>
+<pre class="CCode"><span class="SHKeyword">char</span>* language = <span class="SHString">&quot;C&quot;</span>;<br /><span class="SHComment">// C comment</span><br /><span class="SHPreprocessingDirective"># Perl comment</span><br />-- SQL comment</pre>
 
-=== C ===
+=== Highlight Using "Perl" ===
 
-<pre class="CCode"><span class="SHKeyword">string</span> language = <span class="SHString">&quot;Perl&quot;</span>;<br />// C comment<br /><span class="SHComment"># Perl comment</span><br />-- SQL comment</pre>
+<pre class="CCode"><span class="SHKeyword">my</span> $language = <span class="SHString">&quot;Perl&quot;</span>;<br />// C comment<br /><span class="SHComment"># Perl comment</span><br />-- SQL comment</pre>
 
-=== D ===
+=== Highlight Using "SQL" ===
 
-<pre class="CCode"><span class="SHKeyword">string language</span> = <span class="SHString">&quot;SQL&quot;</span>;<br />// C <span class="SHKeyword">comment</span><br /># Perl <span class="SHKeyword">comment</span><br /><span class="SHComment">-- SQL comment</span></pre>
+<pre class="CCode"><span class="SHKeyword">DECLARE</span> @language <span class="SHKeyword">AS VARCHAR</span>(<span class="SHNumber">50</span>) = <span class="SHString">&quot;SQL&quot;</span>;<br />// C <span class="SHKeyword">comment</span><br /># Perl <span class="SHKeyword">comment</span><br /><span class="SHComment">-- SQL comment</span></pre>
 
-=== E ===
+=== Highlight Using "Pascal" ===
 
-<pre class="CCode"><span class="SHKeyword">string</span> language = <span class="SHString">&quot;Pascal&quot;</span>;<br /># Perl comment<br /><span class="SHComment">// Pascal comment 1</span><br /><span class="SHComment">(* Pascal comment 2 *)</span><br /><span class="SHComment">{ Pascal comment 3 }</span><br />-- SQL comment</pre>
+<pre class="CCode">language: <span class="SHKeyword">string</span> := <span class="SHString">&quot;Pascal&quot;</span>;<br /># Perl comment<br /><span class="SHComment">// Pascal comment 1</span><br /><span class="SHComment">(* Pascal comment 2 *)</span><br /><span class="SHComment">{ Pascal comment 3 }</span><br />-- SQL comment</pre>
 
-=== F ===
+=== Highlight Using "Text" ===
 
-<pre class="CText">string language = &quot;Text, no highlighting&quot;;<br /># Perl comment<br />// Pascal comment 1<br />(* Pascal comment 2 *)<br />{ Pascal comment 3 }<br />-- SQL comment</pre>
+<pre class="CText">string language = &quot;Text&quot;;<br /># Perl comment<br />// Pascal comment 1<br />(* Pascal comment 2 *)<br />{ Pascal comment 3 }<br />-- SQL comment</pre>

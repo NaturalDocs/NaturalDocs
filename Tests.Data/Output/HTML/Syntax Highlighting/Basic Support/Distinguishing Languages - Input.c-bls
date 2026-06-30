@@ -6,91 +6,71 @@
 	Only the comments matching the language should be highlighted as such.
 
 
-	Topic: A
+	Topic: Highlight Using "Code"
 
-		Before
+		No language is specified so it uses the generic syntax highlighter.
 
-		(code)
-		string language = "Unspecified, defaults to C";
+		--- Code
+		string language = "Unspecified";
 		// C comment
 		# Perl comment
 		-- SQL comment
-		(end)
-
-		After
+		---
 
 
-	Topic: B
+	Topic: Highlight Using "C"
 
-		Before
-
-		(C)
-		string language = "C";
+		--- C
+		char* language = "C";
 		// C comment
 		# Perl comment
 		-- SQL comment
-		(end)
-
-		After
+		---
 
 
-	Topic: C
+	Topic: Highlight Using "Perl"
 
-		Before
-
-		(Perl)
-		string language = "Perl";
+		--- Perl
+		my $language = "Perl";
 		// C comment
 		# Perl comment
 		-- SQL comment
-		(end)
-
-		After
+		---
 
 
-	Topic: D
+	Topic: Highlight Using "SQL"
 
-		Before
-
-		(SQL)
-		string language = "SQL";
+		--- SQL
+		DECLARE @language AS VARCHAR(50) = "SQL";
 		// C comment
 		# Perl comment
 		-- SQL comment
-		(end)
-
-		After
+		---
 
 
-	Topic: E
+	Topic: Highlight Using "Pascal"
 
-		Before
-
-		(Pascal)
-		string language = "Pascal";
+		--- Pascal
+		language: string := "Pascal";
 		# Perl comment
 		// Pascal comment 1
 		(* Pascal comment 2 *)
 		{ Pascal comment 3 }
 		-- SQL comment
-		(end)
-
-		After
+		---
 
 
-	Topic: F
+	Topic: Highlight Using "Text"
 
-		Before
+		The "text" keyword will cause it to be treated as plain text with no highlighting.
 
-		(Table)
-		string language = "Text, no highlighting";
+		--- Text
+		string language = "Text";
 		# Perl comment
 		// Pascal comment 1
 		(* Pascal comment 2 *)
 		{ Pascal comment 3 }
 		-- SQL comment
-		(end)
-
-		After
+		---
 
 */
