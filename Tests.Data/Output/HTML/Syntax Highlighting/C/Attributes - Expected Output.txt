@@ -1,0 +1,15 @@
+=== Simple Attributes ===
+
+<pre class="CCode"><span class="SHMetadata">[[AttributeA]]</span><br /><span class="SHMetadata">[[AttributeB()]]</span><br /><span class="SHMetadata">[[AttributeC(12, &quot;string&quot;)]]</span></pre>
+
+=== Attributes with Namespaces ===
+
+<pre class="CCode"><span class="SHMetadata">[[Namespace::AttributeA]]</span><br /><span class="SHMetadata">[[Namespace::AttributeB()]]</span><br /><span class="SHMetadata">[[Namespace::AttributeC(12, &quot;string&quot;)]]</span></pre>
+
+=== Attributes in Lists ===
+
+<pre class="CCode"><span class="SHMetadata">[[AttributeA, AttributeB(), AttributeC(12, &quot;string&quot;)]]</span><br /><span class="SHMetadata">[[Namespace::AttributeA, Namespace::AttributeB(), Namespace::AttributeC(12, &quot;string&quot;)]]</span></pre>
+
+=== Attributes with Using ===
+
+<pre class="CCode"><span class="SHMetadata">[[using Namespace: AttributeA]]</span><br /><span class="SHMetadata">[[using Namespace: AttributeA, AttributeB(), AttributeC(12, &quot;string&quot;)]]</span></pre>

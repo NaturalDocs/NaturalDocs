@@ -1,0 +1,45 @@
+<div class="NDClassPrototype">
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">[[AttributeA]]</span></div>
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">[[AttributeB()]]</span></div>
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">[[AttributeC(12, &quot;string&quot;)]]</span></div>
+      <div class="CPName">SimpleAttributes</div>
+   </div>
+</div>
+-----
+<div class="NDClassPrototype">
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">[[Namespace::AttributeA]]</span></div>
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">[[Namespace::AttributeB()]]</span></div>
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">[[Namespace::AttributeC(12, &quot;string&quot;)]]</span></div>
+      <div class="CPName">AttributesWithNamespaces</div>
+   </div>
+</div>
+-----
+<div class="NDClassPrototype">
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">[[AttributeA, AttributeB(), AttributeC(12, &quot;string&quot;)]]</span></div>
+      <div class="CPName">AttributesInLists</div>
+   </div>
+</div>
+-----
+<div class="NDClassPrototype">
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">[[Namespace::AttributeA, Namespace::AttributeB(), Namespace::AttributeC(12, &quot;string&quot;)]]</span></div>
+      <div class="CPName">AttributesInListsWithNamespaces</div>
+   </div>
+</div>
+-----
+<div class="NDClassPrototype">
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">[[using Namespace: AttributeA]]</span></div>
+      <div class="CPName">AttributesWithUsing</div>
+   </div>
+</div>
+-----
+<div class="NDClassPrototype">
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">[[using Namespace: AttributeA, AttributeB(), AttributeC(12, &quot;string&quot;)]]</span></div>
+      <div class="CPName">AttributesInListsWithUsing</div>
+   </div>
+</div>
