@@ -724,10 +724,21 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			ParsedClassPrototype parsedPrototype = new ParsedClassPrototype(tokenizedPrototype);
 
 
+			// Mark any leading metadata.
+
+			TokenIterator iterator = tokenizedPrototype.FirstToken;
+
+			TryToSkipWhitespace(ref iterator, true, ParseMode.ParseClassPrototype);
+
+			while (TryToSkipMetadata(ref iterator, ParseMode.ParseClassPrototype))
+				{  TryToSkipWhitespace(ref iterator, true, ParseMode.ParseClassPrototype);  }
+
+			TokenIterator endOfMetadata = iterator;
+
+
 			// First walk through trying to find a class keyword.  We're rather permissive when it comes to modifiers to allow for things
 			// like splint comments and bracketed C# metadata.
 
-			TokenIterator iterator = tokenizedPrototype.FirstToken;
 			bool foundKeyword = false;
 
 			for (;;)
@@ -763,7 +774,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			if (foundKeyword)
 				{
-				TokenIterator startOfModifiers = tokenizedPrototype.FirstToken;
+				TokenIterator startOfModifiers = endOfMetadata;
 				TokenIterator endOfModifiers = iterator;
 
 				endOfModifiers.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfModifiers);
@@ -782,7 +793,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			else
 				{
-				iterator = tokenizedPrototype.FirstToken;
+				iterator = endOfMetadata;
 				iterator.NextPastWhitespace();
 
 				if (iterator.FundamentalType != FundamentalType.Text &&
