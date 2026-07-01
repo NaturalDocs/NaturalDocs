@@ -51,6 +51,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			while (iterator < end)
 				{
 				if (TryToSkipPreprocessingDirective(ref iterator, ParseMode.SyntaxHighlight) ||
+					TryToSkipAttributes(ref iterator, ParseMode.SyntaxHighlight) ||
 					TryToSkipKeyword(ref iterator, ParseMode.SyntaxHighlight) ||
 					TryToSkipComment(ref iterator, ParseMode.SyntaxHighlight) ||
 					TryToSkipString(ref iterator, ParseMode.SyntaxHighlight) ||
@@ -68,6 +69,229 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		// Group: Parsing Functions
 		// __________________________________________________________________________
+
+
+		/* Function: TryToSkipMetadata
+		 *
+		 * Override to support detecting attributes as metadata.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- This will be the equivalent of calling <TryToSkipAttributes()> with <PrototypeParsingType.StartOfPrototypeSection>.  If
+		 *			  you need a different interpretation call <TryToSkipAttributes()> directly.
+		 *		- <ParseMode.ParseClassPrototype>
+		 *			- Will mark the first one with <ClassPrototypeParsingType.StartOfPrePrototypeLine> and the rest with
+		 *			  <ClassPrototypeParsingType.PrePrototypeLine>.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		override protected bool TryToSkipMetadata (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			return TryToSkipAttributes(ref iterator, mode, PrototypeParsingType.StartOfPrototypeSection);
+			}
+
+
+		/* Function: TryToSkipAttributes
+		 *
+		 * Tries to move the iterator past one or more attributes like "[[deprecated]]".
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.TypeModifier>,
+		 *			  <PrototypeParsingType.ParamModifier>, or <PrototypeParsingType.StartOfPrototypeSection>.
+		 *		- <ParseMode.ParseClassPrototype>
+		 *			- Will mark the first one with <ClassPrototypeParsingType.StartOfPrePrototypeLine> and the rest with
+		 *			  <ClassPrototypeParsingType.PrePrototypeLine>.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipAttributes (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
+															PrototypeParsingType prototypeParsingType = PrototypeParsingType.TypeModifier)
+			{
+			if (TryToSkipAttribute(ref iterator, mode, prototypeParsingType))
+				{
+				TokenIterator lookahead = iterator;
+
+				for (;;)
+					{
+					TryToSkipWhitespace(ref lookahead, true, mode);
+
+					if (TryToSkipAttribute(ref lookahead, mode, prototypeParsingType))
+						{  iterator = lookahead;  }
+					else
+						{  break;  }
+					}
+
+				return true;
+				}
+			else
+				{  return false;  }
+			}
+
+
+		/* Function: TryToSkipAttribute
+		 *
+		 * Tries to move the iterator past a single attribute like "[[deprecated]]".  It will also handle list attributes like "[[attrA, attrB]]".
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.TypeModifier>,
+		 *			  <PrototypeParsingType.ParamModifier>, or <PrototypeParsingType.StartOfPrototypeSection>.
+		 *		- <ParseMode.ParseClassPrototype>
+		 *			- Will mark the first one with <ClassPrototypeParsingType.StartOfPrePrototypeLine> and the rest with
+		 *			  <ClassPrototypeParsingType.PrePrototypeLine>.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipAttribute (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
+														  PrototypeParsingType prototypeParsingType = PrototypeParsingType.TypeModifier)
+			{
+			// According to the spec double opening brackets aren't allowed anywhere else, so we don't have to worry about this being part of
+			// an array signature or something.
+			if (!iterator.MatchesAcrossTokens("[["))
+				{  return false;  }
+
+			// If we're making a prototype section, the outermost [ and ] will be the start and end.  If it's a list of attributes we'll format them
+			// as parameters, marking the inner [ and ] as the start and end of parameters symbols.  However, if there's a "using:" statement
+			// we'll use its colon as the start of parameters instead.
+
+			// Also, C++ doesn't let you reference parameters by name (like "Function(name: value)"), only by position, so we don't need to
+			// reserve parameter formatting for that.
+
+			TokenIterator lookahead = iterator;
+			lookahead.Next();
+
+			TokenIterator startOfParams = lookahead;
+
+			lookahead.Next();
+			TryToSkipWhitespace(ref lookahead);
+
+			bool formatAsList = false;
+
+
+			// Using
+
+			if (lookahead.MatchesToken("using"))
+				{
+				TokenIterator startOfUsing = lookahead;
+				bool validUsingSyntax = false;
+
+				lookahead.Next();
+
+				if (TryToSkipWhitespace(ref lookahead) &&
+					TryToSkipIdentifier(ref lookahead))
+					{
+					TryToSkipWhitespace(ref lookahead);
+
+					if (lookahead.Character == ':')
+						{
+						startOfParams = lookahead;
+						lookahead.Next();
+
+						if (lookahead.Character != ':')
+							{  validUsingSyntax = true;  }
+
+						TryToSkipWhitespace(ref lookahead);
+						}
+					}
+
+				// Reset the position so we can reparse it as a name, such as if it was "using_attr" instead of "using:"
+				if (!validUsingSyntax)
+					{  lookahead = startOfUsing;  }
+				}
+
+
+			// Content
+
+			for (;;)
+				{
+				if (!lookahead.IsInBounds)
+					{  return false;  }
+				else if (lookahead.MatchesAcrossTokens("]]"))
+					{  break;  }
+				else if (TryToSkipIdentifier(ref lookahead, mode, PrototypeParsingType.Name))
+					{
+					TryToSkipWhitespace(ref lookahead);
+
+					if (lookahead.Character == '(')
+						{
+						lookahead.Next();
+
+						if (!GenericSkipUntilAfter(ref lookahead, ')'))
+							{
+							ResetTokensBetween(iterator, lookahead, mode);
+							return false;
+							}
+
+						TryToSkipWhitespace(ref lookahead);
+						}
+					}
+				else if (lookahead.Character == ',')
+					{
+					if (mode == ParseMode.ParsePrototype && prototypeParsingType == PrototypeParsingType.StartOfPrototypeSection)
+						{
+						formatAsList = true;
+						lookahead.PrototypeParsingType = PrototypeParsingType.ParamSeparator;
+						}
+
+					lookahead.Next();
+					TryToSkipWhitespace(ref lookahead);
+					}
+				else
+					{
+					ResetTokensBetween(iterator, lookahead, mode);
+					return false;
+					}
+				}
+
+
+			if (mode == ParseMode.SyntaxHighlight)
+				{
+				lookahead.Next(2);
+				iterator.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.Metadata);
+				}
+
+			else if (mode == ParseMode.ParsePrototype)
+				{
+				if (prototypeParsingType == PrototypeParsingType.StartOfPrototypeSection)
+					{
+					iterator.PrototypeParsingType = PrototypeParsingType.StartOfPrototypeSection;
+
+					if (formatAsList)
+						{
+						startOfParams.PrototypeParsingType = PrototypeParsingType.StartOfMetadataParams;
+						lookahead.PrototypeParsingType = PrototypeParsingType.EndOfMetadataParams;
+						}
+
+					lookahead.Next();
+					lookahead.PrototypeParsingType = PrototypeParsingType.EndOfPrototypeSection;
+					lookahead.Next();
+					}
+				else
+					{
+					lookahead.Next(2);
+					iterator.SetPrototypeParsingTypeBetween(lookahead, prototypeParsingType);
+					}
+				}
+
+			else if (mode == ParseMode.ParseClassPrototype)
+				{
+				iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfPrePrototypeLine;
+				iterator.Next();
+
+				lookahead.Next(2);
+				iterator.SetClassPrototypeParsingTypeBetween(lookahead, ClassPrototypeParsingType.PrePrototypeLine);
+				}
+
+			iterator = lookahead;
+			return true;
+			}
 
 
 		/* Function: TryToSkipPreprocessingDirective
@@ -118,6 +342,112 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			if (mode == ParseMode.SyntaxHighlight)
 				{  startOfDirective.SetSyntaxHighlightingTypeBetween(iterator, SyntaxHighlightingType.PreprocessingDirective);  }
 
+			return true;
+			}
+
+
+		/* Function: TryToSkipIdentifier
+		 *
+		 * Tries to move the iterator past a qualified identifier, such as "A::B::C".  Use <TryToSkipUnqualifiedIdentifier()> if you only want
+		 * to skip a single segment.
+		 *
+		 * Note that this function will handle internal template signatures ("A.B<X>.C") but not the one at the end ("A.B.C<X>") since it
+		 * is assumed that you would want to handle that one manually.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.Name> or
+		 *			  <PrototypeParsingType.Type>.  If set to Type, it will use both <PrototypeParsingType.Type> and
+		 *			  <PrototypeParsingType.TypeQualifier>.
+		 *		- <ParseMode.ParseClassPrototype>
+		 *			- The tokens will be marked with <ClassPrototypeParsingType.Name>.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		override protected bool TryToSkipIdentifier (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
+																	   PrototypeParsingType prototypeParsingType = PrototypeParsingType.Name)
+			{
+			TokenIterator lookahead = iterator;
+			TokenIterator endOfIdentifier;
+			TokenIterator endOfQualifier = iterator;
+
+			for (;;)
+				{
+				if (TryToSkipUnqualifiedIdentifier(ref lookahead) == false)
+					{  return false;  }
+
+				endOfIdentifier = lookahead;
+				TryToSkipWhitespace(ref lookahead);
+
+				if (lookahead.MatchesAcrossTokens("::"))
+					{
+					lookahead.Next(2);
+					}
+				else
+					{  break;  }
+
+				TryToSkipWhitespace(ref lookahead);
+				endOfQualifier = lookahead;
+				}
+
+			if (mode == ParseMode.ParsePrototype)
+				{
+				if (prototypeParsingType == PrototypeParsingType.Type)
+					{
+					if (endOfQualifier > iterator)
+						{  iterator.SetPrototypeParsingTypeBetween(endOfQualifier, PrototypeParsingType.TypeQualifier);  }
+
+					endOfQualifier.SetPrototypeParsingTypeBetween(endOfIdentifier, PrototypeParsingType.Type);
+					}
+				else
+					{  iterator.SetPrototypeParsingTypeBetween(endOfIdentifier, prototypeParsingType);  }
+				}
+			else if (mode == ParseMode.ParseClassPrototype)
+				{  iterator.SetClassPrototypeParsingTypeBetween(endOfIdentifier, ClassPrototypeParsingType.Name);  }
+
+			iterator = endOfIdentifier;
+			return true;
+			}
+
+
+		/* Function: TryToSkipUnqualifiedIdentifier
+		 *
+		 * Tries to move the iterator past a single unqualified identifier, which means only "A" in "A::B::C".
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.Name> or
+		 *			  <PrototypeParsingType.Type>.
+		 *		- <ParseMode.ParseClassPrototype>
+		 *			- The tokens will be marked with <ClassPrototypeParsingType.Name>.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		override protected bool TryToSkipUnqualifiedIdentifier (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
+																					 PrototypeParsingType prototypeParsingType = PrototypeParsingType.Name)
+			{
+			if (iterator.FundamentalType == FundamentalType.Text)
+				{
+				if (iterator.Character >= '0' && iterator.Character <= '9')
+					{  return false;  }
+				}
+			else if (iterator.Character != '_')
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+
+			do
+				{  lookahead.Next();  }
+			while (lookahead.FundamentalType == FundamentalType.Text || lookahead.Character == '_');
+
+			if (mode == ParseMode.ParsePrototype)
+				{  iterator.SetPrototypeParsingTypeBetween(lookahead, prototypeParsingType);  }
+			else if (mode == ParseMode.ParseClassPrototype)
+				{  iterator.SetClassPrototypeParsingTypeBetween(lookahead, ClassPrototypeParsingType.Name);  }
+
+			iterator = lookahead;
 			return true;
 			}
 
