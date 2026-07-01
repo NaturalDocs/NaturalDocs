@@ -860,7 +860,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TokenIterator lookahead = iterator;
 			lookahead.Next();
 
-			if (!TryToSkipIdentifier(ref lookahead, mode))
+			if (!TryToSkipIdentifier(ref lookahead))
 				{  return false;  }
 
 			TokenIterator endOfIdentifier = lookahead;

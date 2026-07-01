@@ -90,6 +90,5 @@ abstract class AbstractClass
 
   - Name: DecoratedClass
   - Keyword: class
-  - Modifiers: @ParameterlessDecorator @ParameterDecorator(value)
   - Access Level: Unknown
   - No parents
