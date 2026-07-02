@@ -21,6 +21,7 @@
 
 using System;
 using CodeClear.NaturalDocs.Engine.Collections;
+using CodeClear.NaturalDocs.Engine.Prototypes;
 using CodeClear.NaturalDocs.Engine.Tokenization;
 
 
@@ -66,9 +67,166 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
+		/* Function: ParsePrototype
+		 * Converts a raw text prototype into a <ParsedPrototype>.
+		 */
+		override public ParsedPrototype ParsePrototype(string stringPrototype, int commentTypeID)
+			{
+			Tokenizer tokenizedPrototype = new Tokenizer(stringPrototype, tabWidth: EngineInstance.Config.TabWidth);
+			TokenIterator iterator = tokenizedPrototype.FirstToken;
+
+			if (TryToSkipEnum(ref iterator, ParseMode.ParsePrototype))
+				{
+				return new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID, engineInstance);
+				}
+			else
+				{
+				return base.ParsePrototype(stringPrototype, commentTypeID);
+				}
+			}
+
+
 
 		// Group: Parsing Functions
 		// __________________________________________________________________________
+
+
+		/* Function: IsPartOfLongerIdentifier
+		 * Returns whether the <TokenIterator> is on token that's part of a longer identifier, such as by being next to an underscore.
+		 * This is primarily used to validate keywords after checking the contents of the token against a keyword list, so that "input"
+		 * by itself will be distinguished from "_input" or similar.
+		 */
+		protected bool IsPartOfLongerIdentifier (TokenIterator iterator)
+			{
+			TokenIterator lookahead = iterator;
+			lookahead.Next();
+
+			if (lookahead.FundamentalType == FundamentalType.Text ||
+				lookahead.Character == '_')
+				{  return true;  }
+
+			// Just use iterator as a lookbehind instead of creating another one
+			iterator.Previous();
+
+			if (iterator.FundamentalType == FundamentalType.Text ||
+				iterator.Character == '_')
+				{  return true;  }
+
+			return false;
+			}
+
+
+		/* Function: IsOnKeyword
+		 *
+		 * Returns whether the <TokenIterator> is on the passed keyword, making sure there are no other identifier tokens
+		 * before or after it.  This allows us to be sure an iterator on "input" isn't actually on "_input" or similar.  This function
+		 * assumes keywords are only one text token.
+		 *
+		 * If you have multiple keywords to test against, it is more efficient to use one of the <IsOnAnyKeyword()> functions.
+		 */
+		public bool IsOnKeyword (TokenIterator iterator, string keyword)
+			{
+			return (iterator.MatchesToken(keyword) &&
+					   !IsPartOfLongerIdentifier(iterator));
+			}
+
+
+		/* Function: IsOnAnyKeyword
+		 *
+		 * Returns whether the <TokenIterator> is on the passed keyword, making sure there are no other identifier tokens
+		 * before or after it.  This allows us to be sure an iterator on "input" isn't actually on "_input" or similar.  This function
+		 * assumes keywords are only one text token.
+		 */
+		public bool IsOnAnyKeyword (TokenIterator iterator, params string[] keywords)
+			{
+			return (iterator.MatchesAnyAcrossTokens(keywords, true) != -1 &&
+					   !IsPartOfLongerIdentifier(iterator));
+			}
+
+
+		/* Function: TryToSkipEnum
+		 *
+		 * Override to support detecting enums.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipEnum (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			TokenIterator lookahead = iterator;
+
+
+			// Attributes before the keyword
+
+			if (TryToSkipAttributes(ref lookahead, mode, PrototypeParsingType.StartOfPrototypeSection))
+				{  TryToSkipWhitespace(ref lookahead);  }
+
+
+			// Keyword
+			// Can be "enum", "class enum", or "struct enum"
+
+			if (IsOnAnyKeyword(lookahead, "class", "struct"))
+				{
+				lookahead.Next();
+				TryToSkipWhitespace(ref lookahead);
+				}
+
+			if (!IsOnKeyword(lookahead, "enum"))
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+
+			lookahead.Next();
+			TryToSkipWhitespace(ref lookahead);
+
+
+			// Attributes after the keyword
+
+			if (TryToSkipAttributes(ref lookahead, mode, PrototypeParsingType.StartOfPrototypeSection))
+				{  TryToSkipWhitespace(ref lookahead);  }
+
+
+			// Name
+
+			if (!TryToSkipIdentifier(ref lookahead, mode, PrototypeParsingType.Name))
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+
+			TryToSkipWhitespace(ref lookahead);
+
+
+			// Optional type
+
+			if (lookahead.Character == ':')
+				{
+				lookahead.Next();
+				TryToSkipWhitespace(ref lookahead);
+
+				TokenIterator endOfType = lookahead;
+
+				while (endOfType.IsInBounds &&
+							endOfType.Character != ';' &&
+							endOfType.Character != '{')
+					{  GenericSkip(ref endOfType, angleBracketsAsBlocks: true);  }
+
+				if (mode == ParseMode.ParsePrototype)
+					{  MarkTypeAndModifiers(lookahead, endOfType);  }
+
+				lookahead = endOfType;
+				}
+
+
+			// At this point we're only parsing prototypes so there will not be a body and we can stop here.  Documenting this in
+			// case it changes in the future.
+
+			return true;
+			}
 
 
 		/* Function: TryToSkipMetadata
