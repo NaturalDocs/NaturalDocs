@@ -1,0 +1,94 @@
+=== SimpleEnum ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">enum</span> SimpleEnum</div>
+</div>
+
+=== ClassEnum ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">class enum</span> ClassEnum</div>
+</div>
+
+=== StructEnum ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">struct enum</span> StructEnum</div>
+</div>
+
+=== TrailingComma ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">enum</span> TrailingComma</div>
+</div>
+
+=== AttributesA ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
+         <div class="PBeforeParameters FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/3/2"><span class="SHMetadata">[[</span></div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/1/2/2" style="grid-area:1/2/2/3"><span class="SHMetadata">AttributeA,</span></div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="2/1/3/2" style="grid-area:2/2/3/3"><span class="SHMetadata">AttributeB(12)</span></div>
+         <div class="PAfterParameters FitIntoRightIndentOnNarrow" data-WideGridArea="2/3/3/4" data-NarrowGridArea="2/3/3/4" style="grid-area:2/3/3/4"><span class="SHMetadata">]]</span></div>
+      </div>
+   </div>
+   <div class="PSection PPlainSection"><span class="SHMetadata">[[AttributeC()]]</span></div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">enum</span> AttributesA</div>
+</div>
+
+=== AttributesB ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PPlainSection"><span class="SHKeyword">enum</span></div>
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
+         <div class="PBeforeParameters FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/3/2"><span class="SHMetadata">[[</span></div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/1/2/2" style="grid-area:1/2/2/3"><span class="SHMetadata">AttributeA,</span></div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="2/1/3/2" style="grid-area:2/2/3/3"><span class="SHMetadata">AttributeB(12)</span></div>
+         <div class="PAfterParameters FitIntoRightIndentOnNarrow" data-WideGridArea="2/3/3/4" data-NarrowGridArea="2/3/3/4" style="grid-area:2/3/3/4"><span class="SHMetadata">]]</span></div>
+      </div>
+   </div>
+   <div class="PSection PPlainSection"><span class="SHMetadata">[[AttributeC()]]</span></div>
+   <div class="PSection PPlainSection">AttributesB</div>
+</div>
+
+=== AttributesC ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
+         <div class="PBeforeParameters FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/3/2"><span class="SHMetadata">[[</span></div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/1/2/2" style="grid-area:1/2/2/3"><span class="SHMetadata">AttributeA,</span></div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="2/1/3/2" style="grid-area:2/2/3/3"><span class="SHMetadata">AttributeB(12)</span></div>
+         <div class="PAfterParameters FitIntoRightIndentOnNarrow" data-WideGridArea="2/3/3/4" data-NarrowGridArea="2/3/3/4" style="grid-area:2/3/3/4"><span class="SHMetadata">]]</span></div>
+      </div>
+   </div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">enum</span></div>
+   <div class="PSection PPlainSection"><span class="SHMetadata">[[AttributeC()]]</span></div>
+   <div class="PSection PPlainSection">AttributesC</div>
+</div>
+
+=== NestedName ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">enum</span> Namespace::NestedName</div>
+</div>
+
+=== TypedA ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">enum</span> TypedA : <span class="SHKeyword">int</span></div>
+</div>
+
+=== TypedB ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">enum</span> TypedB: <span class="SHKeyword">unsigned</span> <span class="SHKeyword">long</span></div>
+</div>
+
+=== NoValues ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">enum</span> NoValues</div>
+</div>

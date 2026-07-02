@@ -1,0 +1,149 @@
+- Plain Section: enum SimpleEnum
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: class enum ClassEnum
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: struct enum StructEnum
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: enum TrailingComma
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: [[
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: AttributeA,
+    - Name: AttributeA
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: AttributeB(12)
+    - Name: AttributeB
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: ]]
+    - Link Candidates: (none)
+
+- Plain Section: [[AttributeC()]]
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: enum AttributesA
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: enum
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: [[
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: AttributeA,
+    - Name: AttributeA
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: AttributeB(12)
+    - Name: AttributeB
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: ]]
+    - Link Candidates: (none)
+
+- Plain Section: [[AttributeC()]]
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: AttributesB
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: [[
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: AttributeA,
+    - Name: AttributeA
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: AttributeB(12)
+    - Name: AttributeB
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: ]]
+    - Link Candidates: (none)
+
+- Plain Section: enum
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: [[AttributeC()]]
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: AttributesC
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: enum Namespace::NestedName
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: enum TypedA : int
+  - Access Level: Unknown
+  - Link Candidates: int
+
+------------------------------
+
+- Plain Section: enum TypedB: unsigned long
+  - Access Level: Unknown
+  - Link Candidates: long
+
+------------------------------
+
+- Plain Section: enum NoValues
+  - Access Level: Unknown
+  - Link Candidates: (none)
