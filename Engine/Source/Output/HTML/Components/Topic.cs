@@ -618,7 +618,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			output.Append("<a href=\"");
 				output.EntityEncodeAndAppend(target);
-			output.Append("\" target=\"_top\">");
+			output.Append("\" target=\"_blank\">");
 
 			string text = iterator.Property("text");
 
