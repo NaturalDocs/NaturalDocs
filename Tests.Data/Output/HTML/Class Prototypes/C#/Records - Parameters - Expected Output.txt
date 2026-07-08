@@ -1,31 +1,49 @@
+=== WithEmptyParameters ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPModifiers"><span class="SHKeyword">public</span> <span class="SHKeyword">record</span></div>
       <div class="CPName">WithEmptyParameters</div>
    </div>
 </div>
------
+
+=== WithEmptyParameters_NoBody ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPModifiers"><span class="SHKeyword">public</span> <span class="SHKeyword">record</span></div>
       <div class="CPName">WithEmptyParameters_NoBody</div>
    </div>
 </div>
------
+
+=== WithParameters ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPModifiers"><span class="SHKeyword">public</span> <span class="SHKeyword">record</span></div>
       <div class="CPName">WithParameters</div>
    </div>
 </div>
------
+
+=== X ===
+
+=== Y ===
+
+=== WithParameters_NoBody ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPModifiers"><span class="SHKeyword">public</span> <span class="SHKeyword">record</span></div>
       <div class="CPName">WithParameters_NoBody</div>
    </div>
 </div>
------
+
+=== X ===
+
+=== Y ===
+
+=== WithParametersAndInheritance ===
+
 <div class="NDClassPrototype HasParents">
    <div class="CPEntry CPContent Parent TClass">
       <div class="CPName">Parent</div>
@@ -35,7 +53,11 @@
       <div class="CPName">WithParametersAndInheritance</div>
    </div>
 </div>
------
+
+=== Z ===
+
+=== WithParametersAndInheritance_NoBody ===
+
 <div class="NDClassPrototype HasParents">
    <div class="CPEntry CPContent Parent TClass">
       <div class="CPName">Parent</div>
@@ -45,21 +67,41 @@
       <div class="CPName">WithParametersAndInheritance_NoBody</div>
    </div>
 </div>
------
+
+=== Z ===
+
+=== WithParametersAndMembers ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPModifiers"><span class="SHKeyword">public</span> <span class="SHKeyword">record</span></div>
       <div class="CPName">WithParametersAndMembers</div>
    </div>
 </div>
------
+
+=== X ===
+
+=== Y ===
+
+=== Z ===
+
+=== WithParametersAndModifiers ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPModifiers"><span class="SHKeyword">public</span> <span class="SHKeyword">record</span></div>
       <div class="CPName">WithParametersAndModifiers</div>
    </div>
 </div>
------
+
+=== X_2 ===
+
+=== Y ===
+
+=== Z ===
+
+=== WithAll ===
+
 <div class="NDClassPrototype HasParents">
    <div class="CPEntry CPContent Parent TClass">
       <div class="CPName">Parent</div>
@@ -76,3 +118,10 @@
       <div class="CPPostPrototypeLine"><span class="SHKeyword">where</span> T: <span class="SHKeyword">unmanaged</span>, <span class="SHKeyword">notnull</span></div>
    </div>
 </div>
+
+=== Z ===
+
+=== Q ===
+
+=== MyFunction ===
+

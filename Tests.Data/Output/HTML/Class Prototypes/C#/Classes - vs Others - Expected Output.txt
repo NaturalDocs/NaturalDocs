@@ -1,23 +1,31 @@
+=== TestClass ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPName">TestClass</div>
    </div>
 </div>
------
+
+=== TestStruct ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TStruct Current">
       <div class="CPModifiers"><span class="SHKeyword">struct</span></div>
       <div class="CPName">TestStruct</div>
    </div>
 </div>
------
+
+=== TestInterface ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TInterface Current">
       <div class="CPModifiers"><span class="SHKeyword">interface</span></div>
       <div class="CPName">TestInterface</div>
    </div>
 </div>
------
+
+=== TestRecord ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPModifiers"><span class="SHKeyword">record</span></div>

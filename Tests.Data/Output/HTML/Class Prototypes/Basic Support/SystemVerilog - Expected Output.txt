@@ -1,3 +1,5 @@
+=== A ===
+
 <div class="NDClassPrototype HasParents">
    <div class="CPEntry CPContent Parent TClass">
       <div class="CPName">X</div>
@@ -6,7 +8,9 @@
       <div class="CPName">A<span class="TemplateSignature"> #(type T = <span class="SHKeyword">int</span>)</span></div>
    </div>
 </div>
------
+
+=== B ===
+
 <div class="NDClassPrototype HasParents">
    <div class="CPEntry CPContent Parent TClass">
       <div class="CPName">Y<span class="TemplateSignature"> #(.T(T))</span></div>

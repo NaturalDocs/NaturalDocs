@@ -1,3 +1,5 @@
+=== WithInheritance ===
+
 <div class="NDClassPrototype HasParents">
    <div class="CPEntry CPContent Parent TClass">
       <div class="CPName">Parent</div>
@@ -13,14 +15,18 @@
       <div class="CPName">WithInheritance</div>
    </div>
 </div>
------
+
+=== WithModifiers ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPModifiers"><span class="SHKeyword">internal sealed</span> <span class="SHKeyword">record</span></div>
       <div class="CPName">WithModifiers</div>
    </div>
 </div>
------
+
+=== Namespace.WithAttributesAndNamespace ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPPrePrototypeLine"><span class="SHMetadata">[Attibute]</span></div>
@@ -28,14 +34,18 @@
       <div class="CPName"><span class="Qualifier">Namespace.</span>&#8203;WithAttributesAndNamespace</div>
    </div>
 </div>
------
+
+=== AsTemplate ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPModifiers"><span class="SHKeyword">public</span> <span class="SHKeyword">record</span></div>
       <div class="CPName">AsTemplate&#8203;<span class="TemplateSignature">&lt;T&gt;</span></div>
    </div>
 </div>
------
+
+=== AsTemplateWithInheritance ===
+
 <div class="NDClassPrototype HasParents">
    <div class="CPEntry CPContent Parent TClass">
       <div class="CPName"><span class="Qualifier">System.&#8203;Collections.</span>&#8203;List&#8203;<span class="TemplateSignature">&lt;Y&gt;</span></div>
@@ -48,7 +58,9 @@
       <div class="CPName">AsTemplateWithInheritance&#8203;<span class="TemplateSignature">&lt;X,Y&gt;</span></div>
    </div>
 </div>
------
+
+=== AsTemplateWithConditions ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPModifiers"><span class="SHKeyword">public</span> <span class="SHKeyword">record</span></div>

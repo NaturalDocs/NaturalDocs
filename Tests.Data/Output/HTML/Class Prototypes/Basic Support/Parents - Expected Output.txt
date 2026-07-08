@@ -1,9 +1,13 @@
+=== NoParents ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPName">NoParents</div>
    </div>
 </div>
------
+
+=== OneParent ===
+
 <div class="NDClassPrototype HasParents">
    <div class="CPEntry CPContent Parent TClass">
       <div class="CPName">Parent</div>
@@ -12,7 +16,9 @@
       <div class="CPName">OneParent</div>
    </div>
 </div>
------
+
+=== TwoParents ===
+
 <div class="NDClassPrototype HasParents">
    <div class="CPEntry CPContent Parent TClass">
       <div class="CPName">Parent1</div>
@@ -24,7 +30,9 @@
       <div class="CPName">TwoParents</div>
    </div>
 </div>
------
+
+=== Qualifiers ===
+
 <div class="NDClassPrototype HasParents">
    <div class="CPEntry CPContent Parent TClass">
       <div class="CPName"><span class="Qualifier">A.&#8203;B.</span>&#8203;Parent1</div>
@@ -36,7 +44,9 @@
       <div class="CPName">Qualifiers</div>
    </div>
 </div>
------
+
+=== Properties1 ===
+
 <div class="NDClassPrototype HasParents">
    <div class="CPEntry CPContent Parent TClass">
       <div class="CPModifiers"><span class="SHKeyword">public</span></div>
@@ -46,7 +56,9 @@
       <div class="CPName">Properties1</div>
    </div>
 </div>
------
+
+=== Properties2 ===
+
 <div class="NDClassPrototype HasParents">
    <div class="CPEntry CPContent Parent TClass">
       <div class="CPModifiers">[Metadata]</div>
@@ -56,7 +68,9 @@
       <div class="CPName">Properties2</div>
    </div>
 </div>
------
+
+=== Properties3 ===
+
 <div class="NDClassPrototype HasParents">
    <div class="CPEntry CPContent Parent TClass">
       <div class="CPModifiers"><span class="SHKeyword">public</span></div>
@@ -70,7 +84,9 @@
       <div class="CPName">Properties3</div>
    </div>
 </div>
------
+
+=== Templates ===
+
 <div class="NDClassPrototype HasParents">
    <div class="CPEntry CPContent Parent TClass">
       <div class="CPModifiers"><span class="SHKeyword">public</span></div>
@@ -83,7 +99,9 @@
       <div class="CPName">Templates&#8203;<span class="TemplateSignature">&lt;<span class="SHKeyword">int</span>, <span class="SHKeyword">float</span>&gt;</span></div>
    </div>
 </div>
------
+
+=== SimilarParentNames ===
+
 <div class="NDClassPrototype HasParents">
    <div class="CPEntry CPContent Parent TClass">
       <div class="CPName">IList</div>

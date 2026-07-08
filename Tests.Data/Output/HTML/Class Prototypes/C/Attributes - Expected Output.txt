@@ -1,3 +1,5 @@
+=== SimpleAttributes ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPPrePrototypeLine"><span class="SHMetadata">[[AttributeA]]</span></div>
@@ -6,7 +8,9 @@
       <div class="CPName">SimpleAttributes</div>
    </div>
 </div>
------
+
+=== AttributesWithNamespaces ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPPrePrototypeLine"><span class="SHMetadata">[[Namespace::AttributeA]]</span></div>
@@ -15,28 +19,36 @@
       <div class="CPName">AttributesWithNamespaces</div>
    </div>
 </div>
------
+
+=== AttributesInLists ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPPrePrototypeLine"><span class="SHMetadata">[[AttributeA, AttributeB(), AttributeC(12, &quot;string&quot;)]]</span></div>
       <div class="CPName">AttributesInLists</div>
    </div>
 </div>
------
+
+=== AttributesInListsWithNamespaces ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPPrePrototypeLine"><span class="SHMetadata">[[Namespace::AttributeA, Namespace::AttributeB(), Namespace::AttributeC(12, &quot;string&quot;)]]</span></div>
       <div class="CPName">AttributesInListsWithNamespaces</div>
    </div>
 </div>
------
+
+=== AttributesWithUsing ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPPrePrototypeLine"><span class="SHMetadata">[[using Namespace: AttributeA]]</span></div>
       <div class="CPName">AttributesWithUsing</div>
    </div>
 </div>
------
+
+=== AttributesInListsWithUsing ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPPrePrototypeLine"><span class="SHMetadata">[[using Namespace: AttributeA, AttributeB(), AttributeC(12, &quot;string&quot;)]]</span></div>

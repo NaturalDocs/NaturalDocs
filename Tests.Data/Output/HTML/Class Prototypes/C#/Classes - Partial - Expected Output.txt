@@ -1,37 +1,49 @@
+=== PartialClass ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPName">PartialClass</div>
    </div>
 </div>
------
+
+=== PartialStruct ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TStruct Current">
       <div class="CPModifiers"><span class="SHKeyword">struct</span></div>
       <div class="CPName">PartialStruct</div>
    </div>
 </div>
------
+
+=== PartialInterface ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TInterface Current">
       <div class="CPModifiers"><span class="SHKeyword">interface</span></div>
       <div class="CPName">PartialInterface</div>
    </div>
 </div>
------
+
+=== EndOfModifiers ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPModifiers"><span class="SHKeyword">public static</span></div>
       <div class="CPName">EndOfModifiers</div>
    </div>
 </div>
------
+
+=== BeginningOfModifiers ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPModifiers"><span class="SHKeyword">public static</span></div>
       <div class="CPName">BeginningOfModifiers</div>
    </div>
 </div>
------
+
+=== MiddleOfModifiers ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPModifiers"><span class="SHKeyword">public</span> <span class="SHKeyword">static</span></div>

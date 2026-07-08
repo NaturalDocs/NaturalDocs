@@ -1,9 +1,15 @@
+=== Simple ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPName">Simple</div>
    </div>
 </div>
------
+
+=== Inheritance ===
+
+=== Inheritance ===
+
 <div class="NDClassPrototype HasParents">
    <div class="CPEntry CPContent Parent TClass">
       <div class="CPName">Base</div>
@@ -12,7 +18,9 @@
       <div class="CPName">Inheritance</div>
    </div>
 </div>
------
+
+=== ModuleInheritance ===
+
 <div class="NDClassPrototype HasParents">
    <div class="CPEntry CPContent Parent TClass">
       <div class="CPName"><span class="Qualifier">module.</span>&#8203;Base</div>
@@ -21,7 +29,9 @@
       <div class="CPName">ModuleInheritance</div>
    </div>
 </div>
------
+
+=== MultipleInheritance ===
+
 <div class="NDClassPrototype HasParents">
    <div class="CPEntry CPContent Parent TClass">
       <div class="CPName">BaseA</div>
@@ -36,7 +46,9 @@
       <div class="CPName">MultipleInheritance</div>
    </div>
 </div>
------
+
+=== Metaclass ===
+
 <div class="NDClassPrototype HasParents">
    <div class="CPEntry CPContent Parent TClass">
       <div class="CPModifiers"><span class="SHKeyword">metaclass</span></div>
@@ -46,49 +58,69 @@
       <div class="CPName">Metaclass</div>
    </div>
 </div>
------
+
+=== EmptyParens ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPName">EmptyParens</div>
    </div>
 </div>
------
+
+=== Parameterized Classes ===
+
+=== Parameterized ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPName">Parameterized&#8203;<span class="TemplateSignature">[X, Y]</span></div>
    </div>
 </div>
------
+
+=== ParameterizedWithConstraints ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPName">ParameterizedWithConstraints&#8203;<span class="TemplateSignature">[X: <span class="SHKeyword">int</span>, Y: (<span class="SHKeyword">int</span>, <span class="SHKeyword">bytes</span>)]</span></div>
    </div>
 </div>
------
+
+=== ParameterizedWithDefaults ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPName">ParameterizedWithDefaults&#8203;<span class="TemplateSignature">[X = <span class="SHKeyword">int</span>, Y: (<span class="SHKeyword">int</span>, <span class="SHKeyword">bytes</span>) = <span class="SHKeyword">int</span>]</span></div>
    </div>
 </div>
------
+
+=== ParameterizedWithTuples ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPName">ParameterizedWithTuples&#8203;<span class="TemplateSignature">[*X, *Y = (<span class="SHKeyword">int</span>, <span class="SHKeyword">bytes</span>)]</span></div>
    </div>
 </div>
------
+
+=== ParameterizedWithCallable ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPName">ParameterizedWithCallable&#8203;<span class="TemplateSignature">[**X, **Y = (<span class="SHKeyword">str</span>, <span class="SHKeyword">bytearray</span>)]</span></div>
    </div>
 </div>
------
+
+=== ParameterizedWithUnion ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPName">ParameterizedWithUnion&#8203;<span class="TemplateSignature">[X: <span class="SHKeyword">int</span> | <span class="SHKeyword">bytes</span>]</span></div>
    </div>
 </div>
------
+
+=== Misc ===
+
+=== ŬnicodeIdëntifiers ===
+
 <div class="NDClassPrototype HasParents">
    <div class="CPEntry CPContent Parent TClass">
       <div class="CPName">ŬnicodeBåse</div>
@@ -97,7 +129,9 @@
       <div class="CPName">ŬnicodeIdëntifiers</div>
    </div>
 </div>
------
+
+=== Decorators ===
+
 <div class="NDClassPrototype">
    <div class="CPEntry CPContent TClass Current">
       <div class="CPPrePrototypeLine"><span class="SHMetadata">@DecoratorA</span></div>
@@ -107,7 +141,9 @@
       <div class="CPName">Decorators</div>
    </div>
 </div>
------
+
+=== AllCombined ===
+
 <div class="NDClassPrototype HasParents">
    <div class="CPEntry CPContent Parent TClass">
       <div class="CPName">BaseA</div>
