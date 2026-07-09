@@ -6331,7 +6331,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 
 				// Does the token following the dot start with an acceptable character?  Formatting it this way so the expression
-				// isn't an unintelligible mess of paretheses.
+				// isn't an unintelligible mess of parentheses.
 
 				char character = lookahead.Character;
 

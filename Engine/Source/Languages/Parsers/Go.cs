@@ -364,7 +364,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Return value (optional)
 
-			// Can return multiple values in paretheses.  Mark them as a tuple.
+			// Can return multiple values in parentheses.  Mark them as a tuple.
 			if (lookahead.Character == '(')
 				{
 				if (mode == ParseMode.ParsePrototype)
