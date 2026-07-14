@@ -57,7 +57,63 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (base.TryToFindBasicPrototype(topic, lookahead, limit, out prototypeStart, out prototypeEnd))
 				{
+				// If it's a constructor, trim the end of the prototype to exclude the :super() or :this() call
+				if (prototypeStart.MatchesToken("constructor"))
+					{  TrimConstructorPrototype(prototypeStart, ref prototypeEnd);  }
+
+				// Extend the start to include any annotations.
 				prototypeStart = start;
+
+				return true;
+				}
+			else
+				{  return false;  }
+			}
+
+
+		/* Function: TrimConstructorPrototype
+		 * If the iterators surround a constructor declaration, trims off any calls to other constructors.
+		 */
+		protected bool TrimConstructorPrototype (TokenIterator start, ref TokenIterator end)
+			{
+			if (!start.MatchesToken("constructor"))
+				{  return false;  }
+
+			TokenIterator lookahead = start;
+			lookahead.Next();
+
+			// Skip to parentheses
+			while (lookahead.Character != '(')
+				{
+				if (lookahead >= end)
+					{  return false;  }
+
+				GenericSkip(ref lookahead);
+				}
+
+			// Skip past parentheses
+			lookahead.Next();
+			if (!GenericSkipUntilAfter(ref lookahead, ')'))
+				{  return false;  }
+
+			// Skip to colon
+			while (lookahead.Character != ':')
+				{
+				if (lookahead >= end)
+					{  return false;  }
+
+				GenericSkip(ref lookahead);
+				}
+
+			TokenIterator colon = lookahead;
+			lookahead.Next();
+			TryToSkipWhitespace(ref lookahead);
+
+			if (lookahead.MatchesToken("super") ||
+				lookahead.MatchesToken("this"))
+				{
+				end = colon;
+				end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds);
 				return true;
 				}
 			else
