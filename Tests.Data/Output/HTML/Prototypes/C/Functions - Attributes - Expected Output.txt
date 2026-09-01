@@ -1,0 +1,238 @@
+=== Bracketed Attributes ===
+
+=== SimpleAttributes ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHMetadata">[[AttributeA]]</span></div>
+   <div class="PSection PPlainSection"><span class="SHMetadata">[[AttributeB()]]</span></div>
+   <div class="PSection PPlainSection"><span class="SHMetadata">[[AttributeC(12, &quot;string&quot;)]]</span></div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> SimpleAttributes()</div>
+</div>
+
+=== AttributesWithNamespaces ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHMetadata">[[Namespace::AttributeA]]</span></div>
+   <div class="PSection PPlainSection"><span class="SHMetadata">[[Namespace::AttributeB()]]</span></div>
+   <div class="PSection PPlainSection"><span class="SHMetadata">[[Namespace::AttributeC(12, &quot;string&quot;)]]</span></div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> AttributesWithNamespaces()</div>
+</div>
+
+=== AttributesInLists ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
+         <div class="PBeforeParameters FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="1/1/4/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/4/2"><span class="SHMetadata">[[</span></div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/1/2/2" style="grid-area:1/2/2/3"><span class="SHMetadata">AttributeA,</span></div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="2/1/3/2" style="grid-area:2/2/3/3"><span class="SHMetadata">AttributeB(),</span></div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="3/2/4/3" data-NarrowGridArea="3/1/4/2" style="grid-area:3/2/4/3"><span class="SHMetadata">AttributeC(12, &quot;string&quot;)</span></div>
+         <div class="PAfterParameters FitIntoRightIndentOnNarrow" data-WideGridArea="3/3/4/4" data-NarrowGridArea="3/3/4/4" style="grid-area:3/3/4/4"><span class="SHMetadata">]]</span></div>
+      </div>
+   </div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> AttributesInLists()</div>
+</div>
+
+=== AttributesInListsWithNamespaces ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
+         <div class="PBeforeParameters FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="1/1/4/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/4/2"><span class="SHMetadata">[[</span></div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/1/2/2" style="grid-area:1/2/2/3"><span class="SHMetadata">Namespace::AttributeA,</span></div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="2/1/3/2" style="grid-area:2/2/3/3"><span class="SHMetadata">Namespace::AttributeB(),</span></div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="3/2/4/3" data-NarrowGridArea="3/1/4/2" style="grid-area:3/2/4/3"><span class="SHMetadata">Namespace::AttributeC(12, &quot;string&quot;)</span></div>
+         <div class="PAfterParameters FitIntoRightIndentOnNarrow" data-WideGridArea="3/3/4/4" data-NarrowGridArea="3/3/4/4" style="grid-area:3/3/4/4"><span class="SHMetadata">]]</span></div>
+      </div>
+   </div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> AttributesInListsWithNamespaces()</div>
+</div>
+
+=== AttributesWithUsing ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHMetadata">[[using Namespace: AttributeA]]</span></div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> AttributesWithUsing()</div>
+</div>
+
+=== AttributesInListsWithUsing ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
+         <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/4/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/4/2"><span class="SHMetadata">[[using Namespace:</span></div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHMetadata">AttributeA,</span></div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHMetadata">AttributeB(),</span></div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="3/2/4/3" data-NarrowGridArea="4/1/5/2" style="grid-area:3/2/4/3"><span class="SHMetadata">AttributeC(12, &quot;string&quot;)</span></div>
+         <div class="PAfterParameters" data-WideGridArea="3/3/4/4" data-NarrowGridArea="5/1/6/3" style="grid-area:3/3/4/4"><span class="SHMetadata">]]</span></div>
+      </div>
+   </div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> AttributesInListsWithUsing()</div>
+</div>
+
+=== AttributeSpacing ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PPlainSection"><span class="SHMetadata">[[AttributeA]]</span></div>
+   <div class="PSection PPlainSection"><span class="SHMetadata">[ [ AttributeB ] ]</span></div>
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
+         <div class="PBeforeParameters FitIntoLeftIndentOnNarrow RightAlignOnNarrow" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/3/2"><span class="SHMetadata">[ [</span></div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="1/1/2/2" style="grid-area:1/2/2/3"><span class="SHMetadata">AttributeC,</span></div>
+         <div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="2/1/3/2" style="grid-area:2/2/3/3"><span class="SHMetadata">AttributeD</span></div>
+         <div class="PAfterParameters NegativeLeftSpaceOnWide FitIntoRightIndentOnNarrow" data-WideGridArea="2/3/3/4" data-NarrowGridArea="2/3/3/4" style="grid-area:2/3/3/4"><span class="SHMetadata">] ]</span></div>
+      </div>
+   </div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> AttributeSpacing()</div>
+</div>
+
+=== Attributes via __attribute__ ===
+
+=== UnderscoredAttribute ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHMetadata">__attribute__((noinline))</span></div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> UnderscoredAttribute()</div>
+</div>
+
+=== UnderscoredAttributeWithParameter ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHMetadata">__attribute__((section(&quot;SectionName&quot;)))</span></div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> UnderscoredAttributeWithParameter()</div>
+</div>
+
+=== MultipleSeparateUnderscoredAttributes ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHMetadata">__attribute__((noinline))</span></div>
+   <div class="PSection PPlainSection"><span class="SHMetadata">__attribute__((section(&quot;SectionName&quot;)))</span></div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> MultipleSeparateUnderscoredAttributes()</div>
+</div>
+
+=== MultipleCombinedUnderscoredAttributes ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/3/2"><span class="SHMetadata">__attribute__((</span></div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHMetadata">noinline,</span></div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHMetadata">code_seg(&quot;SectionName&quot;)</span></div>
+         <div class="PAfterParameters" data-WideGridArea="2/3/3/4" data-NarrowGridArea="4/1/5/3" style="grid-area:2/3/3/4"><span class="SHMetadata">))</span></div>
+      </div>
+   </div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> MultipleCombinedUnderscoredAttributes()</div>
+</div>
+
+=== UnderscoredAttributeSpacing ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PPlainSection"><span class="SHMetadata">__attribute__((AttributeA))</span></div>
+   <div class="PSection PPlainSection"><span class="SHMetadata">__attribute__ ((AttributeB))</span></div>
+   <div class="PSection PPlainSection"><span class="SHMetadata">__attribute__ ( ( AttributeC ) )</span></div>
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/3/2"><span class="SHMetadata">__attribute__ ( (</span></div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHMetadata">AttributeD,</span></div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHMetadata">AttributeE</span></div>
+         <div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="2/3/3/4" data-NarrowGridArea="4/1/5/3" style="grid-area:2/3/3/4"><span class="SHMetadata">) )</span></div>
+      </div>
+   </div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> UnderscoredAttributeSpacing()</div>
+</div>
+
+=== Attributes via __declspec ===
+
+=== DeclSpecAttribute ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHMetadata">__declspec(noinline)</span></div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> DeclSpecAttribute()</div>
+</div>
+
+=== DeclSpecAttributeWithParameter ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHMetadata">__declspec(code_seg(&quot;SectionName&quot;))</span></div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> DeclSpecAttributeWithParameter()</div>
+</div>
+
+=== DeclSpecMultipleSeparateAttributes ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHMetadata">__declspec(noinline)</span></div>
+   <div class="PSection PPlainSection"><span class="SHMetadata">__declspec(code_seg(&quot;SectionName&quot;))</span></div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> DeclSpecMultipleSeparateAttributes()</div>
+</div>
+
+=== DeclSpecMultipleCombinedAttributes ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/3/2"><span class="SHMetadata">__declspec(</span></div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHMetadata">noinline</span></div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHMetadata">code_seg(&quot;SectionName&quot;)</span></div>
+         <div class="PAfterParameters" data-WideGridArea="2/3/3/4" data-NarrowGridArea="4/1/5/3" style="grid-area:2/3/3/4"><span class="SHMetadata">)</span></div>
+      </div>
+   </div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> DeclSpecMultipleCombinedAttributes()</div>
+</div>
+
+=== DeclSpecAttributeSpacing ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PPlainSection"><span class="SHMetadata">__declspec(AttributeA)</span></div>
+   <div class="PSection PPlainSection"><span class="SHMetadata">__declspec ( AttributeB )</span></div>
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/3/2"><span class="SHMetadata">__declspec (</span></div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHMetadata">AttributeC</span></div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHMetadata">AttributeD</span></div>
+         <div class="PAfterParameters" data-WideGridArea="2/3/3/4" data-NarrowGridArea="4/1/5/3" style="grid-area:2/3/3/4"><span class="SHMetadata">)</span></div>
+      </div>
+   </div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> DeclSpecAttributeSpacing()</div>
+</div>
+
+=== DeclSpecWhitespaceTraps ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PPlainSection"><span class="SHMetadata">__declspec ( )</span></div>
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/3/2"><span class="SHMetadata">__declspec (</span></div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHMetadata">AttributeA</span></div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHMetadata">AttributeB</span></div>
+         <div class="PAfterParameters" data-WideGridArea="2/3/3/4" data-NarrowGridArea="4/1/5/3" style="grid-area:2/3/3/4"><span class="SHMetadata">)</span></div>
+      </div>
+   </div>
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/4/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/4/2"><span class="SHMetadata">__declspec (</span></div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHMetadata">AttributeC</span></div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHMetadata">AttributeD</span></div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="3/2/4/3" data-NarrowGridArea="4/1/5/2" style="grid-area:3/2/4/3"><span class="SHMetadata">AttributeE</span></div>
+         <div class="PAfterParameters" data-WideGridArea="3/3/4/4" data-NarrowGridArea="5/1/6/3" style="grid-area:3/3/4/4"><span class="SHMetadata">)</span></div>
+      </div>
+   </div>
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/3/2"><span class="SHMetadata">__declspec (</span></div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHMetadata">AttributeF</span></div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHMetadata">AttributeG</span></div>
+         <div class="PAfterParameters" data-WideGridArea="2/3/3/4" data-NarrowGridArea="4/1/5/3" style="grid-area:2/3/3/4"><span class="SHMetadata">)</span></div>
+      </div>
+   </div>
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/5/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/5/2"><span class="SHMetadata">__declspec (</span></div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHMetadata">AttributeH ( &quot;value&quot; )</span></div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHMetadata">AttributeI ( &quot;value&quot; )</span></div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="3/2/4/3" data-NarrowGridArea="4/1/5/2" style="grid-area:3/2/4/3"><span class="SHMetadata">AttributeJ ( &quot;value&quot; )</span></div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="4/2/5/3" data-NarrowGridArea="5/1/6/2" style="grid-area:4/2/5/3"><span class="SHMetadata">AttributeK ( &quot;value&quot; )</span></div>
+         <div class="PAfterParameters" data-WideGridArea="4/3/5/4" data-NarrowGridArea="6/1/7/3" style="grid-area:4/3/5/4"><span class="SHMetadata">)</span></div>
+      </div>
+   </div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> DeclSpecWhitespaceTraps()</div>
+</div>
