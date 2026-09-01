@@ -298,7 +298,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToSkipAttribute
 		 *
-		 * Tries to move the iterator past a single attribute like "[[deprecated]]".  It will also handle list attributes like "[[attrA, attrB]]".
+		 * Tries to move the iterator past a single attribute.  This can be a bracketed attribute like "[[deprecated]]", an underscored attribute
+		 * like "__attribute__((noinline))", or a declspec attribute like "__declspec(noinline)".
 		 *
 		 * Supported Modes:
 		 *
@@ -314,6 +315,31 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		protected bool TryToSkipAttribute (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
 														  PrototypeParsingType prototypeParsingType = PrototypeParsingType.TypeModifier)
+			{
+			return (TryToSkipBracketedAttribute(ref iterator, mode, prototypeParsingType) ||
+					   TryToSkipUnderscoredAttribute(ref iterator, mode, prototypeParsingType) ||
+					   TryToSkipDeclSpecAttribute(ref iterator, mode, prototypeParsingType));
+			}
+
+
+		/* Function: TryToSkipBracketedAttribute
+		 *
+		 * Tries to move the iterator past a single bracketed attribute like "[[deprecated]]".  It will also handle list attributes like "[[attrA, attrB]]".
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.TypeModifier>,
+		 *			  <PrototypeParsingType.ParamModifier>, or <PrototypeParsingType.StartOfPrototypeSection>.
+		 *		- <ParseMode.ParseClassPrototype>
+		 *			- Will mark the first one with <ClassPrototypeParsingType.StartOfPrePrototypeLine> and the rest with
+		 *			  <ClassPrototypeParsingType.PrePrototypeLine>.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipBracketedAttribute (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
+																		PrototypeParsingType prototypeParsingType = PrototypeParsingType.TypeModifier)
 			{
 			// According to the spec double opening brackets aren't allowed anywhere else, so we don't have to worry about this being part of
 			// an array signature or something.  However, whitespace is allowed between them.
@@ -462,6 +488,318 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						}
 
 					secondClosingBracket.PrototypeParsingType = PrototypeParsingType.EndOfPrototypeSection;
+					}
+				else
+					{
+					iterator.SetPrototypeParsingTypeBetween(lookahead, prototypeParsingType);
+					}
+				}
+
+			else if (mode == ParseMode.ParseClassPrototype)
+				{
+				iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfPrePrototypeLine;
+				iterator.Next();
+
+				iterator.SetClassPrototypeParsingTypeBetween(lookahead, ClassPrototypeParsingType.PrePrototypeLine);
+				}
+
+			iterator = lookahead;
+			return true;
+			}
+
+
+		/* Function: TryToSkipUnderscoredAttribute
+		 *
+		 * Tries to move the iterator past a single underscored attribute like "__attribute__((noinline))".  It will also handle list attributes like
+		 * "__attribute__((noinline, section("SectionName")))".
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.TypeModifier>,
+		 *			  <PrototypeParsingType.ParamModifier>, or <PrototypeParsingType.StartOfPrototypeSection>.
+		 *		- <ParseMode.ParseClassPrototype>
+		 *			- Will mark the first one with <ClassPrototypeParsingType.StartOfPrePrototypeLine> and the rest with
+		 *			  <ClassPrototypeParsingType.PrePrototypeLine>.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipUnderscoredAttribute (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
+																			PrototypeParsingType prototypeParsingType = PrototypeParsingType.TypeModifier)
+			{
+			// According to the spec double opening parentheses are required, not just a convention.  However, whitespace is allowed between
+			// them.
+			if (!iterator.MatchesAcrossTokens("__attribute__"))
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+
+			lookahead.NextByCharacters(13);
+			TryToSkipWhitespace(ref lookahead);
+
+			if (lookahead.Character != '(')
+				{  return false;  }
+
+			lookahead.Next();
+			TryToSkipWhitespace(ref lookahead);
+
+			if (lookahead.Character != '(')
+				{  return false;  }
+
+			TokenIterator secondOpeningParen = lookahead;
+
+			lookahead.Next();
+			TryToSkipWhitespace(ref lookahead);
+
+			bool formatAsList = false;
+
+
+			// Content in parentheses
+
+			TokenIterator startOfParameter = lookahead;
+			TokenIterator firstClosingParen, secondClosingParen;
+
+			for (;;)
+				{
+				if (!lookahead.IsInBounds)
+					{
+					ResetTokensBetween(iterator, lookahead, mode);
+					return false;
+					}
+
+				else if (lookahead.Character == ')')
+					{
+					firstClosingParen = lookahead;
+
+					lookahead.Next();
+					TryToSkipWhitespace(ref lookahead);
+
+					if (lookahead.Character == ')')
+						{
+						secondClosingParen = lookahead;
+
+						if (formatAsList && mode == ParseMode.ParsePrototype && prototypeParsingType == PrototypeParsingType.StartOfPrototypeSection)
+							{
+							// Mark the last parameter contents
+							TokenIterator endOfParameter = firstClosingParen;
+							endOfParameter.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds);
+
+							startOfParameter.SetPrototypeParsingTypeBetween(endOfParameter, PrototypeParsingType.PropertyValue);
+							}
+
+						lookahead.Next();
+						break;
+						}
+					}
+
+				else if (lookahead.Character == ',')
+					{
+					if (mode == ParseMode.ParsePrototype && prototypeParsingType == PrototypeParsingType.StartOfPrototypeSection)
+						{
+						formatAsList = true;
+						lookahead.PrototypeParsingType = PrototypeParsingType.ParamSeparator;
+
+						TokenIterator endOfParameter = lookahead;
+						endOfParameter.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds);
+
+						if (endOfParameter > startOfParameter)
+							{  startOfParameter.SetPrototypeParsingTypeBetween(endOfParameter, PrototypeParsingType.PropertyValue);  }
+						}
+
+					lookahead.Next();
+					TryToSkipWhitespace(ref lookahead);
+
+					startOfParameter = lookahead;
+					}
+
+				else
+					{
+					GenericSkip(ref lookahead);
+					TryToSkipWhitespace(ref lookahead);
+					}
+				}
+
+
+			// Parameter contents and separators should already be marked.
+
+			if (mode == ParseMode.SyntaxHighlight)
+				{
+				iterator.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.Metadata);
+				}
+
+			else if (mode == ParseMode.ParsePrototype)
+				{
+				if (prototypeParsingType == PrototypeParsingType.StartOfPrototypeSection)
+					{
+					iterator.PrototypeParsingType = PrototypeParsingType.StartOfPrototypeSection;
+
+					if (formatAsList)
+						{
+						secondOpeningParen.PrototypeParsingType = PrototypeParsingType.StartOfMetadataParams;
+						firstClosingParen.PrototypeParsingType = PrototypeParsingType.EndOfMetadataParams;
+						}
+
+					secondClosingParen.PrototypeParsingType = PrototypeParsingType.EndOfPrototypeSection;
+					}
+				else
+					{
+					iterator.SetPrototypeParsingTypeBetween(lookahead, prototypeParsingType);
+					}
+				}
+
+			else if (mode == ParseMode.ParseClassPrototype)
+				{
+				iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfPrePrototypeLine;
+				iterator.Next();
+
+				iterator.SetClassPrototypeParsingTypeBetween(lookahead, ClassPrototypeParsingType.PrePrototypeLine);
+				}
+
+			iterator = lookahead;
+			return true;
+			}
+
+
+		/* Function: TryToSkipDeclSpecAttribute
+		 *
+		 * Tries to move the iterator past a single declspec attribute like "__declspec(noinline)".  It will also handle list attributes like
+		 * "__declspec(noinline, code_seg("SectionName"))".
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.TypeModifier>,
+		 *			  <PrototypeParsingType.ParamModifier>, or <PrototypeParsingType.StartOfPrototypeSection>.
+		 *		- <ParseMode.ParseClassPrototype>
+		 *			- Will mark the first one with <ClassPrototypeParsingType.StartOfPrePrototypeLine> and the rest with
+		 *			  <ClassPrototypeParsingType.PrePrototypeLine>.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipDeclSpecAttribute (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
+																	   PrototypeParsingType prototypeParsingType = PrototypeParsingType.TypeModifier)
+			{
+			if (!iterator.MatchesAcrossTokens("__declspec"))
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+
+			lookahead.NextByCharacters(10);
+			TryToSkipWhitespace(ref lookahead);
+
+			if (lookahead.Character != '(')
+				{  return false;  }
+
+			TokenIterator openingParen = lookahead;
+
+			lookahead.Next();
+			TryToSkipWhitespace(ref lookahead);
+
+			bool formatAsList = false;
+
+
+			// Content in parentheses
+
+			TokenIterator startOfParameter = lookahead;
+			TokenIterator closingParen;
+
+			for (;;)
+				{
+				if (!lookahead.IsInBounds)
+					{
+					ResetTokensBetween(iterator, lookahead, mode);
+					return false;
+					}
+
+				else if (lookahead.Character == ')')
+					{
+					closingParen = lookahead;
+
+					if (formatAsList && mode == ParseMode.ParsePrototype && prototypeParsingType == PrototypeParsingType.StartOfPrototypeSection)
+						{
+						// Mark the last parameter contents
+						TokenIterator endOfParameter = closingParen;
+						endOfParameter.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds);
+
+						if (endOfParameter > startOfParameter)
+							{  startOfParameter.SetPrototypeParsingTypeBetween(endOfParameter, PrototypeParsingType.PropertyValue);  }
+						}
+
+					lookahead.Next();
+					break;
+					}
+
+				else if (lookahead.FundamentalType == FundamentalType.Whitespace ||
+						   lookahead.FundamentalType == FundamentalType.LineBreak)
+					{
+					TokenIterator afterWhitespace = lookahead;
+					afterWhitespace.Next();
+					TryToSkipWhitespace(ref afterWhitespace);
+
+					// If the whitespace is followed by an opening parenthesis, ignore it.  It's a parameter section that should be attached to the
+					// previous parameter.  If it's followed by a closing parenthesis, also ignore it because it's the end of the parameters instead
+					// of a separator.
+					if (afterWhitespace.Character == '(' ||
+						afterWhitespace.Character == ')')
+						{
+						lookahead = afterWhitespace;
+						continue;
+						}
+
+					// Otherwise we treat it as a parameter separator
+					if (mode == ParseMode.ParsePrototype && prototypeParsingType == PrototypeParsingType.StartOfPrototypeSection)
+						{
+						formatAsList = true;
+						lookahead.PrototypeParsingType = PrototypeParsingType.ParamSeparator;
+
+						TokenIterator endOfParameter = lookahead;
+						endOfParameter.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds);
+
+						if (endOfParameter > startOfParameter)
+							{  startOfParameter.SetPrototypeParsingTypeBetween(endOfParameter, PrototypeParsingType.PropertyValue);  }
+						}
+
+					lookahead.Next();
+					TryToSkipWhitespace(ref lookahead);
+
+					startOfParameter = lookahead;
+					}
+
+				else
+					{
+					GenericSkip(ref lookahead);
+					}
+				}
+
+
+			// Parameter contents and separators should already be marked.
+
+			if (mode == ParseMode.SyntaxHighlight)
+				{
+				iterator.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.Metadata);
+				}
+
+			else if (mode == ParseMode.ParsePrototype)
+				{
+				if (prototypeParsingType == PrototypeParsingType.StartOfPrototypeSection)
+					{
+					iterator.PrototypeParsingType = PrototypeParsingType.StartOfPrototypeSection;
+
+					if (formatAsList)
+						{
+						openingParen.PrototypeParsingType = PrototypeParsingType.StartOfMetadataParams;
+						closingParen.PrototypeParsingType = PrototypeParsingType.EndOfMetadataParams;
+
+						// This could get overwritten if there's no whitespace between the attribute and the next token, but that shouldn't
+						// happen very often in practice
+						lookahead.PrototypeParsingType = PrototypeParsingType.EndOfPrototypeSection;
+						}
+					else
+						{
+						closingParen.PrototypeParsingType = PrototypeParsingType.EndOfPrototypeSection;
+						}
 					}
 				else
 					{
