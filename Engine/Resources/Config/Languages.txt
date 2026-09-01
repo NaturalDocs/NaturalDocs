@@ -79,7 +79,7 @@ Language: C/C++
 
    Class Prototype Enders: ; {
    Struct Prototype Enders: ; {
-   Function Prototype Enders: ; {
+   Function Prototype Enders: ; { : try
    Variable Prototype Enders: ; =
    Enumeration Prototype Enders: ; {
 
