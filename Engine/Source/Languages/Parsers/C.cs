@@ -8,9 +8,14 @@
  *
  *		The parser is primarily based on C23 and C++23, the latest releases as of June 2026.
  *
- * Resources:
+ * Primary Resources:
  *		- <C Language Reference: https://cppreference.com/c/language>
  *		- <C++ Language Reference: https://cppreference.com/cpp/language>
+ *		- <Hyperlinked BNF Grammar: https://alx71hub.github.io/hcb/>
+ *
+ *	Additional Topics:
+ *		- <Microsoft-Specific Modifiers: https://github.com/MicrosoftDocs/cpp-docs/blob/main/docs/cpp/microsoft-specific-modifiers.md>
+ *			- <__declspec: https://github.com/MicrosoftDocs/cpp-docs/blob/main/docs/cpp/declspec.md>
  *
  */
 
@@ -146,7 +151,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToSkipEnum
 		 *
-		 * Override to support detecting enums.
+		 * If the iterator is on an enum definition, moves it past it and returns true.
 		 *
 		 * Supported Modes:
 		 *
