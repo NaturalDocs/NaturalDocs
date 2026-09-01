@@ -311,8 +311,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 														  PrototypeParsingType prototypeParsingType = PrototypeParsingType.TypeModifier)
 			{
 			// According to the spec double opening brackets aren't allowed anywhere else, so we don't have to worry about this being part of
-			// an array signature or something.
-			if (!iterator.MatchesAcrossTokens("[["))
+			// an array signature or something.  However, whitespace is allowed between them.
+
+			if (iterator.Character != '[')
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+
+			lookahead.Next();
+			TryToSkipWhitespace(ref lookahead);
+
+			if (lookahead.Character != '[')
 				{  return false;  }
 
 			// If we're making a prototype section, the outermost [ and ] will be the start and end.  If it's a list of attributes we'll format them
@@ -321,9 +330,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Also, C++ doesn't let you reference parameters by name (like "Function(name: value)"), only by position, so we don't need to
 			// reserve parameter formatting for that.
-
-			TokenIterator lookahead = iterator;
-			lookahead.Next();
 
 			TokenIterator startOfParams = lookahead;
 
@@ -367,12 +373,32 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Content
 
+			TokenIterator firstClosingBracket, secondClosingBracket;
+
 			for (;;)
 				{
 				if (!lookahead.IsInBounds)
-					{  return false;  }
-				else if (lookahead.MatchesAcrossTokens("]]"))
-					{  break;  }
+					{
+					ResetTokensBetween(iterator, lookahead, mode);
+					return false;
+					}
+
+				else if (lookahead.Character == ']')
+					{
+					firstClosingBracket = lookahead;
+
+					lookahead.Next();
+					TryToSkipWhitespace(ref lookahead);
+
+					if (lookahead.Character == ']')
+						{
+						secondClosingBracket = lookahead;
+
+						lookahead.Next();
+						break;
+						}
+					}
+
 				else if (TryToSkipIdentifier(ref lookahead, mode, PrototypeParsingType.Name))
 					{
 					TryToSkipWhitespace(ref lookahead);
@@ -390,6 +416,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						TryToSkipWhitespace(ref lookahead);
 						}
 					}
+
 				else if (lookahead.Character == ',')
 					{
 					if (mode == ParseMode.ParsePrototype && prototypeParsingType == PrototypeParsingType.StartOfPrototypeSection)
@@ -401,6 +428,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					lookahead.Next();
 					TryToSkipWhitespace(ref lookahead);
 					}
+
 				else
 					{
 					ResetTokensBetween(iterator, lookahead, mode);
@@ -409,9 +437,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 
+			// Parameter contents and separators should already be marked.
+
 			if (mode == ParseMode.SyntaxHighlight)
 				{
-				lookahead.Next(2);
 				iterator.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.Metadata);
 				}
 
@@ -424,16 +453,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					if (formatAsList)
 						{
 						startOfParams.PrototypeParsingType = PrototypeParsingType.StartOfMetadataParams;
-						lookahead.PrototypeParsingType = PrototypeParsingType.EndOfMetadataParams;
+						firstClosingBracket.PrototypeParsingType = PrototypeParsingType.EndOfMetadataParams;
 						}
 
-					lookahead.Next();
-					lookahead.PrototypeParsingType = PrototypeParsingType.EndOfPrototypeSection;
-					lookahead.Next();
+					secondClosingBracket.PrototypeParsingType = PrototypeParsingType.EndOfPrototypeSection;
 					}
 				else
 					{
-					lookahead.Next(2);
 					iterator.SetPrototypeParsingTypeBetween(lookahead, prototypeParsingType);
 					}
 				}
@@ -443,7 +469,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfPrePrototypeLine;
 				iterator.Next();
 
-				lookahead.Next(2);
 				iterator.SetClassPrototypeParsingTypeBetween(lookahead, ClassPrototypeParsingType.PrePrototypeLine);
 				}
 
