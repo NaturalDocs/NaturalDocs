@@ -106,3 +106,66 @@ AttributeJ ( "value" )
   AttributeK ( "value" )
 )
 void DeclSpecWhitespaceTraps();
+
+
+
+// Group: Attributes via Other Macros
+// ______________________________________________
+
+// Function: StdCallAttribute
+__stdcall void StdCallAttribute() { }
+
+
+
+// Group: Preceding Modifiers
+// ______________________________________________
+
+// Function: InlineFunction
+inline void InlineFunction() { }
+
+// Function: VirtualFunction
+virtual void VirtualFunction() { }
+
+// Function: ExplicitFunction
+explicit void ExplicitFunction() { }
+
+// Function: ReturnValueModifiers
+const unsigned int ReturnValueModifiers() { }
+
+
+
+// Group: Post Modifiers
+// ______________________________________________
+
+// Function: VolatileFunction
+void VolatileFunction() volatile { }
+
+// Function: ConstFunction
+void ConstFunction() const { }
+
+// Function: FunctionWithExceptionList
+void FunctionWithExceptionList() throw (int, ExceptionClass) { }
+
+// Function: FunctionWithExceptionListAndParameter
+void FunctionWithExceptionListAndParameter(int param) throw (int, ExceptionClass) { }
+
+// Function: FunctionWithNoExcept
+void FunctionWithNoExcept() noexcept { }
+
+// Function: FunctionWithNoExceptExpression
+void FunctionWithNoExceptExpression() noexcept(true) { }
+
+// Function: FunctionWithNoExceptExpressionAndParameter
+void FunctionWithNoExceptExpressionAndParameter(int param) noexcept(true) { }
+
+// Function: TrailingReturnValue
+auto TrailingReturnValue() -> int { }
+
+// Function: TrailingReturnValueAndNoExcept
+auto TrailingReturnValueAndNoExcept() noexcept(true) -> float { }
+
+// Function: SingleTrailingRefSymbol
+void ParentClass::SingleTrailingRefSymbol() & { }
+
+// Function: DoubleTrailingRefSymbol
+void ParentClass::DoubleTrailingRefSymbol() && { }

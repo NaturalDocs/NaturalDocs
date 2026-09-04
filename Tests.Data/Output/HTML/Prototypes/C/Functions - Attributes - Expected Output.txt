@@ -261,3 +261,119 @@
    </div>
    <div class="PSection PPlainSection"><span class="SHKeyword">void</span> DeclSpecWhitespaceTraps()</div>
 </div>
+
+=== Attributes via Other Macros ===
+
+=== StdCallAttribute ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection">__stdcall <span class="SHKeyword">void</span> StdCallAttribute()</div>
+</div>
+
+=== Preceding Modifiers ===
+
+=== InlineFunction ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">inline</span> <span class="SHKeyword">void</span> InlineFunction()</div>
+</div>
+
+=== VirtualFunction ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">virtual</span> <span class="SHKeyword">void</span> VirtualFunction()</div>
+</div>
+
+=== ExplicitFunction ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">explicit</span> <span class="SHKeyword">void</span> ExplicitFunction()</div>
+</div>
+
+=== ReturnValueModifiers ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">const unsigned</span> <span class="SHKeyword">int</span> ReturnValueModifiers()</div>
+</div>
+
+=== Post Modifiers ===
+
+=== VolatileFunction ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> VolatileFunction() <span class="SHKeyword">volatile</span></div>
+</div>
+
+=== ConstFunction ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> ConstFunction() <span class="SHKeyword">const</span></div>
+</div>
+
+=== FunctionWithExceptionList ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> FunctionWithExceptionList() <span class="SHKeyword">throw</span> (<span class="SHKeyword">int</span>, ExceptionClass)</div>
+</div>
+
+=== FunctionWithExceptionListAndParameter ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">void</span> FunctionWithExceptionListAndParameter(</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">param</div>
+         <div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">) <span class="SHKeyword">throw</span> (<span class="SHKeyword">int</span>, ExceptionClass)</div>
+      </div>
+   </div>
+</div>
+
+=== FunctionWithNoExcept ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> FunctionWithNoExcept() <span class="SHKeyword">noexcept</span></div>
+</div>
+
+=== FunctionWithNoExceptExpression ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> FunctionWithNoExceptExpression() <span class="SHKeyword">noexcept</span>(<span class="SHKeyword">true</span>)</div>
+</div>
+
+=== FunctionWithNoExceptExpressionAndParameter ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">void</span> FunctionWithNoExceptExpressionAndParameter(</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">param</div>
+         <div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">) <span class="SHKeyword">noexcept</span>(<span class="SHKeyword">true</span>)</div>
+      </div>
+   </div>
+</div>
+
+=== TrailingReturnValue ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">auto</span> TrailingReturnValue() -&gt; <span class="SHKeyword">int</span></div>
+</div>
+
+=== TrailingReturnValueAndNoExcept ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">auto</span> TrailingReturnValueAndNoExcept() <span class="SHKeyword">noexcept</span>(<span class="SHKeyword">true</span>) -&gt; <span class="SHKeyword">float</span></div>
+</div>
+
+=== SingleTrailingRefSymbol ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> ParentClass::SingleTrailingRefSymbol() &amp;</div>
+</div>
+
+=== DoubleTrailingRefSymbol ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> ParentClass::DoubleTrailingRefSymbol() &amp;&amp;</div>
+</div>
