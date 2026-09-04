@@ -1,0 +1,118 @@
+=== Function Bodies ===
+
+=== NoBody ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">bool</span> NoBody(</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">param</div>
+         <div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">)</div>
+      </div>
+   </div>
+</div>
+
+=== StandardBody ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">bool</span> StandardBody(</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">param</div>
+         <div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">)</div>
+      </div>
+   </div>
+</div>
+
+=== StandardBodyConstructor ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2">StandardBodyConstructor(</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">param</div>
+         <div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">)</div>
+      </div>
+   </div>
+</div>
+
+=== TryBody ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">bool</span> TryBody(</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">param</div>
+         <div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">)</div>
+      </div>
+   </div>
+</div>
+
+=== TryBodyConstructor ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2">TryBodyConstructor(</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">param</div>
+         <div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">)</div>
+      </div>
+   </div>
+</div>
+
+=== ZeroBody ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">virtual</span> <span class="SHKeyword">bool</span> ZeroBody(</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">param</div>
+         <div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">) = <span class="SHNumber">0</span></div>
+      </div>
+   </div>
+</div>
+
+=== DefaultBody ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2">DefaultBody::DefaultBody(</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">DefaultBody&amp;&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">toCopy</div>
+         <div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">) = <span class="SHKeyword">default</span></div>
+      </div>
+   </div>
+</div>
+
+=== DeleteBody ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">bool</span> DeleteBody(</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">param</div>
+         <div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">) = <span class="SHKeyword">delete</span></div>
+      </div>
+   </div>
+</div>
+
+=== DeleteBodyWithMessage ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">bool</span> DeleteBodyWithMessage(</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">int</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">param</div>
+         <div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">) = <span class="SHKeyword">delete</span>(<span class="SHString">&quot;You cannot use this function.&quot;</span>)</div>
+      </div>
+   </div>
+</div>
