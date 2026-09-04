@@ -36,6 +36,12 @@ void AttributesInListsWithUsing();
 [ [ AttributeC, AttributeD ] ]
 void AttributeSpacing();
 
+// Function: AttributesInParameters
+void AttributesInParameters([[AttributeA]] int a,
+										   [[Namespace::AttributeB()]] float b,
+										   [[AttributeC(12), AttributeD("string", 0)]] double c,
+										   [[AttributeE]] [[AttributeF(12)]] [[AttributeG("string", 0)]] char* d);
+
 
 
 // Group: Attributes via __attribute__
