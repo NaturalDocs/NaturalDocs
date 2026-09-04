@@ -115,10 +115,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 * This is primarily used to validate keywords after checking the contents of the token against a keyword list, so that "input"
 		 * by itself will be distinguished from "_input" or similar.
 		 */
-		protected bool IsPartOfLongerIdentifier (TokenIterator iterator)
+		protected bool IsPartOfLongerIdentifier (TokenIterator iterator, int characterLength)
 			{
 			TokenIterator lookahead = iterator;
-			lookahead.Next();
+			lookahead.NextByCharacters(characterLength);
 
 			if (lookahead.FundamentalType == FundamentalType.Text ||
 				lookahead.Character == '_')
@@ -138,28 +138,28 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		/* Function: IsOnKeyword
 		 *
 		 * Returns whether the <TokenIterator> is on the passed keyword, making sure there are no other identifier tokens
-		 * before or after it.  This allows us to be sure an iterator on "input" isn't actually on "_input" or similar.  This function
-		 * assumes keywords are only one text token.
+		 * before or after it.  This allows us to be sure an iterator on "input" isn't actually on "_input" or similar.
 		 *
 		 * If you have multiple keywords to test against, it is more efficient to use one of the <IsOnAnyKeyword()> functions.
 		 */
 		public bool IsOnKeyword (TokenIterator iterator, string keyword)
 			{
 			return (iterator.MatchesToken(keyword) &&
-					   !IsPartOfLongerIdentifier(iterator));
+					   !IsPartOfLongerIdentifier(iterator, keyword.Length));
 			}
 
 
 		/* Function: IsOnAnyKeyword
 		 *
 		 * Returns whether the <TokenIterator> is on the passed keyword, making sure there are no other identifier tokens
-		 * before or after it.  This allows us to be sure an iterator on "input" isn't actually on "_input" or similar.  This function
-		 * assumes keywords are only one text token.
+		 * before or after it.  This allows us to be sure an iterator on "input" isn't actually on "_input" or similar.
 		 */
 		public bool IsOnAnyKeyword (TokenIterator iterator, params string[] keywords)
 			{
-			return (iterator.MatchesAnyAcrossTokens(keywords, true) != -1 &&
-					   !IsPartOfLongerIdentifier(iterator));
+			int matchIndex = iterator.MatchesAnyAcrossTokens(keywords, true);
+
+			return (matchIndex != -1 &&
+					   !IsPartOfLongerIdentifier(iterator, keywords[matchIndex].Length));
 			}
 
 
