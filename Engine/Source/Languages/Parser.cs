@@ -2020,8 +2020,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				else if (prototypeEnders.Symbols != null &&
 						   iterator.MatchesAnyAcrossTokens(prototypeEnders.Symbols, !language.CaseSensitive) != -1)
 					{
-					goodPrototype = true;
-					break;
+					// Make sure : as a prototype ender doesn't match against ::
+					if (iterator.MatchesAcrossTokens("::") && !prototypeEnders.Symbols.Contains("::"))
+						{
+						iterator.Next(2);
+						}
+					else
+						{
+						goodPrototype = true;
+						break;
+						}
 					}
 
 
