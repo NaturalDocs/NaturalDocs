@@ -19,6 +19,22 @@
 # ------------------------------------------------------------------------
 # The syntax reference is after the definitions.
 
+Language: C/C++ (Basic Language Support)
+
+   Extensions: c-bls cpp-bls h-bls
+
+   Simple Identifier: CBLS
+
+   Line Comment: //
+   Block Comment: /* */
+   Member Operator: ::
+   Enum Values: Under Parent
+
+   Class Prototype Enders: ; {
+   Function Prototype Enders: ; {
+   Variable Prototype Enders: ; =
+
+
 Language: C# (Basic Language Support)
 
    Extension: cs-bls
@@ -42,46 +58,17 @@ Language: C# (Basic Language Support)
    Event Prototype Enders: ; =
 
 
-Language: C (Basic Language Support)
+Language: Java (Basic Language Support)
 
-   Extensions: c-bls cpp-bls h-bls
-
-   Simple Identifier: CBLS
+   Extension: java-bls
 
    Line Comment: //
    Block Comment: /* */
-   Member Operator: ::
-   Enum Values: Under Parent
-
-   Class Prototype Enders: ; {
-   Function Prototype Enders: ; {
-   Variable Prototype Enders: ; =
-
-
-Language: Perl (Basic Language Support)
-
-   Extensions: pl-bls pm-bls
-
-   Simple Identifier: PerlBLS
-
-   Line Comment: #
+   Enum Values: Under Type
 
    Function Prototype Ender: {
    Variable Prototype Enders: ; =
-
-
-Language: Visual Basic (Basic Language Support)
-
-   Extension: vb-bls
-
-   Simple Identifier: VisualBasicBLS
-
-   Line Comment: '
-   Line Extender: _
-   Enum Values: Under Type
-
-   Function Prototype Ender: \n
-   Variable Prototype Enders: \n =
+   Class Prototype Enders: { ;
 
 
 Language: JavaScript (Basic Language Support)
@@ -96,17 +83,39 @@ Language: JavaScript (Basic Language Support)
    Variable Prototype Enders: ; =
 
 
-Language: Java (Basic Language Support)
+Language: Lua (Basic Language Support)
 
-   Extension: java-bls
+   Extension: lua-bls
+
+   Simple Identifier: LuaBLS
+
+   Line Comment: --
+   Block Comment: --[[ ]]--
+
+
+Language: Pascal (Basic Language Support)
+
+   Extension: pas-bls
+
+   Simple Identifier: PascalBLS
 
    Line Comment: //
-   Block Comment: /* */
-   Enum Values: Under Type
+   Block Comment: { } (* *)
+
+   Function Prototype Ender: ;
+   Variable Prototype Enders: ; :=
+
+
+Language: Perl (Basic Language Support)
+
+   Extensions: pl-bls pm-bls
+
+   Simple Identifier: PerlBLS
+
+   Line Comment: #
 
    Function Prototype Ender: {
    Variable Prototype Enders: ; =
-   Class Prototype Enders: { ;
 
 
 Language: Python (Basic Language Support)
@@ -122,19 +131,6 @@ Language: Python (Basic Language Support)
    Class Prototype Ender: :
    Function Prototype Ender: :
    Variable Prototype Ender: =
-
-
-Language: Pascal (Basic Language Support)
-
-   Extension: pas-bls
-
-   Simple Identifier: PascalBLS
-
-   Line Comment: //
-   Block Comment: { } (* *)
-
-   Function Prototype Ender: ;
-   Variable Prototype Enders: ; :=
 
 
 Language: SQL (Basic Language Support)
@@ -153,16 +149,6 @@ Language: SQL (Basic Language Support)
    Database Trigger Prototype Enders: begin Begin BEGIN as As AS
 
 
-Language: Lua (Basic Language Support)
-
-   Extension: lua-bls
-
-   Simple Identifier: LuaBLS
-
-   Line Comment: --
-   Block Comment: --[[ ]]--
-
-
 Language: SystemVerilog (Basic Language Support)
 
    Extension: sv-bls
@@ -173,6 +159,20 @@ Language: SystemVerilog (Basic Language Support)
 
    Module Prototype Ender: ;
    Class Prototype Ender: ;
+
+
+Language: Visual Basic (Basic Language Support)
+
+   Extension: vb-bls
+
+   Simple Identifier: VisualBasicBLS
+
+   Line Comment: '
+   Line Extender: _
+   Enum Values: Under Type
+
+   Function Prototype Ender: \n
+   Variable Prototype Enders: \n =
 
 
 # These settings define the languages Natural Docs knows how to parse.  You
