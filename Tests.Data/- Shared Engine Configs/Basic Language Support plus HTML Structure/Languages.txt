@@ -83,6 +83,7 @@ Language: Java (Basic Language Support)
    Function Prototype Ender: {
    Variable Prototype Enders: ; =
    Class Prototype Enders: { ;
+   Interface Prototype Enders: { ;
 
 
 Language: JavaScript (Basic Language Support)
