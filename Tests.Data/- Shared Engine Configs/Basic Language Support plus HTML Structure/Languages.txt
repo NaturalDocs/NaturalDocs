@@ -1,4 +1,4 @@
-﻿Format: 2.4 (Development Release 1)
+﻿Format: 2.4 (Beta 1)
 
 # This is the Natural Docs languages file for this project.  If you change
 # anything here, it will apply to THIS PROJECT ONLY.  You can edit the version
@@ -18,6 +18,20 @@
 # Languages
 # ------------------------------------------------------------------------
 # The syntax reference is after the definitions.
+
+Language: ActionScript (Basic Language Support)
+
+   Extensions: as-bls mxml-bls
+
+   Line Comment: //
+   Block Comment: /* */
+   Case Sensitive: Yes
+
+   Class Prototype Ender: {
+   Interface Prototype Ender: {
+   Function Prototype Enders: ; {
+   Variable Prototype Enders: ; =
+
 
 Language: C/C++ (Basic Language Support)
 
@@ -115,6 +129,20 @@ Language: Perl (Basic Language Support)
    Line Comment: #
 
    Function Prototype Ender: {
+   Variable Prototype Enders: ; =
+
+
+Language: PHP (Basic Language Support)
+
+   Extension: php-bls
+
+   Line Comment: // #
+   Block Comment: /* */
+   Case Sensitive: Yes
+
+   Class Prototype Ender: {
+   Interface Prototype Ender: {
+   Function Prototype Enders: ; {
    Variable Prototype Enders: ; =
 
 
