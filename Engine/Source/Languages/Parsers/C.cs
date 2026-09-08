@@ -39,11 +39,26 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		// __________________________________________________________________________
 
 
+		/* Enum: MTNType
+		 *
+		 * The type of modifier-type-name words being parsed.
+		 *
+		 * Function - A function definition from the start to the parameters, encompassing modifiers, the return value, and the function
+		 *				   name.
+		 * Parameter - A function parameter from the start to the default value, parameter separator, or end of parameters, encompassing
+		 *					  modifiers, the type, and the name.
+		 * Variable - A variable from the start to the start of the default value or the end of the definition, encompassing modifiers, the
+		 *				   type, and the name.
+		 */
+		public enum MTNType : byte
+			{  Function, Parameter, Variable  }
+
+
 		/* Enum: TemplateSignatureType
 		 * Definition - The signature of a template definition, such as "template<class T>".
 		 * Instantiation - The signature of a template instantiation, such as "List<int>".
 		 */
-		public enum TemplateSignatureType: byte
+		public enum TemplateSignatureType : byte
 			{  Definition, Instantiation  }
 
 
@@ -175,135 +190,42 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		protected bool TryToSkipFunction (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
+
+			// The part before the parameters can be treated as a modifier-type-name group
+
 			TokenIterator lookahead = iterator;
 
-
-			// Attributes
-
-			if (TryToSkipAttributes(ref lookahead, mode, PrototypeParsingType.StartOfPrototypeSection))
-				{  TryToSkipWhitespace(ref lookahead);  }
-
-
-			// Pass 1: Count the number of words before the parentheses.  We need to accept parentheses that appear after macros
-			// like __declspec() though, so find the last one before the body, the end of the declaration, or a modifier that follows the
-			// function parameters like "noexcept".
-
-			TokenIterator startOfWords = lookahead;
-			int wordCount = 0;
-			bool lastWordHadParentheses = false;
-
-			while (lookahead.IsInBounds)
-				{
-				// Fail on keywords that show we're not on a function
-				if (IsOnAnyKeyword(lookahead, "class", "struct", "enum"))
-					{
-					ResetTokensBetween(iterator, lookahead, mode);
-					return false;
-					}
-
-				// Symbols that end the declaration or appear after the parameters
-				else if (lookahead.Character == ';' ||  // End of declaration
-						   lookahead.Character == '{' ||  // Body
-						   lookahead.Character == '=' ||  // = 0, = default, etc.
-						   lookahead.Character == ':' ||  // Calls to the base constructor
-						   lookahead.MatchesAcrossTokens("->"))  // Auto return values
-					{  break;  }
-
-				// Keywords that follow the parameters
-				else if (IsOnAnyKeyword(lookahead, "volatile", "try", "throw", "noexcept"))
-					{  break;  }
-
-				// xxx "const", "&", and "&&" can appear before a type and after the parentheses
-
-				else if (TryToSkipTypeWord(ref lookahead, includeTemplateSignatures: true))
-					{
-					wordCount++;
-					TryToSkipWhitespace(ref lookahead);
-
-					if (lookahead.Character == '(')
-						{
-						lookahead.Next();
-						lastWordHadParentheses = GenericSkipUntilAfter(ref lookahead, ')', angleBracketsAsBlocks: true, skipToEndIfNotFound: false);
-						TryToSkipWhitespace(ref lookahead);
-						}
-					else
-						{  lastWordHadParentheses = false;  }
-					}
-
-				else
-					{  break;  }
-				}
-
-			if (wordCount == 0 ||
-				lastWordHadParentheses == false)
+			if (!TryToSkipMTNGroup(ref lookahead, MTNType.Function, mode,
+											   failOnKeywords: ["class", "struct", "enum"]))
 				{  return false;  }
 
+			TryToSkipWhitespace(ref lookahead);
 
-			// Pass 2: Mark the words before the parentheses.  The order of words goes [modifier] [modifier] [type] [name], starting
-			// from the right.  We can skip this if we're just iterating over it.
 
-			// These will only be set if we're on ParseMode.ParsePrototype
-			TokenIterator openingParen = lookahead;
-			TokenIterator closingParen = lookahead;
+			// Parameters
 
-			if (mode == ParseMode.ParsePrototype)
+			if (lookahead.Character != '(')
 				{
-				lookahead = startOfWords;
-				TokenIterator wordStart, wordEnd;
-
-				while (wordCount > 0)
-					{
-					wordStart = lookahead;
-
-					TryToSkipTypeWord(ref lookahead, includeTemplateSignatures: true);
-					wordEnd = lookahead;
-
-					// Process the word we found
-					if (wordCount >= 3)
-						{
-						wordStart.SetPrototypeParsingTypeBetween(wordEnd, PrototypeParsingType.TypeModifier);
-						}
-					else if (wordCount == 2)
-						{
-						MarkType(wordStart, wordEnd);
-						}
-					else if (wordCount == 1)
-						{
-						MarkName(wordStart, wordEnd);
-						}
-
-					TryToSkipWhitespace(ref lookahead);
-
-					if (lookahead.Character == '(')
-						{
-						openingParen = lookahead;
-						lookahead.Next();
-
-						if (GenericSkipUntilOn(ref lookahead, ')', angleBracketsAsBlocks: true, skipToEndIfNotFound: false))
-							{
-							closingParen = lookahead;
-
-							// Process the parentheses after the word we found
-							if (wordCount >= 2)
-								{
-								openingParen.PrototypeParsingType = PrototypeParsingType.OpeningTypeModifier;
-								closingParen.PrototypeParsingType = PrototypeParsingType.ClosingTypeModifier;
-								}
-							else if (wordCount == 1)
-								{
-								openingParen.PrototypeParsingType = PrototypeParsingType.StartOfParams;
-								closingParen.PrototypeParsingType = PrototypeParsingType.EndOfParams;
-								}
-
-							lookahead.Next();
-							}
-
-						TryToSkipWhitespace(ref lookahead);
-						}
-
-					wordCount--;
-					}
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
 				}
+
+			TokenIterator openingParen = lookahead;
+			openingParen.PrototypeParsingType = PrototypeParsingType.StartOfParams;
+
+			lookahead.Next();
+
+			if (!GenericSkipUntilOn(ref lookahead, ')', angleBracketsAsBlocks: true, skipToEndIfNotFound: false))
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+
+			TokenIterator closingParen = lookahead;
+			closingParen.PrototypeParsingType = PrototypeParsingType.EndOfParams;
+
+			lookahead.Next();
+			TryToSkipWhitespace(ref lookahead);
 
 
 			// xxx process anything following the parameters
@@ -311,8 +233,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Process the parameters.  We can skip this if we're just iterating over it.
 
-			if (mode == ParseMode.ParsePrototype &&
-				closingParen > openingParen)
+			if (mode == ParseMode.ParsePrototype)
 				{
 				TokenIterator temp = openingParen;
 
@@ -409,108 +330,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		protected bool TryToSkipParameter (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
-			TokenIterator lookahead = iterator;
 
+			// The majority of the parameter can be treated as a modifier-type-name group
 
-			// Attributes
-
-			if (TryToSkipAttributes(ref lookahead, mode, PrototypeParsingType.TypeModifier))
-				{  TryToSkipWhitespace(ref lookahead);  }
-
-
-			// Pass 1: Count the number of words in the parameter declaration, excluding the default value if it exists.  We may need to
-			// accept parentheses that appear after macros, so as long as the last word doesn't end with parentheses it's okay to include
-			// as a modifier.
-
-			TokenIterator startOfWords = lookahead;
-			int wordCount = 0;
-			bool lastWordHadParentheses = false;
-
-			while (lookahead.IsInBounds)
-				{
-				// Symbols that end this part of the parameter
-				if (lookahead.Character == ',' ||  // End of parameter
-					lookahead.Character == ')' ||  // End of all parameters
-					lookahead.Character == '=')  // Default value
-					{  break;  }
-
-				else if (TryToSkipTypeWord(ref lookahead, includeTemplateSignatures: true))
-					{
-					wordCount++;
-					TryToSkipWhitespace(ref lookahead);
-
-					if (lookahead.Character == '(')
-						{
-						lookahead.Next();
-						lastWordHadParentheses = GenericSkipUntilAfter(ref lookahead, ')', angleBracketsAsBlocks: true, skipToEndIfNotFound: false);
-						TryToSkipWhitespace(ref lookahead);
-						}
-					else
-						{  lastWordHadParentheses = false;  }
-					}
-
-				else
-					{  break;  }
-				}
-
-			if (wordCount == 0 ||
-				lastWordHadParentheses)
+			if (!TryToSkipMTNGroup(ref iterator, MTNType.Parameter, mode))
 				{  return false;  }
 
-
-			// Pass 2: Mark the words.  The order of words goes [modifier] [modifier] [type] [name], starting from the right.  We can
-			// skip this if we're just iterating over it.
-
-			if (mode == ParseMode.ParsePrototype)
-				{
-				lookahead = startOfWords;
-				TokenIterator wordStart, wordEnd;
-
-				while (wordCount > 0)
-					{
-					wordStart = lookahead;
-
-					TryToSkipTypeWord(ref lookahead, includeTemplateSignatures: true);
-					wordEnd = lookahead;
-
-					// Process the word we found
-					if (wordCount >= 3)
-						{
-						wordStart.SetPrototypeParsingTypeBetween(wordEnd, PrototypeParsingType.TypeModifier);
-						}
-					else if (wordCount == 2)
-						{
-						MarkType(wordStart, wordEnd);
-						}
-					else if (wordCount == 1)
-						{
-						MarkName(wordStart, wordEnd);
-						}
-
-					TryToSkipWhitespace(ref lookahead);
-
-					if (lookahead.Character == '(')
-						{
-						TokenIterator openingParen = lookahead;
-						lookahead.Next();
-
-						if (GenericSkipUntilOn(ref lookahead, ')', angleBracketsAsBlocks: true, skipToEndIfNotFound: false))
-							{
-							openingParen.PrototypeParsingType = PrototypeParsingType.OpeningTypeModifier;
-							lookahead.PrototypeParsingType = PrototypeParsingType.ClosingTypeModifier;
-
-							lookahead.Next();
-							}
-
-						TryToSkipWhitespace(ref lookahead);
-						}
-
-					wordCount--;
-					}
-				}
+			TokenIterator lookahead = iterator;
+			TryToSkipWhitespace(ref lookahead);
 
 
-			// Handle the default value
+			// Default value
 
 			if (lookahead.Character == '=')
 				{
@@ -1338,21 +1168,198 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
-		/* Function: TryToSkipTypeWord
+		/* Function: TryToSkipMTNGroup
 		 *
-		 * If the iterator is on what could be a complex type or an identifier with modifiers, moves the iterator past one word and
-		 * returns true.  A word can be a type like "int", an identifier like "PackageName::FunctionName", a modifier like "const", an
-		 * attribute like  "[[deprecated]]", or a macro like "__declspec" sans parentheses.  Counting the words helps determine how
-		 * each one is interpreted.
+		 * Tries to move the iterator past a modifier-type-name group, such as "unsigned int Name".  It will continue until it reaches certain
+		 * symbols relevant to the <MTNType> passed.  See <MTNType> and <TryToSkipMTNWord()> for behavior notes.
 		 *
-		 * This will skip most symbols surrounding the word, such as "*int" and "int[]".  It will not skip parentheses following it.  It
-		 * will always skip template signatures appearing inside a qualified identifier ("List<int>::Function") but only the one at the
-		 * end of it if the option is set ("Function<int>").
+		 * You can optionally pass an array of keywords that will cause this function to fail if any of them are encountered.  This allows you to
+		 * prevent MTN groups from possibly misinterpreting a code element by treating a keyword for a different one as a modifier.
 		 *
-		 * It will return false on obvious endpoints like ;, {, and =, but otherwise it will accept almost anything so it's up to the calling
-		 * code to check for ends of the declaration.
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipTypeWord (ref TokenIterator iterator, bool includeTemplateSignatures)
+		protected bool TryToSkipMTNGroup (ref TokenIterator iterator, MTNType mtnType, ParseMode mode = ParseMode.IterateOnly,
+															string[] failOnKeywords = null)
+			{
+			TokenIterator lookahead = iterator;
+
+
+			// Attributes
+
+			if (TryToSkipAttributes(ref lookahead, mode, PrototypeParsingType.TypeModifier))
+				{  TryToSkipWhitespace(ref lookahead);  }
+
+
+			// Pass 1: Count the number of MTN words in the group.  We need to accept parentheses that appear after macros.
+
+			TokenIterator startOfWords = lookahead;
+			int wordCount = 0;
+			bool lastWordHadParentheses = false;
+
+			while (lookahead.IsInBounds)
+				{
+				// Check for symbols that can end the group
+
+				bool foundEnd = false;
+
+				if (mtnType == MTNType.Parameter)
+					{
+					if (lookahead.Character == ',' ||  // End of parameter
+						lookahead.Character == ')' ||  // End of all parameters
+						lookahead.Character == '=')  // Default value
+						{  foundEnd = true;  }
+					}
+
+				else if (mtnType == MTNType.Variable)
+					{
+					if (lookahead.Character == ',' ||  // End of variable in a multi-variable declaration
+						lookahead.Character == ';' ||  // End of definition
+						lookahead.Character == '=')  // Default value
+						{  foundEnd = true;  }
+					}
+
+				else if (mtnType == MTNType.Function)
+					{
+					if (lookahead.Character == ';' ||  // End of declaration
+						lookahead.Character == '{' ||  // Body
+						lookahead.Character == '=' ||  // = 0, = default, etc.
+						lookahead.Character == ':' ||  // Calls to the base constructor
+						lookahead.MatchesAcrossTokens("->"))  // Auto return values
+						{  foundEnd = true;  }
+
+					// Keywords that follow the parameters
+					else if (IsOnAnyKeyword(lookahead, "volatile", "try", "throw", "noexcept"))
+						{  foundEnd = true;  }
+
+					// xxx "const", "&", and "&&" can appear before a type and after the parentheses
+					}
+
+				else
+					{  throw new NotImplementedException();  }
+
+				if (foundEnd)
+					{  break;  }
+
+
+				// Check for keywords that signify a failure
+
+				if (failOnKeywords != null &&
+					IsOnAnyKeyword(lookahead, failOnKeywords))
+					{  return false;  }
+
+
+				// Otherwise add the word and continue
+
+				if (TryToSkipMTNWord(ref lookahead, includeTemplateSignatures: true))
+					{
+					wordCount++;
+					TryToSkipWhitespace(ref lookahead);
+
+					if (lookahead.Character == '(')
+						{
+						lookahead.Next();
+						lastWordHadParentheses = GenericSkipUntilAfter(ref lookahead, ')', angleBracketsAsBlocks: true, skipToEndIfNotFound: false);
+						TryToSkipWhitespace(ref lookahead);
+						}
+					}
+
+				else
+					{  break;  }
+				}
+
+			if (wordCount == 0)
+				{  return false;  }
+
+			if (lastWordHadParentheses &&
+				(mtnType == MTNType.Parameter ||
+				 mtnType == MTNType.Variable))
+				{  return false;  }
+
+
+			// Pass 2: Mark the words.  The order of words goes [modifier] [modifier] [type] [name], starting from the right.  We can
+			// skip this if we're just iterating over it.
+
+			if (mode == ParseMode.ParsePrototype)
+				{
+				lookahead = startOfWords;
+				TokenIterator wordStart, wordEnd;
+
+				while (wordCount > 0)
+					{
+					wordStart = lookahead;
+
+					TryToSkipMTNWord(ref lookahead, includeTemplateSignatures: true);
+					wordEnd = lookahead;
+
+					// Process the word we found
+					if (wordCount >= 3)
+						{
+						wordStart.SetPrototypeParsingTypeBetween(wordEnd, PrototypeParsingType.TypeModifier);
+						}
+					else if (wordCount == 2)
+						{
+						MarkType(wordStart, wordEnd);
+						}
+					else if (wordCount == 1)
+						{
+						MarkName(wordStart, wordEnd);
+						}
+
+					if (wordCount > 1 || lastWordHadParentheses)
+						{
+						TryToSkipWhitespace(ref lookahead);
+
+						if (lookahead.Character == '(')
+							{
+							TokenIterator openingParen = lookahead;
+							lookahead.Next();
+
+							if (GenericSkipUntilOn(ref lookahead, ')', angleBracketsAsBlocks: true, skipToEndIfNotFound: false))
+								{
+								openingParen.PrototypeParsingType = PrototypeParsingType.OpeningTypeModifier;
+								lookahead.PrototypeParsingType = PrototypeParsingType.ClosingTypeModifier;
+								lookahead.Next();
+								}
+
+							if (wordCount > 1)
+								{  TryToSkipWhitespace(ref lookahead);  }
+							}
+						}
+
+					wordCount--;
+					}
+				}
+
+			iterator = lookahead;
+			return true;
+			}
+
+
+		/* Function: TryToSkipMTNWord
+		 *
+		 * If the iterator is on a modifier-type-name series, moves the iterator past one word and returns true.  A word can be a modifier
+		 * like "const" or "unsigned", a type like "int", or a name like "PackageName::FunctionName".  Counting the words helps determine
+		 * how each one is interpreted.
+		 *
+		 * Behavior:
+		 *
+		 * - Attributes like  "[[deprecated]]" and macros like "__declspec" are treated as attributes.
+		 *
+		 * - It will skip most symbols surrounding the word, such as "*int" and "int[]".
+		 *
+		 *    - It will not skip parentheses.  Parentheses following macros or modifiers like "alignas(8)" have to be handled separately.
+		 *
+		 *    - It will always skip template signatures appearing inside a qualified identifier ("List<int>::Function") but only the one at the
+		 *      end of it if the option is set ("Function<int>").
+		 *
+		 * - It will return false on obvious endpoints like ;, {, and =, but otherwise it will accept almost anything so it's up to the calling
+		 *   code to check for ends of the declaration.
+		 */
+		protected bool TryToSkipMTNWord (ref TokenIterator iterator, bool includeTemplateSignatures)
 			{
 			if (TryToSkipAttribute(ref iterator, ParseMode.IterateOnly))
 				{  return true;  }
