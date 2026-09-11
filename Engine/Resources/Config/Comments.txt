@@ -57,6 +57,7 @@ Comment Type: Struct
    Keywords:
       struct, structs
       structure, structures
+      union, unions
 
 
 Comment Type: Section
