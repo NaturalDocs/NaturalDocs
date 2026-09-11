@@ -1,0 +1,237 @@
+=== Simple Inheritance ===
+
+=== SimpleStructInheritance ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPName">BaseStruct</div>
+   </div>
+   <div class="CPEntry CPContent TStruct Current">
+      <div class="CPModifiers"><span class="SHKeyword">struct</span></div>
+      <div class="CPName">SimpleStructInheritance</div>
+   </div>
+</div>
+
+=== StructInheritanceWithPublic ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHKeyword">public</span></div>
+      <div class="CPName">BaseStruct</div>
+   </div>
+   <div class="CPEntry CPContent TStruct Current">
+      <div class="CPModifiers"><span class="SHKeyword">struct</span></div>
+      <div class="CPName">StructInheritanceWithPublic</div>
+   </div>
+</div>
+
+=== StructInheritanceWithPrivate ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHKeyword">private</span></div>
+      <div class="CPName">BaseStruct</div>
+   </div>
+   <div class="CPEntry CPContent TStruct Current">
+      <div class="CPModifiers"><span class="SHKeyword">struct</span></div>
+      <div class="CPName">StructInheritanceWithPrivate</div>
+   </div>
+</div>
+
+=== Multiple Inheritance ===
+
+=== MultipleStructInheritance ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPName">BaseStruct1</div>
+   </div>
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPName">BaseStruct2</div>
+   </div>
+   <div class="CPEntry CPContent TStruct Current">
+      <div class="CPModifiers"><span class="SHKeyword">struct</span></div>
+      <div class="CPName">MultipleStructInheritance</div>
+   </div>
+</div>
+
+=== MultipleStructInheritanceWithAccessA ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHKeyword">public</span></div>
+      <div class="CPName">BaseStruct1</div>
+   </div>
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHKeyword">private</span></div>
+      <div class="CPName">BaseStruct2</div>
+   </div>
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHKeyword">protected</span></div>
+      <div class="CPName">BaseStruct3</div>
+   </div>
+   <div class="CPEntry CPContent TStruct Current">
+      <div class="CPModifiers"><span class="SHKeyword">struct</span></div>
+      <div class="CPName">MultipleStructInheritanceWithAccessA</div>
+   </div>
+</div>
+
+=== MultipleStructInheritanceWithAccessB ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHKeyword">public</span></div>
+      <div class="CPName">BaseStruct1</div>
+   </div>
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPName">BaseStruct2</div>
+   </div>
+   <div class="CPEntry CPContent TStruct Current">
+      <div class="CPModifiers"><span class="SHKeyword">struct</span></div>
+      <div class="CPName">MultipleStructInheritanceWithAccessB</div>
+   </div>
+</div>
+
+=== MultipleStructInheritanceWithAccessC ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPName">BaseStruct1</div>
+   </div>
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHKeyword">private</span></div>
+      <div class="CPName">BaseStruct2</div>
+   </div>
+   <div class="CPEntry CPContent TStruct Current">
+      <div class="CPModifiers"><span class="SHKeyword">struct</span></div>
+      <div class="CPName">MultipleStructInheritanceWithAccessC</div>
+   </div>
+</div>
+
+=== Virtual Inheritance ===
+
+=== VirtualStructInheritance ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHKeyword">virtual</span></div>
+      <div class="CPName">BaseStruct</div>
+   </div>
+   <div class="CPEntry CPContent TStruct Current">
+      <div class="CPModifiers"><span class="SHKeyword">struct</span></div>
+      <div class="CPName">VirtualStructInheritance</div>
+   </div>
+</div>
+
+=== VirtualMultipleStructInheritanceWithAccess ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHKeyword">virtual public</span></div>
+      <div class="CPName">BaseStruct1</div>
+   </div>
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHKeyword">private virtual</span></div>
+      <div class="CPName">BaseStruct2</div>
+   </div>
+   <div class="CPEntry CPContent TStruct Current">
+      <div class="CPModifiers"><span class="SHKeyword">struct</span></div>
+      <div class="CPName">VirtualMultipleStructInheritanceWithAccess</div>
+   </div>
+</div>
+
+=== Namespaces ===
+
+=== Namespace::NamespaceOnStruct ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPName">BaseStruct</div>
+   </div>
+   <div class="CPEntry CPContent TStruct Current">
+      <div class="CPModifiers"><span class="SHKeyword">struct</span></div>
+      <div class="CPName"><span class="Qualifier">Namespace::</span>&#8203;NamespaceOnStruct</div>
+   </div>
+</div>
+
+=== NamespaceOnBaseStruct ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHKeyword">private</span></div>
+      <div class="CPName"><span class="Qualifier">Namespace::</span>&#8203;BaseStruct</div>
+   </div>
+   <div class="CPEntry CPContent TStruct Current">
+      <div class="CPModifiers"><span class="SHKeyword">struct</span></div>
+      <div class="CPName">NamespaceOnBaseStruct</div>
+   </div>
+</div>
+
+=== NamespaceA::NamespaceOnBothStructs ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHKeyword">protected</span></div>
+      <div class="CPName"><span class="Qualifier">NamespaceB::</span>&#8203;BaseStruct</div>
+   </div>
+   <div class="CPEntry CPContent TStruct Current">
+      <div class="CPModifiers"><span class="SHKeyword">struct</span></div>
+      <div class="CPName"><span class="Qualifier">NamespaceA::</span>&#8203;NamespaceOnBothStructs</div>
+   </div>
+</div>
+
+=== Attributes ===
+
+=== AttributeOnStruct ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPName">BaseStruct</div>
+   </div>
+   <div class="CPEntry CPContent TStruct Current">
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">[[Attribute]]</span></div>
+      <div class="CPModifiers"><span class="SHKeyword">struct</span></div>
+      <div class="CPName">AttributeOnStruct</div>
+   </div>
+</div>
+
+=== AttributeOnBaseStruct ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHMetadata">[[Attribute]]</span> <span class="SHKeyword">public</span></div>
+      <div class="CPName">BaseStruct</div>
+   </div>
+   <div class="CPEntry CPContent TStruct Current">
+      <div class="CPModifiers"><span class="SHKeyword">struct</span></div>
+      <div class="CPName">AttributeOnBaseStruct</div>
+   </div>
+</div>
+
+=== AttributeOnBothStructs ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHMetadata">[[AttributeB]]</span> <span class="SHKeyword">private</span></div>
+      <div class="CPName">BaseStruct</div>
+   </div>
+   <div class="CPEntry CPContent TStruct Current">
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">[[AttributeA]]</span></div>
+      <div class="CPModifiers"><span class="SHKeyword">struct</span></div>
+      <div class="CPName">AttributeOnBothStructs</div>
+   </div>
+</div>
+
+=== UnderscoreAttributesOnBothStructs ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHMetadata">__attribute__((AttributeB))</span> <span class="SHKeyword">protected virtual</span></div>
+      <div class="CPName"><span class="Qualifier">Namespace::</span>&#8203;BaseStruct</div>
+   </div>
+   <div class="CPEntry CPContent TStruct Current">
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">__attribute__((AttributeA))</span></div>
+      <div class="CPModifiers"><span class="SHKeyword">final</span> <span class="SHKeyword">struct</span></div>
+      <div class="CPName">UnderscoreAttributesOnBothStructs</div>
+   </div>
+</div>

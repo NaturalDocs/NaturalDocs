@@ -1,0 +1,222 @@
+=== Simple Inheritance ===
+
+=== SimpleInheritance ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPName">BaseClass</div>
+   </div>
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPName">SimpleInheritance</div>
+   </div>
+</div>
+
+=== InheritanceWithPublic ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHKeyword">public</span></div>
+      <div class="CPName">BaseClass</div>
+   </div>
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPName">InheritanceWithPublic</div>
+   </div>
+</div>
+
+=== InheritanceWithPrivate ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHKeyword">private</span></div>
+      <div class="CPName">BaseClass</div>
+   </div>
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPName">InheritanceWithPrivate</div>
+   </div>
+</div>
+
+=== Multiple Inheritance ===
+
+=== MultipleInheritance ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPName">BaseClass1</div>
+   </div>
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPName">BaseClass2</div>
+   </div>
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPName">MultipleInheritance</div>
+   </div>
+</div>
+
+=== MultipleInheritanceWithAccessA ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHKeyword">public</span></div>
+      <div class="CPName">BaseClass1</div>
+   </div>
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHKeyword">private</span></div>
+      <div class="CPName">BaseClass2</div>
+   </div>
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHKeyword">protected</span></div>
+      <div class="CPName">BaseClass3</div>
+   </div>
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPName">MultipleInheritanceWithAccessA</div>
+   </div>
+</div>
+
+=== MultipleInheritanceWithAccessB ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHKeyword">public</span></div>
+      <div class="CPName">BaseClass1</div>
+   </div>
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPName">BaseClass2</div>
+   </div>
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPName">MultipleInheritanceWithAccessB</div>
+   </div>
+</div>
+
+=== MultipleInheritanceWithAccessC ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPName">BaseClass1</div>
+   </div>
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHKeyword">private</span></div>
+      <div class="CPName">BaseClass2</div>
+   </div>
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPName">MultipleInheritanceWithAccessC</div>
+   </div>
+</div>
+
+=== Virtual Inheritance ===
+
+=== VirtualInheritance ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHKeyword">virtual</span></div>
+      <div class="CPName">BaseClass</div>
+   </div>
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPName">VirtualInheritance</div>
+   </div>
+</div>
+
+=== VirtualMultipleInheritanceWithAccess ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHKeyword">virtual public</span></div>
+      <div class="CPName">BaseClass1</div>
+   </div>
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHKeyword">private virtual</span></div>
+      <div class="CPName">BaseClass2</div>
+   </div>
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPName">VirtualMultipleInheritanceWithAccess</div>
+   </div>
+</div>
+
+=== Namespaces ===
+
+=== Namespace::NamespaceOnClass ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPName">BaseClass</div>
+   </div>
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPName"><span class="Qualifier">Namespace::</span>&#8203;NamespaceOnClass</div>
+   </div>
+</div>
+
+=== NamespaceOnBaseClass ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHKeyword">private</span></div>
+      <div class="CPName"><span class="Qualifier">Namespace::</span>&#8203;BaseClass</div>
+   </div>
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPName">NamespaceOnBaseClass</div>
+   </div>
+</div>
+
+=== NamespaceA::NamespaceOnBoth ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHKeyword">protected</span></div>
+      <div class="CPName"><span class="Qualifier">NamespaceB::</span>&#8203;BaseClass</div>
+   </div>
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPName"><span class="Qualifier">NamespaceA::</span>&#8203;NamespaceOnBoth</div>
+   </div>
+</div>
+
+=== Attributes ===
+
+=== AttributeOnClass ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPName">BaseClass</div>
+   </div>
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">[[Attribute]]</span></div>
+      <div class="CPName">AttributeOnClass</div>
+   </div>
+</div>
+
+=== AttributeOnBase ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHMetadata">[[Attribute]]</span> <span class="SHKeyword">public</span></div>
+      <div class="CPName">BaseClass</div>
+   </div>
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPName">AttributeOnBase</div>
+   </div>
+</div>
+
+=== AttributeOnBoth ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHMetadata">[[AttributeB]]</span> <span class="SHKeyword">private</span></div>
+      <div class="CPName">BaseClass</div>
+   </div>
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">[[AttributeA]]</span></div>
+      <div class="CPName">AttributeOnBoth</div>
+   </div>
+</div>
+
+=== UnderscoreAttributesOnBoth ===
+
+<div class="NDClassPrototype HasParents">
+   <div class="CPEntry CPContent Parent TClass">
+      <div class="CPModifiers"><span class="SHMetadata">__attribute__((AttributeB))</span> <span class="SHKeyword">protected virtual</span></div>
+      <div class="CPName"><span class="Qualifier">Namespace::</span>&#8203;BaseClass</div>
+   </div>
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">__attribute__((AttributeA))</span></div>
+      <div class="CPModifiers"><span class="SHKeyword">final</span></div>
+      <div class="CPName">UnderscoreAttributesOnBoth</div>
+   </div>
+</div>
