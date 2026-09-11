@@ -102,13 +102,69 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			}
 
 
-		/* Function: GetModifiers
+		/* Function: BuildModifiers
+		 *
 		 * Gets the bounds of any modifiers to the class, such as "static" or "public", or returns false if there aren't any.
+		 *
+		 * If all the modifiers are continuous in the original <Tokenizer> it will return <TokenIterators> based on that.  However, if they
+		 * are NOT continuous it will create a separate <Tokenizer> to hold a continuous version of it.  The returned bounds will be
+		 * <TokenIterators> based on that rather than on the original <Tokenizer>.  The new <Tokenizer> will still contain the same
+		 * <PrototypeParsingTypes> and <SyntaxHighlightingTypes> of the original.
 		 */
-		public bool GetModifiers (out TokenIterator start, out TokenIterator end)
+		public bool BuildModifiers (out TokenIterator start, out TokenIterator end)
 			{
-			return GetTokensInSection(SectionType.BeforeParents, 0, ClassPrototypeParsingType.Modifier,
-												 out start, out end);
+			if (!GetTokensInSection(SectionType.BeforeParents, 0, ClassPrototypeParsingType.Modifier, out start, out end))
+				{  return false;  }
+
+
+			// See if there are any more modifiers in this section
+
+			TokenIterator lookahead = end;
+
+			TokenIterator sectionStart, sectionEnd;
+			GetSectionBounds(SectionType.BeforeParents, 0, out sectionStart, out sectionEnd);
+
+			for (;;)
+				{
+				// If we hit the end of the section without finding any more modifiers, we can return what we found already
+				if (lookahead >= sectionEnd)
+					{  return true;  }
+
+				else if (lookahead.ClassPrototypeParsingType == ClassPrototypeParsingType.Modifier)
+					{  break;  }
+
+				else
+					{  lookahead.Next();  }
+				}
+
+
+			// If we're here we found another modifier.  Build a new tokenizer and start adding to it.  We can use TypeBuilder even though
+			// it's not a type.
+
+			TypeBuilder modifiers = new TypeBuilder();
+			modifiers.AddTokens(start, end);
+
+			TokenIterator startOfModifiers = lookahead;
+			lookahead.Next();
+
+			do
+				{
+				while (lookahead < sectionEnd &&
+						  lookahead.ClassPrototypeParsingType == ClassPrototypeParsingType.Modifier)
+					{  lookahead.Next();  }
+
+				modifiers.AddTokens(startOfModifiers, lookahead, TypeBuilder.Spacing.SpaceBefore);
+
+				while (lookahead < sectionEnd &&
+						  lookahead.ClassPrototypeParsingType != ClassPrototypeParsingType.Modifier)
+					{  lookahead.Next();  }
+				}
+			while (lookahead < sectionEnd);
+
+			Tokenizer newTokenizer = modifiers.ToTokenizer();
+			start = newTokenizer.FirstToken;
+			end = newTokenizer.EndOfTokens;
+			return true;
 			}
 
 
@@ -121,7 +177,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			Languages.AccessLevel accessLevel = Languages.AccessLevel.Unknown;
 
 			TokenIterator iterator, end;
-			if (GetModifiers(out iterator, out end) == false)
+			if (BuildModifiers(out iterator, out end) == false)
 				{  return accessLevel;  }
 
 			bool previousWasUnderscore = false;
@@ -199,13 +255,71 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			}
 
 
-		/* Function: GetParentModifiers
+		/* Function: BuildParentModifiers
+		 *
 		 * Gets the bounds of the parent's modifiers, such as "public", or returns false if it couldn't find any.
+		 *
+		 * If all the modifiers are continuous in the original <Tokenizer> it will return <TokenIterators> based on that.  However, if they
+		 * are NOT continuous it will create a separate <Tokenizer> to hold a continuous version of it.  The returned bounds will be
+		 * <TokenIterators> based on that rather than on the original <Tokenizer>.  The new <Tokenizer> will still contain the same
+		 * <PrototypeParsingTypes> and <SyntaxHighlightingTypes> of the original.
 		 */
-		public bool GetParentModifiers (int index, out TokenIterator start, out TokenIterator end)
+		public bool BuildParentModifiers (int index, out TokenIterator start, out TokenIterator end)
 			{
-			return GetTokensInSection(SectionType.Parent, index, ClassPrototypeParsingType.Modifier,
-												 out start, out end);
+			if (!GetTokensInSection(SectionType.Parent, index, ClassPrototypeParsingType.Modifier, out start, out end))
+				{  return false;  }
+
+
+			// See if there are any more modifiers in this section
+
+			TokenIterator lookahead = end;
+
+			TokenIterator sectionStart, sectionEnd;
+			GetSectionBounds(SectionType.Parent, index, out sectionStart, out sectionEnd);
+
+			for (;;)
+				{
+				// If we hit the end of the section without finding any more modifiers, we can return what we found already
+				if (lookahead >= sectionEnd)
+					{  return true;  }
+
+				else if (lookahead.ClassPrototypeParsingType == ClassPrototypeParsingType.Modifier)
+					{  break;  }
+
+				else
+					{  lookahead.Next();  }
+				}
+
+
+			// If we're here we found another modifier.  Build a new tokenizer and start adding to it.  We can use TypeBuilder even though
+			// it's not a type.
+
+			TypeBuilder modifiers = new TypeBuilder();
+			modifiers.AddTokens(start, end);
+
+			TokenIterator startOfModifiers = lookahead;
+			lookahead.Next();
+
+			do
+				{
+				while (lookahead < sectionEnd &&
+						  lookahead.ClassPrototypeParsingType == ClassPrototypeParsingType.Modifier)
+					{  lookahead.Next();  }
+
+				modifiers.AddTokens(startOfModifiers, lookahead, TypeBuilder.Spacing.SpaceBefore);
+
+				while (lookahead < sectionEnd &&
+						  lookahead.ClassPrototypeParsingType != ClassPrototypeParsingType.Modifier)
+					{  lookahead.Next();  }
+
+				startOfModifiers = lookahead;
+				}
+			while (lookahead < sectionEnd);
+
+			Tokenizer newTokenizer = modifiers.ToTokenizer();
+			start = newTokenizer.FirstToken;
+			end = newTokenizer.EndOfTokens;
+			return true;
 			}
 
 
@@ -258,6 +372,33 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				sections.Add(section);
 
 				iterator.NextPastWhitespace();
+				}
+
+
+			// In C++ attributes can appear after the keyword, such as "class [[attribute]] ClassName".  Create sections for any that
+			// appear later in the prototype but still before the name, even though they'll be out of order.
+
+			TokenIterator lookahead = iterator;
+
+			while (lookahead.IsInBounds &&
+					  lookahead.ClassPrototypeParsingType != ClassPrototypeParsingType.Name)
+				{
+				if (lookahead.ClassPrototypeParsingType == ClassPrototypeParsingType.StartOfPrePrototypeLine)
+					{
+					section = new Section();
+					section.Type = SectionType.PrePrototypeLine;
+					section.StartIndex = lookahead.TokenIndex;
+
+					do
+						{  lookahead.Next();  }
+					while (lookahead.IsInBounds &&
+							 lookahead.ClassPrototypeParsingType == ClassPrototypeParsingType.PrePrototypeLine);
+
+					section.EndIndex = lookahead.TokenIndex;
+					sections.Add(section);
+					}
+				else
+					{  lookahead.Next();  }
 				}
 
 

@@ -90,7 +90,7 @@ namespace CodeClear.NaturalDocs.Tests.TestRunners
 							{  output.AppendLine("  - Template Suffix: " + start.TextBetween(end));  }
 						if (parsedPrototype.GetKeyword(out start, out end))
 							{  output.AppendLine("  - Keyword: " + start.TextBetween(end));  }
-						if (parsedPrototype.GetModifiers(out start, out end))
+						if (parsedPrototype.BuildModifiers(out start, out end))
 							{  output.AppendLine("  - Modifiers: " + start.TextBetween(end));  }
 						output.AppendLine("  - Access Level: " + parsedPrototype.GetAccessLevel());
 
@@ -126,7 +126,7 @@ namespace CodeClear.NaturalDocs.Tests.TestRunners
 
 								if (parsedPrototype.GetParentTemplateSuffix(i, out start, out end))
 									{  output.AppendLine("    - Template Suffix: " + start.TextBetween(end));  }
-								if (parsedPrototype.GetParentModifiers(i, out start, out end))
+								if (parsedPrototype.BuildParentModifiers(i, out start, out end))
 									{  output.AppendLine("    - Modifiers: " + start.TextBetween(end));  }
 								}
 							}

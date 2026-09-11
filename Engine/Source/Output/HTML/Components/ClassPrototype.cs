@@ -394,7 +394,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			TokenIterator start, end;
 
 			if (parent.prototypeIndex != -1 &&
-				parsedClassPrototype.GetParentModifiers(parent.prototypeIndex, out start, out end) == true)
+				parsedClassPrototype.BuildParentModifiers(parent.prototypeIndex, out start, out end) == true)
 				{
 				output.Append("<div class=\"CPModifiers\">");
 				AppendSyntaxHighlightedText(start, end, output);
@@ -507,7 +507,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			string keyword = startKeyword.String;
 
 			TokenIterator startModifiers, endModifiers;
-			bool hasModifiers = parsedClassPrototype.GetModifiers(out startModifiers, out endModifiers);
+			bool hasModifiers = parsedClassPrototype.BuildModifiers(out startModifiers, out endModifiers);
 
 			if (hasModifiers || keyword != "class")
 				{
