@@ -370,18 +370,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		protected void AppendParentClassPrototype (Parent parent, StringBuilder output)
 			{
 			CommentType parentCommentType;
-			string memberOperator;
 
 			if (parent.targetTopic != null)
-				{
-				parentCommentType = EngineInstance.CommentTypes.FromID(parent.targetTopic.CommentTypeID);
-				memberOperator = language.MemberOperator;
-				}
+				{  parentCommentType = EngineInstance.CommentTypes.FromID(parent.targetTopic.CommentTypeID);  }
 			else
-				{
-				parentCommentType = EngineInstance.CommentTypes.FromKeyword("class", language.ID);
-				memberOperator = ".";
-				}
+				{  parentCommentType = EngineInstance.CommentTypes.FromKeyword("class", language.ID);  }
 
 
 			// Main tag
@@ -416,9 +409,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			string name = null;
 
 			if (parent.targetTopic != null)
-				{  name = parent.targetTopic.Symbol.FormatWithSeparator(memberOperator);  }
+				{  name = parent.targetTopic.Symbol.FormatWithSeparator(language.MemberOperator);  }
 			else if (parent.link != null)
-				{  name = parent.link.Symbol.FormatWithSeparator(memberOperator);  }
+				{  name = parent.link.Symbol.FormatWithSeparator(language.MemberOperator);  }
 			#if DEBUG
 			else
 				{  throw new Exception("There was a parent without a target topic or a link associated with it.");  }
