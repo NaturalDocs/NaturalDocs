@@ -120,6 +120,25 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
+		/* Function: ParseClassPrototype
+		 * Converts a raw text prototype into a <ParsedClassPrototype>.  Will return null if it is not an appropriate prototype.
+		 */
+		override public ParsedClassPrototype ParseClassPrototype (string stringPrototype, int commentTypeID)
+			{
+			Tokenizer tokenizedPrototype = new Tokenizer(stringPrototype, tabWidth: EngineInstance.Config.TabWidth);
+			TokenIterator iterator = tokenizedPrototype.FirstToken;
+
+			if (TryToSkipClass(ref iterator, ParseMode.ParseClassPrototype))
+				{
+				return new ParsedClassPrototype(tokenizedPrototype);
+				}
+			else
+				{
+				return base.ParseClassPrototype(stringPrototype, commentTypeID);
+				}
+			}
+
+
 
 		// Group: Parsing Functions
 		// __________________________________________________________________________
@@ -178,6 +197,126 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
+		/* Function: TryToSkipClass
+		 *
+		 * If the iterator is on a class, struct, or union definition, moves it past it and returns true.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- <ParseMode.ParseClassPrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipClass (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			TokenIterator lookahead = iterator;
+
+
+			// Attributes Before Keyword
+
+			while (TryToSkipAttributes(ref lookahead, mode, classPrototypeParsingType: ClassPrototypeParsingType.PrePrototypeLine) ||
+					  TryToSkipKeywordAndParentheses(ref lookahead, "alignas", mode,
+																	    requireParentheses: true, classPrototypeParsingType: ClassPrototypeParsingType.Modifier))
+				{  TryToSkipWhitespace(ref lookahead);  }
+
+
+			// Keyword
+
+			if (!IsOnAnyKeyword(lookahead, "class", "struct", "union"))
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+
+			if (mode == ParseMode.ParseClassPrototype)
+				{  lookahead.ClassPrototypeParsingType = ClassPrototypeParsingType.Keyword;  }
+
+			lookahead.Next();
+			TryToSkipWhitespace(ref lookahead);
+
+
+			// Attributes After Keyword
+
+			while (TryToSkipAttributes(ref lookahead, mode, classPrototypeParsingType: ClassPrototypeParsingType.PrePrototypeLine) ||
+					  TryToSkipKeywordAndParentheses(ref lookahead, "alignas", mode,
+																	    requireParentheses: true, classPrototypeParsingType: ClassPrototypeParsingType.Modifier))
+				{  TryToSkipWhitespace(ref lookahead);  }
+
+
+			// Name
+
+			if (!TryToSkipIdentifier(ref lookahead, mode))
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+
+			TryToSkipWhitespace(ref lookahead);
+
+
+			// Final
+
+			if (IsOnKeyword(lookahead, "final"))
+				{
+				if (mode == ParseMode.ParseClassPrototype)
+					{  lookahead.ClassPrototypeParsingType = ClassPrototypeParsingType.Modifier;  }
+
+				lookahead.Next();
+				TryToSkipWhitespace(ref lookahead);
+				}
+
+
+			// xxx template definition
+
+
+			// Inheritance
+
+			if (lookahead.Character == ':')
+				{
+				if (mode == ParseMode.ParseClassPrototype)
+					{  lookahead.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfParents;  }
+
+				lookahead.Next();
+				TryToSkipWhitespace(ref lookahead);
+
+				for (;;)
+					{
+					if (TryToSkipAttributes(ref lookahead, mode, classPrototypeParsingType: ClassPrototypeParsingType.Modifier))
+						{  TryToSkipWhitespace(ref lookahead);  }
+
+					while (IsOnAnyKeyword(lookahead, "public", "private", "protected", "virtual"))
+						{
+						if (mode == ParseMode.ParseClassPrototype)
+							{  lookahead.ClassPrototypeParsingType = ClassPrototypeParsingType.Modifier;  }
+
+						lookahead.Next();
+						TryToSkipWhitespace(ref lookahead);
+						}
+
+					if (!TryToSkipIdentifier(ref lookahead, mode))
+						{  return false;  }
+
+					TryToSkipWhitespace(ref lookahead);
+
+					if (lookahead.Character == ',')
+						{
+						if (mode == ParseMode.ParseClassPrototype)
+							{  lookahead.ClassPrototypeParsingType = ClassPrototypeParsingType.ParentSeparator;  }
+
+						lookahead.Next();
+						TryToSkipWhitespace(ref lookahead);
+						}
+					else
+						{  break;  }
+					}
+				}
+
+			iterator = lookahead;
+			return true;
+			}
+
+
 		/* Function: TryToSkipFunction
 		 *
 		 * If the iterator is on a function definition, moves it past it and returns true.
@@ -196,7 +335,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TokenIterator lookahead = iterator;
 
 			if (!TryToSkipMTNGroup(ref lookahead, MTNType.Function, mode,
-											   failOnKeywords: ["class", "struct", "enum"]))
+											   failOnKeywords: ["class", "struct", "union", "enum"]))
 				{  return false;  }
 
 			TryToSkipWhitespace(ref lookahead);
@@ -558,14 +697,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.TypeModifier>,
 		 *			  <PrototypeParsingType.ParamModifier>, or <PrototypeParsingType.StartOfPrototypeSection>.
 		 *		- <ParseMode.ParseClassPrototype>
-		 *			- Will mark the first one with <ClassPrototypeParsingType.StartOfPrePrototypeLine> and the rest with
-		 *			  <ClassPrototypeParsingType.PrePrototypeLine>.
+		 *			- Set classPrototypeParsingType to the type you would like them to be marked as, such as <ClassPrototypeParsringType.Modifier>,
+		 *			  <ClassPrototypeParsingType.StartOfPrePrototypeLine>, or <ClassPrototypeParsingType.PrePrototypeLine>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		protected bool TryToSkipAttributes (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
-															PrototypeParsingType prototypeParsingType = PrototypeParsingType.TypeModifier)
+															PrototypeParsingType prototypeParsingType = PrototypeParsingType.TypeModifier,
+															ClassPrototypeParsingType classPrototypeParsingType = ClassPrototypeParsingType.Modifier)
 			{
-			if (TryToSkipAttribute(ref iterator, mode, prototypeParsingType))
+			if (TryToSkipAttribute(ref iterator, mode, prototypeParsingType, classPrototypeParsingType))
 				{
 				TokenIterator lookahead = iterator;
 
@@ -573,7 +713,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					{
 					TryToSkipWhitespace(ref lookahead, true, mode);
 
-					if (TryToSkipAttribute(ref lookahead, mode, prototypeParsingType))
+					if (TryToSkipAttribute(ref lookahead, mode, prototypeParsingType, classPrototypeParsingType))
 						{  iterator = lookahead;  }
 					else
 						{  break;  }
@@ -599,16 +739,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.TypeModifier>,
 		 *			  <PrototypeParsingType.ParamModifier>, or <PrototypeParsingType.StartOfPrototypeSection>.
 		 *		- <ParseMode.ParseClassPrototype>
-		 *			- Will mark the first one with <ClassPrototypeParsingType.StartOfPrePrototypeLine> and the rest with
-		 *			  <ClassPrototypeParsingType.PrePrototypeLine>.
+		 *			- Set classPrototypeParsingType to the type you would like them to be marked as, such as <ClassPrototypeParsringType.Modifier>,
+		 *			  <ClassPrototypeParsingType.StartOfPrePrototypeLine>, or <ClassPrototypeParsingType.PrePrototypeLine>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		protected bool TryToSkipAttribute (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
-														  PrototypeParsingType prototypeParsingType = PrototypeParsingType.TypeModifier)
+														  PrototypeParsingType prototypeParsingType = PrototypeParsingType.TypeModifier,
+														  ClassPrototypeParsingType classPrototypeParsingType = ClassPrototypeParsingType.Modifier)
 			{
-			return (TryToSkipBracketedAttribute(ref iterator, mode, prototypeParsingType) ||
-					   TryToSkipUnderscoredAttribute(ref iterator, mode, prototypeParsingType) ||
-					   TryToSkipDeclSpecAttribute(ref iterator, mode, prototypeParsingType));
+			return (TryToSkipBracketedAttribute(ref iterator, mode, prototypeParsingType, classPrototypeParsingType) ||
+					   TryToSkipUnderscoredAttribute(ref iterator, mode, prototypeParsingType, classPrototypeParsingType) ||
+					   TryToSkipDeclSpecAttribute(ref iterator, mode, prototypeParsingType, classPrototypeParsingType));
 			}
 
 
@@ -624,12 +765,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.TypeModifier>,
 		 *			  <PrototypeParsingType.ParamModifier>, or <PrototypeParsingType.StartOfPrototypeSection>.
 		 *		- <ParseMode.ParseClassPrototype>
-		 *			- Will mark the first one with <ClassPrototypeParsingType.StartOfPrePrototypeLine> and the rest with
-		 *			  <ClassPrototypeParsingType.PrePrototypeLine>.
+		 *			- Set classPrototypeParsingType to the type you would like them to be marked as, such as <ClassPrototypeParsringType.Modifier>,
+		 *			  <ClassPrototypeParsingType.StartOfPrePrototypeLine>, or <ClassPrototypeParsingType.PrePrototypeLine>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		protected bool TryToSkipBracketedAttribute (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
-																		PrototypeParsingType prototypeParsingType = PrototypeParsingType.TypeModifier)
+																		PrototypeParsingType prototypeParsingType = PrototypeParsingType.TypeModifier,
+																		ClassPrototypeParsingType classPrototypeParsingType = ClassPrototypeParsingType.Modifier)
+
 			{
 			// According to the spec double opening brackets aren't allowed anywhere else, so we don't have to worry about this being part of
 			// an array signature or something.  However, whitespace is allowed between them.
@@ -793,10 +936,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			else if (mode == ParseMode.ParseClassPrototype)
 				{
-				iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfPrePrototypeLine;
-				iterator.Next();
+				if (classPrototypeParsingType == ClassPrototypeParsingType.StartOfPrePrototypeLine ||
+					classPrototypeParsingType == ClassPrototypeParsingType.PrePrototypeLine)
+					{
+					iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfPrePrototypeLine;
+					iterator.Next();
 
-				iterator.SetClassPrototypeParsingTypeBetween(lookahead, ClassPrototypeParsingType.PrePrototypeLine);
+					iterator.SetClassPrototypeParsingTypeBetween(lookahead, ClassPrototypeParsingType.PrePrototypeLine);
+					}
+				else
+					{
+					iterator.SetClassPrototypeParsingTypeBetween(lookahead, classPrototypeParsingType);
+					}
 				}
 
 			iterator = lookahead;
@@ -817,12 +968,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.TypeModifier>,
 		 *			  <PrototypeParsingType.ParamModifier>, or <PrototypeParsingType.StartOfPrototypeSection>.
 		 *		- <ParseMode.ParseClassPrototype>
-		 *			- Will mark the first one with <ClassPrototypeParsingType.StartOfPrePrototypeLine> and the rest with
-		 *			  <ClassPrototypeParsingType.PrePrototypeLine>.
+		 *			- Set classPrototypeParsingType to the type you would like them to be marked as, such as <ClassPrototypeParsringType.Modifier>,
+		 *			  <ClassPrototypeParsingType.StartOfPrePrototypeLine>, or <ClassPrototypeParsingType.PrePrototypeLine>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		protected bool TryToSkipUnderscoredAttribute (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
-																			PrototypeParsingType prototypeParsingType = PrototypeParsingType.TypeModifier)
+																			PrototypeParsingType prototypeParsingType = PrototypeParsingType.TypeModifier,
+																			ClassPrototypeParsingType classPrototypeParsingType = ClassPrototypeParsingType.Modifier)
 			{
 			// According to the spec double opening parentheses are required, not just a convention.  However, whitespace is allowed between
 			// them.
@@ -946,10 +1098,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			else if (mode == ParseMode.ParseClassPrototype)
 				{
-				iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfPrePrototypeLine;
-				iterator.Next();
+				if (classPrototypeParsingType == ClassPrototypeParsingType.StartOfPrePrototypeLine ||
+					classPrototypeParsingType == ClassPrototypeParsingType.PrePrototypeLine)
+					{
+					iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfPrePrototypeLine;
+					iterator.Next();
 
-				iterator.SetClassPrototypeParsingTypeBetween(lookahead, ClassPrototypeParsingType.PrePrototypeLine);
+					iterator.SetClassPrototypeParsingTypeBetween(lookahead, ClassPrototypeParsingType.PrePrototypeLine);
+					}
+				else
+					{
+					iterator.SetClassPrototypeParsingTypeBetween(lookahead, classPrototypeParsingType);
+					}
 				}
 
 			iterator = lookahead;
@@ -970,12 +1130,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.TypeModifier>,
 		 *			  <PrototypeParsingType.ParamModifier>, or <PrototypeParsingType.StartOfPrototypeSection>.
 		 *		- <ParseMode.ParseClassPrototype>
-		 *			- Will mark the first one with <ClassPrototypeParsingType.StartOfPrePrototypeLine> and the rest with
-		 *			  <ClassPrototypeParsingType.PrePrototypeLine>.
+		 *			- Set classPrototypeParsingType to the type you would like them to be marked as, such as <ClassPrototypeParsringType.Modifier>,
+		 *			  <ClassPrototypeParsingType.StartOfPrePrototypeLine>, or <ClassPrototypeParsingType.PrePrototypeLine>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		protected bool TryToSkipDeclSpecAttribute (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
-																	   PrototypeParsingType prototypeParsingType = PrototypeParsingType.TypeModifier)
+																	   PrototypeParsingType prototypeParsingType = PrototypeParsingType.TypeModifier,
+																	   ClassPrototypeParsingType classPrototypeParsingType = ClassPrototypeParsingType.Modifier)
 			{
 			if (!iterator.MatchesAcrossTokens("__declspec"))
 				{  return false;  }
@@ -1105,13 +1266,101 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			else if (mode == ParseMode.ParseClassPrototype)
 				{
-				iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfPrePrototypeLine;
-				iterator.Next();
+				if (classPrototypeParsingType == ClassPrototypeParsingType.StartOfPrePrototypeLine ||
+					classPrototypeParsingType == ClassPrototypeParsingType.PrePrototypeLine)
+					{
+					iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfPrePrototypeLine;
+					iterator.Next();
 
-				iterator.SetClassPrototypeParsingTypeBetween(lookahead, ClassPrototypeParsingType.PrePrototypeLine);
+					iterator.SetClassPrototypeParsingTypeBetween(lookahead, ClassPrototypeParsingType.PrePrototypeLine);
+					}
+				else
+					{
+					iterator.SetClassPrototypeParsingTypeBetween(lookahead, classPrototypeParsingType);
+					}
 				}
 
 			iterator = lookahead;
+			return true;
+			}
+
+
+		/* Function: TryToSkipKeywordAndParentheses
+		 *
+		 * Tries to move the iterator past a single keyword followed by parentheses, such as "alignas(8)".
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.TypeModifier>,
+		 *			  <PrototypeParsingType.ParamModifier>, or <PrototypeParsingType.StartOfPrototypeSection>.
+		 *		- <ParseMode.ParseClassPrototype>
+		 *			- Set classPrototypeParsingType to the type you would like them to be marked as, such as <ClassPrototypeParsingType.Modifier>,
+		 *			  <ClassPrototypeParsingType.StartOfPrePrototypeLine>, or <ClassPrototypeParsingType.PrePrototypeLine>.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipKeywordAndParentheses (ref TokenIterator iterator, string keyword, ParseMode mode = ParseMode.IterateOnly,
+																				bool allowParentheses = true, bool requireParentheses = false,
+																			    PrototypeParsingType prototypeParsingType = PrototypeParsingType.TypeModifier,
+																				ClassPrototypeParsingType classPrototypeParsingType = ClassPrototypeParsingType.Modifier)
+			{
+			if (!IsOnKeyword(iterator, keyword))
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+			lookahead.NextByCharacters(keyword.Length);
+
+			TokenIterator endOfAttribute = lookahead;
+
+			if (allowParentheses || requireParentheses)
+				{
+				TryToSkipWhitespace(ref lookahead);
+
+				if (lookahead.Character == '(')
+					{
+					lookahead.Next();
+
+					if (GenericSkipUntilAfter(ref lookahead, ')'))
+						{  endOfAttribute = lookahead;  }
+					}
+				else if (requireParentheses)
+					{  return false;  }
+				}
+
+
+			// Mark tokens
+
+			if (mode == ParseMode.ParsePrototype)
+				{
+				if (prototypeParsingType == PrototypeParsingType.StartOfPrototypeSection)
+					{
+					iterator.PrototypeParsingType = PrototypeParsingType.StartOfPrototypeSection;
+					endOfAttribute.PrototypeParsingType = PrototypeParsingType.EndOfPrototypeSection;
+					}
+				else
+					{
+					iterator.SetPrototypeParsingTypeBetween(endOfAttribute, prototypeParsingType);
+					}
+				}
+
+			else if (mode == ParseMode.ParseClassPrototype)
+				{
+				if (classPrototypeParsingType == ClassPrototypeParsingType.StartOfPrePrototypeLine ||
+					classPrototypeParsingType == ClassPrototypeParsingType.PrePrototypeLine)
+					{
+					iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfPrePrototypeLine;
+					iterator.Next();
+
+					iterator.SetClassPrototypeParsingTypeBetween(endOfAttribute, ClassPrototypeParsingType.PrePrototypeLine);
+					}
+				else
+					{
+					iterator.SetClassPrototypeParsingTypeBetween(endOfAttribute, classPrototypeParsingType);
+					}
+				}
+
+			iterator = endOfAttribute;
 			return true;
 			}
 
