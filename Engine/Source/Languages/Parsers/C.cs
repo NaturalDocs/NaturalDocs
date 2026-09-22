@@ -28,6 +28,7 @@ using System;
 using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.Prototypes;
 using CodeClear.NaturalDocs.Engine.Tokenization;
+using CodeClear.NaturalDocs.Engine.Topics;
 
 
 namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
@@ -96,6 +97,27 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					{
 					iterator.Next();
 					}
+				}
+			}
+
+
+		override protected bool TryToFindBasicPrototype (Topic topic, TokenIterator start, TokenIterator limit,
+																				out TokenIterator prototypeStart, out TokenIterator prototypeEnd)
+			{
+			TryToSkipWhitespace(ref start);
+			TokenIterator lookahead = start;
+
+			// Needed because the opening brace in a "requires requires() { }" clause would otherwise be mistaken for the start of
+			// the class body and end the prototype too early.
+			if (TryToSkipClass(ref lookahead, ParseMode.ParsePrototype))
+				{
+				prototypeStart = start;
+				prototypeEnd = lookahead;
+				return true;
+				}
+			else
+				{
+				return base.TryToFindBasicPrototype(topic, start, limit, out prototypeStart, out prototypeEnd);
 				}
 			}
 
@@ -216,6 +238,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// Attributes Before Keyword
 
 			while (TryToSkipAttributes(ref lookahead, mode, classPrototypeParsingType: ClassPrototypeParsingType.PrePrototypeLine) ||
+					  TryToSkipTemplateDeclaration(ref lookahead, mode) ||
 					  TryToSkipKeywordAndParentheses(ref lookahead, "alignas", mode,
 																	    requireParentheses: true, classPrototypeParsingType: ClassPrototypeParsingType.Modifier))
 				{  TryToSkipWhitespace(ref lookahead);  }
@@ -335,7 +358,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TokenIterator lookahead = iterator;
 
 			if (!TryToSkipMTNGroup(ref lookahead, MTNType.Function, mode,
-											   failOnKeywords: ["class", "struct", "union", "enum"]))
+											   failOnKeywords: ["class", "struct", "union", "enum", "concept"]))
 				{  return false;  }
 
 			TryToSkipWhitespace(ref lookahead);
@@ -592,6 +615,165 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// At this point we're only parsing prototypes so there will not be a body and we can stop here.  Documenting this in
 			// case it changes in the future.
 
+			return true;
+			}
+
+
+		/* Function: TryToSkipTemplateDeclaration
+		 *
+		 * Tries to move the iterator past a template declaration, such as "template<typename T>".  It supports the export keyword.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- <ParseMode.ParseClassPrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipTemplateDeclaration (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			if (!IsOnAnyKeyword(iterator, "template", "export"))
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+
+
+			// Export keyword
+
+			// We know this is the export keyword from the test at the start of the function
+			if (lookahead.Character == 'e')
+				{
+				lookahead.Next();
+				TryToSkipWhitespace(ref lookahead);
+
+				if (!IsOnKeyword(lookahead, "template"))
+					{  return false;  }
+				}
+
+
+			// Template keyword
+
+			// We know the iterator is on the template keyword at this point
+			lookahead.Next();
+			TryToSkipWhitespace(ref lookahead);
+
+
+			// Template signature
+
+			if (!TryToSkipTemplateSignature(ref lookahead, TemplateSignatureType.Definition, mode))
+				{  return false;  }
+
+			TokenIterator endOfTemplate = lookahead;
+			TryToSkipWhitespace(ref lookahead);
+
+
+			// Requires clauses
+
+			TokenIterator requires = default;
+			bool hasRequires = false;
+
+			if (IsOnKeyword(lookahead, "requires"))
+				{
+				requires = lookahead;
+				hasRequires = true;
+
+				lookahead.Next();
+				TryToSkipWhitespace(ref lookahead);
+
+				if (lookahead.Character == '(')
+					{
+					lookahead.Next();
+
+					if (GenericSkipUntilAfter(ref lookahead, ')',  angleBracketsAsBlocks: false))
+						{
+						endOfTemplate = lookahead;
+						TryToSkipWhitespace(ref lookahead);
+						}
+					}
+
+				// Double requires
+				else if (IsOnKeyword(lookahead, "requires"))
+					{
+					lookahead.Next();
+					endOfTemplate = lookahead;
+
+					TryToSkipWhitespace(ref lookahead);
+
+					if (lookahead.Character == '(')
+						{
+						lookahead.Next();
+
+						if (GenericSkipUntilAfter(ref lookahead, ')', angleBracketsAsBlocks: true))
+							{
+							endOfTemplate = lookahead;
+							TryToSkipWhitespace(ref lookahead);
+							}
+						}
+
+					if (lookahead.Character == '{')
+						{
+						lookahead.Next();
+
+						if (GenericSkipUntilAfter(ref lookahead, '}', angleBracketsAsBlocks: false))
+							{
+							endOfTemplate = lookahead;
+							TryToSkipWhitespace(ref lookahead);
+							}
+						}
+					}
+
+				else
+					{
+					while (TryToSkipIdentifier(ref lookahead, mode))
+						{
+						endOfTemplate = lookahead;
+						TryToSkipWhitespace(ref lookahead);
+
+						if (TryToSkipTemplateSignature(ref lookahead, TemplateSignatureType.Instantiation, mode))
+							{
+							endOfTemplate = lookahead;
+							TryToSkipWhitespace(ref lookahead);
+							}
+
+						if (lookahead.MatchesAcrossTokens("&&") ||
+							lookahead.MatchesAcrossTokens("||"))
+							{
+							lookahead.Next(2);
+							endOfTemplate = lookahead;
+							TryToSkipWhitespace(ref lookahead);
+							}
+						else
+							{  break;  }
+						}
+					}
+				}
+
+
+			// Success
+
+			if (mode == ParseMode.ParsePrototype)
+				{
+				iterator.PrototypeParsingType = PrototypeParsingType.StartOfPrototypeSection;
+
+				TokenIterator lastToken = endOfTemplate;
+				lastToken.Previous();
+				lastToken.PrototypeParsingType = PrototypeParsingType.EndOfPrototypeSection;
+
+				if (hasRequires)
+					{  requires.PrototypeParsingType = PrototypeParsingType.StartOfPrototypeSection;  }
+				}
+			else if (mode == ParseMode.ParseClassPrototype)
+				{
+				iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfPrePrototypeLine;
+
+				iterator.Next();
+				iterator.SetClassPrototypeParsingTypeBetween(endOfTemplate, ClassPrototypeParsingType.PrePrototypeLine);
+
+				if (hasRequires)
+					{  requires.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfPrePrototypeLine;  }
+				}
+
+			iterator = endOfTemplate;
 			return true;
 			}
 
@@ -1439,7 +1621,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Attributes
 
-			if (TryToSkipAttributes(ref lookahead, mode, PrototypeParsingType.TypeModifier))
+			while (TryToSkipAttributes(ref lookahead, mode, prototypeParsingType: PrototypeParsingType.TypeModifier) ||
+					  TryToSkipTemplateDeclaration(ref lookahead, mode))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
