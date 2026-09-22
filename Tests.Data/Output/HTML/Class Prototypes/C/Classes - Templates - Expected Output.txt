@@ -1,0 +1,149 @@
+=== Simple Templates ===
+
+=== SimpleTemplate ===
+
+<div class="NDClassPrototype">
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPPrePrototypeLine"><span class="SHKeyword">template</span>&lt;<span class="SHKeyword">typename</span> T&gt;</div>
+      <div class="CPName">SimpleTemplate</div>
+   </div>
+</div>
+
+=== ExportTemplate ===
+
+<div class="NDClassPrototype">
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPPrePrototypeLine"><span class="SHKeyword">export template</span>&lt;<span class="SHKeyword">typename</span> T&gt;</div>
+      <div class="CPName">ExportTemplate</div>
+   </div>
+</div>
+
+=== Templates with Constraints ===
+
+=== SimpleConstraint ===
+
+<div class="NDClassPrototype">
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPPrePrototypeLine"><span class="SHKeyword">template</span>&lt;<span class="SHKeyword">typename</span> T&gt; </div>
+      <div class="CPPrePrototypeLine"><span class="SHKeyword">requires</span> Incrementable&lt;T&gt;</div>
+      <div class="CPName">SimpleConstraint</div>
+   </div>
+</div>
+
+=== MultipleConstraintsAnd ===
+
+<div class="NDClassPrototype">
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPPrePrototypeLine"><span class="SHKeyword">template</span>&lt;<span class="SHKeyword">typename</span> T&gt; </div>
+      <div class="CPPrePrototypeLine"><span class="SHKeyword">requires</span> Integral&lt;T&gt; &amp;&amp; std::is_signed&lt;T&gt;::value</div>
+      <div class="CPName">MultipleConstraintsAnd</div>
+   </div>
+</div>
+
+=== MultipleConstraintsOr ===
+
+<div class="NDClassPrototype">
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPPrePrototypeLine"><span class="SHKeyword">template</span>&lt;<span class="SHKeyword">typename</span> T&gt; </div>
+      <div class="CPPrePrototypeLine"><span class="SHKeyword">requires</span> EqualityComparable&lt;T&gt; || Same&lt;T, <span class="SHKeyword">void</span>&gt;</div>
+      <div class="CPName">MultipleConstraintsOr</div>
+   </div>
+</div>
+
+=== MultipleConstraintsParentheses ===
+
+<div class="NDClassPrototype">
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPPrePrototypeLine"><span class="SHKeyword">template</span>&lt;<span class="SHKeyword">typename</span> T&gt; </div>
+      <div class="CPPrePrototypeLine"><span class="SHKeyword">requires</span> (EqualityComparable&lt;T&gt; || Same&lt;T, <span class="SHKeyword">void</span>&gt;)</div>
+      <div class="CPName">MultipleConstraintsParentheses</div>
+   </div>
+</div>
+
+=== InlineConstraintExpression ===
+
+<div class="NDClassPrototype">
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPPrePrototypeLine"><span class="SHKeyword">template</span>&lt;<span class="SHKeyword">typename</span> T&gt; </div>
+      <div class="CPPrePrototypeLine"><span class="SHKeyword">requires</span> (<span class="SHKeyword">sizeof</span>(T) &lt; <span class="SHNumber">8</span>)</div>
+      <div class="CPName">InlineConstraintExpression</div>
+   </div>
+</div>
+
+=== DoubleRequiresConstraintA ===
+
+<div class="NDClassPrototype">
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPPrePrototypeLine"><span class="SHKeyword">template</span>&lt;<span class="SHKeyword">typename</span> T&gt; </div>
+      <div class="CPPrePrototypeLine"><span class="SHKeyword">requires requires</span> (T x) { <span class="SHKeyword">sizeof</span>(x) &lt; <span class="SHNumber">8</span>; }</div>
+      <div class="CPName">DoubleRequiresConstraintA</div>
+   </div>
+</div>
+
+=== DoubleRequiresConstraintB ===
+
+<div class="NDClassPrototype">
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPPrePrototypeLine"><span class="SHKeyword">template</span>&lt;<span class="SHKeyword">typename</span> T&gt; </div>
+      <div class="CPPrePrototypeLine"><span class="SHKeyword">requires requires</span>(T a, T b) { { a + b } -&gt; std::same_as&lt;T&gt;; a.swap(b); }</div>
+      <div class="CPName">DoubleRequiresConstraintB</div>
+   </div>
+</div>
+
+=== Templates With Attributes ===
+
+=== AttributeBeforeTemplate ===
+
+<div class="NDClassPrototype">
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">[[Attribute]]</span></div>
+      <div class="CPPrePrototypeLine"><span class="SHKeyword">template</span>&lt;<span class="SHKeyword">typename</span> T&gt;</div>
+      <div class="CPName">AttributeBeforeTemplate</div>
+   </div>
+</div>
+
+=== AttributeAfterTemplateBeforeClass ===
+
+<div class="NDClassPrototype">
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPPrePrototypeLine"><span class="SHKeyword">template</span>&lt;<span class="SHKeyword">typename</span> T&gt;</div>
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">[[Attribute]]</span></div>
+      <div class="CPName">AttributeAfterTemplateBeforeClass</div>
+   </div>
+</div>
+
+=== AttributeAfterClass ===
+
+<div class="NDClassPrototype">
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPPrePrototypeLine"><span class="SHKeyword">template</span>&lt;<span class="SHKeyword">typename</span> T&gt;</div>
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">[[Attribute]]</span></div>
+      <div class="CPName">AttributeAfterClass</div>
+   </div>
+</div>
+
+=== AttributesInAllPositions ===
+
+<div class="NDClassPrototype">
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">[[AttributeA]]</span></div>
+      <div class="CPPrePrototypeLine"><span class="SHKeyword">template</span>&lt;<span class="SHKeyword">typename</span> T&gt;</div>
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">[[AttributeB]]</span></div>
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">[[AttributeC]]</span></div>
+      <div class="CPName">AttributesInAllPositions</div>
+   </div>
+</div>
+
+=== Combinations ===
+
+=== TemplateWithEverything ===
+
+<div class="NDClassPrototype">
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">__attribute__((AttributeA))</span></div>
+      <div class="CPPrePrototypeLine"><span class="SHKeyword">template</span>&lt;<span class="SHKeyword">typename</span> T&gt; </div>
+      <div class="CPPrePrototypeLine"><span class="SHKeyword">requires</span> (EqualityComparable&lt;T&gt; || Same&lt;T, <span class="SHKeyword">void</span>&gt;)</div>
+      <div class="CPPrePrototypeLine"><span class="SHMetadata">[[AttributeB]]</span></div>
+      <div class="CPName">TemplateWithEverything</div>
+   </div>
+</div>
