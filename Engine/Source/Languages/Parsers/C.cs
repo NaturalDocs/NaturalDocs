@@ -259,6 +259,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TryToSkipWhitespace(ref lookahead);
 
 
+			// Distinguish from class/struct enum
+
+			if (IsOnKeyword(lookahead, "enum"))
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+
+
 			// Attributes After Keyword
 
 			while (TryToSkipAttributes(ref lookahead, mode, classPrototypeParsingType: ClassPrototypeParsingType.PrePrototypeLine) ||
