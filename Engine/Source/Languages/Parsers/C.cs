@@ -50,9 +50,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *					  modifiers, the type, and the name.
 		 * Variable - A variable from the start to the start of the default value or the end of the definition, encompassing modifiers, the
 		 *				   type, and the name.
+		 * TrailingReturnType - A trailing function return type from the start to the end of the definition, encompassing modifiers and the type.
 		 */
 		public enum MTNType : byte
-			{  Function, Parameter, Variable  }
+			{  Function, Parameter, Variable, TrailingReturnType  }
 
 
 		/* Enum: TemplateSignatureType
@@ -108,8 +109,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TokenIterator lookahead = start;
 
 			// Needed because the opening brace in a "requires requires() { }" clause would otherwise be mistaken for the start of
-			// the class body and end the prototype too early.
-			if (TryToSkipClass(ref lookahead, ParseMode.ParsePrototype))
+			// the function or class body and end the prototype too early.
+			if (TryToSkipClass(ref lookahead, ParseMode.ParsePrototype) ||
+				TryToSkipFunction(ref lookahead, ParseMode.ParsePrototype))
 				{
 				prototypeStart = start;
 				prototypeEnd = lookahead;
@@ -235,7 +237,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TokenIterator lookahead = iterator;
 
 
-			// Attributes Before Keyword
+			// Attributes and template declaration
 
 			while (TryToSkipAttributes(ref lookahead, mode, classPrototypeParsingType: ClassPrototypeParsingType.PrePrototypeLine) ||
 					  TryToSkipTemplateDeclaration(ref lookahead, mode) ||
@@ -361,10 +363,24 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		protected bool TryToSkipFunction (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
+			TokenIterator lookahead = iterator;
+
+
+			// Template declaration and attributes
+
+			if (TryToSkipAttributes(ref lookahead, mode, prototypeParsingType: PrototypeParsingType.StartOfPrototypeSection))
+				{  TryToSkipWhitespace(ref lookahead);  }
+
+			if (TryToSkipTemplateDeclaration(ref lookahead, mode))
+				{
+				TryToSkipWhitespace(ref lookahead);
+
+				if (TryToSkipAttributes(ref lookahead, mode, prototypeParsingType: PrototypeParsingType.StartOfPrototypeSection))
+					{  TryToSkipWhitespace(ref lookahead);  }
+				}
+
 
 			// The part before the parameters can be treated as a modifier-type-name group
-
-			TokenIterator lookahead = iterator;
 
 			if (!TryToSkipMTNGroup(ref lookahead, MTNType.Function, mode,
 											   failOnKeywords: ["class", "struct", "union", "enum", "concept"]))
@@ -399,7 +415,104 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TryToSkipWhitespace(ref lookahead);
 
 
-			// xxx process anything following the parameters
+			// const/volatile
+
+			if (IsOnAnyKeyword(lookahead, "const", "volatile"))
+				{
+				lookahead.Next();
+				TryToSkipWhitespace(ref lookahead);
+				}
+
+
+			// &/&&
+
+			if (lookahead.Character == '&')
+				{
+				do
+					{  lookahead.Next();  }
+				while (lookahead.Character == '&');
+
+				TryToSkipWhitespace(ref lookahead);
+				}
+
+
+			// noexcept/throw
+
+			if (IsOnAnyKeyword(lookahead, "noexcept", "throw"))
+				{
+				lookahead.Next();
+				TryToSkipWhitespace(ref lookahead);
+
+				if (lookahead.Character == '(')
+					{
+					lookahead.Next();
+					GenericSkipUntilAfter(ref lookahead, ')', skipToEndIfNotFound: false);
+					TryToSkipWhitespace(ref lookahead);
+					}
+				}
+
+
+			// -> trailing return type
+
+			if (lookahead.MatchesAcrossTokens("->"))
+				{
+				lookahead.Next(2);
+				TryToSkipWhitespace(ref lookahead);
+
+				TryToSkipMTNGroup(ref lookahead, MTNType.TrailingReturnType, mode);
+				TryToSkipWhitespace(ref lookahead);
+				}
+
+
+			// Trailing requires clause
+
+			if (TryToSkipRequiresClause(ref lookahead, mode))
+				{  TryToSkipWhitespace(ref lookahead);  }
+
+
+			// override/final
+
+			if (IsOnAnyKeyword(lookahead, "override", "final"))
+				{
+				lookahead.Next();
+				TryToSkipWhitespace(ref lookahead);
+				}
+
+
+			// = 0/default/delete
+
+			if (lookahead.Character == '=')
+				{
+				lookahead.Next();
+				TryToSkipWhitespace(ref lookahead);
+
+				bool validKeyword = false;
+				bool canHaveParentheses = false;
+
+				if (IsOnKeyword(lookahead, "delete"))
+					{
+					validKeyword = true;
+					canHaveParentheses = true;
+					}
+				else if (IsOnAnyKeyword(lookahead, "0", "default"))
+					{
+					validKeyword = true;
+					canHaveParentheses = false;
+					}
+
+				if (validKeyword)
+					{
+					lookahead.Next();
+					TryToSkipWhitespace(ref lookahead);
+
+					if (canHaveParentheses && lookahead.Character == '(')
+						{
+						lookahead.Next();
+						GenericSkipUntilAfter(ref lookahead, ')', skipToEndIfNotFound: false);
+						TryToSkipWhitespace(ref lookahead);
+						}
+					}
+				}
 
 
 			// Process the parameters.  We can skip this if we're just iterating over it.
@@ -1714,6 +1827,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 * You can optionally pass an array of keywords that will cause this function to fail if any of them are encountered.  This allows you to
 		 * prevent MTN groups from possibly misinterpreting a code element by treating a keyword for a different one as a modifier.
 		 *
+		 * This will skip parentheses following modifiers (such as "alignas(8)") but not the one after the last MTN word, such as the parentheses
+		 * following a function name.
+		 *
 		 * Supported Modes:
 		 *
 		 *		- <ParseMode.IterateOnly>
@@ -1728,9 +1844,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Attributes
 
-			while (TryToSkipAttributes(ref lookahead, mode, prototypeParsingType: PrototypeParsingType.TypeModifier) ||
-					  TryToSkipTemplateDeclaration(ref lookahead, mode))
-				{  TryToSkipWhitespace(ref lookahead);  }
+			if (mtnType == MTNType.Function)
+				{
+				while (TryToSkipAttributes(ref lookahead, mode, prototypeParsingType: PrototypeParsingType.StartOfPrototypeSection) ||
+						  TryToSkipTemplateDeclaration(ref lookahead, mode))
+					{  TryToSkipWhitespace(ref lookahead);  }
+				}
+			else
+				{
+				while (TryToSkipAttributes(ref lookahead, mode, prototypeParsingType: PrototypeParsingType.TypeModifier) ||
+						  TryToSkipTemplateDeclaration(ref lookahead, mode))
+					{  TryToSkipWhitespace(ref lookahead);  }
+				}
 
 
 			// Pass 1: Count the number of MTN words in the group.  We need to accept parentheses that appear after macros.
@@ -1771,10 +1896,22 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						{  foundEnd = true;  }
 
 					// Keywords that follow the parameters
-					else if (IsOnAnyKeyword(lookahead, "volatile", "try", "throw", "noexcept"))
+					else if (IsOnAnyKeyword(lookahead, "volatile", "try", "throw", "noexcept", "requires", "override", "final"))
 						{  foundEnd = true;  }
 
 					// xxx "const", "&", and "&&" can appear before a type and after the parentheses
+					}
+
+				else if (mtnType == MTNType.TrailingReturnType)
+					{
+					if (lookahead.Character == ';' ||  // End of declaration
+						lookahead.Character == '{' ||  // Body
+						lookahead.Character == '=')  // = 0, = default, etc.
+						{  foundEnd = true;  }
+
+					// Keywords that follow the return type
+					else if (IsOnAnyKeyword(lookahead, "requires", "override", "final"))
+						{  foundEnd = true;  }
 					}
 
 				else
@@ -1835,11 +1972,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					wordEnd = lookahead;
 
 					// Process the word we found
-					if (wordCount >= 3)
+					if (wordCount >= 3 || (mtnType == MTNType.TrailingReturnType && wordCount >= 2))
 						{
 						wordStart.SetPrototypeParsingTypeBetween(wordEnd, PrototypeParsingType.TypeModifier);
 						}
-					else if (wordCount == 2)
+					else if (wordCount == 2 || (mtnType == MTNType.TrailingReturnType && wordCount == 1))
 						{
 						MarkType(wordStart, wordEnd);
 						}
@@ -1848,7 +1985,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						MarkName(wordStart, wordEnd);
 						}
 
-					if (wordCount > 1 || lastWordHadParentheses)
+					if (wordCount > 1)
 						{
 						TryToSkipWhitespace(ref lookahead);
 
