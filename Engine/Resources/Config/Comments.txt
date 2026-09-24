@@ -57,6 +57,8 @@ Comment Type: Struct
    Keywords:
       struct, structs
       structure, structures
+
+   C/C++ Keywords:
       union, unions
 
 
