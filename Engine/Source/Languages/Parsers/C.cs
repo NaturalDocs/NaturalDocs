@@ -416,6 +416,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 
+			iterator = lookahead;
 			return true;
 			}
 
