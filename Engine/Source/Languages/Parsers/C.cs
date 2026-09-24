@@ -678,84 +678,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Requires clauses
 
-			TokenIterator requires = default;
-			bool hasRequires = false;
+			TokenIterator requires = lookahead;
+			bool hasRequires = TryToSkipRequiresClause(ref lookahead, mode);
 
-			if (IsOnKeyword(lookahead, "requires"))
-				{
-				requires = lookahead;
-				hasRequires = true;
-
-				lookahead.Next();
-				TryToSkipWhitespace(ref lookahead);
-
-				if (lookahead.Character == '(')
-					{
-					lookahead.Next();
-
-					if (GenericSkipUntilAfter(ref lookahead, ')',  angleBracketsAsBlocks: false))
-						{
-						endOfTemplate = lookahead;
-						TryToSkipWhitespace(ref lookahead);
-						}
-					}
-
-				// Double requires
-				else if (IsOnKeyword(lookahead, "requires"))
-					{
-					lookahead.Next();
-					endOfTemplate = lookahead;
-
-					TryToSkipWhitespace(ref lookahead);
-
-					if (lookahead.Character == '(')
-						{
-						lookahead.Next();
-
-						if (GenericSkipUntilAfter(ref lookahead, ')', angleBracketsAsBlocks: true))
-							{
-							endOfTemplate = lookahead;
-							TryToSkipWhitespace(ref lookahead);
-							}
-						}
-
-					if (lookahead.Character == '{')
-						{
-						lookahead.Next();
-
-						if (GenericSkipUntilAfter(ref lookahead, '}', angleBracketsAsBlocks: false))
-							{
-							endOfTemplate = lookahead;
-							TryToSkipWhitespace(ref lookahead);
-							}
-						}
-					}
-
-				else
-					{
-					while (TryToSkipIdentifier(ref lookahead, mode))
-						{
-						endOfTemplate = lookahead;
-						TryToSkipWhitespace(ref lookahead);
-
-						if (TryToSkipTemplateSignature(ref lookahead, TemplateSignatureType.Instantiation, mode))
-							{
-							endOfTemplate = lookahead;
-							TryToSkipWhitespace(ref lookahead);
-							}
-
-						if (lookahead.MatchesAcrossTokens("&&") ||
-							lookahead.MatchesAcrossTokens("||"))
-							{
-							lookahead.Next(2);
-							endOfTemplate = lookahead;
-							TryToSkipWhitespace(ref lookahead);
-							}
-						else
-							{  break;  }
-						}
-					}
-				}
+			if (hasRequires)
+				{  endOfTemplate = lookahead;  }
 
 
 			// Success
@@ -764,12 +691,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{
 				iterator.PrototypeParsingType = PrototypeParsingType.StartOfPrototypeSection;
 
-				TokenIterator lastToken = endOfTemplate;
-				lastToken.Previous();
-				lastToken.PrototypeParsingType = PrototypeParsingType.EndOfPrototypeSection;
-
-				if (hasRequires)
-					{  requires.PrototypeParsingType = PrototypeParsingType.StartOfPrototypeSection;  }
+				// Requires will create its own prototype section, so only end this one if it doesn't exist
+				if (!hasRequires)
+					{
+					TokenIterator lookbehind = endOfTemplate;
+					lookbehind.Previous();
+					lookbehind.PrototypeParsingType = PrototypeParsingType.EndOfPrototypeSection;
+					}
 				}
 			else if (mode == ParseMode.ParseClassPrototype)
 				{
@@ -850,6 +778,175 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{  lookahead.Next();  }
 
 			iterator = lookahead;
+			return true;
+			}
+
+
+		/* Function: TryToSkipRequiresClause
+		 *
+		 * Tries to move the iterator past a constraint declaration.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- <ParseMode.ParseClassPrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipRequiresClause (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			if (!IsOnKeyword(iterator, "requires"))
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+			lookahead.Next();
+
+			TokenIterator endOfClause = lookahead;
+			TryToSkipWhitespace(ref lookahead);
+
+
+			// Constraints in parentheses
+
+			if (lookahead.Character == '(')
+				{
+				lookahead.Next();
+
+				if (GenericSkipUntilAfter(ref lookahead, ')',  angleBracketsAsBlocks: false))
+					{  endOfClause = lookahead;  }
+				else
+					{  return false;  }
+				}
+
+
+			// Constraints defined inline with double requires
+
+			else if (IsOnKeyword(lookahead, "requires"))
+				{
+				lookahead.Next();
+				endOfClause = lookahead;
+
+				TryToSkipWhitespace(ref lookahead);
+
+				// Parameters, optional
+				if (lookahead.Character == '(')
+					{
+					lookahead.Next();
+
+					if (GenericSkipUntilAfter(ref lookahead, ')', angleBracketsAsBlocks: true))
+						{
+						endOfClause = lookahead;
+						TryToSkipWhitespace(ref lookahead);
+						}
+					}
+
+				// Content
+				if (lookahead.Character == '{')
+					{
+					TokenIterator openingBrace = lookahead;
+					lookahead.Next();
+
+					if (GenericSkipUntilOn(ref lookahead, '}', angleBracketsAsBlocks: false))
+						{
+						TokenIterator closingBrace = lookahead;
+
+						lookahead.Next();
+						endOfClause = lookahead;
+
+						if (mode == ParseMode.ParsePrototype)
+							{
+							openingBrace.PrototypeParsingType = PrototypeParsingType.StartOfMetadataParams;
+							closingBrace.PrototypeParsingType = PrototypeParsingType.EndOfMetadataParams;
+
+							TokenIterator startOfConstraint = openingBrace;
+							startOfConstraint.Next();
+							startOfConstraint.NextPastWhitespace();
+
+							TokenIterator constraintIterator = startOfConstraint;
+
+							while (constraintIterator <= closingBrace)
+								{
+								if (constraintIterator == closingBrace ||
+									constraintIterator.Character == ';')
+									{
+									TokenIterator endOfConstraint = constraintIterator;
+									endOfConstraint.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds);
+
+									if (endOfConstraint > startOfConstraint)
+										{  startOfConstraint.SetPrototypeParsingTypeBetween(endOfConstraint, PrototypeParsingType.PropertyValue);  }
+
+									if (constraintIterator.Character == ';')
+										{
+										constraintIterator.PrototypeParsingType = PrototypeParsingType.ParamSeparator;
+										constraintIterator.Next();
+										constraintIterator.NextPastWhitespace();
+										startOfConstraint = constraintIterator;
+										}
+									else
+										{  break;  }
+									}
+								else
+									{  GenericSkip(ref constraintIterator, angleBracketsAsBlocks: false);  }
+								}
+							}
+						}
+					else
+						{  return false;  }
+					}
+				else
+					{  return false;  }
+				}
+
+
+			// Simple constraints as identifiers
+
+			else
+				{
+				while (TryToSkipIdentifier(ref lookahead, mode))
+					{
+					endOfClause = lookahead;
+					TryToSkipWhitespace(ref lookahead);
+
+					if (TryToSkipTemplateSignature(ref lookahead, TemplateSignatureType.Instantiation, mode))
+						{
+						endOfClause = lookahead;
+						TryToSkipWhitespace(ref lookahead);
+						}
+
+					if (lookahead.MatchesAcrossTokens("&&") ||
+						lookahead.MatchesAcrossTokens("||"))
+						{
+						lookahead.Next(2);
+						endOfClause = lookahead;
+						TryToSkipWhitespace(ref lookahead);
+						}
+					else
+						{  break;  }
+					}
+				}
+
+
+			// Success
+
+			if (mode == ParseMode.ParsePrototype)
+				{
+				iterator.PrototypeParsingType = PrototypeParsingType.StartOfPrototypeSection;
+
+				TokenIterator lookbehind = endOfClause;
+				lookbehind.Previous();
+
+				// Ideally we'd want to mark the last token as the end of the section, but don't overwrite something else like the
+				// closing brace of a double requires being marked as EndOfMetadataParams.
+				if (lookbehind.PrototypeParsingType == PrototypeParsingType.Null)
+					{  lookbehind.PrototypeParsingType = PrototypeParsingType.EndOfPrototypeSection;  }
+
+				// Otherwise apply it to endOfClause.  This is ugly since it can be potentially overwritten, but there's likely to be
+				// whitespace here that we can use which would prevent it.  Also check if it's in bounds, since it could be the requires
+				// following the parameters at the end of a function prototype.
+				else if (endOfClause.IsInBounds)
+					{  endOfClause.PrototypeParsingType = PrototypeParsingType.EndOfPrototypeSection;  }
+				}
+
+			iterator = endOfClause;
 			return true;
 			}
 
