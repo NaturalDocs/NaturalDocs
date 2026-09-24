@@ -1,0 +1,310 @@
+=== Template Parameters ===
+
+=== ClassTemplateParameter ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">template</span>&lt;<span class="SHKeyword">class</span> T&gt;</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> ClassTemplateParameter()</div>
+</div>
+
+=== TypeNameTemplateParameter ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">template</span>&lt;<span class="SHKeyword">typename</span> T&gt;</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> TypeNameTemplateParameter()</div>
+</div>
+
+=== UnnamedTemplateParameters ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">template</span>&lt;<span class="SHKeyword">class</span>, <span class="SHKeyword">class</span>&gt;</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> UnnamedTemplateParameters()</div>
+</div>
+
+=== TemplateParameterWithDefault ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">template</span>&lt;<span class="SHKeyword">typename</span> T = <span class="SHKeyword">void</span>&gt;</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> TemplateParameterWithDefault()</div>
+</div>
+
+=== TemplateParameterPack ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">template</span>&lt;<span class="SHKeyword">class</span>... Ts&gt;</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> TemplateParameterPack()</div>
+</div>
+
+=== TemplateWithSpecificTypes ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">template</span>&lt;<span class="SHKeyword">int</span> A, <span class="SHKeyword">int</span> B&gt;</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> TemplateWithSpecificTypes()</div>
+</div>
+
+=== Template Constraints ===
+
+=== SimpleConstraint ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">template</span>&lt;<span class="SHKeyword">typename</span> T&gt;</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">requires</span> std::totally_ordered&lt;T&gt;</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> SimpleConstraint()</div>
+</div>
+
+=== MultipleConstraintsAnd ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">template</span> &lt;<span class="SHKeyword">typename</span> T&gt;</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">requires</span> std::ranges::range&lt;T&gt; &amp;&amp; std::is_integral_v&lt;T&gt;</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> MultipleConstraintsAnd()</div>
+</div>
+
+=== MultipleConstraintsOr ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">template</span> &lt;<span class="SHKeyword">typename</span> T&gt;</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">requires</span> std::ranges::range&lt;T&gt; || std::is_integral_v&lt;T&gt;</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> MultipleConstraintsOr()</div>
+</div>
+
+=== MultipleConstraintsParentheses ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">template</span>&lt;<span class="SHKeyword">typename</span> T&gt;</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">requires</span> (EqualityComparable&lt;T&gt; || Same&lt;T, <span class="SHKeyword">void</span>&gt;)</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> MultipleConstraintsParentheses()</div>
+</div>
+
+=== InlineConstraintExpression ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">template</span>&lt;<span class="SHKeyword">typename</span> T&gt;</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">requires</span> (<span class="SHKeyword">sizeof</span>(T) &lt; <span class="SHNumber">8</span>)</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> InlineConstraintExpression()</div>
+</div>
+
+=== DoubleRequiresConstraintA ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PPlainSection"><span class="SHKeyword">template</span>&lt;<span class="SHKeyword">typename</span> T&gt;</div>
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
+         <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/2/2"><span class="SHKeyword">requires requires</span> (T x) {</div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">sizeof</span>(x) &lt; <span class="SHNumber">8</span>;</div>
+         <div class="PAfterParameters LeftSpaceOnWide" data-WideGridArea="1/3/2/4" data-NarrowGridArea="3/1/4/3" style="grid-area:1/3/2/4">}</div>
+      </div>
+   </div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> DoubleRequiresConstraintA()</div>
+</div>
+
+=== DoubleRequiresConstraintB ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PPlainSection"><span class="SHKeyword">template</span>&lt;<span class="SHKeyword">typename</span> T&gt;</div>
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
+         <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/3/2"><span class="SHKeyword">requires requires</span>(T a, T b) {</div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">{ a + b } -&gt; std::same_as&lt;T&gt;;</div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3">a.swap(b);</div>
+         <div class="PAfterParameters" data-WideGridArea="2/3/3/4" data-NarrowGridArea="4/1/5/3" style="grid-area:2/3/3/4">}</div>
+      </div>
+   </div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> DoubleRequiresConstraintB()</div>
+</div>
+
+=== Trailing Constraints ===
+
+=== SimpleTrailingConstraint ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> SimpleTrailingConstraint()</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">requires</span> std::totally_ordered&lt;T&gt;</div>
+</div>
+
+=== MultipleTrailingConstraintsAnd ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> MultipleTrailingConstraintsAnd()</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">requires</span> std::ranges::range&lt;T&gt; &amp;&amp; std::is_integral_v&lt;T&gt;</div>
+</div>
+
+=== MultipleTrailingConstraintsOr ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> MultipleTrailingConstraintsOr()</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">requires</span> std::ranges::range&lt;T&gt; || std::is_integral_v&lt;T&gt;</div>
+</div>
+
+=== MultipleTrailingConstraintsParentheses ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> MultipleTrailingConstraintsParentheses()</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">requires</span> (EqualityComparable&lt;T&gt; || Same&lt;T, <span class="SHKeyword">void</span>&gt;)</div>
+</div>
+
+=== InlineTrailingConstraintExpression ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> InlineTrailingConstraintExpression()</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">requires</span> (<span class="SHKeyword">sizeof</span>(T) &lt; <span class="SHNumber">8</span>)</div>
+</div>
+
+=== TrailingDoubleRequiresConstraintA ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> TrailingDoubleRequiresConstraintA()</div>
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
+         <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/2/2"><span class="SHKeyword">requires requires</span> (T x) {</div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">sizeof</span>(x) &lt; <span class="SHNumber">8</span>;</div>
+         <div class="PAfterParameters LeftSpaceOnWide" data-WideGridArea="1/3/2/4" data-NarrowGridArea="3/1/4/3" style="grid-area:1/3/2/4">}</div>
+      </div>
+   </div>
+</div>
+
+=== TrailingDoubleRequiresConstraintB ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> TrailingDoubleRequiresConstraintB()</div>
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
+         <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/3/2"><span class="SHKeyword">requires requires</span>(T a, T b) {</div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">{ a + b } -&gt; std::same_as&lt;T&gt;;</div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3">a.swap(b);</div>
+         <div class="PAfterParameters" data-WideGridArea="2/3/3/4" data-NarrowGridArea="4/1/5/3" style="grid-area:2/3/3/4">}</div>
+      </div>
+   </div>
+</div>
+
+=== Both Constraints ===
+
+=== BothConstraints ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">template</span> &lt;<span class="SHKeyword">typename</span> T&gt;</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">requires</span> std::ranges::range&lt;T&gt;</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> BothConstraints()</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">requires</span> std::totally_ordered&lt;T&gt;</div>
+</div>
+
+=== BothConstraintsAndOr ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">template</span> &lt;<span class="SHKeyword">typename</span> T&gt;</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">requires</span> std::ranges::range&lt;T&gt; &amp;&amp; std::is_integral_v&lt;T&gt;</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> BothConstraints()</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">requires</span> std::ranges::range&lt;T&gt; || std::is_integral_v&lt;T&gt;</div>
+</div>
+
+=== BothConstraintsParentheses ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">template</span> &lt;<span class="SHKeyword">typename</span> T&gt;</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">requires</span> (<span class="SHKeyword">sizeof</span>(T) &lt; <span class="SHNumber">8</span>)</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> InlineTrailingConstraintExpression()</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">requires</span> (<span class="SHKeyword">sizeof</span>(T) &lt; <span class="SHNumber">8</span>)</div>
+</div>
+
+=== BothDoubleRequiresConstraintsA ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PPlainSection"><span class="SHKeyword">template</span> &lt;<span class="SHKeyword">typename</span> T&gt;</div>
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
+         <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/2/2"><span class="SHKeyword">requires requires</span> (T x) {</div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">sizeof</span>(x) &lt; <span class="SHNumber">8</span>;</div>
+         <div class="PAfterParameters LeftSpaceOnWide" data-WideGridArea="1/3/2/4" data-NarrowGridArea="3/1/4/3" style="grid-area:1/3/2/4">}</div>
+      </div>
+   </div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> BothDoubleRequiresConstraintsA()</div>
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
+         <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/2/2"><span class="SHKeyword">requires requires</span> (T x) {</div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">sizeof</span>(x) &lt; <span class="SHNumber">8</span>;</div>
+         <div class="PAfterParameters LeftSpaceOnWide" data-WideGridArea="1/3/2/4" data-NarrowGridArea="3/1/4/3" style="grid-area:1/3/2/4">}</div>
+      </div>
+   </div>
+</div>
+
+=== BothDoubleRequiresConstraintsB ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PPlainSection"><span class="SHKeyword">template</span> &lt;<span class="SHKeyword">typename</span> T&gt;</div>
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
+         <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/3/2"><span class="SHKeyword">requires requires</span>(T a, T b) {</div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">{ a + b } -&gt; std::same_as&lt;T&gt;;</div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3">a.swap(b);</div>
+         <div class="PAfterParameters" data-WideGridArea="2/3/3/4" data-NarrowGridArea="4/1/5/3" style="grid-area:2/3/3/4">}</div>
+      </div>
+   </div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> BothDoubleRequiresConstraintsB()</div>
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2">
+         <div class="PBeforeParameters RightSpaceOnWide" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/3/2"><span class="SHKeyword">requires requires</span>(T a, T b) {</div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">{ a + b } -&gt; std::same_as&lt;T&gt;;</div>
+         <div class="PPropertyValue InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3">a.swap(b);</div>
+         <div class="PAfterParameters" data-WideGridArea="2/3/3/4" data-NarrowGridArea="4/1/5/3" style="grid-area:2/3/3/4">}</div>
+      </div>
+   </div>
+</div>
+
+=== Template Instantiation ===
+
+=== ExplicitInstantiation ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">template</span> <span class="SHKeyword">void</span> ExplicitInstantiation&lt;<span class="SHKeyword">double</span>&gt; (</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">double</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">x</div>
+         <div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">)</div>
+      </div>
+   </div>
+</div>
+
+=== InstantiationWithImpliedTypeA ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">template</span> <span class="SHKeyword">void</span> InstantiationWithImpliedTypeA&lt;&gt; (</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">char</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">x</div>
+         <div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">)</div>
+      </div>
+   </div>
+</div>
+
+=== InstantiationWithImpliedTypeB ===
+
+<div class="NDPrototype PContent WideForm">
+   <div class="PSection PParameterSection CStyle">
+      <div class="PParameterCells" data-WideColumnCount="4" data-NarrowColumnCount="3">
+         <div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/4" style="grid-area:1/1/2/2"><span class="SHKeyword">template</span> <span class="SHKeyword">void</span> InstantiationWithImpliedTypeB (</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">char</span>&nbsp;</div>
+         <div class="PName InLastParameterColumn" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">x</div>
+         <div class="PAfterParameters" data-WideGridArea="1/4/2/5" data-NarrowGridArea="3/1/4/4" style="grid-area:1/4/2/5">)</div>
+      </div>
+   </div>
+</div>
+
+=== Templates with Attributes ===
+
+=== AttributeLeadingTemplate ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHMetadata">[[Attribute]]</span></div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">template</span>&lt;<span class="SHKeyword">typename</span> T&gt;</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> AttributeLeadingTemplate()</div>
+</div>
+
+=== TemplateLeadingAttribute ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">template</span>&lt;<span class="SHKeyword">typename</span> T&gt;</div>
+   <div class="PSection PPlainSection"><span class="SHMetadata">[[Attribute]]</span></div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> TemplateLeadingAttribute()</div>
+</div>
