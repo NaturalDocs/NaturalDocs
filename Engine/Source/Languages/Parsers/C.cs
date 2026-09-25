@@ -1902,7 +1902,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					else if (IsOnAnyKeyword(lookahead, "volatile", "try", "throw", "noexcept", "requires", "override", "final"))
 						{  foundEnd = true;  }
 
-					// xxx "const", "&", and "&&" can appear before a type and after the parentheses
+					// "const", "&", and "&&" can appear before a type and after the parentheses
 					}
 
 				else if (mtnType == MTNType.TrailingReturnType)
