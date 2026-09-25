@@ -289,6 +289,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TryToSkipWhitespace(ref lookahead);
 
 
+			// Template signature for explicit instantiation
+
+			if (TryToSkipTemplateSignature(ref lookahead, TemplateSignatureType.Instantiation, mode))
+				{  TryToSkipWhitespace(ref lookahead);  }
+
+
 			// Final
 
 			if (IsOnKeyword(lookahead, "final"))
@@ -299,9 +305,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				lookahead.Next();
 				TryToSkipWhitespace(ref lookahead);
 				}
-
-
-			// xxx template definition
 
 
 			// Inheritance
