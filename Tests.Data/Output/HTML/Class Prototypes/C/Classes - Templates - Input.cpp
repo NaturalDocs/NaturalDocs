@@ -79,6 +79,14 @@ class [[AttributeC]] AttributesInAllPositions { }
 
 
 
+// Group: Template Instantiation
+// ______________________________________________
+
+// Class: ExplicitInstantiation
+template class ExplicitInstantiation<double> { }
+
+
+
 // Group: Combinations
 // ______________________________________________
 

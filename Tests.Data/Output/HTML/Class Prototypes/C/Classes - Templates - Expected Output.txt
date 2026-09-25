@@ -134,6 +134,17 @@
    </div>
 </div>
 
+=== Template Instantiation ===
+
+=== ExplicitInstantiation ===
+
+<div class="NDClassPrototype">
+   <div class="CPEntry CPContent TClass Current">
+      <div class="CPModifiers"><span class="SHKeyword">template</span></div>
+      <div class="CPName">ExplicitInstantiation&#8203;<span class="TemplateSignature">&lt;<span class="SHKeyword">double</span>&gt;</span></div>
+   </div>
+</div>
+
 === Combinations ===
 
 === TemplateWithEverything ===
