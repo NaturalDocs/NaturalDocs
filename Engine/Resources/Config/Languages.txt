@@ -47,6 +47,7 @@ Language: Ada
    Case Sensitive: No
 
    Function Prototype Enders: ; IS
+   Operator Prototype Enders: ; IS
    Variable Prototype Enders: ; :=
 
 
@@ -80,6 +81,7 @@ Language: C/C++
    Class Prototype Enders: ; {
    Struct Prototype Enders: ; {
    Function Prototype Enders: ; { : try
+   Operator Prototype Enders: ; { : try
    Variable Prototype Enders: ; =
    Enumeration Prototype Enders: ; {
 
@@ -110,6 +112,7 @@ Language: Fortran
    Case Sensitive: No
 
    Function Prototype Ender: \n
+   Operator Prototype Ender: \n
    Variable Prototype Enders: \n = =>
 
 
@@ -180,6 +183,7 @@ Language: Kotlin
    Class Prototype Enders: { \n
    Interface Prototype Enders: { \n
    Function Prototype Enders: = {
+   Operator Prototype Enders: = {
    Variable Prototype Enders: = \n
    Property Prototype Enders: = \n
    Constant Prototype Ender: =
@@ -195,6 +199,7 @@ Language: Lua
    Case Sensitive: Yes
 
    Function Prototype Enders: ; \n
+   Operator Prototype Enders: ; \n
    Variable Prototype Enders: ; \n =
 
 
@@ -222,6 +227,7 @@ Language: Pascal
    Block Comments Nest: Yes
 
    Function Prototype Ender: ;
+   Operator Prototype Ender: ;
    Variable Prototype Enders: ; =
    Type Prototype Ender: ;
    Event Prototype Enders: ; read write
@@ -237,6 +243,7 @@ Language: Perl
    Case Sensitive: Yes
 
    Function Prototype Ender: {
+   Operator Prototype Ender: {
    Variable Prototype Enders: ; =
 
 
@@ -293,6 +300,7 @@ Language: Python
 
    Class Prototype Ender: :
    Function Prototype Ender: :
+   Operator Prototype Ender: :
    Variable Prototype Ender: =
 
 
@@ -304,6 +312,7 @@ Language: R
    Case Sensitive: Yes
 
    Function Prototype Enders: { ;
+   Operator Prototype Enders: { ;
    Variable Prototype Enders: <- = ; \n
 
 
@@ -319,6 +328,7 @@ Language: Ruby
 
    Class Prototype Ender: \n
    Function Prototype Enders: ; \n
+   Operator Prototype Enders: ; \n
    Variable Prototype Enders: ; \n =
 
 
@@ -335,6 +345,7 @@ Language: Rust
 
    Struct Prototype Enders: ; {
    Function Prototype Enders: ; {
+   Operator Prototype Enders: ; {
    Variable Prototype Enders: ; =
    Type Prototype Enders: ; =
    Constant Prototype Enders: ; =
@@ -369,6 +380,7 @@ Language: Swift
    Struct Prototype Ender: {
    Interface Prototype Ender: {
    Function Prototype Enders: { \n
+   Operator Prototype Enders: { \n
    Variable Prototype Enders: \n ; = {
    Property Prototype Enders: \n ; = {
    Constant Prototype Ender: =
@@ -444,6 +456,7 @@ Language: Visual Basic
    Class Prototype Ender: \n
    Interface Prototype Ender: \n
    Function Prototype Ender: \n
+   Operator Prototype Ender: \n
    Variable Prototype Enders: \n =
    Property Prototype Ender: \n
 
