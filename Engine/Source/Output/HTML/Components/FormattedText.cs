@@ -527,7 +527,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		/* Regex: FindCodeSplitSymbolsRegex
 		 * Will match instances in the string of member operators which split segments of a code hierarchy.
 		 */
-		[GeneratedRegex("""\.|::|->""",
+		[GeneratedRegex("""\.|::|(?<!operator ?)->""",
 								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
 		static private partial Regex FindCodeSplitSymbolsRegex();
 
