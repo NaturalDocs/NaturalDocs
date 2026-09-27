@@ -1864,21 +1864,20 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// Pass 1: Count the number of MTN words in the group.  We need to accept parentheses that appear after macros.
 
 			TokenIterator startOfWords = lookahead;
+			TokenIterator endOfWords = lookahead;
 			int wordCount = 0;
 			bool lastWordHadParentheses = false;
 
 			while (lookahead.IsInBounds)
 				{
-				// Check for symbols that can end the group
-
-				bool foundEnd = false;
+				// Check for symbols that end the MTN group
 
 				if (mtnType == MTNType.Parameter)
 					{
 					if (lookahead.Character == ',' ||  // End of parameter
 						lookahead.Character == ')' ||  // End of all parameters
 						lookahead.Character == '=')  // Default value
-						{  foundEnd = true;  }
+						{  break;  }
 					}
 
 				else if (mtnType == MTNType.Variable)
@@ -1886,7 +1885,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					if (lookahead.Character == ',' ||  // End of variable in a multi-variable declaration
 						lookahead.Character == ';' ||  // End of definition
 						lookahead.Character == '=')  // Default value
-						{  foundEnd = true;  }
+						{  break;  }
 					}
 
 				else if (mtnType == MTNType.Function)
@@ -1896,11 +1895,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						lookahead.Character == '=' ||  // = 0, = default, etc.
 						lookahead.Character == ':' ||  // Calls to the base constructor
 						lookahead.MatchesAcrossTokens("->"))  // Auto return values
-						{  foundEnd = true;  }
+						{  break;  }
 
 					// Keywords that follow the parameters
 					else if (IsOnAnyKeyword(lookahead, "volatile", "try", "throw", "noexcept", "requires", "override", "final"))
-						{  foundEnd = true;  }
+						{  break;  }
 
 					// "const", "&", and "&&" can appear before a type and after the parentheses
 					}
@@ -1910,18 +1909,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					if (lookahead.Character == ';' ||  // End of declaration
 						lookahead.Character == '{' ||  // Body
 						lookahead.Character == '=')  // = 0, = default, etc.
-						{  foundEnd = true;  }
+						{  break;  }
 
 					// Keywords that follow the return type
 					else if (IsOnAnyKeyword(lookahead, "requires", "override", "final"))
-						{  foundEnd = true;  }
+						{  break;  }
 					}
 
 				else
 					{  throw new NotImplementedException();  }
-
-				if (foundEnd)
-					{  break;  }
 
 
 				// Check for keywords that signify a failure
@@ -1936,6 +1932,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				if (TryToSkipMTNWord(ref lookahead, includeTemplateSignatures: true))
 					{
 					wordCount++;
+					endOfWords = lookahead;
+
 					TryToSkipWhitespace(ref lookahead);
 
 					if (lookahead.Character == '(')
@@ -2013,7 +2011,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					}
 				}
 
-			iterator = lookahead;
+			iterator = endOfWords;
 			return true;
 			}
 
