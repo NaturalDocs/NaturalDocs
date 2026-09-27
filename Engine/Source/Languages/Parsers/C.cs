@@ -202,7 +202,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		public bool IsOnKeyword (TokenIterator iterator, string keyword)
 			{
-			return (iterator.MatchesToken(keyword) &&
+			return (iterator.MatchesAcrossTokens(keyword, ignoreCase: false) &&
 					   !IsPartOfLongerIdentifier(iterator, keyword.Length));
 			}
 
@@ -214,7 +214,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		public bool IsOnAnyKeyword (TokenIterator iterator, params string[] keywords)
 			{
-			int matchIndex = iterator.MatchesAnyAcrossTokens(keywords, true);
+			int matchIndex = iterator.MatchesAnyAcrossTokens(keywords, ignoreCase: false);
 
 			return (matchIndex != -1 &&
 					   !IsPartOfLongerIdentifier(iterator, keywords[matchIndex].Length));
