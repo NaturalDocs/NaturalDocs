@@ -1927,9 +1927,65 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					{  return false;  }
 
 
+				// If we're on an "operator" keyword while processing a function, it's an operator overload.  Add the word but it ends the MTN
+				// group.
+
+				if (mtnType == MTNType.Function &&
+					IsOnKeyword(lookahead, "operator"))
+					{
+					lookahead.Next();
+					wordCount++;
+					endOfWords = lookahead;
+
+					TryToSkipWhitespace(ref lookahead);
+
+					// "operator new/delete" we still treat as one word
+					if (IsOnAnyKeyword(lookahead, "new", "delete"))
+						{
+						lookahead.Next();
+
+						// No whitespace allowed between new/delete and [] if it's included
+						if (lookahead.MatchesAcrossTokens("[]"))
+							{  lookahead.Next(2);  }
+
+						endOfWords = lookahead;
+						}
+					else if (IsOnKeyword(lookahead, "co_await"))
+						{
+						lookahead.NextByCharacters(8);
+						endOfWords = lookahead;
+						}
+					else if (lookahead.MatchesAcrossTokens("()"))
+						{
+						lookahead.Next(2);
+						endOfWords = lookahead;
+						}
+					else
+						{
+						while (lookahead.FundamentalType == FundamentalType.Symbol &&
+								  lookahead.Character != '(')
+							{
+							lookahead.Next();
+							endOfWords = lookahead;
+							}
+						}
+
+					TryToSkipWhitespace(ref lookahead);
+
+					if (lookahead.Character == '(')
+						{
+						lookahead.Next();
+						lastWordHadParentheses = GenericSkipUntilAfter(ref lookahead, ')', angleBracketsAsBlocks: true, skipToEndIfNotFound: false);
+						TryToSkipWhitespace(ref lookahead);
+						}
+
+					break;
+					}
+
+
 				// Otherwise add the word and continue
 
-				if (TryToSkipMTNWord(ref lookahead, includeTemplateSignatures: true))
+				else if (TryToSkipMTNWord(ref lookahead, includeTemplateSignatures: true))
 					{
 					wordCount++;
 					endOfWords = lookahead;
@@ -1967,43 +2023,82 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 				while (wordCount > 0)
 					{
-					wordStart = lookahead;
-
-					TryToSkipMTNWord(ref lookahead, includeTemplateSignatures: true);
-					wordEnd = lookahead;
-
-					// Process the word we found
-					if (wordCount >= 3 || (mtnType == MTNType.TrailingReturnType && wordCount >= 2))
+					if (mtnType == MTNType.Function &&
+						wordCount == 1 &&
+						IsOnKeyword(lookahead, "operator"))
 						{
-						wordStart.SetPrototypeParsingTypeBetween(wordEnd, PrototypeParsingType.TypeModifier);
-						}
-					else if (wordCount == 2 || (mtnType == MTNType.TrailingReturnType && wordCount == 1))
-						{
-						MarkType(wordStart, wordEnd);
-						}
-					else if (wordCount == 1)
-						{
-						MarkName(wordStart, wordEnd);
-						}
-
-					if (wordCount > 1)
-						{
+						lookahead.PrototypeParsingType = PrototypeParsingType.KeywordName;
+						lookahead.Next();
 						TryToSkipWhitespace(ref lookahead);
 
-						if (lookahead.Character == '(')
+						if (IsOnAnyKeyword(lookahead, "new", "delete"))
 							{
-							TokenIterator openingParen = lookahead;
-							lookahead.Next();
+							lookahead.PrototypeParsingType = PrototypeParsingType.KeywordName;
 
-							if (GenericSkipUntilOn(ref lookahead, ')', angleBracketsAsBlocks: true, skipToEndIfNotFound: false))
+							// No whitespace allowed between new/delete and [] if it's included
+							if (lookahead.MatchesAcrossTokens("[]"))
 								{
-								openingParen.PrototypeParsingType = PrototypeParsingType.OpeningTypeModifier;
-								lookahead.PrototypeParsingType = PrototypeParsingType.ClosingTypeModifier;
+								lookahead.SetPrototypeParsingTypeByCharacters(PrototypeParsingType.Name, 2);
+								}
+							}
+						else if (IsOnKeyword(lookahead, "co_await"))
+							{
+							lookahead.SetPrototypeParsingTypeByCharacters(PrototypeParsingType.KeywordName, 8);
+							}
+						else if (lookahead.MatchesAcrossTokens("()"))
+							{
+							lookahead.SetPrototypeParsingTypeByCharacters(PrototypeParsingType.Name, 2);
+							}
+						else
+							{
+							while (lookahead.FundamentalType == FundamentalType.Symbol &&
+									  lookahead.Character != '(')
+								{
+								lookahead.PrototypeParsingType = PrototypeParsingType.Name;
 								lookahead.Next();
 								}
+							}
+						}
 
-							if (wordCount > 1)
-								{  TryToSkipWhitespace(ref lookahead);  }
+					else
+						{
+						wordStart = lookahead;
+						TryToSkipMTNWord(ref lookahead, includeTemplateSignatures: true);
+						wordEnd = lookahead;
+
+						// Process the word we found
+						if (wordCount >= 3 || (mtnType == MTNType.TrailingReturnType && wordCount >= 2))
+							{
+							wordStart.SetPrototypeParsingTypeBetween(wordEnd, PrototypeParsingType.TypeModifier);
+							}
+						else if (wordCount == 2 || (mtnType == MTNType.TrailingReturnType && wordCount == 1))
+							{
+							MarkType(wordStart, wordEnd);
+							}
+						else if (wordCount == 1)
+							{
+							MarkName(wordStart, wordEnd);
+							}
+
+						if (wordCount > 1)
+							{
+							TryToSkipWhitespace(ref lookahead);
+
+							if (lookahead.Character == '(')
+								{
+								TokenIterator openingParen = lookahead;
+								lookahead.Next();
+
+								if (GenericSkipUntilOn(ref lookahead, ')', angleBracketsAsBlocks: true, skipToEndIfNotFound: false))
+									{
+									openingParen.PrototypeParsingType = PrototypeParsingType.OpeningTypeModifier;
+									lookahead.PrototypeParsingType = PrototypeParsingType.ClosingTypeModifier;
+									lookahead.Next();
+									}
+
+								if (wordCount > 1)
+									{  TryToSkipWhitespace(ref lookahead);  }
+								}
 							}
 						}
 
