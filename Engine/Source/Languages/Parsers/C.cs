@@ -1867,6 +1867,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TokenIterator endOfWords = lookahead;
 			int wordCount = 0;
 			bool lastWordHadParentheses = false;
+			bool isTypeConversionOperator = false;
 
 			while (lookahead.IsInBounds)
 				{
@@ -1960,15 +1961,32 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						lookahead.Next(2);
 						endOfWords = lookahead;
 						}
-					else
+					else if (lookahead.FundamentalType == FundamentalType.Symbol &&
+							  lookahead.Character != ':')
 						{
-						while (lookahead.FundamentalType == FundamentalType.Symbol &&
-								  lookahead.Character != '(')
+						do
 							{
 							lookahead.Next();
 							endOfWords = lookahead;
 							}
+						while (lookahead.FundamentalType == FundamentalType.Symbol &&
+								 lookahead.Character != '(');
 						}
+					else if (lookahead.FundamentalType == FundamentalType.Text)
+						{
+						isTypeConversionOperator = true;
+
+						do
+							{
+							lookahead.Next();
+							endOfWords = lookahead;
+							lookahead.NextPastWhitespace();
+							}
+						while (lookahead.FundamentalType == FundamentalType.Text ||
+								 (lookahead.FundamentalType == FundamentalType.Symbol && lookahead.Character != '('));
+						}
+					else
+						{  return false;  }
 
 					TryToSkipWhitespace(ref lookahead);
 
@@ -2049,13 +2067,34 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 							{
 							lookahead.SetPrototypeParsingTypeByCharacters(PrototypeParsingType.Name, 2);
 							}
-						else
+						else if (lookahead.FundamentalType == FundamentalType.Symbol &&
+								  lookahead.Character != ':')
 							{
-							while (lookahead.FundamentalType == FundamentalType.Symbol &&
-									  lookahead.Character != '(')
+							do
 								{
 								lookahead.PrototypeParsingType = PrototypeParsingType.Name;
 								lookahead.Next();
+								}
+							while (lookahead.FundamentalType == FundamentalType.Symbol &&
+									 lookahead.Character != '(');
+							}
+						else
+							{
+							TokenIterator startOfIdentifier = lookahead;
+							while (TryToSkipIdentifier(ref lookahead, mode))
+								{
+								if (cKeywords.Contains(startOfIdentifier.TextBetween(lookahead)))
+									{  startOfIdentifier.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.KeywordName);  }
+
+								lookahead.NextPastWhitespace();
+								startOfIdentifier = lookahead;
+								}
+
+							while (lookahead.Character == '*' || lookahead.Character == '&')
+								{
+								lookahead.PrototypeParsingType = PrototypeParsingType.Name;
+								lookahead.Next();
+								lookahead.NextPastWhitespace();
 								}
 							}
 						}
@@ -2067,7 +2106,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						wordEnd = lookahead;
 
 						// Process the word we found
-						if (wordCount >= 3 || (mtnType == MTNType.TrailingReturnType && wordCount >= 2))
+						if (wordCount >= 3 ||
+							(mtnType == MTNType.TrailingReturnType && wordCount >= 2) ||
+							(isTypeConversionOperator && wordCount >= 2))
 							{
 							wordStart.SetPrototypeParsingTypeBetween(wordEnd, PrototypeParsingType.TypeModifier);
 							}
