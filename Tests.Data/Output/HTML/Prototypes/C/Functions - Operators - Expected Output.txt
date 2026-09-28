@@ -173,6 +173,56 @@
    </div>
 </div>
 
+=== Cast Operators ===
+
+=== int ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">operator int</span>()</div>
+</div>
+
+=== unsigned int ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">explicit operator unsigned int</span>()</div>
+</div>
+
+=== ClassName ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">operator</span> ClassName()</div>
+</div>
+
+=== QualifiedClassName ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">explicit operator</span> NamespaceName::QualifiedClassName()</div>
+</div>
+
+=== ClassName& ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">operator</span> ClassName&amp;()</div>
+</div>
+
+=== QualifiedClassName** ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">explicit operator</span> NamespaceName::QualifiedClassName**()</div>
+</div>
+
+=== Global_Class_Name ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">operator</span> ::Global_Class_Name()</div>
+</div>
+
+=== Qualified_Template_Name ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">explicit operator</span> Namespace_Name::Qualified_Template_Name&lt;<span class="SHKeyword">int</span>&gt;*()</div>
+</div>
+
 === Other Operators ===
 
 === operator[] ===
