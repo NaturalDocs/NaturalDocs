@@ -30,11 +30,6 @@
 	$SystemTheme_Light = 0;
 	$SystemTheme_Dark = 1;
 
-// Keycodes
-
-	$KeyCode_Escape = 27;
-
-
 
 
 /* Class: NDThemes
@@ -722,7 +717,7 @@ var NDThemeSwitcher = new function ()
 	*/
 	this.OnKeyDown = function (event)
 		{
-		if (event.keyCode == $KeyCode_Escape)
+		if (event.key == "Escape")
 			{
 			if (this.MenuIsOpen())
 				{

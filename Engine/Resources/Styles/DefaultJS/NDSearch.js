@@ -35,13 +35,6 @@ $InitialTimeout_Delay = 1250;
 $MaxAutoExpand = 10;
 $MoreResultsThreshold = 25;
 
-$KeyCode_Enter = 13;
-$KeyCode_Escape = 27;
-$KeyCode_LeftArrow = 37;
-$KeyCode_UpArrow = 38;
-$KeyCode_RightArrow = 39;
-$KeyCode_DownArrow = 40;
-
 $Results_TopSpacing = 5;
 $Results_BottomSpacing = 25;  /* leave space for link address pop-up */
 $Results_LeftSpacing = 25;
@@ -354,7 +347,7 @@ var NDSearch = new function ()
 	*/
 	this.OnSearchFieldKey = function (event)
 		{
-		if (event.keyCode == $KeyCode_Escape)
+		if (event.key == "Escape")
 			{
 			this.ClearResults();
 			this.DeactivateSearchField();
@@ -368,7 +361,7 @@ var NDSearch = new function ()
 			event.preventDefault();
 			}
 
-		else if (event.keyCode == $KeyCode_UpArrow)
+		else if (event.key == "ArrowUp")
 			{
 			// If it's -1 (no selection) or 0 (first entry) wrap to the last item
 			if (this.keyboardSelectionIndex <= 0)
@@ -383,7 +376,7 @@ var NDSearch = new function ()
 			event.preventDefault();
 			}
 
-		else if (event.keyCode == $KeyCode_DownArrow)
+		else if (event.key == "ArrowDown")
 			{
 			if (this.visibleEntryCount == 0)
 				{  this.keyboardSelectionIndex = -1;  }
@@ -399,7 +392,7 @@ var NDSearch = new function ()
 			event.preventDefault();
 			}
 
-		else if (event.keyCode == $KeyCode_LeftArrow)
+		else if (event.key == "ArrowLeft")
 			{
 			// Close parents if there's a keyboard selection
 			if (this.keyboardSelectionIndex != -1)
@@ -414,7 +407,7 @@ var NDSearch = new function ()
 				}
 			}
 
-		else if (event.keyCode == $KeyCode_RightArrow)
+		else if (event.key == "ArrowRight")
 			{
 			// Open parents if there's a keyboard selection
 			if (this.keyboardSelectionIndex != -1)
@@ -429,7 +422,7 @@ var NDSearch = new function ()
 				}
 			}
 
-		else if (event.keyCode == $KeyCode_Enter)
+		else if (event.key == "Enter")
 			{
 			// Figure out which element to activate, if any.
 			var domSelectedEntry = undefined;
