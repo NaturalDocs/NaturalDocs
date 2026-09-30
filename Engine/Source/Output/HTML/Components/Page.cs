@@ -56,6 +56,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 						"<title>" + pageTitle.ToHTML() + "</title>" +
 
+						"<link rel=\"icon\" href=\"styles/Default/images/favicon.svg\" />" +
 						"<link rel=\"stylesheet\" type=\"text/css\" href=\"" +
 							context.Target.MakeRelativeURL(outputPath, Paths.Style.OutputFolder(context.Target.OutputFolder) + "/main.css") +
 							"\" />" +
