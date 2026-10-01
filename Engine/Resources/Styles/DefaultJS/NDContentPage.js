@@ -48,6 +48,7 @@ var NDContentPage = new function ()
 			this.resizeEventHandler = NDContentPage.OnResize.bind(NDContentPage);
 			this.messageEventHandler = NDContentPage.OnMessage.bind(NDContentPage);
 			this.effectiveThemeChangeEventHandler = NDContentPage.OnEffectiveThemeChange.bind(NDContentPage);
+			this.keyDownEventHandler = NDContentPage.OnKeyDown.bind(NDContentPage);
 
 
 			// Make sure NDThemes reflects any theme that was set via query parameter
@@ -59,6 +60,7 @@ var NDContentPage = new function ()
 			// Set up event listener
 
 			document.addEventListener("NDEffectiveThemeChange", this.effectiveThemeChangeEventHandler);
+			document.addEventListener("keydown", this.keyDownEventHandler);
 			window.addEventListener("message", this.messageEventHandler);
 			// wait on resize event handler until after reformatting the prototypes the first time
 			}
@@ -118,6 +120,18 @@ var NDContentPage = new function ()
 		if (this.reformatPrototypesTimeout == undefined)
 			{
 			this.reformatPrototypesTimeout = setTimeout("NDContentPage.ReformatPrototypes()", 200);
+			}
+		};
+
+
+	/* Function: OnKeyDown
+	*/
+	this.OnKeyDown = function (event)
+		{
+		if (event.key == "/")
+			{
+			window.parent.postMessage("ActivateSearch", "*");
+			event.preventDefault();
 			}
 		};
 
@@ -497,6 +511,10 @@ var NDContentPage = new function ()
 
 	/* var: resizeEventHandler
 		A bound function to call <OnResize()> with NDContentPage always as "this".
+	*/
+
+	/* var: keyDownEventHandler
+		A bound function to call <OnKeyDown()> with NDContentPage always as "this".
 	*/
 
 	/* var: messageEventHandler

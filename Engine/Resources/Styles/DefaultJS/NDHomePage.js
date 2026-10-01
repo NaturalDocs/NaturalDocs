@@ -34,6 +34,7 @@ var NDHomePage = new function ()
 
 		this.messageEventHandler = NDHomePage.OnMessage.bind(NDHomePage);
 		this.effectiveThemeChangeEventHandler = NDHomePage.OnEffectiveThemeChange.bind(NDHomePage);
+		this.keyDownEventHandler = NDHomePage.OnKeyDown.bind(NDHomePage);
 
 
 		// Make sure NDThemes reflects any theme that was set via query parameter
@@ -45,6 +46,7 @@ var NDHomePage = new function ()
 		// Set up event listeners
 
 		document.addEventListener("NDEffectiveThemeChange", this.effectiveThemeChangeEventHandler);
+		document.addEventListener("keydown", this.keyDownEventHandler);
 		window.addEventListener("message", this.messageEventHandler);
 		};
 
@@ -52,6 +54,18 @@ var NDHomePage = new function ()
 
 	// Group: Event Handlers
 	// ________________________________________________________________________
+
+
+	/* Function: OnKeyDown
+	*/
+	this.OnKeyDown = function (event)
+		{
+		if (event.key == "/")
+			{
+			window.parent.postMessage("ActivateSearch", "*");
+			event.preventDefault();
+			}
+		};
 
 
 	/* Function: OnMessage
@@ -62,6 +76,8 @@ var NDHomePage = new function ()
 
 			NoTheme - Remove any theme classes.
 			Theme=[id] - Apply the passed theme ID.
+			TakeFocus - Take the keyboard focus.  Needed as an extra step in Firefox since just calling iframe.focus()
+							 isn't enough and iframe.contentWindow.focus() is restricted.
 	*/
 	this.OnMessage = function (event)
 		{
@@ -74,6 +90,8 @@ var NDHomePage = new function ()
 			var theme = message.slice(6);
 			NDThemes.SetCurrentTheme(theme, false);
 			}
+		else if (message == "TakeFocus")
+			{  window.focus();  }
 		};
 
 
@@ -92,6 +110,10 @@ var NDHomePage = new function ()
 
 	// Group: Event Handler Variables
 	// ________________________________________________________________________
+
+	/* var: keyDownEventHandler
+		A bound function to call <OnKeyDown()> with NDHomePage always as "this".
+	*/
 
 	/* var: messageEventHandler
 		A bound function to call <OnMessage()> with NDHomePage always as "this".

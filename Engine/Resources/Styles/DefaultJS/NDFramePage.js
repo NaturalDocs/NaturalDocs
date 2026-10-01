@@ -57,11 +57,13 @@ var NDFramePage = new function ()
 		this.resizeEventHandler = NDFramePage.OnResize.bind(NDFramePage);
 		this.blurEventHandler = NDFramePage.OnBlur.bind(NDFramePage);
 		this.hashChangeEventHandler = NDFramePage.OnHashChange.bind(NDFramePage);
+		this.keyDownEventHandler = NDFramePage.OnKeyDown.bind(NDFramePage);
 		this.mouseDownEventHandler = NDFramePage.OnMouseDown.bind(NDFramePage);
 		this.sizerMouseMoveEventHandler = NDFramePage.OnSizerMouseMove.bind(NDFramePage);
 		this.sizerMouseUpEventHandler = NDFramePage.OnSizerMouseUp.bind(NDFramePage);
 		this.effectiveThemeChangeEventHandler = NDFramePage.OnEffectiveThemeChange.bind(NDFramePage);
 		this.availableThemesChangeEventHandler = NDFramePage.OnAvailableThemesChange.bind(NDFramePage);
+		this.messageEventHandler = NDFramePage.OnMessage.bind(NDFramePage);
 
 
 		// The default title of the page is the project title.  Save a copy before we mess with it.
@@ -108,6 +110,8 @@ var NDFramePage = new function ()
 
 		window.addEventListener("resize", this.resizeEventHandler);
 		// window.addEventListener("hashchange", this.hashChangeEventHandler);  // Wait until OnLocationsLoaded
+		window.addEventListener("message", this.messageEventHandler);
+		document.addEventListener("keydown", this.keyDownEventHandler);
 		document.addEventListener("mousedown", this.mouseDownEventHandler);
 
 		document.addEventListener("NDEffectiveThemeChange", this.effectiveThemeChangeEventHandler);
@@ -145,6 +149,31 @@ var NDFramePage = new function ()
 
 		if (NDThemeSwitcher.MenuIsOpen())
 			{  NDThemeSwitcher.CloseMenu();  }
+		};
+
+
+	/* Function: OnMessage
+
+		Event handler for messages sent to this page by the content page via postMessage().
+
+		Supported Commands:
+
+			ActivateSearch - Set focus to the search control.
+	*/
+	this.OnMessage = function (event)
+		{
+		var message = event.data;
+
+		if (message == "ActivateSearch")
+			{  this.ActivateSearch();  }
+		};
+
+
+	/* Function: ActivateSearch
+	*/
+	this.ActivateSearch = function ()
+		{
+		NDSearch.domSearchField.focus();
 		};
 
 
@@ -462,6 +491,19 @@ var NDFramePage = new function ()
 		};
 
 
+	/* Function: OnKeyDown
+	*/
+	this.OnKeyDown = function (event)
+		{
+		if (event.key == "/" &&
+			!NDSearch.SearchFieldIsActive())
+			{
+			this.ActivateSearch();
+			event.preventDefault();
+			}
+		};
+
+
 	/* Function: OnMouseDown
 	*/
 	this.OnMouseDown = function (event)
@@ -761,6 +803,10 @@ var NDFramePage = new function ()
 		A bound function to call <OnHashChange()> with NDFramePage always as "this".
 	*/
 
+	/* var: keyDownEventHandler
+		A bound function to call <OnDownKey()> with NDFramePage always as "this".
+	*/
+
 	/* var: mouseDownEventHandler
 		A bound function to call <OnMouseDown()> with NDFramePage always as "this".
 	*/
@@ -779,6 +825,10 @@ var NDFramePage = new function ()
 
 	/* var: availableThemesChangeEventHandler
 		A bound function to call <OnAvailableThemesChange()> with NDFramePage always as "this".
+	*/
+
+	/* var: messageEventHandler
+		A bound function to call <OnMessage()> with NDFramePage always as "this".
 	*/
 
 
