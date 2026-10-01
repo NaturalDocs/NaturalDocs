@@ -1130,6 +1130,7 @@ var NDSearch = new function ()
 	this.DeactivateSearchField = function ()
 		{
 		this.domSearchField.classList.add("DefaultText");
+		this.domSearchField.classList.remove("FlashFocus");
 		this.domSearchField.value = $Locale{HTML.DefaultSearchText};
 		};
 

@@ -177,6 +177,7 @@ var NDFramePage = new function ()
 			{  NDThemeSwitcher.CloseMenu();  }
 
 		NDSearch.domSearchField.focus();
+		NDSearch.domSearchField.classList.add("FlashFocus");
 		};
 
 

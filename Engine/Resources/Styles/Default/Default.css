@@ -601,6 +601,7 @@ td {
 	padding: .4em .85rem .3em 1.9rem;
 	border: 1px solid #FFFFFF;
 	border-radius: 1em;
+	outline: none;
 
 	/* Make Firefox and Chrome consistent.  The theme switcher icon assumes 25px at 100% zoom. */
 	min-height: 25px;
@@ -638,13 +639,23 @@ td {
 			background-image: URL("images/search-black.svg"), URL("images/search-shortcut-black.svg");
 			}
 
-	#NDSearchField:focus {
-		outline: none;  /* Get rid of Chrome's orange highlight */
-		}
 		/* We only have to do this for the dark theme because it's the only one with a transparent background. */
 		.DarkTheme #NDSearchField:focus {
 			background-color: $ContentBackgroundColor_Dark;
 			}
+
+		#NDSearchField.FlashFocus {
+			outline: 0px solid #FFFFFF90;
+			animation: FlashFocus.225s;
+			}
+			.DarkTheme #NDSearchField.FlashFocus { outline-color: #FFFFFF70; }
+			.BlackTheme #NDSearchField.FlashFocus { outline-color: #FFFFFF90; }
+
+			@keyframes FlashFocus {
+				0% { outline-width: 0px; }
+				50% { outline-width: 8px; }
+				100% { outline-width: 0px;}
+				}
 
 #NDSearchResults {
 	z-index: $NDSearchResultsZIndex;
