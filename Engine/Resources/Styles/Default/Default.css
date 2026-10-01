@@ -624,9 +624,19 @@ td {
 	#NDSearchField.DefaultText {
 		color: $SearchDefaultTextColor;
 		font-style: italic;
+		background: URL("images/search.svg") no-repeat .55rem center,
+						  $ContentBackgroundColor URL("images/search-shortcut.svg") no-repeat right .7rem center;
 		}
-		.DarkTheme #NDSearchField.DefaultText { color: $SearchDefaultTextColor_Dark; }
-		.BlackTheme #NDSearchField.DefaultText { color: $SearchDefaultTextColor_Black; }
+		.DarkTheme #NDSearchField.DefaultText {
+			color: $SearchDefaultTextColor_Dark;
+			background-color: transparent;
+			background-image: URL("images/search-dark.svg"), URL("images/search-shortcut-dark.svg");
+			}
+		.BlackTheme #NDSearchField.DefaultText {
+			color: $SearchDefaultTextColor_Black;
+			background-color: $ContentBackgroundColor_Black;
+			background-image: URL("images/search-black.svg"), URL("images/search-shortcut-black.svg");
+			}
 
 	#NDSearchField:focus {
 		outline: none;  /* Get rid of Chrome's orange highlight */
