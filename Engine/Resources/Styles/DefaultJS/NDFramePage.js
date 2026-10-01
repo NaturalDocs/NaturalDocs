@@ -173,6 +173,9 @@ var NDFramePage = new function ()
 	*/
 	this.ActivateSearch = function ()
 		{
+		if (NDThemeSwitcher.MenuIsOpen())
+			{  NDThemeSwitcher.CloseMenu();  }
+
 		NDSearch.domSearchField.focus();
 		};
 
