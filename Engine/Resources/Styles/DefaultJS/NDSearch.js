@@ -356,7 +356,12 @@ var NDSearch = new function ()
 			// Since setting focus to the iframe via Javascript unfortunately isn't guaranteed to work, blur the
 			// search field too so at least it loses the caret and doesn't appear broken or create other problems.
 			this.domSearchField.blur();
-			document.getElementById("CFrame").contentWindow.focus();
+			var iframe = document.getElementById("CFrame");
+
+			iframe.focus();
+
+			// Extra step needed for Firefox
+			iframe.contentWindow.postMessage("TakeFocus", "*");
 
 			event.preventDefault();
 			}

@@ -130,6 +130,8 @@ var NDContentPage = new function ()
 
 			NoTheme - Remove any theme classes.
 			Theme=[id] - Apply the passed theme ID.
+			TakeFocus - Take the keyboard focus.  Needed as an extra step in Firefox since just calling iframe.focus()
+							 isn't enough and iframe.contentWindow.focus() is restricted.
 	*/
 	this.OnMessage = function (event)
 		{
@@ -142,6 +144,8 @@ var NDContentPage = new function ()
 			var theme = message.slice(6);
 			NDThemes.SetCurrentTheme(theme, false);
 			}
+		else if (message == "TakeFocus")
+			{  window.focus();  }
 		};
 
 
