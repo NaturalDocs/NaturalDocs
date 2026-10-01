@@ -639,6 +639,18 @@ td {
 			background-image: URL("images/search-black.svg"), URL("images/search-shortcut-black.svg");
 			}
 
+		@media (resolution: 120dpi) {  /* 125% scale */
+			#NDSearchField.DefaultText {  background-image: URL("images/search.svg"), URL("images/search-shortcut-125.svg");  }
+			.DarkTheme #NDSearchField.DefaultText {  background-image: URL("images/search-dark.svg"), URL("images/search-shortcut-dark-125.svg");  }
+			.BlackTheme #NDSearchField.DefaultText {  background-image: URL("images/search-black.svg"), URL("images/search-shortcut-black-125.svg");  }
+			}
+		@media (resolution: 144dpi) {  /* 150% scale */
+			#NDSearchField.DefaultText {  background-image: URL("images/search.svg"), URL("images/search-shortcut-150.svg");  }
+			.DarkTheme #NDSearchField.DefaultText {  background-image: URL("images/search-dark.svg"), URL("images/search-shortcut-dark-150.svg");  }
+			.BlackTheme #NDSearchField.DefaultText {  background-image: URL("images/search-black.svg"), URL("images/search-shortcut-black-150.svg");  }
+			}
+		/* Everything else can stay with the regular icon */
+
 		/* We only have to do this for the dark theme because it's the only one with a transparent background. */
 		.DarkTheme #NDSearchField:focus {
 			background-color: $ContentBackgroundColor_Dark;
