@@ -255,7 +255,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		 * the home page file.
 		 */
 		static public StringSet FileExtensions = new StringSet (KeySettings.IgnoreCase, new string[] { "css", "js", "json",
-																																				 "gif", "jpg", "jpeg", "png", "bmp", "svg",
+																																				 "gif", "jpg", "jpeg", "png", "bmp", "svg", "ico",
 																																				 "woff", "eot", "svg", "ttf" });
 
 		/* var: LinkableFileExtensions
