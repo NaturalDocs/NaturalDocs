@@ -34,7 +34,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles.ConfigFiles
 		 * Loads <Style.txt> and returns it as a <Styles.Advanced> object.  If there are any errors found in <Style.txt> they will be added
 		 * to the list and the function will return null.
 		 */
-		public Styles.Advanced Load (Path path, Errors.ErrorList errors)
+		public Styles.Advanced Load (AbsolutePath path, Errors.ErrorList errors)
 			{
 			Styles.Advanced style = new Styles.Advanced(path);
 
@@ -100,7 +100,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles.ConfigFiles
 							else if (!style.Folder.Contains(linkedFile))
 								{  file.AddError( Locale.Get("NaturalDocs.Engine", "Style.txt.LinkedFileMustBeInStyleFolder(name, folder)", linkedFile, style.Folder) );  }
 							else
-								{  style.AddLinkedFile(linkedFile, file.PropertyLocation, pageType);  }
+								{  style.AddLinkedFile((AbsolutePath)linkedFile, file.PropertyLocation, pageType);  }
 							}
 
 						continue;

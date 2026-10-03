@@ -35,7 +35,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		/* Function: Contains
 		 * Returns whether this style contains the passed file.
 		 */
-		override public bool Contains (Path file)
+		override public bool Contains (AbsolutePath file)
 			{
 			return (file == cssFile);
 			}
@@ -44,7 +44,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		/* Function: MakeRelative
 		 * Converts the passed filename to one relative to this style.  If this style doesn't contain the file, it will return null.
 		 */
-		override public RelativePath MakeRelative (Path file)
+		override public RelativePath MakeRelative (AbsolutePath file)
 			{
 			if (file == cssFile)
 				{  return file.NameWithoutPath;  }

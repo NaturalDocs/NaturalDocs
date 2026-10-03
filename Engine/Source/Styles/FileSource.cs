@@ -32,7 +32,6 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 
 		/* Function: FileSource
-		 * Instance constructor.  If the path is relative it will be made absolute using the current working folder.
 		 */
 		public FileSource (Styles.Manager manager) : base (manager.EngineInstance.Files)
 			{
@@ -57,7 +56,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 
 		/* Function: MakeRelative
-		 * If the passed absolute <Path> is contained by this file source, returns a relative path to it.  Otherwise returns null.
+		 * If the passed <AbsolutePath> is contained by this file source, returns a <RelativePath> to it.  Otherwise returns null.
 		 */
 		override public RelativePath MakeRelative (AbsolutePath file)
 			{

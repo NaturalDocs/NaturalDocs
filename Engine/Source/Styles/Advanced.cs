@@ -26,7 +26,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		/* Constructor: Advanced
 		 * Pass the location of <Style.txt>.
 		 */
-		public Advanced (Path configFile) : base ()
+		public Advanced (AbsolutePath configFile) : base ()
 			{
 			this.configFile = configFile;
 			this.folder = configFile.ParentFolder;
@@ -36,7 +36,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		/* Function: Contains
 		 * Returns whether this style contains the passed file.
 		 */
-		override public bool Contains (Path file)
+		override public bool Contains (AbsolutePath file)
 			{
 			if (!folder.Contains(file))
 				{  return false;  }
@@ -48,7 +48,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		/* Function: MakeRelative
 		 * Converts the passed filename to one relative to this style.  If this style doesn't contain the file, it will return null.
 		 */
-		override public RelativePath MakeRelative (Path file)
+		override public RelativePath MakeRelative (AbsolutePath file)
 			{
 			if (folder.Contains(file))
 				{  return file.MakeRelativeTo(folder);  }
@@ -84,7 +84,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		/* Property: ConfigFile
 		 * A path to the style's <Style.txt> configuration file.
 		 */
-		public Path ConfigFile
+		public AbsolutePath ConfigFile
 			{
 			get
 				{  return configFile;  }
@@ -94,7 +94,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		/* Property: Folder
 		 * A path to the style's folder.
 		 */
-		public Path Folder
+		public AbsolutePath Folder
 			{
 			get
 				{  return folder;  }
@@ -109,7 +109,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		/* var: configFile
 		 * The path to the style's <Style.txt> file.
 		 */
-		protected Path configFile;
+		protected AbsolutePath configFile;
 
 
 		/* var: folder
@@ -119,7 +119,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		 * This could technically just be retrieved from <configFile> via <Path.ParentFolder> at runtime, but it's used often enough that
 		 * it's worth storing it instead of generating it constantly.
 		 */
-		protected Path folder;
+		protected AbsolutePath folder;
 
 		}
 	}

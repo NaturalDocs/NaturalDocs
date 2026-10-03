@@ -62,13 +62,8 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 		/* Function: AddLinkedFile
 		 */
-		public void AddLinkedFile (Path file, Config.PropertyLocation propertyLocation, PageType type = PageType.All)
+		public void AddLinkedFile (AbsolutePath file, Config.PropertyLocation propertyLocation, PageType type = PageType.All)
 			{
-			#if DEBUG
-			if (file.IsRelative)
-				{  throw new Exception("Paths passed to AddLinkedFile() must be absolute.");  }
-			#endif
-
 			if (links == null)
 				{  links = new List<LinkStatement>();  }
 
@@ -83,7 +78,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 		/* Function: AddLinkedFile
 		 */
-		public void AddLinkedFile (Path file, Config.PropertySource propertySource, PageType type = PageType.All)
+		public void AddLinkedFile (AbsolutePath file, Config.PropertySource propertySource, PageType type = PageType.All)
 			{
 			AddLinkedFile(file, new Config.PropertyLocation(propertySource), type);
 			}
@@ -120,11 +115,6 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		 */
 		public void SetHomePage (AbsolutePath file, Config.PropertyLocation propertyLocation)
 			{
-			#if DEBUG
-			if (file.IsRelative)
-				{  throw new Exception("Paths passed to SetHomePage() must be absolute.");  }
-			#endif
-
 			homePage.File = file;
 			homePage.PropertyLocation = propertyLocation;
 			}
@@ -146,13 +136,13 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		/* Function: Contains
 		 * Returns whether this style contains the passed file.
 		 */
-		abstract public bool Contains (Path file);
+		abstract public bool Contains (AbsolutePath file);
 
 
 		/* Function: MakeRelative
 		 * Converts the passed filename to one relative to this style.  If this style doesn't contain the file, it will return null.
 		 */
-		abstract public RelativePath MakeRelative (Path file);
+		abstract public RelativePath MakeRelative (AbsolutePath file);
 
 
 		/* Function: IsSameFundamentalStyle
@@ -416,7 +406,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 	public struct LinkStatement
 		{
 		public PageType Type;
-		public Path File;
+		public AbsolutePath File;
 		public Config.PropertyLocation PropertyLocation;
 
 		public bool HasSameProperties (LinkStatement other)
