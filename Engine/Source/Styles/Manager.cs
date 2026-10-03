@@ -261,7 +261,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		/* var: LinkableFileExtensions
 		 * A <StringSet> of the extensions for files that can be linked to pages in <Style.txt>.
 		 */
-		static public StringSet LinkableFileExtensions = new StringSet (KeySettings.IgnoreCase, new string[] { "css", "js", "json" });
+		static public StringSet LinkableFileExtensions = new StringSet (KeySettings.IgnoreCase, new string[] { "css", "js" });
 
 
 

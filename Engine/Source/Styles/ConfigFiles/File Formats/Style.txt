@@ -39,9 +39,9 @@ _______________________________________________________________________________
 		> Content Link: [file]
 		> Home Link: [file]
 
-		Specifies a .css, .js, or .json file that should be included in the page output, such as with a script or link tag.
-		JavaScript files can be restricted to certain page types or linked to all of them.  CSS files can only be linked to all
-		of them.  The file path is relative to the style's folder.
+		Specifies a .css or .js file that should be included in the page output, such as with a script or link tag.  javaScript
+		files can be restricted to certain page types or linked to all of them.  CSS files can only be linked to all of them.
+		The file path is relative to the style's folder.
 
 		All files found in the style's folder are not automatically included because some may be intended to be loaded
 		dynamically, or the .css files may already be linked together with @import.

@@ -934,7 +934,7 @@ Languages.txt.ProjectLanguagesReference.multiline {{{
 # _____________________________________________________________________________
 
 
-Style.txt.CantLinkFileWithExtension(extension): You can only use Link with .css, .js, and .json files.
+Style.txt.CantLinkFileWithExtension(extension): You can only use Link with .css and .js files.
 Style.txt.CantLinkCSSFileToSpecificPageTypes(pageType): You can't link CSS files to only {0} pages, they must be linked to all of them.
 Style.txt.CantFindStyle(name): Can't find style {0}.
 Style.txt.CantFindInheritedStyle(name): Can't find inherited style {0}.
@@ -976,7 +976,7 @@ Style.txt.LinkedFilesHeader.multiline {{{
 }}}
 
 Style.txt.LinkedFilesReference.multiline {{{
-# You can link .css, .js, and .json files to the output like this:
+# You can link .css and .js files to the output like this:
 #
 # Link: [file]
 # Frame Link: [file]

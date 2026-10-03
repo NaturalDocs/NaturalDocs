@@ -25,7 +25,7 @@ Inherit: Default
 # Linked Files
 # ------------------------------------------------------------------------
 
-# You can link .css, .js, and .json files to the output like this:
+# You can link .css and .js files to the output like this:
 #
 # Link: [file]
 # Frame Link: [file]

@@ -344,7 +344,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles.ConfigFiles
 		 *
 		 *		1 - The type of link it is, either "content", "frame", "home", or none, in which case it applies to all pages.
 		 */
-		[GeneratedRegex("""^(?:(content|frame|home) )?(?:link|(?:link|add|inherit|include|import)s? (?:css|js|json|javascript|file)(?: file)?)$""",
+		[GeneratedRegex("""^(?:(content|frame|home) )?(?:link|(?:link|add|inherit|include|import)s? (?:css|js|javascript|file)(?: file)?)$""",
 								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
 		static private partial Regex IsLinkPropertyRegexLC();
 

@@ -91,7 +91,8 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 		/* Function: AddOnLoad
 		 */
-		public void AddOnLoad (string onLoadString, string onLoadStringAfterSubstitutions, Config.PropertyLocation propertyLocation, PageType type = PageType.All)
+		public void AddOnLoad (string onLoadString, string onLoadStringAfterSubstitutions,
+										  Config.PropertyLocation propertyLocation, PageType type = PageType.All)
 			{
 			if (onLoad == null)
 				{  onLoad = new List<OnLoadStatement>();  }
@@ -108,7 +109,8 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 		/* Function: AddOnLoad
 		 */
-		public void AddOnLoad (string onLoadString, string onLoadStringAfterSubstitutions, Config.PropertySource propertySource, PageType type = PageType.All)
+		public void AddOnLoad (string onLoadString, string onLoadStringAfterSubstitutions,
+										  Config.PropertySource propertySource, PageType type = PageType.All)
 			{
 			AddOnLoad(onLoadString, onLoadStringAfterSubstitutions, new Config.PropertyLocation(propertySource), type);
 			}
@@ -346,8 +348,8 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 
 		/* Property: Links
-		 * A list of files to link to each output file, or null if none.  They can be .js, .json, or .css.  Each link stores an absolute
-		 * path but it will be contained in <Folder>.  Do not change.
+		 * A list of files to link to each output file, or null if none.  They can be .js or .css.  Each link stores an absolute path
+		 * but it will be contained in <Folder>.  Do not change.
 		 */
 		public List<LinkStatement> Links
 			{
@@ -382,7 +384,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		protected List<OnLoadStatement> onLoad;
 
 		/* var: links
-		 * A list of files to link to each output file, which can be CSS, JS, or JSON.  Null if none.
+		 * A list of files to link to each output file, which can be .css or .js.  Null if none.
 		 */
 		protected List<LinkStatement> links;
 

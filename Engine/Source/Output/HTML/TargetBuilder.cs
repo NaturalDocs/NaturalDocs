@@ -1239,7 +1239,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 						{
 						string extension = link.File.Extension.ToLower(CultureInfo.InvariantCulture);
 
-						if (extension == "js" || extension == "json")
+						if (extension == "js")
 							{
 							if (jsLinks[(int)link.Type] == null)
 								{  jsLinks[(int)link.Type] = new StringBuilder();  }
