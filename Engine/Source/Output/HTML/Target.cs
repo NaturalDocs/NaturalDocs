@@ -99,7 +99,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 * Creates a relative URL between the two absolute filesystem paths.  Make sure the From parameter is a *file* and not
 		 * a folder.
 		 */
-		public string MakeRelativeURL (Path fromFile, Path toFile)
+		public string MakeRelativeURL (AbsolutePath fromFile, AbsolutePath toFile)
 			{
 			return toFile.MakeRelativeTo(fromFile.ParentFolder).ToURL();
 			}
@@ -116,7 +116,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 * <Engine.Instance.StartPossiblyLongOperation()> and set it to true.  Call <FinishedPurging()> after all purging calls to end
 		 * it.
 		 */
-		protected void PurgeFolder (Path folder, ref bool inPurgingOperation)
+		protected void PurgeFolder (AbsolutePath folder, ref bool inPurgingOperation)
 			{
 			if (System.IO.Directory.Exists(folder))
 				{
@@ -250,7 +250,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		/* Property: OutputFolder
 		 * The root output folder of the entire build target.
 		 */
-		public Path OutputFolder
+		public AbsolutePath OutputFolder
 			{
 			get
 				{  return config.Folder;  }
@@ -260,7 +260,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		/* Property: WorkingDataFolder
 		 * The working data folder specifically for this build target.
 		 */
-		public Path WorkingDataFolder
+		public AbsolutePath WorkingDataFolder
 			{
 			get
 				{  return EngineInstance.Config.OutputWorkingDataFolderOf(config.Number);  }

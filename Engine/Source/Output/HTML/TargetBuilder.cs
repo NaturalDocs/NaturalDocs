@@ -1213,9 +1213,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 						// We don't care about filters for CSS files.
 						if (link.File.Extension.ToLower(CultureInfo.InvariantCulture) == "css")
 							{
-							Path relativeLinkPath = style.MakeRelative(link.File);
-							Path outputPath = Paths.Style.OutputFile(Target.OutputFolder, style.Name, relativeLinkPath);
-							Path relativeOutputPath = outputPath.MakeRelativeTo(Paths.Style.OutputFolder(Target.OutputFolder));
+							RelativePath relativeLinkPath = style.MakeRelative(link.File);
+							AbsolutePath outputPath = Paths.Style.OutputFile(Target.OutputFolder, style.Name, relativeLinkPath);
+							RelativePath relativeOutputPath = outputPath.MakeRelativeTo(Paths.Style.OutputFolder(Target.OutputFolder));
 							cssOutput.Append("@import URL(\"" + relativeOutputPath.ToURL() + "\");");
 							}
 						}
@@ -1246,9 +1246,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 							else
 								{  jsLinks[(int)link.Type].Append(", ");  }
 
-							Path relativeLinkPath = style.MakeRelative(link.File);
-							Path outputPath = Paths.Style.OutputFile(Target.OutputFolder, style.Name, relativeLinkPath);
-							Path relativeOutputPath = outputPath.MakeRelativeTo(Paths.Style.OutputFolder(Target.OutputFolder));
+							RelativePath relativeLinkPath = style.MakeRelative(link.File);
+							AbsolutePath outputPath = Paths.Style.OutputFile(Target.OutputFolder, style.Name, relativeLinkPath);
+							RelativePath relativeOutputPath = outputPath.MakeRelativeTo(Paths.Style.OutputFolder(Target.OutputFolder));
 							jsLinks[(int)link.Type].Append("\"" + relativeOutputPath.ToURL() + "\"");
 							}
 						}
@@ -1359,7 +1359,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				{
 				if (style.Contains(file.FileName))
 					{
-					Path relativeStylePath = style.MakeRelative(file.FileName);
+					RelativePath relativeStylePath = style.MakeRelative(file.FileName);
 					outputFile = Paths.Style.OutputFile(Target.OutputFolder, style.Name, relativeStylePath);
 
 					break;

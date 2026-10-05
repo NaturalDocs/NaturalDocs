@@ -27,14 +27,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 		 * Examples:
 		 *
 		 *		targetOutputFolder - C:\Project\Documentation\search\index.js
-		 *		targetOutputFolder + fileNameOnly - index.js
 		 */
-		static public Path IndexOutputFile (Path targetOutputFolder, bool fileNameOnly = false)
+		static public AbsolutePath IndexOutputFile (Path targetOutputFolder)
 			{
-			if (fileNameOnly)
-				{  return "index.js";  }
-			else
-				{  return (targetOutputFolder + "/search/index.js");  }
+			return targetOutputFolder + "/search/index.js";
 			}
 
 
@@ -45,22 +41,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 		 * Examples:
 		 *
 		 *		targetOutputFolder + prefix - C:\Project\Documentation\search\keywords\006a0073006f.js
-		 *		targetOutputFolder + prefix + fileNameOnly - 006a0073006f.js
 		 */
-		static public Path PrefixOutputFile (Path targetOutputFolder, string prefix, bool fileNameOnly = false)
+		static public AbsolutePath PrefixOutputFile (Path targetOutputFolder, string prefix)
 			{
 			#if DEBUG
 			if (prefix.Length > 3)
 				{  throw new Exception ("PrefixOutputFile assumes the prefix will be 3 characters or less.");  }
 			#endif
 
-			StringBuilder result = new StringBuilder( (fileNameOnly ? 15 : targetOutputFolder.Length + 17 + 15) );
+			StringBuilder result = new StringBuilder(targetOutputFolder.Length + 17 + 15);
 
-			if (!fileNameOnly)
-				{
-				result.Append(targetOutputFolder);
-				result.Append("/search/keywords/");
-				}
+			result.Append(targetOutputFolder);
+			result.Append("/search/keywords/");
 
 			for (int i = 0; i < prefix.Length; i++)
 				{
@@ -76,7 +68,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 		/* Function: OutputFolder
 		 * Returns the root output folder for search index data files.
 		 */
-		static public Path OutputFolder (Path targetOutputFolder)
+		static public AbsolutePath OutputFolder (AbsolutePath targetOutputFolder)
 			{
 			return targetOutputFolder + "/search";
 			}

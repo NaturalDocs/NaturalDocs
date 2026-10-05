@@ -422,7 +422,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			int fileNumber = root.UsedDataFileNumbers.LowestAvailable;
 			root.UsedDataFileNumbers.Add(fileNumber);
 
-			container.DataFileName = Paths.Menu.MenuOutputFile(Target.OutputFolder, root.DataFileIdentifier, fileNumber, fileNameOnly: true);
+			container.DataFileName = Paths.Menu.MenuOutputFileName(root.DataFileIdentifier, fileNumber);
 
 
 			// The data file has to include all the members in this container no matter what, so we don't check the size against the limit

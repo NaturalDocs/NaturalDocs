@@ -69,7 +69,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries.Files
 		 * If this file source had a folder condensed into it, this will be the relative path from the file source to that
 		 * folder.
 		 */
-		public Path CondensedPathFromFileSource
+		public RelativePath CondensedPathFromFileSource
 			{
 			get
 				{  return condensedPathFromFileSource;  }
@@ -86,6 +86,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries.Files
 
 		/* var: condensedPathFromFileSource
 		 */
-		protected Path condensedPathFromFileSource;
+		protected RelativePath condensedPathFromFileSource;
 		}
 	}

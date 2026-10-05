@@ -23,13 +23,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 		/* Function: OutputFile
 		 * Returns the output file of the source file.  The file path must be relative to the file source.
 		 */
-		static public Path OutputFile (Path targetOutputFolder, int fileSourceNumber, Path relativeFilePath)
+		static public AbsolutePath OutputFile (AbsolutePath targetOutputFolder, int fileSourceNumber, RelativePath relativeFilePath)
 			{
-			#if DEBUG
-			if (relativeFilePath.IsAbsolute)
-				{  throw new Exception ("You must pass relative file paths to HTML.Paths.SourceFile.OutputFile.");  }
-			#endif
-
 			string fileName = relativeFilePath.NameWithoutPath.ToString();
 			string outputFileName = Utilities.Sanitize(fileName, replaceDots: true) + ".html";
 			string outputFolder = OutputFolder(targetOutputFolder, fileSourceNumber, relativeFilePath.ParentFolder);
@@ -48,7 +43,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 		 *		targetOutputFolder + fileSourceNumber - C:\Project\Documentation\files
 		 *		targetOutputFolder + fileSourceNumber + subfolder - C:\Project\Documentation\files\Folder1\Folder2
 		 */
-		static public Path OutputFolder (Path targetOutputFolder, int fileSourceNumber, Path subfolder = default(Path))
+		static public AbsolutePath OutputFolder (AbsolutePath targetOutputFolder, int fileSourceNumber, RelativePath subfolder = default)
 			{
 			StringBuilder result = new StringBuilder(targetOutputFolder);
 			result.Append("/files");
@@ -69,10 +64,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 		/* Function: HashPath
 		 * Returns the hash path of the source file.  The file path must be relative to the file source.
 		 */
-		static public string HashPath (int fileSourceNumber, Path relativeFilePath)
+		static public string HashPath (int fileSourceNumber, RelativePath relativeFilePath)
 			{
-			Path fileName = relativeFilePath.NameWithoutPath;
-			Path fileFolder = relativeFilePath.ParentFolder;
+			RelativePath fileName = relativeFilePath.NameWithoutPath;
+			RelativePath fileFolder = relativeFilePath.ParentFolder;
 
 			return FolderHashPath(fileSourceNumber, fileFolder) + Utilities.Sanitize(fileName);
 			}
@@ -89,7 +84,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 		 *		fileSourceNumber - File:
 		 *		fileSourceNumber + subfolder - File:Folder1/Folder2/
 		 */
-		static public string FolderHashPath (int fileSourceNumber, Path subfolder = default(Path))
+		static public string FolderHashPath (int fileSourceNumber, RelativePath subfolder = default)
 			{
 			StringBuilder result = new StringBuilder("File");
 

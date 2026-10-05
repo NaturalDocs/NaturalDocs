@@ -247,7 +247,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					if (!stillExists)
 						{
 						hasDeletions = true;
-						Path outputFolder;
+						AbsolutePath outputFolder;
 
 						if (previousFileSourceConfig.Type == InputType.Source)
 							{  outputFolder = Paths.SourceFile.OutputFolder(OutputFolder, previousFileSourceConfig.Number);  }

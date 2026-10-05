@@ -23,13 +23,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 		/* Function: OutputFile
 		 * Returns the output file of the image file.  The file path must be relative to the file source.
 		 */
-		static public Path OutputFile (Path targetOutputFolder, int fileSourceNumber, Files.InputType fileSourceType, Path relativeFilePath)
+		static public AbsolutePath OutputFile (AbsolutePath targetOutputFolder, int fileSourceNumber, Files.InputType fileSourceType,
+															   RelativePath relativeFilePath)
 			{
-			#if DEBUG
-			if (relativeFilePath.IsAbsolute)
-				{  throw new Exception ("You must pass relative file paths to HTML.Paths.Image.OutputFile.");  }
-			#endif
-
 			string fileName = relativeFilePath.NameWithoutPath.ToString();
 			string outputFileName = Utilities.Sanitize(fileName);
 			string outputFolder = OutputFolder(targetOutputFolder, fileSourceNumber, fileSourceType, relativeFilePath.ParentFolder);
@@ -48,8 +44,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 		 *		targetOutputFolder + fileSourceNumber - C:\Project\Documentation\files
 		 *		targetOutputFolder + fileSourceNumber + subfolder - C:\Project\Documentation\files\Folder1\Folder2
 		 */
-		static public Path OutputFolder (Path targetOutputFolder, int fileSourceNumber, Files.InputType fileSourceType,
-													  Path subfolder = default(Path))
+		static public AbsolutePath OutputFolder (AbsolutePath targetOutputFolder, int fileSourceNumber, Files.InputType fileSourceType,
+																   RelativePath subfolder = default)
 			{
 			if (fileSourceType == Files.InputType.Source)
 				{

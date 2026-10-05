@@ -113,7 +113,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		/* Property: OutputFile
 		 * The output file of the <Page>.
 		 */
-		public Path OutputFile
+		public AbsolutePath OutputFile
 			{
 			get
 				{
@@ -128,7 +128,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					if (fileSource == null)
 						{  throw new InvalidOperationException();  }
 
-					Path relativePath = fileSource.MakeRelative(file.FileName);
+					RelativePath relativePath = fileSource.MakeRelative(file.FileName);
 
 					return Paths.SourceFile.OutputFile(target.OutputFolder, fileSource.Number, relativePath);
 					}
@@ -149,7 +149,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		/* Property: ToolTipsFile
 		 * The path of the <Page's> tool tips data file.
 		 */
-		public Path ToolTipsFile
+		public AbsolutePath ToolTipsFile
 		   {
 			get
 				{
@@ -168,7 +168,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		/* Property: SummaryFile
 		 * The path of the <Page's> summary data file.
 		 */
-		public Path SummaryFile
+		public AbsolutePath SummaryFile
 		   {
 			get
 				{
@@ -187,7 +187,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		/* Property: SummaryToolTipsFile
 		 * The path of the <Page's> summary tool tips data file.
 		 */
-		public Path SummaryToolTipsFile
+		public AbsolutePath SummaryToolTipsFile
 		   {
 			get
 				{
@@ -225,7 +225,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					if (fileSource == null)
 						{  throw new InvalidOperationException();  }
 
-					Path relativePath = fileSource.MakeRelative(file.FileName);
+					RelativePath relativePath = fileSource.MakeRelative(file.FileName);
 
 					fileHashPath = Paths.SourceFile.HashPath(fileSource.Number, relativePath);
 					}

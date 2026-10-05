@@ -74,7 +74,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			foreach (string pathSegment in pathSegments)
 				{
-				Path pathFromFileSource;
+				RelativePath pathFromFileSource;
 
 				if (container == fileSourceEntry)
 					{  pathFromFileSource = pathSegment;  }

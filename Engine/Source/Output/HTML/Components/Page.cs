@@ -39,7 +39,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * Builds an output file based on the passed parameters.  Using this function centralizes standard elements of the page
 		 * structure like the doctype, charset, and embedded comments.
 		 */
-		public void Build (Path outputPath, string pageTitle, string pageContentHTML, PageType pageType)
+		public void Build (AbsolutePath outputPath, string pageTitle, string pageContentHTML, PageType pageType)
 			{
 			string pageTypeName = PageTypes.NameOf(pageType);
 			string jsRelativePrefix = context.Target.MakeRelativeURL(outputPath, Paths.Style.OutputFolder(context.Target.OutputFolder)) + '/';

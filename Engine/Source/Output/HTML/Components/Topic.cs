@@ -803,9 +803,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			string description = targetFile.FileName.NameWithoutPathOrExtension;
 
 			var fileSource = EngineInstance.Files.FileSourceOf(targetFile);
-			Path relativeTargetPath = fileSource.MakeRelative(targetFile.FileName);
-			Path targetOutputPath = Paths.Image.OutputFile(context.Target.OutputFolder, fileSource.Number, fileSource.Type, relativeTargetPath);
-			Path relativeTargetOutputPath = targetOutputPath.MakeRelativeTo(context.OutputFile.ParentFolder);
+			RelativePath relativeTargetPath = fileSource.MakeRelative(targetFile.FileName);
+			AbsolutePath targetOutputPath = Paths.Image.OutputFile(context.Target.OutputFolder, fileSource.Number, fileSource.Type, relativeTargetPath);
+			RelativePath relativeTargetOutputPath = targetOutputPath.MakeRelativeTo(context.OutputFile.ParentFolder);
 
 			output.Append(
 				"<div class=\"CImage\">" +
@@ -869,9 +869,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			string anchor = "Topic" + context.Topic.TopicID + "_Image" + imageNumber;
 
 			var fileSource = EngineInstance.Files.FileSourceOf(targetFile);
-			Path relativeTargetPath = fileSource.MakeRelative(targetFile.FileName);
-			Path targetOutputPath = Paths.Image.OutputFile(context.Target.OutputFolder, fileSource.Number, fileSource.Type, relativeTargetPath);
-			Path relativeTargetOutputPath = targetOutputPath.MakeRelativeTo(context.OutputFile.ParentFolder);
+			RelativePath relativeTargetPath = fileSource.MakeRelative(targetFile.FileName);
+			AbsolutePath targetOutputPath = Paths.Image.OutputFile(context.Target.OutputFolder, fileSource.Number, fileSource.Type, relativeTargetPath);
+			RelativePath relativeTargetOutputPath = targetOutputPath.MakeRelativeTo(context.OutputFile.ParentFolder);
 
 			linkOutput.Append(
 				"<a href=\"#" + anchor + "\" class=\"SeeImageLink\">" +

@@ -234,7 +234,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		 * Returns the working data file path for the passed output entry number.  It's up to the output entry whether
 		 * it wants to actually create and use a file at this path, this just makes sure it has its own unique path.
 		 */
-		public Path OutputWorkingDataFileOf (int number)
+		public AbsolutePath OutputWorkingDataFileOf (int number)
 			{
 			return workingDataFolder + "/Output" + (number == 1 ? "" : number.ToString()) + ".nd";
 			}
@@ -244,7 +244,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		 * Returns the working data folder path for the passed output entry number.  It's up to the output entry whether
 		 * it wants to actually create and use files in this folder, this just makes sure it has its own unique path.
 		 */
-		public Path OutputWorkingDataFolderOf (int number)
+		public AbsolutePath OutputWorkingDataFolderOf (int number)
 			{
 			return workingDataFolder + "/Output" + (number == 1 ? "" : number.ToString());
 			}
@@ -289,15 +289,14 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 
 		/* String: projectConfigFolder
-		 * The project configuration folder <Path>.  It will always be absolute.
+		 * The project configuration folder path.
 		 */
-		protected Path projectConfigFolder;
+		protected AbsolutePath projectConfigFolder;
 
 		/* String: workingDataFolder
-		 * The working data folder <Path>, formerly always a subfolder of the project folder.  It will always
-		 * be absolute.
+		 * The working data folder path, formerly always a subfolder of the project folder.
 		 */
-		protected Path workingDataFolder;
+		protected AbsolutePath workingDataFolder;
 
 		/* var: tabWidth
 		 * The number of spaces tabs should be expanded to.

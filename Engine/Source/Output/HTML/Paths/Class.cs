@@ -24,8 +24,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 		/* Function: OutputFile
 		 * Returns the output file for a class.
 		 */
-		static public Path OutputFile (Path targetOutputFolder, Hierarchies.Hierarchy hierarchy, Languages.Language language,
-												  SymbolString classSymbol)
+		static public AbsolutePath OutputFile (AbsolutePath targetOutputFolder, Hierarchies.Hierarchy hierarchy, Languages.Language language,
+															  SymbolString classSymbol)
 			{
 			SymbolString qualifier = classSymbol.WithoutLastSegment;
 			string endingSymbol = classSymbol.LastSegment;
@@ -50,8 +50,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 		 *		targetOutputFolder + hierarchy + language - C:\Project\Documentation\classes\CSharp
 		 *		targetOutputFolder + hierarchy + language + qualifier - C:\Project\Documentation\classes\CSharp\Namespace1\Namespace2
 		 */
-		static public Path OutputFolder (Path targetOutputFolder, Hierarchies.Hierarchy hierarchy, Languages.Language language = null,
-													  SymbolString qualifier = default(SymbolString))
+		static public AbsolutePath OutputFolder (AbsolutePath targetOutputFolder, Hierarchies.Hierarchy hierarchy, Languages.Language language = null,
+																  SymbolString qualifier = default)
 			{
 			StringBuilder result = new StringBuilder(targetOutputFolder);
 			result.Append('/');
@@ -109,7 +109,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 		 *		hierarchy + language + qualifier - CSharpClass:Namespace1.Namespace2.
 		 */
 		static public string QualifierHashPath (Hierarchies.Hierarchy hierarchy, Languages.Language language = null,
-																SymbolString qualifier = default(SymbolString))
+																SymbolString qualifier = default)
 			{
 			#if DEBUG
 			if (hierarchy.IsLanguageSpecific && language == null)

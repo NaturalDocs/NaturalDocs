@@ -25,7 +25,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries.Files
 
 		/* Function: Folder
 		 */
-		public Folder (Path pathFromFileSource) : base ()
+		public Folder (RelativePath pathFromFileSource) : base ()
 			{
 			this.pathFromFileSource = pathFromFileSource;
 			this.Title = pathFromFileSource.NameWithoutPath;
@@ -66,7 +66,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries.Files
 		 * complete so you don't have to combine it with parent paths, only with the file source if you want to get an
 		 * absolute path.
 		 */
-		public Path PathFromFileSource
+		public RelativePath PathFromFileSource
 			{
 			get
 				{  return pathFromFileSource;  }
@@ -78,7 +78,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries.Files
 
 		/* var: pathFromFileSource
 		 */
-		protected Path pathFromFileSource;
+		protected RelativePath pathFromFileSource;
 
 		}
 	}
