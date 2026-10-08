@@ -362,6 +362,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				PurgeAllStyleFolders(ref inPurgingOperation);
 				PurgeAllMenuFolders(ref inPurgingOperation);
 				PurgeAllSearchIndexFolders(ref inPurgingOperation);
+				PurgeAllOtherFolders(ref inPurgingOperation);
 				}
 
 

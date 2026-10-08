@@ -209,6 +209,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 
 
+		/* Function: PurgeAllOtherFolders
+		 * Deletes all the "other" output folders and their contents.  Pass a reference to a bool that tracks whether we've registered a
+		 * PossiblyLongOperation for purging with <Engine.Instance>.  Call <FinishedPurging()> after all purging calls.
+		 */
+		protected void PurgeAllOtherFolders (ref bool inPurgingOperation)
+			{
+			PurgeFolder( Paths.Other.OutputFolder(this.OutputFolder), ref inPurgingOperation );
+			}
+
+
 		/* Function: FinishedPurging
 		 * Call this after you're done calling all the other purging functions.  Pass the reference to the bool that tracked whether
 		 * we've registered a PossiblyLongOperation for purging with <Engine.Instance>.  If it's set to true it will call
