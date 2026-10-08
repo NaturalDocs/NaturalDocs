@@ -241,12 +241,14 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 		/* Function: BuildInheritanceList
 		 * Returns a list of <Styles> containing this one and all its inherited styles in the order in which they should be applied.
+		 * This means base styles will appear first and the styles inheriting from them afterwards so they can override the base
+		 * styles' properties.
 		 */
 		public List<Style> BuildInheritanceList ()
 			{
 			List<Style> inheritanceList = new List<Style>();
 
-			AddToInheritanceList(ref inheritanceList);
+			AddToInheritanceList(ref inheritanceList, this);
 
 			return inheritanceList;
 			}
@@ -276,33 +278,34 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 
 		/* Function: AddToInheritanceList
-		 * A recursive function used by <BuildInheritanceList()>.
+		 * A recursive function used by <BuildInheritanceList()>.  It will add the passed style and all its parents to the list,
+		 * and in doing so add its parents' parents and so forth.
 		 */
-		protected void AddToInheritanceList (ref List<Style> inheritanceList)
+		static protected void AddToInheritanceList (ref List<Style> inheritanceList, Style style)
 			{
-			// First see if this style already exists in the list.  If it does, we're done.  This not only prevents duplicates, it also
+			// First see if the style already exists in the list.  If it does, we're done.  This not only prevents duplicates, it also
 			// guards against circular dependencies creating an infinite loop.
 
-			foreach (var style in inheritanceList)
+			foreach (var listItem in inheritanceList)
 				{
-				if (this.IsSameFundamentalStyle(style))
+				if (listItem.IsSameFundamentalStyle(style))
 					{  return;  }
 				}
 
-			// Next, recursively add any children.  We add them before ourself because the current style must appear after all
-			// its inherited ones so it can override things.
+			// Next, recursively add any parents.  We add them before the passed style because it must appear after all the
+			// inherited ones so it can override things.
 
-			if (inherits != null)
+			if (style.inherits != null)
 				{
-				foreach (var inheritStatement in inherits)
+				foreach (var inheritStatement in style.inherits)
 					{
-					inheritStatement.Style.AddToInheritanceList(ref inheritanceList);
+					AddToInheritanceList(ref inheritanceList, inheritStatement.Style);
 					}
 				}
 
-			// Now we can finally add ourself.
+			// Now we can finally add the main style.
 
-			inheritanceList.Add(this);
+			inheritanceList.Add(style);
 			}
 
 
