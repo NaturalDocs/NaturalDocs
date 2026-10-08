@@ -621,7 +621,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* Function: BuildHomePage
-		 * Builds home.html, which provides the default home page.
+		 * Builds the default home page file.
 		 */
 		protected void BuildHomePage (CancelDelegate cancelDelegate)
 			{
@@ -638,7 +638,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				// We don't need to build home.html since it's not used in this case.  JSONMenu will add an extra parameter in tabs.js and
 				// NDFramePage will handle loading the appropriate source file's output instead.  However, we do want to delete home.html
 				// if it was added by a previous run just to be tidy and also to not accidentally leak data.
-				DeleteOutputFileIfExists(Target.OutputFolder + "/other/home.html");
+				DeleteOutputFileIfExists(Paths.Other.HomePageFile(Target.OutputFolder));
 				}
 			else
 				{  throw new NotImplementedException();  }
@@ -646,7 +646,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* Function: BuildDefaultHomePage
-		 * Builds the default home.html.
+		 * Builds the default home page.
 		 */
 		protected void BuildDefaultHomePage (CancelDelegate cancelDelegate)
 			{
@@ -699,7 +699,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			Target.BuildState.HomePageUsesTimestamp = (timestampHTML != null);
 
 
-			// Build other/home.html, the default welcome page
+			// Build the page content
 
 			StringBuilder content = new StringBuilder();
 
@@ -769,12 +769,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			Context context = new Context(Target);
 			Components.Page pageBuilder = new Components.Page(context);
 
-			pageBuilder.Build(Target.OutputFolder + "/other/home.html", pageTitleText, content.ToString(), PageType.Home);
+			pageBuilder.Build(Paths.Other.HomePageFile(Target.OutputFolder), pageTitleText, content.ToString(), PageType.Home);
 			}
 
 
 		/* Function: BuildCustomHTMLHomePage
-		 * Builds a custom home.html from the template.
+		 * Builds a custom home page from the template.
 		 */
 		protected void BuildCustomHTMLHomePage (Path template, CancelDelegate cancelDelegate)
 			{
@@ -838,7 +838,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			output = FindProjectCopyrightSubstitutionRegex().Replace(output, copyrightHTML);
 			output = FindProjectTimestampSubstitutionRegex().Replace(output, timestampHTML);
 
-			Path outputFile = Target.OutputFolder + "/other/home.html";
+			Path outputFile = Paths.Other.HomePageFile(Target.OutputFolder);
 			HTML.Component.WriteTextFile(outputFile, output);
 			}
 
