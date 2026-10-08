@@ -696,7 +696,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			// Update HomePageUsesTimestamp
 
-			Target.BuildState.HomePageUsesTimestamp = true;
+			Target.BuildState.HomePageUsesTimestamp = (timestampHTML != null);
 
 
 			// Build other/home.html, the default welcome page
