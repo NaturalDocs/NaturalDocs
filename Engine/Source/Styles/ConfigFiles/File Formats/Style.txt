@@ -67,9 +67,21 @@ _______________________________________________________________________________
 		JavaScript strings.
 
 
+	Topic: Icon
+
+		> Icon: [file]
+
+		Specifies an image to serve as the page icon in tabs and bookmarks.  It's typically a .png, .ico, or .svg file.
+
+
 
 Group: Revisions
 _______________________________________________________________________________
+
+	Topic: 2.4
+
+		- Added the Icon property.
+
 
 	Topic: 2.2
 

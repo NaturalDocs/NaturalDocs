@@ -140,12 +140,11 @@ namespace CodeClear.NaturalDocs.Engine.Styles.ConfigFiles
 					if (IsHomePagePropertyRegexLC().IsMatch(lcIdentifier))
 						{
 						Path homePageFile = value;
-						string lcExtension = homePageFile.Extension.ToLower(CultureInfo.InvariantCulture);
+						string lcExtension = homePageFile.Extension.ToLowerInvariant();
 
 						if (lcExtension != "html" && lcExtension != "htm")
 							{
-							file.AddError( Locale.Get("NaturalDocs.Engine", "Style.txt.HomePageMustHaveHTMLExtension(extension)",
-																 homePageFile.Extension) );
+							file.AddError( Locale.Get("NaturalDocs.Engine", "Style.txt.HomePageMustHaveHTMLExtension(extension)", lcExtension) );
 							}
 						else
 							{
@@ -159,6 +158,36 @@ namespace CodeClear.NaturalDocs.Engine.Styles.ConfigFiles
 							else
 								{
 								style.SetHomePage((AbsolutePath)homePageFile, file.PropertyLocation);
+								}
+							}
+
+						continue;
+						}
+
+
+					// Icon
+
+					if (IsIconPropertyRegexLC().IsMatch(lcIdentifier))
+						{
+						Path iconFile = value;
+						string lcExtension = iconFile.Extension.ToLowerInvariant();
+
+						if (!Styles.Manager.IconFileExtensions.Contains(lcExtension))
+							{
+							file.AddError( Locale.Get("NaturalDocs.Engine", "Style.txt.CantUseIconFileWithExtension(extension)", lcExtension) );
+							}
+						else
+							{
+							if (iconFile.IsRelative)
+								{  iconFile = style.Folder + "/" + iconFile;  }
+
+							if (!System.IO.File.Exists(iconFile))
+								{  file.AddError( Locale.Get("NaturalDocs.Engine", "Style.txt.CantFindIconFile(name)", iconFile) );  }
+							else if (!style.Folder.Contains(iconFile))
+								{  file.AddError( Locale.Get("NaturalDocs.Engine", "Style.txt.IconFileMustBeInStyleFolder(name, folder)", iconFile, style.Folder) );  }
+							else
+								{
+								style.SetIcon((AbsolutePath)iconFile, file.PropertyLocation);
 								}
 							}
 
@@ -315,6 +344,24 @@ namespace CodeClear.NaturalDocs.Engine.Styles.ConfigFiles
 				}
 
 			output.Append( Locale.Get("NaturalDocs.Engine", "Style.txt.HomePageReference.multiline") );
+			output.AppendLine();
+			output.AppendLine();
+
+
+			// Icon
+
+			output.Append( Locale.Get("NaturalDocs.Engine", "Style.txt.IconHeader.multiline") );
+			output.AppendLine();
+
+			if (style.Icon!= null)
+				{
+				output.Append("Icon: ");
+				output.AppendLine(style.MakeRelative(style.Icon));
+				output.AppendLine();
+				output.AppendLine();
+				}
+
+			output.Append( Locale.Get("NaturalDocs.Engine", "Style.txt.IconReference.multiline") );
 
 
 			return ConfigFile.SaveIfDifferent(style.ConfigFile, output.ToString(), noErrorOnFail, errorList);
@@ -370,6 +417,15 @@ namespace CodeClear.NaturalDocs.Engine.Styles.ConfigFiles
 		[GeneratedRegex("""^(?:(?:add|import|include)s? )?home ?page$""",
 								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
 		static private partial Regex IsHomePagePropertyRegexLC();
+
+
+		/* Regex: IsIconPropertyRegexLC
+		 * Will match if the entire string is the property name "icon" or one of its acceptable variants.  Assumes the
+		 * input string is already in lowercase.
+		 */
+		[GeneratedRegex("""^(?:(?:fav|favorite|site|bookmark|tab) ?)?icon""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static private partial Regex IsIconPropertyRegexLC();
 
 
 		/* Regex: FindLocaleSubstitutionRegex

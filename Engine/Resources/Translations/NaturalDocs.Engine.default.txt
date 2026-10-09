@@ -945,6 +945,9 @@ Style.txt.CantFindHomePageFile(name): Can't find home page file {0}.
 Style.txt.HomePageFileMustBeInStyleFolder(name, folder): Home page file {0} must be in the style folder {1}.
 Style.txt.CantUseHomeLinksWithCustomHomePage: Home Link statements won't apply to custom home pages, you must add them to the HTML file yourself.
 Style.txt.CantUseHomeOnLoadWithCustomHomePage: Home OnLoad statements won't apply to custom home pages, you must add them to the HTML file yourself.
+Style.txt.CantUseIconFileWithExtension(extension): You can only use Icon with .svg, .png, .gif, .ico, or .jpg files.
+Style.txt.CantFindIconFile(name): Can't find icon file {0}.
+Style.txt.IconFileMustBeInStyleFolder(name, folder): Icon file {0} must be in the style folder {1}.
 
 
 Style.txt.Header.multiline {{{
@@ -1047,4 +1050,18 @@ Style.txt.HomePageReference.multiline {{{
 #    %NaturalDocs_Subtitle%
 #    %NaturalDocs_Copyright%
 #    %NaturalDocs_Timestamp%
+}}}
+
+Style.txt.IconHeader.multiline {{{
+# Icon
+# ------------------------------------------------------------------------
+}}}
+
+Style.txt.IconReference.multiline {{{
+# You can choose a custom image to serve as the tab and bookmark icon for the
+# output like this:
+#
+# Icon: [file]
+#
+# You can use a .svg, .png, .gif, .ico, or .jpg file.
 }}}

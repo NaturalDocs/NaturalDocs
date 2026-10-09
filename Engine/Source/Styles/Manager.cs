@@ -264,6 +264,12 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		static public StringSet LinkableFileExtensions = new StringSet (KeySettings.IgnoreCase, new string[] { "css", "js" });
 
 
+		/* var: IconFileExtensions
+		 * A <StringSet> of the extensions for files that can be used as icons in <Style.txt>.
+		 */
+		static public StringSet IconFileExtensions = new StringSet (KeySettings.IgnoreCase, new string[] { "gif", "jpg", "jpeg", "png", "svg", "ico" });
+
+
 
 		// Group: Variables
 		// __________________________________________________________________________
