@@ -1,4 +1,4 @@
-﻿Format: 2.2
+﻿Format: 2.4
 
 # This is a configuration file for a Natural Docs HTML output style.
 
@@ -96,3 +96,17 @@ Frame OnLoad: NDThemes.SetAvailableThemes([ ["$Locale{Theme.Light}", "Light"], [
 #    %NaturalDocs_Subtitle%
 #    %NaturalDocs_Copyright%
 #    %NaturalDocs_Timestamp%
+
+
+# Icon
+# ------------------------------------------------------------------------
+
+Icon: images\favicon.svg
+
+
+# You can choose a custom image to serve as the tab and bookmark icon for the
+# output like this:
+#
+# Icon: [file]
+#
+# You can use a .svg, .png, .gif, .ico, or .jpg file.
