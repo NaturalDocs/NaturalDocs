@@ -57,7 +57,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 					{
 					result = false;
 					}
-				else if (!binaryFile.Version.IsAtLeastRelease("2.3.1") &&  // Rebuild all output for 2.3.1
+				else if (!binaryFile.Version.IsAtLeastRelease("2.4") &&
 						  !binaryFile.Version.IsSamePreRelease(Engine.Instance.Version))
 					{
 					binaryFile.Close();
@@ -71,12 +71,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 					// [Byte: Need to Build Frame Page (0 or 1)]
 					// [Byte: Need to Build Home Page (0 or 1)]
 					// [Byte: Need to Build Main Style Files (0 or 1)]
+					// [Byte: Need to Build Icon File (0 or 1)]
 					// [Byte: Need to Build Menu (0 or 1)]
 					// [Byte: Need to Build Main Search Files (0 or 1)]
 
 					unprocessedChanges.framePage = (binaryFile.ReadByte() == 1);
 					unprocessedChanges.homePage = (binaryFile.ReadByte() == 1);
 					unprocessedChanges.mainStyleFiles = (binaryFile.ReadByte() == 1);
+					unprocessedChanges.icon = (binaryFile.ReadByte() == 1);
 					unprocessedChanges.menu = (binaryFile.ReadByte() == 1);
 					unprocessedChanges.mainSearchFiles = (binaryFile.ReadByte() == 1);
 
@@ -154,11 +156,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 
 					// [String: Calculated Home Page Path (absolute) or null]
 					// [Int64: Home Page Last Modification Time in ticks or 0]
+					// [String: Calculated Icon Path (absolute) or null]
+					// [Int64: Icon Last Modification Time in ticks or 0]
 					// [String: Generated Timestamp or null]
 					// [Byte: Home Page Uses Timestamp (0 or 1)]
 
 					buildState.CalculatedHomePage = (AbsolutePath)binaryFile.ReadString();
 					buildState.HomePageLastModified = new DateTime(binaryFile.ReadInt64());
+					buildState.CalculatedIcon = (AbsolutePath)binaryFile.ReadString();
+					buildState.IconLastModified = new DateTime(binaryFile.ReadInt64());
 					buildState.GeneratedTimestamp = binaryFile.ReadString();
 					buildState.HomePageUsesTimestamp = (binaryFile.ReadByte() != 0);
 					}
@@ -203,12 +209,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 				// [Byte: Need to Build Frame Page (0 or 1)]
 				// [Byte: Need to Build Home Page (0 or 1)]
 				// [Byte: Need to Build Main Style Files (0 or 1)]
+				// [Byte: Need to Build Icon File (0 or 1)]
 				// [Byte: Need to Build Menu (0 or 1)]
 				// [Byte: Need to Build Main Search Files (0 or 1)]
 
 				binaryFile.WriteByte( (byte)(unprocessedChanges.framePage ? 1 : 0) );
 				binaryFile.WriteByte( (byte)(unprocessedChanges.homePage ? 1 : 0) );
 				binaryFile.WriteByte( (byte)(unprocessedChanges.mainStyleFiles ? 1 : 0) );
+				binaryFile.WriteByte( (byte)(unprocessedChanges.icon ? 1 : 0) );
 				binaryFile.WriteByte( (byte)(unprocessedChanges.menu ? 1 : 0) );
 				binaryFile.WriteByte( (byte)(unprocessedChanges.mainSearchFiles ? 1 : 0) );
 
@@ -287,11 +295,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 
 				// [String: Calculated Home Page Path (absolute) or null]
 				// [Int64: Home Page Last Modification Time in ticks or 0]
+				// [String: Calculated Icon Path (absolute) or null]
+				// [Int64: Icon Last Modification Time in ticks or 0]
 				// [String: Generated Timestamp or null]
 				// [Byte: Home Page Uses Timestamp (0 or 1)]
 
 				binaryFile.WriteString(buildState.CalculatedHomePage);
 				binaryFile.WriteInt64(buildState.HomePageLastModified.Ticks);
+				binaryFile.WriteString(buildState.CalculatedIcon);
+				binaryFile.WriteInt64(buildState.IconLastModified.Ticks);
 				binaryFile.WriteString(buildState.GeneratedTimestamp);
 				binaryFile.WriteByte( (byte)(buildState.HomePageUsesTimestamp ? 1 : 0) );
 				}

@@ -29,6 +29,20 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 			}
 
 
+		/* Function: IconFile
+		 * Returns the output file name of the icon.
+		 */
+		static public AbsolutePath IconFile (AbsolutePath targetOutputFolder, string fileExtension)
+			{
+			#if DEBUG
+			if (fileExtension.Contains('/') || fileExtension.Contains('\\') || fileExtension.Contains('.'))
+				{  throw new Exception("Pass a file extension to IconFile, not a path.");  }
+			#endif
+
+			return OutputFile(targetOutputFolder, "icon." + fileExtension.ToLowerInvariant());
+			}
+
+
 		/* Function: OutputFile
 		 * Returns the output file name of the file in the "other" folder.
 		 */

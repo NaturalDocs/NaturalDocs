@@ -20,6 +20,7 @@ _______________________________________________________________________________
 		> [Byte: Need to Build Frame Page (0 or 1)]
 		> [Byte: Need to Build Home Page (0 or 1)]
 		> [Byte: Need to Build Main Style Files (0 or 1)]
+		> [Byte: Need to Build Icon File (0 or 1)]
 		> [Byte: Need to Build Menu (0 or 1)]
 		> [Byte: Need to Build Main Search Files (0 or 1)]
 
@@ -91,6 +92,15 @@ _______________________________________________________________________________
 
 		The last modification time of the file used for the home page, or zero if using the default.
 
+		> [String: Calculated Icon Path (absolute) or null]
+
+		The calculated icon file, or null if none.  This is the final calculated value between any settings in <Project.txt>,
+		<Style.txt>, or any of the inherited styles.
+
+		> [Int64: Icon Last Modification Time in ticks or 0]
+
+		The last modification time of the file used for the icon, or zero if there is none.
+
 		> [String: Generated Timestamp or null]
 
 		The timestamp used the last time the output was built.  This is the generated result, so "Updated January 1, 2021",
@@ -104,6 +114,10 @@ _______________________________________________________________________________
 
 Group: Revisions
 _______________________________________________________________________________
+
+	Topic: 2.4
+
+		- Added Need to Build Icon File, Calculated Icon Path, and Icon Last Modification Time.
 
 	Topic: 2.2
 

@@ -39,6 +39,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			calculatedHomePage = null;
 			homePageLastModified = new DateTime(0);
+
+			calculatedIcon = null;
+			iconLastModified = new DateTime(0);
+
 			generatedTimestamp = null;
 
 			// Default to true instead of false since the default home page uses it.  Also, having this set incorrectly true just
@@ -273,7 +277,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* Property: HomePageLastModified
-		 * The time when the <HomePage> was last modified as of the last time the home page output file was built.
+		 * The time when the <CalculatedHomePage> was last modified as of the last time the home page output file was built.
 		 */
 		public DateTime HomePageLastModified
 			{
@@ -286,6 +290,43 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				{
 				lock (accessLock)
 					{  homePageLastModified = value;  }
+				}
+			}
+
+
+		/* Property: CalculatedIcon
+		 * The tab/bookmark icon used for the target, or null if none.  This is the final calculated value from all the places it
+		 * could be set in <Project.txt> and <Styles.txt>.
+		 */
+		public AbsolutePath CalculatedIcon
+			{
+			get
+				{
+				lock (accessLock)
+					{  return calculatedIcon;  }
+				}
+			set
+				{
+				lock (accessLock)
+					{  calculatedIcon = value;  }
+				}
+			}
+
+
+		/* Property: IconLastModified
+		 * The time when the <CalculatedIcon> was last modified as of the last time the icon output file was built.
+		 */
+		public DateTime IconLastModified
+			{
+			get
+				{
+				lock (accessLock)
+					{  return iconLastModified;  }
+				}
+			set
+				{
+				lock (accessLock)
+					{  iconLastModified = value;  }
 				}
 			}
 
@@ -404,9 +445,22 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* var: homePageLastModified
-		 * The last modification time of <homePage> as of the last time its output file was built.
+		 * The last modification time of <calculatedHomePage> as of the last time its output file was built.
 		 */
 		protected DateTime homePageLastModified;
+
+
+		/* var: calculatedIcon
+		 * The tab/bookmark icon used for the target, or null if none.  This is the final calculated value from all the places it
+		 * could be set in <Project.txt> and <Styles.txt>.
+		 */
+		protected AbsolutePath calculatedIcon;
+
+
+		/* var: iconLastModified
+		 * The last modification time of <calculatedIcon> as of the last time its output file was built.
+		 */
+		protected DateTime iconLastModified;
 
 
 		/* var: generatedTimestamp

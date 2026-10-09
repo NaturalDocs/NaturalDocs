@@ -75,6 +75,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 					// [String: Project Copyright or null]
 					// [String: Project Timestamp Code or null]
 					// [String: Project Home Page Path (absolute) or null]
+					// [String: Project Icon Path (absolute) or null]
 
 					settings.Title = binaryFile.ReadString();
 					settings.TitlePropertyLocation = Config.PropertySource.PreviousRun;
@@ -90,6 +91,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 
 					settings.HomePage = (AbsolutePath)binaryFile.ReadString();
 					settings.HomePagePropertyLocation= Config.PropertySource.PreviousRun;
+
+					settings.Icon = (AbsolutePath)binaryFile.ReadString();
+					settings.IconPropertyLocation= Config.PropertySource.PreviousRun;
 
 
 					// [String: Style Path]
@@ -256,6 +260,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 				{  style.SetHomePage((AbsolutePath)homePage, Config.PropertySource.PreviousRun);  }
 
 
+			// [String: Icon Path (absolute) or null]
+
+			string icon = binaryFile.ReadString();
+
+			if (icon != null)
+				{  style.SetIcon((AbsolutePath)icon, Config.PropertySource.PreviousRun);  }
+
+
 			return style;
 			}
 
@@ -352,12 +364,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 				// [String: Project Copyright or null]
 				// [String: Project Timestamp Code or null]
 				// [String: Project Home Page Path (absolute) or null]
+				// [String: Project Icon Path (absolute) or null]
 
 				binaryFile.WriteString(settings.Title);
 				binaryFile.WriteString(settings.Subtitle);
 				binaryFile.WriteString(settings.Copyright);
 				binaryFile.WriteString(settings.TimestampCode);
 				binaryFile.WriteString(settings.HomePage);
+				binaryFile.WriteString(settings.Icon);
 
 
 				// [String: Style Path]
@@ -476,6 +490,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 			// [String: Home Page Path (absolute) or null]
 
 			binaryFile.WriteString(style.HomePage);
+
+
+			// [String: Icon Path (absolute) or null]
+
+			binaryFile.WriteString(style.Icon);
 			}
 
 

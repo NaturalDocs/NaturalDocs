@@ -39,10 +39,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * Builds an output file based on the passed parameters.  Using this function centralizes standard elements of the page
 		 * structure like the doctype, charset, and embedded comments.
 		 */
-		public void Build (AbsolutePath outputPath, string pageTitle, string pageContentHTML, PageType pageType)
+		public void Build (AbsolutePath outputPath, string pageTitle, string pageContentHTML, PageType pageType, string iconFileExtension = null)
 			{
 			string pageTypeName = PageTypes.NameOf(pageType);
 			string jsRelativePrefix = context.Target.MakeRelativeURL(outputPath, Paths.Style.OutputFolder(context.Target.OutputFolder)) + '/';
+
+			string iconTag;
+			if (pageType == PageType.Frame && iconFileExtension != null)
+				{
+				iconTag = "<link rel=\"icon\" href=\"" + context.Target.MakeRelativeURL(outputPath, Paths.Other.IconFile(Target.OutputFolder, iconFileExtension)) + "\" />";
+				}
+			else
+				{  iconTag = "";  }
 
 			WriteTextFile(outputPath,
 
@@ -56,7 +64,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 						"<title>" + pageTitle.ToHTML() + "</title>" +
 
-						"<link rel=\"icon\" href=\"styles/Default/images/favicon.svg\" />" +
+						iconTag +
 						"<link rel=\"stylesheet\" type=\"text/css\" href=\"" +
 							context.Target.MakeRelativeURL(outputPath, Paths.Style.OutputFolder(context.Target.OutputFolder) + "/main.css") +
 							"\" />" +

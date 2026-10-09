@@ -435,12 +435,62 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 				buildState.HomePageLastModified = homePageLastModified;
 				}
-			else // homePage == null)
+			else // homePage == null
 				{
 				buildState.HomePageLastModified = new DateTime(0);
 				}
 
 			// HomePageUsesTimestamp will be determined when it's built.
+
+
+			//
+			// Determine our icon
+			//
+
+			AbsolutePath icon;
+
+			if (Config.Icon != null)
+				{  icon = Config.Icon;  }
+			else
+				{  icon = Style.IconOf(stylesWithInheritance);  }
+
+			// The icon output file name can change if the file extension changed, so delete the old output file if so.  We do it here instead of in the
+			// regular build process because we don't keep the name of the old file past this point.
+			if (buildState.CalculatedIcon != null)
+				{
+				AbsolutePath oldIconOutputFile = Paths.Other.IconFile(OutputFolder, buildState.CalculatedIcon.Extension);
+
+				if (icon == null || Paths.Other.IconFile(OutputFolder, icon.Extension) != oldIconOutputFile)
+					{
+					if (System.IO.File.Exists(oldIconOutputFile))
+						{
+						try
+							{  System.IO.File.Delete(oldIconOutputFile);  }
+						catch (Exception e)
+							{
+							if (!(e is System.IO.DirectoryNotFoundException || e is System.IO.FileNotFoundException))
+								{  throw;  }
+							}
+						}
+					}
+				}
+
+			bool iconChanged = (icon != buildState.CalculatedIcon);
+			buildState.CalculatedIcon = icon;
+
+			if (icon != null)
+				{
+				DateTime iconLastModified = System.IO.File.GetLastWriteTimeUtc(icon);
+
+				if (!iconChanged && buildState.IconLastModified.Ticks != iconLastModified.Ticks)
+					{  iconChanged = true;  }
+
+				buildState.IconLastModified = iconLastModified;
+				}
+			else // icon == null
+				{
+				buildState.IconLastModified = new DateTime(0);
+				}
 
 
 			//
@@ -473,6 +523,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				unprocessedChanges.AddMainSearchFiles();
 				unprocessedChanges.AddFramePage();
 				unprocessedChanges.AddHomePage();
+				unprocessedChanges.AddIcon();
 				unprocessedChanges.AddMenu();
 
 				// We'll handle search prefixes after starting SearchIndex
@@ -480,7 +531,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			else
 				{
-				if (!hasBinaryConfigFile || titlesAndCopyrightChanged || timestampChanged)
+				if (!hasBinaryConfigFile || titlesAndCopyrightChanged || timestampChanged || iconChanged)
 					{  unprocessedChanges.AddFramePage();  }
 
 				if (!hasBinaryConfigFile || hasStyleChanges)
@@ -489,6 +540,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				if (!hasBinaryConfigFile || homePageChanged || titlesAndCopyrightChanged ||
 					(timestampChanged && buildState.HomePageUsesTimestamp))
 					{  unprocessedChanges.AddHomePage();  }
+
+				if (!hasBinaryConfigFile || iconChanged)
+					{  unprocessedChanges.AddIcon();  }
 
 				// May need to update the home page stored in tabs.js
 				if (!hasBinaryConfigFile || homePageChanged || fileSourceNamesChanged)

@@ -51,6 +51,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			framePage = false;
 			homePage = false;
+			icon = false;
 			menu = false;
 
 			possiblyEmptyFolders = new StringSet(Config.Manager.KeySettingsForPaths);
@@ -89,6 +90,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 				if (homePage)
 					{  count += TargetBuilder.HomePageCost;  }
+
+				if (icon)
+					{  count += TargetBuilder.IconCost;  }
 
 				if (menu)
 					{  count += TargetBuilder.MenuCost;  }
@@ -251,6 +255,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			{
 			lock (accessLock)
 				{  homePage = true;  }
+			}
+
+		/* Function: AddIcon
+		 * Adds the icon to the list of things that need to be rebuilt.
+		 */
+		public void AddIcon ()
+			{
+			lock (accessLock)
+				{  icon = true;  }
 			}
 
 		/* Function: AddMenu
@@ -417,6 +430,24 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				if (homePage)
 					{
 					homePage = false;
+					return true;
+					}
+				else
+					{  return false;  }
+				}
+			}
+
+		/* Function: PickIcon
+		 * Picks the icon to work on, returning whether it's necessary.  If it returns true it will be removed from the list of
+		 * unprocessed changes.
+		 */
+		 public bool PickIcon ()
+			{
+			lock (accessLock)
+				{
+				if (icon)
+					{
+					icon = false;
 					return true;
 					}
 				else
@@ -596,6 +627,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 * <Lock()> and <Unlock()>.
 		 */
 		protected internal bool homePage;
+
+
+		/* var: icon
+		 *
+		 * Whether the icon needs to be rebuilt.
+		 *
+		 * This variable is protected internal because some code may need to access it directly.  You should use the access
+		 * functions instead of doing this whenever possible.  All direct access to the variable must be surrounded by calls to
+		 * <Lock()> and <Unlock()>.
+		 */
+		protected internal bool icon;
 
 
 		/* var: menu

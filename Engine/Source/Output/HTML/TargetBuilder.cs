@@ -124,6 +124,28 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 						}
 
 
+					// Build icon
+
+					if (Target.UnprocessedChanges.PickIcon())
+						{
+						lock (accessLock)
+							{  workInProgress += IconCost;  }
+
+						BuildIcon(cancelDelegate);
+
+						lock (accessLock)
+							{  workInProgress -= IconCost;  }
+
+						if (cancelDelegate())
+							{
+							Target.UnprocessedChanges.AddIcon();
+							break;
+							}
+						else
+							{  continue;  }
+						}
+
+
 					// Build main style files
 
 					if (Target.UnprocessedChanges.PickMainStyleFiles())
@@ -532,6 +554,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			if (copyrightHTML != null)
 				{  copyrightHTML = FormatTrademarks(copyrightHTML);  }
 
+			string iconFileExtension = null;
+
+			if (Target.BuildState.CalculatedIcon != null)
+				{  iconFileExtension = Target.BuildState.CalculatedIcon.Extension;  }
+
 
 			// Build index.html, the main frame page
 
@@ -616,7 +643,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			Context context = new Context(Target);
 			Components.Page pageBuilder = new Components.Page(context);
 
-			pageBuilder.Build(Target.OutputFolder + "/index.html", pageTitleText, content.ToString(), PageType.Frame);
+			pageBuilder.Build(Target.OutputFolder + "/index.html", pageTitleText, content.ToString(), PageType.Frame, iconFileExtension: iconFileExtension);
 			}
 
 
@@ -840,6 +867,25 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			Path outputFile = Paths.Other.HomePageFile(Target.OutputFolder);
 			HTML.Component.WriteTextFile(outputFile, output);
+			}
+
+
+		/* Function: BuildIcon
+		 *
+		 * Copies the icon to the output folder if it is used.
+		 */
+		protected void BuildIcon (CancelDelegate cancelDelegate)
+			{
+			if (Target.BuildState.CalculatedIcon != null)
+				{
+				AbsolutePath outputPath = Paths.Other.IconFile(Target.OutputFolder, Target.BuildState.CalculatedIcon.Extension);
+				AbsolutePath outputParentFolder = outputPath.ParentFolder;
+
+				if (!System.IO.Directory.Exists(outputParentFolder))
+					{  System.IO.Directory.CreateDirectory(outputParentFolder);  }
+
+				System.IO.File.Copy(Target.BuildState.CalculatedIcon, outputPath, overwrite: true);
+				}
 			}
 
 
@@ -1550,6 +1596,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 *		MainSearchFilesCost - How much building the main search files costs.
 		 *		FramePageCost - How much building the frame page costs.
 		 *		HomePageCost - How much building the home page costs.
+		 *		IconCost - How much building the icon costs.
 		 *		MenuCost - How much building the menu costs.
 		 *		PossiblyEmptyFolderCost - How much checking a single folder for files costs.
 		 */
@@ -1563,6 +1610,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		public const long MainSearchFilesCost = 1;
 		public const long FramePageCost = 1;
 		public const long HomePageCost = 1;
+		public const long IconCost = 1;
 		public const long MenuCost = 15;
 		public const long PossiblyEmptyFolderCost = 1;
 
