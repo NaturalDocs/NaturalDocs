@@ -29,6 +29,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			timestampCode = null;
 			styleName = null;
 			homePage = null;
+			icon = null;
 
 			titlePropertyLocation = PropertySource.NotDefined;
 			subtitlePropertyLocation = PropertySource.NotDefined;
@@ -36,6 +37,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			timestampCodePropertyLocation = PropertySource.NotDefined;
 			styleNamePropertyLocation = PropertySource.NotDefined;
 			homePagePropertyLocation = PropertySource.NotDefined;
+			iconPropertyLocation = PropertySource.NotDefined;
 			}
 
 		public OverridableOutputSettings (OverridableOutputSettings toCopy)
@@ -46,6 +48,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			timestampCode = toCopy.timestampCode;
 			styleName = toCopy.styleName;
 			homePage = toCopy.homePage;
+			icon = toCopy.icon;
 
 			titlePropertyLocation = toCopy.titlePropertyLocation;
 			subtitlePropertyLocation = toCopy.subtitlePropertyLocation;
@@ -53,6 +56,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			timestampCodePropertyLocation = toCopy.timestampCodePropertyLocation;
 			styleNamePropertyLocation = toCopy.styleNamePropertyLocation;
 			homePagePropertyLocation = toCopy.homePagePropertyLocation;
+			iconPropertyLocation = toCopy.iconPropertyLocation;
 			}
 
 
@@ -252,6 +256,17 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				}
 			}
 
+		/* Property: Icon
+		 * The file that should serve as the tab and bookmark, or null if it's not set.
+		 */
+		public AbsolutePath Icon
+			{
+			get
+				{  return icon;  }
+			set
+				{  icon = value;  }
+			}
+
 
 
 		// Group: Property Locations
@@ -324,6 +339,17 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{  homePagePropertyLocation = value;  }
 			}
 
+		/* Property: IconPropertyLocation
+		 * Where the <Icon> property is defined, or <PropertySource.NotDefined> if it isn't.
+		 */
+		public PropertyLocation IconPropertyLocation
+			{
+			get
+				{  return iconPropertyLocation;  }
+			set
+				{  iconPropertyLocation = value;  }
+			}
+
 
 
 		// Group: Variables
@@ -335,6 +361,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		protected string timestampCode;
 		protected string styleName;
 		protected AbsolutePath homePage;
+		protected AbsolutePath icon;
 
 		protected PropertyLocation titlePropertyLocation;
 		protected PropertyLocation subtitlePropertyLocation;
@@ -342,6 +369,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		protected PropertyLocation timestampCodePropertyLocation;
 		protected PropertyLocation styleNamePropertyLocation;
 		protected PropertyLocation homePagePropertyLocation;
+		protected PropertyLocation iconPropertyLocation;
 
 		}
 	}

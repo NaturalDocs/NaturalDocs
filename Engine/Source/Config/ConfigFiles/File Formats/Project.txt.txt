@@ -47,6 +47,10 @@ _______________________________________________________________________________
 		The file that should serve as the home page.  This could be a source file in one of the input targets, or a HTML file in any
 		location.  Relative paths are relative to the project folder.
 
+		> Icon: [file]
+
+		Specifies an image to serve as the page icon in tabs and bookmarks.  It's typically a .png, .ico, or .svg file.
+
 		> Encoding: [name or number]
 		> Encoding: [name or number] *.[extension]
 
@@ -145,9 +149,10 @@ _______________________________________________________________________________
 			> Timestamp: [timestamp code]
 			> Style: [name]
 			> Home Page: [file]
+			> Icon: [file]
 
-			Each output target may override Title, Subtitle, Copyright, Timestamp, Style, or Home Page properties if desired.  This
-			allows projects with multiple output targets to give each one its own style, subtitle, etc.
+			Each output target may override Title, Subtitle, Copyright, Timestamp, Style, Home Page, or Icon properties if desired.
+			This allows projects with multiple output targets to give each one its own style, subtitle, etc.
 
 
 	Topic: Global Settings
@@ -167,6 +172,10 @@ _______________________________________________________________________________
 
 Group: Revisions
 _______________________________________________________________________________
+
+	Topic: 2.4
+
+		- Added Icon.
 
 	Topic: 2.2
 

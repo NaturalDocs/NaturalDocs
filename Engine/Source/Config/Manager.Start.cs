@@ -1094,6 +1094,12 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				primarySettings.HomePage = secondarySettings.HomePage;
 				primarySettings.HomePagePropertyLocation = secondarySettings.HomePagePropertyLocation;
 				}
+
+			if (!primarySettings.IconPropertyLocation.IsDefined)
+				{
+				primarySettings.Icon = secondarySettings.Icon;
+				primarySettings.IconPropertyLocation = secondarySettings.IconPropertyLocation;
+				}
 			}
 
 

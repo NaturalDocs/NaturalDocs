@@ -672,11 +672,49 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 						Locale.Get("NaturalDocs.Engine", "Project.txt.CantFindHomePageFile(name)", path),
 						propertyLocation);
 					}
+				else
+					{
+					var outputSettings = outputTarget ?? projectConfig.OutputSettings;
 
-				var outputSettings = outputTarget ?? projectConfig.OutputSettings;
+					outputSettings.HomePage = (AbsolutePath)path;
+					outputSettings.HomePagePropertyLocation = propertyLocation;
+					}
 
-				outputSettings.HomePage = (AbsolutePath)path;
-				outputSettings.HomePagePropertyLocation = propertyLocation;
+				return true;
+				}
+
+
+			// Icon
+
+			else if (IsIconPropertyRegexLC().IsMatch(lcIdentifier))
+				{
+				Path path = value;
+				string lcExtension = path.Extension.ToLowerInvariant();
+
+				if (!Styles.Manager.IconFileExtensions.Contains(lcExtension))
+					{
+					errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.CantUseIconFileWithExtension(extension)", lcExtension) );
+					}
+				else
+					{
+					if (path.IsRelative)
+						{  path = propertyLocation.FileName.ParentFolder + "/" + path;  }
+
+					if (!System.IO.File.Exists(path))
+						{
+						errorList.Add(
+							Locale.Get("NaturalDocs.Engine", "Project.txt.CantFindIconFile(name)", path),
+							propertyLocation);
+						}
+					else
+						{
+						var outputSettings = outputTarget ?? projectConfig.OutputSettings;
+
+						outputSettings.Icon = (AbsolutePath)path;
+						outputSettings.IconPropertyLocation = propertyLocation;
+						}
+					}
+
 				return true;
 				}
 
@@ -865,6 +903,9 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			bool hasHomePage = (projectConfig.OutputSettings.HomePagePropertyLocation.IsDefined &&
 											projectConfig.OutputSettings.HomePagePropertyLocation.Source != PropertySource.SystemDefault &&
 											projectConfig.OutputSettings.HomePagePropertyLocation.Source != PropertySource.CommandLine);
+			bool hasIcon = (projectConfig.OutputSettings.IconPropertyLocation.IsDefined &&
+									projectConfig.OutputSettings.IconPropertyLocation.Source != PropertySource.SystemDefault &&
+									projectConfig.OutputSettings.IconPropertyLocation.Source != PropertySource.CommandLine);
 
 			bool hasEncodingRules = false;
 			if (projectConfig.InputSettings.HasCharacterEncodingRules)
@@ -911,7 +952,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				{
 				output.AppendLine("Style: " + projectConfig.OutputSettings.StyleName);
 
-				if (!hasHomePage)
+				if (!hasHomePage && !hasIcon)
 					{  output.AppendLine();  }
 				}
 
@@ -920,6 +961,16 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				Path relativePath = projectConfig.OutputSettings.HomePage.MakeRelativeTo(projectConfig.ProjectConfigFolder);
 
 				output.AppendLine("Home Page: " + (relativePath != null ? relativePath : projectConfig.OutputSettings.HomePage));
+
+				if (!hasIcon)
+					{  output.AppendLine();  }
+				}
+
+			if (hasIcon)
+				{
+				Path relativePath = projectConfig.OutputSettings.Icon.MakeRelativeTo(projectConfig.ProjectConfigFolder);
+
+				output.AppendLine("Icon: " + (relativePath != null ? relativePath : projectConfig.OutputSettings.HomePage));
 				output.AppendLine();
 				}
 
@@ -929,7 +980,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				output.AppendLine();
 				}
 
-			if (hasTitle || hasSubtitle || hasCopyright || hasTimestampCode || hasStyleName || hasHomePage || hasEncodingRules)
+			if (hasTitle || hasSubtitle || hasCopyright || hasTimestampCode || hasStyleName || hasHomePage || hasIcon || hasEncodingRules)
 				{  output.AppendLine();  }
 
 
@@ -950,6 +1001,8 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.StyleSyntax.multiline") );
 			output.AppendLine("#");
 			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.HomePageSyntax.multiline") );
+			output.AppendLine("#");
+			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.IconSyntax.multiline") );
 			output.AppendLine("#");
 			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.EncodingSyntax.multiline") );
 			output.AppendLine();
@@ -1369,6 +1422,13 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				Path relativePath = outputTarget.HomePage.MakeRelativeTo(projectConfig.ProjectConfigFolder);
 				output.AppendLine("   Home Page: " + (relativePath != null ? relativePath : outputTarget.HomePage));
 				}
+
+			if (outputTarget.IconPropertyLocation.IsDefined &&
+				outputTarget.IconPropertyLocation.Source != PropertySource.SystemDefault)
+				{
+				Path relativePath = outputTarget.Icon.MakeRelativeTo(projectConfig.ProjectConfigFolder);
+				output.AppendLine("   Icon: " + (relativePath != null ? relativePath : outputTarget.Icon));
+				}
 			}
 
 
@@ -1483,6 +1543,15 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 		[GeneratedRegex("""^home[ -]?page$""",
 								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
 		static internal partial Regex IsHomePageRegexLC();
+
+
+		/* Regex: IsIconPropertyRegexLC
+		 * Will match if the entire string is the property name "icon" or one of its acceptable variants.  Assumes the input
+		 * string is already in lowercase.
+		 */
+		[GeneratedRegex("""^(?:(?:fav|favorite|site|bookmark|tab) ?)?icon""",
+								  RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		static internal partial Regex IsIconPropertyRegexLC();
 
 
 		/* Regex: IsTabWidthRegexLC
