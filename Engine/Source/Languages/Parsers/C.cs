@@ -1847,18 +1847,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Attributes
 
-			if (mtnType == MTNType.Function)
-				{
-				while (TryToSkipAttributes(ref lookahead, mode, prototypeParsingType: PrototypeParsingType.StartOfPrototypeSection) ||
-						  TryToSkipTemplateDeclaration(ref lookahead, mode))
-					{  TryToSkipWhitespace(ref lookahead);  }
-				}
-			else
-				{
-				while (TryToSkipAttributes(ref lookahead, mode, prototypeParsingType: PrototypeParsingType.TypeModifier) ||
-						  TryToSkipTemplateDeclaration(ref lookahead, mode))
-					{  TryToSkipWhitespace(ref lookahead);  }
-				}
+			var attributePrototypeParsingType = (mtnType == MTNType.Function ? PrototypeParsingType.StartOfPrototypeSection
+																												: PrototypeParsingType.TypeModifier);
+
+			while (TryToSkipAttributes(ref lookahead, mode, prototypeParsingType: attributePrototypeParsingType) ||
+					  TryToSkipTemplateDeclaration(ref lookahead, mode))
+				{  TryToSkipWhitespace(ref lookahead);  }
 
 
 			// Pass 1: Count the number of MTN words in the group.  We need to accept parentheses that appear after macros.
