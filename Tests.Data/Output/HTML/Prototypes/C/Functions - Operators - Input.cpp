@@ -57,31 +57,31 @@ int operator->* (int a) { }
 
 
 
-// Group: Cast Operators
+// Group: Type Conversion Operators
 // ______________________________________________
 
-// Operator: int
+// Operator: operator int
 operator int() { }
 
-// Operator: unsigned int
-explicit operator unsigned int() { }
+// Operator: operator unsigned int*
+explicit operator unsigned int*() { }
 
-// Operator: ClassName
+// Operator: operator ClassName
 operator ClassName() { }
 
-// Operator: QualifiedClassName
+// Operator: operator QualifiedClassName
 explicit operator NamespaceName::QualifiedClassName() { }
 
-// Operator: ClassName&
+// Operator: operator ClassName&
 operator ClassName&() { }
 
-// Operator: QualifiedClassName**
+// Operator: operator QualifiedClassName**
 explicit operator NamespaceName::QualifiedClassName**() { }
 
-// Operator: Global_Class_Name
+// Operator: operator Global_Class_Name
 operator ::Global_Class_Name() { }
 
-// Operator: Qualified_Template_Name
+// Operator: operator Qualified_Template_Name<int>*
 explicit operator Namespace_Name::Qualified_Template_Name<int>*() { }
 
 
