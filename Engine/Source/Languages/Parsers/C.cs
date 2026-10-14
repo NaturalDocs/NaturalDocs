@@ -1068,6 +1068,138 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
+		/* Function: TryToSkipOperatorOverloadIdentifier
+		 *
+		 * If the iterator is on the identifier of an operator oveload, moves it past it and returns true.  This will not handle the return
+		 * values or parameters, just the identifier itself.  It will handle qualifiers before the operator keyword and any trailing keywords
+		 * that are part of the identifier name, such as "new" or type names for casts.
+		 *
+		 * It supports all these forms:
+		 *
+		 * --- C++ ---
+		 * operator+
+		 * operator<<
+		 * operator[]
+		 * operator new
+		 * operator new[]
+		 * operator TypeName
+		 * operator Namespace::TypeName
+		 *
+		 *	---
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipOperatorOverloadIdentifier (ref TokenIterator iterator, out bool isTypeConversionOperator,
+																					ParseMode mode = ParseMode.IterateOnly)
+			{
+			isTypeConversionOperator = false;
+
+			if (!IsOnKeyword(iterator, "operator"))
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+
+			if (mode == ParseMode.ParsePrototype)
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.KeywordName;  }
+
+			lookahead.Next();
+			TryToSkipWhitespace(ref lookahead);
+
+			if (IsOnAnyKeyword(lookahead, "new", "delete"))
+				{
+				if (mode == ParseMode.ParsePrototype)
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.KeywordName;  }
+
+				lookahead.Next();
+
+				// No whitespace allowed between new/delete and [] if it's included
+				if (lookahead.MatchesAcrossTokens("[]"))
+					{
+					if (mode == ParseMode.ParsePrototype)
+						{  lookahead.SetPrototypeParsingTypeByCharacters(PrototypeParsingType.Name, 2);  }
+
+					lookahead.Next(2);
+					}
+				}
+			else if (IsOnKeyword(lookahead, "co_await"))
+				{
+				if (mode == ParseMode.ParsePrototype)
+					{  lookahead.SetPrototypeParsingTypeByCharacters(PrototypeParsingType.KeywordName, 8);  }
+
+				lookahead.NextByCharacters(8);
+				}
+			else if (lookahead.MatchesAcrossTokens("()"))
+				{
+				if (mode == ParseMode.ParsePrototype)
+					{  lookahead.SetPrototypeParsingTypeByCharacters(PrototypeParsingType.Name, 2);  }
+
+				lookahead.Next(2);
+				}
+			else if (lookahead.FundamentalType == FundamentalType.Symbol &&
+						lookahead.Character != ':')
+				{
+				do
+					{
+					if (mode == ParseMode.ParsePrototype)
+						{  lookahead.PrototypeParsingType = PrototypeParsingType.KeywordName;  }
+
+					lookahead.Next();
+					}
+				while (lookahead.FundamentalType == FundamentalType.Symbol &&
+						  lookahead.Character != '(');
+				}
+			else if (lookahead.FundamentalType == FundamentalType.Text ||
+					   lookahead.Character == '_' ||
+					   lookahead.MatchesAcrossTokens("::"))
+				{
+				isTypeConversionOperator = true;
+
+				TokenIterator startOfIdentifier = lookahead;
+				while (TryToSkipIdentifier(ref lookahead, mode))
+					{
+					if (cKeywords.Contains(startOfIdentifier.TextBetween(lookahead)))
+						{  startOfIdentifier.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.KeywordName);  }
+
+					lookahead.NextPastWhitespace();
+
+					if (TryToSkipTemplateSignature(ref lookahead, TemplateSignatureType.Instantiation, mode))
+						{  lookahead.NextPastWhitespace();  }
+
+					while (lookahead.Character == '*' || lookahead.Character == '&')
+						{
+						if (mode == ParseMode.ParsePrototype)
+							{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
+
+						lookahead.Next();
+						lookahead.NextPastWhitespace();
+						}
+
+					startOfIdentifier = lookahead;
+					}
+
+				while (lookahead.Character == '*' || lookahead.Character == '&')
+					{
+					lookahead.PrototypeParsingType = PrototypeParsingType.Name;
+					lookahead.Next();
+					lookahead.NextPastWhitespace();
+					}
+				}
+			else
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				isTypeConversionOperator = false;
+				return false;
+				}
+
+			iterator = lookahead;
+			return true;
+			}
+
+
 		/* Function: TryToSkipMetadata
 		 *
 		 * Override to support detecting attributes as metadata.
@@ -1861,6 +1993,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TokenIterator endOfWords = lookahead;
 			int wordCount = 0;
 			bool lastWordHadParentheses = false;
+			bool isOperatorOverload = false;
 			bool isTypeConversionOperator = false;
 
 			while (lookahead.IsInBounds)
@@ -1922,65 +2055,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					{  return false;  }
 
 
-				// If we're on an "operator" keyword while processing a function, it's an operator overload.  Add the word but it ends the MTN
-				// group.
+				// If we're on an operator overload identifier while processing a function, add it as a single word and it ends the MTN group.
 
 				if (mtnType == MTNType.Function &&
-					IsOnKeyword(lookahead, "operator"))
+					TryToSkipOperatorOverloadIdentifier(ref lookahead, out isTypeConversionOperator))
 					{
-					lookahead.Next();
 					wordCount++;
 					endOfWords = lookahead;
-
-					TryToSkipWhitespace(ref lookahead);
-
-					// "operator new/delete" we still treat as one word
-					if (IsOnAnyKeyword(lookahead, "new", "delete"))
-						{
-						lookahead.Next();
-
-						// No whitespace allowed between new/delete and [] if it's included
-						if (lookahead.MatchesAcrossTokens("[]"))
-							{  lookahead.Next(2);  }
-
-						endOfWords = lookahead;
-						}
-					else if (IsOnKeyword(lookahead, "co_await"))
-						{
-						lookahead.NextByCharacters(8);
-						endOfWords = lookahead;
-						}
-					else if (lookahead.MatchesAcrossTokens("()"))
-						{
-						lookahead.Next(2);
-						endOfWords = lookahead;
-						}
-					else if (lookahead.FundamentalType == FundamentalType.Symbol &&
-							  lookahead.Character != ':')
-						{
-						do
-							{
-							lookahead.Next();
-							endOfWords = lookahead;
-							}
-						while (lookahead.FundamentalType == FundamentalType.Symbol &&
-								 lookahead.Character != '(');
-						}
-					else if (lookahead.FundamentalType == FundamentalType.Text)
-						{
-						isTypeConversionOperator = true;
-
-						do
-							{
-							lookahead.Next();
-							endOfWords = lookahead;
-							lookahead.NextPastWhitespace();
-							}
-						while (lookahead.FundamentalType == FundamentalType.Text ||
-								 (lookahead.FundamentalType == FundamentalType.Symbol && lookahead.Character != '('));
-						}
-					else
-						{  return false;  }
+					isOperatorOverload = true;
 
 					TryToSkipWhitespace(ref lookahead);
 
@@ -1988,7 +2070,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						{
 						lookahead.Next();
 						lastWordHadParentheses = GenericSkipUntilAfter(ref lookahead, ')', angleBracketsAsBlocks: true, skipToEndIfNotFound: false);
-						TryToSkipWhitespace(ref lookahead);
 						}
 
 					break;
@@ -2010,6 +2091,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						lastWordHadParentheses = GenericSkipUntilAfter(ref lookahead, ')', angleBracketsAsBlocks: true, skipToEndIfNotFound: false);
 						TryToSkipWhitespace(ref lookahead);
 						}
+					else
+						{  lastWordHadParentheses = false;  }
 					}
 
 				else
@@ -2019,9 +2102,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			if (wordCount == 0)
 				{  return false;  }
 
-			if (lastWordHadParentheses &&
-				(mtnType == MTNType.Parameter ||
-				 mtnType == MTNType.Variable))
+			if ( (lastWordHadParentheses && mtnType != MTNType.Function) ||
+				 (!lastWordHadParentheses && mtnType == MTNType.Function) )
 				{  return false;  }
 
 
@@ -2035,62 +2117,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 				while (wordCount > 0)
 					{
-					if (mtnType == MTNType.Function &&
-						wordCount == 1 &&
-						IsOnKeyword(lookahead, "operator"))
+					if (wordCount == 1 && isOperatorOverload)
 						{
-						lookahead.PrototypeParsingType = PrototypeParsingType.KeywordName;
-						lookahead.Next();
-						TryToSkipWhitespace(ref lookahead);
-
-						if (IsOnAnyKeyword(lookahead, "new", "delete"))
-							{
-							lookahead.PrototypeParsingType = PrototypeParsingType.KeywordName;
-
-							// No whitespace allowed between new/delete and [] if it's included
-							if (lookahead.MatchesAcrossTokens("[]"))
-								{
-								lookahead.SetPrototypeParsingTypeByCharacters(PrototypeParsingType.Name, 2);
-								}
-							}
-						else if (IsOnKeyword(lookahead, "co_await"))
-							{
-							lookahead.SetPrototypeParsingTypeByCharacters(PrototypeParsingType.KeywordName, 8);
-							}
-						else if (lookahead.MatchesAcrossTokens("()"))
-							{
-							lookahead.SetPrototypeParsingTypeByCharacters(PrototypeParsingType.Name, 2);
-							}
-						else if (lookahead.FundamentalType == FundamentalType.Symbol &&
-								  lookahead.Character != ':')
-							{
-							do
-								{
-								lookahead.PrototypeParsingType = PrototypeParsingType.Name;
-								lookahead.Next();
-								}
-							while (lookahead.FundamentalType == FundamentalType.Symbol &&
-									 lookahead.Character != '(');
-							}
-						else
-							{
-							TokenIterator startOfIdentifier = lookahead;
-							while (TryToSkipIdentifier(ref lookahead, mode))
-								{
-								if (cKeywords.Contains(startOfIdentifier.TextBetween(lookahead)))
-									{  startOfIdentifier.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.KeywordName);  }
-
-								lookahead.NextPastWhitespace();
-								startOfIdentifier = lookahead;
-								}
-
-							while (lookahead.Character == '*' || lookahead.Character == '&')
-								{
-								lookahead.PrototypeParsingType = PrototypeParsingType.Name;
-								lookahead.Next();
-								lookahead.NextPastWhitespace();
-								}
-							}
+						TryToSkipOperatorOverloadIdentifier(ref lookahead, out _, mode);
 						}
 
 					else
