@@ -1,4 +1,4 @@
-﻿Format: 2.2
+﻿Format: 2.4
 
 # This is a configuration file for a Natural Docs HTML output style.
 
@@ -60,6 +60,7 @@ Content OnLoad: NDContentPage.Start();
 
 Home OnLoad: NDHomePage.Start();
 
+
 # You can add code to the page's OnLoad handler like this:
 #
 # OnLoad: [statement]
@@ -103,3 +104,14 @@ Home OnLoad: NDHomePage.Start();
 #    %NaturalDocs_Subtitle%
 #    %NaturalDocs_Copyright%
 #    %NaturalDocs_Timestamp%
+
+
+# Icon
+# ------------------------------------------------------------------------
+
+# You can choose a custom image to serve as the tab and bookmark icon for the
+# output like this:
+#
+# Icon: [file]
+#
+# You can use a .svg, .png, .gif, .ico, or .jpg file.

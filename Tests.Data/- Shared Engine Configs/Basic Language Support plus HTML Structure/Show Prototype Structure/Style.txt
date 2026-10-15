@@ -1,4 +1,4 @@
-﻿Format: 2.4 (Beta 1)
+﻿Format: 2.4
 
 # This is a configuration file for a Natural Docs HTML output style.
 
@@ -29,7 +29,7 @@ Link: Style.css
 Content Link: JavaScript.js
 
 
-# You can link .css, .js, and .json files to the output like this:
+# You can link .css and .js files to the output like this:
 #
 # Link: [file]
 # Frame Link: [file]
@@ -97,3 +97,14 @@ Content OnLoad: AddPrototypeBlockLabels();
 #    %NaturalDocs_Subtitle%
 #    %NaturalDocs_Copyright%
 #    %NaturalDocs_Timestamp%
+
+
+# Icon
+# ------------------------------------------------------------------------
+
+# You can choose a custom image to serve as the tab and bookmark icon for the
+# output like this:
+#
+# Icon: [file]
+#
+# You can use a .svg, .png, .gif, .ico, or .jpg file.
