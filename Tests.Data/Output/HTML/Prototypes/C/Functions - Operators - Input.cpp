@@ -115,6 +115,38 @@ int operator co_await (int a) { }
 
 
 
+// Group: Operators with Qualified Identifiers
+// ______________________________________________
+
+// Operator: operator+
+int ClassName::operator+ (int a) { }
+
+// Operator: operator<<
+int ClassName::operator<< (int a) { }
+
+// Operator: operator->*
+int ClassName::operator->* (int a) { }
+
+// Operator: operator int
+ClassName::operator int() { }
+
+// Operator: operator QualifiedClassNameA
+explicit ClassName::operator NamespaceName::QualifiedClassNameA() { }
+
+// Operator: operator NamespaceName::QualifiedClassNameB
+explicit ClassName::operator NamespaceName::QualifiedClassNameB() { }
+
+// Operator: operator[]
+int ClassName::operator[] (int a) { }
+
+// Operator: operator new
+int ClassName::operator new (int a) { }
+
+// Operator: operator co_await
+int ClassName::operator co_await (int a) { }
+
+
+
 // Group: Spacing
 // ______________________________________________
 //
