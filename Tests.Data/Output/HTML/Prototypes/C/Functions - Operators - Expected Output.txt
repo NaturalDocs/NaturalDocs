@@ -193,10 +193,16 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">operator</span> ClassName()</div>
 </div>
 
-=== operator QualifiedClassName ===
+=== operator QualifiedClassNameA ===
 
 <div class="NDPrototype PContent">
-   <div class="PSection PPlainSection"><span class="SHKeyword">explicit operator</span> NamespaceName::QualifiedClassName()</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">explicit operator</span> NamespaceName::QualifiedClassNameA()</div>
+</div>
+
+=== operator NamespaceName::QualifiedClassNameB ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">explicit operator</span> NamespaceName::QualifiedClassNameB()</div>
 </div>
 
 === operator ClassName& ===
@@ -217,7 +223,7 @@
    <div class="PSection PPlainSection"><span class="SHKeyword">operator</span> ::Global_Class_Name()</div>
 </div>
 
-=== operator Qualified_Template_Name<int>* ===
+=== operator NamespaceName::Qualified_Template_Name<int>* ===
 
 <div class="NDPrototype PContent">
    <div class="PSection PPlainSection"><span class="SHKeyword">explicit operator</span> Namespace_Name::Qualified_Template_Name&lt;<span class="SHKeyword">int</span>&gt;*()</div>

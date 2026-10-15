@@ -69,8 +69,11 @@ explicit operator unsigned int*() { }
 // Operator: operator ClassName
 operator ClassName() { }
 
-// Operator: operator QualifiedClassName
-explicit operator NamespaceName::QualifiedClassName() { }
+// Operator: operator QualifiedClassNameA
+explicit operator NamespaceName::QualifiedClassNameA() { }
+
+// Operator: operator NamespaceName::QualifiedClassNameB
+explicit operator NamespaceName::QualifiedClassNameB() { }
 
 // Operator: operator ClassName&
 operator ClassName&() { }
@@ -81,7 +84,7 @@ explicit operator NamespaceName::QualifiedClassName**() { }
 // Operator: operator Global_Class_Name
 operator ::Global_Class_Name() { }
 
-// Operator: operator Qualified_Template_Name<int>*
+// Operator: operator NamespaceName::Qualified_Template_Name<int>*
 explicit operator Namespace_Name::Qualified_Template_Name<int>*() { }
 
 
