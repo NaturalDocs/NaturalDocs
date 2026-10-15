@@ -1085,6 +1085,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 * operator TypeName
 		 * operator Namespace::TypeName
 		 *
+		 * ClassName::operator+
+		 * // and all other ClassName:: varations of the above
 		 *	---
 		 *
 		 * Supported Modes:
@@ -1098,15 +1100,46 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			{
 			isTypeConversionOperator = false;
 
-			if (!IsOnKeyword(iterator, "operator"))
+			// It can be ClassName::operator+ so we can't just check for "operator" here.  Still try to rule it out early if we can
+			// to avoid expensive operations when this function will usually return false.
+			if (iterator.FundamentalType != FundamentalType.Text &&
+				iterator.Character != '_' &&
+				iterator.Character != ':')
 				{  return false;  }
 
 			TokenIterator lookahead = iterator;
 
-			if (mode == ParseMode.ParsePrototype)
-				{  lookahead.PrototypeParsingType = PrototypeParsingType.KeywordName;  }
+			// Iterate-only the first time so we don't have to undo anything if we fail, which will usually be the case.
+			if (!TryToSkipIdentifier(ref lookahead, ParseMode.IterateOnly))
+				{  return false;  }
 
-			lookahead.Next();
+			// Check that the last token in the iterator was "operator".
+			lookahead.Previous();
+
+			if (!lookahead.MatchesToken("operator"))
+				{  return false;  }
+
+			lookahead.Previous();
+
+			if (lookahead.FundamentalType == FundamentalType.Text ||
+				lookahead.Character == '_')
+				{  return false;  }
+
+			// Okay, now we know we're on an identifier that ends with "operator".  If we need to mark tokens, reset and go again
+			if (mode == ParseMode.ParsePrototype)
+				{
+				lookahead = iterator;
+				TryToSkipIdentifier(ref lookahead, mode, PrototypeParsingType.Name);
+				lookahead.Previous();
+				lookahead.PrototypeParsingType = PrototypeParsingType.KeywordName;
+				lookahead.Next();
+				}
+			else
+				{
+				// If we're not marking tokens we still have to fix that we walked back two tokens.
+				lookahead.Next(2);
+				}
+
 			TryToSkipWhitespace(ref lookahead);
 
 			if (IsOnAnyKeyword(lookahead, "new", "delete"))
@@ -2343,15 +2376,26 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					{  return false;  }
 
 				endOfIdentifier = lookahead;
-				TryToSkipWhitespace(ref lookahead);
+				bool hadWhitespace = TryToSkipWhitespace(ref lookahead);
 
 				if (TryToSkipTemplateSignature(ref lookahead, templateSignatureType, mode))
 					{
-					TryToSkipWhitespace(ref lookahead);
+					hadWhitespace = TryToSkipWhitespace(ref lookahead);
 					}
 
 				if (lookahead.MatchesAcrossTokens("::"))
 					{
+					// If there was whitespace before this :: make sure the previous identifier wasn't "operator".  Otherwise type conversion
+					// operators with global classes like "operator ::GlobalClass()" could cause it to be seen as one identifier.
+					if (hadWhitespace)
+						{
+						TokenIterator lookbehind = endOfIdentifier;
+						lookbehind.Previous();
+
+						if (IsOnKeyword(lookbehind, "operator"))
+							{  break;  }
+						}
+
 					lookahead.Next(2);
 					}
 				else
