@@ -462,8 +462,22 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				lookahead.Next(2);
 				TryToSkipWhitespace(ref lookahead);
 
-				TryToSkipMTNGroup(ref lookahead, MTNType.TrailingReturnType, out _, mode);
+				TryToSkipMTNGroup(ref lookahead, MTNType.TrailingReturnType, out bool returnsTrailingFunctionPointer, mode);
 				TryToSkipWhitespace(ref lookahead);
+
+				if (returnsTrailingFunctionPointer)
+					{
+					if (!TryToSkipFunctionPointer_ClosingParenthesisThroughParameters(ref lookahead, mode))
+						{
+						ResetTokensBetween(iterator, lookahead, mode);
+						return false;
+						}
+
+					TryToSkipWhitespace(ref lookahead);
+
+					if (TryToSkipFunctionPointer_TrailingModifiers(ref lookahead, mode))
+						{ TryToSkipWhitespace(ref lookahead); }
+					}
 				}
 
 
