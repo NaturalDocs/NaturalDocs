@@ -164,8 +164,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 					TokenIterator lookbehind = iterator;
 					lookbehind.Previous();
 
+					// Don't include colons because it looks weird when it gets separated from the rest of the qualifier with C/C++ function
+					// pointers.  We'll special-case them later.
 					if (lookbehind.FundamentalType == FundamentalType.Symbol &&
 						lookbehind.Character != '_' &&
+						lookbehind.Character != ':' &&
 						lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingTypeModifier &&
 						lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingParamModifier &&
 						lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingExtensionSymbol &&
@@ -178,6 +181,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 							{
 							if (lookbehind.FundamentalType == FundamentalType.Symbol &&
 								lookbehind.Character != '_' &&
+								lookbehind.Character != ':' &&
 								lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingTypeModifier &&
 								lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingParamModifier &&
 								lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingExtensionSymbol &&
@@ -188,6 +192,38 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.PrototypeStyleForm
 								}
 							else
 								{  break;  }
+							}
+
+
+						// If we stopped because of a colon, see if we can go back to an opening parentheses while still being on type
+						// modifiers.  This lets us special-case C++ function pointers so they get formatted like this:
+						//
+						//    void    (ParentClass::*parameter)(int, int)
+						//
+						// and not like this:
+						//
+						//    void (ParentClass::   *parameter)(int, int)
+						//
+						if (lookbehind.Character == ':')
+							{
+							TokenIterator functionPointerLookbehind = lookbehind;
+							functionPointerLookbehind.Previous();
+
+							if (functionPointerLookbehind.Character == ':')
+								{
+								functionPointerLookbehind.Previous();
+
+								while (functionPointerLookbehind.PrototypeParsingType == PrototypeParsingType.TypeModifier &&
+										 functionPointerLookbehind.Character != '(')
+									{
+									functionPointerLookbehind.Previous();
+									}
+
+								if (functionPointerLookbehind.Character == '(')
+									{
+									cells[parameterIndex, currentColumn].StartingTextIndex = functionPointerLookbehind.RawTextIndex;
+									}
+								}
 							}
 
 
