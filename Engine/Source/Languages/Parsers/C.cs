@@ -2620,11 +2620,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 									lookahead.PrototypeParsingType = PrototypeParsingType.ClosingTypeModifier;
 									lookahead.Next();
 									}
-
-								if (wordCount > 1)
-									{  TryToSkipWhitespace(ref lookahead);  }
 								}
 							}
+
+						if (wordCount > 1)
+							{  TryToSkipWhitespace(ref lookahead);  }
 						}
 
 					wordCount--;
