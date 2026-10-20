@@ -83,3 +83,26 @@ void TemplatedMemberFunctionPointerAsParameter( void(ParentClass<int>::*paramA)(
 
 // Function: TemplatedMemberFunctionPointerAsReturnValue
 void (ParentClass<int>::*TemplatedMemberFunctionPointerAsReturnValue(int paramA, float paramB))(int, int) { }
+
+
+
+// Group: Whitespace
+// ______________________________________________
+
+// Function: ParameterWhitespaceA
+void ParameterWhitespaceA(void(*paramA)(int,int), float paramB) { }
+
+// Function: ParameterWhitespaceB
+void ParameterWhitespaceB ( void ( * paramA ) ( int , int ) , float paramB) { }
+
+// Function: ReturnValueWhitespaceA
+void (ParentClass::*ReturnValueWhitespaceA(int paramA,float paramB))(int,int) { }
+
+// Function: ReturnValueWhitespaceB
+void ( ParentClass::*ReturnValueWhitespaceB (int paramA , float paramB ) ) ( int , int ) { }
+
+// Function: TrailingReturnValueWhitespaceA
+auto TrailingReturnValueWhitespaceA(int paramA, float paramB) -> void(*)(int,int) { }
+
+// Function: TrailingReturnValueWhitespaceB
+auto TrailingReturnValueWhitespaceB(int paramA, float paramB) -> void ( * ) ( int , int ) { }
