@@ -943,7 +943,53 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 			{
 			get
 				{
-				return ("\"" + this.String + "\" (line " + this.LineNumber + ", char " + this.CharNumber + ")");
+				string content = "\"" + this.String.StringEscape() + "\" (line " + this.LineNumber + ", char " + this.CharNumber;
+
+				if (ClassPrototypeParsingType != ClassPrototypeParsingType.Null)
+					{
+					content += ", marked as " + ClassPrototypeParsingType.ToString();
+					}
+				else if (PrototypeParsingType != PrototypeParsingType.Null)
+					{
+					content += ", marked as " + PrototypeParsingType.ToString();
+					}
+
+				content += ")";
+
+				if (IsInBounds)
+					{
+					content += " -> ";
+
+					int precedingStartIndex = Math.Max(0, RawTextIndex - 25);
+					int precedingEndIndex = RawTextIndex;
+
+					if (precedingStartIndex < precedingEndIndex)
+						{
+						if (precedingStartIndex > 0)
+							{  content += "...";  }
+
+						content += "\"" + tokenizer.RawText.Substring(precedingStartIndex, precedingEndIndex - precedingStartIndex).StringEscape();
+						}
+					else
+						{  content += "\"";  }
+
+					content += "❰" + this.String.StringEscape() + "❱";
+
+					int followingStartIndex = RawTextIndex + RawTextLength;
+					int followingEndIndex = Math.Min(followingStartIndex + 75, tokenizer.RawText.Length);
+
+					if (followingEndIndex > followingStartIndex)
+						{
+						content += tokenizer.RawText.Substring(followingStartIndex, followingEndIndex - followingStartIndex).StringEscape() + "\"";
+
+						if (followingEndIndex < tokenizer.RawText.Length)
+							{  content += "...";  }
+						}
+					else
+						{  content += "\"";  }
+					}
+
+				return content;
 				}
 			}
 
