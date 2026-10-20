@@ -1068,6 +1068,54 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
+		/* Function: TryToSkipArrayBrackets
+		 *
+		 * If the iterator is on a set of one or more array brackets, such as in "int variableName[2][3]", moves it past all of them and
+		 * return true.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipArrayBrackets (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			if (iterator.Character != '[')
+				{  return false;  }
+
+			bool result = false;
+			TokenIterator lookahead = iterator;
+
+			do
+				{
+				lookahead.Next();
+
+				// Can't have two opening brackets in a row or else it's a property
+				if (lookahead.Character == '[')
+					{  return result;  }
+
+				if (!GenericSkipUntilOn(ref lookahead, ']', angleBracketsAsBlocks: true))
+					{  return result;  }
+
+				if (mode == ParseMode.ParsePrototype)
+					{
+					iterator.PrototypeParsingType = PrototypeParsingType.OpeningTypeModifier;
+					lookahead.PrototypeParsingType = PrototypeParsingType.ClosingTypeModifier;
+					}
+
+				lookahead.Next();
+				iterator = lookahead;
+				result = true;
+
+				TryToSkipWhitespace(ref lookahead);
+				}
+			while (lookahead.Character == '[');
+
+			return result;
+			}
+
+
 		/* Function: TryToSkipOperatorOverloadIdentifier
 		 *
 		 * If the iterator is on the identifier of an operator oveload, moves it past it and returns true.  This will not handle the return
@@ -2111,7 +2159,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 				// Otherwise add the word and continue
 
-				else if (TryToSkipMTNWord(ref lookahead, includeTemplateSignatures: true))
+				else if (TryToSkipMTNWord(ref lookahead))
 					{
 					wordCount++;
 					endOfWords = lookahead;
@@ -2158,7 +2206,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					else
 						{
 						wordStart = lookahead;
-						TryToSkipMTNWord(ref lookahead, includeTemplateSignatures: true);
+						TryToSkipMTNWord(ref lookahead);
 						wordEnd = lookahead;
 
 						// Process the word we found
@@ -2218,41 +2266,23 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *
 		 * - Attributes like  "[[deprecated]]" and macros like "__declspec" are treated as attributes.
 		 *
-		 * - It will skip most symbols surrounding the word, such as "*int" and "int[]".
+		 * - It will skip most symbols surrounding the word, such as "*int" and "int[]" and "List<int>".
 		 *
-		 *    - It will not skip parentheses.  Parentheses following macros or modifiers like "alignas(8)" have to be handled separately.
-		 *
-		 *    - It will always skip template signatures appearing inside a qualified identifier ("List<int>::Function") but only the one at the
-		 *      end of it if the option is set ("Function<int>").
-		 *
-		 * - It will return false on obvious endpoints like ;, {, and =, but otherwise it will accept almost anything so it's up to the calling
-		 *   code to check for ends of the declaration.
+		 * - It will not skip parentheses.  Parentheses following macros or modifiers like "alignas(8)" have to be handled separately.
 		 */
-		protected bool TryToSkipMTNWord (ref TokenIterator iterator, bool includeTemplateSignatures)
+		protected bool TryToSkipMTNWord (ref TokenIterator iterator)
 			{
 			if (TryToSkipAttribute(ref iterator, ParseMode.IterateOnly))
 				{  return true;  }
 
 			TokenIterator lookahead = iterator;
-			bool success = false;
 
 
-			// Symbols before an identifier
+			// Pointer/reference symbols
 
-			for (;;)
+			while (lookahead.Character == '*' || lookahead.Character == '&')
 				{
-				if (iterator.Character == '*' || iterator.Character == '&')
-					{
-					lookahead.Next();
-
-					// We want to move on unexpected symbols rather than get stuck, so return this as a success even if it's the only thing
-					// we find.
-					iterator = lookahead;
-					success = true;
-					}
-				else
-					{  break;  }
-
+				lookahead.Next();
 				TryToSkipWhitespace(ref lookahead);
 				}
 
@@ -2262,75 +2292,31 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			if (TryToSkipIdentifier(ref lookahead, ParseMode.IterateOnly))
 				{
 				iterator = lookahead;
-				success = true;
-
 				TryToSkipWhitespace(ref lookahead);
-				}
 
 
-			// Symbols after an identifier
+				// Template signature
 
-			for (;;)
-				{
-				if (lookahead.Character == '[')
+				if (TryToSkipTemplateSignature(ref lookahead, TemplateSignatureType.Instantiation, ParseMode.IterateOnly))
 					{
-					lookahead.Next();
-
-					// If it's an attribute stop here so it's its own word
-					if (lookahead.Character == '[')
-						{  return success;  }
-
-					// If the block isn't closed stop here
-					if (!GenericSkipUntilAfter(ref lookahead, ']', angleBracketsAsBlocks: true))
-						{  return success;  }
-					else
-						{
-						iterator = lookahead;
-						success = true;
-						TryToSkipWhitespace(ref lookahead);
-						}
-					}
-				else if (includeTemplateSignatures && lookahead.Character == '<')
-					{
-					lookahead.Next();
-
-					// If the block isn't closed stop here
-					if (!GenericSkipUntilAfter(ref lookahead, '>', angleBracketsAsBlocks: true))
-						{  return success;  }
-					else
-						{
-						iterator = lookahead;
-						success = true;
-						TryToSkipWhitespace(ref lookahead);
-						}
-					}
-				else
-					{  break;  }
-				}
-
-
-			// If we didn't find anything with the above, try to move forward anyway since there might be an unexpected symbol
-			// that we didn't plan for.
-
-			if (!success)
-				{
-				// Definitely fail on these symbols though, since we don't want them included here.
-				if (!lookahead.IsInBounds ||
-					lookahead.Character == ';' || lookahead.Character == '=' ||
-					lookahead.Character == '{' || lookahead.Character == '(' ||
-					(lookahead.Character == '<' && !includeTemplateSignatures) ||
-					lookahead.Character == ',')
-					{  return false;  }
-
-				else
-					{
-					GenericSkip(ref lookahead);
 					iterator = lookahead;
-					return true;
+					TryToSkipWhitespace(ref lookahead);
 					}
+
+
+				// Array brackets
+
+				if (TryToSkipArrayBrackets(ref lookahead, ParseMode.IterateOnly))
+					{
+					iterator = lookahead;
+					}
+
+				return true;
 				}
 
-			return success;
+			// No identifier
+			else
+				{  return false;  }
 			}
 
 
