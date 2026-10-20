@@ -237,7 +237,15 @@ namespace CodeClear.NaturalDocs.Engine
 					{  output.Append(input, offset, nextEscapedChar - offset);  }
 
 				output.Append('\\');
-				output.Append(input[nextEscapedChar]);
+
+				if (input[nextEscapedChar] == '\n')
+					{  output.Append('n');  }
+				else if (input[nextEscapedChar] == '\r')
+					{  output.Append('r');  }
+				else if (input[nextEscapedChar] == '\t')
+					{  output.Append('t');  }
+				else
+					{  output.Append(input[nextEscapedChar]);  }
 
 				offset = nextEscapedChar + 1;
 				}
@@ -399,7 +407,7 @@ namespace CodeClear.NaturalDocs.Engine
 		/* var: EscapedStringChars
 		 * An array of characters that must be escaped in a JavaScript string.
 		 */
-		static public char[] EscapedStringChars = new char[] { '"', '\'', '\\' };
+		static public char[] EscapedStringChars = new char[] { '"', '\'', '\\', '\n', '\r', '\t' };
 
 
 
