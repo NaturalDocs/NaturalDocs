@@ -106,3 +106,51 @@ auto TrailingReturnValueWhitespaceA(int paramA, float paramB) -> void(*)(int,int
 
 // Function: TrailingReturnValueWhitespaceB
 auto TrailingReturnValueWhitespaceB(int paramA, float paramB) -> void ( * ) ( int , int ) { }
+
+
+
+// Group: Parameter Alignment
+// ______________________________________________
+
+// Function: ParameterAlignmentA
+void ParameterAlignmentA (int (*paramA)(int, int),
+									  int paramB,
+									  int* paramC,
+									  unsigned int (*paramD)(int, int),
+									  unsigned int paramE,
+									  unsigned int* paramF,
+									  ClassName (*paramG)(int, int),
+									  ClassName paramH,
+									  ClassName* paramI,
+									  PackageName::ClassName (*paramJ)(int, int),
+									  PackageName::ClassName paramK,
+									  PackageName::ClassName paramL) { }
+
+// Function: ParameterAlignmentB
+void ParameterAlignmentB (int (ClassName::*paramA)(int, int),
+									  int paramB,
+									  int* paramC,
+									  unsigned int (ClassName::*paramD)(int, int),
+									  unsigned int paramE,
+									  unsigned int* paramF,
+									  ClassName (ClassName::*paramG)(int, int),
+									  ClassName paramH,
+									  ClassName* paramI,
+									  PackageName::ClassName (ClassName::*paramJ)(int, int),
+									  PackageName::ClassName paramK,
+									  PackageName::ClassName paramL) { }
+
+// Function: ParameterAlignmentC
+void ParameterAlignmentC (int (PackageName::ClassName::*paramA)(int, int),
+									  int paramB,
+									  int* paramC,
+									  unsigned int (PackageName::ClassName::*paramD)(int, int),
+									  unsigned int paramE,
+									  unsigned int* paramF,
+									  ClassName (PackageName::ClassName::*paramG)(int, int),
+									  ClassName paramH,
+									  ClassName* paramI,
+									  PackageName::ClassName (PackageName::ClassName::*paramJ)(int, int),
+									  PackageName::ClassName paramK,
+									  PackageName::ClassName paramL) { }
+
