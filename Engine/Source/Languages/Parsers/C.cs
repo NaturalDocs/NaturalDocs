@@ -385,7 +385,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// The part before the parameters can be treated as a modifier-type-name group
 
-			if (!TryToSkipMTNGroup(ref lookahead, MTNType.Function, mode,
+			if (!TryToSkipMTNGroup(ref lookahead, MTNType.Function, out _, mode,
 											   failOnKeywords: ["class", "struct", "union", "enum", "concept"]))
 				{  return false;  }
 
@@ -462,7 +462,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				lookahead.Next(2);
 				TryToSkipWhitespace(ref lookahead);
 
-				TryToSkipMTNGroup(ref lookahead, MTNType.TrailingReturnType, mode);
+				TryToSkipMTNGroup(ref lookahead, MTNType.TrailingReturnType, out _, mode);
 				TryToSkipWhitespace(ref lookahead);
 				}
 
@@ -621,11 +621,27 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// The majority of the parameter can be treated as a modifier-type-name group
 
-			if (!TryToSkipMTNGroup(ref iterator, MTNType.Parameter, mode))
+			bool isPartOfFunctionPointer;
+			if (!TryToSkipMTNGroup(ref iterator, MTNType.Parameter, out isPartOfFunctionPointer, mode))
 				{  return false;  }
 
 			TokenIterator lookahead = iterator;
 			TryToSkipWhitespace(ref lookahead);
+
+			if (isPartOfFunctionPointer)
+				{
+				if (!TryToSkipFunctionPointer_ClosingParenthesisThroughParameters(ref lookahead, mode))
+					{
+					ResetTokensBetween(iterator, lookahead, mode);
+					return false;
+					}
+
+				TryToSkipWhitespace(ref lookahead);
+
+				// For parameters, the trailing modifiers appear after the function pointer's parameters
+				if (TryToSkipFunctionPointer_TrailingModifiers(ref lookahead, mode))
+					{  TryToSkipWhitespace(ref lookahead);  }
+				}
 
 
 			// Default value
@@ -1278,6 +1294,294 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			iterator = lookahead;
 			return true;
+			}
+
+
+		/* Function: TryToSkipFunctionPointer_OpeningParenthesisThroughIdentifier
+		 *
+		 * If the iterator is on the first opening parenthesis of a function pointer or reference, skips past it to the point of passing the
+		 * identifier, if it exists.  For a function that returns a function pointer/reference, this leaves it before the opening parenthesis of
+		 * the function's parameters.  For everything else, this leaves it at the closing parenthesis of the first part to be followed by the
+		 * parentheses for the function pointer's parameters.
+		 *
+		 * It supports all these forms:
+		 *
+		 * --- C++ ---
+		 * void (*)(int, int)
+		 * void (*name)(int, int)
+		 * void (ClassName::*)(int, int)
+		 * void (ClassName::*name)(int, int)
+		 * void (*FunctionName(float functionParam))(int, int)
+		 * void (*name[])(int, int)
+		 * void (&)(int, int)
+		 * // and all other & variations of the above
+		 *	---
+		 *
+		 * The iterator must start on the ( after "void" and it will be left on the spot indicated by ^:
+		 *
+		 * --- C++ ---
+		 * void (*^)(int, int)
+		 * void (*name^)(int, int)
+		 * void (ClassName::*^)(int, int)
+		 * void (ClassName::*name^)(int, int)
+		 * void (*FunctionName^(float functionParam))(int, int)
+		 * void (*name[]^)(int, int)
+		 * void (&^)(int, int)
+		 *	---
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipFunctionPointer_OpeningParenthesisThroughIdentifier (ref TokenIterator iterator,
+																														   ParseMode mode = ParseMode.IterateOnly)
+			{
+			if (iterator.Character != '(')
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+			lookahead.Next();
+			TryToSkipWhitespace(ref lookahead);
+
+
+			// Class specifiers, may not exist
+
+			// We're going to use iterate-only until we're sure we're on a function pointer, since it usually won't be the case but will
+			// have a lot of false positives.  This limits the work we need to undo.
+			if (TryToSkipUnqualifiedIdentifier(ref lookahead, ParseMode.IterateOnly))
+				{
+				do
+					{
+					TryToSkipWhitespace(ref lookahead);
+
+					if (TryToSkipTemplateSignature(ref lookahead, TemplateSignatureType.Instantiation, ParseMode.IterateOnly))
+						{  TryToSkipWhitespace(ref lookahead);  }
+
+					if (lookahead.MatchesAcrossTokens("::"))
+						{  lookahead.Next(2);  }
+					else
+						{  return false;  }
+					}
+				while (TryToSkipUnqualifiedIdentifier(ref lookahead, ParseMode.IterateOnly));
+				}
+
+
+			// Pointer or reference symbol
+
+			if (lookahead.Character != '*' && lookahead.Character != '&')
+				{  return false;  }
+
+			do
+				{  lookahead.Next();  }
+			while (lookahead.Character == '*' || lookahead.Character == '&');
+
+			// If we've reached this point we're likely on a function pointer and can start marking tokens.
+			if (mode == ParseMode.ParsePrototype)
+				{  iterator.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.TypeModifier);  }
+
+			TokenIterator stopPoint = lookahead;
+			TryToSkipWhitespace(ref lookahead);
+
+
+			// Identifier.  May not exist.
+
+			if (TryToSkipUnqualifiedIdentifier(ref lookahead, mode, PrototypeParsingType.Name))
+				{
+				stopPoint = lookahead;
+				TryToSkipWhitespace(ref lookahead);
+				}
+
+
+			// Array brackets
+
+			if (TryToSkipArrayBrackets(ref lookahead, mode))
+				{
+				stopPoint = lookahead;
+				TryToSkipWhitespace(ref lookahead);
+				}
+
+
+			// Make sure what follows is either an opening parenthesis (function parameters for a function that returns a function pointer, like
+			// "void (*FunctionName(int))(int)") or a closing one for everything else ("void (*variableName)(int)").
+
+			if (lookahead.Character != '(' && lookahead.Character != ')')
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+
+			iterator = stopPoint;
+			return true;
+			}
+
+
+		/* Function: TryToSkipFunctionPointer_ClosingParenthesisThroughParameters
+		 *
+		 * If the iterator is on the closing parenthesis of the first part of a function pointer or reference, skips past it to the point of
+		 * passing the function pointer's parameters.
+		 *
+		 * It supports all these forms.  The iterator must start on the spot indicated by ^:
+		 *
+		 * --- C++ ---
+		 * void (*^)(int, int)
+		 * void (*name^)(int, int)
+		 * void (ClassName::*)(int, int)
+		 * void (ClassName::*name^)(int, int)
+		 * void (*FunctionName(float functionParam)^)(int, int)
+		 * void (&^)(int, int)
+		 *	---
+		 *
+		 *	Note that this is the same as where <TryToSkipFunctionPointer_OpeningParenthesisThroughIdentifier()> leaves it *except*
+		 *	for functions returning function pointers.  In this case it is after the parameters of the function that returns the function
+		 *	pointer.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipFunctionPointer_ClosingParenthesisThroughParameters (ref TokenIterator iterator,
+																														    ParseMode mode = ParseMode.IterateOnly)
+			{
+			if (iterator.Character != ')')
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+
+			if (mode == ParseMode.ParsePrototype)
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
+
+			lookahead.Next();
+			TryToSkipWhitespace(ref lookahead);
+
+			if (lookahead.Character != '(')
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+
+			if (mode == ParseMode.ParsePrototype)
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.OpeningTypeModifier;  }
+
+			lookahead.Next();
+
+			if (!GenericSkipUntilOn(ref lookahead, ')', angleBracketsAsBlocks: true))
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+
+			lookahead.PrototypeParsingType = PrototypeParsingType.ClosingTypeModifier;
+			lookahead.Next();
+
+			iterator = lookahead;
+			return true;
+			}
+
+
+		/* Function: TryToSkipFunctionPointer_TrailingModifiers
+		 *
+		 * If you know you're handling a function pointer, this will skip any modifiers that could appear after it.  This is inside the
+		 * parentheses for functions that return function pointers and outside for other uses, such as below.  The iterator should be
+		 * at the spot indicated by ^:
+		 *
+		 * --- C++ ---
+		 * void (*)(int, int) ^noexcept
+		 * void (*name)(int, int) ^&& const
+		 * void (*FunctionName(float functionParam) ^noexcept(true))(int, int)
+		 *	---
+		 *
+		 *	This function will return whether it moved the iterator, though since it's valid for there to be no trailing modifiers you should
+		 *	not treat that as a parsing failure in the calling function.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipFunctionPointer_TrailingModifiers (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			TokenIterator lookahead = iterator;
+			bool result = false;
+
+
+			// const/volatile
+
+			if (IsOnAnyKeyword(iterator, "const", "volatile"))
+				{
+				if (mode == ParseMode.ParsePrototype)
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
+
+				lookahead.Next();
+
+				result = true;
+				iterator = lookahead;
+
+				TryToSkipWhitespace(ref lookahead);
+				}
+
+
+			// &/&&
+
+			if (lookahead.Character == '&')
+				{
+				do
+					{
+					if (mode == ParseMode.ParsePrototype)
+						{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
+
+					lookahead.Next();
+					}
+				while (lookahead.Character == '&');
+
+				result = true;
+				iterator = lookahead;
+
+				TryToSkipWhitespace(ref lookahead);
+				}
+
+
+			// noexcept/throw
+
+			if (IsOnAnyKeyword(lookahead, "noexcept", "throw"))
+				{
+				if (mode == ParseMode.ParsePrototype)
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
+
+				lookahead.Next();
+
+				result = true;
+				iterator = lookahead;
+
+				TryToSkipWhitespace(ref lookahead);
+
+				if (lookahead.Character == '(')
+					{
+					TokenIterator endingParen = lookahead;
+					endingParen.Next();
+
+					if (GenericSkipUntilOn(ref endingParen, ')', skipToEndIfNotFound: false))
+						{
+						if (mode == ParseMode.ParsePrototype)
+							{
+							lookahead.PrototypeParsingType = PrototypeParsingType.OpeningTypeModifier;
+							endingParen.PrototypeParsingType = PrototypeParsingType.ClosingTypeModifier;
+
+							lookahead = endingParen;
+							lookahead.Next();
+							}
+						}
+
+					// result is already true
+					iterator = lookahead;
+					}
+				}
+
+			return result;
 			}
 
 
@@ -2046,16 +2350,20 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 * This will skip parentheses following modifiers (such as "alignas(8)") but not the one after the last MTN word, such as the parentheses
 		 * following a function name.
 		 *
+		 * This function will return whether the last word was part function pointer.  If so, the iterator will be left on the place documented in
+		 * <TryToSkipFunctionPointer_OpeningParenthesisThroughIdentifier()>.
+		 *
 		 * Supported Modes:
 		 *
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParsePrototype>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipMTNGroup (ref TokenIterator iterator, MTNType mtnType, ParseMode mode = ParseMode.IterateOnly,
-															string[] failOnKeywords = null)
+		protected bool TryToSkipMTNGroup (ref TokenIterator iterator, MTNType mtnType, out bool isPartOfFunctionPointer,
+															ParseMode mode = ParseMode.IterateOnly, string[] failOnKeywords = null)
 			{
 			TokenIterator lookahead = iterator;
+			isPartOfFunctionPointer = false;
 
 
 			// Attributes
@@ -2157,6 +2465,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					}
 
 
+				// If we're on the opening parenthesis of a function pointer, add the part through the name and end the MTN group.
+
+				else if (TryToSkipFunctionPointer_OpeningParenthesisThroughIdentifier(ref lookahead))
+					{
+					wordCount++;
+					endOfWords = lookahead;
+					isPartOfFunctionPointer = true;
+					break;
+					}
+
+
 				// Otherwise add the word and continue
 
 				else if (TryToSkipMTNWord(ref lookahead))
@@ -2168,9 +2487,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 					if (lookahead.Character == '(')
 						{
-						lookahead.Next();
-						lastWordHadParentheses = GenericSkipUntilAfter(ref lookahead, ')', angleBracketsAsBlocks: true, skipToEndIfNotFound: false);
-						TryToSkipWhitespace(ref lookahead);
+						// Make sure we don't treat the parentheses in function pointers, such as "void(*paramName)(int, int)", as
+						// parentheses on regular modifiers, such as "alignas(8)".
+						TokenIterator temp = lookahead;
+						if (!TryToSkipFunctionPointer_OpeningParenthesisThroughIdentifier(ref temp, ParseMode.IterateOnly))
+							{
+							lookahead.Next();
+							lastWordHadParentheses = GenericSkipUntilAfter(ref lookahead, ')', angleBracketsAsBlocks: true, skipToEndIfNotFound: false);
+							TryToSkipWhitespace(ref lookahead);
+							}
+						else
+							{  lastWordHadParentheses = false;  }
 						}
 					else
 						{  lastWordHadParentheses = false;  }
@@ -2203,6 +2530,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						TryToSkipOperatorOverloadIdentifier(ref lookahead, out _, mode);
 						}
 
+					else if (wordCount == 1 && isPartOfFunctionPointer)
+						{
+						TryToSkipFunctionPointer_OpeningParenthesisThroughIdentifier(ref lookahead, mode);
+						}
+
 					else
 						{
 						wordStart = lookahead;
@@ -2225,7 +2557,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 							MarkName(wordStart, wordEnd);
 							}
 
-						if (wordCount > 1)
+						if (wordCount > 1 && !(wordCount == 2 && isPartOfFunctionPointer))
 							{
 							TryToSkipWhitespace(ref lookahead);
 
