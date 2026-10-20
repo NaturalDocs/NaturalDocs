@@ -401,7 +401,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 			TokenIterator openingParen = lookahead;
-			openingParen.PrototypeParsingType = PrototypeParsingType.StartOfParams;
+
+			if (mode == ParseMode.ParsePrototype)
+				{  openingParen.PrototypeParsingType = PrototypeParsingType.StartOfParams;  }
 
 			lookahead.Next();
 
@@ -412,7 +414,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 			TokenIterator closingParen = lookahead;
-			closingParen.PrototypeParsingType = PrototypeParsingType.EndOfParams;
+
+			if (mode == ParseMode.ParsePrototype)
+				{  closingParen.PrototypeParsingType = PrototypeParsingType.EndOfParams;  }
 
 			lookahead.Next();
 			TryToSkipWhitespace(ref lookahead);
@@ -1289,7 +1293,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				TokenIterator startOfIdentifier = lookahead;
 				while (TryToSkipIdentifier(ref lookahead, mode))
 					{
-					if (cKeywords.Contains(startOfIdentifier.TextBetween(lookahead)))
+					if (mode == ParseMode.ParsePrototype && cKeywords.Contains(startOfIdentifier.TextBetween(lookahead)))
 						{  startOfIdentifier.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.KeywordName);  }
 
 					lookahead.NextPastWhitespace();
@@ -1311,7 +1315,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 				while (lookahead.Character == '*' || lookahead.Character == '&')
 					{
-					lookahead.PrototypeParsingType = PrototypeParsingType.Name;
+					if (mode == ParseMode.ParsePrototype)
+						{  lookahead.PrototypeParsingType = PrototypeParsingType.Name;  }
+
 					lookahead.Next();
 					lookahead.NextPastWhitespace();
 					}
@@ -1505,7 +1511,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				return false;
 				}
 
-			lookahead.PrototypeParsingType = PrototypeParsingType.ClosingTypeModifier;
+			if (mode == ParseMode.ParsePrototype)
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.ClosingTypeModifier;  }
+
 			lookahead.Next();
 
 			iterator = lookahead;
