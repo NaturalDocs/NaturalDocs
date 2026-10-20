@@ -385,7 +385,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// The part before the parameters can be treated as a modifier-type-name group
 
-			if (!TryToSkipMTNGroup(ref lookahead, MTNType.Function, out _, mode,
+			if (!TryToSkipMTNGroup(ref lookahead, MTNType.Function, out bool returnsFunctionPointer, mode,
 											   failOnKeywords: ["class", "struct", "union", "enum", "concept"]))
 				{  return false;  }
 
@@ -455,9 +455,26 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 
+			// Rest of returned function pointer syntax
+
+			if (returnsFunctionPointer)
+				{
+				if (!TryToSkipFunctionPointer_ClosingParenthesisThroughParameters(ref lookahead, mode))
+					{
+					ResetTokensBetween(iterator, lookahead, mode);
+					return false;
+					}
+
+				TryToSkipWhitespace(ref lookahead);
+
+				if (TryToSkipFunctionPointer_TrailingModifiers(ref lookahead, mode))
+					{  TryToSkipWhitespace(ref lookahead);  }
+				}
+
+
 			// -> trailing return type
 
-			if (lookahead.MatchesAcrossTokens("->"))
+			else if (lookahead.MatchesAcrossTokens("->"))
 				{
 				lookahead.Next(2);
 				TryToSkipWhitespace(ref lookahead);
@@ -2486,6 +2503,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					wordCount++;
 					endOfWords = lookahead;
 					isPartOfFunctionPointer = true;
+
+					TryToSkipWhitespace(ref lookahead);
+
+					if (lookahead.Character == '(')
+						{
+						lookahead.Next();
+						lastWordHadParentheses = GenericSkipUntilAfter(ref lookahead, ')', angleBracketsAsBlocks: true, skipToEndIfNotFound: false);
+						}
+
 					break;
 					}
 
