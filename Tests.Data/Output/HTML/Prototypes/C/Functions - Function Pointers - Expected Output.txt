@@ -22,8 +22,8 @@
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2"><span class="SHKeyword">void</span> MemberFunctionPointerAsParameter(</div>
-         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">void</span>(ParentClass</div>
-         <div class="PSymbols" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">::*</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">void</span></div>
+         <div class="PSymbols" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">(ParentClass::*</div>
          <div class="PName InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5">paramA)(<span class="SHKeyword">int</span>, <span class="SHKeyword">int</span>),</div>
          <div class="PType InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHKeyword">float</span>&nbsp;</div>
          <div class="PName InLastParameterColumn" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5">paramB</div>
@@ -164,8 +164,8 @@
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2"><span class="SHKeyword">void</span> MemberFunctionPointerAsParameterWithModifiers(</div>
-         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">void</span>(ParentClass</div>
-         <div class="PSymbols" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">::*</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">void</span></div>
+         <div class="PSymbols" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">(ParentClass::*</div>
          <div class="PName InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5">paramA)(<span class="SHKeyword">int</span>, <span class="SHKeyword">int</span>) <span class="SHKeyword">const</span> &amp;&amp; <span class="SHKeyword">noexcept</span>(<span class="SHKeyword">true</span>),</div>
          <div class="PType InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHKeyword">float</span>&nbsp;</div>
          <div class="PName InLastParameterColumn" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5">paramB</div>
@@ -297,8 +297,8 @@
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2"><span class="SHKeyword">void</span> MemberFunctionPointerArrayAsParameter(</div>
-         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">void</span>(ParentClass</div>
-         <div class="PSymbols" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">::*</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">void</span></div>
+         <div class="PSymbols" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">(ParentClass::*</div>
          <div class="PName InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5">paramA[<span class="SHNumber">6</span>][])(<span class="SHKeyword">int</span>, <span class="SHKeyword">int</span>),</div>
          <div class="PType InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHKeyword">float</span>&nbsp;</div>
          <div class="PName InLastParameterColumn" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5">paramB</div>
@@ -313,8 +313,8 @@
    <div class="PSection PParameterSection CStyle">
       <div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4">
          <div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/3/2"><span class="SHKeyword">void</span> TemplatedMemberFunctionPointerAsParameter(</div>
-         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">void</span>(ParentClass&lt;<span class="SHKeyword">int</span></div>
-         <div class="PSymbols" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">&gt;::*</div>
+         <div class="PType InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3"><span class="SHKeyword">void</span></div>
+         <div class="PSymbols" data-WideGridArea="1/3/2/4" data-NarrowGridArea="2/2/3/3" style="grid-area:1/3/2/4">(ParentClass&lt;<span class="SHKeyword">int</span>&gt;::*</div>
          <div class="PName InLastParameterColumn" data-WideGridArea="1/4/2/5" data-NarrowGridArea="2/3/3/4" style="grid-area:1/4/2/5">paramA)(<span class="SHKeyword">int</span>, <span class="SHKeyword">int</span>),</div>
          <div class="PType InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3"><span class="SHKeyword">float</span>&nbsp;</div>
          <div class="PName InLastParameterColumn" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5">paramB</div>
