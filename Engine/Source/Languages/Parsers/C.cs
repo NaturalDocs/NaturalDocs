@@ -131,14 +131,33 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			{
 			Tokenizer tokenizedPrototype = new Tokenizer(stringPrototype, tabWidth: EngineInstance.Config.TabWidth);
 			TokenIterator iterator = tokenizedPrototype.FirstToken;
+			bool parsed = false;
 
-			if (TryToSkipFunction(ref iterator, ParseMode.ParsePrototype) ||
-				TryToSkipEnum(ref iterator, ParseMode.ParsePrototype))
+			if (commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("function", language.ID) ||
+				commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("operator", language.ID))
+			    {
+				parsed = TryToSkipFunction(ref iterator, ParseMode.ParsePrototype);
+				}
+
+			if (!parsed &&
+				(commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("variable", language.ID) ||
+				 commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("constant", language.ID)))
+			    {
+				parsed = TryToSkipVariable(ref iterator, ParseMode.ParsePrototype);
+				}
+
+			if (!parsed &&
+				commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("enum", language.ID))
+			    {
+				parsed = TryToSkipEnum(ref iterator, ParseMode.ParsePrototype);
+				}
+
+			if (parsed)
 				{
 				return new ParsedPrototype(tokenizedPrototype, this.Language.ID, commentTypeID, engineInstance);
 				}
 			else
-				{
+			    {
 				return base.ParsePrototype(stringPrototype, commentTypeID);
 				}
 			}
@@ -568,6 +587,71 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 
 			iterator = lookahead;
+			return true;
+			}
+
+
+		/* Function: TryToSkipVariable
+		 *
+		 * If the iterator is on a variable or constant definition, moves it past it and returns true.
+		 *
+		 * Supported Modes:
+		 *
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipVariable (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			TokenIterator lookahead = iterator;
+
+
+			// Attributes
+
+			if (TryToSkipAttributes(ref lookahead, mode, prototypeParsingType: PrototypeParsingType.StartOfPrototypeSection))
+				{  TryToSkipWhitespace(ref lookahead);  }
+
+
+			// Most of it can be treated as a modifier-type-name group
+
+			if (!TryToSkipMTNGroup(ref lookahead, MTNType.Variable, out bool isFunctionPointer, mode,
+											   failOnKeywords: ["class", "struct", "union", "enum", "concept"]))
+				{  return false;  }
+
+			TokenIterator endOfVariable = lookahead;
+			TryToSkipWhitespace(ref lookahead);
+
+			if (isFunctionPointer)
+				{
+				if (!TryToSkipFunctionPointer_ClosingParenthesisThroughParameters(ref lookahead, mode))
+					{
+					ResetTokensBetween(iterator, lookahead, mode);
+					return false;
+					}
+
+				endOfVariable = lookahead;
+				TryToSkipWhitespace(ref lookahead);
+
+				if (TryToSkipFunctionPointer_TrailingModifiers(ref lookahead, mode))
+					{
+					endOfVariable = lookahead;
+					TryToSkipWhitespace(ref lookahead);
+					}
+				}
+
+
+			// Default value or end of declaration
+
+			if (lookahead.IsInBounds &&
+				lookahead.Character != '=' &&
+				lookahead.Character != ';')
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+
+
+			iterator = endOfVariable;
 			return true;
 			}
 
