@@ -1,0 +1,226 @@
+====================
+   Simple Inheritance
+====================
+
+struct SimpleStructInheritance : BaseStruct
+
+  - Name: SimpleStructInheritance
+  - Keyword: struct
+  - Access Level: Unknown
+
+  - Parent 1: BaseStruct
+    - Name: BaseStruct
+
+-----
+
+struct StructInheritanceWithPublic : public BaseStruct
+
+  - Name: StructInheritanceWithPublic
+  - Keyword: struct
+  - Access Level: Unknown
+
+  - Parent 1: public BaseStruct
+    - Name: BaseStruct
+    - Modifiers: public
+
+-----
+
+struct StructInheritanceWithPrivate : private BaseStruct
+
+  - Name: StructInheritanceWithPrivate
+  - Keyword: struct
+  - Access Level: Unknown
+
+  - Parent 1: private BaseStruct
+    - Name: BaseStruct
+    - Modifiers: private
+
+
+====================
+   Multiple Inheritance
+====================
+
+struct MultipleStructInheritance : BaseStruct1, BaseStruct2
+
+  - Name: MultipleStructInheritance
+  - Keyword: struct
+  - Access Level: Unknown
+
+  - Parent 1: BaseStruct1
+    - Name: BaseStruct1
+
+  - Parent 2: BaseStruct2
+    - Name: BaseStruct2
+
+-----
+
+struct MultipleStructInheritanceWithAccessA : public BaseStruct1, private BaseStruct2, protected BaseStruct3
+
+  - Name: MultipleStructInheritanceWithAccessA
+  - Keyword: struct
+  - Access Level: Unknown
+
+  - Parent 1: public BaseStruct1
+    - Name: BaseStruct1
+    - Modifiers: public
+
+  - Parent 2: private BaseStruct2
+    - Name: BaseStruct2
+    - Modifiers: private
+
+  - Parent 3: protected BaseStruct3
+    - Name: BaseStruct3
+    - Modifiers: protected
+
+-----
+
+struct MultipleStructInheritanceWithAccessB : public BaseStruct1, BaseStruct2
+
+  - Name: MultipleStructInheritanceWithAccessB
+  - Keyword: struct
+  - Access Level: Unknown
+
+  - Parent 1: public BaseStruct1
+    - Name: BaseStruct1
+    - Modifiers: public
+
+  - Parent 2: BaseStruct2
+    - Name: BaseStruct2
+
+-----
+
+struct MultipleStructInheritanceWithAccessC : BaseStruct1, private BaseStruct2
+
+  - Name: MultipleStructInheritanceWithAccessC
+  - Keyword: struct
+  - Access Level: Unknown
+
+  - Parent 1: BaseStruct1
+    - Name: BaseStruct1
+
+  - Parent 2: private BaseStruct2
+    - Name: BaseStruct2
+    - Modifiers: private
+
+
+====================
+   Virtual Inheritance
+====================
+
+struct VirtualStructInheritance : virtual BaseStruct
+
+  - Name: VirtualStructInheritance
+  - Keyword: struct
+  - Access Level: Unknown
+
+  - Parent 1: virtual BaseStruct
+    - Name: BaseStruct
+    - Modifiers: virtual
+
+-----
+
+struct VirtualMultipleStructInheritanceWithAccess : virtual public BaseStruct1, private virtual BaseStruct2
+
+  - Name: VirtualMultipleStructInheritanceWithAccess
+  - Keyword: struct
+  - Access Level: Unknown
+
+  - Parent 1: virtual public BaseStruct1
+    - Name: BaseStruct1
+    - Modifiers: virtual public
+
+  - Parent 2: private virtual BaseStruct2
+    - Name: BaseStruct2
+    - Modifiers: private virtual
+
+
+====================
+   Namespaces
+====================
+
+struct Namespace::NamespaceOnStruct : BaseStruct
+
+  - Name: Namespace::NamespaceOnStruct
+  - Keyword: struct
+  - Access Level: Unknown
+
+  - Parent 1: BaseStruct
+    - Name: BaseStruct
+
+-----
+
+struct NamespaceOnBaseStruct : private Namespace::BaseStruct
+
+  - Name: NamespaceOnBaseStruct
+  - Keyword: struct
+  - Access Level: Unknown
+
+  - Parent 1: private Namespace::BaseStruct
+    - Name: Namespace::BaseStruct
+    - Modifiers: private
+
+-----
+
+struct NamespaceA::NamespaceOnBothStructs : protected NamespaceB::BaseStruct
+
+  - Name: NamespaceA::NamespaceOnBothStructs
+  - Keyword: struct
+  - Access Level: Unknown
+
+  - Parent 1: protected NamespaceB::BaseStruct
+    - Name: NamespaceB::BaseStruct
+    - Modifiers: protected
+
+
+====================
+   Attributes
+====================
+
+struct [[Attribute]] AttributeOnStruct : BaseStruct
+
+  - Pre-Prototype Line: [[Attribute]]
+  - Name: AttributeOnStruct
+  - Keyword: struct
+  - Access Level: Unknown
+
+  - Parent 1: BaseStruct
+    - Name: BaseStruct
+
+-----
+
+struct AttributeOnBaseStruct : [[Attribute]] public BaseStruct
+
+  - Name: AttributeOnBaseStruct
+  - Keyword: struct
+  - Access Level: Unknown
+
+  - Parent 1: [[Attribute]] public BaseStruct
+    - Name: BaseStruct
+    - Modifiers: [[Attribute]] public
+
+-----
+
+struct [[AttributeA]] AttributeOnBothStructs : [[AttributeB]] private BaseStruct
+
+  - Pre-Prototype Line: [[AttributeA]]
+  - Name: AttributeOnBothStructs
+  - Keyword: struct
+  - Access Level: Unknown
+
+  - Parent 1: [[AttributeB]] private BaseStruct
+    - Name: BaseStruct
+    - Modifiers: [[AttributeB]] private
+
+-----
+
+struct __attribute__((AttributeA)) UnderscoreAttributesOnBothStructs final : __attribute__((AttributeB)) protected virtual Namespace::BaseStruct
+
+  - Pre-Prototype Line: __attribute__((AttributeA))
+  - Name: UnderscoreAttributesOnBothStructs
+  - Keyword: struct
+  - Modifiers: final
+  - Access Level: Unknown
+
+  - Parent 1: __attribute__((AttributeB)) protected virtual Namespace::BaseStruct
+    - Name: Namespace::BaseStruct
+    - Modifiers: __attribute__((AttributeB)) protected virtual

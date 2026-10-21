@@ -1,0 +1,226 @@
+====================
+   Simple Inheritance
+====================
+
+class SimpleInheritance : BaseClass
+
+  - Name: SimpleInheritance
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: BaseClass
+    - Name: BaseClass
+
+-----
+
+class InheritanceWithPublic : public BaseClass
+
+  - Name: InheritanceWithPublic
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: public BaseClass
+    - Name: BaseClass
+    - Modifiers: public
+
+-----
+
+class InheritanceWithPrivate : private BaseClass
+
+  - Name: InheritanceWithPrivate
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: private BaseClass
+    - Name: BaseClass
+    - Modifiers: private
+
+
+====================
+   Multiple Inheritance
+====================
+
+class MultipleInheritance : BaseClass1, BaseClass2
+
+  - Name: MultipleInheritance
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: BaseClass1
+    - Name: BaseClass1
+
+  - Parent 2: BaseClass2
+    - Name: BaseClass2
+
+-----
+
+class MultipleInheritanceWithAccessA : public BaseClass1, private BaseClass2, protected BaseClass3
+
+  - Name: MultipleInheritanceWithAccessA
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: public BaseClass1
+    - Name: BaseClass1
+    - Modifiers: public
+
+  - Parent 2: private BaseClass2
+    - Name: BaseClass2
+    - Modifiers: private
+
+  - Parent 3: protected BaseClass3
+    - Name: BaseClass3
+    - Modifiers: protected
+
+-----
+
+class MultipleInheritanceWithAccessB : public BaseClass1, BaseClass2
+
+  - Name: MultipleInheritanceWithAccessB
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: public BaseClass1
+    - Name: BaseClass1
+    - Modifiers: public
+
+  - Parent 2: BaseClass2
+    - Name: BaseClass2
+
+-----
+
+class MultipleInheritanceWithAccessC : BaseClass1, private BaseClass2
+
+  - Name: MultipleInheritanceWithAccessC
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: BaseClass1
+    - Name: BaseClass1
+
+  - Parent 2: private BaseClass2
+    - Name: BaseClass2
+    - Modifiers: private
+
+
+====================
+   Virtual Inheritance
+====================
+
+class VirtualInheritance : virtual BaseClass
+
+  - Name: VirtualInheritance
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: virtual BaseClass
+    - Name: BaseClass
+    - Modifiers: virtual
+
+-----
+
+class VirtualMultipleInheritanceWithAccess : virtual public BaseClass1, private virtual BaseClass2
+
+  - Name: VirtualMultipleInheritanceWithAccess
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: virtual public BaseClass1
+    - Name: BaseClass1
+    - Modifiers: virtual public
+
+  - Parent 2: private virtual BaseClass2
+    - Name: BaseClass2
+    - Modifiers: private virtual
+
+
+====================
+   Namespaces
+====================
+
+class Namespace::NamespaceOnClass : BaseClass
+
+  - Name: Namespace::NamespaceOnClass
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: BaseClass
+    - Name: BaseClass
+
+-----
+
+class NamespaceOnBaseClass : private Namespace::BaseClass
+
+  - Name: NamespaceOnBaseClass
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: private Namespace::BaseClass
+    - Name: Namespace::BaseClass
+    - Modifiers: private
+
+-----
+
+class NamespaceA::NamespaceOnBoth : protected NamespaceB::BaseClass
+
+  - Name: NamespaceA::NamespaceOnBoth
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: protected NamespaceB::BaseClass
+    - Name: NamespaceB::BaseClass
+    - Modifiers: protected
+
+
+====================
+   Attributes
+====================
+
+class [[Attribute]] AttributeOnClass : BaseClass
+
+  - Pre-Prototype Line: [[Attribute]]
+  - Name: AttributeOnClass
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: BaseClass
+    - Name: BaseClass
+
+-----
+
+class AttributeOnBase : [[Attribute]] public BaseClass
+
+  - Name: AttributeOnBase
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: [[Attribute]] public BaseClass
+    - Name: BaseClass
+    - Modifiers: [[Attribute]] public
+
+-----
+
+class [[AttributeA]] AttributeOnBoth : [[AttributeB]] private BaseClass
+
+  - Pre-Prototype Line: [[AttributeA]]
+  - Name: AttributeOnBoth
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: [[AttributeB]] private BaseClass
+    - Name: BaseClass
+    - Modifiers: [[AttributeB]] private
+
+-----
+
+class __attribute__((AttributeA)) UnderscoreAttributesOnBoth final : __attribute__((AttributeB)) protected virtual Namespace::BaseClass
+
+  - Pre-Prototype Line: __attribute__((AttributeA))
+  - Name: UnderscoreAttributesOnBoth
+  - Keyword: class
+  - Modifiers: final
+  - Access Level: Unknown
+
+  - Parent 1: __attribute__((AttributeB)) protected virtual Namespace::BaseClass
+    - Name: Namespace::BaseClass
+    - Modifiers: __attribute__((AttributeB)) protected virtual

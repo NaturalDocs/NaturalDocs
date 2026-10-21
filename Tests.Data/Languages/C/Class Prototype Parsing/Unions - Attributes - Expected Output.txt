@@ -1,0 +1,226 @@
+====================
+   Bracketed Attributes
+====================
+
+[[AttributeA]] [[AttributeB()]] [[AttributeC(12, "string")]] union SimpleAttributes
+
+  - Pre-Prototype Line: [[AttributeA]]
+  - Pre-Prototype Line: [[AttributeB()]]
+  - Pre-Prototype Line: [[AttributeC(12, "string")]]
+  - Name: SimpleAttributes
+  - Keyword: union
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+[[Namespace::AttributeA]] [[Namespace::AttributeB()]] [[Namespace::AttributeC(12, "string")]] union AttributesWithNamespaces
+
+  - Pre-Prototype Line: [[Namespace::AttributeA]]
+  - Pre-Prototype Line: [[Namespace::AttributeB()]]
+  - Pre-Prototype Line: [[Namespace::AttributeC(12, "string")]]
+  - Name: AttributesWithNamespaces
+  - Keyword: union
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+[[AttributeA, AttributeB(), AttributeC(12, "string")]] union AttributesInLists
+
+  - Pre-Prototype Line: [[AttributeA, AttributeB(), AttributeC(12, "string")]]
+  - Name: AttributesInLists
+  - Keyword: union
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+[[Namespace::AttributeA, Namespace::AttributeB(), Namespace::AttributeC(12, "string")]] union AttributesInListsWithNamespaces
+
+  - Pre-Prototype Line: [[Namespace::AttributeA, Namespace::AttributeB(), Namespace::AttributeC(12, "string")]]
+  - Name: AttributesInListsWithNamespaces
+  - Keyword: union
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+[[using Namespace: AttributeA]] union AttributesWithUsing
+
+  - Pre-Prototype Line: [[using Namespace: AttributeA]]
+  - Name: AttributesWithUsing
+  - Keyword: union
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+[[using Namespace: AttributeA, AttributeB(), AttributeC(12, "string")]] union AttributesInListsWithUsing
+
+  - Pre-Prototype Line: [[using Namespace: AttributeA, AttributeB(), AttributeC(12, "string")]]
+  - Name: AttributesInListsWithUsing
+  - Keyword: union
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+union [[AttributeA]][[Namespace::AttributeB(12, "string")]] AttributesAfterKeyword
+
+  - Pre-Prototype Line: [[AttributeA]]
+  - Pre-Prototype Line: [[Namespace::AttributeB(12, "string")]]
+  - Name: AttributesAfterKeyword
+  - Keyword: union
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+[[AttributeA]] union [[Namespace::AttributeB(12, "string")]] AttributesBeforeAndAfterKeyword
+
+  - Pre-Prototype Line: [[AttributeA]]
+  - Pre-Prototype Line: [[Namespace::AttributeB(12, "string")]]
+  - Name: AttributesBeforeAndAfterKeyword
+  - Keyword: union
+  - Access Level: Unknown
+  - No parents
+
+
+====================
+   Attributes via __attribute__
+====================
+
+union __attribute__((deprecated)) DeprecatedUnderscored
+
+  - Pre-Prototype Line: __attribute__((deprecated))
+  - Name: DeprecatedUnderscored
+  - Keyword: union
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+union __attribute__((aligned(8))) AlignedUnderscored
+
+  - Pre-Prototype Line: __attribute__((aligned(8)))
+  - Name: AlignedUnderscored
+  - Keyword: union
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+union __attribute__((deprecated)) __attribute__((aligned(8))) MultipleSeparateUnderscored
+
+  - Pre-Prototype Line: __attribute__((deprecated))
+  - Pre-Prototype Line: __attribute__((aligned(8)))
+  - Name: MultipleSeparateUnderscored
+  - Keyword: union
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+union __attribute__((deprecated, aligned(8))) MultipleCombinedUnderscored
+
+  - Pre-Prototype Line: __attribute__((deprecated, aligned(8)))
+  - Name: MultipleCombinedUnderscored
+  - Keyword: union
+  - Access Level: Unknown
+  - No parents
+
+
+====================
+   Attributes via __declspec
+====================
+
+union __declspec(deprecated) DeprecatedDeclSpec
+
+  - Pre-Prototype Line: __declspec(deprecated)
+  - Name: DeprecatedDeclSpec
+  - Keyword: union
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+union __declspec(align(8)) AlignDeclSpec
+
+  - Pre-Prototype Line: __declspec(align(8))
+  - Name: AlignDeclSpec
+  - Keyword: union
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+union __declspec(deprecated) __declspec(align(8)) MultipleSeparateDeclSpec
+
+  - Pre-Prototype Line: __declspec(deprecated)
+  - Pre-Prototype Line: __declspec(align(8))
+  - Name: MultipleSeparateDeclSpec
+  - Keyword: union
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+union __declspec(deprecated align(8)) MultipleCombinedDeclSpec
+
+  - Pre-Prototype Line: __declspec(deprecated align(8))
+  - Name: MultipleCombinedDeclSpec
+  - Keyword: union
+  - Access Level: Unknown
+  - No parents
+
+
+====================
+   AlignAs
+====================
+
+alignas(8) union AlignAsBeforeKeyword
+
+  - Name: AlignAsBeforeKeyword
+  - Keyword: union
+  - Modifiers: alignas(8)
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+union alignas(8) AlignAsAfterKeyword
+
+  - Name: AlignAsAfterKeyword
+  - Keyword: union
+  - Modifiers: alignas(8)
+  - Access Level: Unknown
+  - No parents
+
+
+====================
+   Final
+====================
+
+union FinalAfterName final
+
+  - Name: FinalAfterName
+  - Keyword: union
+  - Modifiers: final
+  - Access Level: Unknown
+  - No parents
+
+
+====================
+   Mixed Attributes
+====================
+
+[[AttributeA]] union alignas(8) __attribute__((deprecated)) MixedAttributes final
+
+  - Pre-Prototype Line: [[AttributeA]]
+  - Pre-Prototype Line: __attribute__((deprecated))
+  - Name: MixedAttributes
+  - Keyword: union
+  - Modifiers: alignas(8) final
+  - Access Level: Unknown
+  - No parents

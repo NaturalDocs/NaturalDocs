@@ -1,0 +1,180 @@
+====================
+   Simple Templates
+====================
+
+template<typename T> class SimpleTemplate
+
+  - Pre-Prototype Line: template<typename T>
+  - Name: SimpleTemplate
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+export template<typename T> class ExportTemplate
+
+  - Pre-Prototype Line: export template<typename T>
+  - Name: ExportTemplate
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+
+====================
+   Templates with Constraints
+====================
+
+template<typename T> requires Incrementable<T> class SimpleConstraint
+
+  - Pre-Prototype Line: template<typename T> 
+  - Pre-Prototype Line: requires Incrementable<T>
+  - Name: SimpleConstraint
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+template<typename T> requires Integral<T> && std::is_signed<T>::value class MultipleConstraintsAnd
+
+  - Pre-Prototype Line: template<typename T> 
+  - Pre-Prototype Line: requires Integral<T> && std::is_signed<T>::value
+  - Name: MultipleConstraintsAnd
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+template<typename T> requires EqualityComparable<T> || Same<T, void> class MultipleConstraintsOr
+
+  - Pre-Prototype Line: template<typename T> 
+  - Pre-Prototype Line: requires EqualityComparable<T> || Same<T, void>
+  - Name: MultipleConstraintsOr
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+template<typename T> requires (EqualityComparable<T> || Same<T, void>) class MultipleConstraintsParentheses
+
+  - Pre-Prototype Line: template<typename T> 
+  - Pre-Prototype Line: requires (EqualityComparable<T> || Same<T, void>)
+  - Name: MultipleConstraintsParentheses
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+template<typename T> requires (sizeof(T) < 8) class InlineConstraintExpression
+
+  - Pre-Prototype Line: template<typename T> 
+  - Pre-Prototype Line: requires (sizeof(T) < 8)
+  - Name: InlineConstraintExpression
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+template<typename T> requires requires (T x) { sizeof(x) < 8; } class DoubleRequiresConstraintA
+
+  - Pre-Prototype Line: template<typename T> 
+  - Pre-Prototype Line: requires requires (T x) { sizeof(x) < 8; }
+  - Name: DoubleRequiresConstraintA
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+template<typename T> requires requires(T a, T b) { { a + b } -> std::same_as<T>; a.swap(b); } class DoubleRequiresConstraintB
+
+  - Pre-Prototype Line: template<typename T> 
+  - Pre-Prototype Line: requires requires(T a, T b) { { a + b } -> std::same_as<T>; a.swap(b); }
+  - Name: DoubleRequiresConstraintB
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+
+====================
+   Templates With Attributes
+====================
+
+[[Attribute]] template<typename T> class AttributeBeforeTemplate
+
+  - Pre-Prototype Line: [[Attribute]]
+  - Pre-Prototype Line: template<typename T>
+  - Name: AttributeBeforeTemplate
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+template<typename T> [[Attribute]] class AttributeAfterTemplateBeforeClass
+
+  - Pre-Prototype Line: template<typename T>
+  - Pre-Prototype Line: [[Attribute]]
+  - Name: AttributeAfterTemplateBeforeClass
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+template<typename T> class [[Attribute]] AttributeAfterClass
+
+  - Pre-Prototype Line: template<typename T>
+  - Pre-Prototype Line: [[Attribute]]
+  - Name: AttributeAfterClass
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+[[AttributeA]] template<typename T> [[AttributeB]] class [[AttributeC]] AttributesInAllPositions
+
+  - Pre-Prototype Line: [[AttributeA]]
+  - Pre-Prototype Line: template<typename T>
+  - Pre-Prototype Line: [[AttributeB]]
+  - Pre-Prototype Line: [[AttributeC]]
+  - Name: AttributesInAllPositions
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+
+====================
+   Template Instantiation
+====================
+
+template class ExplicitInstantiation<double>
+
+  - Name: ExplicitInstantiation
+  - Template Suffix: <double>
+  - Keyword: class
+  - Modifiers: template
+  - Access Level: Unknown
+  - No parents
+
+
+====================
+   Combinations
+====================
+
+__attribute__((AttributeA)) template<typename T> requires (EqualityComparable<T> || Same<T, void>) class [[AttributeB]] TemplateWithEverything
+
+  - Pre-Prototype Line: __attribute__((AttributeA))
+  - Pre-Prototype Line: template<typename T> 
+  - Pre-Prototype Line: requires (EqualityComparable<T> || Same<T, void>)
+  - Pre-Prototype Line: [[AttributeB]]
+  - Name: TemplateWithEverything
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents

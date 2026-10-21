@@ -1,0 +1,226 @@
+====================
+   Bracketed Attributes
+====================
+
+[[AttributeA]] [[AttributeB()]] [[AttributeC(12, "string")]] struct SimpleAttributes
+
+  - Pre-Prototype Line: [[AttributeA]]
+  - Pre-Prototype Line: [[AttributeB()]]
+  - Pre-Prototype Line: [[AttributeC(12, "string")]]
+  - Name: SimpleAttributes
+  - Keyword: struct
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+[[Namespace::AttributeA]] [[Namespace::AttributeB()]] [[Namespace::AttributeC(12, "string")]] struct AttributesWithNamespaces
+
+  - Pre-Prototype Line: [[Namespace::AttributeA]]
+  - Pre-Prototype Line: [[Namespace::AttributeB()]]
+  - Pre-Prototype Line: [[Namespace::AttributeC(12, "string")]]
+  - Name: AttributesWithNamespaces
+  - Keyword: struct
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+[[AttributeA, AttributeB(), AttributeC(12, "string")]] struct AttributesInLists
+
+  - Pre-Prototype Line: [[AttributeA, AttributeB(), AttributeC(12, "string")]]
+  - Name: AttributesInLists
+  - Keyword: struct
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+[[Namespace::AttributeA, Namespace::AttributeB(), Namespace::AttributeC(12, "string")]] struct AttributesInListsWithNamespaces
+
+  - Pre-Prototype Line: [[Namespace::AttributeA, Namespace::AttributeB(), Namespace::AttributeC(12, "string")]]
+  - Name: AttributesInListsWithNamespaces
+  - Keyword: struct
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+[[using Namespace: AttributeA]] struct AttributesWithUsing
+
+  - Pre-Prototype Line: [[using Namespace: AttributeA]]
+  - Name: AttributesWithUsing
+  - Keyword: struct
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+[[using Namespace: AttributeA, AttributeB(), AttributeC(12, "string")]] struct AttributesInListsWithUsing
+
+  - Pre-Prototype Line: [[using Namespace: AttributeA, AttributeB(), AttributeC(12, "string")]]
+  - Name: AttributesInListsWithUsing
+  - Keyword: struct
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+struct [[AttributeA]][[Namespace::AttributeB(12, "string")]] AttributesAfterKeyword
+
+  - Pre-Prototype Line: [[AttributeA]]
+  - Pre-Prototype Line: [[Namespace::AttributeB(12, "string")]]
+  - Name: AttributesAfterKeyword
+  - Keyword: struct
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+[[AttributeA]] struct [[Namespace::AttributeB(12, "string")]] AttributesBeforeAndAfterKeyword
+
+  - Pre-Prototype Line: [[AttributeA]]
+  - Pre-Prototype Line: [[Namespace::AttributeB(12, "string")]]
+  - Name: AttributesBeforeAndAfterKeyword
+  - Keyword: struct
+  - Access Level: Unknown
+  - No parents
+
+
+====================
+   Attributes via __attribute__
+====================
+
+struct __attribute__((deprecated)) DeprecatedUnderscored
+
+  - Pre-Prototype Line: __attribute__((deprecated))
+  - Name: DeprecatedUnderscored
+  - Keyword: struct
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+struct __attribute__((aligned(8))) AlignedUnderscored
+
+  - Pre-Prototype Line: __attribute__((aligned(8)))
+  - Name: AlignedUnderscored
+  - Keyword: struct
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+struct __attribute__((deprecated)) __attribute__((aligned(8))) MultipleSeparateUnderscored
+
+  - Pre-Prototype Line: __attribute__((deprecated))
+  - Pre-Prototype Line: __attribute__((aligned(8)))
+  - Name: MultipleSeparateUnderscored
+  - Keyword: struct
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+struct __attribute__((deprecated, aligned(8))) MultipleCombinedUnderscored
+
+  - Pre-Prototype Line: __attribute__((deprecated, aligned(8)))
+  - Name: MultipleCombinedUnderscored
+  - Keyword: struct
+  - Access Level: Unknown
+  - No parents
+
+
+====================
+   Attributes via __declspec
+====================
+
+struct __declspec(deprecated) DeprecatedDeclSpec
+
+  - Pre-Prototype Line: __declspec(deprecated)
+  - Name: DeprecatedDeclSpec
+  - Keyword: struct
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+struct __declspec(align(8)) AlignDeclSpec
+
+  - Pre-Prototype Line: __declspec(align(8))
+  - Name: AlignDeclSpec
+  - Keyword: struct
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+struct __declspec(deprecated) __declspec(align(8)) MultipleSeparateDeclSpec
+
+  - Pre-Prototype Line: __declspec(deprecated)
+  - Pre-Prototype Line: __declspec(align(8))
+  - Name: MultipleSeparateDeclSpec
+  - Keyword: struct
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+struct __declspec(deprecated align(8)) MultipleCombinedDeclSpec
+
+  - Pre-Prototype Line: __declspec(deprecated align(8))
+  - Name: MultipleCombinedDeclSpec
+  - Keyword: struct
+  - Access Level: Unknown
+  - No parents
+
+
+====================
+   AlignAs
+====================
+
+alignas(8) struct AlignAsBeforeKeyword
+
+  - Name: AlignAsBeforeKeyword
+  - Keyword: struct
+  - Modifiers: alignas(8)
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+struct alignas(8) AlignAsAfterKeyword
+
+  - Name: AlignAsAfterKeyword
+  - Keyword: struct
+  - Modifiers: alignas(8)
+  - Access Level: Unknown
+  - No parents
+
+
+====================
+   Final
+====================
+
+struct FinalAfterName final
+
+  - Name: FinalAfterName
+  - Keyword: struct
+  - Modifiers: final
+  - Access Level: Unknown
+  - No parents
+
+
+====================
+   Mixed Attributes
+====================
+
+[[AttributeA]] struct alignas(8) __attribute__((deprecated)) MixedAttributes final
+
+  - Pre-Prototype Line: [[AttributeA]]
+  - Pre-Prototype Line: __attribute__((deprecated))
+  - Name: MixedAttributes
+  - Keyword: struct
+  - Modifiers: alignas(8) final
+  - Access Level: Unknown
+  - No parents
