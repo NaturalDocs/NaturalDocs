@@ -227,6 +227,8 @@ Language: Pascal
 
    Extension: pas
 
+   Alias: Delphi
+
    Line Comment: //
    Block Comment: { } (* *)
    Case Sensitive: No
