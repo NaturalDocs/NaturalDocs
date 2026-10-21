@@ -37,6 +37,7 @@ Language: ActionScript
    Interface Prototype Ender: {
    Function Prototype Enders: ; {
    Variable Prototype Enders: ; =
+   Constant Prototype Ender: =
 
 
 Language: Ada
@@ -49,6 +50,7 @@ Language: Ada
    Function Prototype Enders: ; IS
    Operator Prototype Enders: ; IS
    Variable Prototype Enders: ; :=
+   Constant Prototype Ender: :=
 
 
 Language: Assembly
@@ -83,6 +85,7 @@ Language: C/C++
    Function Prototype Enders: ; { : try
    Operator Prototype Enders: ; { : try
    Variable Prototype Enders: ; =
+   Constant Prototype Ender: =
    Enumeration Prototype Enders: ; {
 
 
@@ -114,6 +117,7 @@ Language: Fortran
    Function Prototype Ender: \n
    Operator Prototype Ender: \n
    Variable Prototype Enders: \n = =>
+   Constant Prototype Ender: =
 
 
 Language: Go
@@ -132,7 +136,7 @@ Language: Go
    Interface Prototype Ender: {
    Struct Prototype Ender: {
    Variable Prototype Enders: := = \n ;
-   Constant Prototype Enders: = \n ;
+   Constant Prototype Ender: =
    Type Prototype Enders: = \n ; {
 
 
@@ -149,6 +153,7 @@ Language: Java
    Interface Prototype Ender: {
    Function Prototype Ender: {
    Variable Prototype Enders: ; =
+   Constant Prototype Ender: =
 
 
 Language: JavaScript
@@ -167,7 +172,7 @@ Language: JavaScript
    Function Prototype Ender: {
    Property Prototype Ender: {
    Variable Prototype Enders: ; = \n
-   Constant Prototype Enders: ; = \n
+   Constant Prototype Ender: =
 
 
 Language: Kotlin
@@ -201,6 +206,7 @@ Language: Lua
    Function Prototype Enders: ; \n
    Operator Prototype Enders: ; \n
    Variable Prototype Enders: ; \n =
+   Constant Prototype Ender: =
 
 
 Language: Makefile
@@ -229,6 +235,7 @@ Language: Pascal
    Function Prototype Ender: ;
    Operator Prototype Ender: ;
    Variable Prototype Enders: ; =
+   Constant Prototype Ender: =
    Type Prototype Ender: ;
    Event Prototype Enders: ; read write
    Property Prototype Enders: ; read write
@@ -245,6 +252,7 @@ Language: Perl
    Function Prototype Ender: {
    Operator Prototype Ender: {
    Variable Prototype Enders: ; =
+   Constant Prototype Enders: = =>
 
 
 Language: PHP
@@ -260,6 +268,7 @@ Language: PHP
    Interface Prototype Ender: {
    Function Prototype Enders: ; {
    Variable Prototype Enders: ; =
+   Constant Prototype Ender: =
 
 
 Language: PowerBuilder
@@ -274,7 +283,7 @@ Language: PowerBuilder
 
    Function Prototype Ender: \n
    Variable Prototype Enders: \n =
-   Constant Prototype Enders: \n =
+   Constant Prototype Ender: =
 
 
 Language: PowerShell
@@ -302,6 +311,7 @@ Language: Python
    Function Prototype Ender: :
    Operator Prototype Ender: :
    Variable Prototype Ender: =
+   Constant Prototype Ender: =
 
 
 Language: R
@@ -314,6 +324,7 @@ Language: R
    Function Prototype Enders: { ;
    Operator Prototype Enders: { ;
    Variable Prototype Enders: <- = ; \n
+   Constant Prototype Enders: <- =
 
 
 Language: Ruby
@@ -330,6 +341,7 @@ Language: Ruby
    Function Prototype Enders: ; \n
    Operator Prototype Enders: ; \n
    Variable Prototype Enders: ; \n =
+   Constant Prototype Ender: =
 
 
 Language: Rust
@@ -347,8 +359,8 @@ Language: Rust
    Function Prototype Enders: ; {
    Operator Prototype Enders: ; {
    Variable Prototype Enders: ; =
+   Constant Prototype Ender: =
    Type Prototype Enders: ; =
-   Constant Prototype Enders: ; =
 
 
 Language: SQL
@@ -364,6 +376,7 @@ Language: SQL
 
    Function Prototype Enders: ; , AS IS BEGIN
    Variable Prototype Enders: ; , = := DEFAULT
+   Constant Prototype Enders: = :=
 
 
 Language: Swift
@@ -402,6 +415,7 @@ Language: SystemVerilog
    Interface Prototype Ender: ;
    Function Prototype Ender: ;
    Variable Prototype Ender: ;
+   Constant Prototype Ender: =
    Module Prototype Ender: ;
    Package Prototype Ender: ;
 
@@ -438,7 +452,7 @@ Language: TypeScript
    Function Prototype Enders: { ;
    Property Prototype Enders: { ;
    Variable Prototype Enders: ; = \n
-   Constant Prototype Enders: = \n
+   Constant Prototype Ender: =
    Type Prototype Enders: = \n
 
 
@@ -458,6 +472,7 @@ Language: Visual Basic
    Function Prototype Ender: \n
    Operator Prototype Ender: \n
    Variable Prototype Enders: \n =
+   Constant Prototype Ender: =
    Property Prototype Ender: \n
 
 
