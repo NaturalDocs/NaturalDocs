@@ -1,0 +1,91 @@
+=== Properties and Attributes ===
+
+=== typeProperties ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">unsigned</span> <span class="SHKeyword">int</span>* typeProperties</div>
+</div>
+
+=== typePropertiesWithParentheses ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">alignas</span>(<span class="SHNumber">8</span>) <span class="SHKeyword">unsigned</span> <span class="SHKeyword">int</span>* typePropertiesWithParentheses</div>
+</div>
+
+=== bracketedAttributes ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHMetadata">[[AttributeA]]</span></div>
+   <div class="PSection PPlainSection"><span class="SHMetadata">[[AttributeB(12, &quot;string&quot;)]]</span></div>
+   <div class="PSection PPlainSection">NamespaceA::TypeA bracketedAttributes</div>
+</div>
+
+=== bracketedAttributesAfterName ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">int</span> bracketedAttributesAfterName <span class="SHMetadata">[[maybe_unused]]</span></div>
+</div>
+
+=== underscoredAttributes ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHMetadata">__attribute__((AttributeA))</span></div>
+   <div class="PSection PPlainSection"><span class="SHMetadata">__attribute__((AttributeB(12, &quot;string&quot;)))</span></div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span>* underscoredAttributes</div>
+</div>
+
+=== constant ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">const unsigned</span> <span class="SHKeyword">int</span>* constant</div>
+</div>
+
+=== array ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">volatile</span> <span class="SHKeyword">int</span> array[<span class="SHNumber">256</span>]</div>
+</div>
+
+=== templatedType ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection">Dictionary&lt;<span class="SHKeyword">int</span>, <span class="SHKeyword">char</span>*&gt; templatedType</div>
+</div>
+
+=== nestedTemplatedType ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection">std::unique_ptr&lt;Dictionary&lt;<span class="SHKeyword">int</span>, <span class="SHKeyword">char</span>*&gt;&gt; nestedTemplatedType</div>
+</div>
+
+=== Function Pointers ===
+
+=== globalFunctionPointer ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span>(*globalFunctionPointer)(<span class="SHKeyword">int</span>, <span class="SHKeyword">int</span>)</div>
+</div>
+
+=== memberFunctionPointer ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span>(ParentClass::*memberFunctionPointer)(<span class="SHKeyword">int int</span>)</div>
+</div>
+
+=== globalFunctionReference ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> (&amp;globalFunctionReference)(<span class="SHKeyword">int</span>, <span class="SHKeyword">int</span>)</div>
+</div>
+
+=== globalFunctionPointerWithModifiers ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> (*globalFunctionPointerWithModifiers)(<span class="SHKeyword">int</span>, <span class="SHKeyword">int</span>) <span class="SHKeyword">volatile noexcept</span></div>
+</div>
+
+=== memberFunctionPointerWithModifiers ===
+
+<div class="NDPrototype PContent">
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span> (ParentClass::*memberFunctionPointerWithModifiers)(<span class="SHKeyword">int</span>, <span class="SHKeyword">int</span>) <span class="SHKeyword">volatile</span> &amp;&amp; <span class="SHKeyword">noexcept</span>(<span class="SHKeyword">true</span>)</div>
+</div>
