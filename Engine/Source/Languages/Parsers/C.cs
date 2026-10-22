@@ -2656,13 +2656,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{  return false;  }
 
 
-			// Pass 2: Mark the words.  The order of words goes [modifier] [modifier] [type] [name], starting from the right.  We can
-			// skip this if we're just iterating over it.
+			// Pass 2: Mark the words.  The order of words goes [modifier] [modifier] [type] [name], though some MTN types won't
+			// have a name.  We can skip this stage if we're not marking tokens.
 
 			if (mode == ParseMode.ParsePrototype)
 				{
 				lookahead = startOfWords;
 				TokenIterator wordStart, wordEnd;
+
+				bool hasName = ( (mtnType == MTNType.Function && !isTypeConversionOperator) ||
+										   mtnType == MTNType.Parameter ||
+										   mtnType == MTNType.Variable);
 
 				while (wordCount > 0)
 					{
@@ -2682,27 +2686,26 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						TryToSkipMTNWord(ref lookahead);
 						wordEnd = lookahead;
 
-						// Process the word we found
-						if (wordCount >= 3 ||
-							(wordCount >= 2 &&
-							 (mtnType == MTNType.TrailingReturnType ||
-							  mtnType == MTNType.NamelessParameter ||
-							  isTypeConversionOperator)))
+						// Type modifier
+						if (wordCount >= 3 || (!hasName && wordCount >= 2))
 							{
 							wordStart.SetPrototypeParsingTypeBetween(wordEnd, PrototypeParsingType.TypeModifier);
 							}
-						else if (wordCount == 2 ||
-								   (wordCount == 1 &&
-								    (mtnType == MTNType.TrailingReturnType ||
-									 mtnType == MTNType.NamelessParameter)))
+
+						// Type
+						else if (wordCount == 2 || (!hasName && wordCount == 1))
 							{
 							MarkType(wordStart, wordEnd);
 							}
+
+						// Name
 						else if (wordCount == 1)
 							{
 							MarkName(wordStart, wordEnd);
 							}
 
+						// Parentheses.  Only skip if it's not the last word, or the second to last word when the next set of parentheses
+						// is to a function pointer.
 						if (wordCount > 1 && !(wordCount == 2 && isPartOfFunctionPointer))
 							{
 							TryToSkipWhitespace(ref lookahead);
