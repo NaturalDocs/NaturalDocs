@@ -1016,36 +1016,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{  return false;  }
 
 			TokenIterator lookahead = iterator;
-			lookahead.Next();
 
-			// xxx still need to parse contents properly
-			if (!GenericSkipUntilOn(ref lookahead, '>', angleBracketsAsBlocks: true))
+			if (!TryToSkipParameters(ref lookahead, mode, openingChar: '<', nameless: (signatureType == TemplateSignatureType.Instantiation),
+												markAsTypeModifiers: true))
 				{  return false;  }
 
 			if (mode == ParseMode.ParseClassPrototype)
 				{
-				lookahead.Next();
 				iterator.SetClassPrototypeParsingTypeBetween(lookahead, ClassPrototypeParsingType.TemplateSuffix);
 				}
-			else if (mode == ParseMode.ParsePrototype)
-				{
-				if (signatureType == TemplateSignatureType.Instantiation)
-					{
-					iterator.PrototypeParsingType = PrototypeParsingType.OpeningTypeModifier;
-					lookahead.PrototypeParsingType = PrototypeParsingType.ClosingTypeModifier;
-					}
-				else if (signatureType == TemplateSignatureType.Definition)
-					{
-					iterator.PrototypeParsingType = PrototypeParsingType.OpeningParamModifier;
-					lookahead.PrototypeParsingType = PrototypeParsingType.ClosingParamModifier;
-					}
-				else
-					{  throw new NotImplementedException();  }
-
-				lookahead.Next();
-				}
-			else
-				{  lookahead.Next();  }
+			// ParseMode.ParsePrototype is handled by TryToSkipParameters()
 
 			iterator = lookahead;
 			return true;
