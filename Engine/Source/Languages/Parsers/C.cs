@@ -463,9 +463,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 
-			// noexcept/throw
+			// noexcept
 
-			if (IsOnAnyKeyword(lookahead, "noexcept", "throw"))
+			if (IsOnKeyword(lookahead, "noexcept"))
 				{
 				lookahead.Next();
 				TryToSkipWhitespace(ref lookahead);
@@ -474,6 +474,21 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					{
 					lookahead.Next();
 					GenericSkipUntilAfter(ref lookahead, ')', skipToEndIfNotFound: false);
+					TryToSkipWhitespace(ref lookahead);
+					}
+				}
+
+
+			// throw
+
+			else if (IsOnKeyword(lookahead, "throw"))
+				{
+				lookahead.Next();
+				TryToSkipWhitespace(ref lookahead);
+
+				if (lookahead.Character == '(')
+					{
+					TryToSkipParameters(ref lookahead, mode, markAsTypeModifiers: true);
 					TryToSkipWhitespace(ref lookahead);
 					}
 				}
