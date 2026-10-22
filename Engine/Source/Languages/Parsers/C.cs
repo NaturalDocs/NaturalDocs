@@ -668,10 +668,20 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *		- <ParseMode.ParsePrototype>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipParameters (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+		protected bool TryToSkipParameters (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
+															 char openingChar = '(', bool nameless = false, bool markAsTypeModifiers = false)
 			{
-			if (iterator.Character != '(')
+			if (iterator.Character != openingChar)
 				{  return false;  }
+
+			char closingChar;
+
+			if (openingChar == '(')
+				{  closingChar = ')';  }
+			else if (openingChar == '<')
+				{  closingChar = '>';  }
+			else
+				{  throw new InvalidOperationException();  }
 
 
 			// Opening paren
@@ -679,7 +689,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TokenIterator lookahead = iterator;
 
 			if (mode == ParseMode.ParsePrototype)
-				{  lookahead.PrototypeParsingType = PrototypeParsingType.StartOfParams;  }
+				{
+				lookahead.PrototypeParsingType = (markAsTypeModifiers ? PrototypeParsingType.OpeningTypeModifier
+																								  : PrototypeParsingType.StartOfParams);
+				}
 
 			lookahead.Next();
 			TryToSkipWhitespace(ref lookahead);
@@ -687,17 +700,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Parameter list
 
-			while (lookahead.IsInBounds && lookahead.Character != ')')
+			while (lookahead.IsInBounds && lookahead.Character != closingChar)
 				{
 				if (lookahead.Character == ',')
 					{
-					if (mode == ParseMode.ParsePrototype)
+					if (mode == ParseMode.ParsePrototype && !markAsTypeModifiers)
 						{  lookahead.PrototypeParsingType = PrototypeParsingType.ParamSeparator;  }
 
 					lookahead.Next();
 					TryToSkipWhitespace(ref lookahead);
 					}
-				else if (TryToSkipParameter(ref lookahead, mode))
+				else if (TryToSkipParameter(ref lookahead, mode, closingChar: closingChar, nameless: nameless))
 					{
 					TryToSkipWhitespace(ref lookahead);
 					}
@@ -708,10 +721,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Closing paren
 
-			if (lookahead.Character == ')')
+			if (lookahead.Character == closingChar)
 				{
-				if (mode == ParseMode.ParsePrototype)
-					{  lookahead.PrototypeParsingType = PrototypeParsingType.EndOfParams;  }
+			if (mode == ParseMode.ParsePrototype)
+				{
+				lookahead.PrototypeParsingType = (markAsTypeModifiers ? PrototypeParsingType.ClosingTypeModifier
+																								  : PrototypeParsingType.EndOfParams);
+				}
 
 				lookahead.Next();
 				iterator = lookahead;
@@ -727,8 +743,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToSkipParameter
 		 *
-		 * Tries to move the iterator past a parameter, such as "int x" or "List<int> y = null".  The parameter ends at a comma or the
-		 * closing parenthesis.
+		 * Tries to move the iterator past a parameter, such as "int x" or "List<int> y = null".  The parameter ends at a comma or the closing
+		 * character.
 		 *
 		 * Supported Modes:
 		 *
@@ -736,13 +752,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *		- <ParseMode.ParsePrototype>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipParameter (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+		protected bool TryToSkipParameter (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly,
+															char closingChar = ')', bool nameless = false)
 			{
 
 			// The majority of the parameter can be treated as a modifier-type-name group
 
 			bool isPartOfFunctionPointer;
-			if (!TryToSkipMTNGroup(ref iterator, MTNType.Parameter, out isPartOfFunctionPointer, mode))
+			if (!TryToSkipMTNGroup(ref iterator, (nameless ? MTNType.NamelessParameter : MTNType.Parameter), out isPartOfFunctionPointer, mode))
 				{  return false;  }
 
 			TokenIterator lookahead = iterator;
@@ -778,7 +795,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 				while (lookahead.IsInBounds &&
 						  lookahead.Character != ',' &&
-						  lookahead.Character != ')')
+						  lookahead.Character != closingChar)
 					{  GenericSkip(ref lookahead);  }
 
 				if (mode == ParseMode.ParsePrototype)
@@ -2541,6 +2558,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					{
 					if (lookahead.Character == ',' ||  // End of parameter
 						lookahead.Character == ')' ||  // End of all parameters
+						lookahead.Character == '>' ||  // End of all template parameters
 						lookahead.Character == '=')  // Default value
 						{  break;  }
 					}
