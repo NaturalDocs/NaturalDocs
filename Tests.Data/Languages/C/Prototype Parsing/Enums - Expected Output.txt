@@ -28,14 +28,14 @@
     - Link Candidates: (none)
 
   - Parameter 1: AttributeA,
-    - Name: AttributeA
+    - Name: (not detected)
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (none)
     - Default Value: (not detected)
 
   - Parameter 2: AttributeB(12)
-    - Name: AttributeB
+    - Name: (not detected)
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (none)
@@ -64,14 +64,14 @@
     - Link Candidates: (none)
 
   - Parameter 1: AttributeA,
-    - Name: AttributeA
+    - Name: (not detected)
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (none)
     - Default Value: (not detected)
 
   - Parameter 2: AttributeB(12)
-    - Name: AttributeB
+    - Name: (not detected)
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (none)
@@ -96,14 +96,14 @@
     - Link Candidates: (none)
 
   - Parameter 1: AttributeA,
-    - Name: AttributeA
+    - Name: (not detected)
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (none)
     - Default Value: (not detected)
 
   - Parameter 2: AttributeB(12)
-    - Name: AttributeB
+    - Name: (not detected)
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (none)
