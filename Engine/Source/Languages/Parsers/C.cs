@@ -1377,7 +1377,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				do
 					{
 					if (mode == ParseMode.ParsePrototype)
-						{  lookahead.PrototypeParsingType = PrototypeParsingType.KeywordName;  }
+						{  lookahead.PrototypeParsingType = PrototypeParsingType.Name;  }
 
 					lookahead.Next();
 					}
@@ -1394,12 +1394,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{
 				isTypeConversionOperator = true;
 
-				TokenIterator startOfIdentifier = lookahead;
-				while (TryToSkipIdentifier(ref lookahead, mode))
+				// Set it to PrototypeParsingType.Type instead of Name so that it can potentially become a link.  This shouldn't cause
+				// problems in function names the way it would in parameter names.
+				while (TryToSkipIdentifier(ref lookahead, mode, PrototypeParsingType.Type))
 					{
-					if (mode == ParseMode.ParsePrototype && cKeywords.Contains(startOfIdentifier.TextBetween(lookahead)))
-						{  startOfIdentifier.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.KeywordName);  }
-
 					lookahead.NextPastWhitespace();
 
 					if (TryToSkipTemplateSignature(ref lookahead, TemplateSignatureType.Instantiation, mode))
@@ -1413,14 +1411,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						lookahead.Next();
 						lookahead.NextPastWhitespace();
 						}
-
-					startOfIdentifier = lookahead;
 					}
 
 				while (lookahead.Character == '*' || lookahead.Character == '&')
 					{
 					if (mode == ParseMode.ParsePrototype)
-						{  lookahead.PrototypeParsingType = PrototypeParsingType.Name;  }
+						{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
 
 					lookahead.Next();
 					lookahead.NextPastWhitespace();
