@@ -48,12 +48,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *				   name.
 		 * Parameter - A function parameter from the start to the default value, parameter separator, or end of parameters, encompassing
 		 *					  modifiers, the type, and the name.
+		 * NamelessParameter - A function parameter that doesn't have a name, encompassing modifiers and the type.
 		 * Variable - A variable from the start to the start of the default value or the end of the definition, encompassing modifiers, the
 		 *				   type, and the name.
 		 * TrailingReturnType - A trailing function return type from the start to the end of the definition, encompassing modifiers and the type.
 		 */
 		public enum MTNType : byte
-			{  Function, Parameter, Variable, TrailingReturnType  }
+			{  Function, Parameter, NamelessParameter, Variable, TrailingReturnType  }
 
 
 		/* Enum: TemplateSignatureType
@@ -2512,7 +2513,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{
 				// Check for symbols that end the MTN group
 
-				if (mtnType == MTNType.Parameter)
+				if (mtnType == MTNType.Parameter ||
+					mtnType == MTNType.NamelessParameter)
 					{
 					if (lookahead.Character == ',' ||  // End of parameter
 						lookahead.Character == ')' ||  // End of all parameters
@@ -2675,12 +2677,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 						// Process the word we found
 						if (wordCount >= 3 ||
-							(mtnType == MTNType.TrailingReturnType && wordCount >= 2) ||
-							(isTypeConversionOperator && wordCount >= 2))
+							(wordCount >= 2 &&
+							 (mtnType == MTNType.TrailingReturnType ||
+							  mtnType == MTNType.NamelessParameter ||
+							  isTypeConversionOperator)))
 							{
 							wordStart.SetPrototypeParsingTypeBetween(wordEnd, PrototypeParsingType.TypeModifier);
 							}
-						else if (wordCount == 2 || (mtnType == MTNType.TrailingReturnType && wordCount == 1))
+						else if (wordCount == 2 ||
+								   (wordCount == 1 &&
+								    (mtnType == MTNType.TrailingReturnType ||
+									 mtnType == MTNType.NamelessParameter)))
 							{
 							MarkType(wordStart, wordEnd);
 							}
