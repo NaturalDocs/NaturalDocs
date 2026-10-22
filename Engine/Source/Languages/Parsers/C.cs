@@ -2663,19 +2663,20 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{
 				lookahead = startOfWords;
 				TokenIterator wordStart, wordEnd;
+				int wordsLeft = wordCount;
 
 				bool hasName = ( (mtnType == MTNType.Function && !isTypeConversionOperator) ||
-										   mtnType == MTNType.Parameter ||
+										   (mtnType == MTNType.Parameter && wordCount > 1) ||
 										   mtnType == MTNType.Variable);
 
-				while (wordCount > 0)
+				while (wordsLeft > 0)
 					{
-					if (wordCount == 1 && isOperatorOverload)
+					if (wordsLeft == 1 && isOperatorOverload)
 						{
 						TryToSkipOperatorOverloadIdentifier(ref lookahead, out _, mode);
 						}
 
-					else if (wordCount == 1 && isPartOfFunctionPointer)
+					else if (wordsLeft == 1 && isPartOfFunctionPointer)
 						{
 						TryToSkipFunctionPointer_OpeningParenthesisThroughIdentifier(ref lookahead, mode);
 						}
@@ -2687,26 +2688,26 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						wordEnd = lookahead;
 
 						// Type modifier
-						if (wordCount >= 3 || (!hasName && wordCount >= 2))
+						if (wordsLeft >= 3 || (!hasName && wordsLeft >= 2))
 							{
 							wordStart.SetPrototypeParsingTypeBetween(wordEnd, PrototypeParsingType.TypeModifier);
 							}
 
 						// Type
-						else if (wordCount == 2 || (!hasName && wordCount == 1))
+						else if (wordsLeft == 2 || (!hasName && wordsLeft == 1))
 							{
 							MarkType(wordStart, wordEnd);
 							}
 
 						// Name
-						else if (wordCount == 1)
+						else if (wordsLeft == 1)
 							{
 							MarkName(wordStart, wordEnd);
 							}
 
 						// Parentheses.  Only skip if it's not the last word, or the second to last word when the next set of parentheses
 						// is to a function pointer.
-						if (wordCount > 1 && !(wordCount == 2 && isPartOfFunctionPointer))
+						if (wordsLeft > 1 && !(wordsLeft == 2 && isPartOfFunctionPointer))
 							{
 							TryToSkipWhitespace(ref lookahead);
 
@@ -2724,11 +2725,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 								}
 							}
 
-						if (wordCount > 1)
+						if (wordsLeft > 1)
 							{  TryToSkipWhitespace(ref lookahead);  }
 						}
 
-					wordCount--;
+					wordsLeft--;
 					}
 				}
 
