@@ -41,7 +41,7 @@ std::unique_ptr<Dictionary<int, char*>> nestedTemplatedType = 0;
 void(*globalFunctionPointer)(int, int);
 
 // var: memberFunctionPointer
-void(ParentClass::*memberFunctionPointer)(int int) = null;
+void(ParentClass::*memberFunctionPointer)(int, int) = null;
 
 // var: globalFunctionReference
 void (&globalFunctionReference)(int, int);

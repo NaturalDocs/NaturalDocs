@@ -69,7 +69,7 @@
 === memberFunctionPointer ===
 
 <div class="NDPrototype PContent">
-   <div class="PSection PPlainSection"><span class="SHKeyword">void</span>(ParentClass::*memberFunctionPointer)(<span class="SHKeyword">int int</span>)</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">void</span>(ParentClass::*memberFunctionPointer)(<span class="SHKeyword">int</span>, <span class="SHKeyword">int</span>)</div>
 </div>
 
 === globalFunctionReference ===
