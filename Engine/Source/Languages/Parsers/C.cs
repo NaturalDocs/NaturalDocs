@@ -2809,10 +2809,28 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					iterator = lookahead;
 					}
 
+
+				// Parameter pack
+
+				if (lookahead.MatchesAcrossTokens("..."))
+					{
+					lookahead.Next(3);
+					iterator = lookahead;
+					}
+
 				return true;
 				}
 
-			// No identifier
+
+			// Standalone ellipsis for variadic functions
+
+			else if (lookahead.MatchesAcrossTokens("..."))
+				{
+				lookahead.Next(3);
+				iterator = lookahead;
+				return true;
+				}
+
 			else
 				{  return false;  }
 			}
