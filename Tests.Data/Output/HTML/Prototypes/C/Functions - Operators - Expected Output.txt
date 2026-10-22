@@ -178,13 +178,13 @@
 === operator int ===
 
 <div class="NDPrototype PContent">
-   <div class="PSection PPlainSection"><span class="SHKeyword">operator int</span>()</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">operator</span> <span class="SHKeyword">int</span>()</div>
 </div>
 
 === operator unsigned int* ===
 
 <div class="NDPrototype PContent">
-   <div class="PSection PPlainSection"><span class="SHKeyword">explicit operator unsigned int</span>*()</div>
+   <div class="PSection PPlainSection"><span class="SHKeyword">explicit operator</span> <span class="SHKeyword">unsigned</span> <span class="SHKeyword">int</span>*()</div>
 </div>
 
 === operator ClassName ===
@@ -366,7 +366,7 @@
 === operator int ===
 
 <div class="NDPrototype PContent">
-   <div class="PSection PPlainSection">ClassName::<span class="SHKeyword">operator int</span>()</div>
+   <div class="PSection PPlainSection">ClassName::<span class="SHKeyword">operator</span> <span class="SHKeyword">int</span>()</div>
 </div>
 
 === operator QualifiedClassNameA ===
