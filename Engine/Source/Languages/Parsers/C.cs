@@ -1093,16 +1093,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				TryToSkipWhitespace(ref lookahead);
 
 				// Parameters, optional
-				if (lookahead.Character == '(')
-					{
-					lookahead.Next();
-
-					if (GenericSkipUntilAfter(ref lookahead, ')', angleBracketsAsBlocks: true))
-						{
-						endOfClause = lookahead;
-						TryToSkipWhitespace(ref lookahead);
-						}
-					}
+				if (TryToSkipParameters(ref lookahead, mode, markAsTypeModifiers: true))
+					{  TryToSkipWhitespace(ref lookahead);  }
 
 				// Content
 				if (lookahead.Character == '{')
@@ -1166,7 +1158,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			else
 				{
-				while (TryToSkipIdentifier(ref lookahead, mode))
+				while (TryToSkipIdentifier(ref lookahead, mode, PrototypeParsingType.Type))
 					{
 					endOfClause = lookahead;
 					TryToSkipWhitespace(ref lookahead);
