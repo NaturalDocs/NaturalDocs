@@ -1615,31 +1615,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TryToSkipWhitespace(ref lookahead);
 
 
-			// Opening paren of parameters
-
-			if (lookahead.Character != '(')
-				{
-				ResetTokensBetween(iterator, lookahead, mode);
-				return false;
-				}
+			// Function pointer parameters
 
 			// We don't want these formatted the same as regular function parameters so mark the parentheses as type modifiers.
-			if (mode == ParseMode.ParsePrototype)
-				{  lookahead.PrototypeParsingType = PrototypeParsingType.OpeningTypeModifier;  }
-
-			lookahead.Next();
-
-			if (!GenericSkipUntilOn(ref lookahead, ')', angleBracketsAsBlocks: true))
+			if (!TryToSkipParameters(ref lookahead, mode, nameless: true, markAsTypeModifiers: true))
 				{
 				ResetTokensBetween(iterator, lookahead, mode);
 				return false;
 				}
 
-			// We don't want these formatted the same as regular function parameters so mark the parentheses as type modifiers
-			if (mode == ParseMode.ParsePrototype)
-				{  lookahead.PrototypeParsingType = PrototypeParsingType.ClosingTypeModifier;  }
+			TryToSkipWhitespace(ref lookahead);
 
-			lookahead.Next();
 
 			iterator = lookahead;
 			return true;
