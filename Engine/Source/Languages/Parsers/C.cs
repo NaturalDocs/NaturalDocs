@@ -1326,6 +1326,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			TryToSkipWhitespace(ref lookahead);
 
+
+			// operator new/delete
+
 			if (IsOnAnyKeyword(lookahead, "new", "delete"))
 				{
 				if (mode == ParseMode.ParsePrototype)
@@ -1342,6 +1345,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					lookahead.Next(2);
 					}
 				}
+
+
+			// operator co_await
+
 			else if (IsOnKeyword(lookahead, "co_await"))
 				{
 				if (mode == ParseMode.ParsePrototype)
@@ -1349,6 +1356,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 				lookahead.NextByCharacters(8);
 				}
+
+
+			// operator()
+
 			else if (lookahead.MatchesAcrossTokens("()"))
 				{
 				if (mode == ParseMode.ParsePrototype)
@@ -1356,6 +1367,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 				lookahead.Next(2);
 				}
+
+
+			// operator+ and all other symbols
+
 			else if (lookahead.FundamentalType == FundamentalType.Symbol &&
 						lookahead.Character != ':')
 				{
@@ -1369,6 +1384,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				while (lookahead.FundamentalType == FundamentalType.Symbol &&
 						  lookahead.Character != '(');
 				}
+
+
+			// operator [type] conversions
+
 			else if (lookahead.FundamentalType == FundamentalType.Text ||
 					   lookahead.Character == '_' ||
 					   lookahead.MatchesAcrossTokens("::"))
@@ -1568,6 +1587,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		protected bool TryToSkipFunctionPointer_ClosingParenthesisThroughParameters (ref TokenIterator iterator,
 																														    ParseMode mode = ParseMode.IterateOnly)
 			{
+
+			// Closing paren
+
 			if (iterator.Character != ')')
 				{  return false;  }
 
@@ -1579,12 +1601,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			lookahead.Next();
 			TryToSkipWhitespace(ref lookahead);
 
+
+			// Opening paren of parameters
+
 			if (lookahead.Character != '(')
 				{
 				ResetTokensBetween(iterator, lookahead, mode);
 				return false;
 				}
 
+			// We don't want these formatted the same as regular function parameters so mark the parentheses as type modifiers.
 			if (mode == ParseMode.ParsePrototype)
 				{  lookahead.PrototypeParsingType = PrototypeParsingType.OpeningTypeModifier;  }
 
@@ -1596,6 +1622,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				return false;
 				}
 
+			// We don't want these formatted the same as regular function parameters so mark the parentheses as type modifiers
 			if (mode == ParseMode.ParsePrototype)
 				{  lookahead.PrototypeParsingType = PrototypeParsingType.ClosingTypeModifier;  }
 
