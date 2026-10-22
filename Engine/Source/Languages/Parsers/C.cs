@@ -1915,12 +1915,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						}
 					}
 
-				else if (TryToSkipIdentifier(ref lookahead, mode, PrototypeParsingType.Name))
+				else if (TryToSkipIdentifier(ref lookahead, mode, PrototypeParsingType.PropertyValue))
 					{
 					TryToSkipWhitespace(ref lookahead);
 
 					if (lookahead.Character == '(')
 						{
+						TokenIterator openingParen = lookahead;
 						lookahead.Next();
 
 						if (!GenericSkipUntilAfter(ref lookahead, ')'))
@@ -1928,6 +1929,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 							ResetTokensBetween(iterator, lookahead, mode);
 							return false;
 							}
+
+						if (mode == ParseMode.ParsePrototype)
+							{  openingParen.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.PropertyValue);  }
 
 						TryToSkipWhitespace(ref lookahead);
 						}
