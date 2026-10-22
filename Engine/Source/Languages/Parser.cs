@@ -5308,7 +5308,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			while (iterator < end)
 				{
-				if (iterator.Character == '.')
+				if (iterator.Character == '.' && !iterator.MatchesAcrossTokens("..."))
 					{
 					iterator.Next();
 					qualifierEnd = iterator;
