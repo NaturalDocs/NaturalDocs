@@ -1,0 +1,154 @@
+------------------------------
+Function Bodies:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: bool NoBody(
+    - Access Level: Unknown
+    - Link Candidates: bool
+
+  - Parameter 1: int param
+    - Name: param
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: bool StandardBody(
+    - Access Level: Unknown
+    - Link Candidates: bool
+
+  - Parameter 1: int param
+    - Name: param
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: StandardBodyConstructor(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: int param
+    - Name: param
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: bool TryBody(
+    - Access Level: Unknown
+    - Link Candidates: bool
+
+  - Parameter 1: int param
+    - Name: param
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: TryBodyConstructor(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: int param
+    - Name: param
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: virtual bool ZeroBody(
+    - Access Level: Unknown
+    - Link Candidates: bool
+
+  - Parameter 1: int param
+    - Name: param
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: ) = 0
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: DefaultBody::DefaultBody(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: DefaultBody& toCopy
+    - Name: toCopy
+    - Full Type: DefaultBody&
+    - Base Type: DefaultBody
+    - Link Candidates: DefaultBody
+    - Default Value: (not detected)
+
+  - After Parameters: ) = default
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: bool DeleteBody(
+    - Access Level: Unknown
+    - Link Candidates: bool
+
+  - Parameter 1: int param
+    - Name: param
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: ) = delete
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: bool DeleteBodyWithMessage(
+    - Access Level: Unknown
+    - Link Candidates: bool
+
+  - Parameter 1: int param
+    - Name: param
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: ) = delete("You cannot use this function.")
+    - Link Candidates: (none)

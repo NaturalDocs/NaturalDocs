@@ -1,0 +1,801 @@
+------------------------------
+Bracketed Attributes:
+------------------------------
+
+- Plain Section: [[AttributeA]]
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: [[AttributeB()]]
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: [[AttributeC(12, "string")]]
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: void SimpleAttributes(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: [[Namespace::AttributeA]]
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: [[Namespace::AttributeB()]]
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: [[Namespace::AttributeC(12, "string")]]
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: void AttributesWithNamespaces(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: [[
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: AttributeA,
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: AttributeB(),
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: AttributeC(12, "string")
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: ]]
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: void AttributesInLists(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: [[
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: Namespace::AttributeA,
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: Namespace::AttributeB(),
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: Namespace::AttributeC(12, "string")
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: ]]
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: void AttributesInListsWithNamespaces(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: [[using Namespace: AttributeA]]
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: void AttributesWithUsing(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: [[using Namespace:
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: AttributeA,
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: AttributeB(),
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: AttributeC(12, "string")
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: ]]
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: void AttributesInListsWithUsing(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: [[AttributeA]]
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: [ [ AttributeB ] ]
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: [ [
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: AttributeC,
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: AttributeD
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: ] ]
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: void AttributeSpacing(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void AttributesInParameters(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - Parameter 1: [[AttributeA]] int a,
+    - Name: a
+    - Full Type: [[AttributeA]] int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: [[Namespace::AttributeB()]] float b,
+    - Name: b
+    - Full Type: [[Namespace::AttributeB()]] float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - Parameter 3: [[AttributeC(12), AttributeD("string", 0)]] double c,
+    - Name: c
+    - Full Type: [[AttributeC(12), AttributeD("string", 0)]] double
+    - Base Type: double
+    - Link Candidates: double
+    - Default Value: (not detected)
+
+  - Parameter 4: [[AttributeE]] [[AttributeF(12)]] [[AttributeG("string", 0)]] char* d
+    - Name: d
+    - Full Type: [[AttributeE]][[AttributeF(12)]][[AttributeG("string", 0)]] char*
+    - Base Type: char
+    - Link Candidates: char
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+Attributes via __attribute__:
+------------------------------
+
+- Plain Section: __attribute__((noinline))
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: void UnderscoredAttribute(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: __attribute__((section("SectionName")))
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: void UnderscoredAttributeWithParameter(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: __attribute__((noinline))
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: __attribute__((section("SectionName")))
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: void MultipleSeparateUnderscoredAttributes(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: __attribute__((
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: noinline,
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: code_seg("SectionName")
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: ))
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: void MultipleCombinedUnderscoredAttributes(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: __attribute__((AttributeA))
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: __attribute__ ((AttributeB))
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: __attribute__ ( ( AttributeC ) )
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: __attribute__ ( (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: AttributeD,
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: AttributeE
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: ) )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: void UnderscoredAttributeSpacing(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+Attributes via __declspec:
+------------------------------
+
+- Plain Section: __declspec(noinline)
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: void DeclSpecAttribute(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: __declspec(code_seg("SectionName"))
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: void DeclSpecAttributeWithParameter(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: __declspec(noinline)
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: __declspec(code_seg("SectionName"))
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: void DeclSpecMultipleSeparateAttributes(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: __declspec(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: noinline 
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: code_seg("SectionName")
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: void DeclSpecMultipleCombinedAttributes(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: __declspec(AttributeA)
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: __declspec ( AttributeB )
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: __declspec (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: AttributeC 
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: AttributeD
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: void DeclSpecAttributeSpacing(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: __declspec ( )
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: __declspec (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: AttributeA 
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: AttributeB
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: __declspec (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: AttributeC 
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: AttributeD 
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: AttributeE
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: __declspec (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: AttributeF 
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: AttributeG
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: __declspec (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: AttributeH ( "value" ) 
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: AttributeI ( "value" ) 
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: AttributeJ ( "value" ) 
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 4: AttributeK ( "value" )
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: void DeclSpecWhitespaceTraps(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+Attributes via Other Macros:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: __stdcall void StdCallAttribute(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+Preceding Modifiers:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: inline void InlineFunction(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: virtual void VirtualFunction(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: explicit void ExplicitFunction(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: const unsigned int ReturnValueModifiers(
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+Post Modifiers:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void VolatileFunction(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: ) volatile
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void ConstFunction(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: ) const
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void FunctionWithExceptionList(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: ) throw (int, ExceptionClass)
+    - Link Candidates: int, ExceptionClass
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void FunctionWithExceptionListAndParameter(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - Parameter 1: int param
+    - Name: param
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: ) throw (int, ExceptionClass)
+    - Link Candidates: int, ExceptionClass
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void FunctionWithNoExcept(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: ) noexcept
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void FunctionWithNoExceptExpression(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: ) noexcept(true)
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void FunctionWithNoExceptExpressionAndParameter(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - Parameter 1: int param
+    - Name: param
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: ) noexcept(true)
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: auto TrailingReturnValue(
+    - Access Level: Unknown
+    - Link Candidates: auto
+
+  - After Parameters: ) -> int
+    - Link Candidates: int
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: auto TrailingReturnValueAndNoExcept(
+    - Access Level: Unknown
+    - Link Candidates: auto
+
+  - After Parameters: ) noexcept(true) -> float
+    - Link Candidates: float
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void ParentClass::SingleTrailingRefSymbol(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: ) &
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void ParentClass::DoubleTrailingRefSymbol(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: ) &&
+    - Link Candidates: (none)

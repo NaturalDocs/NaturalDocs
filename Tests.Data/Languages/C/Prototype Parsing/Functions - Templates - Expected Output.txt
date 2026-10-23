@@ -1,0 +1,632 @@
+------------------------------
+Template Parameters:
+------------------------------
+
+- Plain Section: template<class T>
+  - Access Level: Unknown
+  - Link Candidates: class
+
+- Parameter Section:
+  - Before Parameters: void ClassTemplateParameter(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: template<typename T>
+  - Access Level: Unknown
+  - Link Candidates: typename
+
+- Parameter Section:
+  - Before Parameters: void TypeNameTemplateParameter(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: template<class, class>
+  - Access Level: Unknown
+  - Link Candidates: class, class
+
+- Parameter Section:
+  - Before Parameters: void UnnamedTemplateParameters(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: template<typename T = void>
+  - Access Level: Unknown
+  - Link Candidates: typename
+
+- Parameter Section:
+  - Before Parameters: void TemplateParameterWithDefault(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: template<class... Ts>
+  - Access Level: Unknown
+  - Link Candidates: class
+
+- Parameter Section:
+  - Before Parameters: void TemplateParameterPack(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: template<int A, int B>
+  - Access Level: Unknown
+  - Link Candidates: int, int
+
+- Parameter Section:
+  - Before Parameters: void TemplateWithSpecificTypes(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+Template Constraints:
+------------------------------
+
+- Plain Section: template<typename T>
+  - Access Level: Unknown
+  - Link Candidates: typename
+
+- Plain Section: requires std::totally_ordered<T>
+  - Access Level: Unknown
+  - Link Candidates: std::totally_ordered, T
+
+- Parameter Section:
+  - Before Parameters: void SimpleConstraint(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: template <typename T>
+  - Access Level: Unknown
+  - Link Candidates: typename
+
+- Plain Section: requires std::ranges::range<T> && std::is_integral_v<T>
+  - Access Level: Unknown
+  - Link Candidates: std::ranges::range, T, std::is_integral_v, T
+
+- Parameter Section:
+  - Before Parameters: void MultipleConstraintsAnd(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: template <typename T>
+  - Access Level: Unknown
+  - Link Candidates: typename
+
+- Plain Section: requires std::ranges::range<T> || std::is_integral_v<T>
+  - Access Level: Unknown
+  - Link Candidates: std::ranges::range, T, std::is_integral_v, T
+
+- Parameter Section:
+  - Before Parameters: void MultipleConstraintsOr(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: template<typename T>
+  - Access Level: Unknown
+  - Link Candidates: typename
+
+- Plain Section: requires (EqualityComparable<T> || Same<T, void>)
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: void MultipleConstraintsParentheses(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: template<typename T>
+  - Access Level: Unknown
+  - Link Candidates: typename
+
+- Plain Section: requires (sizeof(T) < 8)
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: void InlineConstraintExpression(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: template<typename T>
+  - Access Level: Unknown
+  - Link Candidates: typename
+
+- Parameter Section:
+  - Before Parameters: requires requires (T x) {
+    - Access Level: Unknown
+    - Link Candidates: T
+
+  - Parameter 1: sizeof(x) < 8;
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: void DoubleRequiresConstraintA(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: template<typename T>
+  - Access Level: Unknown
+  - Link Candidates: typename
+
+- Parameter Section:
+  - Before Parameters: requires requires(T a, T b) {
+    - Access Level: Unknown
+    - Link Candidates: T, T
+
+  - Parameter 1: { a + b } -> std::same_as<T>;
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: a.swap(b);
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: void DoubleRequiresConstraintB(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+Trailing Constraints:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void SimpleTrailingConstraint(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Plain Section: requires std::totally_ordered<T>
+  - Access Level: Unknown
+  - Link Candidates: std::totally_ordered, T
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void MultipleTrailingConstraintsAnd(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Plain Section: requires std::ranges::range<T> && std::is_integral_v<T>
+  - Access Level: Unknown
+  - Link Candidates: std::ranges::range, T, std::is_integral_v, T
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void MultipleTrailingConstraintsOr(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Plain Section: requires std::ranges::range<T> || std::is_integral_v<T>
+  - Access Level: Unknown
+  - Link Candidates: std::ranges::range, T, std::is_integral_v, T
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void MultipleTrailingConstraintsParentheses(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Plain Section: requires (EqualityComparable<T> || Same<T, void>)
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void InlineTrailingConstraintExpression(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Plain Section: requires (sizeof(T) < 8)
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void TrailingDoubleRequiresConstraintA(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: requires requires (T x) {
+    - Access Level: Unknown
+    - Link Candidates: T
+
+  - Parameter 1: sizeof(x) < 8;
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void TrailingDoubleRequiresConstraintB(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: requires requires(T a, T b) {
+    - Access Level: Unknown
+    - Link Candidates: T, T
+
+  - Parameter 1: { a + b } -> std::same_as<T>;
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: a.swap(b);
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
+
+------------------------------
+Both Constraints:
+------------------------------
+
+- Plain Section: template <typename T>
+  - Access Level: Unknown
+  - Link Candidates: typename
+
+- Plain Section: requires std::ranges::range<T>
+  - Access Level: Unknown
+  - Link Candidates: std::ranges::range, T
+
+- Parameter Section:
+  - Before Parameters: void BothConstraints(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Plain Section: requires std::totally_ordered<T>
+  - Access Level: Unknown
+  - Link Candidates: std::totally_ordered, T
+
+------------------------------
+
+- Plain Section: template <typename T>
+  - Access Level: Unknown
+  - Link Candidates: typename
+
+- Plain Section: requires std::ranges::range<T> && std::is_integral_v<T>
+  - Access Level: Unknown
+  - Link Candidates: std::ranges::range, T, std::is_integral_v, T
+
+- Parameter Section:
+  - Before Parameters: void BothConstraints(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Plain Section: requires std::ranges::range<T> || std::is_integral_v<T>
+  - Access Level: Unknown
+  - Link Candidates: std::ranges::range, T, std::is_integral_v, T
+
+------------------------------
+
+- Plain Section: template <typename T>
+  - Access Level: Unknown
+  - Link Candidates: typename
+
+- Plain Section: requires (sizeof(T) < 8)
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: void InlineTrailingConstraintExpression(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Plain Section: requires (sizeof(T) < 8)
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: template <typename T>
+  - Access Level: Unknown
+  - Link Candidates: typename
+
+- Parameter Section:
+  - Before Parameters: requires requires (T x) {
+    - Access Level: Unknown
+    - Link Candidates: T
+
+  - Parameter 1: sizeof(x) < 8;
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: void BothDoubleRequiresConstraintsA(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: requires requires (T x) {
+    - Access Level: Unknown
+    - Link Candidates: T
+
+  - Parameter 1: sizeof(x) < 8;
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: template <typename T>
+  - Access Level: Unknown
+  - Link Candidates: typename
+
+- Parameter Section:
+  - Before Parameters: requires requires(T a, T b) {
+    - Access Level: Unknown
+    - Link Candidates: T, T
+
+  - Parameter 1: { a + b } -> std::same_as<T>;
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: a.swap(b);
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: void BothDoubleRequiresConstraintsB(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: requires requires(T a, T b) {
+    - Access Level: Unknown
+    - Link Candidates: T, T
+
+  - Parameter 1: { a + b } -> std::same_as<T>;
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: a.swap(b);
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: }
+    - Link Candidates: (none)
+
+------------------------------
+Template Instantiation:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: template void ExplicitInstantiation<double> (
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - Parameter 1: double x
+    - Name: x
+    - Full Type: double
+    - Base Type: double
+    - Link Candidates: double
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: template void InstantiationWithImpliedTypeA<> (
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - Parameter 1: char x
+    - Name: x
+    - Full Type: char
+    - Base Type: char
+    - Link Candidates: char
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: template void InstantiationWithImpliedTypeB (
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - Parameter 1: char x
+    - Name: x
+    - Full Type: char
+    - Base Type: char
+    - Link Candidates: char
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+Templates with Attributes:
+------------------------------
+
+- Plain Section: [[Attribute]]
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: template<typename T>
+  - Access Level: Unknown
+  - Link Candidates: typename
+
+- Parameter Section:
+  - Before Parameters: void AttributeLeadingTemplate(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: template<typename T>
+  - Access Level: Unknown
+  - Link Candidates: typename
+
+- Plain Section: [[Attribute]]
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: void TemplateLeadingAttribute(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)

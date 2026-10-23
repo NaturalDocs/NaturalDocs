@@ -1,0 +1,171 @@
+
+// Group: Bracketed Attributes
+// ______________________________________________
+
+// Function: SimpleAttributes
+[[AttributeA]]
+[[AttributeB()]]
+[[AttributeC(12, "string")]]
+void SimpleAttributes();
+
+// Function: AttributesWithNamespaces
+[[Namespace::AttributeA]]
+[[Namespace::AttributeB()]]
+[[Namespace::AttributeC(12, "string")]]
+void AttributesWithNamespaces();
+
+// Function: AttributesInLists
+[[AttributeA, AttributeB(), AttributeC(12, "string")]]
+void AttributesInLists();
+
+// Function: AttributesInListsWithNamespaces
+[[Namespace::AttributeA, Namespace::AttributeB(), Namespace::AttributeC(12, "string")]]
+void AttributesInListsWithNamespaces();
+
+// Function: AttributesWithUsing
+[[using Namespace: AttributeA]]
+void AttributesWithUsing();
+
+// Function: AttributesInListsWithUsing
+[[using Namespace: AttributeA, AttributeB(), AttributeC(12, "string")]]
+void AttributesInListsWithUsing();
+
+// Function: AttributeSpacing
+[[AttributeA]]
+[ [ AttributeB ] ]
+[ [ AttributeC, AttributeD ] ]
+void AttributeSpacing();
+
+// Function: AttributesInParameters
+void AttributesInParameters([[AttributeA]] int a,
+										   [[Namespace::AttributeB()]] float b,
+										   [[AttributeC(12), AttributeD("string", 0)]] double c,
+										   [[AttributeE]] [[AttributeF(12)]] [[AttributeG("string", 0)]] char* d);
+
+
+
+// Group: Attributes via __attribute__
+// ______________________________________________
+//
+// The double parentheses are a requirement, not just a convention.
+//
+
+// Function: UnderscoredAttribute
+__attribute__((noinline)) void UnderscoredAttribute() { }
+
+// Function: UnderscoredAttributeWithParameter
+__attribute__((section("SectionName"))) void UnderscoredAttributeWithParameter() { }
+
+// Function: MultipleSeparateUnderscoredAttributes
+__attribute__((noinline))
+__attribute__((section("SectionName"))) void MultipleSeparateUnderscoredAttributes() { }
+
+// Function: MultipleCombinedUnderscoredAttributes
+__attribute__((noinline, code_seg("SectionName"))) void MultipleCombinedUnderscoredAttributes() { }
+
+// Function: UnderscoredAttributeSpacing
+__attribute__((AttributeA))
+__attribute__ ((AttributeB))
+__attribute__ ( ( AttributeC ) )
+__attribute__ ( ( AttributeD, AttributeE ) )
+void UnderscoredAttributeSpacing();
+
+
+
+// Group: Attributes via __declspec
+// ______________________________________________
+
+// Function: DeclSpecAttribute
+__declspec(noinline) void DeclSpecAttribute() { }
+
+// Function: DeclSpecAttributeWithParameter
+__declspec(code_seg("SectionName")) void DeclSpecAttributeWithParameter() { }
+
+// Function: DeclSpecMultipleSeparateAttributes
+__declspec(noinline)
+__declspec(code_seg("SectionName")) void DeclSpecMultipleSeparateAttributes() { }
+
+// Function: DeclSpecMultipleCombinedAttributes
+__declspec(noinline code_seg("SectionName")) void DeclSpecMultipleCombinedAttributes() { }
+
+// Function: DeclSpecAttributeSpacing
+__declspec(AttributeA)
+__declspec ( AttributeB )
+__declspec ( AttributeC AttributeD )
+void DeclSpecAttributeSpacing();
+
+// Function: DeclSpecWhitespaceTraps
+__declspec ( )
+__declspec ( AttributeA AttributeB )
+__declspec ( AttributeC
+AttributeD
+  AttributeE )
+__declspec ( AttributeF /* comment */ AttributeG )
+__declspec ( AttributeH ( "value" ) AttributeI ( "value" )
+AttributeJ ( "value" )
+  AttributeK ( "value" )
+)
+void DeclSpecWhitespaceTraps();
+
+
+
+// Group: Attributes via Other Macros
+// ______________________________________________
+
+// Function: StdCallAttribute
+__stdcall void StdCallAttribute() { }
+
+
+
+// Group: Preceding Modifiers
+// ______________________________________________
+
+// Function: InlineFunction
+inline void InlineFunction() { }
+
+// Function: VirtualFunction
+virtual void VirtualFunction() { }
+
+// Function: ExplicitFunction
+explicit void ExplicitFunction() { }
+
+// Function: ReturnValueModifiers
+const unsigned int ReturnValueModifiers() { }
+
+
+
+// Group: Post Modifiers
+// ______________________________________________
+
+// Function: VolatileFunction
+void VolatileFunction() volatile { }
+
+// Function: ConstFunction
+void ConstFunction() const { }
+
+// Function: FunctionWithExceptionList
+void FunctionWithExceptionList() throw (int, ExceptionClass) { }
+
+// Function: FunctionWithExceptionListAndParameter
+void FunctionWithExceptionListAndParameter(int param) throw (int, ExceptionClass) { }
+
+// Function: FunctionWithNoExcept
+void FunctionWithNoExcept() noexcept { }
+
+// Function: FunctionWithNoExceptExpression
+void FunctionWithNoExceptExpression() noexcept(true) { }
+
+// Function: FunctionWithNoExceptExpressionAndParameter
+void FunctionWithNoExceptExpressionAndParameter(int param) noexcept(true) { }
+
+// Function: TrailingReturnValue
+auto TrailingReturnValue() -> int { }
+
+// Function: TrailingReturnValueAndNoExcept
+auto TrailingReturnValueAndNoExcept() noexcept(true) -> float { }
+
+// Function: SingleTrailingRefSymbol
+void ParentClass::SingleTrailingRefSymbol() & { }
+
+// Function: DoubleTrailingRefSymbol
+void ParentClass::DoubleTrailingRefSymbol() && { }

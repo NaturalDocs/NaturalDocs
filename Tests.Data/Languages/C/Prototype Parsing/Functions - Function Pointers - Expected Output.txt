@@ -1,0 +1,683 @@
+------------------------------
+Function Pointers:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void GlobalFunctionPointerAsParameter(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - Parameter 1: void(*paramA)(int, int),
+    - Name: paramA
+    - Full Type: void(*)(int, int)
+    - Base Type: void
+    - Link Candidates: void, int, int
+    - Default Value: (not detected)
+
+  - Parameter 2: float paramB
+    - Name: paramB
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void MemberFunctionPointerAsParameter(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - Parameter 1: void(ParentClass::*paramA)(int, int),
+    - Name: paramA
+    - Full Type: void(ParentClass::*)(int, int)
+    - Base Type: void
+    - Link Candidates: void, int, int
+    - Default Value: (not detected)
+
+  - Parameter 2: float paramB
+    - Name: paramB
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void (*GlobalFunctionPointerAsReturnValue(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - Parameter 1: int paramA,
+    - Name: paramA
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: float paramB
+    - Name: paramB
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - After Parameters: ))(int, int)
+    - Link Candidates: int, int
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void (ParentClass::*MemberFunctionPointerAsReturnValue(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - Parameter 1: int paramA,
+    - Name: paramA
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: float paramB
+    - Name: paramB
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - After Parameters: ))(int, int)
+    - Link Candidates: int, int
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: auto GlobalFunctionPointerAsReturnValueWithAuto(
+    - Access Level: Unknown
+    - Link Candidates: auto
+
+  - Parameter 1: int paramA,
+    - Name: paramA
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: float paramB
+    - Name: paramB
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - After Parameters: ) -> void(*)(int, int)
+    - Link Candidates: void, int, int
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: auto MemberFunctionPointerAsReturnValueWithAuto(
+    - Access Level: Unknown
+    - Link Candidates: auto
+
+  - Parameter 1: int paramA,
+    - Name: paramA
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: float paramB
+    - Name: paramB
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - After Parameters: ) -> void(ClassName::*)(int, int)
+    - Link Candidates: void, int, int
+
+------------------------------
+Function References:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void GlobalFunctionReferenceAsParameter(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - Parameter 1: void(&paramA)(int, int),
+    - Name: paramA
+    - Full Type: void(&)(int, int)
+    - Base Type: void
+    - Link Candidates: void, int, int
+    - Default Value: (not detected)
+
+  - Parameter 2: float paramB
+    - Name: paramB
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void (&GlobalFunctionReferenceAsReturnValue(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - Parameter 1: int paramA,
+    - Name: paramA
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: float paramB
+    - Name: paramB
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - After Parameters: ))(int, int)
+    - Link Candidates: int, int
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: auto GlobalFunctionReferenceAsReturnValueWithAuto(
+    - Access Level: Unknown
+    - Link Candidates: auto
+
+  - Parameter 1: int paramA,
+    - Name: paramA
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: float paramB
+    - Name: paramB
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - After Parameters: ) -> void(&)(int, int)
+    - Link Candidates: void, int, int
+
+------------------------------
+Function Pointers with Modifiers:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void GlobalFunctionPointerAsParameterWithModifiers(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - Parameter 1: void(*paramA)(int, int) const noexcept(true),
+    - Name: paramA
+    - Full Type: void(*)(int, int) const noexcept(true)
+    - Base Type: void
+    - Link Candidates: void, int, int
+    - Default Value: (not detected)
+
+  - Parameter 2: float paramB
+    - Name: paramB
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void MemberFunctionPointerAsParameterWithModifiers(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - Parameter 1: void(ParentClass::*paramA)(int, int) const && noexcept(true),
+    - Name: paramA
+    - Full Type: void(ParentClass::*)(int, int) const&& noexcept(true)
+    - Base Type: void
+    - Link Candidates: void, int, int
+    - Default Value: (not detected)
+
+  - Parameter 2: float paramB
+    - Name: paramB
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void (*GlobalFunctionPointerAsReturnValueWithModifiers(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - Parameter 1: int paramA,
+    - Name: paramA
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: float paramB
+    - Name: paramB
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - After Parameters: ) const noexcept(true))(int, int)
+    - Link Candidates: int, int
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void (ParentClass::*MemberFunctionPointerAsReturnValueWithModifiers(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - Parameter 1: int paramA,
+    - Name: paramA
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: float paramB
+    - Name: paramB
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - After Parameters: ) const & noexcept(true))(int, int)
+    - Link Candidates: int, int
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: auto GlobalFunctionPointerAsReturnValueWithAutoAndModifiers(
+    - Access Level: Unknown
+    - Link Candidates: auto
+
+  - Parameter 1: int paramA,
+    - Name: paramA
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: float paramB
+    - Name: paramB
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - After Parameters: ) -> void(*)(int, int) const noexcept(true)
+    - Link Candidates: void, int, int
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: auto MemberFunctionPointerAsReturnValueWithAutoAndModifiers(
+    - Access Level: Unknown
+    - Link Candidates: auto
+
+  - Parameter 1: int paramA,
+    - Name: paramA
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: float paramB
+    - Name: paramB
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - After Parameters: ) -> void(ClassName::*)(int, int) const noexcept(true)
+    - Link Candidates: void, int, int
+
+------------------------------
+Attributes, Arrays, and Templates:
+------------------------------
+
+- Plain Section: [[deprecated]]
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: void (*GlobalFunctionPointerAsReturnValueWithAttributes(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - Parameter 1: int paramA,
+    - Name: paramA
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: float paramB
+    - Name: paramB
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - After Parameters: ))(int, int)
+    - Link Candidates: int, int
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: __declspec(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: noinline 
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: code_seg("SectionName")
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: void (ParentClass::*MemberFunctionPointerAsReturnValueWithAttributes(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - Parameter 1: int paramA,
+    - Name: paramA
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: float paramB
+    - Name: paramB
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - After Parameters: ))(int, int)
+    - Link Candidates: int, int
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void GlobalFunctionPointerArrayAsParameter(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - Parameter 1: void(*paramA[])(int, int),
+    - Name: paramA
+    - Full Type: void(*[])(int, int)
+    - Base Type: void
+    - Link Candidates: void, int, int
+    - Default Value: (not detected)
+
+  - Parameter 2: float paramB
+    - Name: paramB
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void MemberFunctionPointerArrayAsParameter(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - Parameter 1: void(ParentClass::*paramA[6][])(int, int),
+    - Name: paramA
+    - Full Type: void(ParentClass::*[6][])(int, int)
+    - Base Type: void
+    - Link Candidates: void, int, int
+    - Default Value: (not detected)
+
+  - Parameter 2: float paramB
+    - Name: paramB
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void TemplatedMemberFunctionPointerAsParameter(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - Parameter 1: void(ParentClass<int>::*paramA)(int, int),
+    - Name: paramA
+    - Full Type: void(ParentClass<int>::*)(int, int)
+    - Base Type: void
+    - Link Candidates: void, int, int
+    - Default Value: (not detected)
+
+  - Parameter 2: float paramB
+    - Name: paramB
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void (ParentClass<int>::*TemplatedMemberFunctionPointerAsReturnValue(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - Parameter 1: int paramA,
+    - Name: paramA
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: float paramB
+    - Name: paramB
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - After Parameters: ))(int, int)
+    - Link Candidates: int, int
+
+------------------------------
+Whitespace:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void ParameterWhitespaceA(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - Parameter 1: void(*paramA)(int,int),
+    - Name: paramA
+    - Full Type: void(*)(int, int)
+    - Base Type: void
+    - Link Candidates: void, int, int
+    - Default Value: (not detected)
+
+  - Parameter 2: float paramB
+    - Name: paramB
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void ParameterWhitespaceB (
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - Parameter 1: void ( * paramA ) ( int , int ) ,
+    - Name: paramA
+    - Full Type: void(*)(int, int)
+    - Base Type: void
+    - Link Candidates: void, int, int
+    - Default Value: (not detected)
+
+  - Parameter 2: float paramB
+    - Name: paramB
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void (ParentClass::*ReturnValueWhitespaceA(
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - Parameter 1: int paramA,
+    - Name: paramA
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: float paramB
+    - Name: paramB
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - After Parameters: ))(int,int)
+    - Link Candidates: int, int
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: void ( ParentClass::*ReturnValueWhitespaceB (
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - Parameter 1: int paramA ,
+    - Name: paramA
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: float paramB
+    - Name: paramB
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - After Parameters: ) ) ( int , int )
+    - Link Candidates: int, int
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: auto TrailingReturnValueWhitespaceA(
+    - Access Level: Unknown
+    - Link Candidates: auto
+
+  - Parameter 1: int paramA,
+    - Name: paramA
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: float paramB
+    - Name: paramB
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - After Parameters: ) -> void(*)(int,int)
+    - Link Candidates: void, int, int
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: auto TrailingReturnValueWhitespaceB(
+    - Access Level: Unknown
+    - Link Candidates: auto
+
+  - Parameter 1: int paramA,
+    - Name: paramA
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: float paramB
+    - Name: paramB
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - After Parameters: ) -> void ( * ) ( int , int )
+    - Link Candidates: void, int, int

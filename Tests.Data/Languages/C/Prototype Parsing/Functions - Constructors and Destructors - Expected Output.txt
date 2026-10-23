@@ -1,0 +1,55 @@
+- Parameter Section:
+  - Before Parameters: ConstructorWithParentCalls(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: int param
+    - Name: param
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: [[Attribute]]
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: ClassName::ConstructorWithParentCallsAndAttributes (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: int param
+    - Name: param
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: ) noexcept(true)
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: ~SimpleDestructor(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: virtual ~VirtualDestructor(
+    - Access Level: Unknown
+    - Link Candidates: virtual
+
+  - After Parameters: )
+    - Link Candidates: (none)

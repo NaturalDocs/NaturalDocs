@@ -1,0 +1,97 @@
+------------------------------
+Properties and Attributes:
+------------------------------
+
+- Plain Section: unsigned int* typeProperties
+  - Access Level: Unknown
+  - Link Candidates: int
+
+------------------------------
+
+- Plain Section: alignas(8) unsigned int* typePropertiesWithParentheses
+  - Access Level: Unknown
+  - Link Candidates: int
+
+------------------------------
+
+- Plain Section: [[AttributeA]]
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: [[AttributeB(12, "string")]]
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: NamespaceA::TypeA bracketedAttributes
+  - Access Level: Unknown
+  - Link Candidates: NamespaceA::TypeA
+
+------------------------------
+
+- Plain Section: __attribute__((AttributeA))
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: __attribute__((AttributeB(12, "string")))
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: void* underscoredAttributes
+  - Access Level: Unknown
+  - Link Candidates: void
+
+------------------------------
+
+- Plain Section: const unsigned int* constant
+  - Access Level: Unknown
+  - Link Candidates: int
+
+------------------------------
+
+- Plain Section: volatile int array[256]
+  - Access Level: Unknown
+  - Link Candidates: int
+
+------------------------------
+
+- Plain Section: Dictionary<int, char*> templatedType
+  - Access Level: Unknown
+  - Link Candidates: Dictionary, int, char
+
+------------------------------
+
+- Plain Section: std::unique_ptr<Dictionary<int, char*>> nestedTemplatedType
+  - Access Level: Unknown
+  - Link Candidates: std::unique_ptr, Dictionary, int, char
+
+------------------------------
+Function Pointers:
+------------------------------
+
+- Plain Section: void(*globalFunctionPointer)(int, int)
+  - Access Level: Unknown
+  - Link Candidates: void, int, int
+
+------------------------------
+
+- Plain Section: void(ParentClass::*memberFunctionPointer)(int, int)
+  - Access Level: Unknown
+  - Link Candidates: void, int, int
+
+------------------------------
+
+- Plain Section: void (&globalFunctionReference)(int, int)
+  - Access Level: Unknown
+  - Link Candidates: void, int, int
+
+------------------------------
+
+- Plain Section: void (*globalFunctionPointerWithModifiers)(int, int) volatile noexcept
+  - Access Level: Unknown
+  - Link Candidates: void, int, int
+
+------------------------------
+
+- Plain Section: void (ParentClass::*memberFunctionPointerWithModifiers)(int, int) volatile && noexcept(true)
+  - Access Level: Unknown
+  - Link Candidates: void, int, int

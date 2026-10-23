@@ -1,0 +1,626 @@
+------------------------------
+Single Character Operators:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: int operator+ (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: int a
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: int operator/ (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: int a
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: int operator! (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: int a
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: int operator, (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: int a
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: int operator< (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: int a
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+Double Character Operators:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: int operator+= (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: int a
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: int operator<< (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: int a
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: int operator<= (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: int a
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: int operator&& (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: int a
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: int operator-> (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: int a
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+Triple Character Operators:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: int operator<<= (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: int a
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: int operator<=> (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: int a
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: int operator->* (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: int a
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+Type Conversion Operators:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: operator int(
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: explicit operator unsigned int*(
+    - Access Level: Unknown
+    - Link Candidates: unsigned, int
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: operator ClassName(
+    - Access Level: Unknown
+    - Link Candidates: ClassName
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: explicit operator NamespaceName::QualifiedClassNameA(
+    - Access Level: Unknown
+    - Link Candidates: NamespaceName::QualifiedClassNameA
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: explicit operator NamespaceName::QualifiedClassNameB(
+    - Access Level: Unknown
+    - Link Candidates: NamespaceName::QualifiedClassNameB
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: operator ClassName&(
+    - Access Level: Unknown
+    - Link Candidates: ClassName
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: explicit operator NamespaceName::QualifiedClassName**(
+    - Access Level: Unknown
+    - Link Candidates: NamespaceName::QualifiedClassName
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: operator ::Global_Class_Name(
+    - Access Level: Unknown
+    - Link Candidates: ::Global_Class_Name
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: explicit operator Namespace_Name::Qualified_Template_Name<int>*(
+    - Access Level: Unknown
+    - Link Candidates: Namespace_Name::Qualified_Template_Name, int
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+Other Operators:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: int operator[] (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: int a
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: int operator() (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: int a
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: int operator new (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: int a
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: int operator new[] (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: int a
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: int operator delete (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: int a
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: int operator delete[] (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: int a
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: int operator co_await (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: int a
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+Operators with Qualified Identifiers:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: int ClassName::operator+ (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: int a
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: int ClassName::operator<< (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: int a
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: int ClassName::operator->* (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: int a
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: ClassName::operator int(
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: explicit ClassName::operator NamespaceName::QualifiedClassNameA(
+    - Access Level: Unknown
+    - Link Candidates: NamespaceName::QualifiedClassNameA
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: explicit ClassName::operator NamespaceName::QualifiedClassNameB(
+    - Access Level: Unknown
+    - Link Candidates: NamespaceName::QualifiedClassNameB
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: int ClassName::operator[] (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: int a
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: int ClassName::operator new (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: int a
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: int ClassName::operator co_await (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: int a
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+Spacing:
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: int operator + (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: int a
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: int operator ()(
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: int a
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: int operator <<= (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: int a
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
