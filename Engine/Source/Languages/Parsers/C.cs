@@ -1476,9 +1476,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *		- <ParseMode.ParsePrototype>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipFunctionPointer_OpeningParenthesisThroughIdentifier (ref TokenIterator iterator,
+		protected bool TryToSkipFunctionPointer_OpeningParenthesisThroughIdentifier (ref TokenIterator iterator, out bool hasIdentifier,
 																														   ParseMode mode = ParseMode.IterateOnly)
 			{
+			hasIdentifier = false;
+
 			if (iterator.Character != '(')
 				{  return false;  }
 
@@ -1530,6 +1532,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (TryToSkipUnqualifiedIdentifier(ref lookahead, mode, PrototypeParsingType.Name))
 				{
+				hasIdentifier = true;
 				stopPoint = lookahead;
 				TryToSkipWhitespace(ref lookahead);
 				}
@@ -2525,6 +2528,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			bool lastWordHadParentheses = false;
 			bool isOperatorOverload = false;
 			bool isTypeConversionOperator = false;
+			bool functionPointerHasIdentifier = false;
 
 			while (lookahead.IsInBounds)
 				{
@@ -2610,9 +2614,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 				// If we're on the opening parenthesis of a function pointer, add the part through the name and end the MTN group.
 
-				else if (TryToSkipFunctionPointer_OpeningParenthesisThroughIdentifier(ref lookahead))
+				else if (TryToSkipFunctionPointer_OpeningParenthesisThroughIdentifier(ref lookahead, out functionPointerHasIdentifier))
 					{
-					wordCount++;
+					if (functionPointerHasIdentifier)
+						{  wordCount++;  }
+
 					endOfWords = lookahead;
 					isPartOfFunctionPointer = true;
 
@@ -2642,7 +2648,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						// Make sure we don't treat the parentheses in function pointers, such as "void(*paramName)(int, int)", as
 						// parentheses on regular modifiers, such as "alignas(8)".
 						TokenIterator temp = lookahead;
-						if (!TryToSkipFunctionPointer_OpeningParenthesisThroughIdentifier(ref temp, ParseMode.IterateOnly))
+						if (!TryToSkipFunctionPointer_OpeningParenthesisThroughIdentifier(ref temp, out _, ParseMode.IterateOnly))
 							{
 							lookahead.Next();
 							lastWordHadParentheses = GenericSkipUntilAfter(ref lookahead, ')', angleBracketsAsBlocks: true, skipToEndIfNotFound: false);
@@ -2687,9 +2693,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						TryToSkipOperatorOverloadIdentifier(ref lookahead, out _, mode);
 						}
 
-					else if (wordsLeft == 1 && isPartOfFunctionPointer)
+					// If the last word is part of a function pointer and has an identifier, it means we're on "(*name" in "void (*name)()".
+					else if (wordsLeft == 1 && isPartOfFunctionPointer && functionPointerHasIdentifier)
 						{
-						TryToSkipFunctionPointer_OpeningParenthesisThroughIdentifier(ref lookahead, mode);
+						TryToSkipFunctionPointer_OpeningParenthesisThroughIdentifier(ref lookahead, out _, mode);
 						}
 
 					else
@@ -2718,7 +2725,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 						// Parentheses.  Only skip if it's not the last word, or the second to last word when the next set of parentheses
 						// is to a function pointer.
-						if (wordsLeft > 1 && !(wordsLeft == 2 && isPartOfFunctionPointer))
+						if (wordsLeft > 1 && !(wordsLeft == 2 && isPartOfFunctionPointer && functionPointerHasIdentifier))
 							{
 							TryToSkipWhitespace(ref lookahead);
 
